@@ -218,10 +218,49 @@
 		“La matemática, como un sistema puramente formal, se puede comparar con el ajedrez, los elementos primitivos en ajedrez
 		son las 32 piezas y el tablero; los axiomas son las descripciones de los movimientos de las piezas, no son evidentes, no son ni verdaderos ni falsos, son ası́ y se aceptan sin discutir, las reglas del juego constituyen la lógica del sistema. Nadie se pregunta si el ajedrez es verdadero o falso, lo único importante es saber si se siguen las reglas”, Mariano Perero.
 
-		“Creatividad es lo que se necesita para saber dónde usar y qué herramientas de las matemáticas discretas usar”, Rosen.
+		“Creatividad es lo que se necesita para saber dónde usar y qué herramientas de las matemáticas discretas usar”, Kennet  H. Rosen.
 
 
-|| SIMBOLOGÍA
+
+
+|| TEMAS DE LA MATEMÁTICA DISCRETA
+
+	La matemática discreta se usa siempre que se cuentan objetos, cuando se estudian relaciones entre conjuntos (finitos) o numerables y cuando se analizan procesos con un número finito de pasos.
+
+	Facilitan el entendimiento en todas las áreas de las ciencias de la computación; estructura de datos, algoritmos, seguridad informatica, sistemas operativos, etc. Sin este conocimiento, estos cursos serían más dificiles.
+
+	
+	Razonamiento matemático:
+
+
+
+
+
+	Análisis combinatorio:
+
+
+
+
+
+	Estructuras discretas: 
+
+
+
+
+
+	Pensamiento algorítmico:
+
+
+
+
+
+ 
+	Aplicaciones y modelado:
+
+
+
+
+|| SIMBOLOGÍA	
 	
 	P, Q, R, . . . son propociones
 
@@ -301,10 +340,39 @@
 
 	∗, ⊥, ⊗, ⊕ 	son operaciones binarias
 
+	Σ 		suma
+
+	Π		producto	
+
+
+
+|| Lógica
+
+	Las reglas de lógica son la base de todo razonamiento o enunciado matemático como: 
+
+		<< Existe un entero que no es la suma de dos cuadrados >>
+		<< Para todo entero positivo n, la suma de enteros positivos que no sobrepasan n es n(n+1) >>
+
+	Nos ayudan a entenderlos y razonarlos. Para entender las matemáticas debemos entender QUÉ es lo que constituye un argumento matemático correcto, la demostración.
+
+	Se necesita la práctica para construirlos, no solo leer los enunciados, formulas, etc.
+
+
+	Introducción:
 
 
 
 
+	Proposiciones:
+
+
+
+
+
+
+
+|| CONJUNTOS
+	
 
 
 
