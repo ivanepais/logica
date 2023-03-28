@@ -155,9 +155,70 @@
 			Demostración y prueba son sinónimos, el término verificar se utiliza a veces en lugar de probar, sobre todo cuando la demostración es esencialmente un cálculo.
 
 
+		Inferencia:
+
+			Es un proceso que consiste en obtener la conclusión a partir de un conjunto de premisas.
+
+				<<Todos los hombres son mortales. Sócrates es hombre. Luego Sócrates es mortal.>>
+
+			La distinción entre el conjunto de premisas y la conclusión está determinada por algunas palabras que sirven de referencia, esta distinción está dada; por luego, por lo tanto, en consecuencia.
+
+				<<Si el galeón no trae piratas, entonces el capitán ha muerto o está prisionero. Pero, el capitán no ha muerto ni está prisionero. En consecuencia, el galeón trae piratas.<<
+
+			Proposiciones:
+
+				Expresiones que componen el conjunto de premisas y la conclusión.
+
+			la inferencia es una estructura de proposiciones que consiste en pasar de un conjunto de proposiciones llamadas premisas a otra proposición que es la conclusión.
+
+			Deductividad:
+
+				Cuando la conclusión está contenida en el conjunto de premisas o se deriva necesariamente del conjunto de premisas, la inferencia es válida, en este caso se dice que la conclusión es consecuencia lógica.
+
+
+			Inductividad:
+
+				la conclusión sólo es probable respecto al conjunto de premisas. Lógicamente las inferencias inductivas son inválidas. La lógica trata sólo de inferencias deductivas.
+
+
+			Expresiones proposicionales:
+
+				Las proposiciones son expresiones del lenguaje de las que tiene sentido decir que son verdaderas o falsas. A este tipo de lenguaje usado en el discurso se le denomina también enunciativo, declarativo, descriptivo, aseverativo, asertórico, etc.
+
+
+			Expresiones no proposicionales:
+
+				No cumplen con la propiedad esencial de la proposición, esto es, no son verdaderas ni falsas. Por ejemplo, a diario usamos el lenguaje para hacer preguntas, para dar órdenes, para comunicar sentimientos y actitudes, para expresar deseos y emociones, etc., etc., en estos casos las oraciones no tienen sentido de ser verdaderas o falsas.
+
+
+			Proposiciones simples:
+
+				aquellas expresiones que están constituidas por un solo sujeto, un solo verbo y un solo predicado, en otros términos, de una proposición simple no podemos obtener otra proposición ni siquiera el término "no", por ello se las denomina proposiciones atómicas, básicas o elementales.
+
+				Clasificación:
+
+					Predicativas:
+
+						Atribuyen o niegan un predicado a un sujeto.
+
+					Relacionales:
+
+						Vinculan de alguna manera dos o más sujetos.
+
+
+			Proposiciones compuestas/moleculares:
+
+				Expresiones que están constituidas por más de una proposición simple unidas por términos llamados conectivas. Las conectivas son "y", "O", "si ... entonces", "si y sólo si", "no", etc.
+
+				Clasificación:
+
+					La conectiva principal da nombre a cada una de estas proposiciones; negativa, conjuntiva, condicional, disyuntiva, bicondicional.
+
+
 		“La matemática, como un sistema puramente formal, se puede comparar con el ajedrez, los elementos primitivos en ajedrez
 		son las 32 piezas y el tablero; los axiomas son las descripciones de los movimientos de las piezas, no son evidentes, no son ni verdaderos ni falsos, son ası́ y se aceptan sin discutir, las reglas del juego constituyen la lógica del sistema. Nadie se pregunta si el ajedrez es verdadero o falso, lo único importante es saber si se siguen las reglas”, Mariano Perero.
 
+		“Creatividad es lo que se necesita para saber dónde usar y qué herramientas de las matemáticas discretas usar”, Rosen.
 
 
 || SIMBOLOGÍA
@@ -168,58 +229,77 @@
 
 	P ∧ Q conjuncion de P y Q
 
-	P ∨ Q 
+	P ∨ Q disyunción de P y Q
 
-	P → Q
+	P → Q 	P implica Q
 
-	P ↔ Q
+	P ↔ Q 	P si y solo si Q
 
-	P ⇒ Q
+	P ⇒ Q 	si P → Q es tautologı́a
 
-	P ⇔ Q
+	P ⇔ Q 	si P ↔ Q es tautologı́a
 
-	P ≡ Q
+	P ≡ Q 	P equivalente a Q
 
-	V 0
+	V 0 	denota una tautologı́a
 
-	F 0
+	F 0 	denota una contradicción
 
-	.: 
+	.: 		por lo tanto
 
-	(⇒⇐)
+	(⇒⇐) 	contradicción
 
-	∃
+	∃ 		cuantificador existencial (existe)
 
-	/∃
+	/∃ 		no existe
 
-	A, B, C, . . .
+	∀ 		cuantificador universal (para todo)
 
-	a, b, c, . . .
+	A, B, C denotan conjuntos
 
-	a ∈ A
+	a, b, c denotan elementos
 
-	A ⊆ B
+	a ∈ A 	a pertenece a A
 
-	A ⊂ B
+	A ⊆ B 	A es subconjunto de B
 
-	[a, b]
+	A ⊂ B 	A es subconjunto propio de B
+ 
+	[a, b]	intervalo cerrado
 
-	]a, b
+	(a, b) 	intervalo abierto
 
-	A − B
+	A − B 	diferencia de conjuntos
 
-	A ∪ B
+	A ∪ B 	unión de conjuntos
 
-	A ∩ B
+	A ∩ B 	intersección de conjuntos
 
-	A 7 B
+	A 7 B 	diferencia simétrica de conjuntos
 
-	|A|
+	|A| 	cardinalidad de A
 
-	|x|
+	∅ o { }	conjunto vacı́o
 
-	n!
+	u 		conjunto universo
 
+	A ≈ B 	conjuntos equipotentes
+
+	a ≈ b 	aproximación de números
+
+	A × B 	conjunto producto de A y B
+
+	(a, b), (a, b, c) par ordenado y triplete ordenado
+
+	f, g, h denotan funciones
+
+	f ◦ g 	composición de f y g
+
+	|x| 	valor absoluto de x
+
+	n!		factorial de n
+
+	∗, ⊥, ⊗, ⊕ 	son operaciones binarias
 
 
 
