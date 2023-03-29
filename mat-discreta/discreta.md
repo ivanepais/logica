@@ -232,32 +232,37 @@
 	
 	Razonamiento matemático:
 
+		Sirve para leer, comprender y construir argumentos matemáticos. 
 
-
+		La lógica matemática se usa en el metodo de demostracion inductivo que es el único valido.
 
 
 	Análisis combinatorio:
 
+		Para resolver problemas es importante contar o enumerar objetos. 
 
-
+		Las técnicas de recuento, analisis combinatorio se usan en lugar de las formulas.
 
 
 	Estructuras discretas: 
 
+		Se usan para representar objetos discretos (finitos) y las relaciones entre ellos. 
 
-
+		Aplicamos los conjuntos, permutaciones, relaciones, grafos, arboles y maquinas de estado finito.
 
 
 	Pensamiento algorítmico:
 
+		Ciertos problemas se resuelven aplicando código de ordenador.
 
-
-
+		Debemos saber su significado, verificarlo, su memoria, su tiempo de ejecución; todo en pseudocódigo.
 
  
 	Aplicaciones y modelado:
 
+		La matemática discreta se aplica en cualquier área de estudio. 
 
+		Computación, datos, química, linguística, empresas e internet.
 
 
 || SIMBOLOGÍA	
@@ -351,6 +356,7 @@
 	Las reglas de lógica son la base de todo razonamiento o enunciado matemático como: 
 
 		<< Existe un entero que no es la suma de dos cuadrados >>
+		
 		<< Para todo entero positivo n, la suma de enteros positivos que no sobrepasan n es n(n+1) >>
 
 	Nos ayudan a entenderlos y razonarlos. Para entender las matemáticas debemos entender QUÉ es lo que constituye un argumento matemático correcto, la demostración.
@@ -368,12 +374,321 @@
 
 
 
-
-
-
 || CONJUNTOS
 	
+	Es un grupo de objetos denominados elementos que comparten características o propiedades semejantes.
 
+	Se denota con letra mayús o con un circulo o corchetes.
+
+
+	Pertenencia: 
+
+		De un elemento a un conjunto. Se denota con E.
+
+		Se lee, pertenece a, está en o es elemento de...
+
+			A = {1, 2, 3, 4, 5}
+
+				1 e A.
+
+				10 e/ A, "no pertenece a A."
+
+
+	Caracteristica:
+
+		De un conjunto, se denota con | o :, lo usamos para comprender el conjunto.
+
+		Se lee tales que, para los cuales; seguido de cada elemento (x) es...
+
+			A = {x | x es un objeto electrónico}
+
+
+	Conjunto vacío: 
+
+		Cuando no tiene elementos que cumpla con su característica. Se denota con {}, ø
+
+
+	Subconjunto:
+
+		Cuando un conjunto tiene elementos que se encuentran en otro conjunto. Se denota con C
+
+			A = {1, 2, 3, 4, 5}, B = {3, 4} 
+
+				B c A
+
+
+	Operaciones entre conjuntos: 
+
+		Unión: 
+
+			Cuando hay elementos que pertenecen o se encuentran en uno u otro conjunto.
+
+			Se denota con U.
+
+				A = {1, 2, 3, 4, 5}
+
+				B = {2, 4, 6}
+
+				A u B = {1, 2, 3, 4, 5, 6}
+
+
+		Intersección:
+
+			Cuando hay elementos que solo están en los dos o más conjuntos.
+
+			Se denota con ∩ 
+
+				A = {1, 2, 3, 4, 5}
+
+				B = {2, 4, 6}
+
+				A ∩ B = {2, 4}
+
+
+		Comparaciones:
+
+			Mayor que:
+
+				>
+
+			Menor que:
+
+				<
+
+		O:
+
+			Se usa para la unión/u, v (o).
+
+				A v B
+
+		Y:
+
+			Se usa para la intersección/∩, ∧ (y).
+
+				A ∧ B
+
+
+	Diagramas de Venn:
+
+		Son graficos que muestran conjuntos usando circulos que estan dentro de un rectángulo que denota al conjunto universal que abarca a todos los elementos posibles que no formen parte de los conjuntos o de sus operaciones.
+
+		Debemos hacer el gráfico y colocar los elementos según la operación entre conjuntos.
+
+		El gráfico para todas las operaciones es el conjunto universal con los conjuntos entrelazados.
+
+		Se sombrea las partes o segmento del diagrama que dan la solución.
+
+
+			intersección/∧ (y)/∩:
+
+				En la sección del medio se colocan los elementos comunes en ambos conjuntos, se sombrea el área dónde estén estos elementos.
+
+					U = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}
+
+					A = {1, 3, 5, 12}
+
+					B = {1, 2, 3, 4, 6, 10}
+
+					A ∩ B = {1, 3}
+
+
+			inclusión/subconjunto/c:
+
+				Cuando todos los elementos de un conjunto pertencen al otro.
+
+
+			disyunción/ v (o):
+
+				Cuando no hay elementos comunes en los dos conjuntos. 
+
+
+		Diagramas de Euler:
+
+			Pueden ser más complicados de leer ya que el gráfico general cambia según la operación.
+
+
+			intersección:
+
+				Se gráfican según el tamaño del conjunto.
+
+
+			inclusión/subconjunto:
+
+				En el gráfico, el conjunto más grande contiene al subconjunto.
+
+
+			disyunción:
+
+				El grafico de los circulos/conjuntos van separados.
+
+
+	Notación de conjuntos:
+
+		Comprensión:
+
+			Consiste en indicar la caracteristica o propiedad común a todos los elementos del conjunto.
+
+				A = {x | x e N, x > 10}
+
+				La x se lee o comprende como "cada elemento del conjunto" o "es un elemento"
+
+				Aquí vemos dos propiedades: un numero natural y mayor que 10.
+
+
+		Extensión (enumeración):
+
+			Consiste en nombrar cada uno de sus elementos, cumpliendo con la caracteristica.
+
+				A = {x | x e N, x > 10}
+
+					A = {11, 12, 13, 14, 15...}
+				
+				B = {12, 13, 14, 15}
+
+					B = {x | x e N, 12 ≤ x ≤ 15}
+
+						o 
+
+					B = {x | x e N, 11 < x < 16}
+
+
+		Operaciones en los elementos: 
+
+			A los elementos que cumplen con las características, le debemos aplicar la operación indicada.
+
+				C = {x+5/2 | x e N, x < 5}
+
+				C = {3, 7/2, 4, 9/12}
+
+
+	Unión de conjuntos: 
+
+		El conjunto es formado por todos los elementos que pertenecen a A o a B. Se simboliza con u.
+
+		Notación científica:
+
+				A u B = {x | x e A  v  x e B}
+
+		Practica:
+				
+			A = {1, 2, 3, 4, 5, 6, 7}
+
+			B = {2, 4, 6, 8, 10}
+
+			A u B = {1, 2, 3, 4, 5, 6, 7, 8, 10}
+
+			
+			Diagrama de Venn:
+
+				En el segmento del medio van los elementos que se encuentran en los dos conjuntos. Se sombrea las parte que dan la solución.
+
+				Algún segmento puede estar vacío.
+
+
+		Intersección de conjuntos:
+
+			Es el conjunto de los elementos comunes o que se repiten entre los conjuntos. Se simboliza ∩.
+
+			Notación científica: 
+
+				A ∩ B = {x | x e A  ∧  x e B}
+
+			Practica:
+				
+				A = {1, 2, 3, 4, 5, 6, 7}
+
+				B = {2, 4, 6, 8, 10}
+
+				A ∩ B = {2, 4, 6,}
+
+
+				Diagrama de Venn:
+
+					Como siempre, en la sección del medio van los numero que pertenecen a los dos conjuntos.
+
+					A = {1, 2, 3}
+
+					B = {7, 8, 9}
+
+					A ∩ B = { }
+
+					Como la solución es el conjunto vacío (no hay elementos), se sombrea el area vacía.
+
+
+		Diferencia entre conjuntos:
+
+			Si hacemos una resta entre A - B:
+
+			Es el conjunto de elementos de A que no pertenecen a B.
+
+
+			Notación científica: 
+
+				A - B = {x | x e A  ∧  x e/ B}	
+
+
+			Práctica:
+
+				A = {1, 2, 3, 4, 5, 6}
+
+				B = {2, 4, 6, 8, 10}	
+
+				A - B = {1, 3, 5}
+
+				
+				Diagrama de Venn:
+
+					Se sombrea el área de A.
+
+
+		Complemento de un conjunto:
+
+			Sea A un subconjunto del conjunto universal U, el complemento de A (en U), es el conjunto A' de los elementos de U que no pertenecen a A.
+
+			   U [A' (A)]
+
+
+			Práctica:
+
+				U = {1, 2, 3, 4, 5}
+
+				A = {2, 4}	
+
+				A' = {1, 3, 5}
+
+
+				U = {x | x e N}
+				
+				A = {2, 4}
+
+				A' = {x | x e N, x=/=2  y  x=/=4}
+
+			
+			Propiedades: 
+
+				∅' = U
+
+				U' = ∅
+
+				(A')' = A
+
+			
+		Operaciones combinadas entre conjuntos:
+
+
+
+
+
+
+|| FUNCIONES 
+
+
+
+
+
+
+
+||
 
 
 
