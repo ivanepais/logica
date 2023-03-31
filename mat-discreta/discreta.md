@@ -222,7 +222,6 @@
 
 
 
-
 || TEMAS DE LA MATEMÁTICA DISCRETA
 
 	La matemática discreta se usa siempre que se cuentan objetos, cuando se estudian relaciones entre conjuntos (finitos) o numerables y cuando se analizan procesos con un número finito de pasos.
@@ -325,7 +324,7 @@
 
 	∅ o { }	conjunto vacı́o
 
-	u 		conjunto universo
+	U 		conjunto universo
 
 	A ≈ B 	conjuntos equipotentes
 
@@ -672,12 +671,334 @@
 
 				(A')' = A
 
-			
+
 		Operaciones combinadas entre conjuntos:
 
+			Se hace de a partes, respetando el parentesis y si no hay, se opera de izquierda a derecha.
+
+			Ej: (A u B) ∩ C
+
+			A = {1, 2, 3, 5, 6, 7, 8, 10}
+
+			B = {2, 4, 6, 8, 10}
+
+			C = {5, 6, 7, 8, 9}
+
+				1°	A u B = {1, 2, 3, 4, 5, 6, 7, 8, 10}
+
+				2°	(A u B) ∩ C = {5, 6, 8}
+
+
+			Ej: A' - B
+
+			U = {a, b, c, d, e, f, g}
+
+			A = {a, b, c, d}
+
+			B = {a, c, e, g}
+
+				1° A' = {e, f, g}
+
+				2° B = {f}
+
+
+		Diferencia simétrica (Δ, delta)
+
+			A Δ B, es el conjunto de los elemetos de U que pertenecen a A o B pero no a los dos a la vez.
+
+			A Δ B = (A - B) u (B - A) = (A u B) - (A ∩ B)
+
+
+			diagrama de Venn: 
+
+				U [(A)( )(B)], se toma A y B.
+
+
+			Ej: A Δ B
+
+			U = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
+
+			A = {1, 2, 3, 4, 5}
+
+			B = {3, 4, 5, 6, 7, 8}
+
+			A Δ B = {1, 2, 6, 7, 8}
 
 
 
+|| TABLAS DE VERDAD
+
+	Lógica: 
+
+		Es la disposición natural de los seres humanos a pensar de forma coherente. 
+
+		Científicamente, es la estructura del pensamiento que permite verificar si un razonamiento <<reflexión y el análisis situacional para llegar a una conclusión>> es correcto o incorrecto. 
+
+
+	Lógica proposicional/matemática:
+
+		Ciencia que estudia los métodos (acciones sistematicas para obtener un resultado) y principios indispensables para distinguir el razonamiento.
+
+		Se pueden usar en los programas informaticos para crear todo tipo condiciones.
+
+
+		Proposición: 
+
+			Es un enunciado u oración que puede ser verdadera o falsa.
+
+				"5 > 3" ¿5 es mayor que 3?
+
+			Hay enunciados que no son proposiciones, no podemos decir nada sobre su verdad o falsedad.
+
+				¿Cómo te llamas?
+				¿8 es un número par?
+
+
+		Símbolos: 
+
+			Se le da una letra a cada proposición, una vez dada, para no repetirla todo el tiempo. Generalmente se usan minusculas.
+
+
+			Letras:
+
+				Si tenemos muchas proposiciones: 
+
+					p, q, v, s, t, u...
+
+
+			Conectores/operadores lógicos:
+
+				Unen a las proposciones/enunciados, un simbolo determina una palabra.
+
+					No/negación/falsedad: ¬ o ~
+
+					Y/conjunción: ∧
+
+					O/disyunción: v
+
+					Implica/entonces/condicional: →
+
+					Si y solo si/bicondicional: ↔
+
+
+		Práctica: 
+
+			Afirmación / Negación:
+
+				p: Iré al cine
+
+				-p: No iré al cine
+
+				q: Iré a jugar fútbol
+
+				-p: No iré a jugar fútbol
+
+				v: El numero dos es par
+
+				-v: El numero dos no es par o Es falso que el numero dos sea par
+
+
+			Dos negaciones:
+
+				Se eliminan.
+
+				Ej: "es falso(-) que no(-) está lloviendo(t)"
+
+					- - t = t
+
+				"Es falso(-) que el numero 2(t) no(-) es par"
+
+					=
+
+				"El numero 2 es par"
+
+
+			Conjunción / y (∧) / intersección (∩):
+
+				Se forman con dos proposiciones en una oración o frase.
+
+				Ej: "iré al cine(p) y(v) a jugar(q)"
+
+
+			Disyunción / v(o) / unión (u):
+
+				Igualmente, se forman con dos proposiciones en una oración o frase.
+
+
+				Ej: "se van(t) o(v) se quedan(u)"
+
+
+			Condicional / implica / entonces (->): 
+
+				De igual manera, necesitamos dos proposcioens. 
+
+				Ej: "Si está lloviendo(p), entonces(->), hay nubes en el cielo(q)"
+
+
+			Bicondicional / Si y solo is / (<->)
+
+				Ej: "podemos comprar(p), si y solo si(<->), tenemos dinero(q)"
+
+
+			Combinaciones directas:
+
+				Una vez que tengamos las proposiciones.
+
+					-p v q; -p ∧ q; --p v q; p -> -p
+
+
+		Tablas de verdad:
+
+			Las filas depende del numero de proposiciones, la primera será para las letras, las restantes para las V o F.
+
+			Calculamos 2^n, n son la cantidad de proposiciones.
+
+			En la ultima columna va operación de las proporciones que representa la frase/oración que debemos comparar para encontrar el resultado de la tabla.
+
+
+			Conjunción / y (∧) / intersección (∩): 
+
+				Lo importante es entender como funciona la conexión "y" en la tabla de verdad:
+
+					Unicamente es verdadera si las dos proposiciones son verdaderas.
+
+				Para p escribimos la mitad verdadera (seguidas) y para q, intercalamos entre v y f.
+
+				Resultado de la tabla: 
+
+					Debemos ponerle el valor de v o f a las proposiciones.
+
+					Al final, comparamos los valores con la frase.
+
+					|Es verdadera si las dos proposiciones son verdaderas|
+
+
+				Proposicioes:
+
+					p: Te regalaré flores | Si es V
+
+					q: Te regalaré dulces | Si es F
+
+				Operación:
+
+					"Te regalaré flores y dulces" | el resultado es F
+
+					p 	q 	p ^ q
+					v 	v 	v	
+					v 	f 	f
+					f 	v 	f
+					f 	f 	f
+
+
+			Disyunción / v(o) / unión (u):
+
+				Se debe cumplir una proposicion para que sea verdadera, no son obligación, las dos.
+
+				Tampoco es falso que si cumplimos las dos proposiciones.
+
+				|Es falsa unicamente si las dos son falsas|
+
+
+			Proposiciones:
+
+				p: Te regalaré flores | Si es V | V | F
+
+				q: Te regalaré dulces | Si es V | F | F
+
+			Operación:
+
+				"Te regalaré flores o dulces" | el resultado es V | V | F
+
+				p 	q 	p ^ q
+				v 	v 	v	
+				v 	f 	v
+				f 	v 	v
+				f 	f 	f
+
+
+			Negación / no / falsedad / ¬ o ~:
+
+				Se puede negar varias proposiciones pero siempre funciona de la misma forma.
+
+			Proposiciones: 
+
+				p: Tengo frío	| Si es V | Si "tengo frio" es F
+
+			Operación:
+
+				"no tengo frío" | Es Falso | "No tengo frío" es V
+
+				p 	-p 	
+				v 	f
+				f 	v
+
+
+			Operación doble negación:  --p | -(-p)
+
+				Se puede eliminar los negativos (operación) y queda la proposicion.
+
+				p: Tengo frío
+
+				"Es falso que no tengo frío"
+
+				p 	--p 	
+				v 	v
+				f 	f				
+ 
+
+			Condicional / implica / entonces (->):
+
+				|Es falsa si únicamente la primera es verdadera y la segunda es falsa|
+
+				Importa el orden, p seguido de q; es es al revés cambia la tabla. 
+
+			Proposiciones: 
+
+				p: Si estudias mucho | Si es V | V | F | F	
+
+				q: Te compro un juguete | Si es V |	F | V | F
+
+			Operación:
+
+				"Si Estudias mucho, entonces, te compro un juguete"
+				| V	| F	| V	| V
+
+				p 	q 	p -> q
+				v 	v 	v
+				v 	f 	f
+				f 	v 	v
+				f 	f 	v
+
+
+			Bicondicional / Si y solo si / (<->):
+
+				Nos ayuda a entender porqué operación condicional tiene un solo resultado falso.
+
+				No importa el orden, no cambia la tabla.
+
+				|Es verdadera si las dos proposiciones tienen el mismo valor|
+
+				Es parecida a la ley de los signos.
+
+
+			Proposiciones: 
+
+				p: Te compro un juguete | Si es V | V | F | F	
+
+				q: Si estudias mucho | Si es V | F | V | F
+					
+
+			Operación:
+
+				"te compro un juguete, si y solo si, estudias mucho"	o
+				"Solo si estudias mucho, te compro un juguete"
+				| V	| F	| F	| V
+
+				p 	q 	p <-> q
+				v 	v 	v
+				v 	f 	f
+				f 	v 	f
+				f 	f 	v
 
 
 || FUNCIONES 
