@@ -909,7 +909,7 @@
 
 				"Te regalaré flores o dulces" | el resultado es V | V | F
 
-				p 	q 	p ^ q
+				p 	q 	p v q
 				v 	v 	v	
 				v 	f 	v
 				f 	v 	v
@@ -919,6 +919,8 @@
 			Negación / no / falsedad / ¬ o ~:
 
 				Se puede negar varias proposiciones pero siempre funciona de la misma forma.
+
+				|Solo ponemos el valor contrario|
 
 			Proposiciones: 
 
@@ -952,11 +954,13 @@
 
 				Importa el orden, p seguido de q; es es al revés cambia la tabla. 
 
+
 			Proposiciones: 
 
 				p: Si estudias mucho | Si es V | V | F | F	
 
 				q: Te compro un juguete | Si es V |	F | V | F
+
 
 			Operación:
 
@@ -969,6 +973,13 @@
 				f 	v 	v
 				f 	f 	v
 
+
+			Caso especial:
+
+				3° fila: p es falso y q verdadero = p -> q verdadero
+
+					Solo se cumplió q; no se advierte que pasa si no se cumple la primera proposición, por lo tanto, es verdadero.
+	
 
 			Bicondicional / Si y solo si / (<->):
 
@@ -999,6 +1010,63 @@
 				v 	f 	f
 				f 	v 	f
 				f 	f 	v
+
+
+			Caso especial:
+
+				3° fila: p es falso y q verdadero = p -> q falso
+
+					En está operación si le estamos advirtiendo que se tiene que cumplir la primera proposición.
+
+					Solo se cumplió q; se advierte que pasa si no se cumple la primera proposición, por lo tanto, es falso.
+
+
+		Reglas prácticas:
+
+			Orden de resolución:
+
+				Paréntesis() > negación (-) > conjunción (^, y)/disyunción (v, o) > condicional (->,entonces)/bicondicional(<->)
+				
+				Ejemplos:
+
+					-(p^q); [p^(-q)]; [-p^(-q)]; (p^q)^(pv-q)
+
+					(p v -q)^r; (p->q)^(q->p) 
+
+					[(p->q) v (-q^r)]<->(r->q)
+
+				En la tabla de verdad se hace una columna para cada una, seguida de la otra.
+
+
+		Ejercicio: 
+
+			1°: -(p^q)
+
+				2^n (proposiciones) > 2^²= 4 (filas)
+
+				p 	q 	p^q  	-p^q
+				v 	v 	v 		f 		 		
+				v  	f 	f 		v 				 
+				f  	v 	f 		v
+				f 	f 	f 		v
+
+
+			2°: p^(-q) 
+
+				p 	q 	(-q) 	[p^(-q)]
+				v 	v 	f 		f
+				v 	f 	v 		v
+				f   v 	f 	 	f
+				f 	f 	v 		f
+
+
+			3°: [-p^(-q)]
+
+				p 	q 	-p 	   -q 	-p^(-q)
+				v 	v 	f 		f 	f
+				v 	f 	f 		v 	f
+				f   v 	v 	 	f 	f
+				f 	f 	v 		v 	v
 
 
 || FUNCIONES 
