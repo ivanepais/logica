@@ -952,7 +952,7 @@
 
 				|Es falsa si únicamente la primera es verdadera y la segunda es falsa|
 
-				Importa el orden, p seguido de q; es es al revés cambia la tabla. 
+				Importa el orden, p seguido de q; es si es al revés cambia la tabla. 
 
 
 			Proposiciones: 
@@ -1031,20 +1031,22 @@
 
 					-(p^q); [p^(-q)]; [-p^(-q)]; (p^q)^(pv-q)
 
-					(p v -q)^r; (p->q)^(q->p) 
+					(p v -q)^r; (p^q)->r; (p->q)^(q->p) 
 
 					[(p->q) v (-q^r)]<->(r->q)
 
 				En la tabla de verdad se hace una columna para cada una, seguida de la otra.
 
+				Buscamos rapidamente la condición única de cada operación: y (vv=v, lo demás falso), o (ff=f, lo demás verdadero), - (al revés).
 
-		Ejercicio: 
+
+		Ejercicios: 
 
 			1°: -(p^q)
 
 				2^n (proposiciones) > 2^²= 4 (filas)
 
-				p 	q 	p^q  	-p^q
+				p 	q 	(p^q)  	-p^q
 				v 	v 	v 		f 		 		
 				v  	f 	f 		v 				 
 				f  	v 	f 		v
@@ -1059,6 +1061,8 @@
 				f   v 	f 	 	f
 				f 	f 	v 		f
 
+				* -q se evalua con q y la ultima operación, p con -q
+
 
 			3°: [-p^(-q)]
 
@@ -1067,6 +1071,114 @@
 				v 	f 	f 		v 	f
 				f   v 	v 	 	f 	f
 				f 	f 	v 		v 	v
+
+				* La ultima operación se evalua con -p y -q
+
+
+			4°: (p ^ q)^(p v -q)
+
+				p 	q 	p^q 	-q 	p v -q 	(p^q)^(p v -q)
+				v 	v 	v 		f 	v  		v		
+				v 	f 	f 		v 	v 		f	
+				f   v 	f 	 	f 	f 		f
+				f 	f 	f 		v  	v 		f
+
+			
+			5°: Se agrega una tercera proposición, (p v -q)^r
+
+					2^3 = 8 filas. Para p cuatro valores para vf; en q lo reducimos a dos valores para vf y en r, un valor para vf.
+
+				p 	q 	r 	   -q 	pv(-q) 	(pv-q)^r
+				v 	v 	v 		f 	v  		v			
+				v 	v 	f 		f 	v   	f 	
+				v   f   v 		v	v		v	
+				v  	f 	f 		v	v		f	
+				f   v 	v 	 	f 	f 		f	
+				f 	v 	f 		f 	f 		f	
+				f   f 	v       v	v		v	
+				f   f 	f 		v	v		f					
+
+				*Buscamos rapidamente la condición única de cada operación y (vv=v, lo demás falso), o (ff=f, lo demas verdadero), - (al revés).
+
+
+			6°: (p^q)->r
+
+				|Es falsa si únicamente la primera es verdadera y la segunda es falsa|
+
+				Es la única donde importa el orden, p seguido de q; es si es al revés cambia la tabla.
+
+				*"Si Estudias mucho, entonces, te compro un juguete"
+				| V	| F	| V	| V
+
+				p 	q 	p -> q
+				v 	v 	v
+				v 	f 	f
+				f 	v 	v
+				f 	f 	v
+
+				-------------------------
+
+				p 	q 	r 	   	p^q 	(p^q)->r
+				v 	v 	v 		v 		v  					
+				v 	v 	f 		v 		f   		
+				v   f   v 		f		v			
+				v  	f 	f 	<-	f		v			
+				f   v 	v 	 	f 		v 			
+				f 	v 	f 		f 		v 			
+				f   f 	v       f		v			
+				f   f 	f 		f		v			
+
+				* La primera es p^q, la segunda r.
+
+				* Condición única de ->: vf = f, lo demás verdadero.
+
+
+			7°: [(p->q) v (-q^r)]<->(r->q)
+
+				|Es verdadera si las dos proposiciones tienen el mismo valor|
+
+				* Si y solo si (<->): condición única; vv, ff = v, lo demás falso.
+
+				p 	q 	p <-> q
+				v 	v 	v
+				v 	f 	f
+				f 	v 	f
+				f 	f 	v
+
+				-------------------------
+
+				p 	q 	r 	   	p->q 	-q 	-q->r 	
+				v 	v 	v 		v 		f  	v				
+				v 	v 	f 		v 		f   v		
+				v   f   v 		f		v	v		
+				v  	f 	f 		f		v	f		
+				f   v 	v 	 	v 		f 	v		
+				f 	v 	f 		v 		f 	v		
+				f   f 	v       v		v	v		
+				f   f 	f 		v		v 	f
+
+				(p->q)v(-q^r) 	r->q 	
+				v 	 			v					
+				v 	  			v	  		
+				v       		f				
+				f  		  		v		
+				v   	  		v		
+				v 	   			v			
+				v   	  		f		
+				v     			v
+
+				(p->q)v(-q^r) <-> r->q
+				v 	 								
+				v 	  				  		
+				f       						
+				f  		  			
+				v   	  				
+				v 	   						
+				f   	  				
+				v     			
+
+
+
 
 
 || FUNCIONES 
