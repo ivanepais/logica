@@ -1118,6 +1118,8 @@
 
 				-------------------------
 
+				(p^q)->r:
+
 				p 	q 	r 	   	p^q 	(p^q)->r
 				v 	v 	v 		v 		v  					
 				v 	v 	f 		v 		f   		
@@ -1147,13 +1149,15 @@
 
 				-------------------------
 
-				p 	q 	r 	   	p->q 	-q 	-q->r 	
-				v 	v 	v 		v 		f  	v				
-				v 	v 	f 		v 		f   v		
+				[(p->q) v (-q^r)]<->(r->q):
+
+				p 	q 	r 	   	p->q 	-q 	-q^r 	
+				v 	v 	v 		v 		f  	f				
+				v 	v 	f 		v 		f   f		
 				v   f   v 		f		v	v		
 				v  	f 	f 		f		v	f		
-				f   v 	v 	 	v 		f 	v		
-				f 	v 	f 		v 		f 	v		
+				f   v 	v 	 	v 		f 	f		
+				f 	v 	f 		v 		f 	f		
 				f   f 	v       v		v	v		
 				f   f 	f 		v		v 	f
 
@@ -1178,12 +1182,87 @@
 				v     			
 
 
+		Tautología, contradicción y contingencia:
+
+			Tautología:
+
+				Son proposiciones que verdaderas para todos los posibles valores de verdad.
+
+				El resultado de su tabla de verdad (la última operación) siempre es verdadero.
+
+				Ej: p v -p
+
+					p 	-p 	p v -p
+					v 	f 	v
+					f 	v 	v
+
+
+			Contradicción:
+
+				Son proposicionesque son falsas para todos los posibles valores de verdad.
+
+				El resultado de su tabla de verdad es falso.
+
+				Ej: p ^ -p
+
+					p 	-p 	p ^ -p
+					v 	f 	f
+					f 	v 	f
+
+
+			Contingencia:
+
+				Son proposiciones que no son verdaderas ni falsas.
+
+				En el resultado de su tabla de verdad hay verdaderos y falsos. 
+
+				Sucede en la mayoría de casos o ejercicios.
+
+				Ej: p^(-q) 
+
+					p 	q 	(-q) 	[p^(-q)]
+					v 	v 	f 		f
+					v 	f 	v 		v
+					f   v 	f 	 	f
+					f 	f 	v 		f
+
+
+			Verificar proposiciones proporcionales:
+
+				Se usa el operador bicondicional (<->)
+
+				Tomamos dos proposiciones, ej; pvq y -p^-q
+
+				pvq <-> -p^-q, si nos da |tautología| quiere decir que son equivalentes.
+
+				Ej: pvq <-> -p^-q
+
+					p 	q 	-p 	   -q   pvq 	-p(^)-q 	
+					v 	v 	f 		f 	v  		 f			
+					v 	f 	f 		v 	v   	 f 	
+					f   v   v 		f	v		 f	
+					f  	f 	v 		v	f		 v	
+
+					pvq<->-p^-q
+					f
+					f
+					f
+					f
+
+				No solo no nos dío tautologia, sino, que es una contradicción. 
+
+				pvq es todo lo contrario a -p^-q, lo vemos en sus signos negativos. Tambien lo vemos en las tres últimas operaciones de la tabla.
 
 
 
-|| FUNCIONES 
 
 
+
+
+
+|| FUNCIONES 	
+
+	
 
 
 
