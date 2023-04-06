@@ -1255,20 +1255,262 @@
 
 
 
-
-
-
-
-
 || FUNCIONES 	
 
+			f(x)
+		A -------> B
+			(2x)
+
+	Una función es una relación entre dos variable, conjunto u objeto; cada valor de una de ellas (variable independiente), le corresponde un único valor de la otra (variable dependiente).
+
+	La relación que establecemos entre las dos, puede ser una fórmula o algo que transforme a la otra parte, variable u objeto.
+
+	A la variable independiente le damos el valor que queremos, pero no así a la variable dependiente.
+
+	El valor de la variable dependiente sale automaticamente en el resultado a través de la formula/operaciones
+
+	Por cada valor que le asignamos a la variable independiente, automaticamente aparece otro valor para la variable dependiente, transformada por la relación.
+
+	Ejemplos: 
+
+		Área de un circulo: pi * radio^2
+
+			Nos relaciona el radio de un circulo con su area. Una vez que decidimos cual es el radio, nos sale automaticamente el area completa.
+
+
+		Movimiento rectilínio uniformemente acelerado: 
+
+			y(t) = y0 + v0 * t + 1/2 * g * t^2
+
+			Cuando tiramos un objeto, se ve influenciado por la gravedad que lo devuelve hacia abajo. 
+
+			La gravedad es una acelaracion, entonces, podemos saber la altura del objeto en funcion del tiempo. 
+
+			Ej: si tiramos la pelota hacia arriba nos dice donde esta al cabo de x segundos, ½, 1 seg, etc.
+
+
+	Entre dos conjuntos:
+
+		Una función es una correspondencia, a cada elemento del primer conjunto (dominio) le corresponde un único elemento del segundo (rango o imagen).
+
+
+		No es función:
+
+			Si un elemento del primer conjunto, está relacionado con dós elementos del segundo conunto.
+
+
+	Notación de una función:
+
+		Generalmente aparece la "y" como variable dependiente, la "x" toma el lugar de la variable independiente a la que le pasamos valores. 
+
+		También podemos reemplazar en x o y, coordenadas de un punto.
+
+		y = mx | y = mx + b
+
+
+	Solución de un función:
+
+		Son las raíces de los polinomios o funciones, su cantidad de raíces/soluciones depende del grado del mismo.
+
+
+	Identificar una función: 
+
+		Trazamos una línea vertical al gráfico, sobre el eje x, si lo corta en un punto es un función; si lo corta en más, no es una función.
+
 	
+	Gráfico:
+
+		Podemos gráficarlas por tabla o encontrando cada parte/valor que commpone del gráfico/función mediante fórmulas o cálculos.
+
+		Se necesitan los puntos de corte eje x (soluciones/raíces/intersección ), del eje y (b), la pendiente (m, inclinación o verticalidad de la recta/función), vértice (coordenadas x, y), etc.
+
+
+	Dominio:
+
+		Elementos del conjunto de partida.
+
+		Según las funciones:
+
+			Polinómicas: todos los reales (R)
+
+			Racionales: calcular =/= 0 para el denominador.
+
+			Radicales:
+
+			 	/> (indice par): a/[x] > 0 // [a/b] /> 0
+
+			 	R (indice impar): a/3[x] =/= 0
+
+			Exponenciales: R
+
+
+	Rango:
+
+		Son solo los elementos del conjunto de llegada que tienen relación con elementos del conjunto de partida.
+
+		No siempre son todos los reales, varía con la función.
+
+
+	Codominio:
+
+		Todos los elementos del conjunto de llegada. Son todos los reales.
+
+
+	Conjunto de 0:
+
+		Raíces/soluciones de la función.
+
+
+	Conjunto positividad:
+
+		Gráfico por encima del eje x.
+
+
+	Conjunto negatividad:
+
+		Gráfico por debajo del eje x.
+
+
+	Tipos de funciones:
+
+		Inyectiva:
+
+			Cada valor del conjunto A (df) tiene un valor distinto en B.
+
+			Identificar:
+
+				Trazamos líneas horizontales para verificar que haya un solo punto de corte.
+
+
+		Sobreyectiva:
+
+			Participan todos los elementos del conjunto de llegada B (codominio (todos los Reales) = rango)
+
+			Identificar:
+
+				El gráfico debería ocupar todo el eje y.
+
+
+		Biyectiva:
+
+			Es inyectiva y sobreyectiva, cada valor en A tiene distinto en B y el codominio es igual al rango.
+
+			Identificar:
+
+				Línea horizontal con un corte y gráfico ocupa todo y.
+
+
+	Polinómicas:
+
+		Líneales: 
+
+			Fórmulas:
+
+				Explícita: y = mx + b
+
+					Trasladar los terminos para hacerla implícita.
+
+				General/implícita: Ax + By + C = 0
+
+					Pasamos las variables a un mismo lado para hacerla segmentaria. 
+
+					Dejamos el termino independiente al otro lado y dividimos toda la ecuación por este.
+
+					Pasamos los coeficientes de las variables a dividir.
+
+				Canónica/segmentaria: x/a + y/b = 1
+
+
+
+
+			Hallar solución disponiendo datos:
+
+
+
+		Cuadráticas:
+
+
+			Fórmulas:
+
+				General/implícita: y = ax + by + c
+
+				Factorizada: y = a (x - x1) (x - x2)
+
+					La usamos cuando
+
+				Canonica: y = a (x - xv)^2 + yv
+
+
+				Solución disponiendo datos:
+
+
+
+			Incompletas:
+
+
+			De valor absoluto:
+
+
+
+			Coeficiente positivo:
+
+
+
+	Ruffini: 
+
+		Se usa para encontrar las raíces de polinomios mayores de 3er grado.
+
+
+	Racionales:
+
+
+		Fórmulas:
+
+
+
+		Disponiendo datos:
+
+
+
+
+	Radicales:
+
+
+
+
+	Exponenciales:
+
+
+
+
+	Logarítmicas:
+
+
+
+	Seno:
+
+
+
+	Coseno:
 
 
 
 
 
-||
+
+
+
+|| MATRICES
+
+
+
+
+
+
+
+
+
+
 
 
 
