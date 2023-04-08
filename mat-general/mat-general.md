@@ -15,6 +15,20 @@
 
 
 
+|| POTENCIAS Y RAÍCES
+
+
+
+
+
+|| NOTACIÓN CIENTIFICA
+
+
+
+
+
+
+
 || EXPRESIONES ALGEBRAICAS
 
 
@@ -51,6 +65,43 @@
 
 
 
-	Trinomio:
+	Trinomios:
+
+
+
+
+
+|| SISTEMAS DE ECUACIONES
+
+
+
+	
+	Gauss-Jordan:
+
+
+
+|| DERIVADAS
+
+
+
+
+
+
+
+
+|| LIMITES
+
+
+
+
+
+
+
+
+
+|| INTEGRALES
+
+
+
 
 	

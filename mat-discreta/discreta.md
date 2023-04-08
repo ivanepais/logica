@@ -1331,9 +1331,15 @@
 
 		Según las funciones:
 
-			Polinómicas: todos los reales (R)
+			Polinómicas: 
 
-			Racionales: calcular =/= 0 para el denominador.
+				todos los reales (R)
+
+
+			Racionales: 
+
+				calcular =/= 0 para el denominador.
+
 
 			Radicales:
 
@@ -1341,7 +1347,10 @@
 
 			 	R (indice impar): a/3[x] =/= 0
 
-			Exponenciales: R
+
+			Exponenciales: 
+
+				R
 
 
 	Rango:
@@ -1358,7 +1367,7 @@
 
 	Conjunto de 0:
 
-		Raíces/soluciones de la función.
+		Raíces/intersecciones eje x/soluciones de la función.
 
 
 	Conjunto positividad:
@@ -1404,56 +1413,148 @@
 
 		Líneales: 
 
-			Fórmulas:
-
-				Explícita: y = mx + b
-
-					Trasladar los terminos para hacerla implícita.
-
-				General/implícita: Ax + By + C = 0
-
-					Pasamos las variables a un mismo lado para hacerla segmentaria. 
-
-					Dejamos el termino independiente al otro lado y dividimos toda la ecuación por este.
-
-					Pasamos los coeficientes de las variables a dividir.
-
-				Canónica/segmentaria: x/a + y/b = 1
+			Son proporcionalemente directas.
 
 
+			Gráfico:
+
+				Se grafica el termino "b" (corte eje y), el punto de corte x y la forma depende de la pendiente "m"
+
+				m+: de izquierda a derecha hacia arriba (ascendente)
+
+				m-: izqueirda a derecha hacia abajo (descendente)
+				
+			Dominio: R
+
+			Rango: R
 
 
-			Hallar solución disponiendo datos:
+			Formas:
 
+			Explícita: y = mx + b
+
+				Trasladar los terminos para hacerla implícita.
+
+			General/implícita: Ax + By + C = 0
+
+				Pasamos las variables a un mismo lado para hacerla segmentaria. 
+
+				Dejamos el termino independiente al otro lado y dividimos toda la ecuación por este.
+
+				Pasamos los coeficientes de las variables a dividir.
+
+			Canónica/segmentaria: x/a + y/b = 1
 
 
 		Cuadráticas:
 
-
-			Fórmulas:
-
-				General/implícita: y = ax + by + c
-
-				Factorizada: y = a (x - x1) (x - x2)
-
-					La usamos cuando
-
-				Canonica: y = a (x - xv)^2 + yv
+			Son 
 
 
-				Solución disponiendo datos:
 
+			Gráfico:
+
+				Vertice:
+
+					xv: -b/2a
+
+					yv: reemplazamos el valor numerico de xv en la función.
+
+				Forma: depende del signo del termino "a"
+
+					+a: u, dominio R; Rango [yv, inf)
+					-a: n, dominio R; Rango (-inf, yv]
+
+
+
+
+			Resolvente: -b +- [(b^2)-4ac]/2a
+
+
+			General/implícita: y = ax + by + c
+
+				Para pasarla a factorizada, sacamos las raices con la fórmula resolvente. 
+
+				"a" es el número/factor que acompaña a la x en la general.
+
+
+			Factorizada: y = a (x - x1) (x - x2)
+
+				Para transformarla en canonica necesitamos las coordenadas del vertice.
+
+
+			Canonica: y = a (x - xv)^2 + yv
+
+				Para pasarla a polinomica, resolvemos el binomio que está elevado al cuadrado, distribuimos y sumamos/restamos el ultimo termino.
+
+
+			factor adicional:
+
+				Se resuelve por factorización, distribuyendo el factor, resolviendo el trinomio, factorizamos y simplificamos todo el termino para eliminar el termino adicional. Al final nos quedan las raíces.
+
+				ax^2 + bx + c = 0
+
+				3m^2 - 10m -8
+				3(3m^2 - 10m - 8)/3
+				(3m)^2 + 10(3m) + 24/3
+				(3m - 12) (3m + 2)/3 
+				3(m - 12) (m + 2)/3
+				(m - 4) (3m + 2)
 
 
 			Incompletas:
 
+				Sin termino independiente:
+
+					Sacamos factor común (x.x, 2x), igualamos a 0 para sacar las raíces.
+
+					x^2 + 2x = 0
+					x(x+2)
+					x = 0 y x+2 = 0 -> x=-2
+
+
+				Sin termino líneal:
+
+					Despejamos x, la raíz nos da las soluciones.
+
+					2x^2 - 8 = 0
+					x^2 = 8/2
+					x=[4]
+
+
+				Sin termino independiente y líneal:
+
+					Pasamos potencia como raíz	
+					x^2 = 0
+					x=[0]
+					x=0
+
 
 			De valor absoluto:
 
+				"a" tiene que ser positivo para eliminar el modulo para sacar las raíces.
 
+				|x| = a
+				x = a y x = -(a)
 
-			Coeficiente positivo:
+				Vertice: 
 
+					xv: terminos del modulo igualado a 0 para despejar x y encontrar este valor.
+
+					yv: reemplazar valor de xv en la fx.
+
+				Gráfico fx:
+
+					+|x|, v
+
+					-|x|, ∧
+
+				Dominio: R
+
+				Rango: 
+
+					v, [yv, inf)
+					∧, (-inf, yv]
 
 
 	Ruffini: 
@@ -1463,17 +1564,54 @@
 
 	Racionales:
 
+		Son proporcionalmente inversas
 
 		Fórmulas:
 
+			a+-c/x+b 
+
+				AV: x+b(deno) = 0
+
+				AH: c = 0
 
 
-		Disponiendo datos:
+			ax+b/cx+d
 
+				AV: cx+d = 0
+
+
+				AH: a/c
+
+
+		Forma del gráfico:
+
+			Lo determina "a", + (cuadrante 1 y 3); - (cuadrante 2 y 4).
+
+
+		Dominio: R - {AV}
+
+		Rango: R - {AH}
 
 
 
 	Radicales:
+
+		Cuadrada y cubica
+
+			3^[x], radicando /> 0
+
+
+			Dominio: [radicando />0, inf)
+
+
+			Rango: vemos el gráfico.
+
+
+		Cortes:
+
+		terminos fuera del radicando:
+
+		si es positivo suben la funcion, si es negativo, baja.
 
 
 
@@ -1481,23 +1619,163 @@
 	Exponenciales:
 
 
+		a^x
+
+		"a" es la base, x es el exponente
+
+		Gráfico:
+
+			Tiene Asintota horizontal, se calcula con los terminos fuera del base y exponente.
+
+			+a: de izq a der (ascendente)
+			0< a <1, de izq a der (descendente)
+
+
+		Dominio: R 
+
+		Rango: gráfico en el eje y.
 
 
 	Logarítmicas:
 
+		log a^x, "a" es base; "x" es argumento
+
+		Gráfico:
+
+			AV: argumento = 0
+
+			+a: ascendente desde la asintota, hacia la der
+
+			0< a <1: descendente desde asintota, hacia la der.
+
+
+		Dominio: [AV, inf)
+
+		Rango: R
+
+
+	*Si el coeficiente o factor "a" es negativo se dibuja la función espejada.
 
 
 	Seno:
 
+		senx
+
+		Dominio: R
+
+
+		Rango: es el punto maximo y minimo.
+
+
+		Periodo (T): tramo que se repite.
+
+		Generalizando: 
+
+			Solo necesitamos la amplitud y el periodo.
+
+			Y = +-A Sen K X
+
+				A es la amplitud
+
+				K es cualquier número.
+
+				Periodo: 2pi/K o kx=2pi -> x=2pi/k
+
+					*simplificar
+
+				Otros valores:
+
+					Ubicamos:
+
+						mitad: *1/2 o dividir por 2/1
+						mitad de mitad: 3*mitad de mitad del periodo original
+
+		Ej: y = 2sen 4x
+
+			Amplitud: 2
+
+			Periodo: 2pi/4 -> pi/2
+
+			valores x:
+
+				pi/8, pi/4, 3pi/8, pi/2
 
 
 	Coseno:
 
+		Y = +-A Cos K X
+
+				A es la amplitud
+
+				K es cualquier número.
+
+				Periodo: 2pi/K o kx=2pi -> x=2pi/k
+
+					*simplificar
+
+				Otros valores:
+
+					Ubicamos:
+
+						mitad: *1/2 0 dividir por 2/1
+						mitad de mitad: 3*mitad de mitad del periodo original
+
+			Ej: 4cos 3x
+
+				Amplitud: 4
+
+				Periodo: 2pi/3
+
+				Valores: 1/6 pi, 1/3 pi, 1/2 pi, 2/3 pi
+
+					
+	Tangente:
+
+		360/0° = 2pi rad
+		45° = 1/4 pi rad
+		90° = 1/2 pi rad 
+		180° = pi rad 
+		270° = 3/2 pi rad
+
+		pendientes: 
+
+			m>0 (+): /
+			m<0 (-): \
+			m=0: ¬
+			m indefinida: |
 
 
+		Y = A tg (Bx + C)
 
+			A es amplitud
 
+			B es un número que representa la frecuencia que tiene un periodo: "numero cada pi"
 
+				T = pi/|B|
+
+			(bx + c) es la fase que tiene un inicio y final.
+
+				Bx + C = +pi/2 y Bx + C = -pi/2
+
+				*Para despejar x, forzamos denominador comun: multiplicamos denominador y numerador por un mismo número.
+
+		Ej: 2tg (3x - pi)
+
+			A: 2
+
+			B: 3 (cada pi)
+
+			T: pi/|3| -> pi/3 y -pi/3 = 1/3 pi
+
+			Fase: 
+
+				3x - pi = +pi/2 =
+
+					x = pi/2 = 1/2 pi
+
+				3x - pi = -pi/2 = 
+
+					x = pi/6 = 1/6 pi
 
 
 || MATRICES
