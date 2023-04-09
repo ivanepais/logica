@@ -1255,6 +1255,38 @@
 
 
 
+|| PROPORCIONES  
+
+	Clasificación de relaciones:
+
+		Necesitamos identificar la relación, las variables del problema y los datos.
+
+		Resolución:
+
+			Despejar x:
+
+
+			Notación de proporciones:
+
+
+
+			Multiplicar y dividir: 
+
+				Multiplicamos los datos completos y lo dividimos por el dato nos falta.
+
+				
+	Directa
+
+
+
+	Indirecta
+
+
+
+
+
+
+
 || FUNCIONES 	
 
 			f(x)
@@ -1776,6 +1808,9 @@
 				3x - pi = -pi/2 = 
 
 					x = pi/6 = 1/6 pi
+
+
+	
 
 
 || MATRICES
