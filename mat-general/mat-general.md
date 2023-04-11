@@ -17,7 +17,6 @@
 
 || RAZONES Y PROPORCIONES
 
-
 	Razón:
 
 		Cociente entre dos numeros o cantidades o cosas comparables o relacionadas.
@@ -92,9 +91,11 @@
 
 	Regla de 3
 
+		Se aplica siempre y cuando las variables se relacionan directa o indirectamente al plantear los datos.
+
 		Clasificación de relaciones:
 
-			Necesitamos identificar la relación, las variables del problema y los datos.
+			Necesitamos identificar la relación, las variables del problema, los datos y la incognita.
 			
 			Directa (lo mismo):
 
@@ -116,7 +117,6 @@
 				Obtienen magnitudes contrarias.
 
 		Se aplican a reglas simples y compuestas.
-
 
 			Ejemplos:
 
@@ -148,6 +148,10 @@
 
 		Simples:
 
+			Tienen dos variables
+
+			Directas:
+
 			Velocidad: distancia y tiempo: 
 
 				50 km/h
@@ -166,16 +170,87 @@
  					    1			     20
   						x     			 80
 
-  				Cuánto tiempo tardaría en hacer 80
+  			 	Ej:	Cuánto tiempo tardaría en hacer 80?
 
 
-  			Multiplicamos los datos completos y lo dividimos por el dato nos falta:
+  				Multiplicamos los datos completos y lo 	dividimos por el dato nos falta:
  
   				x = 1*80/20 = 4
 
 
+  			Inversas:
+
+  				Si resolvemos usando la multiplicación y división, la incognita debe quedar en el numerador, invirtiendo la fracción; el denominador pasa a dividir.
+
+  			Ej: relación pintar/trabajar
+
+  				personas 	horas
+  					2 		 36
+  					6 		 x
+
+  						x/36
+
+  				x = 2*36/6 = 12
+
 
 		Compuestas:
+
+			Tienen más de dos variables, suelen estar después del número.
+
+			Con la incognita o pregunta podemos clasificar la relación con las variables restantes. 
+
+			Comparamos la relación de cada variables con la incognita.
+
+			Dejamos a un lado la x y multiplicamos las otras proporciones. Al final despejamos x, usando la regla proporcional.
+
+			Directa: 
+
+			Resolvemos las fracciones como aparecen.
+
+			Indirecta: 
+
+			Invertimos las fracciones de las variables, menos la incognita.
+
+
+			Ej: cuánto gastan los grifos?
+
+			grifos 		horas 		litros
+			  9 		 40 		 200
+			  15 		 9 			  x
+
+			  g+, l+  y  h-, l-: es una relación directa.
+
+			  200/x = 9*40/15*9
+
+			  200/x = 8/3
+
+			  200*3 = x*8
+
+			  200*3/8 = x 
+
+			  75 = x
+
+
+			Ej: cuántos dias para construir un muro?
+
+			obreros     horas 		dias
+			  4 		 7			 3
+			  2 		 6 			 x
+
+			  o-, d+  y  h-, d+: es una relación indirecta.
+
+			  3/x = 2*6/4*7
+
+			  3/x = 3/7
+
+			  3*7 = x*3
+
+			  3*7/3 = x 
+
+			  21/3 = x
+
+			  7 = x
+
 
 
 

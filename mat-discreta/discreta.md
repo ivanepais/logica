@@ -1257,33 +1257,196 @@
 
 || PROPORCIONES  
 
-	Clasificación de relaciones:
+	Razón:
 
-		Necesitamos identificar la relación, las variables del problema y los datos.
+			Cociente entre dos numeros o cantidades o cosas comparables o relacionadas.
+
+			herramientas: 16
+			trabajadores: 8
+
+			Ej: 8/16 -> 1/2 (simplificado)
+
+				16/8 = 2
+
+		Comparamos el numerador contra un denominador, se lee la cantidad que constrasta uno contra el otro.
+
+			"los trabajadores son la mitad que las herramientas"
+
+			"Las herramientas son el doble que los trabajadores"
+
+		Antecedente: es el numerador
+
+		Consecuente: es el denominador.
+
+
+	Proporción:
+
+		Igualdad entre dos razones.
+
+			razón 1: empleados/lapiceras
+
+			razón 2: debe ser equivalente.
+
+			1/4 = 2/8 
+
+			"Si cada 1 empleado hay 4 lapiceras, cada 2 empleados habrá 8 lapiceras"
+			
+
+		Notación: 
+
+			a/b = c/d
+
+			a y d son los extremos, b y c son medios.
+
+
+		Verificación:
+
+			El producto de los extremos debe ser igual al producto de los medios.
+
+				1*8 = 4*2
+	
+	Regla de 3
+
+		Se aplica siempre y cuando las variables se relacionan directa o indirectamente al plantear los datos.
+
+
+	Simple:
+
+		Tienen dos variables.
+
+
+		Clasificación de relaciones:
+
+			Necesitamos identificar la relación, las variables del problema, los datos y la incognita.
+
 
 		Resolución:
 
 			Despejar x:
 
+				2/3 = x?/15
+
+				2*15 = 3*x
+
 
 			Notación de proporciones:
 
+				a/b = c/d
+
+				Verificar proporción: 
+
+				El producto de los extremos debe ser igual al producto de los medios.
+
+				1*8 = 4*2
 
 
 			Multiplicar y dividir: 
 
 				Multiplicamos los datos completos y lo dividimos por el dato nos falta.
 
-				
-	Directa
+
+		Directa
+
+			Cuando las variables se relacionan directamente.
+
+			A más corresponde más.
+			A menos corresponde menos.
+
+			Obtienen el mismo aumento de magnitudes.
 
 
+			Fabricación (relación), tiempo y lapiceras (variables):
 
-	Indirecta
+			tiempo (h) 		lapiceras (q)
+ 				1			     20
+  				x     			 80
+
+  			Ej: Cuánto tiempo tardaría en hacer 80?
+
+  			Multiplicamos los datos completos y lo 	dividimos por el dato nos falta:
+ 
+  				x = 1*80/20 = 4
 
 
+		Inversa
+
+			Cuando las variables se relacionan inversamente.
+
+			A más corresponde menos.
+			A menos corresponde más.
+
+			Obtienen magnitudes contrarias.
+
+			Si resolvemos usando la multiplicación y división, la incognita debe quedar en el numerador, invirtiendo la fracción; el denominador pasa a dividir.
+
+  			Ej: relación pintar/trabajar
+
+  				personas 	horas
+  					2 		 36
+  					6 		 x
+
+  			  			x/36
+
+  				x = 2*36/6 = 12
 
 
+	Compuesta:
+
+		Tienen más de dos variables, suelen estar después del número. 
+
+		Con la incognita o preguna podemos clasificar la relación con las variables restantes.
+
+		Comparamos la relación de cada variable con la incognita.
+
+		Dejamos a un lado la x y multiplicamos las otras proporciones. Al final despejamos x, usando la regla proporcional.
+
+		Directa: 
+
+			Escribimos las fracciones como aparecen.
+
+		Indirecta: 
+
+			Invertimos las fracciones de las variables, menos la incognita.
+
+
+		Ej: cuánto gastan los grifos?
+
+			grifos 		horas 		litros
+			  9 		 40 		 200
+			  15 		 9 			  x
+
+			  g+, l+  y  h-, l-: es una relación directa.
+
+			  200/x = 9*40/15*9
+
+			  200/x = 8/3
+
+			  200*3 = x*8
+
+			  200*3/8 = x 
+
+			  75 = x
+
+
+		Ej: cuántos dias para construir un muro?
+
+			obreros     horas 		dias
+			  4 		 7			 3
+			  2 		 6 			 x
+
+			  o-, d+  y  h-, d+: es una relación indirecta.
+
+			  3/x = 2*6/4*7
+
+			  3/x = 3/7
+
+			  3*7 = x*3
+
+			  3*7/3 = x 
+
+			  21/3 = x
+
+			  7 = x
 
 
 
@@ -1291,7 +1454,7 @@
 
 			f(x)
 		A -------> B
-			(2x)
+		1	(2x)   2
 
 	Una función es una relación entre dos variable, conjunto u objeto; cada valor de una de ellas (variable independiente), le corresponde un único valor de la otra (variable dependiente).
 
