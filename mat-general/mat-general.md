@@ -365,7 +365,13 @@
 
 
 
+	Funciones: 
 
+		Funciones líneales:
+			
+			Elección de consumo óptima:
+
+				En el gráfico podemos ver claramente cuál opción de consumo nos conviene de acuerdo a nuestros parametros.
 
 
 

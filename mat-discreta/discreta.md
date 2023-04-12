@@ -1290,7 +1290,7 @@
 			1/4 = 2/8 
 
 			"Si cada 1 empleado hay 4 lapiceras, cada 2 empleados habrá 8 lapiceras"
-			
+
 
 		Notación: 
 
@@ -1606,14 +1606,46 @@
 
 	Polinómicas:
 
+		Constante:
+
+			y = b 
+
+			Indica que la recta no tiene pendiente.
+
+			Solo marca situaciones de costos fijos, planos, invariables.
+
+			b o la función/recta completa corta al eje y.
+
+
 		Líneales: 
 
-			Son proporcionalemente directas.
+			y = mx
+
+			Son proporcionalemente directas: 
+
+				Si le pasamos un numero positivo, sale otro positivo.
+
+				Si le asamos un numero negativo, sale otro negativo.
+
+			Además, si la variable independiente es 0, la variable dependiente tambien.
+
+			Podría ser situaciones de compra y pago.
+
+
+		Afines:
+
+			y = mx + b
+
+			El termino independiente no esta ligado a la variable x, no varía cuándo pasamos valores o cantidades.
+
+			Es la ordenada en el origen, no pasa por el punto 0,0.
+
+			Podría ser situaciones dónde empezamos con un costo fijo o tenemos un punto de partida.
 
 
 			Gráfico:
 
-				Se grafica el termino "b" (corte eje y), el punto de corte x y la forma depende de la pendiente "m"
+				Se grafica el termino "b" (corte eje y), el punto de corte x y la forma depende de la pendiente "m" (inclinacion de la recta)
 
 				m+: de izquierda a derecha hacia arriba (ascendente)
 
@@ -1622,7 +1654,6 @@
 			Dominio: R
 
 			Rango: R
-
 
 			Formas:
 
@@ -1640,11 +1671,25 @@
 
 			Canónica/segmentaria: x/a + y/b = 1
 
+			Ejemplo:
+
+				Se puede hacer función que tiene dos variables independientes que serian kilometros y minutos, en funciones de eso nos sale un coste.
+
+					C(k,m) = 2 + 0,5 * k + 0,4 * m
+
 
 		Cuadráticas:
 
+			y = ax^2 + bx + c
+
 			Son 
 
+
+			Tiene forma de parabola/sonrisa, son simetricas.
+
+			Tiene el punto mas bajo/alto de la funcion que es el vertice que esta en el centro del eje de simetria
+
+			las funciones parabolicas se ajustan trayectores/tiros/caidas parabolicas, a un un arco, etc.
 
 
 			Gráfico:
@@ -1661,9 +1706,34 @@
 					-a: n, dominio R; Rango (-inf, yv]
 
 
+				Raíces o puntos de corte:
+
+					Resolvente: -b +- [(b^2)-4ac]/2a
+					
+					0
+
+					Reemplazando y resolviendo:
+
+					corte eje y, en la función x = 0.
+					corte eje x, en la funcion y = 0.
 
 
-			Resolvente: -b +- [(b^2)-4ac]/2a
+				Traslación de la función:
+
+					Vertical:
+
+						y = x^2 + n
+
+							n, sube
+							-n, baja
+
+
+					Horizontal: 
+
+						y = (x + m)^2 
+ 					
+ 							m, izquierda
+ 							-m, derecha
 
 
 			General/implícita: y = ax + by + c
@@ -1685,7 +1755,7 @@
 
 			factor adicional:
 
-				Se resuelve por factorización, distribuyendo el factor, resolviendo el trinomio, factorizamos y simplificamos todo el termino para eliminar el termino adicional. Al final nos quedan las raíces.
+				Se Puede resolver por factorización, distribuyendo el factor, resolviendo el trinomio, factorizamos y simplificamos todo el termino para eliminar el termino adicional. Al final nos quedan las raíces.
 
 				ax^2 + bx + c = 0
 
@@ -1759,7 +1829,33 @@
 
 	Racionales:
 
-		Son proporcionalmente inversas
+		y = k/x
+
+		Son proporcionalmente inversas, si una magnitud aumenta, la otra disminuye.
+
+		En proporcionalidad directa: dos magnitudes dividiéndose daban lo mismo.
+
+			a/b = c/d
+
+		Proporcionalidad inversa: dos magnitudes multiplicándose dan lo mismo, el producto de estas dos es constante, x*y = k
+
+			y = k/x
+
+		Ejemplo:
+
+			n°amigos 	$/amigo 	$regalo 
+			 	y 			x 			12
+
+			x*y = 12 -> y = 12/x
+
+			cuanto más amigos menos dinero pone cada uno, pero el producto siempre es constante
+
+			Si x es 1 (amigo), y es ($12) debe poner el total.
+
+			Si x es 3 (amigos), y es ($4) deben poner cada uno.
+
+			Si x es 12 (amigos), y es ($1) deben poner cada uno.
+
 
 		Fórmulas:
 
@@ -1774,7 +1870,6 @@
 
 				AV: cx+d = 0
 
-
 				AH: a/c
 
 
@@ -1788,10 +1883,53 @@
 		Rango: R - {AH}
 
 
+		Traslaciones:
+
+			Vertical:
+
+				y = k/x + n (termino ind)
+
+					n, arriba
+					-n, abajo
+
+
+			Horizontal:
+
+				y = k/x+m 
+
+					m, izquierda
+
+					-m, derecha
+
+			Junto: y = k/x+m (+ n)
+
+
+		Polinomio entre polinomio:
+
+			y = P(x)/Q(x)
+
+			dividendo/divisor = cociente + resto / divisor:
+
+				9/2 = 4; 1(resto)
+
+				9/2 = 4 + 1/2
+
+			P(x)/Q(x) = C(x); R(x)
+
+			Entonces, P(x)/Q(x) = C(x) + R(x)/Q(x)
+
+			En la división polinomica, el resto lo deberiamos seguir dividiendo.
+
+			Cuando tengamos el resto, el cociente, podemos rescribir la función en una más fácil, de la forma:
+
+				y = k/x+m (+ n)
+
+			Es más fácil de graficar.
+
 
 	Radicales:
 
-		Cuadrada y cubica
+		Cuadrada y cúbica:
 
 			3^[x], radicando /> 0
 
@@ -1807,8 +1945,6 @@
 		terminos fuera del radicando:
 
 		si es positivo suben la funcion, si es negativo, baja.
-
-
 
 
 	Exponenciales:
