@@ -1929,6 +1929,8 @@
 
 	Radicales:
 
+		Crecen indefinidamente.
+
 		Cuadrada y cúbica:
 
 			3^[x], radicando /> 0
@@ -1947,8 +1949,35 @@
 		si es positivo suben la funcion, si es negativo, baja.
 
 
+		Traslación: 
+
+			Vertical: eje x
+
+				[x + m] + n
+
+					n, sube 
+					-n, baja
+
+
+			Horizontal:
+
+				[x + m] + n
+
+					m, izquierda 
+					-m, derecha
+
+		Valor absoluto:
+
+			[|x|]
+
+			Si le podemos dar valores negativos
+
+
 	Exponenciales:
 
+		Crecen rapidamente, siempre son positivas.
+
+		Punto clave (0,1).
 
 		a^x
 
@@ -1969,7 +1998,9 @@
 
 	Logarítmicas:
 
-		log a^x, "a" es base; "x" es argumento
+		log a X, "a" es base (sub); "x" es argumento
+
+		Puntos claves (1,0) y (b-base-,1)
 
 		Gráfico:
 
@@ -1984,6 +2015,34 @@
 
 		Rango: R
 
+		Log en base fraccionaria:
+
+			log 1/4 X
+
+			Despejando x, tenemos una función exponencial; despejando y, tenemos una función logarítmica.
+
+				log a X --> a^y = X
+
+				log 1/4 X --> 1/4^y = X
+
+
+		Traslación: 
+
+			Vertical:
+
+				log a X + n
+
+					n, sube 
+					-n, baja
+
+
+			Horizontal:
+
+				log a (X+M)
+
+					M, izquierda
+					-M, derecha
+					
 
 	*Si el coeficiente o factor "a" es negativo se dibuja la función espejada.
 

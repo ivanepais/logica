@@ -363,7 +363,7 @@
 
 || PROBLEMAS 
 
-
+	
 
 	Funciones: 
 
@@ -371,7 +371,7 @@
 			
 			Elección de consumo óptima:
 
-				En el gráfico podemos ver claramente cuál opción de consumo nos conviene de acuerdo a nuestros parametros.
+				Graficando las funciones constantes, líneales y afines, podemos ver claramente cuál opción de consumo nos conviene de acuerdo a nuestros parámetros.
 
 
 
