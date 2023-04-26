@@ -1517,7 +1517,7 @@
 
 		Podemos gráficarlas por tabla o encontrando cada parte/valor que commpone del gráfico/función mediante fórmulas o cálculos.
 
-		Se necesitan los puntos de corte eje x (soluciones/raíces/intersección ), del eje y (b), la pendiente (m, inclinación o verticalidad de la recta/función), vértice (coordenadas x, y), etc.
+		Se necesitan los puntos de corte eje x (soluciones/raíces/intersección/punto-valor0), del eje y (b), la pendiente (m, inclinación o verticalidad de la recta/función), vértice (coordenadas x, y), etc.
 
 
 	Dominio:
@@ -1563,6 +1563,8 @@
 	Conjunto de 0:
 
 		Raíces/intersecciones eje x/soluciones de la función.
+
+		Significa que en ese punto la función tiene un valor de 0.
 
 
 	Conjunto positividad:
@@ -1681,9 +1683,6 @@
 		Cuadráticas:
 
 			y = ax^2 + bx + c
-
-			Son 
-
 
 			Tiene forma de parabola/sonrisa, son simetricas.
 

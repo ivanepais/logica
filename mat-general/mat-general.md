@@ -262,23 +262,687 @@
 
 	Potencias:
 
+		a^n = a*a*a*...*a, n veces
+
+		5^3 = 5*5*5 = 125 
+
+	Propiedades: 
+
+		1. a^1 = a
+
+			7^1 = 7
+
+
+		2. a^0 = 1 
+
+			4^0 = 1 
+
+			1 = 8/8 = 2^3/2^3 = 2^0
+
+
+		3. a^n * a^m = a^n+m
+
+			6^2 * 6^3 = 6^5
+
+				(6*6) * (6*6*6) = 6^5
+
+
+		4. a^m : a^n = a^m-n
+
+			5^5 * 5^3 = 5^2
+
+				5*5*5*5*5 / 5*5*5 = 5^2
+
+				simplificamos los 5. 
+
+
+		5. a^m * b^m = (a*b)^m  <->  (a*b)^m = a^m * b^m
+
+			2^5 * 3^5 = 6^5
+
+				2*2*2*2*2*3*3*3*3*3 = 7776 = 6^5
+
+			(3*x)^2 = 9*x^2
+
+
+		6. a^m / b^m = (a/b)^m  <->  (a/b)^m = a^m / b^m
+
+			12^5 / 3^5 = 4^5 
+
+				12*12*12*12*12 / 3*3*3*3*3
+				248832 / 243 = 1024 = 4^5
+					
+			(3/x)^2 = 9/x^2
+
+
+		7. (a^m)^n = a^m*m
+
+			(4^3)^2 = 4^6 
+
+				4^3 * 4^3 = 4*4*4*4*4*4 = 4^6
+					
+			(2^3)^-2 = 2^-6 
+
+			[(4^3)^0]^2 = 4^0 = 1 
+
+
+		Si no tienen nada en común no se aplica ninguna propiedad: 
+
+			3^5 * 2^4 
+
+		Tampoco se aplican en sumas ni restas: 
+
+			2^5 +- 2^3 
+
+
+		8. Si tenemos una base negativa, el resultado depende: 
+
+			(-a)^m = 
+
+			a^m si "m" es par
+
+			-a^m si "m" es impar.
+
+			(-3)^2 = (-3)*(-3) = 9
+
+			(-3)^3 = (-3)*(-3)*(-3) = -27 
+
+			(-5)^6 = 5^6 
+
+			(-5)^7 = -5^7 
+
+
+		9. a^-m = 1/a^m: 
+
+			Dividimos el número n veces. 
+
+			2^-3 = 1/2 * 1/2 * 1/2 = 1/2^3
+
+			2^4 / 2^7 es 2^-3 porque: 
+
+				2*2*2*2 / 2*2*2*2*2*2*2 = 1/2^3
+
+				Simplificamos 4 veces el 2, y en el númerador nos queda 1, en el denominador; los que sobran. 
+
+			3^-2 = 1/3^2 = 1/9 =/= -9
+
+			5*2^-4 = 5/2^4
+
+			7^-1/3^-2 = 3^2/7 
+
+			(2/5)^-3 = 2^-3/5^-3 o 5/2^3 
+
+				Invertimos la fracción para cambiar el signo del exponente. Solo en fracciones.
+
+
+	Ejercicios: 
+
+		Expresar los resultados en potencia: 
+
+			Si tenemos factores (bases) o exponentes comunes, aplicamos las propiedades. 
+
+			Si no tenemos nada en común, factorizamos la potencia y aplicamos las propiedades. 
+
+		
+			1. x^8:(x^2:x) = x^8:x = x^7
+
+			2. (25^2:5^3)*5^2 = ((5^2)^2)*5^2 = (5^4:5^3)*5^2 = 5*5^2
+
+			3. (-4)^6:128 = (2^2)^6:2^7 = 2^12:2^7 = 2^5
+
+				El exponente par cambia el signo de la base negativa. 
+
+			4. 2^-1 + 2^0 -2^2 + (-2)^2 = 3/2 
+
+				En -2^2, la potencia solo afecta al número. En +(-2)^2, afecta a todo el paréntesis. 
+
+			5. 3^0 + 3^2 + (1/3)^-1 - (-3)^2 + 3^-1 = -41/3
+
+				Invertimos la fracción para cambiar el signo del exponente. 
+	
+			6. (2/3)^3 - (3/2)^-2
+
+				2^3/3^3 - 2^2/3^2
+
+				= -4/27 = -2^2/3^3
+
+
+		Simplificar potencias: 
+
+			Factorizamos, dividimos y restamos potencias. 
+
+			1. 10*45/3^3*2 = 2*5*3^2*5 / 3^3*5 = 2*3^-1*5 = 2*5/3
+
+			2. 6^-3*3^4/12^-3*9 = 12^3*3^4 / 6^3*9 = 2^3*3^2
+
+				Invertimos el númerador y denominador para cambiar de signo de los exponentes. 
+
+
+	Notación científica: 
+
+		Simplifica números o cantidades muy grandes usando potencias. 
+
+		Se usa en la fisíca, química para medir el tamaño, masa o composición de los objetos, elementos. 
+
+		Ej: 6.371.000.000 = 6,371*10^9 
+
+			Ponemos una cifra antes de la coma y multiplicamos por una potencia de 10 según cuantas cifras haya despues de la coma. 
+
+			Inventamos una coma que no estaba y despues movemos la coma, la cantidad de posiciones como cifras que no queremos escribir. 
+
+			41.800.000.000 = 4,18*10^10
+
+				Después del 4 hay 10 lugares.
+
+			300.000.000 = 3*10^8
+
+			Si tenemos un número decimal, movemos la coma a la izquierda, hacemos todo igual, salvo el exponente que es negativo.
+
+				0,00000000658 = 6,58*10^-9 
+
+				Después del 6 hay 9 posiciones para mover la coma. 
+
+			0,000000077 = 7,7*10^-8
+
+			150.000.000.000 = 1,5*10^11
+
+				Después del 1 hay 11 lugares. 
+
+			0,00205 = 2,05*10^-3
+
+			32397258 = 3,2397258*10^7 = 3,24*10^7 
+
+				Si no rendondeamos no simplificamos nada. 
+
+
+		Notación decimal a científica: 
+
+			Movemos la coma (sin escribirla) o inventamos tantos ceros como diga el exponente.
+
+				2,349*10^5 = 234900 
+
+			Si la potencia es negativa, movemos la coma a la izquierda y agregamos ceros según la cantidad del exponente. 
+
+				5,08*10^-2 = 0,0508 
+
+				6,67*10^-11 = 0,0000000000667
+
+
+	Ejercicios con notación científica: 
+
+		Multiplicación: 
+
+			Se aplican las propiedades de las potencias. 
+
+			3,2*10^5 * 5*10^4 
+
+				Multiplicamos los factores: 	
+
+					3,2*5 = 16
+
+				Como indica la propiedad, mantenemos la base y sumamos los exponentes: 
+
+					10^5*10^4 = 10^9
+
+				Simplificamos el factor
+
+				16*10^9 = 1,6*10^10
+
+
+		División: 
+
+			3,2*10^5 / 5*10^4
+
+				Dividimos los factores: 	
+
+					3,2/5 = 0,64
+
+				Como indica la propiedad, mantenemos la base y sumamos los exponentes: 
+
+					10^5/10^4 = 10^1
+
+				Simplificamos 
+
+					0,64*10^1 = 6,4
+
+
+		Suma: 	
+
+			3,2*10^5 + 5*10^4 
+
+				No podemos sumar: 
+
+					3,2+5 ni 10^5+10^4
+
+				Debemos operar cada notación científica o decimales: 
+
+					3,2*10^5 = 320.000
+
+					5*10^4 = 50.000
+
+				Sumarlas: 
+
+					320.000 + 50.000 = 370.000 
+
+				Simplificarlas: 
+
+					370.000 = 3,7*10^5
+
+
+		Resta: 	
+
+			3,2*10^5 - 5*10^4 
+
+				Operar cada notación científica o decimales: 
+
+					3,2*10^5 = 320.000
+
+					5*10^4 = 50.000
+
+				Sumarlas: 
+
+					320.000 - 50.000 = 270.000 
+
+				Simplificarlas: 
+
+					270.000 = 2,7*10^5
+
+		Combinaciones: 	
+
+			(4*10^-5)*(9*10^7) = 36*10^-12 = 3,6*10^-11
+
+			4*10^5 + 9*10^6 = 4*10^5 + 90*10^5 = 9,4*10^6
+
+				Buscamos la misma base, bajando exponentes. 
 
 
 
-	Raices: 
+	RAÍCES: 
+
+		n^[a], "n" indice, "a" radicando. 
+
+		n^[a] = x  <->  x^n = a 
+
+		Ejemplo: 
+
+			4^[16] = x 
+
+				Buscamos un número que elevado a 4ta potencia, de 16. 
+ 
+				x^4 = x*x*x*x = 16 -> 2*2*2*2 = 16
+
+				x = 2 -> 2^4 = 16 
+
+				4^[16] = 2  <->  2^4 = 16
+ 
+
+			5^[1] = x 
+
+				x^5 = 1, probamos: 1*1*1*1*1 = 1 
+
+				x = 1
+
+
+
+
 
 
 		Racionalizar:
 
 
 
+
 || LOGARITMOS
+	
+	Notación científica: 
+
+		log a B = X  <->  a^X = B
+
+		"Logaritmo en base a de B es igual a X"
+
+		Ejemplos: 
+
+			log 2 (8) = x  <->  2^x = 8 
+
+				x = 3 
+
+			log 5 (1/15) = x  <->  5^x = 1/15
+
+				x = -2  
+
+			log 2  (5^[4]) = x  <->  2^x = 5^[4] 
+
+				2^x = 5^[4] <-> 2^x = 2^2/5
+
+				x = 2/5
+
+			log 6 (x) = 2  <-> 6^2 = x, x = 36
+
+			log x (27) = 3  <->  x^3 = 27, x = 3 
+
+			log 5 (5) = x  <->  5^x = 5, x = 1
+
+				propiedad: log a (a) = 1. 
+
+			log 5 (1) = x  <->  5^x = 1, x = 0 
+
+				propiedad: log a (1) = 0.  
+
+			log 5 (0) = x  <->  5^x = 0, 
+
+				logaritmo de 0 no se puede resolver, sin importar la base. 
+
+			log 2 (-4) = x  <->  2^x = -4
+
+				Tampoco hay logaritmos de números negativos. 
+
+				Propiedad: E/ log a B, si B </ 0 
 
 
+	Logaritmo decimal: 
+
+		log 10 (B) = log (B) 
+
+			La base no se escribe.  
+
+		Ejemplos: 
+
+			log 10 (1) = x  <->  log 1 = x 
+
+				10^x = 1, x = 0 
+
+			log 10 (10) = x  <->  log 10 = x 
+
+				10^x = 10, x = 1 
+
+			log 10 (100) = x  <->  log 100 = x 
+
+				10^x = 100, x = 2 
+
+			log 10 (1000) = x  <->  log 1000 = x 
+
+				10^x = 1000, x = 3
+
+			log 10 (0,1) = x  <->  log 0.1 = x 
+
+				10^x = 0,1, x = -1 
+
+			log 10 (0,01) = x  <->  log 0,01 = x 
+
+				10^x = 0,01, x = -2 
+
+			log 10 (0,001) = x  <->  log 0,001 = x 
+
+				10^x = 0,001, x = -3 
+
+			log 10 (0,0001) = x  <->  log 0,0001 = x 
+
+				10^x = 0,0001, x = -4
+
+		Es util para medir magnitudes (valores/tamaños +/-) de variaciones muy grandes de un valor a otro, se utiliza la escala logaritmica. 
+
+			Ej: un terremoto de magnitud 4 tiene una intensidad de 10.000, de 5 es 100.000, de 6 pasa a 1.000.000 y de magnitud 7 pasa a 10.000.000
 
 
+	Logaritmo neperiano: 
 
-|| NOTACIÓN CIENTIFICA
+		log e (B) = ln (B) o L(B)
+
+		log e (e) o ln (e) = 1.
+
+			propiedad: log a (a) = 1
+
+		Para los demás valores usamos calculadora.
+
+
+		Número e: 
+
+			Es un número irracional (como pi) resultado de un límite. 
+
+				e = lim n->inf (1 + 1/n)^n = 2,718281
+
+	
+	Propiedades: 
+
+		No importa la base del logaritmo. 	
+
+		1. log a + log b = log (a*b)
+
+			Ejemplos: 
+
+				log 6 + log 4 = log (24) 
+
+				log 2 (6) + log 2 (4) = log (24)
+
+				ln 5 + ln 2 = ln 10 
+
+				log (2x) = log 2 + log x 
+
+			No aplica a bases distintas: 
+
+				log 5 + log 3 (2) = ? 
+
+				solo calculadora. 
+
+			Ni a una multiplicación: 	
+
+				log 5 * log 2 = ?
+
+
+		2. log a - log b = log (a/b)
+
+			Ejemplos: 	
+
+				log 8 - log 4 = log (2)
+
+				log 5 - log 5 = log (1)
+ 
+				log 2 (8) - log 2 (4) = log 2 (2)
+
+				log (5/2) = log 5 - log 2 
+
+				No aplica a una resta de destintas bases: 
+
+					ln 5 - log 2 = ? 
+
+				Ni a una división de logaritmos: 
+
+					log8/log4 
+
+
+		3. log a^m = m * log a
+
+			Ejemplos: 
+
+				log 3^5 = 5*log 3 
+
+				log 8 = log 2^3 = 3*log 2 
+
+				log 2^x = log x*log 2 
+
+				log [6] = log 6^1/2 = 1/2*log 6 
+
+				log 7^[5^3] = log 5^3/7 = 3/7*log 5
+
+
+			Se cumple la propiedad: 
+
+				log 5^2 = log (5^2)
+
+				Si el exponente es del número. 
+
+			No se cumple: 
+				
+				(log 5)^² = log ^2 5 
+
+				Si el exponente es del logaritmo.
+
+
+	Cambio de base: 
+
+		Calcular logaritmo: 
+
+			log 7 = 0,845098...
+			log 100 = 2 
+			ln 8 = 2,079441...
+			ln e = 1 
+
+			en calculadora: 
+
+				log 3 (7) = 
+
+				No se puede sin cambiar de base
+
+		
+		Cambio de base: 
+
+			log a (B)  <-> log p (B)/log p (a)
+
+			Elegimos otra base y dividimos B por a. 
+
+			Ejemplos: 	
+
+				log 4 (9) = log 5 (9)/log 5 (4)
+
+
+			Para la calculadora lo pasamos a logaritmo decimal o neperiano: 
+
+				log a (B) = log (B) / log (a) = ln (b)/ln (a)
+
+				Ejemplos: 
+
+					log 4 (9) = log 9 / log 4 = 1,58496...
+
+					log 8 (11) = ln 11 / ln 8
+
+	Ejercicios: 
+
+		Ecuación: 
+
+			2^x = 7 
+			
+			Usamos log a (B) = X  <->  a^X = B, para despejar la x. 
+
+			x = log 2 (7)
+
+			Usamos log a (B)  <-> log p (B)/log p (a), para calcular el log con calculadora. 
+
+			x = log 7 / log 2 
+
+			x = 2,80735
+
+			Ej2: 5^x = 2/3 -> x = log 5 (2/3) -> x = log 2/3 / log 5 
+
+			Usamos log a - log b = log (a/b), para descomponer la división en el númerador en una resta. 
+
+			x = log 2 - log 3 / log 5
+
+			Operamos en calculadora 
+
+			x = -0,25192
+
+
+		Aplicando otro metodo: 
+
+			Tomamos logaritmos: ponemos dos logaritmos para no alterar la igualdad.
+
+			2^x = 7 
+
+			log 2^x = log 7 
+
+			Usamos log a^m = m * log a, para bajar el exponente y convertir la ecuación exponencial en líneal, necesitamos que haya un logaritmo en la incognita. 
+
+			x * log 2 = log 7 
+
+			Pasamos a dividir el logaritmo que multiplica a la x para despejarla. 
+
+			x = log 7 / log 2 
+
+			x = 2,80735... 
+
+
+			Ej2: 5^x = 2/3 
+
+			log 5^x = log 2/3 
+
+			x * log 5 = log 2/3 
+
+			x = log 2/3 / log 5 
+
+			x = log 2 - log 3 / log 5 
+
+			x = -0,25192
+
+
+			Ej3: log x (1/4) 
+
+			x^2 = 1/4 
+
+			despejamos x pasando la potencia como raíz. 
+
+			x = [1/4]
+
+			x = [1]/[4]
+
+			x = 1/2 
+
+
+			Ej4: log 9 1/3 = x 
+
+			Convertimos el log en una potencia. 
+
+			9^x = 1/3
+
+			9^x = 3^-1
+
+			3^2x = 3^-1
+
+			Como es una igualdad se cancelan las bases. 
+
+			2x = -1  
+
+			Despejamos x 
+
+			x = -1/2 
+
+
+			Ej5: log 2 1/[8] = x 
+
+			Convertimos el log en una potencia. 
+
+			2^x = 1/[8] 
+
+			2^x = 1/[2^3]
+
+			2^x = 2^-3/2 
+
+			Aprovechando la igualdad. 
+
+			x = -3/2 
+
+			Ej6: Si log 2 = 0,3010, hallar los siguientes logaritmos. 
+
+			log 4: 
+
+				log 4 = log (2*2) = log 2 + log 2 = 0,6020 
+
+				o 
+
+				log 4 = log 2^2 = 2*log 2 = 0,6020 
+ 
+			log 5: 
+
+				log 5 = log (10/2) = log 10 - log 2 = 0,699 
+
+			log 7^[8]:
+
+				log  7^[8] = log 7^[2^3] = log 2^3/7 = 3/7*log 2 = 0,129 
+
+			log 1/[20]:
+
+				log 1/[20] = log 1 / 20^1/2 = log 20^-1/2 = -1/2*log 20 =  -1/2*log (4*5) = -1/2*[log 4 + log 5] = -1/2*[(log 2*2) + log (10/2)] = -1/2*[(log 2 + log 2) + (log 10 - log 2)] = -1/2*(0,3010 + 0,3010 + 1 - 0,3010) = -0,6505
+
+
 
 
 
@@ -1021,15 +1685,81 @@
 
 	Logaritmos: 
 
+		Potencia: 
+
+			Es un objeto (base) que se multiplica x veces (exponente/potencia) a si mismo.
+
+			 	a^n = a*a*a*...*a, n veces
+
+				5^3 = 5*5*5 = 125
+
+		Raíces: 
+
+			Es la operación inversa a las raíces (encuentra al número que se multiplico -base exponencial-), usando al radicando y al indice de la raíz.
+
+				√x = y <-> y^2 = x
+
+				n^[a] = x  <->  x^n = a 
+
+					5^[1] = x  <->  x^5 = 1
+
+					x^5 = 1,  x = 1
+
+						Dado que 1*1*1*1*1 = 1
 
 
+		Logaritmo: 
+
+			Resulven ecuaciones exponenciales de manera más sencilla, así como simplificar la multiplicación y división de números muy grandes o muy pequeños.
+
+				ecuación exponencial utilizando logaritmos:
+				
+					2^x = 8 
+
+					log2(2^x) = log2(8)
+
+					x * log2(2) = log2(8)
+
+					x = log2(8)
+
+					x = 3
+
+			Son el inverso de las potencias, deshacen su efecto u operación. Es el exponente de una base en la potenciación. 
+
+			El logaritmo base b de y es igual a x: 
+
+				b^x = y <-> logb(y) = x 
+
+			Nos permiten pasar de una ecuación exponencial a una ecuación lineal, lo que facilita su resolución.
+
+
+		Usar potencias, raíces y log: 
+
+			encontrar raíz: 
+
+				4^[16] = x 
+
+				(4^[16])^4 = x^4 
+
+				16 = x^4 
+
+				log 4 (16) = x
+
+				x = log 16 / log 4 
+
+				x = 2
+
+				.... 
+
+			2^x = 7 
+		
 
 
 	Sistemas de ecuaciones líneales: 
 
 
 
-	
+
 
 
 
