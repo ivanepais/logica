@@ -1,4 +1,4 @@
-|| COMBINACIONES
+|| Naturales
 	
 	Orden de las operaciones: 
 
@@ -7,9 +7,20 @@
 		Cuando dos operaciones de la misma jerarquía coínciden, se hace de izquierda a derecha
 
 
+|| Enteros
 
 
-|| FRACCIONES
+
+
+
+	División entera: 
+
+
+
+
+
+
+|| Racionales 
 
 
 
@@ -582,13 +593,294 @@
 
 				x = 1
 
+			2^[49] = x
+
+				x^2 = 49, 7*7 = 49
+
+				x = 7
+
+			3^[-8] = x 
+
+				x^3 = -8, -2*-2*-2 = -8
+
+				x = -2 
+
+			2^[25] = x 
+
+				5*5 = 25 y -5*-5 = 25 
+
+				x = 5 y x = -5
+
+			2^[-9]	
+
+				-3*-3 = 9 y 3*3 = 9 
 
 
+			El índice impar hace que la raíz tenga una solución, aunque el radicando sea negativo. 
 
+			El índice par y el radicando positivo, da dos soluciones (de un mismo número), + o -.
+
+			Una raíz con índice par y radicando negativo no tiene solución.  
+
+
+		Algoritmo para cualquier raíz: 
+
+			2^[74.529]
+
+			Separamos de dos en dos, empezando por la unidades (der a izq). 
+
+				2^[7-45-29]
+
+			Calculamos la raíz entera y el resto del primer número (cercano) quedará como cociente y tambien escribimos el resto. 
+
+				2^[7-45-29] | 2 	2*2=4, 7-4=3
+					3
+
+			Bajamos las siguientes dos cifas. 
+
+				2^[7-45-29] | 2
+					345
+
+			Escribimos el doble del cociente que tenemos, debajo del cociente 
+
+				2^[7-45-29] | 2
+					345 	  4	
+
+			Al número debajo del cociente le agregamos una cifra (empezando por 1) y un multiplicador para que se acerque la resto que llevamos. 
+
+				2^[7-45-29] | 2
+					345  	  47*7=329
+
+			Escribimos el multiplicador y restamos el producto con el resto que llevamos. Escribimos el nuevo resto. 
+
+				2^[7-45-29] | 27
+					345  	  47*7=329 
+					 16 	  345-329=16 
+							  
+			Volvemos a bajar otras dos cifras y escribimos el doble del codiente que llevamos. 
+
+				2^[7-45-29] | 27
+					345  	  47*7=329 
+					 1629 	  345-329=16
+					 		  27*2=54
+					 		  54
+
+			Volvemos a agregarle una cifra y un multiplicador al doble del cociente. 
+
+				2^[7-45-29] | 273
+					345  	  47*7=329 
+					 1629 	  345-329=16
+					  0		  27*2=54
+					 		  543*3=1629
+					 		  1629-1629=0
+
+
+		Ej con decimales: 
+
+			791,8596 | 28,1
+			 391 	   48*8=384  391-384 = 7
+			   785 	   561*1=561  785-561 = 224
+			    22496    5624*4=22496 22496-22496=0
+   	              0
+
+			Cuando bajamos números decimales, se pone la coma para el resto del cociente.
+
+
+		Raíz usando potencias y logaritmos: 
+
+			4^[16] = x 
+
+			(4^[16])^4 = x^4 
+
+			16 = x^4 
+
+			log 4 (16) = x
+
+			x = log 16 / log 4 
+
+			x = 2
+
+
+		Propiedades: 
+
+			1. n^[a^m] = a^m/n
+
+				2^[7^3] = 7^3/2
+
+				5^[7] = 7^1/5
+
+				6^[7^4] = 7^4/6 = 7^2/3 = 3^[7^2] = 12^[7^8]
+
+					Simplifimos el índice de la potencia y volverlo a expresar como raíz o amplificar el indice y el exponente. 
+
+
+			2. n^[a] * n^[b] = n^[a*b]
+
+				3^[4] * 3^[2] = 3^[8] = 2
+
+				2^[3] * 2^[3] = 2^[3^4 * 3^5] = [3^9]
+
+					Si le aplicamos la primera propiedad: 
+
+						2^[3] * 2^[3] = 3^4/2 * 3^5/2
+
+						3^4/2+5/2 = 3^9/2
+
+					Al tener la misma base debemos sumarle los exponentes que además son fraccionarios. 
+
+				No aplica la propiedad: 
+
+					Si hay una suma entre las raíces, no se y cuando los indices son distintos. 
+
+					3^[4] + 3^[5]
+
+					3^[4] * 4^[5]
+
+
+			3. n^[a] / n^[b] = n^[a/b]
+
+				3^[10] / 3^[5] = 3^[2] 
+
+				[20] / [5] = [4] = 2
+
+				5^[2^6] / 5^[2^4] = 5^[2^6 / 2^4] = 5^[2^2]
+
+				No aplica la propiedad: 
+
+					Si hay una resta entre las raíces, no se y cuando los indices son distintos. 
+
+					3^[4] - 3^[5]
+
+					4^[10] / 3^[5]
+
+
+			4. n^[m^[a]] = n*m^[a] o ([a^m])^n = [a^m*n]
+
+				Es igual a: (m^[n^[a^p]])^q = m*n^[a^p*q]
+
+				5^[2^[3]] = 10^[3] 
+
+				(3^[5^2])^4 = 3^[5^8] 
+
+				(7^[3^[5^2]])^4 = 21^[5^8]
+
+
+		Ejercicios: 
+
+			1. [98]/[2] = [49] = 7
+
+			2. [5]*[2]*[8]/[20] = [80]/[20] = [4] = 2
+
+			3. 3^[-32] * 3^[2] = 3^[-64] = -4
+
+			4. 4^[3] * 4^[9] * 4^[27] = 4^[3*9*27] = 4^[3* 3^2* 3^3] =  4^[3^6] = 3^6/4 = 3^3/2 = [3^3]
+
+			5. 3^2/5 * 5^[4^2] =  3^2/5 * 4^2/5 = 5^[12^2]
+
+			6. 4^[3] * 3^2/5 = 3^1/4 * 3^2/5 = 3^2/5+1/4 = 3^13/20 = 20^[3^13]
+
+			7. 3^[5^6/125] = 3^[5^6/5^3] = 3^[5^3] = 5^3/3 = 5
+
+			8. 3^[1/4^3] = 3^[4^-3] = 4^-3/3 = 4^-1 = 1/4 = 
+
+				Invertimos la potencia y cambia el signo del exponente. 
+
+				Cambiamos la potencia negativa a fracción. 
+
+
+		Extraer factores: 
+
+			Caso 1: 
+
+				El exponente debe ser igual que el índice: 
+
+					3^[5^3] = 5
+
+			Caso 2: 
+
+				Exponente > índice: 
+
+
+					[32] = [2^6] = 2^[2^2 * 2^2 * 2] = 2*2 2^[2] = 4 2^[2]
+
+					Sacamos los índices que sean igual al exponente. 
+
+					*Solo en multiplicación y división
+					*Los factores que salen se operan
+
+
+		Sumas y restas: 
+
+			Factorizamos radicandos y separamos potencias (para que índice raíz = exponente radicando). 
+
+			Sacamos los radicandos para juntar raíces con sumas o restas, iguales. 
+
+			5*2^[12] - 2*2^[27] + 2^[75] + 3*2^[48]
 
 
 		Racionalizar:
 
+			Debemos eliminar las raíces del denominador: 
+
+				4/3-[2] 
+
+
+			Caso 1: Denominador con raíz cuadrada 
+
+				5/2*[6]
+
+				Multiplicar númerador y denominador por la misma raíz. 
+
+				juntamos las raíces en una de igual indice y eliminamos raíz por exponente.  
+
+				Ej: 4/[3]
+
+					4/[3] * [3]/[3] = 4*[3]/2^[3^2] = 4*[3]/3
+
+
+			Caso 2: Raíz no cuadrada 
+
+				5/2*4^[6]
+
+				El radicando debe estar elevado al mismo exponente que el indice de la raíz
+
+				Ej: 4/4^[3]
+
+					4/4^[3] * 4*5^[3] / 5^[3*3^4] = 4[3]/3
+
+					Como solo teníamos 3, le agregamos 4^3 para que quede 5^[3^5] y eliminar la raíz. 
+
+
+			Caso 3: Raíces cuadradas con sumas o restas 
+
+				4/3-[2] o 1/[3]+[2]
+
+				Usamos la igualdad notable: (a+b)(a-b)=a^2-b^2
+
+				Multiplicamos por el mismo termino númerador y denominador, según la parte que nos falte. 
+
+				Operaciones en el númerador: 	
+
+					distribución de la multiplicación entre los terminos, el coeficiente de la raíz (es 1) multiplica, se multiplica con la distribución y es usado para simplificar. 
+
+				Operaciones en el denominador: 
+
+					Todo termina a se eleva al cuadrado, lo mismo en b. 
+
+					Con el exponente cancelamos la raíz y hacemos la potencia de las sumas o restas o números que queden.
+
+				Ej: 3/3-[2]
+
+					3/3-[2] * 4*(3+[2]) / (3-[2])*(3+[2]) = 12+4[2]/ (3^2-[2]^2)*(3^2+[2]^2) = 12+4[2] / 9-2 = 12+4[2]/7
+
+
+				*Simplificar fracción:
+
+					10[5]/15 = 2[5]/3
+
+				*Denominador negativo: 
+
+					5(1-[2])/1-2 = 5(1-[2])/-1 = -5*(1-[2]) 
 
 
 
@@ -919,6 +1211,7 @@
 			Aprovechando la igualdad. 
 
 			x = -3/2 
+
 
 			Ej6: Si log 2 = 0,3010, hallar los siguientes logaritmos. 
 
@@ -1730,7 +2023,7 @@
 
 				b^x = y <-> logb(y) = x 
 
-			Nos permiten pasar de una ecuación exponencial a una ecuación lineal, lo que facilita su resolución.
+			Nos permiten pasar de una ecuación exponencial a una ecuación lineal, lo que facilita su resolución. 
 
 
 		Usar potencias, raíces y log: 
@@ -1748,19 +2041,16 @@
 				x = log 16 / log 4 
 
 				x = 2
+ 		
 
-				.... 
+		Problemas: 
 
-			2^x = 7 
-		
+			1.  
+
+
 
 
 	Sistemas de ecuaciones líneales: 
-
-
-
-
-
 
 
 
