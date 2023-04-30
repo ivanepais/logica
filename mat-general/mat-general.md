@@ -266,9 +266,6 @@
 
 
 
-
-
-
 || POTENCIAS Y RAÍCES
 
 	Potencias:
@@ -422,9 +419,9 @@
 
 			Factorizamos, dividimos y restamos potencias. 
 
-			1. 10*45/3^3*2 = 2*5*3^2*5 / 3^3*5 = 2*3^-1*5 = 2*5/3
+			1. 10*45/3^3*2 = 2*5 * 3^2*5 / 3^3*5 = 2*3^-1*5 = 2*5/3
 
-			2. 6^-3*3^4/12^-3*9 = 12^3*3^4 / 6^3*9 = 2^3*3^2
+			2. 6^-3*3^4 / 12^-3*9 = 12^3*3^4 / 6^3*9 = 2^3*3^2
 
 				Invertimos el númerador y denominador para cambiar de signo de los exponentes. 
 
@@ -441,17 +438,17 @@
 
 			Inventamos una coma que no estaba y despues movemos la coma, la cantidad de posiciones como cifras que no queremos escribir. 
 
-			41.800.000.000 = 4,18*10^10
+				41.800.000.000 = 4,18*10^10
 
-				Después del 4 hay 10 lugares.
+					Después del 4 hay 10 lugares.
 
-			300.000.000 = 3*10^8
+				300.000.000 = 3*10^8
 
 			Si tenemos un número decimal, movemos la coma a la izquierda, hacemos todo igual, salvo el exponente que es negativo.
 
 				0,00000000658 = 6,58*10^-9 
 
-				Después del 6 hay 9 posiciones para mover la coma. 
+					Después del 6 hay 9 posiciones para mover la coma. 
 
 			0,000000077 = 7,7*10^-8
 
@@ -593,11 +590,13 @@
 
 				x = 1
 
+
 			2^[49] = x
 
 				x^2 = 49, 7*7 = 49
 
 				x = 7
+
 
 			3^[-8] = x 
 
@@ -605,11 +604,13 @@
 
 				x = -2 
 
+
 			2^[25] = x 
 
 				5*5 = 25 y -5*-5 = 25 
 
 				x = 5 y x = -5
+
 
 			2^[-9]	
 
@@ -690,15 +691,7 @@
 
 			4^[16] = x 
 
-			(4^[16])^4 = x^4 
 
-			16 = x^4 
-
-			log 4 (16) = x
-
-			x = log 16 / log 4 
-
-			x = 2
 
 
 		Propiedades: 
@@ -709,7 +702,7 @@
 
 				5^[7] = 7^1/5
 
-				6^[7^4] = 7^4/6 = 7^2/3 = 3^[7^2] = 12^[7^8]
+				6^[7^4] = 7^4/6 = 7^2/3 = 3^[7^2] o 12^[7^8]
 
 					Simplifimos el índice de la potencia y volverlo a expresar como raíz o amplificar el indice y el exponente. 
 
@@ -799,7 +792,6 @@
 			Caso 2: 
 
 				Exponente > índice: 
-
 
 					[32] = [2^6] = 2^[2^2 * 2^2 * 2] = 2*2 2^[2] = 4 2^[2]
 
@@ -1122,6 +1114,7 @@
 			x = log 7 / log 2 
 
 			x = 2,80735
+
 
 			Ej2: 5^x = 2/3 -> x = log 5 (2/3) -> x = log 2/3 / log 5 
 
@@ -2025,6 +2018,12 @@
 
 			Nos permiten pasar de una ecuación exponencial a una ecuación lineal, lo que facilita su resolución. 
 
+			En potencia tenemos base, exponente, nos falta resultado. 
+
+			En raíz tenemos exponente, resultado de potencia, nos falta la base .
+
+			En logaritmo tenemos base, resultado, nos falta exponente. 
+
 
 		Usar potencias, raíces y log: 
 
@@ -2032,17 +2031,86 @@
 
 				4^[16] = x 
 
-				(4^[16])^4 = x^4 
+				4^[2^4] = x 
 
-				16 = x^4 
+				2 = x 
 
-				log 4 (16) = x
 
-				x = log 16 / log 4 
+			ecuación exponencial:  
 
-				x = 2
- 		
+				2^x = 7 
+			
+					Usamos log a (B) = X  <->  a^X = B, para despejar la x. 
 
+				x = log 2 (7)
+
+					Usamos log a (B)  <-> log p (B)/log p (a), para calcular el log con calculadora. 
+
+				x = log 7 / log 2 
+
+				x = 2,80735
+
+				o 
+
+				2^x = 7 
+
+				log 2^x = log 7 
+
+					Usamos log a^m = m * log a, para bajar el exponente y convertir la ecuación exponencial en líneal.
+
+				x * log 2 = log 7 
+
+					Pasamos a dividir el logaritmo que multiplica a la x para despejarla. 
+
+				x = log 7 / log 2 
+
+				x = 2,80735...
+
+
+			encontrar base log: 
+
+				log x (1/4) 
+
+				x^2 = 1/4 
+
+				despejamos x pasando la potencia como raíz. 
+
+				x = [1/4]
+
+				x = [1]/[4]
+
+				x = 1/2 
+
+
+		Conversiones: 			
+
+ 			√x = y <-> y^2 = x
+
+ 			2^-3 = 1/2^3 = 1/8
+
+ 			(2/5)^-3 = 5/2^3 o (3/2)^-2 = 2^2/3^2
+
+ 			(-4)^6 = (4)^6 -exponente par-
+
+ 			[1/4]= [1]/[4] = 1/2 
+
+ 			2^[7^3] = 7^3/2 
+
+ 			3^[1/4^3] = 3^[4^-3] = 4^-3/3 = 4^-1 = 1/4
+
+ 			log 2 (8) = x  <->  2^x = 8 o log (8)  = x  <->  10^x = 8 
+
+ 			log 3^5 = 5*log 3 o log 7^[5^3] = log 5^3/7 = 3/7*log 5
+
+ 			log a (B)  <-> log p (B)/log p (a)
+
+				Elegimos otra base y dividimos B por a. 
+
+			x = log 5 (2/3) -> x = log 2/3 / log 5
+			x = log 2 - log 3 / log 5
+
+
+			
 		Problemas: 
 
 			1.  
