@@ -691,7 +691,41 @@
 
 			4^[16] = x 
 
+			4^[2^4] = x 
 
+			2 = x 
+
+			o
+
+			4^[16] = x 
+
+			16 = x^4 
+
+			log x (16) = 4 
+
+			1/log 16 (x) = 4 
+
+			(1/log 16 (x)) * log 16 (x) = 4*log 16 (x) 
+				
+				Multiplicamos ambos lados para eliminar denominador. 
+
+			1 = 4*log 16 (x)
+
+			1/4 = log 16 (x) 
+
+			16^1/4 = x 
+
+				Factorizamos 
+
+			(2^4)^1/4 = x 
+
+				Multiplicación de exponentes. 
+
+			(2)^4*1/4 = x 
+
+				4*1 = 4/4 = 1 
+
+			2 = x 
 
 
 		Propiedades: 
@@ -878,7 +912,7 @@
 
 || LOGARITMOS
 	
-	Notación científica: 
+	Notación algebraica: 
 
 		log a B = X  <->  a^X = B
 
@@ -1159,7 +1193,7 @@
 			x = -0,25192
 
 
-			Ej3: log x (1/4) 
+			Ej3: log x (1/4) = 2
 
 			x^2 = 1/4 
 
@@ -2020,9 +2054,30 @@
 
 			En potencia tenemos base, exponente, nos falta resultado. 
 
-			En raíz tenemos exponente, resultado de potencia, nos falta la base .
+				a^n = x
+				5^3 = 5*5*5 = 125
+
+			En raíz tenemos exponente, resultado de potencia, nos falta la base.
+
+				n^[a] = x  <->  x^n = a 
+
+				4^[16] = x 
+
+					Buscamos un número que elevado a 4ta potencia, de 16. 
+ 
+				x^4 = x*x*x*x = 16 -> 2*2*2*2 = 16
+
+				x = 2 -> 2^4 = 16 
+
+				4^[16] = 2  <->  2^4 = 16
 
 			En logaritmo tenemos base, resultado, nos falta exponente. 
+
+				log a B = X  <->  a^X = B
+
+				log 2 (8) = x  <->  2^x = 8 
+
+					x = 3 
 
 
 		Usar potencias, raíces y log: 
@@ -2032,6 +2087,37 @@
 				4^[16] = x 
 
 				4^[2^4] = x 
+
+				2 = x 
+
+				o 
+
+				4^[16] = x 
+
+				16 = x^4 
+
+				log x (16) = 4 
+
+				1/log 16 (x) = 4 
+
+				(1/log 16 (x)) * log 16 (x) = 4*log 16 (x) 
+					Multiplicamos ambos lados para eliminar denominador. 
+
+				1 = 4*log 16 (x)
+
+				1/4 = log 16 (x) 
+
+				16^1/4 = x 
+
+					Factorizamos 
+
+				(2^4)^1/4 = x 
+
+					Multiplicación de exponentes. 
+
+				(2)^4*1/4 = x 
+
+					4*1 = 4/4 = 1 
 
 				2 = x 
 
@@ -2069,11 +2155,13 @@
 
 			encontrar base log: 
 
-				log x (1/4) 
+				log x (1/4) = 2 
+
+					Pasamos log a potencia
 
 				x^2 = 1/4 
 
-				despejamos x pasando la potencia como raíz. 
+					despejamos x pasando la potencia como raíz. 
 
 				x = [1/4]
 
@@ -2113,8 +2201,176 @@
 			
 		Problemas: 
 
-			1.  
+			1. La magnitud "M" de un terremoto de define mediante la fórmula: 
 
+				log E = 11,8+1,5*M
+
+			M es la magnitud del terremoto en la escala Ritcher (0 a 10), E es la energia liberada (expresada en ergios). 
+
+			¿Que magnitud tendría un terremoto que liberará 10^16 ergios?
+
+				Reemplazamos el valor de E y despejamos M: 
+
+					log 10^6 = 11,8+1,5*M
+					log 10^6-11,8/1,5 = M
+					16-11,8/1,5 = M 
+					2,8 = M 
+
+			¿Cuánta energia se libera en un terremoto de magnitud 7?
+
+				Reemplazamos el valor de M y despejamos E:
+
+					log E = 11,8+1,5*7
+					log E = 22,3 
+					10^22,3 = E 
+					1,995*10^22 = E 
+
+
+			2. Calcular el ph del zumo de limón, sabiendo que la concentración de protones del mismo es de 0,01 moles/L. 
+
+				pH = -log[H^+]
+
+				Concentración de protones: [H^+]
+
+					hidrogeno, protón y electón: si pierde el electrón se queda con carga +, lo que es un protón. 
+
+				pH = -log 0,01 
+
+				pH = -(-2)
+
+				pH = 2 
+
+				0 
+
+				pH = -log 0,01
+
+				pH = -log 10^-2
+
+				pH = -(-2) * log 10 
+
+				pH =  2*1 
+
+				pH = 2 
+
+
+			Calculo de tiempo: 
+
+			1. Una ameba es un ser unicelular que se reproduce por bipartición (cada ameba se duplicará y se convertirá en 2 idénticas). ¿Si partimos de un cultivo de 800 amebas que se reproducen cada hora?
+
+				Reproducción: 2 (base/cantidad) cada 1h (tiempo)
+
+				1 hora: 800*2
+
+				2 horas: 800*2*2 
+
+				3 horas: 800*2*2*2 
+
+				Número de amebas en 10 horas: 
+
+					N = 800*2^t
+
+					N(10) = 800 * 2^(10)
+
+					N(10) = 819.200 
+
+			¿Cuánto tiempo tiene que pasar para que tengamos una población de 2 millones de amebas? 
+
+				Reemplazamos la cantidad para despejar y encontrar el tiempo: 
+
+					2.000.000 = 2*2^6 
+
+					N = 800*2^t
+
+					2*2^6/800 = 2^t 
+
+					2500 = 2^t  
+
+					log 2500 = t*log 2
+
+					log 2500/log 2 = t 
+
+					11,29 = t (horas)
+
+
+			2. El valor de un auto se devalúa un 10% cada año que pasa. Si su valor es de $24000, ¿cuánto costará al cabo de 12 años?
+						 
+				precio auto: 24000 
+
+				devaluación: 10%*año (tiempo) 
+
+					año 1: 24.000*90%
+
+					año 2: 24.000*90%*90%
+
+					año 3: 24.000*90%*90%*90%
+
+				P = 24.000*0,9^t 
+
+				P(12) = 24.000*0,9^12 
+
+				p(12) = 6.788,31
+
+
+			¿Cuánto tiempo debe pasar para que cueste 10.000?
+
+				10.000 = 24.000*0,9^t		
+				
+				10.000/24.000 = 0,9^t
+
+				0,416 = 0,9^t
+
+				log 0,416 = t*log 0,9
+
+				log 0,416/log 0,9 = t
+
+				8,3 = t (años) 
+
+				o 				
+
+				10.000 = 24.000*0,9^t		
+				
+				10.000/24.000 = 0,9^t
+
+				5/12 = 0,9^t
+
+				log (5/12) =  t*log 0,9
+
+				log 5 - log 12 = t*log 0,9
+
+				log 5 - log 12/log 0,9 = t 
+
+				8,3 = t (años)
+
+
+			3. ¿Durante cuánto tiempo hay que tener a interés compuesto $40.000 al 5,5% de interés anual para que se recupere un capital de $44.100?
+
+				Fórmula de interés compuesto: 
+
+					C = C(0) (1 + r/100)^t
+
+						C: capital final 
+
+						C(0): capital inicial 
+
+						r: redito/interes
+
+						t: tiempo/periodos de capitalización  
+
+				44.100 = 40.000 (1 + 5,5/100)^t
+
+				44.100 = 40.000 (1,055)^t 
+
+				44.100 = 40.000*1,055^t 
+
+				44.100/40.000 = 1,055^t
+
+				1,025 = 1,055^t 
+
+				log 1,025 = t*log 1,055
+
+				log 1,025/log 1,055 = t
+
+				t = 1,822 (años) 
 
 
 
