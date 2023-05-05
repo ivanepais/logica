@@ -1,5 +1,207 @@
+|| Matemáticas
+
+	Es una ciencia que se ocupa del estudio de los números, las estructuras, las relaciones y las propiedades abstractas de los objetos y los sistemas. 
+
+	Ello, se utiliza para describir y entender las leyes que rigen el universo, resolver problemas en una amplia variedad de campos, como la ciencia, la ingeniería, la tecnología, la economía, la medicina, etc. 
+
+	Se divide en diferentes ramas, como la geometría, el álgebra, el análisis, la teoría de números, la estadística y la probabilidad. Cada una de estas ramas tiene sus propias herramientas, técnicas y métodos para abordar problemas específicos.
+
+
+
 || Naturales
 	
+	Son los números que se utilizan para contar elementos de un conjunto, objetos o cualquier cosa de la vida cotidiana. 
+
+	Introducen la suma a la matemática. 
+
+	Se denóta como: 
+
+		N = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, ...}
+
+	Son la base para los demás conjuntos númericos.
+
+
+	Sistemas de númeración: 
+
+		La necesidad de contar surgió en todas las civilizaciones, cada una tenía su propio sistema de númeración.	
+
+		Por eso existen diferentes formas de representar números como los números babilonicos, egipcios, romanos, etc. 
+
+		Estos tienen ciertas limitaciones, que no existen en el sistema arábigo que se extendió por todo el mundo, dado que facilita las operaciones y es el que usamos ahora. 
+
+
+	Sistema de númeración arábigo: 
+
+		Es un sistema decimal dado sus 10 simbolos para representar todos los números: 1, 2, 3, 4, 5, 6, 7, 8, 9 y 0. 
+
+		Tambien es posicional: cada posición representa una cantidad distinta: 
+
+			Unidades: 
+
+				1 = 10^0 
+
+
+			Decenas: 
+
+				10 = 10^1 (DECA)
+
+			Décimos: 
+
+				0,1 = 10^-1 (DECI)
+
+
+			Centenas: 
+
+				100 = 10^2 (HECTO)
+
+			Centésimos: 
+
+				0,01 = 10^-2 (CENTI)
+
+
+			Unidades de mil (miles):  
+
+				1.000 = 10^3 (KILO)
+
+			Milésimos: 
+
+				0,001 = 10^-3 (MILI)
+
+			
+			Decenas de mil (diez miles): 
+
+				10.000 = 10^4
+
+			Diezmilésimos: 
+
+				0,0001 = 10^-4
+
+
+			Centenas de mil (cien miles): 
+
+				100.000 = 10^5
+
+			Cienmilésimos: 
+
+				0,00001 = 10^-5
+
+
+			Unidades de millón (millones):  
+
+				1.000.000 = 10^6 (MEGA)
+
+			Millonésimos: 
+
+				0,000001 = 10^-6 (MICRO)
+
+
+			Decenas de millón (diez millones): 
+
+				10.000.000 = 10^7 
+
+			Diezmillonésimos
+
+				0,0000001 = 10^-7
+
+			
+			Centenas de millón (cien millones): 
+
+				100.000.000 = 10^8
+
+			Cienmillonésimos: 
+
+				0,00000001 = 10^-8
+
+			
+			Unidad de mil millones (mil millones/ 1 billón-inglés): 
+
+				1.000.000.000 = 10^9 (GIGA)
+
+			Milmillonesimos: 
+
+				0,000000001 = 10^-9 (NANO)
+
+
+			Decena de mil millones (diez mil millones): 
+
+				10.000.000.000 = 10^10
+
+			Centena de mil millones (cien mil millones): 
+
+				100.000.000.000 = 10^11
+
+			Unidad de billón/millón de millones (1 trillón-inglés): 
+
+				1.000.000.000.000 = 10^12 (TERA)
+
+			Decena de billón: 
+
+				10.000.000.000.000 = 10^13
+
+			Centena de billón: 
+
+				100.000.000.000.000 = 10^14
+
+	Propiedades: 
+
+		Conmutativa: 
+
+			El cambio en el orden de los factores no altera el resultado. 
+
+			Aplica para sumas y multiplicaciones. 
+
+			a+b = b+a 
+
+			a*b = b*a 
+
+
+		Asociativa: 
+
+			En una operación entre varios factores o terminos, agruparlos de distinta forma no afecta el resultado final. 
+
+			Aplica para sumas y multiplicaciones 
+
+			(a+b)+c = a+(b+c)
+
+			(a*b)*c = a*(b*c)
+
+
+		Distributiva: 
+
+			Cuando tenemos un factor que multiplica antes de un parentesis, resolver el parentesis primero o distribuir el factor y despues operar, no cambia el resultado. 
+
+			Aplica a las sumas, restas.
+
+			a*(b+c) = a*b+a*c 
+
+			a*(b-c) = a*b-a*c
+
+
+
+|| Enteros
+
+	Representan números completos y exactos, porque no tienen parte fraccionaria o decimal. Se utilizan en todas las operaciones. 
+
+	Introducen la resta a la matemática. 
+
+	Incluye los números naturales (1, 2, 3, ...) y sus correspondientes números negativos (-1, -2, -3, ...) y el cero (0). 
+
+	Se denota: 
+
+		Z = {..., -3, -2, -1, 0, 1, 2, 3,...}
+
+	Representan situaciones que involucran el uso de números negativos y positivos como ganancias y pérdidas, temperaturas bajo cero, entre otras. 
+
+
+	Recta real: 
+
+		Donde se ubican u ordenan todos los números reales. 
+
+		A la izquierda de 0 se ubican los negativos y a la derecha los positivos. 
+
+		Mientras más a la izquierda esté un número más chico será, mientras más a la derecha, será más grande.  
+
+
 	Orden de las operaciones: 
 
 		Parentesís > exponentes/raices > multiplicación/división > suma/resta.
@@ -7,24 +209,156 @@
 		Cuando dos operaciones de la misma jerarquía coínciden, se hace de izquierda a derecha
 
 
-|| Enteros
-
-
-
-
-
-	División entera: 
-
-
-
-
-
 
 || Racionales 
 
+	Son un conjunto de números que se pueden expresar como una fracción, es decir, como una división de dos números enteros.
+
+	Estos números introducen la división, tenemos un entero, objeto o unidad al que  intentamos dividir por una cantidad para usar otra parte.  
+
+	Incluyen los números naturales, enteros y fraccionarios. 
+
+	Se denota: 
+
+		Q = {..., -2, -5/3, -1, 0, 1/2, 1, 2, ...}
+
+	Un entero y un decimal periódico se puede expresar como racional.
+
+	Se presenta en situaciones en las que debemos expresar cantidades y medidas de un total, entero o unidad. 
 
 
-	*Un decimal no puede convertirse a entero dado este no tiene decimales. 
+	Significado de fracción: 
+
+		Es una forma de expresar una unidad como una relación entre dos números que es una parte de un número entero u objeto. 
+
+		Se escriben de forma: 
+
+			a/b, "a" y "b" son números enteros. 
+
+			"b" distinto de 0, porque no podemos dividir o multiplicar algo por la nada o que no existe, o sea, 0. 
+
+
+	Ejemplo: 
+
+		1/8 
+
+		Representa un objeto o unidad que se dividió en 8 (denominador) partes y se uso 1 (númerador). 
+
+		El resultado de la división es un número racional o cociente. 
+
+		Si usamos 3, 1/8 -> 3/8. 
+
+
+	Tipos de fracciones: 
+
+		Propia: 
+
+			Denominador > númerador, usamos menos del total dividido en 4. 
+
+			3/4
+
+		Impropia: 
+
+			Númerador > denominador, usamos más del total dividido en 4 (4*2). 
+
+			8/4 
+
+		Número mixto:
+
+			Una fracción impropia puede expresarse como un entero multiplicando a una fracción: 
+
+				2*1/4 
+
+
+	División convencional: 
+
+		Si tomamos dos enteros, numerador y denominado y los dividimos, el resultado es un número racional o la cantidad de objetos/enteros usados/necesitados/tomados. 
+
+		Debemos encontrar un número aparte (cociente) que, multiplicado por el denominador de como resultado el númerador. 
+
+		8/2 = 4 
+
+			4*2 = 8 
+
+		8 |2
+		0  4 
+
+			Acá vemos el dividendo (8), el divisor (2), el resto (0) y el cociente/racional (4). 
+
+
+		8/5 = 1,6 
+
+		8  |5 
+		30  1,6
+		 0 
+		 
+		3/4 = 0,75
+
+		3  |4 
+		30   0,75
+		 20 
+		  0
+
+
+	División por ecuación: 
+
+		2/4 = x
+
+
+	Representación de una fracción en la recta real: 
+
+		Dividimos todos los números de la recta en las partes que diga el denominador. 
+
+		Vemos hasta que valor llega. 
+
+
+	Amplificación y simplificación: 
+ 
+
+		Amplificar significa tomar más partes o dividir por más partes una unidad. 
+
+			Se multipica el númerador y denominador por un mismo número.
+ 	
+
+		Para simplificar, reducimos las partes usadas y divididas de la unidad. 
+
+			Se divide el númerador y denominador por un mismo número.
+
+			168/420 = 84/210 
+
+				168/84 = 2
+
+		Ambos hacen una fracción equivalente. 
+
+
+|| Irracionales
+
+	Son números que no se pueden expresar como una fracción de dos números enteros, son decimales infinitos y no periódicos.
+
+		Se denota: 
+
+		I = {..., 2^[2], e, pi, ...}
+
+	Forman parte del conjunto de números reales, que incluye tanto números racionales como irracionales. 
+
+	El propio conjunto irracional no incluye racionales, dado que no se pueden representar como ellos. 
+
+	Cada número es infinito e impredecible que no repite un patrón de números. Se utilizan para describir situaciones que no se pueden expresar exactamente con números racionales
+
+	Por ejemplo, describir las propiedades de las formas geométricas, como la longitud diagonal de un cuadrado o un rectángulo.	
+
+
+|| Reales
+	
+	Son un conjunto numérico que incluye todos los números racionales e irracionales.
+
+	Son números que se pueden representar en la recta numérica, incluyendo los números enteros, fraccionarios, decimales finitos, decimales periódicos y decimales no periódicos.
+
+	Se denóta: 
+
+		R = {..., -5/3, -1, 0, 1/2, 1, 2^[2], e, pi ...}
+
+	Se utilizan para resolver cualquier problema, calcular longitudes, tiempos, velocidades, temperaturas y otras magnitudes físicas que pueden tomar cualquier valor dentro de un rango continuo.
 
 
 
