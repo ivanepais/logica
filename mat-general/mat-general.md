@@ -1,4 +1,4 @@
-|| Matemáticas
+|| MATEMÁTICAS
 
 	Es una ciencia que se ocupa del estudio de los números, las estructuras, las relaciones y las propiedades abstractas de los objetos y los sistemas. 
 
@@ -8,7 +8,7 @@
 
 
 
-|| Naturales
+|| NATURALES
 	
 	Son los números que se utilizan para contar elementos de un conjunto, objetos o cualquier cosa de la vida cotidiana. 
 
@@ -178,7 +178,7 @@
 
 
 
-|| Enteros
+|| ENTEROS
 
 	Representan números completos y exactos, porque no tienen parte fraccionaria o decimal. Se utilizan en todas las operaciones. 
 
@@ -210,7 +210,7 @@
 
 
 
-|| Racionales 
+|| RACIONALES 
 
 	Son un conjunto de números que se pueden expresar como una fracción, es decir, como una división de dos números enteros.
 
@@ -285,7 +285,6 @@
 
 			Acá vemos el dividendo (8), el divisor (2), el resto (0) y el cociente/racional (4). 
 
-
 		8/5 = 1,6 
 
 		8  |5 
@@ -295,7 +294,7 @@
 		3/4 = 0,75
 
 		3  |4 
-		30   0,75
+		30  0,75
 		 20 
 		  0
 
@@ -313,25 +312,121 @@
 
 
 	Amplificación y simplificación: 
- 
 
 		Amplificar significa tomar más partes o dividir por más partes una unidad. 
 
 			Se multipica el númerador y denominador por un mismo número.
- 	
+
+			Podemos ir cambiando de factor primo, empezamos por 2, 3, 5, 7, 11, etc. 
+	
+			(*2) 2/3 = 4/6 (*3) = 6/9 (*5) = 10/5
+
 
 		Para simplificar, reducimos las partes usadas y divididas de la unidad. 
 
 			Se divide el númerador y denominador por un mismo número.
 
-			168/420 = 84/210 
+			(/2) 168/420 = 84/210 (/2) = 42/105 (/3) = 14/35 (/7) = 2/5
 
-				168/84 = 2
-
-		Ambos hacen una fracción equivalente. 
+		Ambos hacen una fracción equivalente (mismo valor). 
 
 
-|| Irracionales
+	Orden de fracciones: 
+
+		Usamos mcd para denominadores y el númerador determinará cuál es más grande 
+
+			2/3  3/5  5/8  7/10 
+
+			mcd (120) 
+
+			2/3*(40) = 80/120
+
+			3/5*(24) = 72/120 
+
+			5/8*(15) = 75/120 
+
+			7/10*(12) = 84/120 
+
+
+		O dividimos la fracción: 
+
+			2/3 = 0,66
+
+			3/5 = 0,6
+
+			5/8 = 0,625
+
+			7/10 = 0,7 
+
+
+		Problemas de orden en fracciones: 
+
+			Se trata de una relación unida a las fracciones. 
+
+			Ej: Promedio en aciertos sobre intentos 
+
+				Un jugador de baloncesto ("A"), lanzo 9 tiros libres, de los cuales encestó 7. Otro jugador ("B") lanzó 12 de los cuales ancestó 9. ¿Quién fue mejor lanzador? 
+
+				Jugador A: 7/9 
+
+				Jugador B: 9/12  
+
+				mcm (36)
+
+				A: (4)*7/9 = 28/36
+
+				B: (3)*9/12 = 27/36
+
+				A tiene mejor promedio en lanzamientos. 
+
+
+	Suma y resta: 
+
+		a/b +- c/d 
+
+		Deben tener el mismo denominador: 
+
+			mcm: 
+
+				Multiplicamos todos denominadores, después, en cada fracción lo dividimos por el denominador y el resultado multiplicamos por el denominador. 
+
+
+			Denominador común: 
+
+				Multiplicamos por un número cada fraccion, para llegar al mismo denominador y operar directo los númeradores.  
+
+
+	Multiplicación: 	
+
+		Se opera directo: 
+
+		a/b * c/d = a*c/b*c 
+
+
+	División: 	
+
+		Se multiplica cruzado: 
+
+			a/b : c/d = a*d/b*a
+
+
+		Dividir fracción entre fracción: 
+
+			a/b / c/d = a*d/b*c
+
+
+	*Si hay más fracciones, usamos la propiedad asociativa. 
+
+
+
+|| MULTIPLOS Y DIVISORES
+
+
+
+
+
+
+|| IRRACIONALES
 
 	Son números que no se pueden expresar como una fracción de dos números enteros, son decimales infinitos y no periódicos.
 
@@ -346,6 +441,7 @@
 	Cada número es infinito e impredecible que no repite un patrón de números. Se utilizan para describir situaciones que no se pueden expresar exactamente con números racionales
 
 	Por ejemplo, describir las propiedades de las formas geométricas, como la longitud diagonal de un cuadrado o un rectángulo.	
+
 
 
 || Reales
