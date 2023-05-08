@@ -418,11 +418,346 @@
 	*Si hay más fracciones, usamos la propiedad asociativa. 
 
 
+	Fracción generatriz: 
+
+		Es la fracción de dónde proviene un número decimal. 
+
+		8/5 = 1,6 
+
+
+		Tipos de números decimales: 
+
+			Exactos: 
+
+				Tienen una cifra determinada, finita.  
+
+				1,6; 24,79; 312,5
+
+
+			Periódicos puros: 
+
+				Después de la coma tienen un número o un par de numeros que se repiten periódicamente desde el comienzo. Se representan con un arco arriba de ese número. 
+
+				7,3333333... = 7,3'  
+				4,18181818... = 4,'18'
+
+
+			Periódicos mixtos: 
+
+				En un momento tienen números que se periodicamente, no desde el comienzo. Los que se repiten se representan con el arco. 
+
+				7,45333333... = 7,453'
+				4,618181818... = 4,6'18'
+
+
+		Generatriz de cada tipo de decimal: 
+
+			Exactos: 
+
+				Numerador: escribimos el número sin decimales.
+
+				Denominador: escribimos el 1 y despues tantos 0s como cifras decimales tenga
+
+				Simplificar. 
+
+				2,3 = 23/10
+
+				75,1 = 751/10 
+
+				1,23 = 123/100 
+
+				1,6 = 16/10 = 8/5 
+
+
+			Periódicos puros: 
+
+				Numerador: escribimos el número entero y le restamos los números que no son periodicos. 
+
+				Denominador: tantos nueves como  cifras periodicas haya. 
+
+				7,333333... = 7,3'
+
+					73-7/9 = 66/9 = 22/3 
+
+				4,18181818... = 4,'18' 
+
+					418-4/99 = 414/99 = 46/11
+
+				30,22222... = 30,2'
+
+					302-30/9 = 272/9 
+
+
+			Periódicos mixtos: 
+
+				Numerador: escribimos el número entero y le restamos los números que no son periodicos. 
+
+				Denominador: tantos nueves como  cifras periodicas haya y se agregan tantos ceros como cifras no periodicas (entre la coma y el periodo). 
+
+				7,45333333... = 7,453'
+
+					7453-745/900 = 6709/900 = 559/75
+
+				4,618181818... = 4,6'18'
+
+					4618-46/990 = 4573/990 = 254/55 	
+
+
+		Operaciones: 
+
+			Al convertirlos en fracciones se hacen más simples las operaciones. 
+
+			Suma y resta: 
+
+				7,3' +- 4,'18' = 7,333333... *  4,18181818...
+
+				Lo transformamos en fracciones y operamos: 
+
+					22/3 + 46/11 = 242+138/33 = 380/33 = 11,515151...  
+
+
+			Multiplicación y división: 
+
+				7,3' */ 4,'18' = 7,333333... */  4,18181818...
+
+					22/3 */ 46/11
+
+				Lo transformamos en fracciones y operamos:
+
+					22/3 * 46/11 = 1012/33 = 92/3 = 30,66666...
+
+			
+			Ej: 2,5 - 3,4' + 7,'18'
+
+				25/10 - 34-3/9 + 718-71/90 
+
+				5/2 - 31/9 + 647/90  
+
+				225/90 - 310/90 + 647/90 
+
+				562/90 = 281/45
+
+
 
 || MULTIPLOS Y DIVISORES
+	
+	Multiplo: 
+
+		Un número es múltiplo de otro si lo contiene varias veces exactamente. 
+
+		a = b · c 
+
+		a es multiplo de b y c es la cantidad de veces que el número b está contenido en el multiplo a. 
+
+		14 = 2 · 7 
 
 
+		Ej: Hallar multiplos de 4 
 
+			Si multiplicamos 4 por cualquier natural, tenemos sus multiplos. 
+
+			4*1, 4*2, 4*3, 4*4 
+
+			4, 8, 12, 18 son algunos de sus multiplos. 
+
+
+		Propiedades: 	
+
+			1. El cero es múltiplo de todos los números.
+
+			2. Todo número a, distinto de 0, es múltiplo de sí mismo y de la unidad.
+
+			3. Todo número, distinto de cero, tiene infinitos múltiplos.
+
+			4. Si a es múltiplo de b, al dividir a entre b la división es exacta.
+
+			5. La suma de varios múltiplos de un número es otro múltiplo de dicho número.
+
+			6. La suma de varios múltiplos de un número es otro múltiplo de dicho número.
+
+			7. Si un número es múltiplo de otro, y éste lo es de un tercero, el primero es múltiplo del tercero.
+
+			8. Si un número es múltiplo de otro, todos los múltiplos del primero lo son también del segundo.
+
+
+		Casos con multplos: 
+
+			Podemos pensar que los multiplos se relacionan con sucesos que se repiten periódicamente. 
+
+
+	Divisor: 
+
+		Un número es divisor de otro cuando lo divide exactamente. Tambien se los llama factores. 
+
+		a:b = c 
+
+		14:1 = 14 
+
+		14:2 = 7
+
+		14:7 = 2   
+
+		14:14 = 1
+
+			1, 2, 7, 14 son todos los divisores de 14. 
+
+		El resultado (c) tambien es divisor de a. 
+
+		Al descomponer un número por factores primos podemos conocer todos sus divisores. 
+
+
+		Propiedades: 
+
+			1. El 1 es divisor de todos los números.
+
+			2. Todo número, distinto de 0, es divisor de sí mismo.
+
+			3. Todo divisor de un número distinto de cero es menor o igual a él, por tanto el número de divisores es finito. 
+
+			4. Si un número es divisor de otros dos, también lo es de su suma y de su diferencia.
+
+			5. Si un número es divisor de otro, también lo es de cualquier múltiplo de este. 
+
+			6. Si un número es divisor de otro, y éste lo es de un tercero, el primero lo es del tercero. 
+
+
+			Números primos: 
+
+			Solo se pueden dividir entre 1 y ellos mismo. 
+
+			Hay infinitos pero los más usados son 1, 2, 3, 5, 7, 11, 13.  
+
+
+		Teorema fundamental del algebra: 
+
+			Todos los números, o son primos o son el producto de números primos.
+
+			90 = 2*3*3*5  
+
+
+		Factorización de un número: 
+
+			Descomponer un número en factores o números primos. 
+
+			Usamos 2, 3, 5, 7, 11, 13 
+
+
+			Números divisibles por 2:
+
+				Cuando es par (terminan en 0, 2, 4, 6, 8) o multiplos de 2 (2*n, entero).
+
+
+			Divisibles por 3: 
+
+				La suma de sus cifras es multiplo de 3.
+
+				57 = 5+7 = 12  
+				384 = 3+8+4 = 15
+
+
+			Divisibles por 5: 
+
+				Terminan en 0 y 5 
+
+
+			Divisibles por 7: 
+
+				Separamos la cifra de las unidades 194 / 6
+
+				Ahora restamos el número 194 menos el doble de la cifra de las unidades 2×6 = 12
+
+				194 – 12 = 182
+
+				Como 182 todavía es un número muy grande, repetimos los pasos:
+
+				Separamos la cifra de las unidades 18 / 2
+
+				Restamos el número 18 menos el doble de la cifra de las unidades 2×2=4
+
+				18 – 4 = 14
+
+				14 es un múltiplo de 7. Por lo tanto 1946 sí es divisible por 7.
+
+
+			Divisibles por 11: 
+
+				Un número es divisible entre 11 cuando la suma de los números que ocupan la posición par menos la suma de los números que ocupan la posición impar es igual a 0 o a un número múltiplo de 11.
+
+				Sumamos las cifras en posicion parer e impare y después restamos cada una. 
+
+					5863 divisible entre 11
+
+					posicion par: 8 y 3. Los sumamos: 8 + 3 = 11
+
+					impar: 5 y 6. Los sumamos: 5 + 6 = 11
+
+					11 – 11 = 0, es divisible entre 11.
+
+
+			Divisibles por 13: 
+
+				Restar el número sin la cifra de las unidades y 9 veces la cifra de las unidades. Si esa resta tiene como resultado 0 múltiplo de 13 entonces el número es divisible entre 13. El resultado es 13.
+
+				Vamos a separar la cifra de las unidades:
+
+					370 y 5
+
+				Restamos la cifra sin las unidades y 9 veces las unidades:
+
+					370 – 9 x 5 =
+
+					370 – 45 = 325
+
+				Como todavía el número es muy grande, vamos a repetir el mismo procedimiento:
+
+					32 y 5
+
+					32 – 9 x 5 =
+
+					32 – 45 =
+
+				Como el minuendo es menor que el sustraendo podemos invertir la resta:
+
+					45 – 32 = 13
+
+				El resultado es 13. Como es un múltiplo de 13, el número 3705 sí es divisible entre 13.
+
+
+	Casos con divisores:
+
+		Aparecen cuando hay que repartir, hacer particiones o divisiones. 
+
+
+		mcm: 
+
+			Representa un hecho o suceso que se repite periódicamente cada x cantidad de veces.   
+
+			En estos casos podemos sacar el punto de coincidencia entre varios objetos o hechos. 
+
+			Por eso tomamos todos los factores y de los que estan repetidos se toman los de mayor exponente. 
+
+			234 = 2*3^2*13 
+
+			840 = 2^3*3*5*7 
+
+			mcm = 2^3*3^2*5*7*13 = 32760
+
+	
+		MCD: 
+
+			En dos o más conjuntos de elementos, encontramos un número entre el que se puede dividir ambos. 
+
+			Se presenta en donde hay que repartir ciertas cantidades sobre algo, usamos divisores. 
+
+			Tambien se da un punto de coincidencia/valor/cantidad entre varios divisores. 
+
+			Por eso tomamos los factores repetidos y de menor exponente. 
+
+			234 = 2*3^2*13 
+
+			840 = 2^3*3*5*7 
+
+			MCD = 2*3 = 6
 
 
 
@@ -1694,60 +2029,143 @@
 
 
 
+|| POLINOMIOS
 
+	Son expresiones que tienen: 
 
+		Coeficientes/factores: numeros. 
 
+		Variabes: letras. 
 
+		operaciones: potencias, multiplicaciones, divisiones, sumas y restas. 
 
-
-|| EXPRESIONES ALGEBRAICAS
-
-
-
-
-
-
-|| FACTORIZACIONES
-	
-	Factor:
-
-
-
-
-	Factor común:
-
-
-
-
-	Factorización:
-
-
-
-
-	Monomio:
-
-
-
-	Diferencia de cuadrados:
-
-
-
-	Suma/diferencia de cubos:
-
-
-
-	Trinomios:
-
-
-
-
-
-|| SISTEMAS DE ECUACIONES
-
-
+	P(x) = 4x^5 - 2x^3 + 1/2x^2 + 7x - 3
 
 	
-	Gauss-Jordan:
+	Monomios: 
+
+		Son los términos separados por las sumas y restas.
+
+		4x^5, 1/2x^2
+
+
+	Grado del polinomio: 
+
+		Es el mayor exponente de la variable
+
+
+	Termino independiente: 
+
+		número sin variable. 
+
+
+	Operaciones entre polinomios: 
+
+		Suma y resta: 
+
+			Los monomios deben tener las mismas variables al mismo exponente. 
+
+			Operamos los coeficientes y dejamos las variabes. 
+
+			3x^4 + 5x^4 = 8x^4
+
+			3x^4 + 5y^2 = ?
+
+			En un polinomio extenso, escribimos uno debajo de otro y dejamos espacios por las potencias que no esten. 	
+			
+			En la resta, le cambiamos el signo a los terminos del polinomio de abajo. 
+
+			El polinomio resultante tiene el mismo grado que el polinomio de mayor grado entre los operados. 
+
+
+		Multiplicación: 	
+
+			Propiedades multiplicación de potencias: 
+
+				x^3 * x^4 = x^7 
+
+				2x^3 * 5x^4 = 10x^7 
+
+			Cada monomio se multiplicará por todos los monomios del otro polinomio. 
+
+			El grado del polinomio resultante es la suma de los grados de los monomios de mayor grado de cada polinomio. 
+
+
+		Factor común: 
+
+			Proviene de la propiedad distributiva: 
+
+				3(2+7-5) = 3*2 + 3*7 - 3*5
+
+			Es el factor que se repite y que está multiplicando. Es lo que tenemos que encontrar. 
+
+				4x - xy^2 + 7xz 
+
+					se repite la x 
+
+			Dividimos cada termino del polinomio por el factor común. 
+
+				x (4 - y^2 + 7z) 
+
+			Para comprobar hacemos la multiplicación. 
+
+
+			Ejercicios: 
+
+				1. 6x - 10y 
+
+					factorizamos los coeficientes 
+
+					6 = 2*3, 10 = 2*5 
+
+					2 es el factor común y lo dividimos. 
+
+					6x - 10y = 2(3x - 5y)
+
+
+				2. 8x^3 - 12x^2 = 4x^2 (2x - 3)
+
+					4*2*x^3 -4*3x^2
+
+
+				3. 10x + 5 
+
+					5(2x+0)	= 10x+0 
+					
+					10x + 5 = 5(2x+1)		
+
+
+		Igualdades notables: 
+
+			1. (a+b)^2 = a^2 + 2ab + b^2
+
+				igual a (a+b)*(a+b)
+
+
+
+
+			2. (a-b)^2 = a^2 - 2ab + b^2
+
+				igual a (a+b)*(a+b) 
+
+
+
+			
+			3. (a+b)*(a-b) = a^2 - b^2
+
+
+
+
+
+
+
+|| ECUACIONES
+
+
+	Sistemas de ecuaciones: 
+	
+		Gauss-Jordan:
+
 
 
 
