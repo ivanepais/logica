@@ -2142,20 +2142,184 @@
 				igual a (a+b)*(a+b)
 
 
-
-
 			2. (a-b)^2 = a^2 - 2ab + b^2
 
 				igual a (a+b)*(a+b) 
-
-
 
 			
 			3. (a+b)*(a-b) = a^2 - b^2
 
 
+		Valor numérico de un polinomio: 
+	
+			Es el resultado de sustituir la variable por un número. 
+
+			P(x) = x^4 - 6x^3 - 3x + 5 
+			P(2) = 2^4 - 6*2^3 - 3*2 + 5 
+			 	= 16 - 6*8 - 6 + 5
+			 	= -33 
 
 
+			P(x) = -x^4 - 2x^3 - 3*x^2 - 5x -1 
+			
+			P(2) = -(2)^4 - 2(2)^3 - 3*(2)^2 - 5(2) -1
+			 	= -16 - 2*8 - 3*4 - 10 -1 
+			 	= -16 -16 -12 -10 -1
+			 	= -55
+
+			P(-2) = -(-2)^4 - 2(-2)^3 - 3*(-2)^2 - 5(-2) -1
+			  	=  -16 - 2*(-8) - 3*4 - 10 -1 
+			  	= -16 +16 -12 +10 -1
+			  	= -3 
+
+
+		División de un polinomio: 
+
+			P(x)/Q(x) 
+
+			P(x): x^4 -6x^3 -3x +5 
+			Q(x): x^2 + 4x -1 
+
+			x^4 -6x^3 -3x +5   |x^2 + 4x -1
+
+			Debemos multiplicar el primer termino del divisor por un número para obtener el termino del primer dividendo. 
+
+				x^2*x^2 = x^4 
+
+			Será el primer termino del cociente. 
+
+			x^4 -6x^3 -3x +5   |x^2 + 4x -1 
+								x^2
+
+			Multiplicamos el primer cociente por cada termino del divisor. 
+
+			x^4 + 4x^3 -x^2  
+
+			Al resultado le aplicamos una resta de polinomios con el dividendo, por esto, cambiamos todos los signos. 
+
+			x^4 -6x^3 -3x +5
+			-x^4 -4x^3 +x^2	
+
+			Bajamos los terminos que no podemos restar con otros monomios. 
+
+			-10x^3 +x^2 -3x -5 
+
+			Volvemos a multiplicamos el primer divisor para obtener el primer termino del nuevo dividendo. 
+
+			x^4 -6x^3 -3x +5   |x^2 + 4x -1 
+			-10x^3 +x^2 -3x -5  x^2
+
+		El grado del polinomio resultante se restan. 
+
+
+		División por Ruffini:	 
+
+			Solo si el divisor es de la forma: 
+
+				x+a o x-a 
+
+			P(x): 2x^4 +x^3 -4x +3
+			Q(x): x+2 
+
+			Escribo los coeficientes del polinomio dividendo. Se escriben 0 cuando falta un monomio. 
+
+			Con el termino independiente "a" del divisor, cambiado de signo, hacemos las operaciones. 
+
+				a -> -a 
+
+					2  1  0  -4  +3 
+				-2 | 
+
+			Bajamos el primer coeficiente para multiplicarlo con el termino independiente.  
+
+					2  1   0  4  3 
+				-2 |   
+					2 
+
+			El resultado pasa se deja en la segunda línea para sum/rest con el segundo termino del divisor, así sucesivamente.  
+
+					2  1   0  4  3 
+				-2 |   -4  6 -12 32  
+
+			La tercera línea son los resultados de la sum/rest.
+
+					2  1   0  4  3 
+				-2 |   -4  6 -12 32  
+					2  -3  6 -16 35 
+
+			El ultimo termino es el resto de la división y los anteriores son los terminos del nuevo polinomio, con un grado menos. 
+ 
+				2x^3 -3x^2 +6x -16, resto 35. 
+
+
+		Teorema del resto: 
+
+			P(x): 2x^4 +x^3 -4x +3 
+			Q(x): x+2 
+
+			1. Para x+a, en el polinomio dividendo se remplaza por el termino independiente del divisor cambiado de signo.  
+
+				P(-a)
+
+			2. Para x-a, se hace lo contrario: 
+
+				P(a) 
+
+
+			Ejemplo:
+
+				P(x): 2x^4 +x^3 -4x +3 
+				Q(x): x+2
+
+				El resto de esta división será: 
+
+					P(-2) = 2(-2)^4 +(-2)^3 -4(-2) +3
+					= 32 -8 +8 +3 
+					= 35 
+
+		
+		Raíces de un polinomio: 
+
+			Son los números o valores de x que hacen que el valor del polinomio dé cero. 
+
+			Si igualamos el polinomio a 0 y despejamos x encontramos sus raíces. 
+
+			Para polinomios de primer grado alcanza con igualar a 0 y despejar x directamente.  
+
+			Para polinomios de segundo grado, usamos la formula: 
+
+				x = -b +- [b^2 -4*a*c]/2a
+
+			Para polinomios de tercer grado o más grande usamos ruffini, hasta dar con los valores que tengan resto 0. 
+
+			Para encontrar el termino que haga 0, es probable que este número sea divisor del termino independiente del dividendo. 
+
+			Cuando llegamos hasta el grado 2 por ruffini, podemos aplicar la formula de segundo grado. 
+
+					2  1   0  4  3 
+				? |   
+
+				? divisor de 3 
+				
+					Los divisores más comúnes son: 1 y si mismo. 
+					*intentamos con negativos
+
+					.....
+
+					Un número es divisor de otro cuando lo divide exactamente.
+						
+						a:b = c
+
+					a dividendo, b divisor; c tambien es divisor de a 
+
+						14:2 = 7
+						14:7 = 2  
+
+					Al descomponer un número por factores primos podemos conocer todos sus divisores.
+
+					números primos: 
+
+						2, 3, 5, 7, 11, 13  
 
 
 
