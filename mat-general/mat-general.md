@@ -2322,14 +2322,278 @@
 						2, 3, 5, 7, 11, 13  
 
 
+	Factorización de polinomios: 
+
+		a^2 + bx + c = factor * factor 
+
+		x^2 + 2x + 3 = (x-1)*(x+3)
+
+		Si los igualo a 0 y despejo x o cambio de signo, se transforman en las raíces del polinomio. 
+
+		Si podemos sacar factor común a la x, es la raíz x=0, y es el factor x-0. 
+
+			x^3 -3x^2 -10x = x(x^2-3x-10)
+
+			x^2 -7x = x(x-7)  
+
+				x*x - 7x 
+
+
+		Variaciones de un polinomio: 
+
+			Se pueden aplicar los mismos metodos para encontrar sus raíces, pero los factores tienen algunos cambios. 
+
+			1. x^2 +3x -4 = 0			
+
+				Raíces: x=1, x=-4
+
+				factores: (x-1)*(x+4)
+
+
+			2. 0 = -x^2 -3x +4			
+
+				Raíces: x=1, x=-4
+
+				Factores: -(x-1)*(x+4)
+
+
+			3. 2(x^2 +3x -4) = 2x^2 +6x -8		
+
+				Raíces: x=1, x=-4
+
+				Factores: 2(x-1)*(x+4)
+
+
+			Ej: P(x)= -3x^2 +9x -6
+
+				Raíces: x=1, x=2
+
+				Factores: 
+
+					(x-1)*(x-2) = x^2 -3x +2
+
+					-3(x-1)*(x-2) = -3x^2 +9x -6
+
+
+				o sacamos factor común: 
+
+					-3x^2 +9x -6 = -3(x^2-3x+2)
+
+						-3xx +3*3x -3*2
+
+					x^2-3x+2
+
+						raíces: x=1, x=2
+						factores: -3(x-1)(x-2)
+
+
+		Algoritmo para factorizar polinomios: 
+
+			1. Sacar factor común si se puede 
+
+				-3x^2 +9x -6 = -3(x^2-3x+2)
+					
+					-3xx +3*3x -3*2
+
+			2. Ver si es una igualdad notable.
+
+				(a+b)^2 = a^2 + 2ab + b^2
+				
+				(a-b)^2 = a^2 - 2ab + b^2
+				
+				(a+b)*(a-b) = a^2 - b^2
+ 
+
+			3. Sacar raíces y factorizar. 
+
+				x = -b +- [b^2 -4*a*c]/2a
+
+				Ruffini
+
+
+			Ej: P(x)= x^2 +6x +9 
+
+					= (x+3)^3 
+
+					= (x+3)(x+3)
+
+
+				P(x)= x^2 -5x -24
+
+					raíces: x=8, x=-3
+
+					factores: (x-8)(x+3)
+
+
+				P(x)= 3x^3 -21x^2 + 30x
+
+					factor común: 
+
+						x(x^3 -21x +30)
+
+						3x(x^2 -7x +10)
+
+					raíces: x=0, x=5, x=2 
+
+					factores: 3x(x-5)(x-2)
+						
+
+				P(x)= -x^3 -9x^2 -24x +16
+
+					raíces: x=1, x=4, x=4 
+
+					factores: -(x-1)(x-4)(x-4)
+
+
+		Fracciones algebraicas: 
+
+			En el numerador y denominador hay polinomios que hay que factorizar por factor común, igualdad notable o raíces. 
+
+			Después hay que simplificar numerador con denominador y operar. 
+
+			1. 3x-x/x-1  
+
+				3(x-1)/(x-1) 
+
+				= 3  
+
+			2. x+1/x-2 * 3x-6/x^2-1
+
+				x+1/x-2 * 3(x-2)/(x+1)(x-1) 
+
+				3/x+1 
+
+			3. x^-9/x+2 : x-3/x^2-4 
+
+				(x+3)(x-3)/x+2 : x-3/(x+2)(x-2)
+
+				(x+3)(x-3)*(x+2)(x-2)/x+2*x-3
+
+				(x+3)(x-2)
+
+			4. Sumas o restas: 
+
+				Común denominador: factorizar,  multiplicar númerador y denominador por el polinomio o termino que nos falta.  
+
+				mcm: dividir denominador y multiplicar numerador por el resultado. 
+
+
+				1. (x + 4x-1/x-4) * 2/x-1
+
+					2(x-1)/x-4
+
+
+				2. (1/x^2-4 + 1/x-2) : (1+2/x-2)
+
+					x+3/x(x+2)
+
+
 
 || ECUACIONES
+	
+	Es una expresión algebraica (números y operaciones) que tiene variables o incognitas y que está separada por el signo igual. 
+		
+		ax+b = c 
+		2x+1 = 3 
+
+	Ecuaciones equivalente: 
+
+		Cuando hacemos la misma operación en los dos miembros, no cambia su valor. 
+
+			x= 7 
+
+			x+1 = 7+1 
+			x+1 = 8 
+			x=7 
+
+	Despejar x: 
+
+		Solo podemos pasa números cuando estan operando a todo un miembro. 
+
+		 	5x-4 = 1
+		 	5(x-4) = 1
+
+		 	-3+1/6x = 2 
+		 	-3+x/6 = 2 
+
+		Si tenemos una x negativa, cambiamos el signo de todos los terminos del otro miembro. 
+
+			-x = 2 
+			x = -2 
+
+			x = 2/-1 
+			x = -2 
+
+		Cuando pasamos multiplicaciones o divisiones, no cambia el signo de los números. 
+
+			-2x = 10 
+			x = 10/-2
+			x = -5 
+
+
+	Varias x: 
+
+		Pasamos las x a un lado y los números al otro miembro.  
+
+		Para operar las variables se aplican las reglas de la suma y resta de polinomios. 
+
+			Los monomios deben tener las mismas variables al mismo exponente. 
+
+			Operamos los coeficientes y dejamos las variabes. 
+
+			3x^4 + 5x^4 = 8x^4
+
+
+		Ej: 2x+19 = 4-3x
+			2x+3x = 4-19 
+			5x = -15 
+			x = -15/5 
+			x = -3 
+
+
+	Ecuaciones con fracciones: 
+
+		Aplicamos común denominador o mcm (todos los factores y los repetidos de mayor exponente).
+		
+
+		1. 
+
+			Si tenemos igual denominador, eliminamos las fracciones y dejamos el númerador. 
+
+
+		2. 
+
+			Si tenemos distinto denominador, multiplicamos numerador y denominador por los factores que nos falta para llegar al común denominador 
+
+
+		3.
+
+			Si aplicamos mcm (), lo dividimos por denominador de cada fracción y multiplicamos numerador por el resultado resultado. 
+
 
 
 	Sistemas de ecuaciones: 
 	
 		Gauss-Jordan:
 
+
+
+
+|| INECUACIONES 	
+
+
+
+
+
+|| MATRICES 
+
+
+
+
+
+|| FUNCIONES
+
+	Es una expresión algebraica con dos variables o incognitas distintas. 
 
 
 
