@@ -2554,21 +2554,216 @@
 	Ecuaciones con fracciones: 
 
 		Aplicamos común denominador o mcm (todos los factores y los repetidos de mayor exponente).
-		
 
-		1. 
+		Pero antes tenemos que operar cualquier parentesis u operaciones que haya en el númerador. 
+
+
+		1. 3x-5/6 = 1-x/6
+
+			3x-5 = 1-x 	
 
 			Si tenemos igual denominador, eliminamos las fracciones y dejamos el númerador. 
 
 
-		2. 
+		2. 3x-5/6 = 1-x/3
+
+			3x-5/6 = 2(1-x)/3*2
+
+			3x-5/6 = 2-2x/6
+
+			3x-5 = 2-2x
 
 			Si tenemos distinto denominador, multiplicamos numerador y denominador por los factores que nos falta para llegar al común denominador 
 
+ 
+		3. 3x-5/6 = 1-x/3
 
-		3.
+			6(3x-5)/6 = 6(1-x)/3 
 
-			Si aplicamos mcm (), lo dividimos por denominador de cada fracción y multiplicamos numerador por el resultado resultado. 
+			3x-5 = 2 = 2(1-x) 
+
+			3x-5 = 2-2x 
+
+			Si aplicamos mcm, lo dividimos por denominador de cada fracción y multiplicamos numerador por el resultado resultado. 
+
+
+	Ecuaciones de segundo grado: 
+
+		ax^2 + b + c = 0 
+
+		a, b y c son coeficientes. 
+
+		Ej: 3x^2 +7x -2 = 0 
+
+				a = 3, b = 7 , c = -2
+
+			x^2 -x +5 = 0 
+
+				a = 1, b = -1, c = 5 
+
+			x -6 = 4 -3x^2 + 3x 
+
+			3x^2 +x -3x -6 -4 = 0 
+
+			3x^2 -2x -10 = 0
+
+
+		Formula: 
+
+			x = -b +- [b^2 -4ac]/2a 
+
+			Dado los polinomios, no podemos operar una misma variable con distinto exponente. 
+
+			Ej: x^2 -5x +4 = 0
+
+				a= 1, b= -5, c= 4 
+
+				x = 5 +- [(-5)^2 -4*1*4]/2*1 
+
+				x = 5+-[25-16]/2 
+
+				x = 5+-[9]/2 
+
+				x = 5+-3/2 
+
+				x' = 5+3/2 = 8/2 = 4 
+
+				x'' = 5-3/2 = 2/2 = 1
+
+
+		Discriminante:
+
+			Determina las soluciones de la ecuación.  
+
+			b^2 -4ac > 0, dos soluciones. 
+
+			b^2 -4ac = 0, una misma solución doble. 
+
+			b^2 -4ac < 0, no tiene solución 
+
+
+		Incompletas: 
+
+			Le falta algún termino. Tambien podemo aplicar la fórmula. 
+
+			Sin x^1: 
+
+				Despejamos directamente. 
+
+				ax^2 + c = 0 
+
+				ax^2 = -c 
+
+				x^2 = -c/a 
+
+				x = +-[-c/a]
+
+				x'= +[-c/a] 
+				x''= -[-c/a]
+
+
+			Sin termino independiente "c": 
+
+				Sacamos factor común a la x, será x'= 0 
+
+				ax^2 + bx = 0
+
+					axx + bx 
+
+				x(ax + b) = 0 
+
+					Nos dice que si el producto de dos números es igual a cero, algún número tiene que ser 0. 
+
+				x'= 0
+
+				ax+b = 0  
+
+				x'' = -b/a 
+			
+
+		Factorizar o sacar raíces rapidamente: 
+
+			x^2 - Sx + P = 0 
+
+				S: suma de las raíces (soluciones) -que deseemos- 
+
+				P: producto de las raíces. 
+
+				Ej: si queremos x'= 5 y x''= 3 
+
+					S: 5+3= 8
+					P: 5*3= 15 
+
+					x^2 - Sx + P = 0 
+					x^2 - 8x + 15 = 0 
+
+
+			Nos sirve para no usar la fórmula: 
+
+				Ej: x^2 -7x +12	= 0		
+
+				Tenemos dos soluciones que sumadas dan 7 y multiplicadas dan 12. 
+
+				Empezamos por la multiplicación:
+
+					P: -3*-4= 12
+					S: -3-4= -7
+
+					x'= 3
+					x''= 4
+			
+				Tambien podemos factorizar el termino independiente. 
+
+
+				Ej2: x^2 +4x -21 = 0 
+
+					P: 7*-3= -21
+					S: 7-3= 4
+
+					x'= -7
+					x''= 3
+				
+
+	Ecuaciones exponenciales: 
+
+		La incognita o variable está en el exponente y no en la base o número. 
+
+		x^2+5 = 6x
+
+		2^x-3 = 16 
+
+		Hay tres tipos: 
+
+			1. Dos potencias que tienen la misma base
+
+				5^3x-2 = 5^x^2
+
+					La base es 5. 
+
+				2^x-3 = 16 
+
+				2^x-3 = 2^4
+
+					Si factorizamos 16, tenemos la misma base. 
+
+
+			2. En las que podemos sustituir a^x por una variable para que nos quede una ecuación no-exponencial. 
+
+				2^x+3 +4^x+1 -320 = 0
+
+
+			3. Las que se resuelven usando logaritmos. 
+
+				3x^-1 = 2
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2837,7 +3032,7 @@
 
 	Ecuaciones:
 
-		A la pregunta final se suele asignarle la incognita.
+		A la pregunta final o lo que desconocemos se le suele asignar la incognita. 
 
 		A una pista, frase o hecho incompleto con datos, con los datos y la incognita armamos la ecuación.
 
@@ -3100,6 +3295,142 @@
 			80° + 80° + 20° = 180°
 
 		
+		De 2° grado:
+
+			Ej: Hallar dos números consecutivos cuyo producto sea 182. 
+
+				primer numero: x
+
+				segundo consecutivo: x+1 
+
+				x(x+1) = 182 
+				x^2 + x = 182 
+				x^2 + x - 182 = 0
+
+				x = -b+-[b^2-4*a*c]/2*a 
+
+				x = -1+-[1^2-4*1*-182]/2*1	
+
+				x = -1+-[1+728]/2
+
+				x = -1+-[729]/2
+
+				x = -1+-27/2
+
+				x'= -1+27/2					
+				x'= 13
+
+				x''= -1-27/2	
+				x''= -14 
+
+				Positivos: 
+
+					primer numero: x=13 
+					segundo consecutivo: x+1= 14
+
+				Negativos: 
+
+					primer numero: -14
+					segundo consecutivo: -13
+
+				x(x+1) = 182
+				13*14 = 182
+
+
+			Ej2: La suma de los cuadrados de dos números consecutivos es 181. Halla dichos números. 
+
+				(x^2)+(x+1)^2 = 181 
+				x^2 + (x^2+2x+1^2) = 181 
+				x^2 + x^2+2x+1 = 181 
+				x^2 + x^2+2x+1 -181 = 0
+				2x^2+2x-180 = 0 
+
+				x = -b+-[b^2-4*a*c]/2*a 
+
+				x = -2+-[2^2-4*2*-180]/2*2	
+
+				x = -2+-[4-(-1440)]/4
+
+				x = -2+-[1444]/4
+
+				x = -2+-38/4
+
+				x' = -2+38/4
+				x' = 9
+
+				x'' = -2-38/2 
+				x'' = -10
+				
+				Positivos: 
+
+					x=9 y x+1=10 
+
+				Negativos: 
+
+					-10 y -9
+
+				(x^2)+(x+1)^2 = 181
+				(9^2)+(10)^2 = 181
+				81+100 = 181 
+
+
+			Ej3: Calcula las dimensiones de un campo de rugby, sabiendo que la superficie total es de 6750m^2 y que de largo mide 15 metros más que de ancho. 
+
+				Superficie: x * x+15 = 6750
+
+				x * x+15 = 6750
+				x^2 +15x - 6750 = 0 
+
+				x = -b+-[b^2-4*a*c]/2*a 
+
+				x = -15+-[15^2-4*1*-6750]/2*1	
+
+				x = -15+-[225-(-27000)]/2
+
+				x = -15+-[27225]/2
+
+				x = -15+-165/2
+
+				x' = -15+165/2
+				x' = 75
+
+				x'' = -15-165/2 
+				x'' = -90
+
+				La dimensión no puede ser negativa, x'' no se tiene en cuenta. 
+
+
+			Ej4: En un triángulo rectángulos los tres lados son tres números pares consecutivos. Halla la longitud de los lados. 
+
+				par: 2n o n+2 
+
+				Teorema de Pitagoras para triángulo rectángulo:
+
+					a: cateto 
+					b: cateto 
+					c: hipotenusa
+
+					c^2 = a^2 + b^2 
+
+				Tres pares números consecutivos: 
+					
+					2x + 2x+1 + 2x+2 = 0
+					o			
+					x + x+2 + x+4 = 0 
+
+				Longitud de los lados: 
+
+					(x+4)^2 = x^2 + (x+2)^2
+					X^2+8x+16 = x^2+x^2+4x+2 
+					x^2-x^2-x^2+8x-4^2+16-4 = 0 
+					
+					-x^2+4x+12 = 0 
+
+						x'= 6 
+						x''= -2 
+
+					un triángulo no puede tener longitud negativa, usamos la positiva.  
+
 
 	Razonamiento temporal:
 
@@ -3664,5 +3995,6 @@
 				Graficando las funciones constantes, líneales y afines, podemos ver claramente cuál opción de consumo nos conviene de acuerdo a nuestros parámetros.
 
 
+|| DEMOSTRACIONES: 
 
 	
