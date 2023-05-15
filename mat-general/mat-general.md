@@ -2746,10 +2746,255 @@
 
 					Si factorizamos 16, tenemos la misma base. 
 
+				
+				Ej: a^b = a^c -> b = c 
+
+						Deducimos que como la base es la misma, los exponentes tienen que ser iguales. 
+
+						De lo contrario, no daría lo mismo. 
+
+					3^2x = 3^x-5 
+
+					2x = x-5 
+
+					x = 5 
+
+
+					5^3x-2 = 5^x^2 
+
+					3x-2 = x^2 
+
+					-x^2 + 3x -2 = 0 
+
+						x= 1 
+						x''= 2
+
+
+					2^x-3 = 16 
+
+					2^x-3 = 2^4 
+
+					x-3 = 4
+
+					x= 7 
+
+
+					2^-11x-10 -2^2x+5 = 0 
+
+					2^-11x-10 = 2^2x+5
+
+					-11x-10 = 2x+5 
+
+					-9x = 15 
+
+					x = -5/3 
+
+
+					32^-3x+6 = 4^-7x-3
+
+					(2^5)^-3x+6 = (2^2)^-7x-3
+
+						Tenemos potencia de potencia de la misma base. Aplicamos pot*pot 
+
+					2^-15x+30 = 2^-14x-6  
+
+						Ahora si tenemos potencias de la misma base. 
+
+					-15x+30 = -14x-6
+
+					x = 36
+
+
+					4^-2x+2 = 1 
+
+					4^-2x+2 = 4^0 
+
+					-2x+2 = 0  
+
+					x = -1  
+
 
 			2. En las que podemos sustituir a^x por una variable para que nos quede una ecuación no-exponencial. 
 
 				2^x+3 +4^x+1 -320 = 0
+
+
+				Ej: 6^x/2+2 = 6^x-16 
+
+					Como tenemos la misma potencia, en los dos lados; la sustituimos por otra variable. 
+
+						6^x = t 
+
+					t/2+2 = t-16  
+
+						Ahora es una ecuación de líneal, agrupamos variables y operamos. 
+
+					t/2 + 2(2)/2 = 2(t)/2 - 2(16)/2 
+
+					t + 4 = 2t - 32 
+
+					36 = t 
+
+					36 = 6^x 
+
+					6^2 = 6^x 
+
+					x = 2 
+
+
+					2^x+1 + 2^x + 2^x-1 = 28 
+
+						Aplicamos la propiedad: 
+
+							a^n*a^m = a^n+m 
+							5^2*5^3 = 5^5 
+							2^x*2^1 = 2^x+1 
+
+							a^n/a^m = a^n-m
+							5^6/5^2 = 5^4
+							2^x/2^1 = 2^x-1
+
+					2^x*2 + 2^x + 2^x/2 = 28 
+
+						2^x = t 
+ 
+					t*2 + t + t/2 = 28 
+
+					2(2t)/2 + 2(t)/2 + t/2 = 2(28)/2 
+
+					4t + 2t + t = 56 
+
+					7t = 56 
+
+					t = 8  
+
+					2^x = 8 
+
+					2^x = 2^3 
+
+					x = 3 
+
+
+					7^2x+3 - 8*7^x+1 + 1 = 0 
+
+						Ahora aplicamos dos propiedades: 
+
+							1. a^n*a^m = a^n+m y a^n/a^m = a^n-m 
+
+								Separamos exponentes
+
+							2. (a^n)^m = a^n*m
+
+								Separamos potencia. 
+
+					7^2x*7^3 - 8*7^x*7 + 1 = 0 
+
+					(7^x)^2*7^3 - 8*7^x*7 + 1 = 0 
+
+						7^x = t 
+
+					(t)^2*7^3 - 8*(t)*7 + 1 = 0 
+
+					t^2*343 - 56t + 1 = 0 
+
+					343t^2 - 56t + 1 = 0 
+
+						t= 1/7 
+						t''= 1/49 
+
+					7^x= 1/7 
+
+						7^-1 = 1/7 
+
+						x= -1 
+
+					7^x= 1/49
+
+						7^-2 = 1/7 
+
+						x= -2
+
+
+					2^x+3 + 4^x+1 - 320 = 0 
+
+						Factorizamos base y distribuimos exponente: 
+
+							4= 2^2
+							2^2(x+1)= 2^2x+2 
+
+						Separamos exponentes: 
+
+							2^x+3 = 2^x*2^3
+							2^2x+2= 2^2x*2^2
+						
+						Separamos exponente de exponente
+
+							2^2x = (2^x)^2 
+
+
+					2^x+3 + 4^x+1 - 320 = 0
+
+					2^x*2^3 + 2^2(x+1) - 320 = 0 
+
+					2^x*2^3 + 2^2x+2 - 320 = 0 
+
+					2^x*2^3	+ 2^2x*2^2 - 320 = 0
+
+					2^x*2^3	+ (2^x)^2*2^2 - 320 = 0
+
+					2^x*8 + (2^x)^2*4 - 320 = 0
+
+						2^x = t 
+
+					(t)*8 + (t)^2*4 - 320 = 0 
+
+					8t + 4t^2 - 320 = 0 
+
+						t= 8
+						t''= -10 
+
+					2^x = 8 
+
+						2^3 = 8 
+
+						x= 3
+
+
+					2^x = -10 
+
+						2^? = -10, no existe 
+
+						x''= no existe 
+
+
+					3^2x-1 - 8*3^x-1 = 3 
+
+					3^2x/3 - 8*3^x/3 = 3 
+
+					(3^x)^2/3 - 8*3^x/3 = 3 
+
+						t = 3^x 
+
+					t^2/3 - 8t/3 = 3(3)/3  
+
+					t^2 - 8t = 9 
+
+					t^2 - 8t -9 = 0 
+
+						t= 9
+						t''= -1 
+
+					3^x = 9 
+
+						3^2 = 9 
+
+						x= 2 
+
+					3^x = -1 
+
+						3^? = -1
+
+						x'' = no existe 
 
 
 			3. Las que se resuelven usando logaritmos. 
@@ -2757,19 +3002,281 @@
 				3x^-1 = 2
 
 
+	Ecuaciones irracionales: 
+
+		Hay una incognita en una raíz. 
+
+		[x]+14 = x^2 
+
+		Eliminamos la raíz, elevandola a una potencia. 
+
+			Propiedades a tener en cuenta: 
+
+				índice impar, raíz de una solución, aunque el radicando sea negativo. 
+
+				índice par y radicando positivo, da dos soluciones (de un mismo número), + o -.
+
+				raíz índice par y radicando negativo no tiene solución.
+
+				Si tenemos una base negativa, el resultado depende: 
+
+				(-a)^m = 
+
+				a^m si "m" es par
+
+				-a^m si "m" es impar.
+
+				(-3)^2 = (-3)*(-3) = 9
+
+				(-3)^3 = (-3)*(-3)*(-3) = -27 
+
+				o le cambiamos el signo a la potencia. 
+
+				(-5)^6 = 5^6 
+
+				(-5)^7 = -5^7 
+				 
+
+			Ej: indice (exp pot) par y radicando positivo tiene dos soluciones (base pot) de una mismo número.
+
+				x = 5 
+
+				x^2 = 25 
+
+				x = +-[25] 
+
+					5^2 = 25 
+					(-5)^2 = 25 
+
+				x = 5 
+				x''= -5 
 
 
+		Algoritmo para ecuaciones exponenciales: 
+			
+			Cancelar raíces nos puede llevar a soluciones incorrectas facilmente, puede ser que alguna sea falsa. 
 
 
+			1. Dejamos sola a la raíz en miembro. 
+
+			2. Si hay varias raíces, las dejamos en terminos diferentes. 
+
+			3. Pasamos la raíz. 
+
+				Detectar igualdades notables:
+
+					(a+b)^2 = a^2 + 2ab + b^2
+
+						igual a (a+b)*(a+b)
+
+					(a-b)^2 = a^2 - 2ab + b^2
+
+						igual a (a+b)*(a+b) 
+			
+					(a+b)*(a-b) = a^2 - b^2
 
 
+			4. Resolvemos y verificamos el resultado. 
 
 
+			1+[x+1] = x 
+
+			[x+1] = x-1
+
+			x+1 = (x-1)^2
+
+			x+1 = x^2 - 2*x*1 + 1^2
+
+			x+1 = x^2-2x+1 
+
+			x = x^2-2x 
+
+			0 = x^2-2x-x
+
+			0 = x^2-3x
+
+				x^2-3x = x(x-3)
+
+					xx - 3x 
+
+				x'= 0
+
+				x-3= 0 
+
+				x''= 3 
+
+				*Verificamos, puede ser que alguna solución sea falsa. 
+
+					1+[0+1]= 0 
+					1+1 =/= 0 
+
+					1+[3+1]= 3 
+					1+[4] = 3 
+					1+2 = 3 
+
+
+				x = 2-[x^2-2] 
+
+				x-2 = -[x^2-2] 
+
+				(x-2)^2 = (-[x^2-2])^2 
+
+					El negativo se convierte en positivo con la potencia. 
+
+				x^2-4x+4 = x^2-2 
+
+				-4x+4 = -2 
+
+				-4x = -6 
+
+				x = 3/2 
+
+				Comprobamos: 
+
+				3/2 = 2-[(3/2)^2-2] 
+
+				3/2 = 2-[9/4-2] 
+
+				3/2 = 2-[9/4-4(2)/4] 
+
+				3/2 = 2-[9-8/4] 
+
+				3/2 = 2-[1/4] 
+
+				3/2 = 2-1/2 
+
+				3/2 = 2-1/2 
+
+				3/2 = 2(2)/2-1/2 
+
+				3 = 4 - 1 
+
+
+				[2x+5]-[x+3]=2 
+ 
+				[2x+5] = 2 + [x+3] 
+
+				([2x+5])^2 = (2 + [x+3])^2
+
+					igualdad notable 
+
+				2x+5 = 2^2 + 2*2*[x+3] + [x+3]^2
+
+				2x+5 = 4 + 4[x+3] + x+3
+
+					Empezamos de 0, aislando la raíz, etc. 
+
+				2x+5 = 4+4[x+3]+x+3 
+
+				2x+5-4-x-3 = 4[x+3] 
+
+				x-2 = 4[x+3]  
+
+					Aplicamos potencia 
+
+				(x-2)^2 = (4[x+3])^2 
+
+				x^2-4x+4 = 16(x+3) 
+
+				x^2-4x+4 = 16x+48
+
+				x^2-20x-44 = 0 
+
+				x= 22
+				x''= -2 
+
+				Verificamos en la primera ecuación: 
+
+				[2x+5]-[x+3]= 2
+
+				[2*22+5]-[22+3]= 2
+
+				[49]-[25]= 2 
+
+				7-5 = 2 
+
+
+				2[x+1]-[x+5] = -2 
+
+				2[x+1] = [x+5]-2 
+
+				(2[x+1])^2 = ([x+5]-2)^2
+
+					Igualdad notable 
+
+				4(x+1) = [x+5]^2 - 2*[x+5]*2 + (2)^2  
+
+				4x+4 = x+5 -4[x+5] +4 
+
+				4x+4-x-5-4 = -4[x+5]
+
+				3x-5 = -4[x+5] 
+
+					Empezamos otra vez
+
+				(3x-5)^2 = (-4[x+5])^2 
+
+				9x^2-30x+25 = 16(x+5)
+
+				9x^2-30x+25 = 16x+55 
+
+				9x^2-46x-55 = 0 
+
+				x= 55/9 
+
+				x''= -1 
+
+				Verificamos en la ecuación original: 
+
+				2[x+1]-[x+5] = -2 
+
+				2[55/9+1]-[55/9+5] = -2 
+
+				2[55/9 + 9(1)/9] - [55/9 + 9(5)/9] = -2 
+
+				2[55/9 + 9/9] - [55/9 + 45)/9] = -2 
+
+					No es una ecuación, no sacamos el denominador. 
+
+				2[55+9/9] - [55+45/9] = -2 
+
+				2[64+9/9] - [55+45/9] = -2 
+
+				2*8/3 - 10/3 = -2 
+
+				16/3 - 10/3 = -2 
+
+				6/3 = -2 
+
+				2 =/= -2 
+
+				Probamos la otra solución: 
+
+				2[-1+1]-[-1+5] = -2
+
+				2[0]-[4] = -2 
+
+				2*0-[4] = -2 
+
+				-2 = -2 
 
 
 	Sistemas de ecuaciones: 
+
+
 	
 		Gauss-Jordan:
+
+
+
+
+		Tres ecuaciones: 
+
+
+
+
+	Sistemas de ecuaciones no líneales: 
+
 
 
 
