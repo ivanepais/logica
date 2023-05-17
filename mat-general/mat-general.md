@@ -1,6 +1,8 @@
 || MATEMÁTICAS
+	
+	Son un conjunto de herramientas como cualquier otra de la vida real. Una suma o resta, una ecuación, una derivada o una integral, se usan en determinadas situaciones. 
 
-	Es una ciencia que se ocupa del estudio de los números, las estructuras, las relaciones y las propiedades abstractas de los objetos y los sistemas. 
+	Formalmente es una ciencia que se ocupa del estudio de los números, las estructuras, las relaciones y las propiedades abstractas de los objetos y los sistemas. 
 
 	Ello, se utiliza para describir y entender las leyes que rigen el universo, resolver problemas en una amplia variedad de campos, como la ciencia, la ingeniería, la tecnología, la economía, la medicina, etc. 
 
@@ -3263,19 +3265,286 @@
 
 	Sistemas de ecuaciones: 
 
+		Nos encontramos con dos incognitas distantas, como x e y. 
+
+			3x-2y = 4 
+
+		La única forma de saber el valor de dos incognitas es tener otra ecuación de la misma forma. Si tuviese tres variables, aplica lo mismo. 
+
+			3x-2y = 4 
+			-x+5y = 1 
+
+		De forma generica: 
+
+			ax+by = c 
+			a'x+b'y = c' 
+
+
+		Ordenar sistema: 
+
+			y = x/2-4  
+			5+x = y-1/3
+
+			2(y)/2 = x/2 - 2(4)/2 
+			3(5)/3 + 3(x)/3 = 3(y)/3 - 1/3 
+
+			2y = x-8
+			15+3x = 3y-1 
+
+			-x+2y = -8 
+			3x-3y = -16 
+
+
+		Metodos para resolver un sistema de ecuaciones: 
+
+			Sustitución: 
+
+				1° x+2y = 6 
+				2° 3x-y = 11 
+
+				Despejamos una de las variabes (de coeficiente 1,-1 o lo menor posible) de una de las ecuaciones (más facil). 
+
+					1° x = -2y + 6 
+
+				El resultado lo sustituimos en la otra ecuación, así formamos una sola ecuación con una sola incognita y la resolvemos para hallar su valor. 
+
+					2° 3 (-2y + 6) - y = 11 
+
+						-6y+18-y = 11 
+
+						-7y = 11-18  
+
+						y = -7/-7 
+
+						y = 1 
+
+				El valor de la primera incognita lo sustituimos en alguna ecuación original para despejar y sacar el segundo valor de la incognita o variable. 
+
+					1° x+2y = 6 
+
+						x + 2*1 = 6 
+
+						x = 6-2 
+
+						x = 4 
+
+				Verificamos: 
+
+					1° 4+2*1 = 6 
+
+						6 = 6 
+
+					2° 3x-y = 11
+					 	3*4-1 = 11 
+					 	12-1 = 11 
+
+
+			Igualación:  
+
+				Representa una situación en dónde tenemos un valor que une o es igual para todas las partes. 
+
+				La información proviene de cada una de las partes. 
+
+				1° x+2y = 6 
+				2° 3x-y = 11 
+
+				Despejamos una de las variabes y la despejamos en las dos ecuaciones 
+
+					1° x = -2y + 6 
+					2° x = y+11/3 
+
+				Igualamos los dos despejes, así formamos una sola ecuación con una sola incognita y la resolvemos para hallar su valor.
+
+					-2y+6 = y+11/3 
+
+					3(-2)y/3 + 3(6)/3 = 3(y)/3 + 11/3 
+
+					-6y+18 = y + 11 
+
+					-7y = 11-18 
+
+					y = -7/-7 
+
+					y = 1 
+
+				El valor de la primera incognita lo sustituimos en alguna ecuación original o despejada para sacar el valor de la segunda incognita o variable. 
+
+					1° x+2y = 6 
+
+						x + 2*1 = 6 
+
+						x = 6-2 
+
+						x = 4 
+
+				Verificamos: 
+
+					1° 4+2*1 = 6 
+
+						6 = 6
+
+					2° 3x-y = 11
+					 	3*4-1 = 11 
+					 	12-1 = 11 
+
+
+			Reducción:  
+
+				Es para encontrar alguna diferencia entre dos partes, cosas o ecuaciones en matematica. 
+
+				Es parte del metodo de reducción gaussiana. 
+				
+					1° x+2y = 6 
+					2° 3x-y = 11 
+
+				Consiste en conseguir el opuesto de alguno de los términos. 
+
+				A veces necesitamos multiplicar las dos ecuaciones para conseguir el opuesto y cambiarle de signo a un multiplo. 
+
+					1° 3x-2y = 0 
+					2° 4x+3y = 17
+
+				Además necesitamos el mcm para conseguir el opuesto o multiplicar por factores opuestos. 
+
+					mcm(3,4) = 12 
+
+					3x-2y = 0 	f1*(4)
+					4x+3y = 17 	f2*(-3) 
+
+					12x-8y = 0 
+					-12x-9y = -51 
+
+
+				Multiplicamos por algún termino todo la ecuación para reducir a cero el valor donde este una variable en las dos ecuaciones. Se logra con el opuesto. Tomamos la variable que necesite el menor coeficiente (1,-1), si es posible. 
+
+				Operamos termino a termino lo que quede de las dos ecuaciones. 
+
+					x+2y = 6 	f1*(-3)
+					3x-y = 11
+
+					-3x-6y = -18 
+					3x-y = 11 
+
+					-6y = -18 
+					-y = 11 
+
+					-7y = -7 
+					y = -7/-7 
+					y = 1 
+
+
+				Con el sistema resultante nos quedará una ecuación con una sola incognita por resolver. 
+
+					-6y = -18 
+					-y = 11 
+
+					-7y = -7 
+					y = -7/-7 
+					y = 1 
+
+				Con el valor de la primera incognita, encontramos la segunda si la sustituimos en alguna ecuación. 
+
+					x+2y = 6 
+					x+2*1 = 6 
+					x = 6-2 
+					x = 4 
+				
+				Verificamos: 
+
+					1° 4+2*1 = 6 
+
+						6 = 6
+
+					2° 3x-y = 11
+					 	3*4-1 = 11 
+					 	12-1 = 11 
+
+			Gráfico: 
+
+				Representamos cada ecuación líneal, el punto de corte en el que se cruzan las rectas o gráficas, es la solución al sistema.
+
+				Los valores de x e y que encontramos son el par de coordenadas x,y de un punto solución. 
+
+					x=4, y=1 -> P(4,1)
+
+				Función Líneal: 
+
+					Son proporcionalemente directas: 
+
+						Si le pasamos un numero positivo, sale otro positivo.
+
+						Si le asamos un numero negativo, sale otro negativo.
+
+					Se grafica el termino "b" (corte eje y), el punto de corte x, y la forma depende de la pendiente "m" (inclinacion de la recta)
+
+					Por tablas, le damos un valor a x, lo reemplazamos en la ecuación y despejamos y, para obtener su valor. Dibujamos la función con esos puntos.  
+
+					Dominio: R
+
+					Rango: R
+
+
+				Una ecuación líneal está formada por infinitos puntos (x,y) que forman una línea recta.
+
+					x+y = 10 
+
+				Estos infinitos puntos tienen valores en x e y que forman las infinitas soluciones. 
+
+					9+1 = 10 
+					8+2 = 10 
+					5+5 = 10 
+					11-1 = 10 
+					etc.
+
+				La ecuación nos dice que dos números sumarán 10. 
+
+				Si gráficamos la ecuación 
+
+					x-y = 2  
+
+				nos dice que todos los puntos x de la recta, supera en 2 al valor de y. 
+
+				o que todos los puntos en el que uno le saque dos al otro, forman la ecuación. 
+
+				o dados dos números, uno es dos unidades mayor que otro. 
+
+				Si hacemos un sistema con las dos ecuación, podemos obtener el único punto solución que resuelve este sistema o problema. 
+
+					x+y = 10 
+					x-y = 2
+
+					x=6, y= 4 -> P(6,4)
+
+				Son dos números que suman 10 y que el primer número le saca dos al otro. 
+
 
 	
-		Gauss-Jordan:
+			Gauss-Jordan:
 
 
 
 
-		Tres ecuaciones: 
+			Tres ecuaciones: 
+
+
 
 
 
 
 	Sistemas de ecuaciones no líneales: 
+
+
+
+
+
+
+
+
+	Discutir sistemas de ecuaciones: 
+
+
+
+
 
 
 
@@ -3536,14 +3805,45 @@
 			MCD(45, 60) = 3*5 = 15 (15x15 metros)
 
 
-
 	Ecuaciones:
 
-		A la pregunta final o lo que desconocemos se le suele asignar la incognita. 
+		A la pregunta final o a lo que desconocemos se le suele asignar la incognita. 
 
-		A una pista, frase o hecho incompleto con datos, con los datos y la incognita armamos la ecuación.
+		Un objeto es igual o esta formado por otras cosas/datos:
+
+			(precio cafe) x = ... (valores, etc)
+
+			x = ... 
+
+		Una ecuación está formada por distintos valores que vamos encontrando, despejando: 
+
+			y = mx+c 
+			ax+by+c = 0
+
+		En los problemas nos pueden dar unos datos, pero nos faltarán otros: 
+
+			precio cafe: x+y = 80 
+
+		Tomamos una frase, pista o hecho incompleto con datos e incognita del problema y armamos las ecuaciónes.
+
+			Ej: la altura es 1/3 de la base 
+
+				base: x 
+				altura: y 
+
+					y = 1/3x 
+
+		En resumen: 
+
+			objeto1: x 
+			objeto2: y 
+			frase/datos: x+y = 10 
+
+		Vemos como las frases o datos se combinan con los objetos/variables. 
+
 
 		Cada problema va a ser diferente.
+
 
 		Verificar las respuestas: 
 
@@ -4489,6 +4789,257 @@
 
 
 	Sistemas de ecuaciones líneales: 
+
+		Tenemos que armar una ecuación por cada incognita o variable que desconocemos.
+
+		A lo que desconocemos le asignamos la incognita. 
+
+		A los objetos o cosas del problema lo relacionamos o lo llamamos como una variable. Son iguales o están formados por información, datos, cosas u otros objetos que están en el problema.
+
+			Ej: (precio cafe) x = ... (valores, etc)
+
+			x = ...  
+			y = ... 
+			z = ... 
+
+		Una ecuación está formada por distintos valores que vamos encontrando, despejando: 
+
+			y = mx+c 
+			ax+by+c = 0 
+
+		En los problemas nos pueden dar unos datos, pero nos faltarán otros: 
+
+			precio cafe: x+y = 80 
+
+		Tomamos una frase, pista o hecho incompleto con datos e incognita del problema y armamos las ecuaciónes.
+
+			Ej: la altura es 1/3 de la base 
+
+				base: x 
+				altura: y 
+
+					y = 1/3x  
+
+		En resumen: 
+
+			objeto1: x 
+			objeto2: y 
+			frase/datos: x+y = 10 
+
+		Vemos como las frases o datos se combinan con los objetos/variables. 
+
+
+			
+		Ej: Las edades de dos personas suman 10 años, una de ellas es dos años mayor que la otra. ¿Cuáles son los unicos valores que cumplen con estos requisitos?
+
+			persona 1: x 
+			persona 2: y 
+
+			Suma de edades: x+y = 10 
+			Diferencia de dos: x-y = 2 
+
+			Sistema: 
+					
+				1° x+y = 10
+				2° x-y = 2
+
+				x: 
+					2x = 12 
+					x= 6 
+
+				y: 
+					6+y=10
+					y= 10-6 
+					y= 4 
+
+				punto: 
+
+					x= 6
+					y= 4 
+					P(6,4)  
+
+				Verificación: 
+
+					1° x+y = 10
+						6+4 = 10 
+
+					2° x-y = 2
+						6-4 = 2 
+
+
+		Ej2: Dos números sumados dan 12, y restados 2. ¿Qué número son? 
+
+			x+y = 12 
+			x-y = 2 
+
+			2x= 14 
+			x=7 
+
+			7+y = 12 
+			y= 12-7 
+			y= 5 
+
+			Verificación: 
+
+				7+5 = 12 
+				7-5 = 2 
+
+
+		Ej3: Las edades de dos hermanos suman 20, y se llevan 4 años de diferencia. ¿Qué edades tienen? 
+
+			x+y = 20 
+			x-y = 4 
+
+			2x = 24 
+			x= 12  
+
+			12+y = 20 
+			y= 8 
+
+			Verificación: 
+
+				12+8 = 20 
+				12-8 = 4 
+
+
+		Ej4: La diferencia de dos números es 4. El triple del mayor menos el doble del menor es 15. Halla dichos números. 
+
+			x-y = 4  	f1*(-3)
+			3x-2y = 15 
+
+			-3x+3y = -12 
+			3x-2y = 15 
+
+			y = 3 
+
+			x-3 = 4 
+			x= 7 
+
+			Verificación: 
+
+				7-3 = 4 
+
+				3*7 - 2*3 = 15 
+				21-6 = 15
+
+
+		Ej5: Con $12 que tengo, podría ir dos días a la piscina, un día al cine y aún me sobrarían $4,5. La entrada a la piscina cuesta $1,5 menos que la del cine. ¿Cuánto cuesta la entrada de cine? 
+
+			entrada cine: x
+				
+			piscina: y 
+
+			dos días/entrada piscina: 2y 
+
+			gasto: x+2y
+
+			total: x+2y+4,5 = 12
+
+			entrada piscina: y = x-1,5
+
+				1° x+2y = 12-4,5
+					x+2y = 7,5 	
+				
+				2° -x+y = -1,5  
+
+				x+2y = 7,5 
+				-x+y = -1,5 
+
+				3y= 6 
+				y = 2 
+
+				-x+2 = -1,5 
+				-x = -3,5 
+				x = 3,5 
+
+			Verificación: 
+
+				3,5+2*2 = 7,5 
+				-3,5+2 = -1,5
+
+
+		Ej6: Calcula las dimensiones de un rectángulo cuyo perímetro mide 80cm y a la altura es un tercio de la base. 
+
+			Rectángulo: 	
+
+				Area: base*altura 
+
+				perímetro: 2(base+altura)
+						
+					suma de los lados
+
+			
+			Dimensiones: ancho, alto 
+
+				base: x 
+
+				altura: y
+
+				Perimetro: 80cm 
+
+					80 = x+y+x+y
+					80 = 2(x+y)  
+					80 = 2x+2y 
+					80/2 = 2x/2+2y/2 
+					40 = x+y 
+
+				altura un tercio de base: y = 1/3x 
+
+			1° 40 = x+y
+			2° y = 1/3x  
+				3(y)/3 = 1/3x 
+				3y = x 
+
+				-x-y = -40 f1*(-1)
+				-x+3y = 0 
+
+				x+y = 40 
+				-x+3y = 0 
+
+				4y = 40 
+				y = 10 
+
+				-x-10 = -40 
+				-x = -30 
+				x = 30 
+
+			Verificación: 
+
+				40 = 10+30 
+				3*10 = 30 
+
+
+		Ej7: En un triángulo isósceles, los lados que son iguales miden el doble que el lado desigual. Si el perímetro del triángulo es de 65cm, calcula la longitud de los lados. 
+
+			Lados iguales: x 
+			Lado desigual: y 
+
+			Lados iguales son el doble: x = 2y
+			Perimetro: x+2y = 65
+
+			1° x = 2y 	
+				x-2y = 0  f1(-2)
+
+			2° 2x+y = 65 
+
+				-2x+4y = 0 
+				2x+y = 65 
+
+				5y = 65 
+				y = 65/5
+				y = 13	 
+
+				x = 2*13  
+				x = 26 
+
+			Verificación: 	
+
+				26 = 13*2 
+				2*26+13 = 65 
+
+
+
+
 
 
 

@@ -1634,6 +1634,23 @@
 			Podría ser situaciones de compra y pago.
 
 
+		Interpretación: 
+
+			Una ecuación líneal está formada por infinitos puntos (x,y) que forman una línea recta.
+
+				x+y = 10 
+
+			Estos infinitos puntos tienen valores en x e y que forman las infinitas soluciones. 
+
+				9+1 = 10 
+					8+2 = 10 
+					5+5 = 10 
+					11-1 = 10 
+					etc.
+
+			La ecuación nos dice que dos números sumarán 10.
+
+
 		Afines:
 
 			y = mx + b
@@ -1647,7 +1664,7 @@
 
 			Gráfico:
 
-				Se grafica el termino "b" (corte eje y), el punto de corte x y la forma depende de la pendiente "m" (inclinacion de la recta)
+				Se grafica el termino "b" (corte eje y), el punto de corte x, y la forma depende de la pendiente "m" (inclinacion de la recta)
 
 				m+: de izquierda a derecha hacia arriba (ascendente)
 
