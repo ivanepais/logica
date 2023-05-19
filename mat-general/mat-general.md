@@ -3824,6 +3824,8 @@
 
 			precio cafe: x+y = 80 
 
+		Cada ecuación representará un total, equivalencia entre los valores.
+
 		Tomamos una frase, pista o hecho incompleto con datos e incognita del problema y armamos las ecuaciónes.
 
 			Ej: la altura es 1/3 de la base 
@@ -3833,13 +3835,24 @@
 
 					y = 1/3x 
 
+		Cada ecuación representará un total, equivalencia entre los valores. 
+
+			un bocado y refresco: 4 
+
+				x+y = 4 
+
+			dos bocados y un refresco: 7 
+
+				2x+y = 7 
+
+
 		En resumen: 
 
 			objeto1: x 
 			objeto2: y 
 			frase/datos: x+y = 10 
 
-		Vemos como las frases o datos se combinan con los objetos/variables. 
+			Las frases o datos se combinan con los objetos/variables. 
 
 
 		Cada problema va a ser diferente.
@@ -4820,6 +4833,16 @@
 
 					y = 1/3x  
 
+		Cada ecuación representará un total, equivalencia entre los valores. 		
+
+			un bocado y refresco: 4 
+
+				x+y = 4 
+
+			dos bocados y un refresco: 7 
+
+				2x+y = 7 
+
 		En resumen: 
 
 			objeto1: x 
@@ -5037,6 +5060,327 @@
 				26 = 13*2 
 				2*26+13 = 65 
 
+
+		Ej8: Compara un bocado y un refresco cuesta $4, y dos bocadillos y un refresco cuesta $7. ¿Cuánto cuesta cada producto? 
+
+			Precio bocado: x  
+			Precio refresco: y 
+
+			un bocado y refresco: 4 
+
+				x+y = 4 
+
+			dos bocados y un refresco: 7 
+
+				2x+y = 7 
+
+
+			Sistema: 
+
+				1° x+y = 4 	f1*(-1)
+				2° 2x+y = 7
+
+					-x-y = -4 
+					2x+y = 7 
+
+					x = 3 
+
+					3+y = 4 
+					y = 1 
+
+				
+				Verificación: 
+
+					3+1 = 4 
+					2*3+1 = 7 
+
+		
+		Ej9: Dos hogazas de pan y 8 barras pesan 6kg, y 12 barras y una hogaza pesan 4kg. ¿Cuánto pesa cada barra de pan y cada hogaza? 
+
+			hogaza: x 
+			barra: y 
+
+			dos hogazas y 8 barras: 6kg 
+
+				2x+8y = 6
+
+			12 barras y una hogaza: 4kg 
+
+				x+12y = 4  
+
+			Sistema: 
+
+				1° 2x+8y = 6  
+				2° x+12y = 4  f1*(-2)
+
+					2x+8y = 6 
+					-2x-24y = -8 
+
+					-16y = -2 
+					y = 0,125 
+
+					x+12*0,125 = 4 
+					x+1,5 = 4
+					x = 4-1,5 
+					x = 2,5 
+
+				Verificación: 
+
+					1° 2*2,5+8*0,125 = 6
+						6 = 6 
+
+					2° 2,5+12*0,125 = 4 
+						4 = 4 
+
+
+		Ej10: Andrea tiene en el bolsillo 7 monedas que hacen un total de $11. ¿Cuántas son de $1 y cuántas son de $2?
+
+			Cantidad de $1: x 
+			Cantidad de $2: y 
+
+			Valor de cada una: 1x, 2y 
+
+			7 monedas:  
+
+				x+y = 7 
+
+			Suman 11:
+
+				x+2y = 11
+
+			Sistema: 
+
+				1. x+y = 7  f1*(-1)
+				2. x+2y = 11 
+
+					-x-y = -7 
+					x+2y = 11 
+
+					y = 4 
+
+					x+2*4 = 11 
+					x = 3  
+
+			Verificación: 
+
+				1. 3+4 = 7 
+				2. 3+2*4 = 11 
+
+
+		Ej11: Un librero vende 84 libros a dos precios distintos: los novedades a $45 y los más viejos a $36, obteniendo de la venta $3105. ¿Cuántos libros vendió de cada clase. 
+
+			Libro novedad: 45x 
+			Libro viejo: 36y 
+
+			stock: x+y = 84 
+			venta: 45x+36y = 3105 
+
+			Sistema: 	
+
+				1. x+y = 84  f1*(-36)
+				2. 45x+36y = 3105
+
+					-36x-36y = -3024
+					45x+36y = 3105 
+
+					9x = 81
+					x = 9
+
+					9+y = 84 
+					y = 75 
+
+			Verificación: 
+
+				9+75 = 84 
+				45*9+36*75 = 3105
+
+
+		Ej12: En un corral hay conejos y gallinas, que hacen un total de 61 cabezas y 196 patas. Halla el número de conejos y de gallinas. 
+
+			Conejos: x 
+			Gallinas: y 
+
+			Cabeza conejo, gallina: 1x, 1y
+
+				x+y = 61
+
+			Patas conejo, gallina: 4x, 2y 
+ 
+				4x+2y = 196 
+
+			Sistema: 
+
+				1. x+y = 61  f1*(-2)
+				2. 4x+2y = 196 
+
+					-2x-2y = -122 
+					4x+2y = 196 
+
+					2x = 74 
+					x = 37 
+
+					37+y = 61 
+					y = 24 
+
+			Verificación: 
+
+				1. 37+24 = 61 
+				2. 4*37+2*24 = 196
+
+
+		Ej13: Un mecánico ha cambiado 32 neumáticos en un solo día, que correspondían a 12 vehículos. ¿Cuántos de esos vehículos eran coches y cuántos eran motos. 
+
+			Coches: x 
+			Motos: y 
+
+			Total coches y motos: 12 
+
+				x+y = 12 
+
+			Total neumáticos: 32 
+
+			Neumáticos coches y motos: 4 y 2 
+
+				4x+2y = 32 
+
+			Sistema: 
+
+				1. x+y = 12	 f1*(-2)
+				2. 4x+2y = 32
+
+					-2x-2y = -24 
+					4+2y = 32 
+					
+					2x = 8 
+					x = 4 
+
+					4+y = 12 
+					y = 8 
+
+			Verificación: 	
+
+				1. 4+8 = 12 
+				2. 4*4+2*8 = 32 
+
+
+		Ej14: La edad de una parsona es doble que la de otra. Hace 7 años la suma de las edades era igual a la edad actual de la primera. Halla las edades de las personas. 
+
+
+			Edad actual: hallar x, y
+				
+				persona 1: x 
+				persona 2: y 
+
+			doble que la otra: 
+
+				x = 2y 
+
+			Edad hace 7 años: -7
+
+				persona 1: x-7
+				persona 2: y-7  
+
+				x-7+y-7 = x
+
+			Sistema: 	
+
+				1. x = 2y 
+					x-2y = 0 
+
+				2. x-7+y-7 = x
+					x-x+y = 7+7
+					y = 14 
+
+					x = 2*14
+					x = 28 
+
+
+		Ej14: Halla las edades de dos personas, sabiendo que hace 10 años la edad de la primera era 4 veces la edad de la segunda, y dentro de 20 años la edad de la primera será sólo el doble. 
+
+			Edad actual: hallar x, y 
+
+				pers1: x
+				pers2: y 
+
+			Edad hace 10 años: -10 
+
+				pers1: x-10 = 4(y-10)
+
+			Edad dentro de 20 años: +20 
+
+				pers1: x+20 = 2(y+20) 
+
+			Sistema: 
+
+				1. x-10 = 4(y-10)
+					x-10 = 4y-40 
+					x-4y = -40+10 
+					x-4y = -30  f*(-1)
+
+				2. x+20 = 2(y+20)
+					x+20 = 2y+40 
+					x-2y = 40-20 
+					x-2y = 20   
+
+					-x+4y = 30  
+					x-2y = 20 
+
+					2y = 50 
+					y = 25  
+
+					x-2*25 = 20 
+					x-50 = 20 
+					x = 70 
+
+			Verificación: 
+
+				70-4*25 = -30 
+				70-2*25 = 20 
+
+
+		Ej15: Hace 1 año la edad de un padre era el triple que la de su hijo, pero dentro de 13 años no tendrá más que el doble. Halla las edades del padre y del hijo. 
+
+			Edad actual: 
+
+				padre: x
+				hijo: y 
+
+			Hace 1 año: 
+
+				padre: x-1 = 3(y-1) 
+				hijo: y-1 
+
+			Dentro de 13 años: 
+
+				padre: x+13 = 2(y+13) 
+				hijo: y+13 
+
+			Sistema: 
+
+				1. x-1 = 3(y-1)
+					x-1 = 3y-3 
+					x-3y = -3+1 
+					x-3y = -2  f1*(-1)
+
+				2. x+13 = 2(y+13)
+					x+13 = 2y+26 
+					x-2y = 26-13 
+					x-2y = 13  
+
+					-x+3y = 2 
+					x-2y = 13 
+
+					y = 15 
+
+					x-2*15 = 13 
+					x-30 = 13 
+					x = 13+30 
+					x = 43 
+
+			Verificación: 
+				
+				1. 43-3*15 = -2
+				2. 43-2*15 = 13
 
 
 
