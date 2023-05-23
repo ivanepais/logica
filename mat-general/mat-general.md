@@ -426,6 +426,49 @@
 
 		8/5 = 1,6 
 
+		Ej: 
+
+			Fracción a decimal: 
+
+				Dividiendo.
+				cuando no es entero, se baja un cero, se pone coma y el resto es el decimal; hasta que de cero. 
+				Si se repite es periodico.
+				Si no termina en resto 0, tiene decimales infinitos, hasta que se repite el número despues de la coma. 
+
+					2,3 = 23/10 
+
+					9/4 = 2,2 
+
+						9  |4 
+						10  2,25
+						 20 
+						  0 
+
+					110/3 = 36,6'
+
+						110  |3 
+						 20   36,66...
+						  20 
+						   2
+
+					2/5 = 0,4 
+
+						20 	|5 
+						 0   0,4 
+
+					13/7 = 1,85714' 	
+						
+						13 	|7 
+					 	60  1,85714285...
+					     40 
+					      50 
+					       10 
+					        30 
+					         20 
+					          60 
+					           40 
+					            5
+
 
 		Tipos de números decimales: 
 
@@ -799,7 +842,7 @@
 
 	Razón:
 
-		Cociente entre dos numeros o cantidades o cosas comparables o relacionadas.
+		Cociente entre dos numeros o cantidades o cosas comparables y/o relacionadas.
 
 			herramientas: 16
 			trabajadores: 8
@@ -3518,7 +3561,144 @@
 				Son dos números que suman 10 y que el primer número le saca dos al otro. 
 
 
-	
+			Clasificación de sistemas lineales: 
+
+				1. ax+by = c 
+				2. a'x+b'y = c 
+
+
+				1. Sistema compatible determinado (S.C.D)
+
+					Es coherente (compatible) y tiene solución (determinado)
+
+						3x+y = -2
+						2x+4y = 1 
+
+					En las dos ecuaciones tenemos diferentes coeficientes en las variables. 
+
+						3 y 1, 2 y 4 
+
+					Nos indican que las rectas son diferentes, tienen distinta dirección o inclinación. 
+
+					Tendrán algún punto de corte o se cruzarán en algún momento.   
+
+					Coeficientes no proporcionales/distintos: 
+
+						a/a' =/= b/b'
+						3/2 =/= 1/4 
+
+					Tienen una única solución, con dos rectas secantes: se cruzan.
+
+					Las ecuaciones aportan distinta información. 
+
+					Ej: Las edades de dos personas suman 10 años. Una de ellas es dos años mayor que la primera. 
+
+						x+y = 10 
+						x-y = 2 
+
+						Solución: 
+
+							x = 6 
+							y = 4 
+							P (6,4)
+
+						Clasificación: 
+
+							1/1 =/= 1/-1 
+							S.C.D
+
+
+				2. Sistema compatible Indeterminado (S.C.I)
+
+					Es coherente (compatible), no tiene una solución determinada.
+
+						3x+y = -2
+						6x+2y = -4 
+
+					En las dos ecuaciones tenemos coeficientes iguales en las variables y termino independiente. 
+
+						3 y 6; 1 y 2; -2 y -4  
+
+					Es una sola recta escrita dos veces. No tendrán un punto de corte.   
+
+					Coeficientes y termino independiente son proporcionales, iguales o constantes: 
+
+						a/a' = b/b' = c/c'
+						3/6 = 1/2 = -2/-4
+
+					No tienen una única solución, sus rectas trazan el mismo camino: no se cruzan, son las mismas.  	
+
+						3/6 = 1/2 = -2/-4  
+
+					Sus ecuaciones son iguales, tienen infinitas soluciones.  
+
+					Las dos ecuaciones aportan la misma información. 
+
+					Ej: Las edades de dos personas suman 10 años. El doble de una más el doble de la otra suman 20 años. 
+
+						x+y = 10 
+						2x+2y = 20 
+
+						Solución: 
+
+							Las dos rectas están superpuestas, es la misma. Nos da infinitas soluciones.  
+
+							La segunda ecuación es la primera multiplicada por dos. 
+
+							0 = 0 
+
+						Clasificación: 
+
+							1/2 = 1/2 
+							S.C.I
+
+
+				3. Sistema incompatible (S.I)
+
+					No es coherente (incompatible), no tiene solución. El sistema está mal definido. 
+
+						3x+y = -2
+						6x+2y = 7 
+
+					En las dos ecuaciones tenemos coeficientes iguales en las variables, pero diferente termino independiente. 
+
+						3 y 6; 1 y 2 -2 y 7 
+
+					Las rectas tienen la misma dirección o inclinación o pendiente.  
+
+					No tendrán un punto de corte.   
+
+					Coeficientes y termino independiente son distintos.  
+
+						a/a' = b/b' =/= c/c'
+						3/6 = 1/2 =/= -2/7
+
+					No tienen solución, sus rectas tienen la misma pendiente. 
+
+						3/6 = 1/2 = -2/7 
+
+					Sus ecuaciones representan rectas paralelas. No tienen solución. 
+
+					Las dos ecuaciones se contradicen con la información.
+
+					Ej: Las edades de dos personas suman 10 años. El doble de una más el doble de la otra suman 12 años. 
+
+						x+y = 10 
+						2x+2y = 12 
+
+						Solución: 
+
+							Las dos rectas están paralelas. No tiene solución.  
+
+							0 = -8 
+
+						Clasificación: 
+
+							1/2 = 1/2 =/= 10/12
+							S.I
+
+
+		
 			Gauss-Jordan:
 
 
@@ -3852,7 +4032,7 @@
 			objeto2: y 
 			frase/datos: x+y = 10 
 
-			Las frases o datos se combinan con los objetos/variables. 
+			Las frases nos sirven de datos que se combinan con los objetos/variables. 
 
 
 		Cada problema va a ser diferente.
@@ -4624,7 +4804,6 @@
 			x = log 5 (2/3) -> x = log 2/3 / log 5
 			x = log 2 - log 3 / log 5
 
-
 			
 		Problemas: 
 
@@ -4849,7 +5028,295 @@
 			objeto2: y 
 			frase/datos: x+y = 10 
 
-		Vemos como las frases o datos se combinan con los objetos/variables. 
+			Vemos como las frases nos sirven de datos que se combinan con los objetos/variables.
+
+			Ejemplos: 
+
+				1. Suma, resta o diferencia, producto entre variables: 
+
+					Suma de edades: 
+
+						x+y = 10 
+
+					Diferencia de dos: 
+
+						x-y = 2
+					
+					El triple del mayor menos el doble del menor es 15. Halla dichos números: 
+
+						3x-2y = 15
+
+
+				2. Una variable igual a la otra: 
+
+					doble que la otra: 
+
+						x = 2y 
+
+					La entrada a la piscina cuesta $1,5 menos que la del cine: 
+
+						y = x-1,5 
+
+
+				3. Números consecutivos
+
+					tres números consecutivos que sumen 45. 
+
+					primer número: x
+
+					segundo número: x+1
+
+					tercer número:  x+2
+
+
+				4. Partes, restos: 
+
+					El total de algo es está dividido en 3 partes. 
+
+					Si sumamos dos:
+
+						1/3x + 1/3x = 2/3x
+
+					nos queda: 
+
+						1/3x
+
+
+				5. Incrementos, decrementos, paso del tiempo: 
+
+					Pueden afectar a las dos variables. 
+
+					Edad hace 7 años: -7
+
+						Pers1: x-7
+						Pers2: y-7  
+
+					Edad dentro de 10 años: +10 
+
+						Pers1: x+10
+						Pers2: y+10 
+
+					Hace 1 año la edad de un padre era el triple que la de su hijo:
+
+						hijo: y-1
+						padre: x-1 = 3(y-1) 
+
+
+				6. Valores, cantidades, totales: 
+
+					Dos bocados y un refresco son $7 
+
+						2x+y = 7 
+
+					Hay 7 monedas que hacen un total de $11. ¿Cuántas hay de $1 y de $2?
+
+						Cantidad de $1: x 
+						Cantidad de $2: y 
+
+						Valor de cada una: 1x, 2y 
+
+						7 monedas: x+y = 7 
+
+						Suman 11: x+2y = 11
+					
+					Se haambiado 32 neumáticos en 12 vehículos. ¿Cuántos eran de coches y motos. 
+
+						Coches: x 
+						Motos: y 
+
+						Total coches y motos: 12 
+
+						x+y = 12 
+
+						Total neumáticos: 32 
+
+						Neumáticos coches y motos: 4 y 2 
+
+						4x+2y = 32 
+
+
+				7. Porcentaje, tiempo, interes
+
+					decimal a fracción: el numerados es el numero entero y el denominador es 1 seguido de cifras despues de la coma. 
+
+					fracción a decimal: Dividiendo.
+					cuando no es entero, se baja un cero, se pone coma y el resto es el decimal; hasta que de cero. 
+					Si se repite es periodico.
+					Si no termina en resto 0, tiene decimales infinitos, hasta que se repite el número despues de la coma.
+
+					2,3 = 23/10 
+
+					9/4 = 2,2 
+
+						9  |4 
+						10  2,25
+						 20 
+						  0 
+
+					110/3 = 36,6'
+
+						110  |3 
+						 20   36,66...
+						  20 
+						   2
+
+					2/5 = 0,4 
+
+						20 	|5 
+						 0   0,4 
+
+					13/7 = 1,85714' 
+
+						13 	|7 
+						 60  1,8571485...
+					  	  40 
+					   	   50 
+					        10 
+					         30 
+					          20 
+					           60 
+					            40 
+					             5 
+
+					Aplicando descuento del 10% en pantalón y en camisa del 15% son 52,8: 
+
+						10%->10/100: 0,1 
+
+						0,9x+0,85y = 52,8 
+
+					Descuento del 20% en 6 lamparas y del 40% en 5 cuadros, son $229: 
+
+						6*0,80x + 5*0,60y = 228
+
+
+					Reproducción: 2 (base/cantidad) cada 1h (tiempo)
+
+					1 hora: 800*2
+
+					2 horas: 800*2*2 
+
+					3 horas: 800*2*2*2 
+					...
+
+					Número de amebas en 10 horas: 
+
+					N = 800*2^t
+
+					N(10) = 800 * 2^(10)
+
+					N(10) = 819.200 
+
+						 
+					Precio de un auto: 24000 
+
+					devaluación: 10%*año (tiempo) 
+
+					año 1: 24.000*90%
+
+					año 2: 24.000*90%*90%
+
+					año 3: 24.000*90%*90%*90%
+					...
+
+					P = 24.000*0,9^t 
+
+					P(12) = 24.000*0,9^12 
+
+					p(12) = 6.788,31
+
+
+					Fórmula de interés compuesto: 
+
+						C = C(0) (1 + r/100)^t
+
+						C: capital final 
+
+						C(0): capital inicial 
+
+						r: redito/interes
+
+						t: tiempo/periodos de capitalización  
+
+					44.100 = 40.000 (1 + 5,5/100)^t
+
+					t = 1,822 (años) 
+
+
+				8. Proporcionalidad: 
+
+					Razón:
+
+						Cociente entre dos numeros o cantidades o cosas comparables y/o relacionadas.
+
+						herramientas: 16
+						trabajadores: 8
+
+						Ej: 8/16 -> 1/2 (simplificado)
+
+						16/8 = 2
+
+						Comparamos el numerador contra un denominador, se lee la cantidad que constrasta uno contra el otro.
+
+						"los trabajadores son la mitad que las herramientas"
+
+						"Las herramientas son el doble que los trabajadores"
+
+
+					Proporción:
+
+						Igualdad entre dos razones.
+
+						Su cociente se mantiene constante. 
+
+						razón 1: empleados/lapiceras
+
+						razón 2: debe ser equivalente.
+
+						1/4 = 2/8 
+
+						"Si cada 1 empleado hay 4 lapiceras, cada 2 empleados habrá 8 lapiceras"
+
+						a/b = c/d
+
+						a*d = b*c 
+
+
+				45.000 espectadores, por cada 2 aficionados del equipo visitante hay 7 aficionados del equipo local. 
+
+					Proporcionalidad: 
+
+					locales/visitantes: x/y
+					espectadores: 45.000 = 2/7 
+
+					Total: x+y = 45.000
+
+					De cada equipo: x/y = 2/7 
+
+
+				9. Formar Cifras
+
+					Ej20: Un número está compuesto por dos cifras, que suman 6 unidades. Si cambiamos las dos cifras de orden, el número aumenta en 18 unidades. ¿De qué número se trata? 
+
+						Cifra1: x 
+						Cifra2: y 
+
+						Total: x+y = 6  
+
+						Un número que si cambio las cifras de orden aumenta en 18:
+
+							47 -> 74
+							74-47 = 27
+							27 no es 18 unidades mayor.
+
+						47 o 74, no tienen el mismo peso. 47 = 40+7 (x,y). 74 = 70+4 (x,y). Uno es decena (x) y otro unidad (y)
+
+							10x+y, 10y+x 
+
+						Ahora buscamos que cambiarlos de orden sean 18 unidades mayor. 
+
+							(10y+x)-(10x+y) = 18 
+
+
 
 
 			
@@ -5383,8 +5850,210 @@
 				2. 43-2*15 = 13
 
 
+		Ej16: Un pantalón y una camisa cuestan $60, pero he pagado $52,8 porque han hecho un descuento del 10% en el pantalón y en la camisa del 15%. ¿Cuánto ha costado cada prenda? 
+
+			Pantalón: x
+			Camisa: y 
+
+			Pantalón y camisa son 60: 
+
+				x+y = 60 
+
+			Aplicando descuento del 10% en pantalón y camisa del 15% son 52,8: 
+
+				0,9x+0,85y = 52,8 
+
+			Sistema: 
+
+				1. x+y = 60  f1*(-0,9)
+
+				2. 0,9x+0,85y = 52,8
+
+					-0.9x-0,9y = -54 
+					0,9x+0,85y = 52,8 
+					-0,05y = -1,2 
+					y = 24 
+
+					x+24 = 60 
+					x = 36 
+
+			Verificación: 
+
+				1. 36+24 = 60 
+				2. 0,9*36+0,85*24 = 52,8
 
 
+		Ej17: En la compra de 6 lámparas y 5 cuadros iguales se pagan $310. Si en el precio de las lámparas se realiza un 20% de descuento y en los cuadros un 40%, se pagan $228. ¿Cuál es el precio de las lámparas y el de los cuadros? 
+
+			Lámparas: x
+			cuadrós: y 
+
+			6 lámparas y 5 cuadros son $310: 
+
+				6x + 5y = 310 
+
+			Con descuento del 20% en lamparas y del 40% en cuadros, $229: 
+
+				6*0,80x + 5*0,60y = 228 
+
+			Sistema: 
+
+				1. 6x+5y = 310  f1*(-3)
+
+				2. 6*0,80x + 5*0,60y = 228
+					4,8x+3y = 228  f2*(5)
+
+					-18x+15y = -930
+					24x+15y =  1140 
+					6x = 210 
+					x = 35 
+
+					6*35+5y = 310 
+					210+5y = 310 
+					5y = 100 
+					y = 20 
+
+			Verificación: 
+
+				1. 6*35+5*20 = 310
+
+				2. 6*0,80*35 + 5*0,60*20 = 228 
+
+
+		Ej18: Hallar dos números cuya suma es 72 y que sean proporcionales a 5 y 3. 
+
+			Proporción: cociente se mantiene constante. 
+
+			Num1: x 
+			Num2: y 
+
+			Total: x+y = 72 
+
+			Proporción: x/y = 5/3 
+
+			Sistema: 
+
+				1. x+y = 72  f1*(-3)
+
+				2. x/y = 5/3 
+					3(x)/y*3 = y(5)/3*y
+					3x = 5y 
+					3x-5y = 0 
+
+					-3x-3y = -216 
+					3x-5y = 0 
+					-8y = -216 
+					y = 27 
+
+					x+27 = 72 
+					x = 45
+
+			Verificación: 
+
+				1. 45+27 = 72
+				2. 45/27 = 5/3 
+
+
+
+		Ej18: Reparte $55 proporcionalmente a 2 y 3. 
+
+			Total: x+y = 55 
+
+			Proporción: x/y = 2/3 
+
+			Sistema: 
+
+				1. x+y = 55  f1*(2)
+
+				2. x/y = 2/3 
+					3(x)/y*3 = y(2)/3*y
+					3x = 2y
+					3x-2y = 0 
+
+					2x+2y = 110 
+					3x-2y = 0 
+					5x = 110 
+					x = 22
+
+					22+y = 55 
+					y = 33 
+
+			Verificación: 
+
+				1. 22+33 = 55 
+				2. 22/33 = 2/3 
+
+
+		Ej19: En un estadio de fútbol con 45.000 espectadores, por cada 2 aficionados del equipo visitante hay 7 aficionados del equipo local. ¿Cuántos aficionados hay de cada equipo? 
+
+			Aficionados 
+
+				locales: x 
+				visitantes: y 
+
+			Total: x+y = 45.000
+
+			Proporcionalidad: 
+
+				locales/visitantes: x/y
+				espectadores: 45.000 = 2/7 
+
+			De cada equipo: x/y = 2/7 
+
+			Sistema: 
+
+				1. x+y = 45.000
+				2. x/y = 2/7
+
+		Ej20: Un número está compuesto por dos cifras, que suman 6 unidades. Si cambiamos las dos cifras de orden, el número aumenta en 18 unidades. ¿De qué número se trata? 
+
+			Cifra1: x 
+			Cifra2: y 
+
+			Total: x+y = 6  
+
+			Un número que si cambio las cifras de orden aumenta en 18:
+
+				ej: 47 -> 74
+					74-47 = 27
+					27 no es 18 unidades mayor.
+
+				Si pensamos una ecuación para la operación de diferencia: 
+
+					yx-xy = 18  
+					7*4-4*7 
+
+				Está mal dado que se multiplican. Pero se trata de formar un número como 47, 74. 
+
+				47 o 74, no tienen el mismo peso. 47 = 40+7 (x,y). 74 = 70+4 (x,y). Uno es decena (x) y otro unidad (y)
+
+					10x+y, 10y+x 
+
+				Ahora buscamos que cambiarlos de orden sean 18 unidades mayor. 
+
+					(10y+x)-(10x+y) = 18 
+
+			Sistema: 
+
+				1. x+y = 6  f1*(9)
+
+				2. (10y+x)-(10x+y) = 18
+					10y+x-10x-y = 18 
+					9y-9x = 18 
+
+					9x+9y = 54 
+					-9x+9y = 18 
+
+					18y = 72 
+					y = 4 
+
+					x+4 = 6 
+					x = 2 
+
+			Verificación: 
+
+				1. 2+4 = 6 
+				2. 9*4-9*2 = 18
 
 
 
