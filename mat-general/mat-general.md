@@ -2,7 +2,14 @@
 	
 	Son un conjunto de herramientas como cualquier otra de la vida real. Una suma o resta, una ecuación, una derivada o una integral, se usan en determinadas situaciones. 
 
-	Formalmente es una ciencia que se ocupa del estudio de los números, las estructuras, las relaciones y las propiedades abstractas de los objetos y los sistemas. 
+	Son creadas mediante la abstracción, tomando el objeto de la vida real y llevarlo al mundo de las ideas o conceptos; quitandoles su esencia o idea general del objeto para transformarla en fórmulas, principios, propiedades o definiciones.  
+
+	La tecnica consiste en tomar un problema o caso individual con variables determinadas y llevarlo a un caso general para crear una fórmula que acepte cualquier variable.
+
+	Usamos símbolos (números, letras) para referirnos de manera abstracta a los objetos reales. Las generalizaciones o fórmulas deben ser intuitivas, usando letras que se ajusten a lo que haga referencia. 
+
+
+	Formalmente, la matemática es una ciencia que se ocupa del estudio de los números, las estructuras, las relaciones y las propiedades abstractas de los objetos y los sistemas. 
 
 	Ello, se utiliza para describir y entender las leyes que rigen el universo, resolver problemas en una amplia variedad de campos, como la ciencia, la ingeniería, la tecnología, la economía, la medicina, etc. 
 
@@ -3737,8 +3744,277 @@
 
 
 || MATRICES 
+	
+	Es un conjunto de números agrupados en filas y columnas. 
+
+		1 5 -2 3
+		0 4 8  1 
+		1 -6 0 7
+
+	La idea se basa en representar y manipular datos organizados en filas y columnas. 
+
+	Dimensión: 
+
+		n°fila*n°columna
+
+			3*4 
+
+	Elementos: 
+
+		Si la matriz se llamara "A" es: 
+
+			1 5 -2 3
+			0 4 8  1 
+			1 -6 0 7
+
+		El elemento de la fila y columna 1, se llamará "a": 
+
+			a11 = 1 
+			a12 = 5 
+			a21 = 0 
+			a22 = 4 
 
 
+	Tipos de matrices: 
+
+		Según su forma: 
+			
+			Fila: 
+
+				Solo tiene una fila.
+
+				(a11 a12 a13)
+
+				(3 2 1 ) 
+
+			Columna: 
+
+				Solo tiene una columna. 
+
+				a11 	1  
+				a21     2 
+				a31     3 
+
+			Cuadrada: 
+
+				Tiene el mismo número de filas y columnas. 
+ 			
+ 				a11 a12 a13  	2 3 5 
+ 				a21 a22 a23  	4 7 -9 
+ 				a31 a32 a33 	1 8 7 
+
+ 				Tienen una diagonal principal, va de la punta izquierda de arriba hacia derecha de abajo (\). La diagonal secundaria que es la opuesta (/). 
+
+ 		Según sus elementos: 
+
+ 			Diagonal: 
+
+ 				Solo tienen números en la diagonal principal, el resto son ceros. 
+
+ 				a11 0 0 	2 0 0 
+ 				0 a22 0  	0 7 0 
+ 				0 0 a33 	0 0 7 
+ 				
+ 				Casos particulares: 
+
+ 					matriz escalar: 
+
+ 						Los números de la diagonal principal son iguales. 
+
+ 						2 0 0 
+ 						0 2 0 
+ 						0 0 2
+
+ 						Si multiplicamos una matriz cualquiera por una escalar es lo mismo que multiplicar cada elemento por un número (multiplicación escalar)
+
+ 					Matriz identidad: 
+
+ 						Los números de la diagonal principal son unos. 
+
+ 						1 0 0 
+ 						0 1 0 
+ 						0 0 1
+
+ 						Si multiplicamos una matriz cualquiera por una identidad es lo mismo que multiplicar cada elemento por uno. Obtenemos la misma matriz (en multiplicación). 
+
+
+ 			Triangular: 
+
+ 				Superior: 
+
+ 					Debajo de la diagonal principal hay ceros. 
+
+ 					2 4 5 	
+ 					0 3 8 
+ 					0 0 9
+
+ 				Inferior: 
+
+ 					Arriba de la diagonal principal hay ceros.
+
+ 					1 0 0  
+ 					3 5 0 
+ 					6 7 2 
+
+
+ 			Traspuesta: 
+
+ 				Se intercambian las filas por las columnas. 
+
+ 				2 4 5 t'
+ 				1 3 8 
+ 				7 6 9
+
+ 				2 1 7
+ 				4 3 6
+ 				5 8 9  
+
+
+ 	Suma y resta de matrices: 
+ 		
+ 		Se opera cada elemento con el que ocupa la misma posición en la otra matriz. 
+
+ 		Solo cuando tienen la mima dimensión (fxc), la matriz resultante tendrá la misma dimensión. 
+
+
+ 	Producto de un escalar por una matriz: 	
+
+ 		Cada elemento se multiplica por el escalar. 
+
+
+ 	Multipicación de matrices. 
+
+ 		Condiciones: 
+
+ 			El número de columnas de la primera matriz debe ser igual al número de fila de la segunda matriz. 
+
+ 				dimA = fxc
+ 				dimB = f'x c' 
+ 				A*B <-> c = f'
+
+ 			La matriz resultante tendrá la dimensión según el número de fila de la primera matriz y el número de columna de la segunda matriz. 
+
+ 				dimR = fxc' 
+
+ 		Operación: 	
+
+ 			Multiplicamos elemento a elemento (va a ir sumandose), cada fila de la primera matriz por cada columna de la segunda matriz. 
+
+ 				A*B = af*bc' 
+
+ 			Cada multiplicación de fila por columna, dará un elemento para la matriz resultante. 
+
+ 				aR = af*bc'
+
+ 		Propiedades: 
+
+ 			No es conmutativa, no se cumple la condicion: A*B <-> c = f'.
+
+ 			A*B =/= B*A 
+
+
+ 	Determinantes: 
+
+ 		Solo lo podemos calcular en matrices cuadradas. 
+
+ 		2x2: 
+
+ 			Regla de Sarrus:
+
+ 				Multiplicamos los elementos de la diagonal principal (\) y los restamos los de la secundaria (/).
+
+ 				A =  1 3  
+ 					-2 5 
+
+ 				deterA =  1*5 - 3*(-2) = 5+6 = 11 
+
+ 		3x3: 
+
+ 			Sarrus: 
+
+ 				Tenemos que reescribir la matriz, agregandole la primera y segunda fila. 
+
+ 				Asi podemos multiplicar tres diagonales principales, restandolas con tres secundarias. 
+
+
+		Propiedades de los determinantes:  	
+
+			Se usan para aplicarlos en problemas y resolver rapidamente. Funcionan inversamente.  
+
+			1. |A*B| = |A|*|B|
+
+				Evitamos multiplicar las matrices 
+
+			2. |A^t| = |A| 
+
+				El determinante de la traspuesta no cambia el determinante de la matriz normal. 
+
+				Evitamos hacer la traspuesta y despues su determinante. 
+
+			3. |A^-1| = 1/|A| 
+
+				Solo calculamos el determinante e invertimos el resultado. Así no calculamos la inversa y después su determinante.
+
+
+			Ej: |A*B*A^-1*B^t|
+
+				Aplicamos la primera propiedad: 
+
+					|A|*|B|*|A^-1|*|B^t| 
+
+				Aplicando la tercera y la segunda: 
+
+					|A|*|B|*1/|A|*|B| 
+
+				Ahora resolvemos cada uno, hasta podemos simplificar |A|*1/|A|
+
+					|B|*|B| 
+
+
+			4. Si sacamos factor común a alguna línea, multiplicará al determinante.
+					
+				|1 5 3|
+				 4 2 6 
+			     7 8 9 
+
+				3*|1 5 1|
+				   4 2 1 
+				   7 8 2 
+
+
+			5. Al intercambiar dos líneas consecutivas, el determinante cambia de signo. 
+
+				| 2 6 | = 30 
+				 -4 3 
+
+				f1<->f2 
+
+				|-4 3 | = -30 
+				  2 6 
+
+				Tiene que ser consecutiva: 
+
+				|1  0 -3| = 80 
+				 9  6  1 
+				 0  2  4 
+
+				 f3<->f1 no cambiará a -80. 
+
+
+			6. Si a una línea le sumamos o restamos una combinación líneal de otras líneas, el determinante no varía. 
+
+				Es lo que hace le metodo de Gauss. Tomamos una fila y la sumamos/restamos con otras, en las necesitamos ceros.  
+
+
+			Determinante 0: 
+
+				Muestra que hay un problema en alguna línea.
+
+				Puede ser que sea igual que otra o proporcional, una combinación de otras. 
+
+				Nos señala que una ecuación no es valida, dado que aporta información repetitiva. 
+
+				1. 
 
 
 
