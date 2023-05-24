@@ -3936,6 +3936,18 @@
 
  				Asi podemos multiplicar tres diagonales principales, restandolas con tres secundarias. 
 
+ 		4x4 o mayor: 
+
+ 			Metodos: 
+ 				
+ 				1. Tomamos una línea de la matriz y hacemos el adjunto de cada elemento, después lo multiplicamos por este elemento. 
+
+ 				2. Tomamos una línea facil (0,1) y por combinación lineal la hacemos 0.  Despues hacemos su adjunto y lo multiplicamos por el elemento. 
+
+ 				3. Hacemos un triángulo de ceros por eliminación gaussiana: marcamos una escalera debajo de la diagonal principal y operamos contra la línea de arriba. 
+
+ 				Al final multiplicamos la diagonal principal.  
+
 
 		Propiedades de los determinantes:  	
 
@@ -4012,15 +4024,843 @@
 
 				Puede ser que sea igual que otra o proporcional, una combinación de otras. 
 
-				Nos señala que una ecuación no es valida, dado que aporta información repetitiva. 
+				Nos señala que una ecuación no es valida, dado que aporta información repetitiva (0=0), o contradice a la otra (0=-1) por ejemplo. 
 
-				1. 
+				1. Si hay una línea de ceros, va a dar 0. 
+
+				2. Si hay dos líneas paralelas iguales, dará 0. 
+
+				3. Si hay dos líneas paralelas proporcionales (doble, triple, factor común, etc), va a ser 0. 
+
+				4. Si una de las líneas es combinación lineal, ej: 
+
+					f2 = -2f1-f2. 
+					f3 = f1+f2 
+
+
+	Adjunto de un elemento: 
+
+		Es el determinante entre los elementos que quedan, despues de suprimir suprimir su fila y columna. 
+
+		Si la suma entre el número de fila y columna del elemento es impar, cambiamos el signo del resultado. 
+
+
+	Matriz adjunta: 
+
+		Está formada por el adjunto de todos los elementos de la matriz original. 
+
+
+	Inversa de una matriz: 
+
+		En matrices, la inversa reemplaza a la división. 
+
+			A*X = B 
+			X = A^-1*B 
+
+		Como aparece a la izquierda de la matriz X, debe aparecen al otro lado en el mismo lugar: 
+
+			Multiplicamos por la inversa a la matriz A por la izquierda:
+
+				A*X = B
+				A^-1*A*X = A^-1* B
+				I*X = A^-1* B
+				X = A^-1* B 
+
+			Por la derecha: 
+				
+				X*A = B 
+				X*A*A^-1 = B*A^-1 
+				X*I = B*A^-1 
+				X = B*A^-1
+
+
+		Propiedades de la matriz inversa: 
+
+			Identidad: 
+
+				A*A^-1 = I 
+				A^-1*A = I  
+
+			Inversa de inversa: 
+
+				(A^-1)^-1 = A 
+
+			Inversa de dos matrices multiplicandose: 
+
+				(A*B)^-1 = B^-1*A^-1 
+
+				Nos cambia el orden de los factores
+
+			Inversa de una matriz traspuesta: 
+
+				(A^t)^-1 = (A^-1)t 
+
+				No importa el orden de operación. 
+
+
+		Condición: 
+
+			Determinante =/= 0
+
+		A^-1 = adj(A)^t/|A| 
+
+			1° |A|
+			2° Matriz adjA
+			3° Traspuesta de adj(A)
+			4° Dividir cada elemento
+
+
+		Inversa por Gauss-Jordan: 
+
+			1° Ampliamos la matriz original con la matriz identidad. 
+			
+			2° Convertimos la matriz original en identidad, combinando lineas.
+
+				Para lograr el 1 dividimos toda la fila. 
+
+				Para lograr el 0 sumamos/restamos. 
+
+			3° La matriz ampliada va cambiando cuando operamos todas las líneas. 
+
+			4° Cuando completamos la matriz identidad izquierda, la matriz ampliada será el resultado de la  inversa.  
 
 
 
 || FUNCIONES
 
 	Es una expresión algebraica con dos variables o incognitas distintas. 
+
+			f(x)
+		A -------> B
+		1	(2x)   2
+
+	Una función es una relación entre dos variable, conjunto u objeto; cada valor de una de ellas (variable independiente), le corresponde un único valor de la otra (variable dependiente).
+
+	La relación que establecemos entre las dos, puede ser una fórmula o algo que transforme a la otra parte, variable u objeto.
+
+	A la variable independiente le damos el valor que queremos, pero no así a la variable dependiente.
+
+	El valor de la variable dependiente sale automaticamente en el resultado a través de la formula/operaciones
+
+	Por cada valor que le asignamos a la variable independiente, automaticamente aparece otro valor para la variable dependiente, transformada por la relación.
+
+	Ejemplos: 
+
+		Área de un circulo: pi * radio^2
+
+			Nos relaciona el radio de un circulo con su area. Una vez que decidimos cual es el radio, nos sale automaticamente el area completa.
+
+
+		Movimiento rectilínio uniformemente acelerado: 
+
+			y(t) = y0 + v0 * t + 1/2 * g * t^2
+
+			Cuando tiramos un objeto, se ve influenciado por la gravedad que lo devuelve hacia abajo. 
+
+			La gravedad es una acelaracion, entonces, podemos saber la altura del objeto en funcion del tiempo. 
+
+			Ej: si tiramos la pelota hacia arriba nos dice donde esta al cabo de x segundos, ½, 1 seg, etc.
+
+
+	Entre dos conjuntos:
+
+		Una función es una correspondencia, a cada elemento del primer conjunto (dominio) le corresponde un único elemento del segundo (rango o imagen).
+
+
+		No es función:
+
+			Si un elemento del primer conjunto, está relacionado con dós elementos del segundo conunto.
+
+
+	Notación de una función:
+
+		Generalmente aparece la "y" como variable dependiente, la "x" toma el lugar de la variable independiente a la que le pasamos valores. 
+
+		También podemos reemplazar en x o y, coordenadas de un punto.
+
+		y = mx | y = mx + b
+
+
+	Solución de un función:
+
+		Son las raíces de los polinomios o funciones, su cantidad de raíces/soluciones depende del grado del mismo.
+
+
+	Identificar una función: 
+
+		Trazamos una línea vertical al gráfico, sobre el eje x, si lo corta en un punto es un función; si lo corta en más, no es una función.
+
+	
+	Gráfico:
+
+		Podemos gráficarlas por tabla o encontrando cada parte/valor que commpone del gráfico/función mediante fórmulas o cálculos.
+
+		Se necesitan los puntos de corte eje x (soluciones/raíces/intersección/punto-valor0), del eje y (b), la pendiente (m, inclinación o verticalidad de la recta/función), vértice (coordenadas x, y), etc.
+
+
+	Dominio:
+
+		Elementos del conjunto de partida.
+
+		Según las funciones:
+
+			Polinómicas: 
+
+				todos los reales (R)
+
+
+			Racionales: 
+
+				calcular =/= 0 para el denominador.
+
+
+			Radicales:
+
+			 	/> (indice par): a/[x] > 0 // [a/b] /> 0
+
+			 	R (indice impar): a/3[x] =/= 0
+
+
+			Exponenciales: 
+
+				R
+
+
+	Rango:
+
+		Son solo los elementos del conjunto de llegada que tienen relación con elementos del conjunto de partida.
+
+		No siempre son todos los reales, varía con la función.
+
+
+	Codominio:
+
+		Todos los elementos del conjunto de llegada. Son todos los reales.
+
+
+	Conjunto de 0:
+
+		Raíces/intersecciones eje x/soluciones de la función.
+
+		Significa que en ese punto la función tiene un valor de 0.
+
+
+	Conjunto positividad:
+
+		Gráfico por encima del eje x.
+
+
+	Conjunto negatividad:
+
+		Gráfico por debajo del eje x.
+
+
+	Tipos de funciones:
+
+		Inyectiva:
+
+			Cada valor del conjunto A (df) tiene un valor distinto en B.
+
+			Identificar:
+
+				Trazamos líneas horizontales para verificar que haya un solo punto de corte.
+
+
+		Sobreyectiva:
+
+			Participan todos los elementos del conjunto de llegada B (codominio (todos los Reales) = rango)
+
+			Identificar:
+
+				El gráfico debería ocupar todo el eje y.
+
+
+		Biyectiva:
+
+			Es inyectiva y sobreyectiva, cada valor en A tiene distinto en B y el codominio es igual al rango.
+
+			Identificar:
+
+				Línea horizontal con un corte y gráfico ocupa todo y.
+
+
+	Polinómicas:
+
+		Constante:
+
+			y = b 
+
+			Indica que la recta no tiene pendiente.
+
+			Solo marca situaciones de costos fijos, planos, invariables.
+
+			b o la función/recta completa corta al eje y.
+
+
+		Líneales: 
+
+			y = mx
+
+			Son proporcionalemente directas: 
+
+				Si le pasamos un numero positivo, sale otro positivo.
+
+				Si le asamos un numero negativo, sale otro negativo.
+
+			Además, si la variable independiente es 0, la variable dependiente tambien.
+
+			Podría ser situaciones de compra y pago.
+
+
+		Interpretación: 
+
+			Una ecuación líneal está formada por infinitos puntos (x,y) que forman una línea recta.
+
+				x+y = 10 
+
+			Estos infinitos puntos tienen valores en x e y que forman las infinitas soluciones. 
+
+				9+1 = 10 
+					8+2 = 10 
+					5+5 = 10 
+					11-1 = 10 
+					etc.
+
+			La ecuación nos dice que dos números sumarán 10.
+
+
+		Afines:
+
+			y = mx + b
+
+			El termino independiente no esta ligado a la variable x, no varía cuándo pasamos valores o cantidades.
+
+			Es la ordenada en el origen, no pasa por el punto 0,0.
+
+			Podría ser situaciones dónde empezamos con un costo fijo o tenemos un punto de partida.
+
+
+			Gráfico:
+
+				Se grafica el termino "b" (corte eje y), el punto de corte x, y la forma depende de la pendiente "m" (inclinacion de la recta)
+
+				m+: de izquierda a derecha hacia arriba (ascendente)
+
+				m-: izqueirda a derecha hacia abajo (descendente)
+				
+			Dominio: R
+
+			Rango: R
+
+			Formas:
+
+			Explícita: y = mx + b
+
+				Trasladar los terminos para hacerla implícita.
+
+			General/implícita: Ax + By + C = 0
+
+				Pasamos las variables a un mismo lado para hacerla segmentaria. 
+
+				Dejamos el termino independiente al otro lado y dividimos toda la ecuación por este.
+
+				Pasamos los coeficientes de las variables a dividir.
+
+			Canónica/segmentaria: x/a + y/b = 1
+
+			Ejemplo:
+
+				Se puede hacer función que tiene dos variables independientes que serian kilometros y minutos, en funciones de eso nos sale un coste.
+
+					C(k,m) = 2 + 0,5 * k + 0,4 * m
+
+
+		Cuadráticas:
+
+			y = ax^2 + bx + c
+
+			Tiene forma de parabola/sonrisa, son simetricas.
+
+			Tiene el punto mas bajo/alto de la funcion que es el vertice que esta en el centro del eje de simetria
+
+			las funciones parabolicas se ajustan trayectores/tiros/caidas parabolicas, a un un arco, etc.
+
+
+			Gráfico:
+
+				Vertice:
+
+					xv: -b/2a
+
+					yv: reemplazamos el valor numerico de xv en la función.
+
+				Forma: depende del signo del termino "a"
+
+					+a: u, dominio R; Rango [yv, inf)
+					-a: n, dominio R; Rango (-inf, yv]
+
+
+				Raíces o puntos de corte:
+
+					Resolvente: -b +- [(b^2)-4ac]/2a
+					
+					0
+
+					Reemplazando y resolviendo:
+
+					corte eje y, en la función x = 0.
+					corte eje x, en la funcion y = 0.
+
+
+				Traslación de la función:
+
+					Vertical:
+
+						y = x^2 + n
+
+							n, sube
+							-n, baja
+
+
+					Horizontal: 
+
+						y = (x + m)^2 
+ 					
+ 							m, izquierda
+ 							-m, derecha
+
+
+			General/implícita: y = ax + by + c
+
+				Para pasarla a factorizada, sacamos las raices con la fórmula resolvente. 
+
+				"a" es el número/factor que acompaña a la x en la general.
+
+
+			Factorizada: y = a (x - x1) (x - x2)
+
+				Para transformarla en canonica necesitamos las coordenadas del vertice.
+
+
+			Canonica: y = a (x - xv)^2 + yv
+
+				Para pasarla a polinomica, resolvemos el binomio que está elevado al cuadrado, distribuimos y sumamos/restamos el ultimo termino.
+
+
+			factor adicional:
+
+				Se Puede resolver por factorización, distribuyendo el factor, resolviendo el trinomio, factorizamos y simplificamos todo el termino para eliminar el termino adicional. Al final nos quedan las raíces.
+
+				ax^2 + bx + c = 0
+
+				3m^2 - 10m -8
+				3(3m^2 - 10m - 8)/3
+				(3m)^2 + 10(3m) + 24/3
+				(3m - 12) (3m + 2)/3 
+				3(m - 12) (m + 2)/3
+				(m - 4) (3m + 2)
+
+
+			Incompletas:
+
+				Sin termino independiente:
+
+					Sacamos factor común (x.x, 2x), igualamos a 0 para sacar las raíces.
+
+					x^2 + 2x = 0
+					x(x+2)
+					x = 0 y x+2 = 0 -> x=-2
+
+
+				Sin termino líneal:
+
+					Despejamos x, la raíz nos da las soluciones.
+
+					2x^2 - 8 = 0
+					x^2 = 8/2
+					x=[4]
+
+
+				Sin termino independiente y líneal:
+
+					Pasamos potencia como raíz	
+					x^2 = 0
+					x=[0]
+					x=0
+
+
+			De valor absoluto:
+
+				"a" tiene que ser positivo para eliminar el modulo para sacar las raíces.
+
+				|x| = a
+				x = a y x = -(a)
+
+				Vertice: 
+
+					xv: terminos del modulo igualado a 0 para despejar x y encontrar este valor.
+
+					yv: reemplazar valor de xv en la fx.
+
+				Gráfico fx:
+
+					+|x|, v
+
+					-|x|, ∧
+
+				Dominio: R
+
+				Rango: 
+
+					v, [yv, inf)
+					∧, (-inf, yv]
+
+
+	Ruffini: 
+
+		Se usa para encontrar las raíces de polinomios mayores de 3er grado.
+
+
+	Racionales:
+
+		y = k/x
+
+		Son proporcionalmente inversas, si una magnitud aumenta, la otra disminuye.
+
+		En proporcionalidad directa: dos magnitudes dividiéndose daban lo mismo.
+
+			a/b = c/d
+
+		Proporcionalidad inversa: dos magnitudes multiplicándose dan lo mismo, el producto de estas dos es constante, x*y = k
+
+			y = k/x
+
+		Ejemplo:
+
+			n°amigos 	$/amigo 	$regalo 
+			 	y 			x 			12
+
+			x*y = 12 -> y = 12/x
+
+			cuanto más amigos menos dinero pone cada uno, pero el producto siempre es constante
+
+			Si x es 1 (amigo), y es ($12) debe poner el total.
+
+			Si x es 3 (amigos), y es ($4) deben poner cada uno.
+
+			Si x es 12 (amigos), y es ($1) deben poner cada uno.
+
+
+		Fórmulas:
+
+			a+-c/x+b 
+
+				AV: x+b(deno) = 0
+
+				AH: c = 0
+
+
+			ax+b/cx+d
+
+				AV: cx+d = 0
+
+				AH: a/c
+
+
+		Forma del gráfico:
+
+			Lo determina "a", + (cuadrante 1 y 3); - (cuadrante 2 y 4).
+
+
+		Dominio: R - {AV}
+
+		Rango: R - {AH}
+
+
+		Traslaciones:
+
+			Vertical:
+
+				y = k/x + n (termino ind)
+
+					n, arriba
+					-n, abajo
+
+
+			Horizontal:
+
+				y = k/x+m 
+
+					m, izquierda
+
+					-m, derecha
+
+			Junto: y = k/x+m (+ n)
+
+
+		Polinomio entre polinomio:
+
+			y = P(x)/Q(x)
+
+			dividendo/divisor = cociente + resto / divisor:
+
+				9/2 = 4; 1(resto)
+
+				9/2 = 4 + 1/2
+
+			P(x)/Q(x) = C(x); R(x)
+
+			Entonces, P(x)/Q(x) = C(x) + R(x)/Q(x)
+
+			En la división polinomica, el resto lo deberiamos seguir dividiendo.
+
+			Cuando tengamos el resto, el cociente, podemos rescribir la función en una más fácil, de la forma:
+
+				y = k/x+m (+ n)
+
+			Es más fácil de graficar.
+
+
+	Radicales:
+
+		Crecen indefinidamente.
+
+		Cuadrada y cúbica:
+
+			3^[x], radicando /> 0
+
+
+			Dominio: [radicando />0, inf)
+
+
+			Rango: vemos el gráfico.
+
+
+		Cortes:
+
+		terminos fuera del radicando:
+
+		si es positivo suben la funcion, si es negativo, baja.
+
+
+		Traslación: 
+
+			Vertical: eje x
+
+				[x + m] + n
+
+					n, sube 
+					-n, baja
+
+
+			Horizontal:
+
+				[x + m] + n
+
+					m, izquierda 
+					-m, derecha
+
+		Valor absoluto:
+
+			[|x|]
+
+			Si le podemos dar valores negativos
+
+
+	Exponenciales:
+
+		Crecen rapidamente, siempre son positivas.
+
+		Punto clave (0,1).
+
+		a^x
+
+		"a" es la base, x es el exponente
+
+		Gráfico:
+
+			Tiene Asintota horizontal, se calcula con los terminos fuera del base y exponente.
+
+			+a: de izq a der (ascendente)
+			0< a <1, de izq a der (descendente)
+
+
+		Dominio: R 
+
+		Rango: gráfico en el eje y.
+
+
+	Logarítmicas:
+
+		log a X, "a" es base (sub); "x" es argumento
+
+		Puntos claves (1,0) y (b-base-,1)
+
+		Gráfico:
+
+			AV: argumento = 0
+
+			+a: ascendente desde la asintota, hacia la der
+
+			0< a <1: descendente desde asintota, hacia la der.
+
+
+		Dominio: [AV, inf)
+
+		Rango: R
+
+		Log en base fraccionaria:
+
+			log 1/4 X
+
+			Despejando x, tenemos una función exponencial; despejando y, tenemos una función logarítmica.
+
+				log a X --> a^y = X
+
+				log 1/4 X --> 1/4^y = X
+
+
+		Traslación: 
+
+			Vertical:
+
+				log a X + n
+
+					n, sube 
+					-n, baja
+
+
+			Horizontal:
+
+				log a (X+M)
+
+					M, izquierda
+					-M, derecha
+					
+
+	*Si el coeficiente o factor "a" es negativo se dibuja la función espejada.
+
+
+	Seno:
+
+		senx
+
+		Dominio: R
+
+
+		Rango: es el punto maximo y minimo.
+
+
+		Periodo (T): tramo que se repite.
+
+		Generalizando: 
+
+			Solo necesitamos la amplitud y el periodo.
+
+			Y = +-A Sen K X
+
+				A es la amplitud
+
+				K es cualquier número.
+
+				Periodo: 2pi/K o kx=2pi -> x=2pi/k
+
+					*simplificar
+
+				Otros valores:
+
+					Ubicamos:
+
+						mitad: *1/2 o dividir por 2/1
+						mitad de mitad: 3*mitad de mitad del periodo original
+
+		Ej: y = 2sen 4x
+
+			Amplitud: 2
+
+			Periodo: 2pi/4 -> pi/2
+
+			valores x:
+
+				pi/8, pi/4, 3pi/8, pi/2
+
+
+	Coseno:
+
+		Y = +-A Cos K X
+
+				A es la amplitud
+
+				K es cualquier número.
+
+				Periodo: 2pi/K o kx=2pi -> x=2pi/k
+
+					*simplificar
+
+				Otros valores:
+
+					Ubicamos:
+
+						mitad: *1/2 0 dividir por 2/1
+						mitad de mitad: 3*mitad de mitad del periodo original
+
+			Ej: 4cos 3x
+
+				Amplitud: 4
+
+				Periodo: 2pi/3
+
+				Valores: 1/6 pi, 1/3 pi, 1/2 pi, 2/3 pi
+
+					
+	Tangente:
+
+		360/0° = 2pi rad
+		45° = 1/4 pi rad
+		90° = 1/2 pi rad 
+		180° = pi rad 
+		270° = 3/2 pi rad
+
+		pendientes: 
+
+			m>0 (+): /
+			m<0 (-): \
+			m=0: ¬
+			m indefinida: |
+
+
+		Y = A tg (Bx + C)
+
+			A es amplitud
+
+			B es un número que representa la frecuencia que tiene un periodo: "numero cada pi"
+
+				T = pi/|B|
+
+			(bx + c) es la fase que tiene un inicio y final.
+
+				Bx + C = +pi/2 y Bx + C = -pi/2
+
+				*Para despejar x, forzamos denominador comun: multiplicamos denominador y numerador por un mismo número.
+
+		Ej: 2tg (3x - pi)
+
+			A: 2
+
+			B: 3 (cada pi)
+
+			T: pi/|3| -> pi/3 y -pi/3 = 1/3 pi
+
+			Fase: 
+
+				3x - pi = +pi/2 =
+
+					x = pi/2 = 1/2 pi
+
+				3x - pi = -pi/2 = 
+
+					x = pi/6 = 1/6 pi
+
 
 
 
