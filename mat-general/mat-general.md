@@ -281,13 +281,18 @@
 
 	División convencional: 
 
-		Si tomamos dos enteros, numerador y denominado y los dividimos, el resultado es un número racional o la cantidad de objetos/enteros usados/necesitados/tomados. 
+		Si tomamos dos enteros, numerador y denominado y los dividimos, el resultado es un número racional o la cantidad de objetos, enteros usados, necesitados o tomados. 
 
 		Debemos encontrar un número aparte (cociente) que, multiplicado por el denominador de como resultado el númerador. 
 
+		a/b = c 
 		8/2 = 4 
 
-			4*2 = 8 
+			2*4 = 8 
+			4 es el multiplo de 2 que da 8. 
+			
+			a = b*c 
+			Tambien, 8 es multiplo de 2 dado que está 4 veces contenido.  
 
 		8 |2
 		0  4 
@@ -306,11 +311,6 @@
 		30  0,75
 		 20 
 		  0
-
-
-	División por ecuación: 
-
-		2/4 = x
 
 
 	Representación de una fracción en la recta real: 
@@ -599,7 +599,7 @@
 
 		a = b · c 
 
-		a es multiplo de b y c es la cantidad de veces que el número b está contenido en el multiplo a. 
+		a es multiplo de b, c es la cantidad de veces que el número b está contenido en el multiplo a. 
 
 		14 = 2 · 7 
 
@@ -853,6 +853,10 @@
 
 			herramientas: 16
 			trabajadores: 8
+
+			"16 es a 8"
+
+			Se ve cuántas veces contiene una a la otra.
 
 			Ej: 8/16 -> 1/2 (simplificado)
 
@@ -4863,17 +4867,372 @@
 
 
 
+|| LÍMITES
+
+	El límite de una funcion f(x) en un punto x = a, es el valor L al tiende la función cuando x se aproxima a "a". 
+
+		lim f(x), x->a = L 
+
+
+	Si tenemos una funcion y un punto (coordenadas x,y)
+
+		horizontal/dirección: x 
+		vertical/altura: y
+
+	Necesitamos que el punto este en la función: 
+
+		coordenada: (x, f(x))
+
+			x y reemplazamos x en la fx. 
+
+			Así podemos encontrar en qué punto está la función. 
+
+			Este punto nos dice hacia dónde va la función. 
+
+	Tomando la coordenada x para la función [(x, f(x))], la podemos despalzar izq y der hasta un valor llamado "a". 
+
+	Tambien se moverá la coordenada f(x) en la altura, logicamente; hasta encontrar el límite.  
+
+	El valor L, es el límite de la función: 
+
+		f(x) tiende a L cuando x se aproxima a "a". 
+
+			lim f(x), x->a = L 
+
+	Ej: lim f(x) = 6 
+		x->1 
+
+		"Cuando se vaya desplazando hacia 1, el limite de la coordenada f(x), es 6."
+
+		Formalmente, "El límite de f(x) cuando x se ha ido acercando a 1, es 6."
+
+		El límite se da en el punto (1,6). 
+
+
+	Calcular el límite de una función: 
+
+		f(x) = x^2-6x+11 
+
+		Cuando x tiende a uno: x->1 
+
+		lim f(x) = x^2-6x+11 
+		x->1 
+
+		Metodos: 
+
+			1. Tabla de valores: 
+
+				x que se aproximen a 1, reemplazamos en la fx, calculamos y nos dará un valor.
+				Podemos hacerlo por izq (->/-) o der (<-/+).  	
+
+			2. Reemplazar 1 en la fx: 		
+
+				lim f(x) = f(a)
+				x->a
+ 
+
+		Indeterminaciones: 	
+
+			Al reemplazar "a" en la función, podemos encontrar indeterminaciones, que no son un número, es un especie de contradicción entre números por lo que no podemos saber su resultado.  
+
+			Metodos: 
+
+				1. Tablas de valores: 
+
+					Cuando no nos da un número, tenemos que ir aproximandones al número por izq o derecha.  
+
+					lim f(x) = x^2-1/x-1 = 0/0
+					x->1 
+
+					izq: 
+						x = 0,8
+						f(0,8) = 1,8 
+
+						x = 0,9 
+						f(0,9) = 1,9 
+
+						x = 0,99 
+						f(0,99) = 1,99 
+
+					der: 
+
+						x = 1,2 
+						f(1,2) = 2,2 
+
+						x = 1,1
+						f(1,1) = 2,1 
+
+						x = 1,01 
+						f (1,01) = 2,01 
+
+
+					lim f(x) = x^2-1/x-1 = 2
+					x->1 
+
+
+				2. Resolverlas individualmente, mediante deferentes metodos que se aplican para cada una. 
+
+
+	Número dividido entre 0: k/0 
+
+		En una dividisión tenemos que encontrar un número aparte (cociente) que, multiplicado por el denominador de como resultado el númerador. 
+
+			a/b = c 
+			8/2 = 4 
+
+				2*4 = 8 
+				4 es el multiplo de 2 que da 8. 
+
+				a = b*c 
+				Tambien 8 es multiplo de 2 dado que lo contiene 4 veces.  
+
+			8 |2
+			0  4 
+
+		Esto nos da un problema al dividir por 0. 
+			8/0 = ?
+
+				0*? = 8 
+
+		No hay un número que multiplicado por cero de 8, o multiplo de 0 que de 8.
+
+		El resultado es indefinido. 
+
+		Un número racional representa un objeto o unidad que se dividió en n° partes (denominador) y se uso n° partes (númerador). 
+
+			En 1/8, usamos 1 parte de las 8 que disponemos. Es un fracción propia. 
+
+			En 8/0, no disponemos de partes para hacer uso.
+
+			10/5, usamos más partes de las que tenemos; 2 unidades de 5. Es una fracción impropia. 
+
+		Una división, fracción tambien puede interpretarse como una razón: dos cantidades relacionadas.
+
+			a/b, "a es a b". 
+
+				a es antecedente/numerador/dividendo
+
+				b es consecuente/denominador/divisor. 
+
+			Ej: en 10 litros de agua y 5 botellas. Entrarán 2 litros en cada botella.
+
+				10/5 = 2 
+
+			Si diminuimos el divisor, más botellas necesito. 
+
+				10/2 = 5 
+
+				10/1 = 10 
+
+				10/0,5 = 20 
+
+			Se hará más grande el resultado o cociente. 
+
+			Si dividimos por 0, no podemos calcular cuanto más grande será el cociente. 
+
+				10/0 = ?
+
+			No podemos dividirlos, pero si podemos calcular el límite de 10/x, y ver a cuanto se aproxima el resultado. 
+
+				lim 10/x 
+				x->0  
+
+			Pero no tenemos un límite para números grandes, el resultado de la división se acerca al infinito. 
+
+				lim 10/x = +-inf 
+				x->0 
+
+			Podemos calcularlo por izq o derecha (-+). 
+
+			Por derecha: 
+
+				x = 0,1 
+				f(0,1) = 100 
+
+				x = 0,01 
+				f(0,01) = 1000 
+
+				x = 0,001 
+				f(0,001) = 10000
+
+				El resultado es +inf. 
+
+					lim 10/x = +inf 
+					x->0  
+
+			Por izquierda: 
+
+				x = -0,1 
+				f(-0,1) = -100 
+
+				x = -0,01 
+				f(-0,01) = -1000 
+
+				x = -0,001
+				f(-0,001) = -10000 
+
+				El resultado es -inf 
+
+					lim 10/x = -inf 
+					x->0 
+
+		* Un límite que da 0 como resultado, es valido: 
+
+			lim 10/2+x 
+			x->-5 
+
+			10/2 - 5 = 5-5 = 0 
+
+		* Un límite que da 0/k como resultado, es valido. 
+
+			0/5 = 0 
+
+				5*0 = 0 
+				Existe un multiplo de 5 que de 0, y es 0. 
+
+			lim 3x-12
+			x->4
+
+			3*4-12/4+1 = 12-12/5 = 0/5 
+
+
+	Tipos de indeterminaciones: 
+
+		1.  k/0 = +-infinito
+
+			Dará valores cada vez más grandes o más pequeños. 
+
+			Si calculamos el límite de una función y el resultado da k/0, la función tiende a +-inf. 
+
+			Ahora debemos saber si tiende a - o - infinitos. Para eso hay diferentes metodos: 
+
+				1. Limites laterales: 
+
+					lim f(x) = 5/x-2 
+					x-> 2 
+
+					5/2-2 = 5/0 
+
+					Entonces, es +inf o -inf 
+					
+					No siempre el límite por derecha da +inf y el límite por izquierda da -inf. 
+
+					Depende de la función y del valor "a". 
+
+					izq: 
+
+						x = 1,99 
+						f(1,99) = -500 
+
+						x = 1,999
+						f(1,999) = -5000 
+
+						lim f(x) = 5/x-2 = -inf
+						x-> 2-
+
+					der: 
+
+						x = 2,01 
+						f(2,01) = 500 
+
+						x = 2,001 
+						f(2,001) = 5000 
+
+						lim f(x) = 5/x-2 = +inf 
+						x-> 2+
+
+
+				2.  
+
+
+
+
+		2.  0/0: 
+
+			Es lo que define la indeterminación. 
+
+			Contrasta dos resultados: 
+
+				0/k = 0 
+				k/0 = +-inf 
+
+			0/0 puede dar: 
+
+				0, un número (n°), o +-inf
+
+
+			Ej: lim 3x-6/x-2
+				x->2 
+
+				3*2-6/2-2 = 6-6/2-2 = 0/0 = ? 
+
+					0/0 = ? 
+
+						0*? = 0 
+
+						No podemos considerar algún multiplo de 0. 
+
+
+			Metodos: 	
+
+				Depende de la función: 
+
+				1. Factorizar numerador y denominador: 
+
+					Debemos verificar si hay: 
+
+					1. Factor común
+					2. Igualdades notables
+					3. Resolver la ecuación 
+
+					Aplicamos algunos de estos metodos, reemplazamos por x por el valor de "a". Si vuelve a dar 0/0, probamos otro metodo. 
+
+
+					Ej: factor comun
+
+
+					Ej: igualdad notable 1: 
+
+
+					Ej: igualdad notable 2: 
+
+
+					Ej: igualdad notable 3: 
+
+					
+
+
+				2. Racionalizando. 
+
+				3. 
+
+
+		3. inf/inf
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 || DERIVADAS
 
 
 
-
-
-
-
-
-|| LÍMITES
 
 
 
