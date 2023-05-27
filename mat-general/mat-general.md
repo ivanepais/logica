@@ -2200,7 +2200,7 @@
 
 			2. (a-b)^2 = a^2 - 2ab + b^2
 
-				igual a (a+b)*(a+b) 
+				igual a (a-b)*(a-b) 
 
 			
 			3. (a+b)*(a-b) = a^2 - b^2
@@ -3127,7 +3127,7 @@
 
 					(a-b)^2 = a^2 - 2ab + b^2
 
-						igual a (a+b)*(a+b) 
+						igual a (a-b)*(a-b) 
 			
 					(a+b)*(a-b) = a^2 - b^2
 
@@ -4869,10 +4869,16 @@
 
 || LÍMITES
 
+	Determinan las tendencias de las cosas en matemáticas.
+
+	Describen el comportamiento de una función a medida que se acerca a cierto valor, dado que las funciones son infinitas. 
+
+	Indican la tendencia a crecer o disminuir, si se acerca a un valor específico o si se dispara hacia el infinito. 
+
+
 	El límite de una funcion f(x) en un punto x = a, es el valor L al tiende la función cuando x se aproxima a "a". 
 
 		lim f(x), x->a = L 
-
 
 	Si tenemos una funcion y un punto (coordenadas x,y)
 
@@ -5175,41 +5181,585 @@
 
 			Metodos: 	
 
-				Depende de la función: 
+				Depende de la función.
 
 				1. Factorizar numerador y denominador: 
 
 					Debemos verificar si hay: 
 
 					1. Factor común
-					2. Igualdades notables
+
+						De variable y de número. 
+						Todos los terminos deben tener en común una variable o un número.
+
+							x^2-2x = xx-2x = x(x-2)
+
+							3x-6 = 3x-3*2 = 3(x-2)
+
+					2. Igualdades notables:
+
+						(a+b)^2 = a^2 + 2ab + b^2
+
+							igual a (a+b)*(a+b)
+
+						(a-b)^2 = a^2 - 2ab + b^2
+
+							igual a (a-b)*(a-b)
+
+							Además de desarrollar el binomio, tenemos que factorizarlo: 
+
+								Buscar dos números que multiplicados den el termino "c" y sumados den el termino "b". 
+
+							Y al final, los separamos para simplificar con el denominador. 
+
+						(a+b)*(a-b) = a^2 - b^2
+
 					3. Resolver la ecuación 
 
-					Aplicamos algunos de estos metodos, reemplazamos por x por el valor de "a". Si vuelve a dar 0/0, probamos otro metodo. 
+					Primero verificamos que de una indeterminación. 
+
+					Segundo verificamos el factor que causa la indeterminación: 
+
+						Cambio de signo x->a 
+
+							x-a   
+
+
+					Después aplicamos algunos de estos metodos. Cuando terminamos de factorizar o simplificar y reemplazamos x por el valor de "a". Puede volver a dar otra indeterminación que la resolveremos con su metodo. 
+
 
 
 					Ej: factor comun
 
+						lim 3x-6/x^2-2x 
+						x->2 
 
-					Ej: igualdad notable 1: 
+						3*2-6/2^2-2*2 = 6-6/4-4 = 0/0 
+
+						3(x-2)/x(x-2) = 3/x 
+
+						lim = 3/2 
 
 
-					Ej: igualdad notable 2: 
+					Ej: igualdad notable 1 o 2: 
+
+						lim x^2-8x+16/x-4 
+						x->4 
+
+						4^2-8*4+16/4-4 = -16+16/4-4 = 0/0 
+
+						(x-4)^2/x-4 = (x-4)(x-4)/x-4 = x-4/1 = 0/1 = 0 
 
 
 					Ej: igualdad notable 3: 
 
+						lim x^2-9/2x-6 
+						x->3 
+
+						3^2-9/2*3-6 = 9-9/6-6 = 0/0 
+
+						(x-3)*(x+3)/2(x-3) =  x+3/2
+
+						3+3/2 = 6/2 = 3 
+
+
+				2. Raíces: 
+
+					Metodos: 
+
+						1. Escribir la fracción como potencia. 
+
+							Conversiones: 
+
+								2^[7^3] = 7^3/2 
+
+ 								3^[1/4^3] = 3^[4^-3] = 4^-3/3 = 4^-1 = 1/4 
+
+ 								3^[x-1] = (x-1)^1/3 
+
+ 								(x-1)^-2/3 / x 
+
+ 								Cambiamos la potencia negativa invirtiendo la fracción, multiplicando al denominador o viceversa. 
+
+ 								1/x*(x-1)^2/3
+
+ 						
+ 							lim 3^[x-1]/x^2-x 
+ 							x->1 
+
+ 							3^[1-1]/1^2-1 
+
+ 							3^[0]/1-1 = 0/0 
+
+ 							Facotrizamos: 
+
+ 							(x-1)^1/3 / x(x-1) = 
+
+ 							Restamos los exponentes de una potencia de misma base:  
+
+ 							(x-1)^-2/3 / x 
+
+ 							Cambiamos la potencia negativa invirtiendo la fracción, multiplicando 1*x 
+
+ 							1/x*(x-1)^2/3 
+
+ 							Volvemos a reemplazar "a" en x: 
+
+ 							1/1(1-1)^2/3 = 1/1(0)^2/3 = 1/1(0) = 1/0 = +-inf
+
+ 							Aplicamos límites laterales: 	
+
+ 							lim 3^[x-1]/x^2-1 
+ 							x->1 
+
+ 							der: 
+ 							x = 0,9
+ 							f(x)= 21,76
+
+ 							x = 0,999 
+ 							f(x) = 100,1 
+
+ 							lim 3^[x-1]/x^2-1 = +inf
+ 							x->1
+
+
+ 							izq: 
+
+ 							x = 1,01 
+ 							f(x) = 21,33 
+
+ 							x = 1,001 
+ 							f(x) = 99,1 
+
+ 							lim 3^[x-1]/x^2-1 = +inf
+ 							x->1
+
+
+						2. Racionalizar: 
+
+							Caso 1: Denominador con raíz cuadrada 
+
+								5/2*[6]
+
+							Multiplicar númerador y denominador por la misma raíz. 
+
+							Juntamos las raíces en una de igual indice y eliminamos raíz por exponente.  
+
+								Ej: 4/[3]
+
+								4/[3] * [3]/[3] = 4*[3]/2^[3^2] = 4*[3]/3
+
+
+							Caso 2: Raíz no cuadrada 
+
+								5/2*4^[6]
+
+							El radicando debe estar elevado al mismo exponente que el indice de la raíz
+
+								Ej: 4/4^[3]
+
+								4/4^[3] * 4*5^[3] / 5^[3*3^4] = 4[3]/3
+
+								Como solo teníamos 3, le agregamos 4^3 para que quede 5^[3^5] y eliminar la raíz. 
+
+
+							Caso 3: Raíces cuadradas con sumas o restas 
+
+								4/3-[2] o 1/[3]+[2]
+
+							Usamos la igualdad notable: (a+b)(a-b)=a^2-b^2
+
+							Multiplicamos por el mismo termino númerador y denominador, según la parte que nos falte. 
+
+							Operaciones en el númerador: 	
+
+								distribución de la multiplicación entre los terminos, el coeficiente de la raíz (es 1) multiplica, se multiplica con la distribución y es usado para simplificar. 
+
+							Operaciones en el denominador: 
+
+								Todo termino a se eleva al cuadrado, lo mismo en b. 
+
+								Con el exponente cancelamos la raíz y hacemos la potencia de las sumas o restas o números que queden.
+
+							Ej: 3/3-[2]
+
+							3/3-[2] * 4*(3+[2]) / (3-[2])*(3+[2]) = 12+4[2]/ (3^2-[2]^2)*(3^2+[2]^2) = 12+4[2] / 9-2 = 12+4[2]/7
+
+
+							*Simplificar fracción:
+
+							10[5]/15 = 2[5]/3
+
+							*Denominador negativo: 
+
+							5(1-[2])/1-2 = 5(1-[2])/-1 = -5*(1-[2])
+	
+					Ej: racionalizar límite por conjugado: 
+
+						lim = [x+1]-2/x-3
+						x->3 
+
+						[3+1]-2/3-3 = [4]-2/0 = 2-2/0 = 0/0 
+
+						Racionalizamos: 
+
+						[x+1]-2/x-3 = 
+
+						([x+1]-2)*([x+1]+2) /
+						(x-3)*([x+1]+2)
+
+						Aplicamos a^2-b^2
+						Las raíces tendra potencias para cancelarlas y el segundo termino tambien. 
+
+						([x+1^2])^2 - 2^2 / (x-3)*([x+1]+2) 
+
+						x+1-4/x-3*[x+1]+2
+
+						Si opero x+1-4, encuentro el factor que causa la indeterminación: 
+
+						x-3/x-3*[x+1]+2 
+
+						1/[x+1]+2 
+
+						Volvemos a reemplazar "a"
+
+						lim = 1/[x+1]+2
+						x->3  
+
+						1/[3+1]+2 
+
+						1/[4]+2 
+
+						1/2+2 
+
+						1/4
+
+
+				3. Regla de L'Hopital 
+
+					Se aplican a funciones especiales que no se pueden resolver con los metodos anteriores
+
+					f(x), g(x) son derivables en un entorno de "a" 
+
+					Cuando tenemos el caso: 
+
+						lim f(x) = 0 
+						x->a 
+
+						lim g(x) = 0 
+						x->a 
+
+						lim f(x)/g(x) = 0/0
+						x->a
+
+					Aplicamos la derivada de las dos funciones: 
+
+						lim = f'(x)/g'(x)
+						x->a
+
+					Si nos vuelve a dar 0/0, volvemos a hacer las derivadadas de las funciones resultantes. 
+
+
+					Ej: lim e^x-1/senx
+						x->0  
+
+						e^0-1/sen0 = 1-1/0 = 0/0 
+
+						Verificamos la indeterminación 0/0 
+
+						Despues Aplicamos las derivadas. 
+
+
+					Ej: lim = lnx/2x-2 
+						x-1 
+
+
+					Ej: x-senx/x^2 
+
+
+				4. 
+
+
+		3. infinito
+
+			Se da cuando x->a, es x->+-inf, Cuando x tiende a valores muy grandes (inf), la función tambien tiende al infinito con resultados en positivos y negativos como 0,99999999 o 0,0000001, -19,9991, etc.
+
+			En las anteriores funciones teníamos x->3, x->2, x->-1. 
+
+			Acá podemos tomar x->99, x->999, x->-99 
+
+			Operaciones entre inf: 
+
+				Suma y resta: 
+
+					inf+-n = inf 
+
+						inf+8 = inf 
+						inf-14 = inf 
+
+					-inf+-n =  -inf
+
+						-inf-10 = -inf 
+						-inf+13 = -inf 
+
+					inf+inf = inf 
+
+					-inf-inf = -inf
+
+					+inf-inf = indeterminación
+
+						Tenemos un valor que crece indefinidamente y otro que decrece indefinidamente. 
+
+						Depende del ritmo de crecimiento y decrecimiento entre uno y otro. 
+
+					Ej: lim -x-19 
+						x->-inf 
+
+						-(-inf)-19 = inf - 19 = inf
+
+
+				Multiplicación: 
+
+					inf*-+n = +-inf 
+
+						inf*8 = inf 
+						inf*(-14) = -inf 
+
+					-inf*(+-n) = -+inf 
+
+						-inf*10 = -inf 
+						-inf*(-13) = inf 
+
+					inf*inf = inf 
+
+					-inf*inf = -inf
+
+					-inf*(-inf) = inf  
+
+					inf*0 = indeterminación 
+
+					inf^n, n = natural
+						
+						inf^2 = inf 
+						inf^4 = inf 
+
 					
+					Ej: lim -4x 
+						x->-inf 
+
+						-4(-inf) =  inf 
+
+					Ej: lim 3x^2 
+						x->inf 	
+						
+						3*inf^2 = 3*inf = inf			
+					Ej: lim -7x^2-4x+9 
+						x->inf
+
+						-7*inf^2-4*inf+9 = -7*inf-inf+9 = -inf-inf+9 = -inf+9 = -inf 
 
 
-				2. Racionalizando. 
+			1. +inf-inf = indeterminación 
 
-				3. 
+				Ej: lim x^3+4x^2
+					x->inf 
+
+					inf^3+4inf^2 
+					inf+4inf
+					inf+inf 
+					inf 
+
+					No hay contradicción. 
+
+				Ej: lim -7x^2-4x 
+					x->inf 
+
+					-7*inf^2-4*inf 
+					-7*inf-4*inf 
+					-inf-inf 
+					-inf 
+
+					No hay contradicción. 
+
+				Ej: lim 2x^3-8x^2 
+					x->inf 
+
+					2*inf^3-8*inf^2 
+					2*inf-8*inf 
+					inf-inf 
+
+					Indeterminación.
 
 
-		3. inf/inf
+				Se encuentran en: 
+
+				1. Resolver termino con mayor exponente: 
+
+					Ej: lim 2x^3-8x^2 
+					x->inf 
+
+					2*inf^3-8*inf^2 
+					2*inf-8*inf 
+					inf-inf 
+
+					Indeterminación.
+
+					Hay que fijarse en los exponente: 
+
+					2x^3-8x^2
+					2*inf^3 - 8*inf^2
+
+						inf^3 > -inf2 
+
+					lim 2x^3-8x^2 = inf 
+					x->inf
 
 
+					Ej: lim [x^2+5x]-3x^2 
+						x->inf
+
+						[inf]-3*inf 
+						inf-inf 
+
+						o 
+
+						inf^1/2-inf
+						inf^0,5-inf^1 
+
+						o 
+
+						[inf^2+inf]-inf^2
+
+						[inf^2] 
+						gana en el parentesis
+
+						inf^2/2-inf^2
+						-inf 
+
+						o 
+
+						raíz < poten
+
+						-inf 
+
+
+					Ej: lim [x^3-x]-6x 
+						x->inf 
+
+						[inf^3-inf]-6*inf 
+						[inf-inf]-6*inf 
+						[inf-inf]-inf
+						
+						indet en raiz  
+
+						gana inf^3 
+
+						[inf^3]-inf 
+						inf^3/2-inf^1 
+
+						inf^1,5-inf^1 
+						inf
+
+
+				2. Operar la resta: 
+
+
+
+				3. Raíces cuadradas: 
+
+
+
+			División entre infinito:
+
+				Hasta ahora en la división teníamos: 
+
+				1. 0/k = 0 
+
+					Es una división convencional. 
+
+
+				2. k/0 = +-inf (indet)
+
+					Lo resolviamos con límites laterales y 
+
+
+				3. 0/0 puede dar: (indet)
+
+					0, un número (n°), o +-inf
+
+					Lo resolviamos con factores comunes, igualdades notables, racionalizando, usando la regla de l'Hopital (fx especiales) y 
+
+
+				Con el número infinito agregamos nuevas divisiones: 
+
+				1. +-inf/n = +-inf 
+
+					inf/7 = inf 
+					-inf/3 = -inf 
+					inf/-2 = -inf 
+
+				2. n/inf = 0 
+					
+					8/inf = 0 
+
+				3. inf/0 = +-inf 
+
+					Se relaciona con: 
+
+						+-inf/n = +-inf 
+						n/0 = +-inf
+
+					Aplicamos limites laterales. 
+
+					0/0 = indet que nos puede volver tocar
+
+				4. inf/inf = indeterminación 
+
+						Puede dar 0, -inf
+
+
+				Nos quedamos con 0/0 y inf/inf 
+
+				Ej: 
+
+
+
+			2. inf*0 = indeterminación 
+
+
+
+			3. inf/inf = indeterminación: 
+
+
+
+
+
+
+
+
+
+
+		4. 
+
+
+		5. 
+
+
+	Resumen de indeterminaciones: 
+
+		k/0: 
+
+			Limites laterales 
+
+		0/0: 
+
+			Se resuelven con factores comunes (lineales), igualdades notables (cuadráticas), Raíz en fracción,  Racionalizando (racionales), l'Hopital (irracionales)
+
+		inf-inf: 
+
+			Se resuelven mediante exponentes
+
+		inf/inf:
 
 
 
