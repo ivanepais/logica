@@ -5661,12 +5661,148 @@
 						inf
 
 
-				2. Operar la resta: 
+				2. Operar resta de terminos: 
 
+					Necesitamos resolver por grados para conocer sus tres posibbles resultados: 
+
+						+- inf si num>den 
+
+						0 si den>num 
+
+						coef(fx)/coef(gx) si num=den 
+
+					En cada termino puede haber una indeterminación inf/inf que se resulve con grados. 
+
+					Cuando terminemos los terminos nos quederá, la indeterminación inf-inf.
+
+					Después debemos sacar mcd para resolver las fracciones (no podemos eliminar denominador porque no son ecuaciones, son sum/res convencional) y sacar la indetermnación final. 
+
+					Ej: lim x^2+1/x+2 - x 
+						x->inf 
+
+						inf/inf - inf 
+
+						1°indet
+
+							x^2+1/x+2 = 
+
+							inf/inf 
+
+							grados: 
+
+							x^2/x 
+
+							inf  
+
+						inf-inf 
+
+
+						x^2+1/x+2 - x(x+2)/(x+2)
+
+						x^2+1 - x^2+2x/ x+2
+
+						-2x+1/x+2 
+
+						inf/inf 
+
+						2°indet 
+
+							grados: 
+
+							-2x/x
+
+							num=den 
+
+							coeficientes: 
+
+							-2/1 
+							-2 
+
+						Entonces: 
+
+						im x^2+1/x+2 - x = -2
+						x->inf
 
 
 				3. Raíces cuadradas: 
 
+					Tenemos que aplicar las racionalizaciones, sobre todo conjugado: a^2-b^2
+
+					Para eliminar las raíces y resolver por grados. 
+
+
+					Ej: lim [x^2-3x]-x 
+						x->inf 
+
+						inf-inf 
+
+						apicamos conjugado
+
+						[x^2-3x]-x * [x^2-3x]+x / [x^2-3]+x 
+
+						([x^2-3x])^2 - x^2/ [x^2-3]+x
+ 						
+ 						x^2-3x-x^2 / [x^2-3]+x 
+
+ 						-3x/[x^2-3]+x 
+
+ 						Resolvemos límite 
+
+ 						-inf/inf 
+
+ 						grados: 
+
+ 							-3x/x 
+
+ 							son iguales 
+
+ 						coeficientes: 
+
+ 							Tomamos todos los coeficientes del mismo grada de todos los terminos.  
+
+ 							-3/[1]+1 
+ 							-3/1+1 
+ 							-3/2
+
+
+ 					Ej2: no tiende a infinitos
+
+ 						lim 1/x^2-9 - 1/x-3 
+ 						x->3 
+
+ 						1/9-9 - 1/3-3 = 1/0 - 1/0 = +-inf - +-inf 
+
+ 						resolvemos la fracción 
+
+ 						1-(x+3)/x^2-9
+
+ 						1-x-3/x^2-9 
+
+ 						-2-x/x^2-9
+
+ 						reemplazamos el termino "a"
+
+ 						-2-3/9-9 = -5/0 = +-inf
+
+ 						límites laterales del resultado sin indeterminación: 
+
+ 						izq: 
+ 							
+ 							lim -2-x/x^2-9
+
+ 							x = 2,99 
+ 							f(2,99) = 83,3  
+
+ 							x = 2,999 
+ 							f(2,999) = 833,3 
+
+ 						der: 
+
+ 							x = 3,01 
+ 							f(3,01) = -83,36
+
+ 							x = 3,001 
+ 							f(3,001) = -833,36
 
 
 			División entre infinito:
@@ -5720,22 +5856,175 @@
 
 				Nos quedamos con 0/0 y inf/inf 
 
-				Ej: 
+				Ej: lim x-6/11 = 
+					x->inf 
 
+					inf-6/11 = inf/11 = inf 
+
+					lim x^2-6x/11 = 
+					x->inf 
+
+					inf-inf/11 = inf/11 = inf 
+
+					lim 2/x+8 = 
+					x->inf 
+
+					2/inf+8 = 2/inf = 0 
 
 
 			2. inf*0 = indeterminación 
+
+				Qué lo causa: 
 
 
 
 			3. inf/inf = indeterminación: 
 
+				Se resuelven por el grado de las funciones:
+
+				Hay tres resultados posibles:
+
+				grado numerador > denominador = +-inf
+
+				grado numerador < denominador = 0  
+
+				grado numerador = denominador = dividimos los coeficientes de las variables con mayor exponente. 
+
+				Ej: lim -2x^3+4x/x^2+6 = 
+					x->inf 
+
+					-2x^3 > x^2 
+
+					-inf/inf 
+
+					-inf 
 
 
+					lim -2x^3/x^3-6x+5 = 
+					x->inf 
+
+					-inf/inf 
+
+					-2/1 
+
+					-2 
 
 
+					lim -2x^2-x/x^3+7 = 
+					x->inf 
+
+					-inf/inf 
+
+					0 
 
 
+					lim 3x^2/[4x^2+7x] = 
+					x->inf 
+
+					inf/inf 
+
+					3x^2/[4x^2] 
+
+					3x^2>4x 
+
+					inf 
+
+
+					lim 3x/[4x^2+7x] = 
+					x->inf 
+
+					inf/inf 
+
+					3x/[4x^2] 
+
+					grados 3x = 4x 
+
+					3x/[4x^2]
+
+					coeficientes 3/2 
+
+					Rs: operar infinitos, comparar los grados, comparar coeficientes, tomando estas partes. 
+
+						inf/inf 
+
+						3x/[4x^2] 
+
+						grados 3x = 4x 
+
+						3x/[4x^2]
+
+						coeficientes
+						operamos la raíz para el coeficiente.  
+
+						3/[4]
+
+
+						Ej: lim 3x/[5x^2+7x]
+							x->inf 
+
+							infinitos: 
+
+								inf/inf 
+
+							grados: 
+
+								3x/[5x^2]
+								3x/5x 
+
+							coeficientes:  
+							
+							Operamos la raíz cuadrada para los coeficientes. 
+
+							3/[5] 
+
+							3/2,32 
+
+
+							lim 3x/[4x^2+1]+5x
+							x->inf 
+
+							infinitos: 
+
+								inf/[inf]+inf 
+								inf/inf 
+
+							grados: 
+
+								3x/[4x^2]+5x 
+								3x/4x+5x  
+
+							coeficientes:
+
+								Operamos la raíz para los coeficientes.
+
+								3/[4]+5 
+								3/2+5
+								3/7 
+
+
+							lim 3x+[x^2+9]/2x =   
+							x->inf 
+
+							inf/inf
+
+							3x+x/2x 
+
+							Anotamos todos los coeficientes de los exponentes mayores con sus raíces. 
+
+							3+[1]/2 
+							3+1/2 
+							4/2 
+							2  
+
+
+							lim 3x+[x^2+9]/2x^2
+							x->inf 
+
+							inf/inf 
+
+							3x+x/2x^2 
+
+							0 
 
 
 
@@ -5747,26 +6036,220 @@
 
 	Resumen de indeterminaciones: 
 
-		k/0: 
+		1. k/0 = +-inf
 
-			Limites laterales 
+			Limites laterales, 
 
-		0/0: 
+
+		2. 0/0 = 0, un número (n°), o +-inf
 
 			Se resuelven con factores comunes (lineales), igualdades notables (cuadráticas), Raíz en fracción,  Racionalizando (racionales), l'Hopital (irracionales)
 
-		inf-inf: 
-
-			Se resuelven mediante exponentes
-
-		inf/inf:
+			en caso de volver a dar indeterminación +-inf, se resuelve con su metodo. 
 
 
+		3. inf-inf = +-inf, 0, coef/coef.
+
+			Aparece en tres casos: 
+				
+				1. Se resuelven mediante grado exponentes
+
+					[inf^3]-inf 
+
+					inf^3/2-inf^1 
+
+					inf^1,5-inf^1 
+
+					inf
 
 
+				2. Operar resta de terminos: 
+
+					Necesitamos resolver por grados para conocer sus tres posibbles resultados: 
+
+						+- inf si num>den 
+
+						0 si den>num 
+
+						coef(fx)/coef(gx) si num=den 
+
+					En cada termino puede haber una indeterminación inf/inf que se resulve con grados. 
+
+					Cuando terminemos los terminos nos quederá, la indeterminación inf-inf.
+
+					Después debemos sacar mcd para resolver las fracciones (no podemos eliminar denominador porque no son ecuaciones, son sum/res convencional) y sacar la indetermnación final. 
+
+					Ej: lim x^2+1/x+2 - x 
+						x->inf 
+
+						inf/inf - inf 
+
+						1°indet
+
+							x^2+1/x+2 = 
+
+							inf/inf 
+
+							grados: 
+
+							x^2/x 
+
+							inf  
+
+						inf-inf 
 
 
+						x^2+1/x+2 - x(x+2)/(x+2)
 
+						x^2+1 - x^2+2x/ x+2
+
+						-2x+1/x+2 
+
+						inf/inf 
+
+						2°indet 
+
+							grados: 
+
+							-2x/x
+
+							num=den 
+
+							coeficientes: 
+
+							-2/1 
+							-2 
+
+						Entonces: 
+
+						im x^2+1/x+2 - x = -2
+						x->inf
+
+
+				3. Raíces cuadradas: 
+
+					Tenemos que aplicar las racionalizaciones, sobre todo conjugado: a^2-b^2
+
+					Para eliminar las raíces y resolver por grados. 
+
+
+					Ej: lim [x^2-3x]-x 
+						x->inf 
+
+						inf-inf 
+
+						apicamos conjugado
+
+						[x^2-3x]-x * [x^2-3x]+x / [x^2-3]+x 
+
+						([x^2-3x])^2 - x^2/ [x^2-3]+x
+ 						
+ 						x^2-3x-x^2 / [x^2-3]+x 
+
+ 						-3x/[x^2-3]+x 
+
+ 						Resolvemos límite 
+
+ 						-inf/inf 
+
+ 						grados: 
+
+ 							-3x/x 
+
+ 							son iguales 
+
+ 						coeficientes: 
+
+ 							Tomamos todos los coeficientes del mismo grada de todos los terminos.  
+
+ 							-3/[1]+1 
+ 							-3/1+1 
+ 							-3/2
+
+ 					Ej2: no tiende a infinitos
+
+ 						lim 1/x^2-9 - 1/x-3 
+ 						x->3 
+
+ 						1/9-9 - 1/3-3 = 1/0 - 1/0 = +-inf - +-inf 
+
+ 						resolvemos la fracción 
+
+ 						1-(x+3)/x^2-9
+
+ 						1-x-3/x^2-9 
+
+ 						-2-x/x^2-9
+
+ 						reemplazamos el termino "a"
+
+ 						-2-3/9-9 = -5/0 = +-inf
+
+ 						límites laterales del resultado sin indeterminación: 
+
+ 						izq: 
+ 							
+ 							lim -2-x/x^2-9
+
+ 							x = 2,99 
+ 							f(2,99) = 83,3  
+
+ 							x = 2,999 
+ 							f(2,999) = 833,3 
+
+ 						der: 
+
+ 							x = 3,01 
+ 							f(3,01) = -83,36
+
+ 							x = 3,001 
+ 							f(3,001) = -833,36
+
+
+		4. inf/inf = 0,+-inf, coef/coef
+
+			Se resuelven por el grado de las funciones:
+
+				Hay tres resultados posibles:
+
+				grado numerador > denominador = +-inf
+
+				grado numerador < denominador = 0  
+
+				grado numerador = denominador = dividimos los coeficientes de las variables con mayor exponente. 
+
+					lim 3x/[4x^2+1]+5x
+					x->inf 
+
+						infinitos: 
+
+							inf/[inf]+inf 
+							inf/inf 
+
+						grados: 
+
+							3x/[4x^2]+5x 
+							3x/4x+5x  
+
+						coeficientes:
+
+							Anotamos todos los coeficientes de los exponentes mayores con sus raíces. 
+
+							Operamos la raíz para los coeficientes.
+
+							Tomamos todos los coeficientes del mismo grada de todos los terminos. 
+
+								Por eso tenemos los coeficientes de los terminos: 
+
+									[4x^2]+5x 
+									[4] y 5 
+
+							3/[4]+5 
+							3/2+5
+							3/7 
+
+
+		0*inf = 
 
 
 
