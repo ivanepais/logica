@@ -5228,7 +5228,6 @@
 					Después aplicamos algunos de estos metodos. Cuando terminamos de factorizar o simplificar y reemplazamos x por el valor de "a". Puede volver a dar otra indeterminación que la resolveremos con su metodo. 
 
 
-
 					Ej: factor comun
 
 						lim 3x-6/x^2-2x 
@@ -5874,7 +5873,61 @@
 
 			2. inf*0 = indeterminación 
 
-				Qué lo causa: 
+				Hasta ahora tenemos: 
+
+					0*n = 0 
+						
+						0*5 = 0 
+
+
+					inf*n = inf 
+
+						inf*3 = inf 
+
+				
+				Con infinito: 
+
+					0*inf = indet 
+
+				Una tiende a 0 y la otra a infinito. 
+
+
+				Ej: lim 2x*3/x+5 
+					x->inf 
+
+				encontramos la indeterminación.
+
+					2*inf*3/inf+5 = inf*3/inf = inf*0 
+
+				resolvemos los terminos
+
+					2x*3/x+5 = 6x/x+5
+
+				Volvemos a reemplazar x por inf para encontrar la otra indeterminación. 
+
+					2*inf*3/inf+5 = inf/inf 
+
+				Resolvemos la nueva indeterminación 
+
+					grados: 
+
+						6x/x 
+
+						son iguales
+
+					coeficientes: 
+
+						6/1 
+
+						1 
+
+
+				
+
+
+					
+
+
 
 
 
@@ -6027,14 +6080,125 @@
 							0 
 
 
-
 		4. 
 
 
 		5. 
 
 
+
 	Resumen de indeterminaciones: 
+
+		Operar límites: 
+
+			Un límite se resuelve con estos pasos: 
+
+				Ej: lim 2x*3/x+5 
+					x->inf 
+
+				Encontramos la indeterminación.
+
+					2*inf*3/inf+5 = inf*3/inf = inf*0 
+
+				Resolvemos los terminos
+
+					2x*3/x+5 = 6x/x+5
+
+				Volvemos a reemplazar x por inf para encontrar la otra indeterminación. 
+
+					2*inf*3/inf+5 = inf/inf 
+
+				Resolvemos la nueva indeterminación 
+
+					grados: 
+
+						6x/x 
+
+						son iguales
+
+					coeficientes: 
+
+						6/1 
+
+						1 
+
+			Cambian las indeterminaciones que van apareciendo cuando operamos los terminos del límite: 
+
+				raíces (cambio a potencia, racionaliación), suma/resta (mcd), multiplicación/div de fracciones (direct/invers), factorizaciones (común, igualdades), etc. 
+
+			Tambien podemos tener en cuenta operaciones con números entre cero, inf, etc: 
+
+				Suma y resta: 
+
+					inf+-n = inf 
+
+					-inf+-n =  -inf
+			
+					inf+inf = inf 
+
+					-inf-inf = -inf
+
+					+inf-inf = (indet)
+
+
+				Multiplicación: 
+
+					0*n = 0 
+
+					inf*-+n = +-inf (aplica los signos, no es indet )
+
+					-inf*(+-n) = -+inf (aplica signos)
+
+					inf*inf = inf 
+
+					-inf*inf = -inf
+
+					-inf*(-inf) = inf  
+
+					inf^n = inf
+
+					inf*0 = (indet) 
+
+						Una tiende a 0 y la otra a infinito. 
+
+					
+				División:
+
+					0/k = 0 
+
+						Es una división convencional. 
+
+					k/0 = +-inf (indet)
+
+						Lo resolviamos con límites laterales y 
+
+					0/0 puede dar: (indet)
+
+						0, un número (n°), o +-inf
+
+						Lo resolviamos con factores comunes, igualdades notables, racionalizando, usando la regla de l'Hopital (fx especiales) y 
+
+					Con el número infinito agregamos nuevas divisiones:
+
+						n/inf = 0 
+
+						+-inf/n = +-inf 
+
+							(aplica signos, no es indet)
+			
+						inf/0 = +-inf (indet)
+
+							Aplicamos limites laterales. 
+
+						inf/inf = (indet)
+
+							Puede dar 0, -+inf (lim, lat), grados, coeficientes, etc. 
+
+
+				Potencias:
+
+
+
 
 		1. k/0 = +-inf
 
@@ -6249,12 +6413,46 @@
 							3/7 
 
 
-		0*inf = 
+		5. 0*inf = indet
+
+			Ej: lim 2x*3/x+5 
+				
+				x->inf 
+
+				encontramos la indeterminación.
+
+					2*inf*3/inf+5 = inf*3/inf = inf*0 
+
+				resolvemos los terminos
+
+					2x*3/x+5 = 6x/x+5
+
+				Volvemos a reemplazar x por inf para encontrar la otra indeterminación. 
+
+					2*inf*3/inf+5 = inf/inf 
+
+				Resolvemos la nueva indeterminación 
+
+					grados: 
+
+						6x/x 
+
+						son iguales
+
+					coeficientes: 
+
+						6/1 
+
+						1 
+
+
+		6. 
 
 
 
 
 
+		7. 
 
 
 
