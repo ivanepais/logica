@@ -2,11 +2,33 @@
 	
 	Son un conjunto de herramientas como cualquier otra de la vida real. Una suma o resta, una ecuación, una derivada o una integral, se usan en determinadas situaciones. 
 
-	Son creadas mediante la abstracción, tomando el objeto de la vida real y llevarlo al mundo de las ideas o conceptos; quitandoles su esencia o idea general del objeto para transformarla en fórmulas, principios, propiedades o definiciones.  
+	Son creadas mediante la abstracción, tomando un objeto de la vida real, llevándolo al mundo de las ideas o conceptos; quitandoles su esencia o idea general del objeto para transformarla en fórmulas, principios, propiedades o definiciones.  
 
-	La tecnica consiste en tomar un problema o caso individual con variables determinadas y llevarlo a un caso general para crear una fórmula que acepte cualquier variable.
+	La tecnica consiste en tomar un problema o caso individual con variables determinadas y llevarlo a un caso general para crear una fórmula que acepte cualquier variable.	
 
 	Usamos símbolos (números, letras) para referirnos de manera abstracta a los objetos reales. Las generalizaciones o fórmulas deben ser intuitivas, usando letras que se ajusten a lo que haga referencia. 
+
+		Caso particular: 
+
+			Una tienda hace un descuento del 15% para los productos con un precio de $2000. 
+	
+			Fórmula particular:
+
+				Descuento = 15%*2000 
+
+					0.15*2000 = 300
+					
+		Generalización: 
+
+			El descuento de un producto, sea x el valor del porcentaje de descuento multiplicado por el precio de un producto. 
+
+				Descuento = %descuento*precio 
+
+			Fórmula general: 
+
+				Descuento = x*precio
+
+				D = x*p 
 
 
 	Formalmente, la matemática es una ciencia que se ocupa del estudio de los números, las estructuras, las relaciones y las propiedades abstractas de los objetos y los sistemas. 
@@ -5102,6 +5124,844 @@
 			3*4-12/4+1 = 12-12/5 = 0/5 
 
 
+		Resumen de indeterminaciones: 
+
+		Operar límites: 
+
+			Un límite se resuelve con estos pasos: 
+
+				Ej: lim 2x*3/x+5 
+					x->inf 
+
+				Encontramos la indeterminación.
+
+					2*inf*3/inf+5 = inf*3/inf = inf*0 
+
+				Resolvemos los terminos
+
+					2x*3/x+5 = 6x/x+5
+
+				Volvemos a reemplazar x por inf para encontrar la otra indeterminación. 
+
+					2*inf*3/inf+5 = inf/inf 
+
+				Resolvemos la nueva indeterminación 
+
+					grados: 
+
+						6x/x 
+
+						son iguales
+
+					coeficientes: 
+
+						6/1 
+
+						1 
+
+			Cambian las indeterminaciones que van apareciendo cuando operamos los terminos del límite: 
+
+				raíces (cambio a potencia, racionaliación), suma/resta (mcd), multiplicación/div de fracciones (direct/invers), factorizaciones (común, igualdades), etc. 
+
+			Tambien podemos tener en cuenta operaciones con números entre cero, inf, etc: 
+
+				Suma y resta: 
+
+					inf+-n = inf 
+
+					-inf+-n = -inf
+			
+					inf+inf = inf 
+
+					-inf-inf = -inf
+
+					+inf-inf = (indet)
+
+
+				Multiplicación: 
+
+					0*n = 0 
+
+					inf*-+n = +-inf (aplica los signos, no es indet )
+
+					-inf*(+-n) = -+inf (aplica signos)
+
+					inf*inf = inf 
+
+					-inf*inf = -inf
+
+					-inf*(-inf) = inf  
+
+					inf^n = inf
+
+					inf*0 = (indet) 
+
+						Una tiende a 0 y la otra a infinito. 
+
+					
+				División:
+
+					0/k = 0 
+
+						Es una división convencional. 
+
+					k/0 = +-inf (indet)
+
+						Lo resolviamos con límites laterales y 
+
+					0/0 puede dar: (indet)
+
+						0, un número (n°), o +-inf
+
+						Lo resolviamos con factores comunes, igualdades notables, racionalizando, usando la regla de l'Hopital (fx especiales) y 
+
+					Con el número infinito agregamos nuevas divisiones:
+
+						n/inf = 0 
+
+						+-inf/n = +-inf 
+
+							(aplica signos, no es indet)
+			
+						inf/0 = +-inf (indet)
+
+							Aplicamos limites laterales. 
+
+						inf/inf = (indet)
+
+							Puede dar 0, -+inf (lim, lat), grados, coeficientes, etc. 
+
+
+				Potencias: 
+
+					inf^n = inf 
+
+					inf^inf = inf 
+
+					inf^-n = 1/inf^n = 1/inf = 0 
+
+						inf^-n = 0 
+
+					inf^-inf = 1/inf^inf = 1/inf = 0 
+
+						inf^-inf = 0 
+
+					Si n^inf: 
+
+						1° inf, si n>1 
+
+							4^inf = inf 
+							(7/4)^inf = inf 
+
+						2° 0, si 0 </ n < 1 
+
+							0,6^2 = 0,36 
+
+							tienden a 0. 
+
+							0,6^inf = 0 
+
+						Un número muy grande, lo acerca rapidamente a 0. 
+
+					Si n^-inf: 
+
+						1° 0, si n > 1 
+
+							4^-inf = 0 
+
+							1/4^-inf = 0 
+
+						2° inf, si 0 </ n < 1 
+
+							(3/5)-inf = 5/3^inf = inf 
+
+					1^inf = indet 
+
+
+			Conviene aprenderse los casos 0 e indet antes que todas las operaciones: 
+
+				Resultado 
+					
+					cero: 
+
+						0*n = 0 
+
+						0/k = 0 
+
+						n/inf = 0  
+
+						inf^-n = 0  
+
+						inf^-inf = 0  
+
+						n^inf = 0
+
+							si n entre 0 y 1. 
+
+						n^-inf = 0  
+
+							si n > 1
+
+					Indet: 
+
+						inf*0 = (indet)
+
+						k/0 = +-inf (lim lat)
+
+						0/0 = (indet) 
+
+						inf/0 = +-inf (lim lat)
+
+						inf/inf = (indet) 
+
+						1^inf = indet 
+
+
+		1. k/0 = +-inf
+
+			Limites laterales, 
+
+
+		2. 0/0 = 0, un número (n°), o +-inf
+
+			Se resuelven con factores comunes (lineales), igualdades notables (cuadráticas), Raíz en fracción,  Racionalizando (racionales), l'Hopital (irracionales)
+
+			en caso de volver a dar indeterminación +-inf, se resuelve con su metodo. 
+
+
+		3. inf-inf = +-inf, 0, coef/coef.
+
+			Aparece en tres casos: 
+				
+				1. Se resuelven mediante grado exponentes
+
+					[inf^3]-inf 
+
+					inf^3/2-inf^1 
+
+					inf^1,5-inf^1 
+
+					inf
+
+
+				2. Operar resta de terminos: 
+
+					Necesitamos resolver por grados para conocer sus tres posibbles resultados: 
+
+						+- inf si num>den 
+
+						0 si den>num 
+
+						coef(fx)/coef(gx) si num=den 
+
+					En cada termino puede haber una indeterminación inf/inf que se resulve con grados. 
+
+					Cuando terminemos los terminos nos quederá, la indeterminación inf-inf.
+
+					Después debemos sacar mcd para resolver las fracciones (no podemos eliminar denominador porque no son ecuaciones, son sum/res convencional) y sacar la indetermnación final. 
+
+					Ej: lim x^2+1/x+2 - x 
+						x->inf 
+
+						inf/inf - inf 
+
+						1°indet
+
+							x^2+1/x+2 = 
+
+							inf/inf 
+
+							grados: 
+
+							x^2/x 
+
+							inf  
+
+						inf-inf 
+
+
+						x^2+1/x+2 - x(x+2)/(x+2)
+
+						x^2+1 - x^2+2x/ x+2
+
+						-2x+1/x+2 
+
+						inf/inf 
+
+						2°indet 
+
+							grados: 
+
+							-2x/x
+
+							num=den 
+
+							coeficientes: 
+
+							-2/1 
+							-2 
+
+						Entonces: 
+
+						im x^2+1/x+2 - x = -2
+						x->inf
+
+
+				3. Raíces cuadradas: 
+
+					Tenemos que aplicar las racionalizaciones, sobre todo conjugado: a^2-b^2
+
+					Para eliminar las raíces y resolver por grados. 
+
+
+					Ej: lim [x^2-3x]-x 
+						x->inf 
+
+						inf-inf 
+
+						apicamos conjugado
+
+						[x^2-3x]-x * [x^2-3x]+x / [x^2-3]+x 
+
+						([x^2-3x])^2 - x^2/ [x^2-3]+x
+ 						
+ 						x^2-3x-x^2 / [x^2-3]+x 
+
+ 						-3x/[x^2-3]+x 
+
+ 						Resolvemos límite 
+
+ 						-inf/inf 
+
+ 						grados: 
+
+ 							-3x/x 
+
+ 							son iguales 
+
+ 						coeficientes: 
+
+ 							Tomamos todos los coeficientes del mismo grada de todos los terminos.  
+
+ 							-3/[1]+1 
+ 							-3/1+1 
+ 							-3/2
+
+ 					Ej2: no tiende a infinitos
+
+ 						lim 1/x^2-9 - 1/x-3 
+ 						x->3 
+
+ 						1/9-9 - 1/3-3 = 1/0 - 1/0 = +-inf - +-inf 
+
+ 						resolvemos la fracción 
+
+ 						1-(x+3)/x^2-9
+
+ 						1-x-3/x^2-9 
+
+ 						-2-x/x^2-9
+
+ 						reemplazamos el termino "a"
+
+ 						-2-3/9-9 = -5/0 = +-inf
+
+ 						límites laterales del resultado sin indeterminación: 
+
+ 						izq: 
+ 							
+ 							lim -2-x/x^2-9
+
+ 							x = 2,99 
+ 							f(2,99) = 83,3  
+
+ 							x = 2,999 
+ 							f(2,999) = 833,3 
+
+ 						der: 
+
+ 							x = 3,01 
+ 							f(3,01) = -83,36
+
+ 							x = 3,001 
+ 							f(3,001) = -833,36
+
+
+		4. inf/inf = 0,+-inf, coef/coef
+
+			Se resuelven por el grado de las funciones:
+
+				Hay tres resultados posibles:
+
+				grado numerador > denominador = +-inf
+
+				grado numerador < denominador = 0  
+
+				grado numerador = denominador = dividimos los coeficientes de las variables con mayor exponente. 
+
+					lim 3x/[4x^2+1]+5x
+					x->inf 
+
+						infinitos: 
+
+							inf/[inf]+inf 
+							inf/inf 
+
+						grados: 
+
+							3x/[4x^2]+5x 
+							3x/4x+5x  
+
+						coeficientes:
+
+							Anotamos todos los coeficientes de los exponentes mayores con sus raíces. 
+
+							Operamos la raíz para los coeficientes.
+
+							Tomamos todos los coeficientes del mismo grada de todos los terminos. 
+
+								Por eso tenemos los coeficientes de los terminos: 
+
+									[4x^2]+5x 
+									[4] y 5 
+
+							3/[4]+5 
+							3/2+5
+							3/7 
+
+
+		5. 0*inf = indet
+
+			Ej: lim 2x*3/x+5 
+				
+				x->inf 
+
+				encontramos la indeterminación.
+
+					2*inf*3/inf+5 = inf*3/inf = inf*0 
+
+				resolvemos los terminos
+
+					2x*3/x+5 = 6x/x+5
+
+				Volvemos a reemplazar x por inf para encontrar la otra indeterminación. 
+
+					2*inf*3/inf+5 = inf/inf 
+
+				Resolvemos la nueva indeterminación 
+
+					grados: 
+
+						6x/x 
+
+						son iguales
+
+					coeficientes: 
+
+						6/1 
+
+						1 
+
+
+		6. 1^inf 
+
+			2^-3 = 1/2^3 = 1/2*2*2 = 1/8 
+
+			(2/3)^-3 = (3/2)^3 =  27/8 
+
+			4^inf = inf  
+
+			1^inf = indet 
+
+
+			lim f(x)^g(x) = 1^inf 
+			x->inf 
+
+				Elevamos una función, si su resultado da 1^inf (inde)
+
+				Es igual al número e. 
+
+
+			= e^lim x->inf g(x)*[f(x-1)]
+
+				Elevamos el límite al número e.
+
+				Resolvemos el límite de e.  
+
+				x->"a", puede tomar cualquier número. 
+
+					x->k
+					x->inf 
+
+				Ej: al reemplazar x->1, puede quedar: 
+
+					(2/2)^2/0 = 1^inf 
+
+
+			* También se aplica si nos queda: 
+				
+				1^-inf = 1/1^inf 
+
+			* También es valido el siguiente resultado: 
+
+				e-inf = 1/e^inf  
+
+					e es un número más
+
+				1/inf = 0 
+
+					Por la propiedad/operación: 
+					
+						n/inf 
+
+
+			Ej: lim (x-1/x+3)^2x 
+				x->inf 
+
+				Reemplazamos "a" en lim 
+
+				(inf-1/inf+3)^2*inf 
+
+				(inf/inf)^inf 
+
+				Resolvemos la indeterminación del parentesis
+
+				grados: 
+
+					x/x 
+
+				coeficientes: 
+
+					1/1 
+					1 
+
+				(1)^inf
+
+				lim (x-1/x+3)^2x = 1^inf
+				x->inf 
+
+				Aplicamos: 	
+
+					e^lim x->inf g(x)*[f(x-1)]	
+
+				e^lim (2x)*[(x-1/x+3 - 1)]
+					x->inf
+
+					(2x)*[(x-1-1*(x+3)/x+3)] 
+					(2x)*[(x-1-x-3/x+3)] 
+					(2x)*(-4/x+3) 
+					-8x/x+3 
+
+				e^lim -8x/x+3
+					x->inf
+
+				Reeplazamos inf en x:  
+
+					-inf*inf/inf+3 
+					-inf/inf 
+
+				Resolvemos otra indeterminación: 
+
+					grados
+					-8x/1x 
+					-8/1 
+					-8
+
+				e^lim -8x/x+3 = -8 
+					x->inf
+
+				Por lo tanto nos quedó una potencia de -8 
+
+				e^-8 
+
+				1/e^8 
+
+
+			Ej2: después de operar, nos queda: 
+
+				En la indeterminación: 
+
+					1^-inf = 1/1^inf 
+
+					Aplicamos la fórmula igualmente. 
+
+				En el exponente del número e: 
+
+					e^lim -4x^2/x-3 
+						x->inf 
+
+						-4*inf^2/inf-3 
+						-inf/inf 
+
+						grados: 
+
+						-4x^2/x 
+
+						num>den 
+
+						-inf 
+
+					e-inf = 1/e^inf  
+
+						Como e es un número más
+
+					1/inf = 0 
+
+						Por la propiedad/operación: 	
+
+							n/inf 
+
+
+	Comparación de infinitos: 
+
+		Cuando no tenemos la funciones polinomicas en la indeterminación inf/inf, es complicado saber sus grados y el resultado final. Como pasa con las funciones irracionales. 
+
+		Hasta que aprendamos la regla de l'hopital, derivar f(x)/g(x). 
+
+		Si tenemos el limite de dos funciones que dan infinito: 
+
+			lim f(x) = inf 
+			x->inf 
+
+			lim g(x) = inf 
+			x->inf 
+
+		Si hacemos el límite de f(x)/g(x) nos dará infinito: 
+
+			lim f(x)/g(x)
+			x->inf 
+
+		Comparamos cual función tiende más rapido hacia infinito: 
+
+			1° f(x) exponenciales: 
+
+				a^x (a>1) 
+
+				2^x, 5^x 
+
+				Con la condición de que la base sea mayor 1. 
+
+			2° f(x) polinomicas: 
+
+				x^n  
+
+				2x^2+3x+4 
+
+			3° f(x) logaritmicas: 
+
+				log a (x) 
+
+				log (x)
+
+		Como son divisiones, tenemos los siguientes resultados: 
+
+			f(x) numerador > denominador = inf 
+			f(x) denominador > numerador = 0 
+
+			Si su tendencia es igual o no lo tenemos claro, convertimos la función problematica. 
+
+			Ej: lim log 2 (x)/x^3 = inf/inf = 0 
+				x->inf 
+
+				lim 2^x/x^6 = inf/inf =inf 
+				x->inf  
+
+				lim x^4*2^-x = inf*0
+
+					Convertimos la potencia negativa: 
+
+					x^4*1/2^x 
+					x^4/2^x = inf/inf = 0 
+
+				lim 5^x/2^x = inf/inf 
+				x->inf  
+
+					(5/2)^x = 2,5^x 
+
+					Es una base > 1 
+
+					lim 2,5^x = inf  
+					x->inf  
+
+
+	Regla de l'Hopital: 
+
+		f(x), g(x) son funciones derivables en un entorno de a 
+
+		Si hacemos el límite de dos funciones y nos da 0: 
+			
+			lim f(x) = 0
+			x->a 
+
+			lim g(x) = 0 
+			x->a 
+
+		Si hacemos el límite de f(x)/g(x) nos dará 0: 
+
+			lim f(x)/g(x) = 0/0 
+			x->a 
+
+		Podemos derivar f(x) y g(x) 
+
+			lim f'(x)/g'(x) 
+			x->a  
+
+		Lo hacemos para simplificar las funciones. 
+
+		
+		Ej: lim e^x-1/senx
+			x->0  
+
+			Reemplazamos 0 en x: 
+
+			e^0-1/sen0 = 1-1/0 = 0/0 
+
+			Hacemos las derivadas: 
+
+			l'H = e^x/cosx 
+
+			sustituimos por 0
+
+			e^0/cos^0 
+
+			1/1 
+
+			1 
+
+
+		También puede aplicarse a los infinitos: 
+
+			lim f(x) = inf
+			x->inf 
+
+			lim g(x) = inf 
+			x->inf 
+
+			Es igual a: 
+
+			lim f(x)/lim g(x) = inf/inf 
+			x->inf 
+			
+			Es igual a: 
+
+			lim f'(x)/g'(x) 
+			x->inf 
+
+
+		La indeterminación 0/0, esconde inf/inf: 
+
+			lim f(x) = inf 
+			x->a 
+
+			lim g(x) = inf 
+			x->a 
+
+			x->"a" no es x->inf, pero tienden a inf en su proceso: 
+
+			lim f(x)/g(x) = inf 
+			x->a  
+
+			Pasamos el númerador a dividir al denominador 
+
+				1/g(x)/f(x) 
+
+			Pasamos el denominador a dividir al numerador 1. 
+
+				1/g(x) / 1/f(x) 
+ 			
+			Como daban infinito: 
+
+				1/inf / 1/inf = 0/0 
+
+
+			Ej: lim lnx/x = inf/inf 
+				x->inf 
+			 	
+			 	l'H = lim 1/x / 1/1   
+			 		   x->inf 
+
+			 		= 1*1/x*1 = 1/x    
+
+
+			 	lim e^x/[x-2] = inf/inf 
+			 	x->inf 
+
+			 	l'H = e^x/ 1/2[x-2] 
+
+			 		= e^x/1 / 1/2[x-2] 
+
+			 		= e^x*2*[x-2] / 1/1  
+
+			 		= e^x*2*[x-2]/1 
+
+			 	x = inf: 
+
+			 		e^inf*2[inf-2]/1 
+			 		inf*2*[inf]/1 
+			 		inf/1 
+			 		inf 
+
+		También podemos aplicarla en casos 0*inf especiales (x->0, etc), para eliminar algún x que multiplique. 
+
+			lim x*lnx = 0*ln 0,1 = 0*(-inf)
+			x->0+
+
+			El ln de 0 y negativo no existe, no se puede aproximar por la izquierda en x->0.  
+
+			Después de encontrar la indeterminación, no podemos resolverla dado que no sabemos los grados, no tenemos terminos para operar, etc. 
+			
+			Tomamos f(x) y la pasamos a dividir (Desde una multiplicación, no división) 
+
+				lnx/1/x 
+
+			Si reemplazamos nos da -inf/inf, y podemos aplicar l'Hopital:
+
+				-inf/1/0 = -inf/inf 
+
+				l'H = 1/x / -1/x^2 
+
+					= 1*x^2/x*-1
+
+					= x^2/-x 
+
+					= x/-1 
+
+			Sustituimos: 
+
+				0/-1 = 0 
+
+
+			Otro caso: 
+				
+				lim x^2*e^x  
+				x->-inf 
+
+				-inf^2*e^-inf = -inf*-inf*e^-inf = inf*0 
+
+				x^2/e^-x
+
+				-inf*-inf/e^-(-inf) = inf/inf
+
+				Conseguimos inf/inf para aplicar l'Hopital: 
+
+				l'H = 2x/-e^-x 
+
+				Reemplazamos: 
+
+					2*-inf/-e^-(-inf) = -inf/-inf
+					= inf/inf 
+
+				Volvemos a aplicar l'Hopital: 
+
+					l'H = 2/e^-x 
+
+				Reemplazamos: 
+
+					2/e^-(-inf) 
+
+					2/inf = 0 
+
+
 	Tipos de indeterminaciones: 
 
 		1.  k/0 = +-infinito
@@ -5919,21 +6779,12 @@
 
 						6/1 
 
-						1 
+						1
 
 
-				
+		3. inf/inf = indeterminación: 
 
-
-					
-
-
-
-
-
-			3. inf/inf = indeterminación: 
-
-				Se resuelven por el grado de las funciones:
+			Se resuelven por el grado de las funciones:
 
 				Hay tres resultados posibles:
 
@@ -6012,375 +6863,26 @@
 						3/[4]
 
 
-						Ej: lim 3x/[5x^2+7x]
-							x->inf 
-
-							infinitos: 
-
-								inf/inf 
-
-							grados: 
-
-								3x/[5x^2]
-								3x/5x 
-
-							coeficientes:  
-							
-							Operamos la raíz cuadrada para los coeficientes. 
-
-							3/[5] 
-
-							3/2,32 
-
-
-							lim 3x/[4x^2+1]+5x
-							x->inf 
-
-							infinitos: 
-
-								inf/[inf]+inf 
-								inf/inf 
-
-							grados: 
-
-								3x/[4x^2]+5x 
-								3x/4x+5x  
-
-							coeficientes:
-
-								Operamos la raíz para los coeficientes.
-
-								3/[4]+5 
-								3/2+5
-								3/7 
-
-
-							lim 3x+[x^2+9]/2x =   
-							x->inf 
-
-							inf/inf
-
-							3x+x/2x 
-
-							Anotamos todos los coeficientes de los exponentes mayores con sus raíces. 
-
-							3+[1]/2 
-							3+1/2 
-							4/2 
-							2  
-
-
-							lim 3x+[x^2+9]/2x^2
-							x->inf 
-
-							inf/inf 
-
-							3x+x/2x^2 
-
-							0 
-
-
-		4. 
-
-
-		5. 
-
-
-
-	Resumen de indeterminaciones: 
-
-		Operar límites: 
-
-			Un límite se resuelve con estos pasos: 
-
-				Ej: lim 2x*3/x+5 
+				Ej: lim 3x/[5x^2+7x]
 					x->inf 
 
-				Encontramos la indeterminación.
-
-					2*inf*3/inf+5 = inf*3/inf = inf*0 
-
-				Resolvemos los terminos
-
-					2x*3/x+5 = 6x/x+5
-
-				Volvemos a reemplazar x por inf para encontrar la otra indeterminación. 
-
-					2*inf*3/inf+5 = inf/inf 
-
-				Resolvemos la nueva indeterminación 
-
-					grados: 
-
-						6x/x 
-
-						son iguales
-
-					coeficientes: 
-
-						6/1 
-
-						1 
-
-			Cambian las indeterminaciones que van apareciendo cuando operamos los terminos del límite: 
-
-				raíces (cambio a potencia, racionaliación), suma/resta (mcd), multiplicación/div de fracciones (direct/invers), factorizaciones (común, igualdades), etc. 
-
-			Tambien podemos tener en cuenta operaciones con números entre cero, inf, etc: 
-
-				Suma y resta: 
-
-					inf+-n = inf 
-
-					-inf+-n =  -inf
-			
-					inf+inf = inf 
-
-					-inf-inf = -inf
-
-					+inf-inf = (indet)
-
-
-				Multiplicación: 
-
-					0*n = 0 
-
-					inf*-+n = +-inf (aplica los signos, no es indet )
-
-					-inf*(+-n) = -+inf (aplica signos)
-
-					inf*inf = inf 
-
-					-inf*inf = -inf
-
-					-inf*(-inf) = inf  
-
-					inf^n = inf
-
-					inf*0 = (indet) 
-
-						Una tiende a 0 y la otra a infinito. 
-
-					
-				División:
-
-					0/k = 0 
-
-						Es una división convencional. 
-
-					k/0 = +-inf (indet)
-
-						Lo resolviamos con límites laterales y 
-
-					0/0 puede dar: (indet)
-
-						0, un número (n°), o +-inf
-
-						Lo resolviamos con factores comunes, igualdades notables, racionalizando, usando la regla de l'Hopital (fx especiales) y 
-
-					Con el número infinito agregamos nuevas divisiones:
-
-						n/inf = 0 
-
-						+-inf/n = +-inf 
-
-							(aplica signos, no es indet)
-			
-						inf/0 = +-inf (indet)
-
-							Aplicamos limites laterales. 
-
-						inf/inf = (indet)
-
-							Puede dar 0, -+inf (lim, lat), grados, coeficientes, etc. 
-
-
-				Potencias:
-
-
-
-
-		1. k/0 = +-inf
-
-			Limites laterales, 
-
-
-		2. 0/0 = 0, un número (n°), o +-inf
-
-			Se resuelven con factores comunes (lineales), igualdades notables (cuadráticas), Raíz en fracción,  Racionalizando (racionales), l'Hopital (irracionales)
-
-			en caso de volver a dar indeterminación +-inf, se resuelve con su metodo. 
-
-
-		3. inf-inf = +-inf, 0, coef/coef.
-
-			Aparece en tres casos: 
-				
-				1. Se resuelven mediante grado exponentes
-
-					[inf^3]-inf 
-
-					inf^3/2-inf^1 
-
-					inf^1,5-inf^1 
-
-					inf
-
-
-				2. Operar resta de terminos: 
-
-					Necesitamos resolver por grados para conocer sus tres posibbles resultados: 
-
-						+- inf si num>den 
-
-						0 si den>num 
-
-						coef(fx)/coef(gx) si num=den 
-
-					En cada termino puede haber una indeterminación inf/inf que se resulve con grados. 
-
-					Cuando terminemos los terminos nos quederá, la indeterminación inf-inf.
-
-					Después debemos sacar mcd para resolver las fracciones (no podemos eliminar denominador porque no son ecuaciones, son sum/res convencional) y sacar la indetermnación final. 
-
-					Ej: lim x^2+1/x+2 - x 
-						x->inf 
-
-						inf/inf - inf 
-
-						1°indet
-
-							x^2+1/x+2 = 
-
-							inf/inf 
-
-							grados: 
-
-							x^2/x 
-
-							inf  
-
-						inf-inf 
-
-
-						x^2+1/x+2 - x(x+2)/(x+2)
-
-						x^2+1 - x^2+2x/ x+2
-
-						-2x+1/x+2 
+					infinitos: 
 
 						inf/inf 
 
-						2°indet 
+					grados: 
 
-							grados: 
+						3x/[5x^2]
+						3x/5x 
 
-							-2x/x
+					coeficientes:  
+							
+						Operamos la raíz cuadrada para los coeficientes. 
 
-							num=den 
+						3/[5] 
 
-							coeficientes: 
+						3/2,32 
 
-							-2/1 
-							-2 
-
-						Entonces: 
-
-						im x^2+1/x+2 - x = -2
-						x->inf
-
-
-				3. Raíces cuadradas: 
-
-					Tenemos que aplicar las racionalizaciones, sobre todo conjugado: a^2-b^2
-
-					Para eliminar las raíces y resolver por grados. 
-
-
-					Ej: lim [x^2-3x]-x 
-						x->inf 
-
-						inf-inf 
-
-						apicamos conjugado
-
-						[x^2-3x]-x * [x^2-3x]+x / [x^2-3]+x 
-
-						([x^2-3x])^2 - x^2/ [x^2-3]+x
- 						
- 						x^2-3x-x^2 / [x^2-3]+x 
-
- 						-3x/[x^2-3]+x 
-
- 						Resolvemos límite 
-
- 						-inf/inf 
-
- 						grados: 
-
- 							-3x/x 
-
- 							son iguales 
-
- 						coeficientes: 
-
- 							Tomamos todos los coeficientes del mismo grada de todos los terminos.  
-
- 							-3/[1]+1 
- 							-3/1+1 
- 							-3/2
-
- 					Ej2: no tiende a infinitos
-
- 						lim 1/x^2-9 - 1/x-3 
- 						x->3 
-
- 						1/9-9 - 1/3-3 = 1/0 - 1/0 = +-inf - +-inf 
-
- 						resolvemos la fracción 
-
- 						1-(x+3)/x^2-9
-
- 						1-x-3/x^2-9 
-
- 						-2-x/x^2-9
-
- 						reemplazamos el termino "a"
-
- 						-2-3/9-9 = -5/0 = +-inf
-
- 						límites laterales del resultado sin indeterminación: 
-
- 						izq: 
- 							
- 							lim -2-x/x^2-9
-
- 							x = 2,99 
- 							f(2,99) = 83,3  
-
- 							x = 2,999 
- 							f(2,999) = 833,3 
-
- 						der: 
-
- 							x = 3,01 
- 							f(3,01) = -83,36
-
- 							x = 3,001 
- 							f(3,001) = -833,36
-
-
-		4. inf/inf = 0,+-inf, coef/coef
-
-			Se resuelven por el grado de las funciones:
-
-				Hay tres resultados posibles:
-
-				grado numerador > denominador = +-inf
-
-				grado numerador < denominador = 0  
-
-				grado numerador = denominador = dividimos los coeficientes de las variables con mayor exponente. 
 
 					lim 3x/[4x^2+1]+5x
 					x->inf 
@@ -6397,66 +6899,250 @@
 
 						coeficientes:
 
-							Anotamos todos los coeficientes de los exponentes mayores con sus raíces. 
-
 							Operamos la raíz para los coeficientes.
-
-							Tomamos todos los coeficientes del mismo grada de todos los terminos. 
-
-								Por eso tenemos los coeficientes de los terminos: 
-
-									[4x^2]+5x 
-									[4] y 5 
 
 							3/[4]+5 
 							3/2+5
 							3/7 
 
 
-		5. 0*inf = indet
+					lim 3x+[x^2+9]/2x =   
+					x->inf 
 
-			Ej: lim 2x*3/x+5 
-				
+						inf/inf
+
+						3x+x/2x 
+
+						Anotamos todos los coeficientes de los exponentes mayores con sus raíces. 
+
+						3+[1]/2 
+						3+1/2 
+						4/2 
+						2  
+
+
+						lim 3x+[x^2+9]/2x^2
+						x->inf 
+
+						inf/inf 
+
+						3x+x/2x^2 
+
+						0 
+
+
+		Potencias: 
+
+			inf^n = inf 
+
+			inf^inf = inf 
+
+			inf^-n = 1/inf^n = 1/inf = 0 
+
+				inf^-n = 0 
+
+			inf^-inf = 1/inf^inf = 1/inf = 0 
+
+			Si n^inf: 
+
+				1° inf, si n>1 
+
+					4^inf = inf 
+					(7/4)^inf = inf 
+
+				2° 0, si 0 </ n < 1 
+
+					0,6^2 = 0,36 
+
+						tienden a 0. 
+
+					0,6^inf = 0 
+
+						Un número muy grande, lo acerca rapidamente a 0. 
+
+			Si n^-1: 
+
+				1° 0, si n > 1 
+
+					4^-inf = 0 
+
+						1/4^inf = 0 
+
+
+				2° inf, si 0 </ n < 1 
+
+					(3/5)-inf = 5/3^inf = inf 
+
+			1^inf = indet 
+
+
+			Ej: lim (3x+1/5)^4 
 				x->inf 
 
-				encontramos la indeterminación.
+				(3*inf+1/5)^4 
 
-					2*inf*3/inf+5 = inf*3/inf = inf*0 
+				(inf/5)^4 
 
-				resolvemos los terminos
+				(inf)^4
 
-					2x*3/x+5 = 6x/x+5
-
-				Volvemos a reemplazar x por inf para encontrar la otra indeterminación. 
-
-					2*inf*3/inf+5 = inf/inf 
-
-				Resolvemos la nueva indeterminación 
-
-					grados: 
-
-						6x/x 
-
-						son iguales
-
-					coeficientes: 
-
-						6/1 
-
-						1 
+				inf 
 
 
-		6. 
+				lim (4x^2+9x/2x^2+1)^x 
+				x->inf  
+
+				(inf/inf)^inf 
+
+				encontramos la indeterminación (inf/inf) 
+
+				grados: 
+
+					4x^2/2x^2 
+
+				coeficientes: 
+
+					4/2 
+					2 
+
+				2^inf  
 
 
+				lim (5x^2+9x/2x^2+1)^-3x^2
+				x->inf 
+
+				(inf/inf)^-3*inf^2 
+
+				(inf/inf)^-inf^2 
+
+				(inf/inf)^-inf 
+
+				grados: 
+
+					5x^2/2x^2 
+
+				coeficientes: 
+
+					5/2 
+
+				5/2^-inf 
+
+				2/5^inf 
+
+				0,4^inf 
+
+				0 
 
 
+		4. 1^inf 
 
-		7. 
+			1^n = 1
 
+			1^5 = 1*1*1*1*1 
 
+			2^-3 = 1/2^3 = 1/2*2*2 = 1/8 
 
+			(2/3)^-3 = (3/2)^3 =  27/8 
 
+			4^inf = inf  
+
+			1^inf = indet 
+
+				Metodos: 
+
+					1° La resolvemos mediante el número e = 2,718281... 
+
+						e = lim (1+1/x)^x  
+						x->inf  
+
+						(1+1/inf)^inf 
+
+						(1+0)^inf 
+
+						(1)^inf  
+
+						1^inf 
+
+						La idea es hacer que las funciones a resolver se parezcan a este límite. 
+
+					
+					2° lim f(x)^g(x) = 1^inf 
+						x->inf 
+
+							Elevamos una función, si su resultado da 1^inf (inde)
+
+							Es igual al número e. 
+
+						= e^lim x->inf g(x)*[f(x-1)]
+
+							Elevamos el límite al número e.
+
+							Resolvemos el límite de e.  
+
+						x->"a", puede tomar cualquier número. 
+
+							x->k
+							x->inf 
+
+			Ej: lim (x-1/x+3)^2x 
+				x->inf 
+
+				Reemplazamos "a" en lim 
+
+				(inf-1/inf+3)^2*inf 
+
+				(inf/inf)^inf 
+
+				Resolvemos la indeterminación del parentesis
+
+				grados: 
+
+					x/x 
+
+				coeficientes: 
+
+					1/1 
+					1 
+
+				(1)^inf
+
+				lim (x-1/x+3)^2x = 1^inf
+				x->inf 
+
+				Aplicamos: 	
+
+					e^lim x->inf g(x)*[f(x-1)]	
+
+				e^lim (2x)*[(x-1/x+3 - 1)]
+					x->inf
+
+					(2x)*[(x-1-1*(x+3)/x+3)] 
+					(2x)*[(x-1-x-3/x+3)] 
+					(2x)*(-4/x+3) 
+					-8x/x+3 
+
+				e^lim -8x/x+3
+					x->inf
+
+				Reeplazamos inf en x:  
+
+					-inf*inf/inf+3 
+					-inf/inf 
+
+				Resolvemos otra indeterminación: 
+
+					grados
+					-8x/1x 
+					-8/1 
+					-8
+
+				e^lim -8x/x+3 = -8 
+					x->inf
+
+				Por lo tanto nos quedó una potencia de -8 
+
+				e^-8 
+
+				1/e^8
 
 
 
@@ -6473,7 +7159,66 @@
 
 
 
+
+
+
 || INTEGRALES
+
+
+
+
+
+
+
+
+
+|| PROGRESIONES
+
+
+
+
+
+
+
+
+
+|| SUMATORIA 
+
+
+
+
+
+
+
+
+
+
+
+
+|| VECTORES 
+
+
+
+
+
+
+
+
+
+
+|| GEOMETRÍA 
+
+
+
+
+
+
+
+
+
+|| TRIGONOMETRÍA
+
+
 
 
 
