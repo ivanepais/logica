@@ -7275,6 +7275,51 @@
 						No hay más operaciones disponibles dado que son monomios de misma variable pero distinto exponente, no se puede operar coeficientes. 
 
 
+			Rs exponenciales: 
+
+				y = x^m -> y'= m*x^m-1 
+
+				1. y'= k = 0 
+
+				2. y'= x = 1
+
+				3. y'= k*x = k 
+
+				4. y'= x^-m 
+
+					 = -m*x^-m-1 
+
+					o 
+
+					Cuando tenemos el polinomio en el denominador (o viceversa) aplicamos: 
+
+						k/x^m = kx^-m
+
+					Transformamos la fracción en potencia y al resolverla, volvemos a fracción
+
+					k/x^m = kx^-m = -m*x^-m-1 = -m/x^m
+
+					y = 1/x	-> y'= -1/x^2 
+
+				5. y'= [x] = x^1/2 =
+
+					1/2*x^1/2-1/1 
+
+						Potencia con fracciones:
+						
+							1/2-1(2)/2 = 1-2/2 = -1/2
+
+					Potencia negativa a positiva:
+
+						x^-1/2 /2 = 1/2*x^1/2
+
+					Volvemos a transformarlo en raíz 
+
+					= 1/2[x]
+
+				..................
+
+
 				y = x^3+x^2-x 
 
 					y'= 3x^2 + 2x - 1  
@@ -7360,30 +7405,80 @@
 					y'= -1/x^2  
 
 
-			Rs exponenciales: 
+				y = 4/x^2 
 
-				y = x^m -> y'= m*x^m-1 
-
-				1. y'= k = 0 
-
-				2. y'= x = 1
-
-				3. y'= k*x = k 
-
-				4. y'= x^-m 
-
-					 = -m*x^-m-1 
-
-					o 
-
-					Cuando tenemos el polinomio en el denominador.
-
-					Transformamos la fracción en potencia y al resolverla, volvemos a fracción.
-
-					1/x^m = x^-m = -m*x^-m-1 = -m/x^m
+					y'= 4x^-2 = -8x^-3 = -8/x^3 
 
 
+				y = -6x^3+4x^2-9x+2+3/x-7/x^2 
 
+				y' = -18x^2 + 8x - 9 -3/x^2 + 14/x^3
+
+					3/x = 3x^-1 = -1*3x^-1-1 = -3x^-2 = -3/x^2  
+
+					7/x^2 = 7x^-2 = -14x^-3 = -14/x^3 
+
+
+				y= [x] = x^1/2 =
+
+					y'= 1/2*x^1/2-1/1 
+
+						Potencia con fracciones:
+						
+							1/2-1(2)/2 = 1-2/2 = -1/2
+
+					Potencia negativa a positiva:
+
+						x^-1/2 /2 = 1/2*x^1/2
+
+					Volvemos a transformarlo en raíz 
+
+					= 1/2[x]
+
+
+				y = 3^[x]
+
+					y'= x^1/3 = 1/3*x^1/3-1/1 
+
+						1/3-1/1 = 1-1(3)/3 = 1-3/3 = -2/3 
+
+					 = 1/3*x^-2/3 
+
+					 = x^-2/3 /3 
+
+					 = 1/3*x^2/3
+
+					 = 1/3*3^[x^2] 
+
+
+				y = 5^[x^3] 
+
+					y'= x^3/5 = 3/5*x^3/5-1/1 
+
+						3/5-1/1 = 3-5(1)/5 = 3-5/5 = -2/5 
+
+					 = 3/5*x^-2/5  
+
+					 = 3x^-2/5 /5 
+
+					 = 3/5*x^2/5 
+
+					 = 3/5*5^[x^2] 
+
+
+				y = 6*2^[x] 
+
+					y'= 6*x^1/2 = 6*1/2*x^1/2-1/1 
+
+						1/2-1/1 = 1-1(2)/2 = -1/2 
+
+						6*1/2 = 6/2 = 3  
+
+					 = 3x^-1/2 
+
+					 = 3/x^1/2 
+
+					 = 3/[x]
 
 
 		Logarítmica: 
