@@ -7148,15 +7148,278 @@
 
 || DERIVADAS
 
+	Relación con la función: 
+
+		Una función es una relación entre dos magnitudes (x e y) de modo que a cada valor de x le corresponde un único valor de y. 
+
+			y = x^2 -> y'= (x^2)'
+
+			y = [x] -> y'= ([x])'
+
+			y = log x -> y'= (logx)'
+
+			y = senx -> y'= (senx)'
+
+		La derivada de una función se representa con una coma. 
+
+			y = f -> y'= f' 
+
+
+	Operaciones con derivadas: 
+
+		y = f -> y'= f' 
+
+		y = f+g -> y'= f'+-g' 
+
+		y = k*f -> y'= k*f' 
+
+			k, (número R, constante, coeficiente de variable) 
+
+			Si tenemos una división: 
+
+				y = x^2/4
+
+			Es como multiplicar: 
+
+				y = 1/4*x^2 
+
+			Entonces, podemos aplicar:  
+
+				y = x^2/4 -> y' = (x^2)'/4 
+
+				El denominador hace de constante, no perjudica la derivada. 
+
+			Lo aplicamos en todas las divisiones constantes. 
+
+		y = f/k -> y'= f'/k 
+
+		y = f*g -> y'= f'*g + f*g' 
+
+		y = f/g -> y'= f'*g - f*g'/g^2 
+
+		y = f(g) -> y'= f'(g)*g' 
+
+			Primero derivamos la función más externa y mantenemos multiplicando la interna. Después multiplicamos y derivamos la interna. 
+
+			y = [senx] -> y'= [senx]'*(senx)'
+
+			y = log (x^6) -> y'= log'(x^6)*(x^6)'
+
+			y = f(g(h)) -> y'= f'(g(h)) * g'(h) * (h)'
+ 
+				Derivamos las más externas y las más internas no las modifico. Multiplicamos y derivamos la siguiente, etc. 
+
+		Ej: 
+
+
+
+
+	Derivadas por tablas: 
+
+		Constante: 
+
+			y = k (número) -> y'= 0 
+
+				y = 5 -> y'= 0 
+
+				y = -6 -> y'= 0 
+
+				y = 3/4 -> y'= 0 
+
+				y = pi -> y'= 0 
+
+				y = [19] -> y'= 0 
+
+
+			Al final una fracción, una raíz, pi, e son un número: racional, irracional como los enteros, enteros y naturales etc. 
+
+			Ej: y = 5+[2] -> y'= 0+0 
+
+				y = e-1/5 -> y'= 0-0 
+
+
+		Polinómica: 	
+
+			y = x^m -> y'= m*x^m-1  
+
+				y = x^4 -> y'= 4*x^4-1 = 4x^3
+
+				y = x^2 -> y'= 2*x^2-1 = 2x 
+
+				Casos especiales: 
+					
+					y = x 
+
+						y'= 1*x^1-1 = 1*x^0 = 1*1 = 1 
+
+					y = k*x
+
+						y' = k * 1*x^1-1 
+
+						   = k * 1*1 
+
+						   = k*1 
+
+						   = k 
+
+
+			Ej: y = x^4+x^6 
+
+					y'= 3x^3 + 6x^5 
+
+
+				y = x^5-x^4-x^3+x^2 
+
+					y'= 5x^4 - 4x^3 - 3x^2 + 2x 
+
+						No hay más operaciones disponibles dado que son monomios de misma variable pero distinto exponente, no se puede operar coeficientes. 
+
+
+				y = x^3+x^2-x 
+
+					y'= 3x^2 + 2x - 1  
+
+
+				y = 6x^3 
+
+					Para el coeficiente 6, aplica k*f -> k*f', no modifica la derivada. 
+
+					y'= 3*6x^2 = 18x^2
+
+
+				y = 8x^3-6x^2+x-10 
+
+					Para x aplica (y'= x es 1) 1, y para (y'= k es 0) 10, 0. 
+
+					y'= 3*8x^2 - 2*6x + 1 
+
+					  = 24x^2 -12x +1 
+
+
+				y = x^3/2 
+
+					Aplica y'= f'/k (/2 = *1/2)
+
+					y'= 3x^2/2 
+
+					o 
+
+					y'= 3/2*x^2
+
+						No podemos simplificar 
+
+
+				y = 4x^3/4 
+
+					y'= 12x^2/4 = 3x^2 
+
+						Podemos simplificar 
+					o 
+
+					y'= 12/4*x^2 = 3x^2 
+
+
+				y = x^4/4 
+
+					y'= 4x^3/4 = x^3 
+
+					o 
+
+					y'= 4/4*x^3 = x^3 
+
+
+				y = 5x 
+
+					Aplica k*f', además y'= x es 1. Aplicamos directamente: 
+
+						y'= k*x = k 
+
+					y'= 5 
+
+
+				y = x^-3 
+
+					y'= -3x^-3-1 = -3x^-4 
+
+
+				y = 1/x^3 
+
+					Cuando tenemos el polinomio en el denominador, deshacemos la fracción
+
+					y'= x^-3 = -3x^-3-1 = -3x^-4
+
+					La volvemos a fracción
+
+						y'= -3/x^4 
+
+
+				y = 1/x 
+
+					y'= x^-1 = -x^-1-1 = -x^-2
+
+					y'= -1/x^2  
+
+
+			Rs exponenciales: 
+
+				y = x^m -> y'= m*x^m-1 
+
+				1. y'= k = 0 
+
+				2. y'= x = 1
+
+				3. y'= k*x = k 
+
+				4. y'= x^-m 
+
+					 = -m*x^-m-1 
+
+					o 
+
+					Cuando tenemos el polinomio en el denominador.
+
+					Transformamos la fracción en potencia y al resolverla, volvemos a fracción.
+
+					1/x^m = x^-m = -m*x^-m-1 = -m/x^m
 
 
 
 
 
+		Logarítmica: 
 
 
 
 
+
+			Neperiana: 
+
+
+
+
+
+		Exponencial: 
+
+
+
+
+
+			Base e: 
+
+
+
+		Trigonométricas: 
+
+			Seno: 
+
+
+			Cos: 
+
+
+			Tg: 
+
+
+			arc: 
 
 
 
