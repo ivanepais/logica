@@ -7209,12 +7209,156 @@
  
 				Derivamos las más externas y las más internas no las modifico. Multiplicamos y derivamos la siguiente, etc. 
 
-		Ej: 
-
-
-
 
 	Derivadas por tablas: 
+
+		Simplificaciones: 
+
+			En la multiplicación aparecen multiplicaciones de fracciones.
+
+				fracciones: 
+
+				y = x^6*log 2 (x)
+
+					Aplicamos: 
+
+						y = f*g -> y'= f'*g + f*g'
+
+					y'= 6x^5 * log 2 (x) + x^6 * 	1/x*log 2 (e) 
+
+							Multiplicamos: 
+
+								x^6*1/x = x^6/x 
+
+						6x^5 * log 2 (x) + x^6/x*log 2 (e)
+
+							Dividimos o simplificamos el mismo termino: 
+
+								x^6/x = x^5 
+
+						6x^5 * log 2 (x) + x^5*log 2 (e)
+
+
+			En la división aparecen factores comunes, divisiones monomios, multiplicaciones. 
+
+				y = lnx/x^3 
+
+					y'= 1/x * x^3 - lnx * 3x^2 / x^6 
+
+						x^2 - lnx * 3x^2 / x^6
+
+
+				y = ln(x^4) 
+
+					Aplicamos: 
+
+						y = f(g) -> y'= f'(g) * g' 
+
+					1/x^4 * 4x^3 
+
+					4x^3/x^4 
+
+					4/x 
+
+
+				log: 
+
+				y = logx/x^2
+
+					Aplicamos:
+
+						y = f/g -> y'= f'*g - f*g'/(g)^2
+
+					y'= 1/x*log e * x^2 - logx * 2x/ x^4 
+
+						Simplificamos: 1/x*x^2 = x^2/x = x 
+
+					y'= log e * x - logx * 2x/ x^4 
+
+						Simplificar: 
+
+
+				y = [lnx] 
+
+					Aplicamos: 
+
+						y'= [x] = x^1/2
+
+							1/2[x]
+
+					y'= 1/2[lnx] * 1/x 
+
+							Multiplicamos denominadores: 
+								
+								2[lnx]*x 
+
+						1/2x[lnx] 
+
+
+				y = ln[x] 	
+
+					y'= 1/[x]*1/2[x]
+
+						1/2[x]^2
+
+						1/x 
+
+
+
+				y = 2^x * log 3 (x)
+
+					y'= 2^x*ln2 * log 3 (x) + 2^x * 1/x*log 3 (e) 
+
+						Factor común: 
+
+							2^x*ln2*log 3 (x)
+
+							2^x*1/x*log 3 (e)
+
+
+				y = 5^x/x^4 
+
+					y'= 5^x*ln5 * x^4 - 5^x * 4x^3 / x^8 
+
+						Factor común: 
+
+							x^4, 4x^3
+
+							5^x*ln5 * x^4 - 5^x * 4x^3 = 
+
+							= x^3(5^x*ln5*x-5^x*4)
+
+						Simplificar: 
+
+							x^3*x^8 
+
+							(5^x*ln5*x-5^x*4)/x^5
+
+						Factor común: 
+
+							5^x, 5^x
+
+							5^x (ln5*x-4)
+
+
+				y = logx/e^x
+
+					y'= 1/x*log(e) * e^x - logx * e^x /e^2x 
+
+						Factor común repetido en los terminos: 
+
+							e^x
+
+						= e^x (1/x*log(e)*1-logx*1)/e^2x 
+
+							Resta exponentes: 
+
+							e^x/e^2x 
+
+							2x-x = e^x 
+
+						loge/x - logx/e^x 
+
 
 		Constante: 
 
@@ -7275,7 +7419,7 @@
 						No hay más operaciones disponibles dado que son monomios de misma variable pero distinto exponente, no se puede operar coeficientes. 
 
 
-			Rs exponenciales: 
+			Rs polinómicas: 
 
 				y = x^m -> y'= m*x^m-1 
 
@@ -7309,11 +7453,13 @@
 						
 							1/2-1(2)/2 = 1-2/2 = -1/2
 
-					Potencia negativa a positiva:
+						Potencia negativa a positiva:
 
-						x^-1/2 /2 = 1/2*x^1/2
+							x^-1/2 /2 = 1/2*x^1/2
 
-					Volvemos a transformarlo en raíz 
+						Volvemos a transformarlo en raíz 
+
+							1/2[x]
 
 					= 1/2[x]
 
@@ -7483,24 +7629,370 @@
 
 		Logarítmica: 
 
+			Rs logaritmica: 
+
+				y = log a (x) -> y'= 1/x*log a (e)
+
+				y = ln x -> y'= 1/x 
+
+				1. y'= k*log a (x)
+
+					k*1/x*log a (e) 
+
+					k*log a (e)/x 
+
+					o 
+
+					y'= log a (x)/k 
+
+					1/x*log a (e)/k 
+
+					1*log a (e)/kx 
+
+					Se mantiene dado que es constante, no modifica la derivada. 
+
+					En caso de varios "pisos", los números que dividen pasan al denominador y los del númerador quedan. 
+
+						Dado que: 
+
+							1/x /3 = 1/x / 3/1 
+
+							1*1 / 3*x = 1/3x 
+
+				2. y'= k*ln x
+
+					k*1/X 
+
+					k/x 
+
+					o 
+
+				 	y'= ln x/k 
+
+				 	1/x /k 
+
+				 	1/kx
+
+		..............		 	
+
+			y = log a (x) -> y'= 1/x*log a (e)
+
+				
+				y = log 4 (x) 
+
+					y'= 1/x*log 4 (e)
 
 
+				y = log x 
+
+					y'= 1/x*log (e)
+
+
+				y = x5+log 4 (x) 
+
+					y'= 5x^4 + 1/x*log 4 (e)
+
+
+				y = 3x^2-log x 
+
+					y'= 6x - 1/x*log (e) 
+
+
+				y = -9*log 4 (x)
+
+					y'= -9*1/x*log 4 (e) 
+
+						-9*log 4 (e)/x 
+
+
+				y = log x/2 
+
+					y'= 1/x*log (e)/2 
+
+						1*log e/2x 
+
+						log e/2k 
+
+
+				y = x^6*log 2 (x)
+
+					Aplicamos: 
+
+						y = f*g -> y'= f'*g + f*g'
+
+					y'= 6x^5 * log 2 (x) + x^6 * 1/x*log 2 (e) 
+
+						Multiplicamos: x^6*1/x = x^6/x 
+
+					6x^5 * log 2 (x) + x^6/x*log 2 (e)
+
+						Dividimos: x^6/x = x^5 
+
+					6x^5 * log 2 (x) + x^5*log 2 (e)
+
+
+				y = logx/x^2
+
+					Aplicamos:
+
+						y = f/g -> y'= f'*g - f*g'/(g)^2
+
+					y'= 1/x*log e * x^2 - logx * 2x/ x^4 
+
+						Simplificamos: 1/x*x^2 = x^2/x = x 
+
+					y'= log e * x - logx * 2x/ x^4
 
 
 			Neperiana: 
 
+				ln = log e (base)  
+
+					ln x = log e (x) 
+
+						y' = 1/x*log e (e) 
+
+							log e (e) = 1  
+
+								e^1 = e 
+
+				y = ln x -> y'= 1/x 
 
 
+				y = 5*ln x 
+
+					y'= 5*1/x  
+
+						5/x 
+
+
+				y = ln x/3 
+
+					y'= 1/x /3 
+
+						1/3x 
+
+
+				y = ln x + 3x^5 
+
+					y'= 1/x + 15x^4 
+
+
+				y = ln x - log x 
+
+					y'= 1/x - 1/x log (e)
+
+
+				y = x^2 * lnx  
+
+					y'= 2x * lnx + x^2 * 1/x 
+
+						2x * lnx +  x^2/x 
+
+						2x * lnx +  x
+
+
+				y = lnx/x^3 
+
+					y'= 1/x * x^3 - lnx * 3x^2 / x^6 
+
+						x^2 - lnx * 3x^2 / x^6
+
+
+				y = ln(x^4) 
+
+					Aplicamos: 
+
+						y = f(g) -> y'= f'(g) * g' 
+
+					1/x^4 * 4x^3 
+
+					4x^3/x^4 
+
+					4/x 
+
+
+				y = (lnx)^4 
+
+					4(lnx)^3 * 1/x  
+
+
+				y = ln^4x 
+
+					izq a der :
+						
+						externa: ln^4 
+						interna: lnx 
+
+					y'= 4ln^3 * 1/x
+
+
+				y = [lnx] 
+
+					Aplicamos raíz a exp: 
+
+						y'= [x] = x^1/2
+
+							1/2[x]
+
+					y'= 1/2[lnx] * 1/x 
+
+						Multiplicamos: 
+
+							1*1
+							2[lnx]*x
+
+						1/2x[lnx]
+
+
+				y = ln[x] 	
+
+					y'= 1/[x]*1/2[x]
+
+						1/2[x]^2
+
+						1/x 
 
 
 		Exponencial: 
 
+			Rs exponencial: 
+
+				y = a^x -> y'= a^x * lna
+
+				y = e^x -> y'= e^x
 
 
+			y = a^x -> y'= a^x * lna 
+
+
+				y = 3^x 
+
+					y' = 3^x * ln3 
+
+
+				y = 2^x * log 3 (x)
+
+					y'= 2^x*ln2 * log 3 (x) + 2^x * 1/x*log 3 (e) 
+
+						Factor común: 
+
+							2^x*ln2*log 3 (x)
+
+							2^x*1/x*log 3 (e)
+
+
+				y = 5^x/x^4 
+
+					y'= 5^x*ln5 * x^4 - 5^x * 4x^3 / x^8 
+
+						Factor común: 
+
+							x^4, 4x^3
+
+							5^x*ln5 * x^4 - 5^x * 4x^3 = 
+
+							= x^3(5^x*ln5*x-5^x*4)
+
+						Simplificar: 
+
+							x^3*x^8 
+
+							(5^x*ln5*x-5^x*4)/x^5
+
+						Factor común: 
+
+							5^x, 5^x
+
+							5^x (ln5*x-4)
+
+
+				y = 2^3x^7 
+
+					izq a der: 
+
+						2^3x^7 (ext 1°) 
+
+						3x^7 (int 2°)
+
+					y'= 2^3x^7*ln2 * 21x^6
+
+
+				y = [4^x] 
+
+					y'= 1/2[4^x] * 4^x*ln4 
 
 
 			Base e: 
 
+			y = e^x -> y'= e^x
+
+				e es un número como a^x, si aplicamos a^x -> a^x*lna 
+
+					e^x -> e^x*lne = e^x*1 = e^x 
+
+			
+				y = 7*e^x 
+
+					y'= 7*e^x
+
+				
+				y = e^x/6 
+
+					y'= e^x/6 
+
+
+				y = 5x^2 - e^x + lnx 
+
+					y'= 10x-e^x+1/x 
+
+
+				y = logx/e^x
+
+					y'= 1/x*log(e) * e^x - logx * e^x /e^2x 
+
+						Factor común repetido en los terminos: 
+
+							e^x
+
+						= e^x (1/x*log(e)*1-logx*1)/e^2x 
+
+							Resta exponentes: 
+
+							e^x/e^2x 
+
+							2x-x = e^x 
+
+						loge/x - logx/e^x 
+
+
+				y = e^8x^3 
+
+					externa: 
+
+						e^x -> e^8x^3
+
+					interna: 
+
+						8x^3
+
+					y'= e^8x^3 * 24x^2
+
+
+				y = log 2 e^x 
+
+					1° log 2 (x)-> log 2 (e^x)
+					2° e^x 
+
+						No la modificamos cuando la derivamos con la primera. No es que se escribe dos veces. 
+
+					y'= 1/e^x*log 2 (e) * e^x
+
+						Simplificamos: 
+
+							e^x*1/e^x
+
+					log 2 (e)
 
 
 		Trigonométricas: 
@@ -7517,6 +8009,157 @@
 			arc: 
 
 
+
+		Rs derivadas:
+
+			Operaciones: 
+
+
+
+
+			Const: 
+
+				y = k (número) -> y'= 0 
+
+					1.y'= 5 = 0 
+
+					2. y'= -6 = 0 
+
+					3. y'= 3/4 = 0 
+
+					4. y'= pi = 0 
+
+					5. y'= [19] = 0
+
+			Pol:  
+
+				y = x^m -> y'= m*x^m-1 
+
+					1. y'= k = 0 
+
+					2. y'= x = 1
+
+					3. y'= k*x = k 
+
+					4. y'= x^-m	= -m*x^-m-1 
+
+						y = 1/x	-> y'= -1/x^2 
+
+					5. y'= [x] = x^1/2 = 1/2[x]
+
+			log: 
+
+				y = log a (x) -> y'= 1/x*log a (e)
+
+				y = ln x -> y'= 1/x 
+
+			exp: 
+				y = a^x -> y'= a^x * lna
+
+				y = e^x -> y'= e^x
+
+
+				
+
+
+
+
+			f(g): 
+
+				y = [4^x] 
+
+					y'= 1/2[4^x] * 4^x*ln4 
+
+
+				y = ln(x^4) 
+
+					1/x^4 * 4x^3 
+
+					4x^3/x^4 
+
+					4/x 
+
+
+				y = (lnx)^4 
+
+					4(lnx)^3 * 1/x  
+
+
+				y = ln[x] 	
+
+					y'= 1/[x]*1/2[x]
+
+						1/2[x]^2
+
+						1/x 
+
+
+				y = [lnx] 
+
+					Aplicamos raíz a exp: 
+
+						y'= [x] = x^1/2
+
+							1/2[x]
+
+					y'= 1/2[lnx] * 1/x 
+
+						Multiplicamos: 
+
+							1*1
+							2[lnx]*x
+
+						1/2x[lnx]
+
+
+				y = ln^4x 
+
+					izq a der :
+						
+						externa: ln^4 
+						interna: lnx 
+
+					y'= 4ln^3 * 1/x
+
+
+				y = 2^3x^7 
+
+					izq a der: 
+
+						2^3x^7 (ext 1°) 
+
+						3x^7 (int 2°)
+
+					y'= 2^3x^7*ln2 * 21x^6
+
+
+				y = e^8x^3 
+
+					externa: 
+
+						e^x -> e^8x^3
+
+					interna: 
+
+						8x^3
+
+					y'= e^8x^3 * 24x^2 
+
+
+				y = log 2 e^x 
+
+					1° log 2 (x)-> log 2 (e^x)
+					2° e^x 
+
+						No la modificamos cuando la derivamos con la primera
+
+					y'= 1/e^x*log 2 (e) * e^x
+
+						Simplificamos: 
+
+							e^x*1/e^x
+
+					log 2 (e)
 
 
 
