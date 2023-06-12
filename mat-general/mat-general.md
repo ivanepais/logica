@@ -7984,7 +7984,7 @@
 					1° log 2 (x)-> log 2 (e^x)
 					2° e^x 
 
-						No la modificamos cuando la derivamos con la primera. No es que se escribe dos veces. 
+						No la modificamos cuando la derivamos con la primera. No es que se escribe dos veces o multiplicarla fx'(g). 
 
 					y'= 1/e^x*log 2 (e) * e^x
 
@@ -7999,18 +7999,198 @@
 
 			Seno: 
 
-
-			Cos: 
-
-
-			Tg: 
+				y = senx -> y'= cosx	
 
 
-			arc: 
+				y = 2*senx 
+
+					y'= 2*cosx 
+
+
+				y = x^3*senx 
+
+					y'= 3x^2*senx + x^3*cosx
+
+
+				y = sen(x^2-5x)
+
+					y'= cos(x^2-5x) * (2x-5)
+
+
+			Coseno: 
+
+				y = cosx -> y'= -senx 
+
+
+				y = cosx+lnx 
+
+					y'= -senx + 1/x 
+
+
+				y = cos(x^4) 
+
+					y'= -sen(x^4) * 4x^3
+
+
+				y = cos^4*x  / cos^4x
+
+						1° x^4 -> 4x^3 
+
+							x = cos
+
+								la incognita está en la base. 
+
+							4*cos^3 
+
+						2° cosx -> -senx
+
+					y'= 4cos^3 * (-senx)
+
+
+			Tangente: 
+
+				y = tgx -> y'= sec^2x = 1+tg^2x 
+
+
+				y = tgx/x 
+
+					y'= sec^2x * x - tgx * 1 / x^2 
+
+
+				y = tg(lnx) 
+
+					y'= sec^2(lnx) * 1/x 
+
+
+				y = ln(tgx) 
+
+					y'= 1/tgx * sec^2x 
+
+			
+			Secante: 
+
+				y = secx -> y'= secx*tgx 
+
+
+				y = secx*2^x 
+
+					y'= secx*tgx*2^x + secx*2^x*ln2 
+
+
+			Cosecante: 
+
+				y = cosecx -> y'= -cosecx*cotgx
+
+
+				y = cosec(3x^2-4x) 
+
+					y'= -cosec(3x^2-4x)*cotg(3x^2-4x)
+					* (6x-4)
+
+
+			Cotangente: 	
+
+				y = cotgx -> y'= -cosec^2x
+
+
+				y = 5*cotg^3 x 
+
+					1° x^3 
+					2° cotgx 
+
+					y'= 5[3cotg^2 x * (-cosec^2x)]  
+
+					-15cotg^2 x * cosec^2x
+
+
+				y = cotg([x])
+
+					y'= -cosec^2([x]) * 1/2[x]
+
+
+			arcSeno: 
+
+				y = arcsenx -> y'= 1/[1-x^2]
+
+
+				y = arcsen(10x^3)/2 
+
+					y'= 1/[1-(10x^3)^2] * 30x^2 /2 
+
+						Si operamos: 
+
+							10^2
+							x^3*2 
+							30/2 
+
+						1*30x^2/2*[1-100x^6]
+
+						15x^2/[1-100x^6]
+
+
+			arcCoseno:
+
+				y = arccosenox -> y'= -1/[1-x^2]
+
+
+				y = arccos^4 x 
+
+					y'= 4*arccos^3 x * (-1/[1-x^2]) 
+
+						Operamos: 
+
+							4*arccos^3 x * -1 
+							1*[1-x^2] 
+
+						-4*arccos^3 x/[1-x^2]
+
+
+			arcTangente: 
+
+				y = arctgx -> y'= 1/1+x^2
+
+
+				y = arctg(3x+1) 
+
+					y'= 1/1+(3x+1)^2 * 3 
+
+						Operamos: 
+
+							igualdad notable:
+
+								(3x+1)^2
+
+						3/1+9x^2+6x+1
+
+						3/1+9x^2+6x+2
+
+
+
+		Ejercicios de derivadas: 
+
+			
+
+
 
 
 
 		Rs derivadas:
+
+			"x" puede ser el valor "x" o cualquier otro: 
+
+				lnx 
+
+				ln(x^4)
+
+				[x]
+
+				[4^x] 
+
+				senx 
+				
+				sen2x 
+
+
 
 			Operaciones: 
 
@@ -8064,7 +8244,90 @@
 
 
 
-			f(g): 
+			Función dentro de función, f(g):
+
+				Caso 1:  
+
+					y = sen(x^2-5x)
+
+						y'= cos(x^2-5x) * (2x-5)
+
+							No modificamos (g) cuando la derivamos con la primera (f). No es que se escribe dos veces o multiplicarla f'*(g).
+
+
+				Caso 2: 
+
+					y = cos^4*x  / cos^4x
+
+						1° x^4 -> 4x^3 
+
+							x = cos
+
+								Ver donde está la incognita es otra pista para resolver,	está en la base. 
+
+							4*cos^3 
+
+						2° cosx -> -senx
+
+						y'= 4cos^3 * (-senx) 
+
+
+				Caso 3: 
+
+					y = arcsen(10x^3)/2 
+
+						Tenemos una función dentro de otra y además una operación de derivadas. 
+
+					y'= 1/[1-(10x^3)^2] * 30x^2 /2 
+
+						Si operamos: 
+
+							(10x^2)^3
+
+								10^2
+								x^3*2 
+
+							30/2 
+
+						1*30x^2/2*[1-100x^6]
+
+						15x^2/[1-100x^6]
+
+				
+				Caso 4: 		
+
+					y = arctg(3x+1) 
+
+						y'= 1/1+(3x+1)^2 * 3 
+
+							Operamos: 
+
+								igualdad notable 1:
+
+									(3x+1)^2
+
+									No es: 
+
+										3x^2+1^2
+
+										o
+
+										3^2*x^2+1^2
+
+							3/1+9x^2+6x+1
+
+							3/1+9x^2+6x+2
+
+
+				y = 5*cotg^3 x 
+
+					1° x^3 
+					2° cotgx 
+
+					y'= 5[3cotg^2 x * (-cosec^2x)]  
+
+					-15cotg^2 x * cosec^2x
+
 
 				y = [4^x] 
 
@@ -8160,6 +8423,26 @@
 							e^x*1/e^x
 
 					log 2 (e)
+
+
+				y = sen(x^2-5x)
+
+					y'= cos(x^2-5x) * (2x-5)
+
+
+				y = cos^4*x  / cos^4x
+
+						1° x^4 -> 4x^3 
+
+							x = cos
+
+								la incognita está en la base. 
+
+							4*cos^3 
+
+						2° cosx -> -senx
+
+					y'= 4cos^3 * (-senx)
 
 
 
