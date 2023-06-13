@@ -7165,58 +7165,366 @@
 			y = f -> y'= f' 
 
 
-	Operaciones con derivadas: 
+	Implicaciones no abstractas: 
 
-		y = f -> y'= f' 
-
-		y = f+g -> y'= f'+-g' 
-
-		y = k*f -> y'= k*f' 
-
-			k, (número R, constante, coeficiente de variable) 
-
-			Si tenemos una división: 
-
-				y = x^2/4
-
-			Es como multiplicar: 
-
-				y = 1/4*x^2 
-
-			Entonces, podemos aplicar:  
-
-				y = x^2/4 -> y' = (x^2)'/4 
-
-				El denominador hace de constante, no perjudica la derivada. 
-
-			Lo aplicamos en todas las divisiones constantes. 
-
-		y = f/k -> y'= f'/k 
-
-		y = f*g -> y'= f'*g + f*g' 
-
-		y = f/g -> y'= f'*g - f*g'/g^2 
-
-		y = f(g) -> y'= f'(g)*g' 
-
-			Primero derivamos la función más externa y mantenemos multiplicando la interna. Después multiplicamos y derivamos la interna. 
-
-			y = [senx] -> y'= [senx]'*(senx)'
-
-			y = log (x^6) -> y'= log'(x^6)*(x^6)'
-
-			y = f(g(h)) -> y'= f'(g(h)) * g'(h) * (h)'
- 
-				Derivamos las más externas y las más internas no las modifico. Multiplicamos y derivamos la siguiente, etc. 
+		
 
 
-	Derivadas por tablas: 
+
+
+
+	Rs derivadas:
+
+		"x" puede ser el valor "x" o cualquier otro: 
+
+			x
+
+			lnx 
+
+			ln(x^4)
+
+			[x]
+
+			[4^x] 
+
+			senx 
+				
+			sen2x 
+
+
+		Operaciones: 
+
+			y = f -> y'= f' 
+
+			y = f+-g -> y'= f'+-g' 
+
+			y = k*f -> y'= k*f'
+
+			y = f/k -> y'= f'/k 
+
+			y = f*g -> y'= f'*g + f*g' 
+
+			y = f/g -> y'= f'*g - f*g'/g^2 
+
+			y = f(g) -> y'= f'(g)*g' 
+
+
+		Const: 
+
+			y = k (número) -> y'= 0 
+
+				1.y'= 5 = 0 
+
+				2. y'= -6 = 0 
+
+				3. y'= 3/4 = 0 
+
+				4. y'= pi = 0 
+
+				5. y'= [19] = 0
+
+
+		Pol:  
+
+			y = x^m -> y'= m*x^m-1 
+
+				1. y'= k = 0 
+
+				2. y'= x = 1
+
+				3. y'= k*x = k 
+
+				4. y'= x^-m	= -m*x^-m-1 
+
+					y = 1/x	-> y'= -1/x^2 
+
+				5. y'= [x] = x^1/2 = 1/2[x]
+
+
+		Log: 
+
+			y = log a (x) -> y'= 1/x*log a (e)
+
+			y = ln x -> y'= 1/x 
+
+
+		Exp: 
+
+			y = a^x -> y'= a^x * lna
+
+			y = e^x -> y'= e^x
+
+
+		Trig: 
+
+			y = senx -> y'= cosx
+
+			y = cosx -> y'= -senx 
+
+			y = tgx -> y'= sec^2x = 1+tg^2x 
+
+			y = secx -> y'= secx*tgx 
+
+			y = cosecx -> y'= -cosecx*cotgx
+
+			y = cotgx -> y'= -cosec^2x 
+
+			y = arcsenx -> y'= 1/[1-x^2] 
+
+			y = arccosx -> y'= -1/[1-x^2] 
+
+			y = arctgx -> y'= 1/1+x^2
+
+
+		Función dentro de función, f(g):
+
+			Caso 1:  
+
+				y = sen(x^2-5x)
+
+					y'= cos(x^2-5x) * (2x-5)
+
+						No modificamos (g) cuando la derivamos con la primera (f). No es que se escribe dos veces o multiplicarla f'*(g)*g'.
+
+
+			Caso 2: 
+
+				y = cos^4*x  / cos^4x
+
+					1° x^4 -> 4x^3 
+
+						x = cos
+
+							Ver donde está la incognita es otra pista para resolver	está en la base. 
+
+							4*cos^3 
+
+					2° cosx -> -senx
+
+					y'= 4cos^3 * (-senx) 
+
+
+			Caso 3: 
+
+				y = arcsen(10x^3)/2 
+
+					Tenemos una función dentro de otra y además una operación de derivadas. 
+
+					y'= 1/[1-(10x^3)^2] * 30x^2 /2 
+
+						Si operamos: 
+
+							(10x^2)^3
+
+								10^2
+								x^3*2 
+
+							30/2 
+
+						1*30x^2/2*[1-100x^6]
+
+						15x^2/[1-100x^6]
+
+				
+			Caso 4: 		
+
+				y = arctg(3x+1) 
+
+					y'= 1/1+(3x+1)^2 * 3 
+
+						Operamos: 
+
+							igualdad notable 1:
+
+								(3x+1)^2
+
+								No es: 
+
+									(a*b)^m = a^m*b^m
+
+									Hay una operación +
+
+									3x^2+1^2
+
+									o
+
+									3^2*x^2+1^2
+
+					3/1+9x^2+6x+1
+
+					3/1+9x^2+6x+2
+
+
+				Caso 5: 
+
+					y = sen^3(x^2-4x) 
+
+						1° x^3 -> sen^3
+						2° senx -> sen(x^2-4x)
+						3° sum -> (x^2-4x)
+
+					y'= 3*sen^2(x^2-4x) * cos(x^2-4x) * (2x-4)
+
+						Distribuimos: 3*(2x-4) 
+
+					(6X-12)sen^2(x^2-4x) * cos(x^2-4x)
+
+
+				Caso 6: 
+
+					y = ln sen(x^2-x) 
+
+						1° lnx: ln sen(x^2-x)'  
+						2° senx: sen(x^2-x)'
+						3° res: (x^2-x)' 
+
+							Multiplicandose
+
+					y'= 1/sen(x^2-x)*cos(x^2-x)*(2x-1) 
+
+						Operamos: 1*cos(x^2-x)*(2x-1)
+
+					cos(x^2-x)*(2x-1)/sen(x^2-x)
+
+						Operamos: cos/sen = cotg 
+
+							como sen/cos = tg
+
+					cotg*(x^2-x)*(2x-1)
+
+
+				y = 5*cotg^3 x 
+
+					1° x^3 
+					2° cotgx 
+
+					y'= 5[3cotg^2 x * (-cosec^2x)]  
+
+					-15cotg^2 x * cosec^2x
+
+
+				y = [4^x] 
+
+					y'= 1/2[4^x] * 4^x*ln4 
+
+
+				y = ln(x^4) 
+
+					1/x^4 * 4x^3 
+
+					4x^3/x^4 
+
+					4/x 
+
+
+				y = (lnx)^4 
+
+					4(lnx)^3 * 1/x  
+
+
+				y = ln[x] 	
+
+					y'= 1/[x]*1/2[x]
+
+						1/2[x]^2
+
+						1/x 
+
+
+				y = [lnx] 
+
+					Aplicamos raíz a exp: 
+
+						y'= [x] = x^1/2
+
+							1/2[x]
+
+					y'= 1/2[lnx] * 1/x 
+
+						Multiplicamos: 
+
+							1*1
+							2[lnx]*x
+
+						1/2x[lnx]
+
+
+				y = ln^4x 
+
+					izq a der :
+						
+						externa: ln^4 
+						interna: lnx 
+
+					y'= 4ln^3 * 1/x
+
+
+				y = 2^3x^7 
+
+					izq a der: 
+
+						2^3x^7 (ext 1°) 
+
+						3x^7 (int 2°)
+
+					y'= 2^3x^7*ln2 * 21x^6
+
+
+				y = e^8x^3 
+
+					externa: 
+
+						e^x -> e^8x^3
+
+					interna: 
+
+						8x^3
+
+					y'= e^8x^3 * 24x^2 
+
+
+				y = log 2 e^x 
+
+					1° log 2 (x)-> log 2 (e^x)
+					2° e^x 
+
+						No la modificamos cuando la derivamos con la primera
+
+					y'= 1/e^x*log 2 (e) * e^x
+
+						Simplificamos: 
+
+							e^x*1/e^x
+
+					log 2 (e)
+
+
+				y = sen(x^2-5x)
+
+					y'= cos(x^2-5x) * (2x-5)
+
+
+				y = cos^4*x  / cos^4x
+
+						1° x^4 -> 4x^3 
+
+							x = cos
+
+								la incognita está en la base. 
+
+							4*cos^3 
+
+						2° cosx -> -senx
+
+					y'= 4cos^3 * (-senx)
+
+
+
+
 
 		Simplificaciones: 
 
-			En la multiplicación aparecen multiplicaciones de fracciones.
-
-				fracciones: 
+			Caso 1: En la multiplicación aparecen multiplicaciones de fracciones.
 
 				y = x^6*log 2 (x)
 
@@ -7239,7 +7547,7 @@
 						6x^5 * log 2 (x) + x^5*log 2 (e)
 
 
-			En la división aparecen factores comunes, divisiones monomios, multiplicaciones. 
+			Caso 2: En la división aparecen factores comunes, divisiones monomios, multiplicaciones. 
 
 				y = lnx/x^3 
 
@@ -7248,20 +7556,33 @@
 						x^2 - lnx * 3x^2 / x^6
 
 
-				y = ln(x^4) 
+			Caso 3: y = x-1/x^2+1
 
-					Aplicamos: 
+				Derivamos la división, no así la resta, la suma y después la división. 
 
-						y = f(g) -> y'= f'(g) * g' 
+				y'= 1*(x^2+1) - (x-1)*(2x) / (x^2+1)^2 
 
-					1/x^4 * 4x^3 
+					Tenemos multiplicación de binomios y una igualdad notable 2. 
 
-					4x^3/x^4 
+					x^2+1 -2x^2+2x / (x^2+1)^2 
 
-					4/x 
+						Operamos: x^2-2x^2 
+
+					-x^2+2x+1 / (x^2+1)^2 
 
 
-				log: 
+			Caso 4:  y = e^x/cosx 	
+
+				y'= e^x*cosx - e^x*-senx / (cosx)^2 
+
+						Operamos: -e^x*-senx = e^x*senx
+
+						factorizamos: e^x
+
+					e^x(cosx+senx)/cos^2x 
+
+
+			log: 
 
 				y = logx/x^2
 
@@ -7276,23 +7597,6 @@
 					y'= log e * x - logx * 2x/ x^4 
 
 						Simplificar: 
-
-
-				y = [lnx] 
-
-					Aplicamos: 
-
-						y'= [x] = x^1/2
-
-							1/2[x]
-
-					y'= 1/2[lnx] * 1/x 
-
-							Multiplicamos denominadores: 
-								
-								2[lnx]*x 
-
-						1/2x[lnx] 
 
 
 				y = ln[x] 	
@@ -7359,6 +7663,77 @@
 
 						loge/x - logx/e^x 
 
+
+		Monotonía y extremos relativos: 
+
+
+
+		Curvatura y puntos de inflexión: 
+
+
+
+		Recta tangente a la función: 
+
+
+
+		Máximos y Minomos: 
+
+
+
+		Optimización: 
+
+
+
+
+
+
+
+	Operaciones con derivadas: 
+
+		y = f -> y'= f' 
+
+		y = f+g -> y'= f'+-g' 
+
+		y = k*f -> y'= k*f' 
+
+			k, (número R, constante, coeficiente de variable) 
+
+			Si tenemos una división: 
+
+				y = x^2/4
+
+			Es como multiplicar: 
+
+				y = 1/4*x^2 
+
+			Entonces, podemos aplicar:  
+
+				y = x^2/4 -> y' = (x^2)'/4 
+
+				El denominador hace de constante, no perjudica la derivada. 
+
+			Lo aplicamos en todas las divisiones constantes. 
+
+		y = f/k -> y'= f'/k 
+
+		y = f*g -> y'= f'*g + f*g' 
+
+		y = f/g -> y'= f'*g - f*g'/g^2 
+
+		y = f(g) -> y'= f'(g)*g' 
+
+			Primero derivamos la función más externa y mantenemos multiplicando la interna. Después multiplicamos y derivamos la interna. 
+
+			y = [senx] -> y'= [senx]'*(senx)'
+
+			y = log (x^6) -> y'= log'(x^6)*(x^6)'
+
+			y = f(g(h)) -> y'= f'(g(h)) * g'(h) * (h)'
+ 
+				Derivamos las más externas y las más internas no las modifico. Multiplicamos y derivamos la siguiente, etc. 
+
+
+	Derivadas por tablas: 
 
 		Constante: 
 
@@ -8130,7 +8505,7 @@
 
 			arcCoseno:
 
-				y = arccosenox -> y'= -1/[1-x^2]
+				y = arccosx -> y'= -1/[1-x^2]
 
 
 				y = arccos^4 x 
@@ -8168,281 +8543,282 @@
 
 		Ejercicios de derivadas: 
 
+			y = x/3 
+
+				y'= 1/3 
+
+
+			y = 4x/5 
+
+				y'= 4/5  
+
+
+			y = x^2-4/9 
+
+				y'= 2x/9 
+
+
+			y = 1/x^4
+
+				1*x^4/1 = x^-4
+
+				y'= x^-4 
+
+					-4x^-5 
+
+					-4/x^5 
+
+
+			y = 2/3x^2 
+
+				2*x^-2/3 
+
+				y'= 2x^-2/3 
+
+					-4x^-3/3 
+
+						Como la función era una fracción, el resultado también. 
+
+					-4/3x^3 
+
+
+			y = [x] 
+
+				y'= 1/2[x] 
+
+
+			y = 3^[x] 
+
+				x^1/3
+
+				y'= 1/3*x^1/3-1/1
+
+						1/3-1/1 = 1-3/3 = -2/3 
+
+					1/3 * x^-2/3 /1 
+
+						1*x^-2/3 / 1*3 
+
+					x^-2/3 /3 
+
+					= 1 / 3*x^2/3  
+
+						Como la función era una raíz, el resultado también. 
+
+					= 1/3*3^[x^2]
+
+
+			y = 1/x[x] 
+
+				1 / x*x^1/2 
+
+					x^1*x^1/2 = x^1+1/2				
+				1/x^3/2  
+
+				1*x^-3/2 / 1 
+
+				x^-3/2
+
+				y'= -3/2*x^-3/2-1
+
+					-3/2-1/1 = -3-2/2 = -5/2 
+
+					-3/2*x^-5/2 
+
+					-3/2*x^5/2 
+
+					La respuesta se expresa como está escrita la función:  
+
+					-3/2*[x^5]
+
+					Podemos extraer factores 
+
+					3/2*[x^2*x^2*x]
+
+					3/2*x*x[x] 
+
+					-3/2*x^2[x]
+
+
+			y = (2x+3)^4 
+
+				1° x^4 -> x = 2x+3
+
+				2° 2x+3 
+
+				y'= 4*(2x+3)^3 * 2
+
+					8*(2x+3)^3 
+
 			
+			y = (x^2-6x)^3 
 
+				y'= 3*(x^2-6x)^2 * (2x-6) 
 
+					Tenemos una igualdad notable 2 y el binomio. 
 
+					3*(2X-6) * (x^2-6x)^2	  
 
+					(6x-18)*(x^2-6x)^2
 
-		Rs derivadas:
 
-			"x" puede ser el valor "x" o cualquier otro: 
+			y = [x^2+3x] 
 
-				lnx 
+				y'= 1/2[x^2+3x] * 2x+3/1  
 
-				ln(x^4)
+					2x+3 / 2[x^2+3x]  
 
-				[x]
 
-				[4^x] 
+			y = 4^[x^3+x^2]	 
 
-				senx 
-				
-				sen2x 
+				La base (x^3+x^2) tiene exponente 1. 
 
+				y'= (x^3+x^2)^1/4 
 
+					1/4*(x^3+x^2)^1/4-1/1 
 
-			Operaciones: 
+						1/4-1/1 = 1-4/4 = -3/4 
 
+					1/4*(x^3+x^2)^-3/4 
 
+					Después derivamos la segunda. 
 
+					1/4*(x^3+x^2)^3/4 * (3x^3+2x) 
 
-			Const: 
+					1/4*4^[(x^3+x^2)^3] * (3x^3+2x)/1 
 
-				y = k (número) -> y'= 0 
+					3x^3+2x / 4*4^[(x^3+x^2)^3]
 
-					1.y'= 5 = 0 
 
-					2. y'= -6 = 0 
+			y = e^4x^3 -x 
 
-					3. y'= 3/4 = 0 
+				y'= e^4x^3 -x * 12x^2-1
 
-					4. y'= pi = 0 
 
-					5. y'= [19] = 0
+			y = 5^x^2+8x 
 
-			Pol:  
+				y'= 5^x^2+8x*ln5 * 2x+8 
 
-				y = x^m -> y'= m*x^m-1 
 
-					1. y'= k = 0 
+			y = e^2x * x^3 
 
-					2. y'= x = 1
+				Tenemos una función dentro de otra y la multiplicación
 
-					3. y'= k*x = k 
+				y'= e^2x*2*x^3 + e^2x*3x^2
 
-					4. y'= x^-m	= -m*x^-m-1 
+					Simplificar:  
 
-						y = 1/x	-> y'= -1/x^2 
+						terminos comunes: 
 
-					5. y'= [x] = x^1/2 = 1/2[x]
+							e^2x, e^2x = e^2x
 
-			log: 
+							x^3, x^2 = x^2(x+1)
 
-				y = log a (x) -> y'= 1/x*log a (e)
+					e^2x*x^2 (1*2*x + 1*3) 
 
-				y = ln x -> y'= 1/x 
+					e^2x*x^2(2x+3)
 
-			exp: 
-				y = a^x -> y'= a^x * lna
 
-				y = e^x -> y'= e^x
+			y = 2^x/x^4  
 
+				y'= 2^x*ln2*x^4 - 2^x*4x^3 / x^8 
 
-				
+					Terminos comunes: 
 
+						2^x, x^4, x^3 /x^8 
 
+					2^x*x^3(ln2*x-4) / x^8 
 
+					2^x(ln2*x-4)/x^5 
 
-			Función dentro de función, f(g):
 
-				Caso 1:  
+			y = ln(x^3-x) 
 
-					y = sen(x^2-5x)
+				y'= 1/x^3-x * 3x^2-1
 
-						y'= cos(x^2-5x) * (2x-5)
+					3x^2-1/x^3-x 
 
-							No modificamos (g) cuando la derivamos con la primera (f). No es que se escribe dos veces o multiplicarla f'*(g).
 
+			y = log(x^2+1) 
 
-				Caso 2: 
+				y'= 1/(x^2+1)*log(e) * 2x 
 
-					y = cos^4*x  / cos^4x
+					log(e)*2x//(x^2+1)
 
-						1° x^4 -> 4x^3 
 
-							x = cos
+			y = sen^3(x^2-4x) 
 
-								Ver donde está la incognita es otra pista para resolver,	está en la base. 
+				1° x^3 -> sen^3
+				2° senx -> sen(x^2-4x)
+				3° sum -> (x^2-4x)
 
-							4*cos^3 
+				y'= 3*sen^2(x^2-4x) * cos(x^2-4x) * (2x-4)
 
-						2° cosx -> -senx
+					Distribuimos: 3*(2x-4) 
 
-						y'= 4cos^3 * (-senx) 
+					(6X-12)sen^2(x^2-4x) * cos(x^2-4x)
 
 
-				Caso 3: 
+			y = cosx*lnx 
 
-					y = arcsen(10x^3)/2 
+				y'= -senx*lnx + cosx*1/x 
 
-						Tenemos una función dentro de otra y además una operación de derivadas. 
+					-senx*lnx + cosx/x
 
-					y'= 1/[1-(10x^3)^2] * 30x^2 /2 
 
-						Si operamos: 
+			y = 10^x+tgx 
 
-							(10x^2)^3
+				y'= 10^x*ln10 + sec^2x
 
-								10^2
-								x^3*2 
 
-							30/2 
+			y = arctgx / x 
 
-						1*30x^2/2*[1-100x^6]
+				y'= 1/1+x^2*x - arctgx*1 /x^2 
 
-						15x^2/[1-100x^6]
+				y'= 1/1+x^2*x - arctgx /x^2
 
-				
-				Caso 4: 		
 
-					y = arctg(3x+1) 
+			y = x-1/x^2+1
 
-						y'= 1/1+(3x+1)^2 * 3 
+				Derivamos la división, no así la resta, la suma y después la división. 
 
-							Operamos: 
+				y'= 1*(x^2+1) - (x-1)*(2x) / (x^2+1)^2 
 
-								igualdad notable 1:
+						Tenemos multiplicación de binomios y una igualdad notable 2. 
 
-									(3x+1)^2
+					x^2+1 -2x^2+2x / (x^2+1)^2 
 
-									No es: 
+						Operamos: x^2-2x^2 
 
-										3x^2+1^2
+					-x^2+2x+1 / (x^2+1)^2
 
-										o
 
-										3^2*x^2+1^2
+			y = e^x/cosx 	
 
-							3/1+9x^2+6x+1
+				y'= e^x*cosx - e^x*-senx / (cosx)^2 
 
-							3/1+9x^2+6x+2
+						Operamos: -e^x*-senx = e^x*senx
 
+						factorizamos: e^x
 
-				y = 5*cotg^3 x 
+					e^x(cosx+senx)/cos^2x 
 
-					1° x^3 
-					2° cotgx 
 
-					y'= 5[3cotg^2 x * (-cosec^2x)]  
+			y = ln sen(x^2-x) 
 
-					-15cotg^2 x * cosec^2x
+				1° lnx: ln sen(x^2-x)'  
+				2° senx: sen(x^2-x)'
+				3° res: (x^2-x)' 
 
+					Multiplicandose
 
-				y = [4^x] 
+				y'= 1/sen(x^2-x)*cos(x^2-x)*(2x-1) 
 
-					y'= 1/2[4^x] * 4^x*ln4 
+					Operamos: 1*cos(x^2-x)*(2x-1)
 
+				cos(x^2-x)*(2x-1)/sen(x^2-x) 
 
-				y = ln(x^4) 
-
-					1/x^4 * 4x^3 
-
-					4x^3/x^4 
-
-					4/x 
-
-
-				y = (lnx)^4 
-
-					4(lnx)^3 * 1/x  
-
-
-				y = ln[x] 	
-
-					y'= 1/[x]*1/2[x]
-
-						1/2[x]^2
-
-						1/x 
-
-
-				y = [lnx] 
-
-					Aplicamos raíz a exp: 
-
-						y'= [x] = x^1/2
-
-							1/2[x]
-
-					y'= 1/2[lnx] * 1/x 
-
-						Multiplicamos: 
-
-							1*1
-							2[lnx]*x
-
-						1/2x[lnx]
-
-
-				y = ln^4x 
-
-					izq a der :
-						
-						externa: ln^4 
-						interna: lnx 
-
-					y'= 4ln^3 * 1/x
-
-
-				y = 2^3x^7 
-
-					izq a der: 
-
-						2^3x^7 (ext 1°) 
-
-						3x^7 (int 2°)
-
-					y'= 2^3x^7*ln2 * 21x^6
-
-
-				y = e^8x^3 
-
-					externa: 
-
-						e^x -> e^8x^3
-
-					interna: 
-
-						8x^3
-
-					y'= e^8x^3 * 24x^2 
-
-
-				y = log 2 e^x 
-
-					1° log 2 (x)-> log 2 (e^x)
-					2° e^x 
-
-						No la modificamos cuando la derivamos con la primera
-
-					y'= 1/e^x*log 2 (e) * e^x
-
-						Simplificamos: 
-
-							e^x*1/e^x
-
-					log 2 (e)
-
-
-				y = sen(x^2-5x)
-
-					y'= cos(x^2-5x) * (2x-5)
-
-
-				y = cos^4*x  / cos^4x
-
-						1° x^4 -> 4x^3 
-
-							x = cos
-
-								la incognita está en la base. 
-
-							4*cos^3 
-
-						2° cosx -> -senx
-
-					y'= 4cos^3 * (-senx)
+				cotg*(x^2-x)*(2x-1)
 
 
 
