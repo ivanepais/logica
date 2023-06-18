@@ -7167,10 +7167,143 @@
 
 	Implicaciones no abstractas: 
 
-		
+		Instantaneidad: 
+
+			La derivada permite medir cambios o variaciones en el momento, usando valores muy pequeños. 
+
+			Los valores incrementales pasan a llamarse diferenciales. 
+
+				dx/dt 
 
 
+		Función: 
 
+			Son dos magnitudes que se relacionan, al variar una de ellas, la otra también varía. 			 		
+				y = 2x+3 
+
+
+		Derivada: 
+			
+			Al dividir las variaciones de ambas magnitudes se obtiene una nueva magnitud. 	
+
+				^x/^t = velocidad media 
+
+			Esta nueva magnitud nos da su valor medio, pero si los incrementos son mínimos obtenemos su valor instantáneo. 
+
+				difX/difT = velocidad instantánea. 
+
+			El valor instantáneo que calcula la derivada nos da información sobre la tendencia o comportamiento de una función. 
+
+
+		Ejemplos:  
+
+			1. Espacio recorrido por un vehículo y tiempo que tarda. 
+
+				^x/^t = velocidad media
+
+				dx/dt = velocidad instantánea 
+
+			2. Cuánto tarda un vehículo en modificar su velocidad. 
+
+				^v/^t = aceleración media 
+
+				dv/dt = aceleración instantánea
+
+			3. Ingresos de una empresa y n° de trabajadores. 
+
+				^i/^n = rendimiento medio 
+
+				di/dn = tendencia actual de rendimiento 
+
+			4. N° de habitantes de una población en distintos instantes. 
+
+				^n/^t = tasa natalidad/mortalidad 
+
+				dn/dt = tasa actual de crecimiento. 
+
+
+	Implicaciones abstractas: 
+
+		Una formula puede estar representada por una función con dos variables (x,y): 
+
+			y = f(x) 
+
+		Si los dividimos, para valores grandes usamos incrementos, y para derivar usamos diferenciales que son valores muy pequeños. 
+
+			^y/^x
+
+			dy/dx 
+
+		Como están relacionadas, al variar o incrementarse una, la otra también lo hace. Si usamos valores grandes, tendrán grandes incrementos, si usamos valores muy pequeños, tendrán pequeños incrementos.  
+
+
+		Definición de derivada: 
+
+			Dividir el diferencial (muy pequeño incremento) de y entre el de x. 
+
+			y'= dy/dx 
+
+			Si tomamos un punto de una función, coordenada x e y. Si incrementamos las coordenadas: 
+
+				x1 -> x2 = ^x
+				y1 -> y2 = ^y
+
+			Determinamos ^x, ^y que forma otro punto. 
+
+			La derivada trata de dividir estos incrementos, pero en diferenciales 
+
+				^y/^x 
+				dy/dx  
+
+			^x, ^y son incrementos grandes, en el gráfico forma la pendiente entre dos puntos de una función:  
+
+				m = ^y/^x = y2-y1/x2-x1 
+
+				Variación vertical/horizontal
+
+			Si hacemos los incrementos muy pequeños: 
+
+				dx/dy = pendiente de una función en un punto. 
+
+			Como están tan juntos, no exite x2, y2, solo x e y. 
+
+			La derivada es la pendiente de una función. 
+
+			La derivada de una función en un punto da la pendiente exacta de la función en ese punto. 
+
+			Nos damos cuenta de la tendencia de la función en ese punto. 
+
+				m+, m-, m0 (constante: max, min ) 
+
+			Ejemplo: 
+
+				La función lineal y = 2x-3 representa una recta. 
+
+				Su derivada y'= 2 es la pendiente que está en la formula: y = mx+b 
+
+				También podemos sacarla mediente el gráfico, tomando el incremento entre los puntos: cuantos valores avanzaba desde x hasta y. 
+
+				Una función polinómica y = x^2-2x-3 representa una parabola que va cambiando su pendiente. 
+
+				En cada punto es distinta. 
+
+				Si derivamos x^2-2x-3 nos queda una función (no da la pendiente directamente) que va a representar la pendiente en cada punto. 
+
+					y'= 2x-2 
+
+					x = 0 
+					y'(pendiente) = -2  
+
+					P(0,2), la pendiente de la parabola es negativa (\)
+
+					El vertice hace cambiar la pendiente. 
+
+					En el vertice (1,-4), la pendiente es horizontal 
+
+					y'= 2x-2 
+
+					x = 1 
+					y'(pendiente) = 0
 
 
 	Rs derivadas:
@@ -7207,6 +7340,8 @@
 			y = f/g -> y'= f'*g - f*g'/g^2 
 
 			y = f(g) -> y'= f'(g)*g' 
+
+			y = f^g -> y'= y*(g'*lnf + g*f'/f)
 
 
 		Const: 
@@ -7519,7 +7654,16 @@
 					y'= 4cos^3 * (-senx)
 
 
+		Función elevada a otra función: 
 
+			Distinto de f^x, o f*(g)
+
+			y = f^g -> y'= y*(g'*lnf + g*f'/f)
+
+
+			y = (x^3+5x)^x^2
+			
+			y = (cosx)^lnx
 
 
 		Simplificaciones: 
@@ -7664,9 +7808,24 @@
 						loge/x - logx/e^x 
 
 
-		Monotonía y extremos relativos: 
+		Intervalos, mínimo y máximo de F(x): 
 
+			Hay que sabar sacar las raíces de todas las funciones, las asíntotas y dominar todas las derivadas. 	
 
+				1° Derivar f(x)
+
+				2° Raíces f'(x) y asíntotas de f(x)
+
+				3° Intervalos de f(x):
+
+					Recta para f(x), usamos las raíces de f'(x)
+
+					Toma de valores para f'(x)
+
+				4° Mínimos y máximos de f(x): 
+
+					Usamos raíces de f'(x) y las reemplazamos en f(x). 
+					
 
 		Curvatura y puntos de inflexión: 
 
@@ -7676,7 +7835,7 @@
 
 
 
-		Máximos y Minomos: 
+		Máximos y mínimos: 
 
 
 
@@ -8540,6 +8699,48 @@
 						3/1+9x^2+6x+2
 
 
+		Función elevada a otra función: 
+
+			Distinto de f^x, o f*(g)
+
+			y = f^g -> y'= y*(g'*lnf + g*f'/f)
+
+				Es resultado de: 
+
+					y = f^g 
+
+					ln y = ln f^g 
+
+					ln y = g*lnf 
+
+					1/y*y' = g'*lnf + g*1/f*f' 
+
+					y' = y*(g'*lnf + g*f'/f)
+
+
+			y = (x^3+5x)^x2  
+
+				y'= (x^3+5x)^x2*(2x * ln(x^3+5x) + x^2 * 3x^2+5/x^3+5x)
+
+			
+			y = (cosx)^lnx 
+
+				f = cosx 
+				f'= -senx 
+
+				g = lnx 
+				g'= 1/x 
+
+				y'= (cosx)^lnx*(1/x*ln(cosx) + lnx*-senx/cosx) 	
+
+					Simplificamos: 
+
+						sen/cos = tg 
+
+						-sen pasa -lnx
+
+					(cosx)^lnx*(ln(cosx)/x -lnx*tgx)
+
 
 		Ejercicios de derivadas: 
 
@@ -8819,6 +9020,135 @@
 				cos(x^2-x)*(2x-1)/sen(x^2-x) 
 
 				cotg*(x^2-x)*(2x-1)
+
+
+	Aplicaciones derivadas: 
+
+
+		Monotonía y extremos relativos: 
+
+			Dado que la derivada es la pendiente de la función y además podemos saber la pendiente en cada punto, la utilizamos para calcular la monotonía y los extremos relativos de las funciones. 
+
+			Monotonía: 
+
+				Son los intervalos de crecimiento y de decrecimiento de una función. 
+
+				Los podemos observar en el gráfico desde donde son ascendentes o descendentes. 
+
+			Extremos relativos: 
+				
+				Son los máximos o mínimos de una función. 
+
+				Son los puntos que cambian la tendencia de una función. 
+
+			1. Si el tramos es creciente, la derivada/pendiente es positiva. 
+
+			2. Si es decreciente, es negativa. 
+
+			3. Si hay un máximo o mínimo, la derivada es 0. 
+
+
+			Calcular intervalos +-, max y min: 
+
+				1. Derivar la función.
+
+					f(x) = x^2/x-1
+
+					f'(x) = x^2-2x/(x-1)^2
+
+				2. Raíces y asintotas: igualar a 0 la derivada, para encontrar la coordenada x de los max y min.
+
+					f'(x) = x^2-2x/(x-1)^2
+
+					Raíces de f'(x): 
+
+						x^2-2x/(x-1)^2
+
+						x^2-2x/(x-1)^2 = 0 
+
+						x^2-2x = 0 *(x-1)^2
+						
+						x^2-2x = 0 
+
+							x1 = 0
+
+							x2 = 2
+
+					Asintota de f(x): 
+
+						x^2/x-1
+
+						x-1 = 0 
+						x = 1 
+
+				3. Los valores de x que hacen 0 la derivada, generan intervalos, entre ellos vemos si la pendiente es + o neg
+
+					Creamos una recta para marcarlos: tomamos un valor que este dentro de este invervalo y lo reemplazamos en la derivada. 
+
+					Las asintotas también generan intervalos, según la función. Marcarlas y dar valor de x a la derivada 
+
+					Recta: 
+
+						-inf  0  -1-  2   inf
+
+					Tomamos valores: 
+
+						-1, 0.5, 1.5, 3 
+
+					f'(x) = x^2-2x/(x-1)^2
+
+					f'(-1) = 3/4
+
+					f'(0,5) = -3
+
+					f'(1,5) = -3
+
+					f'(3) = 3/4 
+
+					Intervalos de f(x): 
+
+						Crecimiento:
+
+							(-inf, 0) u (2, inf)
+
+						Decrecimiento: 
+
+							(0, 1) u (1, 2)
+
+				4. Sustituimos los valores de x de los max y min en la función para obtener la coordenada y de ellos.  
+
+					Mínimos y máximos de f(x):
+
+						Usamos las raíces de f'(x): 0 y 2 
+						
+						f(x) = x^2/x-1
+
+						f(0) = 0
+
+							máximo en P(0,0)
+
+						f(2) = 4
+
+							mínimo en P(2,4)
+
+
+		Curvatura y puntos de inflexión: 
+
+
+
+
+		Recta tangente a la función: 
+
+
+
+
+		Máximos y mínimos: 
+
+
+
+
+		Optimización: 
+
 
 
 
