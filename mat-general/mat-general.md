@@ -7808,7 +7808,15 @@
 						loge/x - logx/e^x 
 
 
-		Intervalos, mínimo y máximo de F(x): 
+		Intervalos (monotonía), mínimos y máximo (extremos relativos) de F(x): 
+
+			La primera derivada calcula el valor y como puede su pendiente: 
+
+				1. (/) positiva, f'(x) > 0 
+
+				2. (\) negativa, f'(x) < 0 
+
+				3. (-) horizontal/min/max/puntos de inflexión, f'(x) = 0
 
 			Hay que sabar sacar las raíces de todas las funciones, las asíntotas y dominar todas las derivadas. 	
 
@@ -7829,22 +7837,172 @@
 
 		Curvatura y puntos de inflexión: 
 
+			La segunda derivada corresponde a diferentes formas: 
+
+				1. (n) convexa, f''(x) < 0 
+
+				2. (u) cóncava, f''(x) > 0 
+
+				3. (-) punto de inflexión, f''(x) = 0 
+
+				Depende de la disminución o aumento pendiente: 
+
+					1. Si es convexa, f'(x) está aumentando 
+
+					2. Si es concava, f'(x) está disminuyendo
+
+
+			Calcular curvatura e inflexión: 
+
+				1. Derivamos dos veces f(x)
+
+				2. Sacamos las raíces de f''(x)
+
+					Puede dar 2 = 0 
+
+					Es falso, no hay x, ni punto de inflexión. 
+
+				3. Creamos intervalos para f(x): 
+
+					Usamos asíntotas de f(x) y raíces de f''(x), las marcamos en la recta.
+
+						Asíntota f(x)
+
+					Nos crean intervalos, le damos valores que esten entre estos, a f''(x). 
+
+						Recta y Valores para f''(x)
+
+					Dados estos resultados, describimos cual curvatura tiene la f(x). 
+
+						Curvatura: 
+
+							convexa(n,-)
+
+
+							cóncava(u,+)
+
+				4. Punto de inflexión f(x): 
+
+					Reemplazando las raíces de f''(x) en f(x), averiguamos la coordenada y del punto.
+
+						Puede no habar inflexión en f''(x) para la f(x). 
 
 
 		Recta tangente a la función: 
 
+			Es la ecuación de la recta/pendiente.
+
+			La derivada es la pendiente que tiene un valor, pero no da la ecuación. 
+
+			La recta tangente es otra función independiente. 
+
+			Usamos la ecuación punto pendiente: 
+
+				y-yp = m(x-xp) 
+
+			Ejercicio: 
+
+				En la función real de variable real: f(x) = x^2+4 
+
+				Escriba la recta tangente a la gráfica de f(x) en x = 2 
+
+				y - f(xp) = f'(xp)*(x-xp) 
+
+					y - f(2) = f'(2)*(x-2)
+
+						xp = 2 (punto dado)
+
+						f(x) = x^2+4 
+
+						f'(x) = 2x 
+
+						f(2) = 2^2+4 = 8 (yp)
+
+						f'(2) = 4 (pendiente, m)
+
+					y - 8 = 4(x-2) 
+
+					y - 8 = 4x-8 
+
+					y = 4x-8+8 
+
+					y = 4x 
+
+					p = (2,8)
 
 
-		Máximos y mínimos: 
+		Definición de derivada: 
 
+			La pendiente ^y/^x = y2-y1/x2-x1 = m, puede denotarse algebraicamente como: 
 
+				Si definimos un punto con las variables o coordenadas x y f(x), relacionadas directamente. 
 
-		Optimización: 
+					P(x,f(x))
 
+				Si consideramos un aumento de un punto a otro: 
 
+					P(x,f(x)) -> P2(x+h, f(x+h))
 
+				Si restamos los puntos y los dividimos por el incremento: 
 
+					^y/^x = f(x+h) - f(x)/h 
 
+				Si el incremento pasa a ser muy pequeño, h (incremento) tiende a 0: 
+
+					h -> 0 
+
+				Eliminamos la recta entre dos puntos y conseguimos la recta tangente a la función: 
+
+					y' = f'(x) = dy/dx = f(x+h) - f(x)/h
+
+				Como necesitamos que h tienda a 0, la definición científica de derivada queda: 
+ 
+					f'(x) = lim f(x+h)-f(x)/h
+							h->0
+
+			Ejemplo: 
+
+				Calcular f(x) = x^2-3x aplicando la definición de derivada. 
+
+				Debemos comprobar: f'(x) = 2x-3
+
+				Vamos completando la formula: 
+
+					f'(x) = lim f(x+h)-f(x)/h
+							h->0 
+
+					1° tenemos f(x) = x^2-3x 
+
+						f'(x) = lim f(x+h) - x^2-3x /h 
+
+					2° la variable x de f(x) pasa a ser (x+h), dejamos los coeficientes y exponentes
+
+						f'(x) = lim (x+h)^2 - 3(x+h) - (x^2-3x) / h 
+
+					3° Desarrollamos las igualdades notables, distribuciones, parentesis, etc. 
+
+						lim (x+h)^2 - 3(x+h) - (x^2-3x) / h 
+
+						x^2 + 2xh + h2 -3x -3h -x^2 + 3x /h 
+
+						2xh + h^2 - 3h/ h 
+
+					4° Hacemos el límite, reemplazando h por 0. 
+
+						0/0 
+
+					5° Resolvemos la indeterminación. 
+
+						factorizamos h 
+
+						h(2x+h-3)/h 
+
+						lim 2x+h-3 
+						h->0 
+
+					6° Volvemos a resolver el límite 
+
+						2x-3 
 
 
 	Operaciones con derivadas: 
@@ -9134,20 +9292,291 @@
 
 		Curvatura y puntos de inflexión: 
 
+			La segunda derivada nos indica cómo evoluciona la primera derivada. 
 
+			Cuando hacemos la segunda derivada, podemos verificar con valores, cómo es la forma o gráfico en cada punto. 
+
+			La primera derivada calcula el valor y como puede su pendiente: 
+
+				1. (/) positiva, f'(x) > 0 
+
+				2. (\) negativa, f'(x) < 0 
+
+				3. (-) horizontal/min/max/puntos de inflexión, f'(x) = 0
+
+			La segunda derivada corresponde a diferentes formas: 
+
+				1. (n) convexa, f''(x) < 0 
+
+				2. (u) cóncava, f''(x) > 0 
+
+				3. (-) punto de inflexión, f''(x) = 0 
+
+				Depende de la disminución o aumento pendiente: 
+
+					1. Si es convexa, f'(x) está aumentando 
+
+					2. Si es concava, f'(x) está disminuyendo
+
+
+			Calcular curvatura e inflexión: 
+
+				1. Derivamos dos veces f(x)
+
+					f(x) = x^2/x-1
+
+					f'(x) = x^2-2x/(x-1)^2
+
+					f''(x) = 2/(x-1)^3
+
+				2. Sacamos las raíces de f''(x)
+
+					2/(x-1)^3
+
+					2/(x-1)^3 = 0 
+
+					2 = 0 * (x-1)^3 
+
+					2 = 0 
+
+					falso, no hay x, ni punto de inflexión. 
+
+
+				3. Creamos intervalos para f(x): 
+
+					Usamos asíntotas de f(x) y raíces de f''(x), las marcamos en la recta.
+
+						Asíntota f(x): 
+
+							x^2/x-1 
+
+							x-1 = 0 
+
+							x = 1, av
+
+					Nos crean intervalos, le damos valores que esten entre estos, a f''(x). 
+
+						Recta: 
+
+							-inf   1   inf
+
+						Valores para f''(x): 
+
+							2/(x-1)^3
+
+							f''(0) = -2 
+
+							f''(2) =  2 
+
+					Dados estos resultados, describimos cual curvatura tiene la f(x). 
+
+						Curvatura: 
+
+							convexa(n,-): (-inf, 1)
+
+
+							cóncava(u,+): (1,inf)
+
+
+				4. Punto de inflexión f(x): 
+
+					Reemplazando las raíces de f''(x) en f(x), averiguamos la coordenada y del punto.
+
+						La f(x) no tiene	
 
 
 		Recta tangente a la función: 
 
+			Es la ecuación de la recta/pendiente.
+
+			La derivada es la pendiente que tiene un valor, pero no da la ecuación. 
+
+			La recta tangente es otra función independiente. 
+
+			Usamos la ecuación punto pendiente: 
+
+				y-yp = m(x-xp) 
+
+				Coordenadas del punto: 
+
+					xp, yp 
+
+					Pertenece a la función (gráfico) y a la recta (es otra función). 
+
+				Pendiente: 
+
+					m es la pendiente o derivada de la función (f'(x)). 
+
+					O en el punto concreto f'(xp)
+
+
+				y - f(xp) = f'(xp)*(x-xp)
+
+					1° Valor que nos pidan o den: 
+
+						(xp) 
+
+					2°  lo reemplazamos en la función y en la derivada: 
+
+						f(xp) nos da yp: 
+
+							sustituimos el valor que nos dan (xp) en la función
+
+						f'(xp) nos da m: 
+
+							calculamos la derivada en el punto que nos pidan  
+
+
+			Ejercicio: 
+
+				En la función real de variable real: f(x) = x^2+4 
+
+				Escriba la recta tangente a la gráfica de f(x) en x = 2 
+
+				y - f(xp) = f'(xp)*(x-xp) 
+
+					y - f(2) = f'(2)*(x-2)
+
+						xp = 2 (punto dado)
+
+						f(x) = x^2+4 
+
+						f'(x) = 2x 
+
+						f(2) = 2^2+4 = 8 (yp)
+
+						f'(2) = 4 (pendiente, m)
+
+
+					y - 8 = 4(x-2) 
+
+					y - 8 = 4x-8 
+
+					y = 4x-8+8 
+
+					y = 4x 
+
+					p = (2,8)
+
+
+				Ejercicio 2: 
+
+					f(x) = x+1/x-1 
+
+					f(x) en x = -1 
+
+					y - f(xp) = f'(xp)*(x-xp)
+
+						xp = -1 
+
+						y - f(-1) = f'(-1)*(x+1)
+
+						f'(x) = 1*(x-1) - (x+1)*1/(x-1)^2 
+
+						x-1-x-1/(x-1)^2
+
+						-2/(x-1)^2 
+
+		Definición de derivada: 
+
+			y = f(x)
+
+			La función y depende de lo que valga x cuando toma valores, entonces, tenemos dos variables relacionada. 
+
+			El incremento y la división en la coordenada x e y (punto): ^y/^x, da la pendiente de una función. 
+
+				^y/^x = y2-y1/x2-x1 = m 
+
+				Una coordenada depende de la otra, y de x.
+
+				Conseguimos formar una recta entre dos puntos. 
+
+			En la derivada se usan diferenciales (valores muy pequeños o cercanos): dy/dx que determina la pendiente en un punto. 
+
+				y' = dy/dx
+
+
+			La pendiente ^y/^x = y2-y1/x2-x1 = m, puede notarse algebraicamente como: 
+
+				Si definimos un punto con las variables o coordenadas x y f(x), relacionadas directamente. 
+
+					P(x,f(x))
+
+				Si consideramos un aumento de un punto a otro: 
+
+					P(x,f(x)) -> P2(x+h, f(x+h))
+
+				Si restamos los puntos y los dividimos por el incremento: 
+
+					^y/^x = f(x+h) - f(x)/h 
+
+				Si el incremento pasa a ser muy pequeño, h (incremento) tiende a 0: 
+
+					h -> 0 
+
+				Eliminamos la recta entre dos puntos y conseguimos la recta tangente a la función: 
+
+					y' = f'(x) = dy/dx = f(x+h) - f(x)/h
+
+				Como necesitamos que h tienda a 0, la definición científica de derivada queda: 
+ 
+					f'(x) = lim f(x+h)-f(x)/h
+							h->0 
+
+
+			Ejemplo: 
+
+				Calcular f(x) = x^2-3x aplicando la definición de derivada. 
+
+				Debemos comprobar: f'(x) = 2x-3
+
+				Vamos completando la formula: 
+
+					f'(x) = lim f(x+h)-f(x)/h
+							h->0 
+
+					1° tenemos f(x) = x^2-3x 
+
+						f'(x) = lim f(x+h) - x^2-3x /h 
+
+					2° la variable x de f(x) pasa a ser (x+h), dejamos los coeficientes y exponentes
+
+						f'(x) = lim (x+h)^2 - 3(x+h) - (x^2-3x) / h 
+
+					3° Desarrollamos las igualdades notables, distribuciones, parentesis, etc. 
+
+						lim (x+h)^2 - 3(x+h) - (x^2-3x) / h 
+
+						x^2 + 2xh + h2 -3x -3h -x^2 + 3x /h 
+
+						2xh + h^2 - 3h/ h 
+
+					4° Hacemos el límite, reemplazando h por 0. 
+
+						0/0 
+
+					5° Resolvemos la indeterminación. 
+
+						factorizamos h 
+
+						h(2x+h-3)/h 
+
+						lim 2x+h-3 
+						h->0 
+
+					6° Volvemos a resolver el límite 
+
+						2x-3 
 
 
 
-		Máximos y mínimos: 
 
 
 
 
-		Optimización: 
+
+
+
 
 
 
