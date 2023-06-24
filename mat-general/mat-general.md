@@ -834,6 +834,73 @@
 			MCD = 2*3 = 6
 
 
+	Conversiones
+
+		1. /4 <-> 1/4*
+
+			cosx/4 <-> 1/4*cosx
+
+				Cuando pasa a multiplicar siempre dejamos el 1 como numerador. 
+
+			-3/x <-> -3*1/x 
+
+				Sacamos el 3 de la fracción y dejamos el 1 en el numerador. 
+
+
+
+		2. 1/x /3 = 1/3x
+
+			En caso de varios "pisos", los números que dividen pasan al denominador y los del númerador quedan. 
+
+			Dado que: 
+
+				1/x /3 = 1/x / 3/1 
+
+				1*1 / 3*x = 1/3x 
+
+				*Nos faltaba denominador en 2da fracción. Bajamos denominador.
+
+
+			x^3/2 / 3/2
+
+				Tenemos un denominador (2) del denominador (3), al 2 lo pasamos al númerador.
+
+			2x^3/2 /3
+
+					Dado que: 
+
+						x^3/2 /1 / 3/2 = 2*x^3/2 / 1*3 = 2x^3/2 / 3 
+
+					*Nos faltaba denominador en primera fracción. Subimos denominador 2da fracción al númerador. 
+
+		3. 	x^-3/-3
+
+				Invertimos la fracción para cambiar la potencia negativa.
+
+			-1/3x^3 
+
+
+			3x^-1/2 
+
+				Dejamos el coeficiente en el numerador, pasamos la potencia al denominador.
+
+			3/x^1/2 
+
+
+			6/x^3
+
+				Los subimos o bajamos y viceversa
+
+			6*x^-3
+
+
+			-3x^-2 
+
+				Sin fracción, invertimos la potencia negativa.
+
+			-3/x^2 
+
+
 
 || IRRACIONALES
 
@@ -7442,7 +7509,7 @@
 			Caso 3: 
 
 				y = arcsen(10x^3)/2 
-
+|
 					Tenemos una función dentro de otra y además una operación de derivadas. 
 
 					y'= 1/[1-(10x^3)^2] * 30x^2 /2 
@@ -9570,22 +9637,475 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
 || INTEGRALES
 
+	Es la operación inversa a derivar: 
+
+		Derivar: f(x) -> f(x)' 
+
+		Integrar: f(x)'-> f(x) 
+
+		Se trata de encontrar la función original a la que pertenece la derivada, se llama primitiva: F(x)'.
+
+		Derivar: x^2' -> 2x 
+
+		Integrar: 2x -> x^2 
+
+		Notación: |f(x)dx 
+
+			Está compuesta por el signo integral(|) y el diferencial de x (dx)
+
+		Resultado: 
+
+			|f(x)dx = F(x)+k 
+
+			Se compone de la función primitiva y se le añade la k 
+
+		Ejemplo: 
+
+			Integrar la función 2x 
+
+			|2x dx = x^2 + k 
+
+
+	Significado de k: 
+
+		Si tenemos una función y la derivamos: 
+
+			y = x^2+3 -> y'= 2x 
+
+		Si queremos derivar una función es muy perecida o varía muy poco, puede dar lo mismo que la anterior: 
+
+			y = x^2-1 -> y'= 2x  
+
+			O querer derivar algo que por las propiedades de la derivada, va a dar igual que otra. 
+
+		 	y = x^2+17 -> y'= 2x 
+
+		 	y = x^2-2/5 -> y'= 2x 
+
+		Estas funciones son distintas pero su derivada da lo mismo. 
+
+		Ahora vemos que los número se han "perdido" o no se reflejan en el resultado "2x". 
+
+		Si hacemos al revés, es decir, encontrar la función primitiva de 2x; tenemos un montón de variantes de funciones que dan los mismo. 
+
+			|2x dx -> y = x^2+3 ... 
+
+		Además nos falta un número que no podemos saber cuál es, dado que al derivar se pierde. 
+
+			3, -1, 17, -2/5 ...
+
+			|2x dx = x^2+k
+
+		Reciben el nombre de integrales indefinidas. 
+
+
+	Operaciones con derivadas: 
+
+		Como existen las derivadas por tabla, sabemos de que función salen algunas derivadas. 
+
+		Debemos mirar que derivada tenemos en la integral |f(x)dx.
+
+
+		|f(x)dx = F(x)+k 
+
+		1. |f(x)+-g(x) dx = |f(x) dx +- |g(x) dx
+
+			= F(x) +- G(x) +- k 
+
+			Primero las separamos (sin resolver nada), después escribimos las primitivas (sin dx) y agregamos k. 
+
+			O hacemos las primitivas directamente. 
+
+			|f(x)+g(x) dx = F(x)+G(x)+k
+
+
+			Ejemplos: 
+
+				|2x dx = x^2+k 
+
+
+				|cosx dx = senx+k 
+
+
+				|1/x dx = lnx+k  
+
+
+				|(2x+cosx) dx
+
+					|2x dx + |cosx dx 
+
+					x^2 + senx + k 
+
+
+				|(cosx-1/x) dx = senx-lnx+k 
+
+
+		2. |c*f(x) dx = c*|f(x) dx = c*F(x)+k 
+
+			|c*f(x) dx = c*F(x)+k
+
+
+			Ejemplos:
+
+				|4cosx dx = 4|cosx dx = 4senx + k 
+
+
+				|-3/x dx = -3|1/x dx = -3lnx + k
+
+
+				|cosx/5 dx = |1/5*cosx dx	
+				
+					1/5|cosx dx = 1/5*senx + k = senx/5+k 
+
+
+				|2x/13 dx = |1/13*2x dx 
+				
+					1/13|2x dx = 1/13*x^2+k = x^2/13 + k 
+
+
+	Integrales basicas: 
+
+		1. |c*dx = cx+k 
+
+			Al número le agregamos una x y k 
+
+			
+			|5dx = 5x+k 
+
+
+			|-8dx = -8x+k
+
+
+			|dx/7 = 1/7|dx = 1/7*x+k = x/7+k 
+
+				o
+
+				|1/7*dx = 1/7*x+k = x/7+k 
+
+
+			|(4-[11]) dx = 4x-[11]x+k
+
+
+		2. |x^m dx = x^m+1/m+1 + k 
+
+
+			|x^2 dx = x^3/3 +k 
+
+				Comprobación: 
+
+					y = x^3/3 + 4 
+
+						y'= 3x^2/3 + 0 
+
+							x^2
+
+
+			|x dx = x^2/2 +k 
+
+
+			|5x^2 dx = 5*x^3/3 +k = 5x^3/3 +k 
+
+
+			|6x dx = 6x^2/2 + k 
+
+				Simplificamos: 
+
+					6/2 = 3 
+
+				3x^2+k 
+
+			|(2x^3-5x^2+2x-9) dx = 2*x^4/4 - 5*x^3/3 + 2*x^2/2 - 9x + k 
+
+				Simplificamos:
+
+					2/4 = 1/2 
+					2/2 = 1 
+
+				x^4/2 - 5x^3/3 + x^2 - 9x + k 
+
+
+			|[x] dx = |x^1/2 dx 
+
+				Convertimos y despues integramos
+
+				x^1/2+1/1 / 1/2+1/1 
+
+					Fracciones: 
+
+						1/2+1/1 = 1+2(1)/2 = 3/2
+
+				x^3/2 / 3/2 +k 
+
+					Tenemos un denominador (2) del denominador (3), al 2 lo pasamos al númerador 
+
+				2x^3/2 /3 +k 
+
+					Dado que: 
+
+						x^3/2 /1 / 3/2 = 2*x^3/2 / 1*3 = 2x^3/2 / 3 
+
+					Volvemos a escribir la solución como era originalmente la función.  
+
+				2[x^3]/3+k  
+
+					Extraemos factor de la raíz: 
+
+						exponente > indice 
+
+						[x^2*x]  = x[x] 
+
+				2x[x]/3+k 
+
+
+			|1/x^4 dx = |x^-4 dx 
+
+				x^-3/-3 + k 
+
+				Ahora nos toca poner el resultado como estaba la función original
+
+				Invertimos la fracción para cambiar la potencia negativa
+
+				-1/3x^3 + k
+
+
+			|6/x^3 dx = |6*x^-3
+
+				6*x^-2/-2 
+
+				6x^-2/-2 
+
+				-3x^-2 + k 
+
+					Volvemos a escribir la fracción a positiva como esta la original. 
+
+				-3/x^2 + k  
+
+
+			|1/x dx = |x^-1 dx 
+
+				x^0/0 + k 
+
+				1/0 + k 
+
+				No aplica la integral de una potencia, sino que aplica la integral de log neperiano. 
+
+
+		3. |1/x dx = lnx + k 
+
+
+			|1/x dx = |x^-1 = lnx + k 
+
+
+			|5/x dx  = 5|1/x dx 
+
+				5lnx + k 
+
+			|(x^2 - x + 1 - 1/x) dx 
+
+				x^3/3 - x^2/2 + x - lnx + k 
+
+
+		4. |e^x dx = e^x + k 
+
+
+			|-4e^x dx 
+
+				-4e^x + k  
+
+
+			|e^x/6 dx 
+
+				1/6*e^x + k  
+
+
+			|(e^x + 2/x) dx = 
+
+				|e^x dx + |2/x dx 
+
+				|e^x dx + 2|1/x dx 
+
+					e^x + 2lnx + k 
+
+
+		5. |a^xln a dx = a^x + k 
+
+
+			|4^xln4 dx = 4^x + k 
+
+
+			Por lo general no nos dan la integral exponencial completa, faltará lna.
+
+			|2^x dx
+
+			Tenemos que introducirlo en la integral.  
+
+			Si introducimos el lna que nos falta, tambien lo dividimos.
+
+			|2^x dx = |2^x * ln2/ln2 dx 
+
+				ln2/ln2 = 1
+
+				Si multiplicamos por 1, no cambiamos la integral. 
+
+				Pero no necesitamos el que divide, lo sacamos 
+
+			|2^x dx = 1/ln2|2^x * ln2 dx 
+
+				1/ln2*2^x + k 
+
+				2^x/ln2 + k 
+
+
+			|a^x dx -> |a^x * lna/lna dx -> 1/lna|a^x * lna dx 
+
+				1/lna*a^x +k
+
+				a^x/lna + k
+
+
+			|4^x dx = |4^x * ln4/ln4 dx
+
+			= 1/ln4|4^x * ln4 dx 
+
+				1/ln4*4^x + k 
+
+				4^x/ln4 + k 
+
+
+		Trigonométricas: 
+
+			6. 
+
+
+			7. 
+
+
+			8. 
 
 
 
+	Rs integrales: 
+
+		Operaciones: 
+
+			1. |f(x)+-g(x) dx = |f(x) dx +- |g(x) dx
+
+				F(x) +- G(x) +- k 
+
+
+			2.  |c*f(x) dx = c*|f(x) dx = c*F(x)+k 
+
+
+		Propiedades de multiplos y divisores: 
+
+			1. /4 <-> 1/4*
+
+				cosx/4 <-> 1/4*cosx
+				
+				-3/x <-> -3*1/x 
+
+
+			2. 1/x /3 = 1/3x
+
+				Dado que: 
+
+					1/x /3 = 1/x / 3/1 
+
+					1*1 / 3*x = 1/3x 
+
+
+				x^3/2 / 3/2 = 2x^3/2 /3
+
+					Dado que: 
+
+						x^3/2 /1 / 3/2 = 2*x^3/2 / 1*3 = 2x^3/2 / 3 
+ 
+
+			3. 	x^-3/-3 <-> -1/3x^3 
+
+				3x^-1/2 <-> 3/x^1/2 
+
+				6/x^3 <-> 6*x^-3
+
+			-3x^-2 <-> -3/x^2 
+
+
+		Tipos de integrales: 
+
+			Const:
+
+				|c*dx = cx+k 
+
+					|(4-[11]) dx = 4x-[11]x+k
+
+
+			Pol: 
+
+				|x^m dx = x^m+1/m+1 + k 
+
+					1. |x dx = x^2/2 +k
+
+					2. |[x] dx = |x^1/2 dx
+
+					3. |6/x^3 dx = |6*x^-3
+
+					El resultado se vuelve a escribir como la función original.
+
+			
+			log nep: 
+
+				|1/x dx = lnx + k
+
+					|5/x dx  = 5|1/x dx 
+
+						5lnx + k
+
+		
+			euler: 
+
+				|e^x dx = e^x + k
+
+					|(e^x + 2/x) dx = 
+
+						|e^x dx + |2/x dx 
+
+						|e^x dx + 2|1/x dx 
+
+							e^x + 2lnx + k 
+
+
+			Exp:
+
+				|a^xln a dx = a^x + k 
+
+					|4^xln4 dx = 4^x + k 
+
+
+					1. |a^x dx -> |a^x * lna/lna dx -> 1/lna|a^x * lna dx
+
+						1/lna*a^x +k
+
+						a^x/lna + k
+
+						Resolvemos: 1*a^x, lna*1
+
+
+						|2^x dx = 1/ln2|2^x * ln2 dx 
+
+							1/ln2*2^x + k 
+
+							2^x/ln2 + k 
+
+
+			Trig: 
+
+				|
+
+				|
+
+				|
 
 
 
