@@ -9765,7 +9765,7 @@
 					1/13|2x dx = 1/13*x^2+k = x^2/13 + k 
 
 
-	Integrales basicas: 
+	Integrales basicas/indefinidas: 
 
 		1. |c*dx = cx+k 
 
@@ -9976,13 +9976,226 @@
 
 		Trigonométricas: 
 
-			6. 
+			6. |cosx dx = senx + k 
 
 
-			7. 
+				|cosx/3 dx = 1/3*senx+k = senx/3+k 
 
 
-			8. 
+			7. |senx dx = -cosx + k 
+
+
+				|5senx dx = -5cosx + k 
+			
+
+			8. |tgx dx = -ln(cosx) + k 
+
+				
+				|(tgx + cosx) dx = -ln(cosx) + senx + k 
+
+
+			9. |cotgx dx = ln(senx) + k 
+
+
+				|(3senx + 8cotgx) dx = -3cosx + 8ln(senx) + k 
+
+
+			10. |sec^2x dx = tgx + k 
+
+
+				|1/cos^2x dx = |sec^2x dx 
+
+					tgx + k 
+
+
+				|sec^2x/2 dx = 1/2*tgx + k = tgx/2 + k 
+
+
+				|(senx - sec^2x)dx = -cosx - tgx + k 
+
+
+				
+
+			11. |cosec^2x dx = -cotgx + k 
+
+
+				|1/sen^2x dx = |cosec^2x dx 
+
+					-cotgx + k 
+
+				
+				|3cosec^2x dx = -3cotgx + k 
+
+
+				|(cosec^2x + 2tgx) dx = -cotgx -2ln(cosx) + k
+
+
+			12. |1/[1-x^2] dx = arcsenx + k 
+
+
+				|(1/[1-x^2] + cosx) = arcsenx + senx + k  
+
+
+
+			13. |1/1+x^2 dx = arctgx + k 
+
+
+				|(1/1+x^2 + tgx) dx = arctgx - ln(cosx)
+
+			
+				|(cotgx - 1/x^2 + sec^2x) dx = ln(senx) - arctgx + tgx + k
+
+
+
+	Integrales inmediatas: 
+
+		Hasta ahora venimos tratando con los siguientes conceptos: 
+
+			Derivadas basicas:
+
+				y = f(x) -> y' = f(x)'
+
+
+			Integrales basicas/indefinidas: 
+
+				y' -> F(x) + k 
+
+
+		Las derivadas basicas dan lugar a las integrales basicas: 
+
+			y = senx -> y'= cosx 
+
+			|cosx dx = senx + k 
+
+
+			y = x^3 -> y'= 3x^2 
+
+			|3x^2 dx = 3x^3/3 = x^3 + k 
+
+
+		Después venían las derivadas compuestas en las que x puede tomar como valor otras funciones: 
+
+			y = f(g) -> y'= f'(g)*g'
+
+			y = sen(x^3) -> y'= cos(x^3) * 3x^2
+
+
+		Da origen a las integrales inmediatas/compuestas: 
+
+			|f(g)*g' dx = F(g) + k
+
+		en donde tenemos estas derivadas complejas, para encontrar la función primitiva. 
+
+			|cos(x^3) * 3x^2 dx = sen(x^3) + k
+
+				Dentro la integral vamos a encontrar dos funciones (cosx y x^3) y además la derivada de la segunda función (3x^2) 
+
+				La solución va a ser la primitiva (senx) de la primera derivada (cosx)
+
+		Si nos faltase la derivada de la segunda función dentro de la integral, no aplica:  
+
+			|cos(x^3) dx =/= sen(x^3)
+
+
+		En conclusión, solo se puede hacer a integral compuesta si está la derivada de la segunda función:
+
+			|f dx = F + k  
+
+			|f(g) dx = ?
+
+			|f(g)*g' dx = F(g) + k
+
+				Es solo integrar f y dejar g + k
+
+					|cos(x^3) * 3x^2 dx = sen(x^3) + k
+
+
+		Ejemplos: 
+
+			|senx dx = -cosx + k
+
+			|sen(x^2) dx = ???
+
+			|sen(x^2)*2x dx = -cos(x^2) + k 
+
+
+		Fórmulas: 
+
+			Como x puede tomar el valor de un función (g): 
+
+			|x^m dx = x^m+1/m+1 + k
+
+				|x^2 dx = x^3/3 + k 
+
+
+			|g^m * g'dx = g^m+1/m+1 + k
+
+				|(senx)^2 * cosx dx = (senx)^3/3 + k 
+
+				*Una función (g), elevado a m
+
+				*Integrar f y dejar g + k
+
+				*La función más interna suele ser la segunda función
+
+					En f(x) pol puede ser confusa.
+
+				*"x" puede ser el valor "x" o cualquier otro.
+
+
+				|(lnx)^4 * 1/x dx = (lnx)^5/5 + k 
+
+
+				|(senx)^2 dx = ???
+
+
+				|(lnx)^4 dx = ??? 
+
+
+			|1/x dx = lnx + k 
+
+
+			|1/g * g' dx = ln g + k 
+
+				|1/x^2+3x * (2x+3) dx = ln (x^2+3x) + k 
+
+
+				|1/senx * cosx dx = ln(senx) + k 
+
+					|cosx/senx dx =  ln(senx) + k
+
+					|cotg dx = ln(senx) + k
+
+			*Si encontramos una derivada en un numerador, es una integral inmediata/compuesta.  
+
+				|2x+3/x^2+3x dx = ln(x^2+3x) + k 
+
+
+			|e^x dx = e^x + k 
+
+
+			|e^g * g' dx = e^g + k 
+
+
+				|e^x^4 * 4x^3 dx = e^x^4 + k 
+
+					la segunda función es una polinómica (x^4), la dejamos y solo integramos (e)
+
+				|e^x^4 dx = ??? 
+
+
+				|e^x^4 * x^3 dx = 
+
+					Nos falta un número, pero la derivada que aparece es muy parecida. Lo introducimos		
+						4/4*x^3 = 1*x^3
+
+						Es modificación neutra. 
+
+					|e^x^4 * 4x^3/4 dx 
+
+					1/4|e^x^4 * 4x^3 dx 
+
+						1/4*(e^x^4) + k  
 
 
 
@@ -10031,8 +10244,8 @@
 
 			-3x^-2 <-> -3/x^2 
 
-
-		Tipos de integrales: 
+		
+		Integrales basicas/indefinidas: 
 
 			Const:
 
@@ -10101,11 +10314,125 @@
 
 			Trig: 
 
-				|
+				|cosx dx = senx + k 
 
-				|
+					|cosx/3 dx = 1/3*senx+k = senx/3+k
 
-				|
+
+				|senx dx = -cosx + k 
+
+					|5senx dx = -5cosx + k
+				
+
+				|tgx dx = -ln(cosx) + k 
+			
+					|(tgx + cosx) dx = -ln(cosx) + senx + k 
+
+
+				|cotgx dx = ln(senx) + k 
+
+					|(3senx + 8cotgx) dx = -3cosx + 8ln(senx) + k 
+
+
+				|sec^2x dx = tgx + k 
+
+					|1/cos^2x dx = |sec^2x dx 
+
+						tgx + k 
+
+
+				|cosec^2x dx = -cotgx + k 
+
+					|1/sen^2x dx = |cosec^2x dx 
+
+					-cotgx + k 
+
+
+				|1/[1-x^2] dx = arcsenx + k 
+
+					|(1/[1-x^2] + cosx) = arcsenx + senx + k  
+
+
+				|1/1+x^2 dx = arctgx + k 
+
+					|(1/1+x^2 + tgx) dx = arctgx - ln(cosx)
+
+
+		Integrales inmediatas/compuestas: 
+
+			1. Si encontramos una derivada en un numerador, es una integral inmediata/compuesta.
+
+				|g'/g dx = g´ + k 
+
+				|1/senx * cosx dx = ln(senx) + k 
+
+					|cosx/senx dx = ln(senx) + k
+
+					|cotg dx = ln(senx) + k
+
+
+				Una función (g), elevado a m.
+
+				Integrar f y dejar g + k. 
+
+				La función más interna suele ser la segunda función. 
+
+					En f(x) pol puede ser confusa.
+
+					|(senx)^2 * cosx dx = (senx)^3/3 + k 
+
+				"x" puede ser el valor "x" o cualquier otro.
+
+
+			2. Si Encontramos una derivada muy parecida a nuestra función g, introducimos los factores que faltan. 
+
+				Como en la integral exponencial: 
+
+					|a^x dx -> |a^x * lna/lna dx -> 1/lna|a^x * lna dx
+
+					lna/lna = 1
+
+					1 es nuetro. 
+
+					Sacamos afuera lo que no necesitamos. 
+
+				|e^x^4 * x^3 dx = 
+
+					Nos falta un número, pero la derivada que aparece es muy parecida.
+
+					|e^x^4 * 4x^3/4 dx 
+
+					1/4|e^x^4 * 4x^3 dx 
+
+						1/4*(e^x^4) + k
+
+			Pol: 
+				
+				|g^m * g'dx = g^m+1/m+1 + k
+
+
+
+			Log: 
+
+				|g'/g dx = ln g + k 
+
+
+
+			e: 
+				|e^g * g' dx = e^g + k 
+
+
+
+
+			exp: 
+
+
+
+
+
+			trig: 
+
+
 
 
 
