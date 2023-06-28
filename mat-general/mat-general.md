@@ -10198,8 +10198,550 @@
 						1/4*(e^x^4) + k  
 
 
+			|cosx dx = senx + k 
 
-	Rs integrales: 
+			|senx dx = -cosx + k 
+
+			|tgx dx = -ln(cosx) + k 
+
+
+			|cos(g)*g' dx = sen(g) + k 
+
+			|sen(g)*g' dx = -cos(g) + k 
+
+			|tg(g)*g' dx = -ln(cos(g)) + k 
+
+
+				|cos(x^3)*x^2 dx =   
+
+					Nos falta un 3
+
+					|cos(x^3)*3/3*x^2 dx = 
+
+					1/3*sen(x^3) + k 
+
+
+				|cos(5x) dx = 
+
+					Nos falta la derivada completa, pero es 5. 
+
+					|cos(5x)*5/5 dx = 
+
+					1/5*sen(5x) 
+
+
+				|sen(lnx)/x dx = 
+
+					-cos(lnx) + k 
+
+
+				|tg(x^2-7)*x dx = 
+
+					|tg(x^2-7)*2/2*x dx 
+
+						-1/2*ln(cos(x^2-7)) + k 
+
+
+		Ejercicios - Compuestas: 
+
+			|g^m * g'dx = g^m+1/m+1 + k 
+
+
+				|(x^2-5x+9) dx = 
+
+					x^3/3 - 5x^2/2 + 9x + k
+
+
+				|(1/x^3 + 7/x^2) dx = 
+
+					|(x^-3 + 7*x^⁻2) dx 
+
+					x^-2/-2 + 7x^-1/-1 + k 
+
+					1/-2x^2 - 7/x + k 
+
+
+				|4^[x] dx = |x^1/4 dx 
+
+					x^1/4+1/1 / 1/4+1/1 + k 
+
+					x^5/4 / 5/4 + k 
+
+					4*4^[x^5] / 5
+
+						Dado que: 
+
+							numerador: x^5/4*4 
+							denominador: 1*5
+
+					4*x*4^[x^5] / 5 
+
+						Extraemos factores: 
+
+							4^[x^5] 
+
+							4^[x^4*x^1]
+
+							4*x*4^[x]
+
+
+				|2(2x-8)^6 dx = 
+
+					2*(2x-8)^7/7 + k 
+
+						2* es la derivada, no cuenta para la solución. 
+
+					(2x-8)^7/7 + k
+
+
+				|x(x^2-8)^3 dx = 
+
+					|2/2*x(x^2-8)^3  dx 
+
+					1/2*(x^2-8)^4/4 + k 
+
+					(x^2-8)^4/8 + k
+
+
+				|x^2/(x^3+5)^4 dx = 
+
+					(x^3+5)^5/5 + k 
+
+					Hay que modificarla: 
+
+						|x^2*(x^3+5)^-4 dx
+
+						|3/3*x^2(x^3+5)^-4 dx 
+
+							1/3*(x^3+5)^-3/-3 + k 
+
+							(x^3+5)^-3/-9 + k
+
+							1/-9*(x^3+5)^3 + k 
+
+
+				|3/[5x] dx = 
+
+					|3/(5x)^1/2 dx 
+
+					3|(5x)^-1/2 dx
+
+					3|5/5*(5x)^-1/2 dx 
+
+					3/5|5*(5x)^-1/2 dx 
+
+						3/5*(5x)^-1/2+1/1 / -1/2+1/1 + k 
+
+						3/5*(5x)^1/2 / 1/2 + k 
+
+						6/5*(5x)^1/2 + k 
+
+						6[5x]/5 + k 
+
+
+			|e^g*g' dx = e^g + k 
+
+			|a^g*lna*g' dx = a^g + k 
+
+				La integral exponencial necesita dos requisitos: lna (nos puede faltar y habrá que incorporarla) y g'
+
+
+				|e^x dx = e^x + k 
+
+
+				|e^-6x dx = 
+
+					|-6/-6*e^-6x dx 
+
+						-1/6*e^-6x + k 
+
+						-e^-6x/6 + k
+
+						Usamos -6/-6 = 1 para que no modifique la integral.
+
+						Si no, modifica la integral: -6/6 = -1
+
+
+				|e^3x/2 dx = 
+
+					Necesitamos la derivada de 3x/2 -> 3/2 
+
+						usamos 3/2 / 3/2 o 3/2*2/3 
+
+						Siempre serán 1. 
+
+					|3/2*2/3 * e^3x/2 dx 
+
+					2/3|3/2 * e^3x/2 dx  
+
+						2/3*e^3x/2 + k 
+
+						2*e^3x/2 /3 + k
+
+
+				|3xe^x^2 dx 
+
+					3|2/2*x*e^x^2 dx 
+
+					3/2|2x*e^x^2 dx 
+
+					3/2|2x*e^x^2 dx 
+
+						3/2*e^x^2 + k 
+
+						3*e^x^2 / 2 + k
+
+
+				|4^xln4 dx = 
+
+					4^x + k 
+
+
+				|4^x dx = 
+
+					|4^x*ln4/ln4 dx 
+
+					1/ln4|4^x*ln4 dx
+
+						1/ln4*4^x + k 
+
+						4^x/ln4 + k 
+
+
+				|5^7x dx = 
+
+					|5^7x * ln5/ln5 * 7/7 dx 
+
+					1/ln5|5^7x * ln5 * 7/7 dx 
+
+					1/7ln5|5^7x * ln5 * 7 dx 
+
+						1/7ln5*5^7x + k 
+
+						5^7x/7ln5 + k
+
+
+			|1/g * g' dx = lng + k 
+
+			|g'/g dx = lng + k 
+
+
+				|1/x dx = lnx + k 
+
+				
+				|dx/x = lnx + k 
+
+
+				|2x/x^2+3 dx = 
+
+					ln(x^2+3) + k 
+
+				
+				|x/x^2-1 dx = 
+
+					|2/2*x / x^2-1 dx 
+
+					1/2|2x/x^2-1 dx 
+
+						1/2*ln(x^2-1) + k 
+
+
+				|dx/2-x = 
+
+					La derivada de -x es -1
+
+					-1|-1*dx/2-x dx= 
+
+					-1|-1/2-x dx
+
+						-1*ln(2-x) + k 
+
+						-ln(2-x) + k 
+
+
+				|x^2-2/x^3-6x+1 dx = 
+
+					|3/3*x^2-2/x^3-6x+1 dx 
+
+					1/3|3(x^2-2)/x^3-6x+1 dx 
+
+						1/3*ln(x^3-6x+1) + k 
+
+
+				|7x/x^2+3 dx = 
+
+					7|2/2*x/x^2+3 dx 
+
+					7/2|2x/x^2+3 dx 
+
+						7/2*ln(x^2+3) + k 
+
+
+				|dx/x*lnx = 
+
+					y' = ln x = 1/x
+
+					y' = x = 1 
+
+					|1/x*1/lnx dx 
+
+					|1/x/lnx dx 
+
+						ln(lnx) + k 
+
+
+			|cos(g)*g' dx = sen(g) + k 
+
+			|sen(g)*g' dx = -cos(g) + k 
+
+			|tg(g)*g' dx = -ln(cos(g)) + k
+
+
+				|sen(4x+3) dx 
+
+					|sen(4x+3)*4/4 dx 
+
+					1/4|sen(4x+3)*4 dx 
+
+						1/4*(-cos(4x+3)) + k 
+
+						-cos(4x+3)/4 + k 
+
+
+				|cos(2x/5) dx 
+
+					|cos(2x/5)*2/5*5/2 dx 
+
+					5/2|cos(2x/5)*2/5 dx 
+
+						5/2*sen(2x/5) + k 
+
+
+				|tan(x/6) dx 
+
+					|tan(x/6)*1/6*6/1 dx 
+
+					6|tan(x/6)*1/6 dx 
+
+						-6*ln(cos(x/6)) + k 
+
+
+				|x^2*sen(x^3) dx 
+
+					|3/3*x^2*sen(x^3) dx 
+
+					1/3|3x^2*sen(x^3) dx 
+
+						-1/3*cos(x^3) + k 
+
+						-cos(x^3)/3 + k 
+
+
+				|3e^x*tang(e^x) dx 
+
+					3|e^x*tang(e^x) dx  
+
+						-3ln(cos(e^x)) + k 
+
+
+			|g'/1+g^2 dx = arctan(g) + k 
+
+				Necesitamos un +1, g^2 y g'(^1)
+
+				
+				|1/1+x^2 dx 
+
+					arctan(x) + k 
+
+
+				|dx/1+x^2 dx 
+
+					arctan(x) + k 
+
+
+				|dx/1+(3x)^2 dx 
+
+					|3/3*dx/1+(3x)^2 
+
+					1/3|3dx/1+(3x)^2 
+
+						1/3*arctan(3x) + k 
+
+
+				|1/1+9x^2 dx 
+
+					Necesitamos que el termino esté al cuadrado, no solo la variable. 
+
+					|dx/1+9x^2 
+
+						Reescribimos el termino:
+
+							9x^2 = (3x)^2
+
+					|dx/1+(3x)^2 dx 
+
+						Y además necesitamos la derivada del nuevo termino: 
+
+							y'= 3x = 3
+
+					|3*3dx/1+(3x)^2 dx
+
+					3|3dx/1+(3x)^2 dx
+
+						arctan(3x) + k 
+
+
+				|1/1+7x^2 dx 
+
+					|dx/1+([7]x)^2 dx
+
+						La potencia cancela la raíz: [7]^2 = 7
+					
+					|dx/1+([7]x)^2 dx 
+
+						y'= [7]x
+
+							[7] es un número, y' = 0
+
+							0*x + [7]*1 
+
+							0+[7]
+
+					|[7]/[7]*dx/1+([7]x)^2 dx
+
+					1/[7]|[7]dx/1+([7]x)^2 dx
+
+						1/[7]*arctan(7]x) + k 
+
+						*Podríamos racionalizar /[7]
+
+
+				|1/4+x^2 dx 
+
+					Tenemos la derivada, el termino/f(x) al cuadrado pero nos falta +1
+
+					Introducimos un 4 para sacar factor común: 
+
+						4/4*x^2  
+
+					|1/4+4x^2/4 dx  
+
+					|1/4(1+x^2/4) dx 
+
+						Sacamos el factor del denominador 1/4() -> 1/4
+
+					1/4|1/1+x^2/4 dx
+
+						Reescribimos la f(x): 
+
+							x^2/4 = (x/2)^2 
+
+					1/4|1/1+(x/2)^2 dx 
+
+						Derivada de x/2: 
+
+							1/2 
+
+						Introducimos en la fracción: 
+
+							1/2*2/1 
+
+					1/4|1/2*2/1*1 / 1+(x/2)^2 dx 
+
+						Sacamos el *2 hacia el numerador de afuera
+
+					2/4|1/2 * 1/1+(x/2)^2 dx  
+
+						2/4*arctan(x/2) + k 
+
+						1/2*arctan(x/2) + k 
+
+
+				|1/5+x^2 dx 
+
+					|1 / 5+5/5*x^2 dx 
+
+					|1/5(1+x^2/5) dx 
+
+					1/5|1/1+x^2/5 dx 
+
+					1/5|1/1+(x/[5])^2 dx 
+
+						Derivada de x/[5]: 
+
+							1/[5]
+
+							número, no función
+
+						Introducimos: 
+
+							1/[5]*[5]/1
+
+					1/5|1/[5]*[5]/1 * 1 / 1+(x/[5])^2 dx
+
+					[5]/5 |1/[5] /1 +(x/[5])^2 dx
+
+						[5]/5*arctan(x/[5]) + k 
+
+						*Podríamos racionalizar (x/[5]) 
+
+
+				|1/3+2x^2 dx 
+
+					Introducimos todas las dificultades: 
+
+						1. Factor común 
+							
+							sacar factor afuera a dividir
+
+						2. Reescribir función
+
+							Raíces
+
+						3. Introducir la derivada de la función 
+
+							Introducir fracción: a/b*b/a 
+
+							Raíces
+
+							Sacar numerador
+
+					|1/3+3/3*2x^2 dx 
+
+					|1/3(1+2x^2/3) dx
+
+					1/3|1/1+2x^2/3 dx 
+
+					1/3|1/1+([2]x/[3])^2 dx 
+
+						Derivada de [2]x/[3]
+
+							[2]/[3]
+
+						Introducimos: 
+
+							[2]/[3]*[3]/[2]
+
+ 						Sacamos a multiplicar 
+
+ 							[3]/[2] 
+
+ 					1/3|[2]/[3]*[3]/[2]* 1 / 1+([2]x/[3])^2 dx
+
+ 					1/3 * [3]/[2] |[2]/[3] * 1 / 1+([2]x/[3])^2 dx
+
+ 					1/3 * [3]/[2]*arctan([2]x/[3]) + k 
+
+					[3]/3[2]*arctan([2]x/[3]) + k
+
+
+					
+
+
+
+
+
+	Rs integrales: 	
 
 		Operaciones: 
 
@@ -10266,6 +10808,8 @@
 
 					El resultado se vuelve a escribir como la función original.
 
+					Nos tocará invertir potencias, cambiarlas de piso y extraer factores de la raíz. 
+
 			
 			log nep: 
 
@@ -10273,7 +10817,12 @@
 
 					|5/x dx  = 5|1/x dx 
 
-						5lnx + k
+						5lnx + k 
+
+					|1/x dx = lnx + k 
+
+					|dx/x = lnx + k 
+
 
 		
 			euler: 
@@ -10406,31 +10955,199 @@
 
 						1/4*(e^x^4) + k
 
+
+			3. Solo nos queda averiguar cuál es la derivada de la segunda función, puede estar completa o incompleta: 	
+
+				|2(2x-8)^6 dx = 
+
+					2*(2x-8)^7/7 + k 
+
+						2* es la derivada, no cuenta para la solución. 
+
+					(2x-8)^7/7 + k
+
+
+			4. La forma importa, tiene que ser explicitamente igual a las fórmulas:
+
+				Con esta forma no se puede aplicar la integral polinómica. 
+				
+					|x^2/(x^3+5)^4 dx = 
+
+						(x^3+5)^5/5 + k 
+
+				
+				La tenemos que modificar: 
+
+					|x^2*(x^3+5)^-4 dx
+
+					|3/3*x^2(x^3+5)^-4 dx 
+
+						1/3*(x^3+5)^-3/-3 + k 
+
+						(x^3+5)^-3/-9 + k
+
+						1/-9*(x^3+5)^3 + k 
+
+
+				Es como en la integral: 
+
+					|(1/x^3 + 7/x^2) dx = 
+
+						|(x^-3 + 7*x^⁻2) dx 
+
+
 			Pol: 
 				
 				|g^m * g'dx = g^m+1/m+1 + k
 
 
+				|3/[5x] dx = 
+
+					|3/(5x)^1/2 dx 
+
+					3|(5x)^-1/2 dx
+
+					3|5/5*(5x)^-1/2 dx 
+
+					3/5|5*(5x)^-1/2 dx 
+
+						3/5*(5x)^-1/2+1/1 / -1/2+1/1 + k 
+
+						3/5*(5x)^1/2 / 1/2 + k 
+
+						6/5*(5x)^1/2 + k 
+
+						6[5x]/5 + k
+
 
 			Log: 
 
+				Cuando tengamos una integral que sea un división/fracción y en el denominador haya un función, verifiquemos que en el numerador haya la derivada de f(x). 
+
+
+				|1/g * g' dx = ln g + k 
+
+					|1/x^2+3x * (2x+3) dx = ln (x^2+3x) + k 
+
+
+					|1/senx * cosx dx = ln(senx) + k 
+
+						|cosx/senx dx =  ln(senx) + k
+
+						|cotg dx = ln(senx) + k
+
+
 				|g'/g dx = ln g + k 
 
+					|2x+3/x^2+3x dx = ln(x^2+3x) + k
 
 
 			e: 
 				|e^g * g' dx = e^g + k 
+
+					La integral exponencial necesita dos requisitos: lna (nos puede faltar y habrá que incorporarla) y g'
+
+
+					|e^-6x dx = 
+
+					|-6/-6*e^-6x dx 
+
+						-1/6*e^-6x + k 
+
+						-e^-6x/6 + k
+
+						Usamos -6/-6 = 1 para que no modifique la integral.
+
+						Si no, modifica la integral: -6/6 = -1
+
+
+					|3xe^x^2 dx 
+
+						3|2/2*x*e^x^2 dx 
+
+						3/2|2x*e^x^2 dx 
+
+						3/2|2x*e^x^2 dx 
+
+							3/2*e^x^2 + k 
+
+							3*e^x^2 / 2 + k
+
 
 
 
 
 			exp: 
 
+				|a^g*lna*g' dx = a^g + k 
+
+
+
+
 
 
 
 
 			trig: 
+
+				|cos(g)*g' dx = sen(g) + k 
+
+				|sen(g)*g' dx = -cos(g) + k 
+
+				|tg(g)*g' dx = -ln(cos(g)) + k 
+
+
+
+				|g'/1+g^2 dx = arctan(g) + k 
+
+					Necesitamos un +1, g^2 y g'(^1)
+
+					|1/1+9x^2 dx 
+
+						Necesitamos que el termino esté al cuadrado, no solo la variable. 
+
+						|dx/1+9x^2 
+
+							Reescribimos el termino:
+
+								9x^2 = (3x)^2
+
+						|dx/1+(3x)^2 dx 
+
+							Y además necesitamos la derivada del nuevo termino: 
+
+								y'= 3x = 3
+
+						|3*3dx/1+(3x)^2 dx
+
+						3|3dx/1+(3x)^2 dx
+
+							arctan(3x) + k 
+
+
+					|1/1+7x^2 dx 
+
+						|dx/1+([7]x)^2 dx
+
+							La potencia cancela la raíz: [7]^2 = 7
+					
+						|dx/1+([7]x)^2 dx 
+
+							y'= [7]x
+
+								[7] es un número, y' = 0
+
+								0*x + [7]*1 
+
+								0+[7]
+
+						|[7]/[7]*dx/1+([7]x)^2 dx
+
+						1/[7]|[7]dx/1+([7]x)^2 dx
+
+							1/[7]*arctan(7]x) + k 
+
+							*Podríamos racionalizar /[7]
 
 
 
