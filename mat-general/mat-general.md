@@ -10735,10 +10735,184 @@
 					[3]/3[2]*arctan([2]x/[3]) + k
 
 
-					
+	Integrales por partes: 
+
+		En derivadas cuando teníamos funciones que se multiplican, teníamos que hacer varias operaciones: 
+
+			y = f*g -> y'= f'*g + f*g' 
+
+			y = 2x*senx -> y'= 2*senx + 2x*cosx
 
 
+		En la integral tendremos que retrotrater esas operaciones: 
 
+			|f*g dx 
+
+		Debemos renombrar/clasificar las dos funciones con u y dv (diferencial de v): 
+
+			|f*g dx = 
+
+				f -> u
+
+				g dx -> dv 
+
+		Después transformamos la integral original con estos nombres que será igual a unas operaciones:  
+
+			|u*dv = u*v-|v*du 
+
+			|2x*cosx dx = 
+
+				2x -> u 
+
+				cosx dx -> dv 
+
+				Son los valores que reemplazan a las letras en la operación. 
+
+			|2x*cosx dx = 2x*v-|v*du 
+
+				v = ?
+				du = ?
+
+
+		Nos faltan los factores v y du, los conseguimos derivando u (du) e integrando dv (v). 
+
+		Además agregamos dx (diferencial x) a du y dv:
+
+			u = 2x -> du = 2dx 
+
+			dv = cosx dx -> v = senx 
+
+			*derivar f, integrar g*dx 
+
+
+		Sustituimos todos los valores: 
+
+			|u*dv = u*v-|v*du 
+
+			|2x*cosx dx
+
+				u = 2x -> du = 2dx
+				dv = cosx dx -> v = senx 
+
+			|2x*cosx dx = 2x*senx-|senx*2 dx
+
+				1° Sacamos factores de la 2da integral
+
+					|*2 -> 2*| 
+
+			|2x*cosx dx = 2x*senx-2|senx dx
+			
+				2° Resolvemos la 2da integral 
+
+			|2x*cosx dx = 2x*senx-2*(-cosx) + k 
+
+				3° Operamos signos/terminos
+
+					-2*(-cosx) = 2cosx
+
+			|2x*cosx dx = 2x*senx-2*(-cosx) + k
+
+
+		Ejemplos: 
+
+			u*dv = u*v-|v*du 
+
+			|f*g dx
+
+				f -> u, gdx -> dv
+
+				*Derivar f, integrar g*dx, agregar dx (du y dv)
+
+					derivar: u -> du dx
+
+					integrar: dv dx -> v 
+			
+				*Elegir u para la f(x) más facil de derivar y dv para la más facil de integrar
+			
+					Para u: 
+
+						Siguiendo en orden la regla Alpes: 
+
+							A arcotangente (arctan x)
+
+							L logaritmos (logx, lnx)
+
+							P polinómicas (x^3, x^2, x)
+
+							E exponenciales (e^x, 4^x)
+
+							S seno, coseno, tan (senx, cosx, tanx) 
+
+						
+						Ej: |2x*cosx dx 
+
+							La exponencial está antes que trigonométricas
+
+							u = 2x 
+							dv = cosx dx 
+
+							derivar e integrar
+
+							du = 2 dx
+							v = senx 
+
+
+			|x^2*lnx dx 
+
+				alpes 
+
+				u = lnx 
+				dv = x^2 dx 
+
+				du = 1/x dx
+				v = x^3/3 
+
+				|x^2*lnx dx = 
+
+					lnx*x^3/3-|x^3/3*1/x dx
+
+					lnx*x^3/3-1/3|x^3/x dx 
+
+					lnx*x^3/3-1/3|x^3/x dx
+
+					lnx*x^3/3-1/3|x^2 dx 
+
+					lnx*x^3/3-1/3*x^3/3 + k 
+
+					lnx*x^3/3-x^3/9 + k
+
+
+			|x*e^2x dx = 
+
+				alpes
+
+				u = x
+				dv = e^2x dx 
+
+				du = 1 dx 
+				v = |e^2x dx 
+
+					|2/2*e^2x dx 
+
+					1/2|2*e^2x dx 
+
+						1/2*e^2x + k 
+
+						e^2x/2 +k 
+
+
+				|x*e^2x dx = 
+
+					x*e^2x/2-|e^2x/2*1 dx 
+
+					x*e^2x/2-1*|e^2x/2 dx
+
+					x*e^2x/2-1*1/2*|e^2x dx
+
+					x*e^2x/2-1*1/2*e^2x/2 + k
+
+					x*e^2x/2-e^2x/4 + k
+	
 
 
 	Rs integrales: 	
@@ -11001,23 +11175,101 @@
 				|g^m * g'dx = g^m+1/m+1 + k
 
 
-				|3/[5x] dx = 
+					|4^[x] dx = |x^1/4 dx 
 
-					|3/(5x)^1/2 dx 
+						x^1/4+1/1 / 1/4+1/1 + k 
 
-					3|(5x)^-1/2 dx
+						x^5/4 / 5/4 + k 
 
-					3|5/5*(5x)^-1/2 dx 
+						4*4^[x^5] / 5
 
-					3/5|5*(5x)^-1/2 dx 
+							Dado que: 
 
-						3/5*(5x)^-1/2+1/1 / -1/2+1/1 + k 
+								numerador: x^5/4*4 
+								denominador: 1*5
 
-						3/5*(5x)^1/2 / 1/2 + k 
+						4*x*4^[x^5] / 5 
 
-						6/5*(5x)^1/2 + k 
+							Extraemos factores: 
 
-						6[5x]/5 + k
+								4^[x^5] 
+
+								4^[x^4*x^1]
+
+								4*x*4^[x]
+
+
+					|3/[5x] dx = 
+
+						|3/(5x)^1/2 dx 
+
+						3|(5x)^-1/2 dx
+
+						3|5/5*(5x)^-1/2 dx 
+
+						3/5|5*(5x)^-1/2 dx 
+
+							3/5*(5x)^-1/2+1/1 / -1/2+1/1 + k 
+
+							3/5*(5x)^1/2 / 1/2 + k 
+
+							6/5*(5x)^1/2 + k 
+
+							6[5x]/5 + k
+
+
+					|2(2x-8)^6 dx = 
+
+						2*(2x-8)^7/7 + k 
+
+							2* es la derivada, no cuenta para la solución. 
+
+						(2x-8)^7/7 + k
+
+
+					|x(x^2-8)^3 dx = 
+
+						|2/2*x(x^2-8)^3  dx 
+
+						1/2*(x^2-8)^4/4 + k 
+
+							(x^2-8)^4/8 + k
+
+
+					|x^2/(x^3+5)^4 dx = 
+
+						(x^3+5)^5/5 + k 
+
+						Hay que modificarla: 
+
+							|x^2*(x^3+5)^-4 dx
+
+							|3/3*x^2(x^3+5)^-4 dx 
+
+								1/3*(x^3+5)^-3/-3 + k 
+
+								(x^3+5)^-3/-9 + k
+
+								1/-9*(x^3+5)^3 + k 
+
+
+					|3/[5x] dx = 
+
+						|3/(5x)^1/2 dx 
+
+						3|(5x)^-1/2 dx
+
+						3|5/5*(5x)^-1/2 dx 
+
+						3/5|5*(5x)^-1/2 dx 
+
+							3/5*(5x)^-1/2+1/1 / -1/2+1/1 + k 
+
+							3/5*(5x)^1/2 / 1/2 + k 
+
+							6/5*(5x)^1/2 + k 
+
+							6[5x]/5 + k 
 
 
 			Log: 
@@ -11025,7 +11277,7 @@
 				Cuando tengamos una integral que sea un división/fracción y en el denominador haya un función, verifiquemos que en el numerador haya la derivada de f(x). 
 
 
-				|1/g * g' dx = ln g + k 
+				1. |1/g * g' dx = ln g + k 
 
 					|1/x^2+3x * (2x+3) dx = ln (x^2+3x) + k 
 
@@ -11037,15 +11289,72 @@
 						|cotg dx = ln(senx) + k
 
 
-				|g'/g dx = ln g + k 
+				2. |g'/g dx = ln g + k 
 
+					
 					|2x+3/x^2+3x dx = ln(x^2+3x) + k
+
+
+					|2x/x^2+3 dx = 
+
+						ln(x^2+3) + k 
+
+
+					|x/x^2-1 dx = 
+
+						|2/2*x / x^2-1 dx 
+
+						1/2|2x/x^2-1 dx 
+
+							1/2*ln(x^2-1) + k 
+
+
+					|dx/2-x = 
+
+						La derivada de -x es -1
+
+						-1|-1*dx/2-x dx= 
+
+						-1|-1/2-x dx
+
+							-1*ln(2-x) + k 
+
+							-ln(2-x) + k 
+
+
+					|x^2-2/x^3-6x+1 dx = 
+
+						|3/3*x^2-2/x^3-6x+1 dx 
+
+						1/3|3(x^2-2)/x^3-6x+1 dx 
+
+							1/3*ln(x^3-6x+1) + k 
+
+
+					|7x/x^2+3 dx = 
+
+						7|2/2*x/x^2+3 dx 
+
+						7/2|2x/x^2+3 dx 
+
+							7/2*ln(x^2+3) + k 
+
+
+					|dx/x*lnx = 
+
+						y' = ln x = 1/x
+
+						y' = x = 1 
+
+						|1/x*1/lnx dx 
+
+						|1/x/lnx dx 
+
+							ln(lnx) + k 
 
 
 			e: 
 				|e^g * g' dx = e^g + k 
-
-					La integral exponencial necesita dos requisitos: lna (nos puede faltar y habrá que incorporarla) y g'
 
 
 					|e^-6x dx = 
@@ -11074,18 +11383,57 @@
 							3*e^x^2 / 2 + k
 
 
+					|e^3x/2 dx = 
 
+						Necesitamos la derivada de 3x/2 -> 3/2 
 
+						usamos 3/2 / 3/2 o 3/2*2/3 
 
+						Siempre serán 1. 
+
+						|3/2*2/3 * e^3x/2 dx 
+
+						2/3|3/2 * e^3x/2 dx  
+
+							2/3*e^3x/2 + k 
+
+							2*e^3x/2 /3 + k
+
+					
 			exp: 
 
 				|a^g*lna*g' dx = a^g + k 
 
+					La integral exponencial necesita dos requisitos: lna (nos puede faltar y habrá que incorporarla) y g'
 
 
+					|4^xln4 dx = 
+
+						4^x + k 
 
 
+					|4^x dx = 
 
+						|4^x*ln4/ln4 dx 
+
+						1/ln4|4^x*ln4 dx
+
+						1/ln4*4^x + k 
+
+							4^x/ln4 + k 
+
+
+					|5^7x dx = 
+
+						|5^7x * ln5/ln5 * 7/7 dx 
+
+						1/ln5|5^7x * ln5 * 7/7 dx 
+
+						1/7ln5|5^7x * ln5 * 7 dx 
+
+							1/7ln5*5^7x + k 
+
+							5^7x/7ln5 + k
 
 
 			trig: 
@@ -11094,8 +11442,28 @@
 
 				|sen(g)*g' dx = -cos(g) + k 
 
-				|tg(g)*g' dx = -ln(cos(g)) + k 
+				|tg(g)*g' dx = -ln(cos(g)) + k
 
+
+					|cos(5x) dx = 
+
+						Nos falta la derivada completa, pero es 5. 
+
+						|cos(5x)*5/5 dx = 
+
+						1/5*sen(5x) 
+
+
+					|sen(lnx)/x dx = 
+
+						-cos(lnx) + k 
+
+
+					|tg(x^2-7)*x dx = 
+
+						|tg(x^2-7)*2/2*x dx 
+
+							-1/2*ln(cos(x^2-7)) + k  
 
 
 				|g'/1+g^2 dx = arctan(g) + k 
@@ -11150,7 +11518,273 @@
 							*Podríamos racionalizar /[7]
 
 
+					|1/1+7x^2 dx 
 
+						|dx/1+([7]x)^2 dx
+
+							La potencia cancela la raíz: [7]^2 = 7
+					
+						|dx/1+([7]x)^2 dx 
+
+							y'= [7]x
+
+							[7] es un número, y' = 0
+
+							0*x + [7]*1 
+
+							0+[7]
+
+						|[7]/[7]*dx/1+([7]x)^2 dx
+
+						1/[7]|[7]dx/1+([7]x)^2 dx
+
+							1/[7]*arctan(7]x) + k 
+
+							*Podríamos racionalizar /[7]
+
+
+					|1/4+x^2 dx 
+
+						Tenemos la derivada, el termino/f(x) al cuadrado pero nos falta +1
+
+						Introducimos un 4 para sacar factor común: 
+
+							4/4*x^2  
+
+						|1/4+4x^2/4 dx  
+
+						|1/4(1+x^2/4) dx 
+
+							Sacamos el factor del denominador 1/4() -> 1/4
+
+						1/4|1/1+x^2/4 dx
+
+							Reescribimos la f(x): 
+
+								x^2/4 = (x/2)^2 
+
+						1/4|1/1+(x/2)^2 dx 
+
+							Derivada de x/2: 
+
+								1/2 
+
+							Introducimos en la fracción: 
+
+								1/2*2/1 
+
+						1/4|1/2*2/1*1 / 1+(x/2)^2 dx 
+
+							Sacamos el *2 hacia el numerador de afuera
+
+						2/4|1/2 * 1/1+(x/2)^2 dx  
+
+							2/4*arctan(x/2) + k 
+
+							1/2*arctan(x/2) + k 
+
+
+					|1/5+x^2 dx 
+
+						|1 / 5+5/5*x^2 dx 
+
+						|1/5(1+x^2/5) dx 
+
+						1/5|1/1+x^2/5 dx 
+
+						1/5|1/1+(x/[5])^2 dx 
+
+							Derivada de x/[5]: 
+
+								1/[5]
+
+								número, no función
+
+							Introducimos: 
+
+								1/[5]*[5]/1
+
+						1/5|1/[5]*[5]/1 * 1 / 1+(x/[5])^2 dx
+
+						[5]/5 |1/[5] /1 +(x/[5])^2 dx
+
+							[5]/5*arctan(x/[5]) + k 
+
+							*Podríamos racionalizar (x/[5]) 
+
+
+					|1/3+2x^2 dx 
+
+						Introducimos todas las dificultades: 
+
+							1. Factor común 
+							
+								sacar factor afuera a dividir
+
+							2. Reescribir función
+
+								Raíces
+
+							3. Introducir la derivada de la función 
+
+								Introducir fracción: a/b*b/a 
+
+								Raíces
+
+								Sacar numerador
+
+						|1/3+3/3*2x^2 dx 
+
+						|1/3(1+2x^2/3) dx
+
+						1/3|1/1+2x^2/3 dx 
+
+						1/3|1/1+([2]x/[3])^2 dx 
+
+							Derivada de [2]x/[3]
+
+								[2]/[3]
+
+							Introducimos: 
+
+								[2]/[3]*[3]/[2]
+
+ 							Sacamos a multiplicar 
+
+ 								[3]/[2] 
+
+ 						1/3|[2]/[3]*[3]/[2]* 1 / 1+([2]x/[3])^2 dx
+
+ 						1/3 * [3]/[2] |[2]/[3] * 1 / 1+([2]x/[3])^2 dx
+
+ 							1/3 * [3]/[2]*arctan([2]x/[3]) + k 
+
+							[3]/3[2]*arctan([2]x/[3]) + k
+
+
+		Integrales por partes/multiplicación: 	
+
+			|u*dv = u*v-|v*du 
+
+			|2x*cosx dx
+
+				*derivar f, integrar g*dx, agregar dx (du y dv)
+
+					f -> u, gdx -> dv
+
+				u = 2x -> du = 2dx
+				dv = cosx dx -> v = senx 
+
+
+			|2x*cosx dx = 2x*senx-|senx*2 dx
+
+				1° Sacamos factores de la 2da integral
+
+					|*2 -> 2*| 
+
+			|2x*cosx dx = 2x*senx-2|senx dx
+
+			
+				2° Resolvemos la 2da integral 
+
+			|2x*cosx dx = 2x*senx-2*(-cosx) + k
+
+
+				3° Operamos signos/terminos
+
+					-2*(-cosx) = 2cosx
+
+			|2x*cosx dx = 2x*senx-2*(-cosx) + k
+
+
+			*Elegir u para la f(x) más facil de derivar y dv para la más facil de integrar
+			
+				Para u: 
+
+					Siguiendo en orden la regla Alpes: 
+
+						A arcotangente (arctan x)
+
+						L logaritmos (logx, lnx)
+
+						P polinómicas (x^3, x^2, x)
+
+						E exponenciales (e^x, 4^x)
+
+						S seno, coseno, tan (senx, cosx, tanx) 
+
+						
+					Ej: |2x*cosx dx 
+
+						La exponencial está antes que la trigonométrica
+
+						u = 2x 
+						dv = cosx dx 
+
+						Derivamos e integramos
+
+						du = 2 dx
+						v = senx 
+
+
+			|x^2*lnx dx 
+
+				alpes 
+
+				u = lnx 
+				dv = x^2 dx 
+
+				du = 1/x dx
+				v = x^3/3 
+
+				|x^2*lnx dx = 
+
+					lnx*x^3/3-|x^3/3*1/x dx
+
+					lnx*x^3/3-1/3|x^3/x dx 
+
+					lnx*x^3/3-1/3|x^3/x dx
+
+					lnx*x^3/3-1/3|x^2 dx 
+
+					lnx*x^3/3-1/3*x^3/3 + k 
+
+					lnx*x^3/3-x^3/9 + k
+
+
+			|x*e^2x dx = 
+
+				alpes
+
+				u = x
+				dv = e^2x dx 
+
+				du = 1 dx 
+
+				Si tenemos una integral compuesta/inmediata necesitamos la derivada de g para aplicarla:
+				
+					v = |e^2x dx 
+
+						|2/2*e^2x dx 
+
+						1/2|2*e^2x dx 
+
+							1/2*e^2x + k 
+
+							e^2x/2 +k 
+
+
+				|x*e^2x dx = 
+
+					x*e^2x/2-|e^2x/2*1 dx 
+
+					x*e^2x/2-1*|e^2x/2 dx
+
+					x*e^2x/2-1*1/2*|e^2x dx
+
+					x*e^2x/2-1*1/2*e^2x/2 + k
+
+					x*e^2x/2-e^2x/4 + k
 
 
 
