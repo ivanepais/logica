@@ -10882,7 +10882,7 @@
 					lnx*x^3/3-x^3/9 + k
 
 
-			|x*e^2x dx = 
+			|x*e^2x dx 
 
 				alpes
 
@@ -10912,7 +10912,334 @@
 					x*e^2x/2-1*1/2*e^2x/2 + k
 
 					x*e^2x/2-e^2x/4 + k
+
+
+			|lnx dx 
+				
+				No existe la integral (indefinida e inmediata) de lnx, existe la derivada:
+
+					y = ln x -> y'= 1/x 
+					|1/x dx = lnx + k
+					|1/g*g' dx = ln g + k
+					|g'/g dx = ln g + k
+
+				Como tampoco hay dos funciones multiplicandose, tomamos solo lnx para derivar e integramos (numero) dx: 
+
+					y = ln x -> y'= 1/x
+					|c*dx = cx+k
+
+					u = lnx
+					du = 1/x dx
+					
+					dv = dx 
+					v = x 
+
+				|lnx dx =	
+
+					lnx*x-|x*1/x dx 
+
+					lnx*x-1| dx 
+
+					lnx*x-x + k
+
+
+			|arctgx dx 
+
+				alpes 
+
+				u = arctgx
+				dv = dx
+
+				du = 1/1+x^2 dx 
+				v = x 
+
+				|arctgx dx = 
+
+					arctgx*x-|x*1/1+x^2 dx 
+
+					arctgx*x-|x/1+x^2 dx
+
+					arctgx*x-|2/2*x/1+x^2 dx
+
+					arctgx*x-1/2*|2x/1+x^2 dx
+
+					arctgx*x-1/2*ln(1+x^2) + k 
+
+					arctgx*x-ln(1+x^2) + k
+
+			
+			|arcsenx dx  
+
+				u = arcsenx
+				dv = dx  
+
+				du = 1/[1-x^2] dx 
+				v = x 
+
+				|arcsenx dx = 
+
+					arcsenx*x-|x*1/[1-x^2] dx  
+
+					arcsenx*x-|x/[1-x^2] dx
+
+						Como es polinómica, los subimos al denominador pasando la raíz a potencia
+
+					arcsenx*x-|x*(1-x^2)^-1/2 dx 
+
+						Agregamos una fracción negativa que es lo que necesita la derivada de 1-x^2
+
+					arcsenx*x-|(1-x^2)^-1/2*-2/2*x dx
+
+						El negativo exterior cambia el signo al operar -1/-2 = 1/2
+
+					arcsenx*x+1/2|(1-x^2)^-1/2*-2x dx 
+
+						Aplicamos la integral
+
+					arcsenx*x+1/2*(1-x^2)^-1/2+1/1 / -1/2+1/1 + k
+
+						Operamos las fracciones en potencia y denominador
+
+					arcsenx*x+1/2*(1-x^2)^-1+2/2 / -1+2/2 + k
+
+					arcsenx*x+1/2*(1-x^2)^1/2 / 1/2 + k
+
+						Simplificamos 1/2*1/2
+
+						Volvemos a la forma raíz
+
+					arcsenx*x+[(1-x^2)] + k
+
+			
+			|x^2*senx dx  
+
+				alpes 
+
+				u = x^2
+				dv = senx dx 
+
+				du = 2x dx 
+				v = -cosx + k 
+
+				|x^2*senx dx = 
+
+					x^2*-cosx-|-cosx*2x dx 
+
+					x^2*-cosx+|cosx*2x dx
+
+						Tenemos una integral por partes 
+
+							|cosx*2x dx 
+
+								alpes 
+
+								u = 2x
+								dv = cosx dx 
+
+								du = 2 dx 
+								v = senx + k 
+
+								
+								|cosx*2x dx = 	
+
+									2x*senx-|senx*2 dx 
+
+									2x*senx-2*-cosx + k 
+
+									2x*senx+2cosx + k
+
+					x^2*-cosx+|cosx*2x dx
+
+					x^2*-cosx +	2x*senx+2cosx + k
+
+
+			|e^x*(x^2-3) dx  
+
+				alpes 
+
+				u = x^2-3
+				dv = e^x dx 
+
+				du = 2x dx
+				v = e^x + k  
+
+				|e^x*(x^2-3) dx 
+
+					x^2-3*e^x-|e^x*2x dx 
+
+						Segunda integral por partes: 
+
+							|e^x*2x dx 
+
+								alpes 
+
+								u = 2x
+								dv = e^x dx
+
+								du = 2 dx 
+								v = e^x + k 
+
+								|e^x*2x
+									
+									2x*e^x-|e^x*2 dx
+
+									2x*e^x-2e^x + k 
+
+				e^x*(x^2-3) dx 
+
+					(x^2-3)*e^x-|e^x*2x dx 
+					
+					(x^2-3)*e^x-(2x*e^x-2e^x) + k
+
+					(x^2-3)*e^x-2x*e^x+2e^x + k
+
+						Factor común:
+
+							e^x(x^2-3-2x+2)
+					
+					e^x(x^2-3-2x+2) + k 
+
+
+	Integrales por partes ciclicas: 
+
+		El problema es que al intentar resolver una multiplicación de integrales, aparencen otras, hasta que se repite la original. 
+
+			|e^x*senx dx = 
+
+				Conseguimos otra integral compuesta: 
+
+					e^x*cosx-|-cosx*e^x dx 
+
+					e^x*cosx+|cosx*e^x dx 
+
+				La resolvemos y nos vuelve a dar la integral original: 
+
+					-e^x*cosx+e^x*senx-|senx*e^x dx 
+
+				Vamos a renombrar e^x*senx y senx*e^x por la letra I: 
+
+					|e^x*senx dx = I 
+
+					-e^x*cosx+e^x*senx-I 
+
+				Despejamos la I, pasandola a un solo termino: 
+
+					I  = -e^x*cosx+e^x*senx-I 
+
+					I+I = -e^x*cosx+e^x*senx 
+
+					2I = -e^x*cosx+e^x*senx 
+
+					I = -e^x*cosx+e^x*senx / 2 
+
+				Volvemos a escribir la integral de I, será el resultado final:  
+
+					|e^x*senx dx = -e^x*cosx+e^x*senx / 2 
+
+
+		Ejemplo: 
+
+			|sen(lnx) dx 
+
+				alpes 
+
+				u = sen(lnx) 		
+
+				dv = dx 
+
+				Derivar e integrar
+
+				du = cos(lnx)*1/x dx 
+
+				v = x 
+
+				|sen(lnx) dx = 
+
+					sen(lnx)*x-|x*cos(lnx)*1/x dx 
+
+						Simplificamos la x con la x
+
+					sen(lnx)*x-|cos(lnx) dx
+
+						Resolvemos la 2da integral como siempre 
+
+							|cos(lnx) dx
+
+							alpes
+
+							u = cos(lnx)
+							dv = dx 
+
+							du = -sen(lnx)*1/x dx 
+							v = x 
+
+							|cos(lnx) dx = 
+
+								cos(lnx)*x-|x*-sen(lnx)*1/x dx 
+
+									Pasamos el negativo y simplificamos las x 
+
+								cos(lnx)*x+|senx(lnx) dx 
 	
+
+			Reemplazamos sen(lnx) por I:
+
+				|sen(lnx) dx = 
+
+					sen(lnx)*x-|cos(lnx) dx
+
+				sen(lnx)*x-|cos(lnx) dx = 
+
+					cos(lnx)*x+|senx(lnx) dx
+				
+
+				Volvemos a escribir los resultados: 
+
+					sen(lnx)*x-(cos(lnx)*x+|senx(lnx) dx)  
+
+						El primer signo menos cambia el parentesis
+
+					sen(lnx)*x-cos(lnx)*x-|senx(lnx) dx
+
+
+				|sen(lnx) dx = sen(lnx)*x-cos(lnx)*x-|senx(lnx) dx
+
+				I = sen(lnx)*x-cos(lnx)*x-I 
+
+				2I = sen(lnx)*x-cos(lnx)*x 
+
+				I = sen(lnx)*x-cos(lnx)*x / 2 
+
+				|sen(lnx) dx = sen(lnx)*x-cos(lnx)*x / 2 
+
+
+	Integrales por fracciones parciales: 
+
+		
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 	Rs integrales: 	
@@ -11238,7 +11565,7 @@
 
 					|x^2/(x^3+5)^4 dx = 
 
-						(x^3+5)^5/5 + k 
+						(x^3+5)^5/5 + k es incorrecta
 
 						Hay que modificarla: 
 
@@ -11678,9 +12005,10 @@
 
 			|2x*cosx dx = 2x*senx-|senx*2 dx
 
-				1° Sacamos factores de la 2da integral
+				1° Sacamos factores (*k o /k) de la 2da integral, para ver cual integral inmediata o indefinida queda por resolver. 
 
 					|*2 -> 2*| 
+
 
 			|2x*cosx dx = 2x*senx-2|senx dx
 
@@ -11785,6 +12113,310 @@
 					x*e^2x/2-1*1/2*e^2x/2 + k
 
 					x*e^2x/2-e^2x/4 + k
+
+
+						|lnx dx 
+				
+				No existe la integral (indefinida e inmediata) de lnx, existe la derivada:
+
+					y = ln x -> y'= 1/x 
+					|1/x dx = lnx + k
+					|1/g*g' dx = ln g + k
+					|g'/g dx = ln g + k
+
+				Como tampoco hay dos funciones multiplicandose, tomamos solo lnx para derivar e integramos (numero) dx: 
+
+					y = ln x -> y'= 1/x
+					|c*dx = cx+k
+
+					u = lnx
+					du = 1/x dx
+					
+					dv = dx 
+					v = x 
+
+				|lnx dx =	
+
+					lnx*x-|x*1/x dx 
+
+					lnx*x-1| dx 
+
+					lnx*x-x + k
+
+
+			|arctgx dx 
+
+				alpes 
+
+				u = arctgx
+				dv = dx
+
+				du = 1/1+x^2 dx 
+				v = x 
+
+				|arctgx dx = 
+
+					arctgx*x-|x*1/1+x^2 dx 
+
+					arctgx*x-|x/1+x^2 dx
+
+					arctgx*x-|2/2*x/1+x^2 dx
+
+					arctgx*x-1/2*|2x/1+x^2 dx
+
+					arctgx*x-1/2*ln(1+x^2) + k 
+
+					arctgx*x-ln(1+x^2) + k
+
+			
+			|arcsenx dx  
+
+				u = arcsenx
+				dv = dx  
+
+				du = 1/[1-x^2] dx 
+				v = x 
+
+				|arcsenx dx = 
+
+					arcsenx*x-|x*1/[1-x^2] dx  
+
+					arcsenx*x-|x/[1-x^2] dx
+
+						Como es polinómica, los subimos al denominador pasando la raíz a potencia
+
+					arcsenx*x-|x*(1-x^2)^-1/2 dx 
+
+						Agregamos una fracción negativa que es lo que necesita la derivada de 1-x^2
+
+					arcsenx*x-|(1-x^2)^-1/2*-2/2*x dx
+
+						El negativo exterior cambia el signo al operar -1/-2 = 1/2
+
+					arcsenx*x+1/2|(1-x^2)^-1/2*-2x dx 
+
+						Aplicamos la integral
+
+					arcsenx*x+1/2*(1-x^2)^-1/2+1/1 / -1/2+1/1 + k
+
+						Operamos las fracciones en potencia y denominador
+
+					arcsenx*x+1/2*(1-x^2)^-1+2/2 / -1+2/2 + k
+
+					arcsenx*x+1/2*(1-x^2)^1/2 / 1/2 + k
+
+						Simplificamos 1/2*1/2
+
+						Volvemos a la forma raíz
+
+					arcsenx*x+[(1-x^2)] + k
+
+			
+			|x^2*senx dx  
+
+				alpes 
+
+				u = x^2
+				dv = senx dx 
+
+				du = 2x dx 
+				v = -cosx + k 
+
+				|x^2*senx dx = 
+
+					x^2*-cosx-|-cosx*2x dx 
+
+					x^2*-cosx+|cosx*2x dx
+
+						Tenemos una integral por partes 
+
+							|cosx*2x dx 
+
+								alpes 
+
+								u = 2x
+								dv = cosx dx 
+
+								du = 2 dx 
+								v = senx + k 
+
+								
+								|cosx*2x dx = 	
+
+									2x*senx-|senx*2 dx 
+
+									2x*senx-2*-cosx + k 
+
+									2x*senx+2cosx + k
+
+					x^2*-cosx+|cosx*2x dx
+
+					x^2*-cosx +	2x*senx+2cosx + k
+
+
+			|e^x*(x^2-3) dx  
+
+				alpes 
+
+				u = x^2-3
+				dv = e^x dx 
+
+				du = 2x dx
+				v = e^x + k  
+
+				|e^x*(x^2-3) dx 
+
+					x^2-3*e^x-|e^x*2x dx 
+
+						Segunda integral por partes: 
+
+							|e^x*2x dx 
+
+								alpes 
+
+								u = 2x
+								dv = e^x dx
+
+								du = 2 dx 
+								v = e^x + k 
+
+								|e^x*2x
+									
+									2x*e^x-|e^x*2 dx
+
+									2x*e^x-2e^x + k 
+
+				e^x*(x^2-3) dx 
+
+					(x^2-3)*e^x-|e^x*2x dx 
+					
+					(x^2-3)*e^x-(2x*e^x-2e^x) + k
+
+					(x^2-3)*e^x-2x*e^x+2e^x + k
+
+						Factor común:
+
+							e^x(x^2-3-2x+2)
+					
+					e^x(x^2-3-2x+2) + k 
+
+
+
+
+
+		Integrales por partes cíclicas: 
+
+			El problema es que al intentar resolver una multiplicación de integrales, aparencen otras, hasta que se repite la original. 
+
+			|e^x*senx dx = 
+
+				Conseguimos otra integral compuesta: 
+
+					e^x*cosx-|-cosx*e^x dx 
+
+					e^x*cosx+|cosx*e^x dx 
+
+				La resolvemos y nos vuelve a dar la integral original: 
+
+					-e^x*cosx+e^x*senx-|senx*e^x dx 
+
+				Vamos a renombrar e^x*senx y senx*e^x por la letra I: 
+
+					|e^x*senx dx = I 
+
+					-e^x*cosx+e^x*senx-I 
+
+				Despejamos la I, pasandola a un solo termino: 
+
+					I  = -e^x*cosx+e^x*senx-I 
+
+					I+I = -e^x*cosx+e^x*senx 
+
+					2I = -e^x*cosx+e^x*senx 
+
+					I = -e^x*cosx+e^x*senx / 2 
+
+				Volvemos a escribir la integral de I, será el resultado final:  
+
+					|e^x*senx dx = -e^x*cosx+e^x*senx / 2 
+
+
+		Ejemplo: 
+
+			|sen(lnx) dx 
+
+				alpes 
+
+				u = sen(lnx) 		
+
+				dv = dx 
+
+				Derivar e integrar
+
+				du = cos(lnx)*1/x dx 
+
+				v = x 
+
+				|sen(lnx) dx = 
+
+					sen(lnx)*x-|x*cos(lnx)*1/x dx 
+
+						Simplificamos la x con la x
+
+					sen(lnx)*x-|cos(lnx) dx
+
+						Resolvemos la 2da integral como siempre 
+
+							|cos(lnx) dx
+
+							alpes
+
+							u = cos(lnx)
+							dv = dx 
+
+							du = -sen(lnx)*1/x dx 
+							v = x 
+
+							|cos(lnx) dx = 
+
+								cos(lnx)*x-|x*-sen(lnx)*1/x dx 
+
+									Pasamos el negativo y simplificamos las x 
+
+								cos(lnx)*x+|senx(lnx) dx 
+	
+
+			Reemplazamos sen(lnx) por I:
+
+				|sen(lnx) dx = 
+
+					sen(lnx)*x-|cos(lnx) dx
+
+				sen(lnx)*x-|cos(lnx) dx = 
+
+					cos(lnx)*x+|senx(lnx) dx
+				
+
+				Volvemos a escribir los resultados: 
+
+					sen(lnx)*x-(cos(lnx)*x+|senx(lnx) dx)  
+
+						El primer signo menos cambia el parentesis
+
+					sen(lnx)*x-cos(lnx)*x-|senx(lnx) dx
+
+
+				|sen(lnx) dx = sen(lnx)*x-cos(lnx)*x-|senx(lnx) dx
+
+				I = sen(lnx)*x-cos(lnx)*x-I 
+
+				2I = sen(lnx)*x-cos(lnx)*x 
+
+				I = sen(lnx)*x-cos(lnx)*x / 2 
+
+				|sen(lnx) dx = sen(lnx)*x-cos(lnx)*x / 2 
+
+
 
 
 
