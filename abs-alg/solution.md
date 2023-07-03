@@ -2,12 +2,21 @@
 
 	+ - * / ^ [] log func derv intr
 
+	return
+
+	Estructura: 
+
+		bucles, array, tree
+
+
+
+
 
 || Soluciones 
 	
 	Pensar más allá: 
 
-		Cómo se llego a/penso la solución 
+		Cómo se llego a/pensó la solución 
 
 
 	Abstracción: 
@@ -23,3 +32,19 @@
 
 
 || Algoritmos
+
+
+
+
+|| Ing inversa 
+	
+	Abstracción: 
+
+		Pensar en cómo se pudo implementar 
+
+		-> Metodo -> reimplementación 
+
+
+		
+
+
