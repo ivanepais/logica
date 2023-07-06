@@ -9638,8 +9638,108 @@
 
 
 || INTEGRALES
+	
+	Conceptos no abstractos: 
 
-	Es la operación inversa a derivar: 
+		Integrar es una sumatoria Σ (representa varios o infinitos sumados) de infinitos términos, infinitamente pequeños. 
+
+		El propio símbolo de la integral hacer referencia a la sumatoria. 
+
+		Si suponemos una figura de un rectángulo perfecto y otra imperfecto, en los cuales debemos calcular su área: 
+
+			rectángulo perfecto: 
+
+				área: base*altura 
+
+		Para el rectángulo imperfecto debemos dividirlo en varios rectángulos perfectos para saber cuál es su área.  
+
+			Rectángulo imperfecto: 
+
+				área: base(1)*altura(1) + base(2)*altura(2) + base(3)*altura(3)...
+
+		Entonces, para saber o calcular cuál es el área que toma una función podemos aplicar el metodo de dividir el area en rectángulos, quedarían espacios sin cubrir. 
+
+		Pero si hacemos rectángulos muy pequeños conseguimos cubrir la forma de la función. 
+
+		La integral pasaría a ser la sumatoria de todos estos rectángulos, infinitamente (característica de la f(x)) pequeños. 
+
+		Si los vemos como una notación matemática: 
+
+			Marcamos un rectángulo muy pequeño en un punto de x, hasta llegar a la función. 
+
+			El área del pequeño rectángulo se va a formar entre x y f(x): 
+
+				base(x) * altura(fx) 
+
+			El espacio horizontal o la anchura (x) va a ser muy pequeños y la altura será hasta dónde esté la función (fx o y).
+
+			Pero como los valores de x son tan pequeños los llamamos diferenciales: 
+
+				base(dx) * altura(fx)   
+
+				|f(x)*dx 
+
+					Sumatorio de infinitos términos, infinitamente pequeños. 
+
+
+		Las aplicaciones de las integrales van desde la física hasta cualquier disciplina que requiera de cálculos de áreas. 
+
+		En física podemos usar el plano cartesiano con los ejes x e y que justo tiene forma de rectángulo para representar espacios. 
+
+			MRU: 
+
+				Si ponemos un marcha un auto con velocidad constante sobre el plano cartesiano, traza una línea o recta horizontal (fx constante, y = b)
+
+					v = cte, no varía la velocidad. 
+
+				El espacio es la velocidad por le tiempo: 
+
+					e = v*t 
+
+				Si renombramos los ejes x e y por v (altura/y), t (base/x)
+
+				El auto trazará una línea recta (v.cte): 
+
+					y = m
+
+				Que formará un rectángulo perfecto y para saber el área calculamos v*t (espacio)
+
+
+			MRUA: 
+
+				Empezamos en una velocidad que va variando y forma en el plano una línea o recta oblicua o diagonal (y = mx o mx+b)
+
+				El espacio o área cubierta cambia: 
+
+					e = v(0)*t+1/2a*t^²
+
+					v0 empieza a trazar la función o movimiento en el plano. 
+
+				t^2/2 se parece a la integral integral de x: 
+
+					|x dx =  = x^1+1/1+1 =  x^2/2 
+
+				El espacio es integrar la velocidad inicial por tiempo.
+
+				Cuando la función o recorrido/recta es compleja no hay fórmula para calcular el espacio. 
+
+				Se calculará haciendo sumas de infinitos rectángulos, infinitamente pequeños. O sea, integrar para calcular el área de cualquier tipo de movimiento (fx). 
+
+					e = |v*dt 
+
+						velocidad (altura/y) * diferencial de tiempo(base/x) 
+
+
+		En matemáticas, un ejemplo complejo podría ser la campana de Gauss: 
+
+			f(x) = 1/o[2pi]*e^-1/2(x-u/o)^2
+
+			En probabilidad, para calcular un área se hace integral: 
+
+				|1/o[2pi]*e^-1/2(x-u/o)^2 dx
+ 
+
+	Matemáticamente es la operación inversa a derivar: 
 
 		Derivar: f(x) -> f(x)' 
 
@@ -11215,13 +11315,314 @@
 
 	Integrales por fracciones parciales: 
 
-		
+
+
+
+
+	Integrales definidas: 
+
+		1. En las integrales indefinidas hay que encontrar la función primitiva F(x)´ de una derivada. 
+
+			El problema es que hay muchas funciones primitivas una misma derivada:
+
+				y = x^2+17 -> y'= 2x 
+
+		 		y = x^2-2/5 -> y'= 2x 
+
+			Hay un número de la función que se pierde al derivar. 
+
+			Si queremos encontrar la función primitiva de una función derivada, integrando; no podemos conocer todas las funciones: 
+
+				|2x dx -> y = x^2+3 ...
+
+			Además nos falta un número que tampoco podemos saber cuál es. 
+
+				3, -1, 17, -2/5 ...
+
+				|2x dx = x^2+k
+
+
+		2. En las Integrales inmediatas/compuestas teníamos derivadas compuestas en las que x puede tomar como valor otras funciones: 
+
+			y = f(g) -> y'= f'(g)*g'
+
+			y = sen(x^3) -> y'= cos(x^3) * 3x^2
+
+
+			Da origen a las integrales inmediatas/compuestas: 
+
+				|f(g)*g' dx = F(g) + k
+
+			Solo se puede hacer la integral compuesta si está la derivada de la segunda función:
+
+				|f dx = F + k  
+
+				|f(g) dx = ?
+
+				|f(g)*g' dx = F(g) + k
+
+				Es solo integrar f y dejar g + k
+
+					|cos(x^3) * 3x^2 dx = sen(x^3) + k
+
+	
+		3. En las integrales por partes/multiplicadas 
+
+			En derivadas cuando teníamos funciones que se multiplican, teníamos que hacer varias operaciones: 
+
+			y = f*g -> y'= f'*g + f*g' 
+
+			y = 2x*senx -> y'= 2*senx + 2x*cosx
+
+
+			En la integral tendremos que retrotrater esas operaciones: 
+
+				|f*g dx 
+
+			Debemos renombrar/clasificar las dos funciones con u y dv (diferencial de v): 
+
+				|f*g dx = 
+
+				f -> u
+
+				g dx -> dv 
+
+			Después transformamos la integral original con estos nombres que será igual a unas operaciones:  
+
+				|u*dv = u*v-|v*du 
+
+				|2x*cosx dx = 
+
+					2x -> u 
+
+					cosx dx -> dv 
+
+				Son los valores que reemplazan a las letras en la operación. 
+
+				|2x*cosx dx = 2x*v-|v*du 
+
+					v = ?
+					du = ?
+
+
+			Nos faltan los factores v y du, los conseguimos derivando u (du) e integrando dv (v). 
+
+			Además agregamos dx (diferencial x) a du y dv:
+
+				u = 2x -> du = 2dx 
+
+				dv = cosx dx -> v = senx 
+
+				*derivar f, integrar g*dx 
+
+			Al final Sustituimos todos los valores
+
+				2x*cosx dx = 2x*senx-|senx*2 dx
+
+
+		En las integrales definidas aparecen números o valores definidos, no aparece la x que daba un resultado generico o de incognita x de las integrales indefinidas, inmediatas o por partes. 
+
+			Indefinidas, inmediatas, por partes: 
+
+				|x²dx = x^3/3 + k 
+
+				|2x+3/x^2+3x dx = ln(x^2+3x) + k 
+
+				|2x*cosx dx = 2x*senx + 2cosx + k  
+
+				Si aplican para calcular el área que ocupa una función. 
+
+					Ej: e = |v*dt 
+
+						velocidad(altura,y o v) * diferencial de tiempo (base,x o t)
+				
+			Definidas: 
+
+				Ahora en las definidas vamos a aplicar las integrales para calcular el área de una función, pero en un intervalo, espacio o área definida y no todo el eje x. 
+							t2
+					Ej: e = |v*dt
+							t1
+
+
+			Regla de Barrow: 
+
+				Dada una función f(x) y un intervalo [a,b] 
+
+					Integral definida: 
+
+						b
+						|f(x)dx  = F(b) - F(a)
+						a 
+
+							F = función primitiva o integral
+
+							(a), (b), sustituir la x por los valores de los extremos. 
+
+							Vemos que no hay constante k. 
+
+						Determina el valor del área, ya no es un resultado generico. 
+
+				Ej: 
+
+					|x²dx = x^3/3 + k 
+
+					4			  4	
+					|x²dx = [x^3/3]
+					1 			  1
+
+						F(4) = 4^3/3 = 64/3
+
+						F(1) = 1^3/3 = 1/3
+
+						F(4)-F(1) = 64/3-1/3 = 63/3 = 21 
+
+
+					|2x+3/x²+3x dx = ln(x^2+3x) + k
+
+					5							 5
+					|2x+3/x^2+3x dx = [ln(x^2+3x)]
+					2 							 2 
+
+						F(5) = ln(5^2+3(5)) = ln40 
+
+						F(2) = ln(2^2+3(2)) = ln10
+
+						F(5)-F(2) = ln40 - ln10 
+
+							ln(40/10) = ln4 = 1,386
+
+
+			Análisis de áreas de la función:
+
+				La integral da el área entre la función y el eje horizontal x. 
+
+				En el tramo donde la función es positiva (encima eje x), la integral dará un resultado positivo. 
+
+				En el tramo que la función es negativa (por debajo de eje x), la integral será negativa y nos puede generar un problema. Un área no puede ser negativa. 
+
+					f(x) = x 
+
+						Es una función lineal que pasa por el eje de ordenadas (0,0). 
+
+					2			  2 
+					|x dx = [x^2/2] 
+					0 			  0 
+
+					F(2) = 2^2/2 = 4/2 = 2 
+
+					F(0) =  0^2/2 = 0/2 = 0 
+
+					F(2)-F(0) = 2-0 = 2
+
+
+					0			  0 
+					|x dx = [x^2/2] 
+					-2 			  -2
+
+					F(0) =  0^2/2 = 0/2 = 0
+
+					F(-2) = (-2)^2/2 = 4/2 = 2 
+
+					F(0)-F(2) = 0-2 = -2
+
+
+					2			  2 
+					|x dx = [x^2/2] 
+					-2 			  -2
+
+					F(2) = (-2)^2/2 = 4/2 = 2 
+
+					F(-2) = (-2)^2/2 = 4/2 = 2 
+
+					F(2)-F(-2) = 2-2 = 0
+
+					Los extremos dieron en la raíz de la función. 
+
+
+				Cuando la función tiene tramos (extremos) positivos y negativos (por ej, 2 y -2) hay que calcular cada área individualmente: 
+
+					Si marcamos los puntos de corte con el eje x o raíces (hacen 0 la función) nos quedan los tramos donde la función es positiva, negativa. 
+
+					Cuando aplicamos los extremos de la integral definida, nos da el resultado del área o tramo de la función, si es positivo está por encima, si es negativo, por debajo. 
+
+					No podemos sumar o restar todos esos valores acumulados: 
+
+						c
+						|f(x)dx = +5-4+1 = 2u^2
+						a 
+
+							Un área es una unidad al cuadrado. 
+
+						El área acumulada no puede valer 2, si hay áreas que valen 5, -4, 1. 
+
+
+					Hay que calcular individualmente cada área, separar las positivas y las negativas. 
+
+					Cuando nos piden una integral hay que conocer la función y cuando nos piden el área definida entre valores de x (integral definida), tenemos que conocer el gráfico de la función o conocer los puntos de corte para calcular extremos y saber cuál tramos es positivo o negativo. 
+
+						Debemos aplicar todo el conocimiento de funciones, derivadas e integrales. 
+
+					Todo esto es para separar las áreas positivas de las negativas para no integrar mezclando estás áreas. 
+
+					Es lo que hicimos en el ejemplo anterior: 
+
+						Vamos por tramo, raíces e integramos. 
+
+						No calculamos de la raíz de extremo a extremo olvidando las del medio. 
+
+						Pero nos falta una cosa: 
+
+							Debemos tomar el valor absoluto de cada área: 
+
+								|5| = 5 
+
+								|-5| = 5
+
+
+					Si nos piden: 
+
+					c
+					|f(x)dx =
+					a	
+
+						Conociendo las raíces:				
+						En los extremos van las raíces: abajo (inicio) arriba(fin) o de izq a der.
+
+
+						 0
+						|/f(x)dx| + 
+						 a  
+
+						 b
+						|/f(x)dx| + 
+						 0 
+
+						 c
+						|/f(x)dx| + 
+						 b 
+
+					Ya no es: 
+
+						c
+						|f(x)dx = +5-4+1 = 2u^2
+						a 
+
+					Si no: 
+
+						c
+						|f(x)dx = |5|+ |-4| + |1| = 5 + 4 + 1 = 10u^2 
+						a
 
 
 
 
 
 
+
+
+			Resumen integral definida:
+
+				Integrar, definir, operar extremos
 
 
 
