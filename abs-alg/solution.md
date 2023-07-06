@@ -2,11 +2,12 @@
 
 	+ - * / ^ [] log func derv intr
 
-	return
+	cons, var, return
 
 	Estructura: 
 
 		bucles, array, tree
+
 
 
 
@@ -32,6 +33,10 @@
 
 
 || Algoritmos
+	
+	Lectura: 
+	
+	encapsular
 
 
 
@@ -45,6 +50,19 @@
 		-> Metodo -> reimplementación 
 
 
-		
+|| UI/UX 
+	 
+	display: 
+
+		normal flow: margin, border ,padding, content
+
+		flex: 
+
+		grid: 
+
+		box-alignment: 
+
+	
+	Metodos: 
 
 
