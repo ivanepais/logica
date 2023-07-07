@@ -7445,7 +7445,7 @@
 					y'(pendiente) = 0
 
 
-	Rs derivadas:
+	Resumen derivadas:
 
 		"x" puede ser el valor "x" o cualquier otro: 
 
@@ -11690,12 +11690,16 @@
 
 			Calcula el área comprendida entre la función f(x) = 2x-3, el eje x y las rectas x = -1 y x = 2.
 
-				Tenemos dos rectas (lineales) o definidas por el problema (-1 y 2) y una función (2x-3) a la que debemos gráficar y sacar su raíz. 
+				Tenemos dos rectas (lineales) o definidas por el problema (-1 y 2) que directamente nos dan dos puntos de corte o raíces, una función (2x-3) a la que debemos gráficar y sacar su raíz. 
 
 				De todo esto sacamos las raíces para saber los extremos de las integrales y calcular el área de cada una. 
 
 				Al final operamos los valores absolutos.  
 
+				x = -1
+				x = 2 
+
+					Marcan el área a calcular
 
 				f(x) = 2x-3 
 
@@ -11711,14 +11715,200 @@
 						ordenada: -3  
 
 
+				Al gráficar todas las rectas, nos queda un área negativa y positiva: 
+
+					negativa: -1 a 3/2
+					positiva: 3/2 a 2
+
+					No podemos hacer la integral definida de -1 a 2 directamente
+
+					Dentro de está integral, debemos partirla en otras integrales con valores absolutos.  
+
 				2
-				|2x-3 dx  
+				|2x-3 dx = 
 				-1 
+					 3/2
+					|/(2x-3) dx| + 
+					 -1
+
+					 2
+					|/(2x-3) dx| 
+					 3/2
+
+
+				Tramo -1 a 3/2 es negativo
+
+					 3/2
+					|/(2x-3) dx| = 
+					 -1
+
+					 	 			3/2
+					 	|[2x^2/2 - 3x]|
+					 				-1 
+
+					 	F(-1): 2*(-1)^2/2 - 3(-1)
+
+					 		1-(-3) = 4
+
+					 	F(3/2): 2*(3/2)^2/2 - 3(3/2) 
+
+					 		2*(3/2)*(3/2)/2 - 9/2
+
+					 		18/4 / 2/1 - 9/2 
+
+					 		9/2 / 2/1 - 9/2 
+
+					 		9/4 - 9/2 
+
+					 		9-9(2)/4 
+
+					 		9-18/4 
+
+					 		-9/4
+
+					 			
+					 	F(3/2)-F(-1) = 
+
+					 		-9/4 - 4 
+
+					 		-9-4(4)/4 
+
+					 		|-25/4|
+
+
+						El tramo -1 a 3/2 es negativo y da -25/4
+
+
+					Tramo 3/2 a 2 es positivo: 
+
+					 2
+					|/(2x-3) dx| = 
+					 3/2
+
+					 	 			 2
+					 	|[2x^2/2 - 3x]|
+					 				3/2
+
+					 	F(3/2): 2*(3/2)^2/2 - 3(3/2)
+
+					 		2*(3/2)*(3/2)^2/2 - 3(3/2)
+
+					 		18/4 / 2/1 - 9/2 
+
+					 		9/2 / 2/1 - 9/2 
+
+					 		9/4 - 9/2 
+
+					 		9-9(2)/4 
+
+					 		9-18/4 
+
+					 		-9/4
 
 
 
+					 	F(2): 2*(2)^2/2 - 3(2) 
+
+					 		8/2 - 6 
+
+					 		4 - 6
+
+					 		-2 
+
+					 			
+					 	F(2)-F(3/2) = 
+
+					 		-2-(-9/4)
+
+							-2+9/4 
+
+							-2(4)+9/4 
+
+							-8+9/4  
+
+					 		|1/4|
 
 
+					 	Tramo 3/2 a 2 es positivo y da 1/4 
+
+					2
+					|2x-3 dx = |-25/4| + |1/4| 
+					-1	
+
+						25/4 + 1/4 
+
+						26/4 
+
+						13/2 u^2
+
+
+				Calcula el área comprendida entre la función y = x^3-x^2-6x y el eje x. 
+
+
+					f(x) = x^3-x^2-6x 
+
+						Raíces: 
+
+							Ruffini, cuadrática (o producto/suma y cambio de signo), factor común, etc
+							
+							x^3-x^2-6x = 0 
+
+							x(x^2-x-6) = 0 
+							
+							x1 = 0 
+
+							Para x^2-x-6 = 0: 
+
+								producto, suma y cambio de signo: 
+
+									-3*2 = -6 
+									-3+2 = -1 
+
+									x1 = 3
+									x2 = -2 
+
+							x1 = 0 
+							x2 = 3 
+							x3 = -2  
+
+						Tramos de áreas formado por las raíces:  
+
+							-2 a 0 
+
+							0 a 3 
+
+
+						Integral de la función: 
+							
+							|x^3-x^2-6x dx = 
+
+								x^4/4 - x^3/3 - 6x^2/2 
+
+								x^4/4 - x^3/3 - 3x^2
+
+
+						Integral definida total: 
+
+							3
+							|x^3-x^2-6x dx
+							-2
+
+
+						Integral valor absoluto dividida por tramos/raíces: 	
+
+							3
+							|x^3-x^2-6x dx = 
+							-2
+								
+								0
+								|/x^3-x^2-6x dx| 
+								-2
+
+								+
+ 								
+								3
+ 								|/x^3-x^2-6x dx|
+ 								0
 
 
 
@@ -11726,6 +11916,63 @@
 		Resumen integral definida:
 
 			Función, raíces, gráfico; Integrar, definir, operar extremos. 
+
+			1. Raíces f(x): 
+
+				Ruffini, cuadrática (o producto/suma y cambio de signo), factor común, etc
+
+					x^3-x^2-6x = 0 
+
+					x(x^2-x-6) = 0 
+
+					x1 = 0 
+					x2 = 3 
+					x3 = -2
+
+
+			2. Tramos de áreas formado por las raíces: 
+
+				-2 a 0 
+
+				0 a 3 
+
+
+			3. Integral de la función: 
+
+				indefinida, inmediata/compuesta, por partes, parciales
+
+					|x^3-x^2-6x dx =
+
+
+			4. Integral definida total:  
+
+				3
+				|x^3-x^2-6x dx
+				-2
+
+
+			5. Integral valor absoluto dividida por tramos/raíces: 	
+
+				3
+				|x^3-x^2-6x dx = 
+				-2
+								
+					0
+					|/x^3-x^2-6x dx| 
+					-2
+
+					+
+ 								
+					3
+ 					|/x^3-x^2-6x dx|
+ 					0
+
+
+ 			6. Sumar los valores absolutos
+
+
+
+
 
 				Si nos piden: 
 
@@ -11776,13 +12023,161 @@
 
 				Calcula el área comprendida entre la función f(x) = 2x-3, el eje x y las rectas x = -1 y x = 2.
 
-					Tenemos dos rectas (lineales) o definidas por el problema (-1 y 2) y una función (2x-3) a la que debemos gráficar y sacar su raíz. 
+					Tenemos dos rectas (lineales) o definidas por el problema (-1 y 2) que directamente nos dan otras raíces o puntos de corte x, una función (2x-3) a la que debemos gráficar y sacar su raíz. 
 
 					De todo esto sacamos las raíces para saber los extremos de las integrales y calcular el área de cada una. 
 
 					Al final operamos los valores absolutos. 
 
 
+					x = -1
+					x = 2
+
+						Marcan el área a calcular
+
+					f(x) = 2x-3 
+
+						Raíces: 
+
+							2x-3 = 0  
+							x = 3/2 
+
+						Gráfico: 
+
+							pendiente: 2 
+
+							ordenada: -3  
+
+
+					Al gráficar todas las rectas, nos queda un área negativa y positiva: 
+
+						negativa: -1 a 3/2
+						positiva: 3/2 a 2
+
+						No podemos hacer directamente la integral definida de -1 a 2. 
+
+						Dentro de está integral, debemos partirla en otras integrales con valores absolutos.
+
+					2
+					|2x-3 dx = 
+					-1  
+
+						2x^2/2 - 3x
+
+
+				     	3/2
+						|/(2x-3) dx| + 
+					 	-1
+
+					 	2
+						|/(2x-3) dx| 
+					 	3/2
+
+
+					Tramo -1 a 3/2 es negativo
+
+					 3/2
+					|/(2x-3) dx| = 
+					 -1
+
+					 	 			3/2
+					 	|[2x^2/2 - 3x]|
+					 				-1 
+
+					 	F(-1): 2*(-1)^2/2 - 3(-1)
+
+					 		1-(-3) = 4
+
+					 	F(3/2): 2*(3/2)^2/2 - 3(3/2) 
+
+					 		2*(3/2)*(3/2)/2 - 9/2
+
+					 		18/4 / 2/1 - 9/2 
+
+					 		9/2 / 2/1 - 9/2 
+
+					 		9/4 - 9/2 
+
+					 		9-9(2)/4 
+
+					 		9-18/4 
+
+					 		-9/4
+
+					 			
+					 	F(3/2)-F(-1) = 
+
+					 		-9/4 - 4 
+
+					 		-9-4(4)/4 
+
+					 		|-25/4|
+
+
+						El tramo -1 a 3/2 es negativo y da -25/4
+
+
+					Tramo 3/2 a 2 es positivo: 
+
+					 2
+					|/(2x-3) dx| = 
+					 3/2
+
+					 	 			 2
+					 	|[2x^2/2 - 3x]|
+					 				3/2
+
+					 	F(3/2): 2*(3/2)^2/2 - 3(3/2)
+
+					 		2*(3/2)*(3/2)^2/2 - 3(3/2)
+
+					 		18/4 / 2/1 - 9/2 
+
+					 		9/2 / 2/1 - 9/2 
+
+					 		9/4 - 9/2 
+
+					 		9-9(2)/4 
+
+					 		9-18/4 
+
+					 		-9/4
+
+
+
+					 	F(2): 2*(2)^2/2 - 3(2) 
+
+					 		8/2 - 6 
+
+					 		4 - 6
+
+					 		-2 
+
+					 			
+					 	F(2)-F(3/2) = 
+
+					 		-2-(-9/4)
+
+							-2+9/4 
+
+							-2(4)+9/4 
+
+							-8+9/4  
+
+					 		|1/4|
+
+
+					 	Tramo 3/2 a 2 es positivo y da 1/4 
+
+					2
+					|2x-3 dx = |-25/4| + |1/4| 
+					-1	
+
+						25/4 + 1/4 
+
+						26/4 
+
+						13/2 u^2 
 
 
 
@@ -11794,11 +12189,7 @@
 
 
 
-
-
-
-
-	Rs integrales: 	
+	Resumen integrales: 	
 
 		Operaciones: 
 
