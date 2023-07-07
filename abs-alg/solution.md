@@ -17,19 +17,25 @@
 	
 	Pensar más allá: 
 
-		Cómo se llego a/pensó la solución 
+		Problema mundo real -> Buscar soluciones en el mundo de las ideas -> Formulaciones/Metodos
+
+		Mundo de las ideas -> herramientas para el mundo real/Metodos
 
 
-	Abstracción: 
+		Abstracción: 
 
-		Caso particular -> Caso general
+			Generalización: 
+
+				Caso particular -> Caso general
+
+				Fórmula particular | Fórmula general
 
 
-	Solución: 
+		Solución: 
 
-		Inicio/nada -> Final/solución 
+			Inicio/nada -> Final/solución 
 
-			Transformaciones
+				Transformaciones
 
 
 || Algoritmos
@@ -45,6 +51,10 @@
 	
 	Abstracción: 
 
+		Pensar más allá: 
+
+			Cómo se llego a/pensó la solución
+
 		Pensar en cómo se pudo implementar 
 
 		-> Metodo -> reimplementación 
@@ -52,7 +62,7 @@
 
 || UI/UX 
 	 
-	display: 
+	Display: 
 
 		normal flow: margin, border ,padding, content
 
@@ -61,6 +71,14 @@
 		grid: 
 
 		box-alignment: 
+
+
+	Soporte: 
+
+		Viejo: 
+
+		Moderno: 
+
 
 	
 	Metodos: 
