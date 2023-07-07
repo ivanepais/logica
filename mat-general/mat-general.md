@@ -4955,6 +4955,78 @@
 					x = pi/6 = 1/6 pi
 
 
+	Resumen funciones - fórmulas: 
+
+		Distancia entre puntos: 
+
+			d^2 = (x1-x2)^2 + (y2-y1)^2
+			d = [(x1-x2)^2 + (y2-y1)^2] 
+
+		Lineal: 
+
+			y = mx+b 
+
+			m = ^y/^x = (y2-y1/x2-x1)
+
+		Cuadrática: 
+
+			y = ax^2+bx+c 
+			y = a(x-x1)(x-x2) 
+			y = a(x-xv)^2+yv 
+
+			{x1,x2} = -b+-[b²-4ac]/2a 
+
+			xv = -b/2a = x1+x2/2 
+
+		Homografica: 
+
+			y = ax+b/cx+d 
+
+				(c=/= 0; a,b,c,d e R; ab=/=cd)
+
+			AV: x = -d/c
+
+			AH: y = a/c 
+
+		Exponencial: 
+
+			y = ab^cx+d + e 
+
+		Log natural (ln): 
+
+			y = a*ln(bx+c) + d
+
+			Df(x): bx+c > 0 
+
+		Raíz cuadrada: 
+
+			y = a[bx+c+d] 
+
+			Df(x): bx+c /> 0  
+
+		Trigonometricas: 	
+
+			y = asen(bx+c) + d 
+			y = acos(bx+c) + d 
+			180° = pi 
+
+
+			Grados: 
+
+				0°, 30°, 45°, 60°, 90°, 120°, 135°, 150°, 180°, 270°, 360°
+
+			Radianes: 
+
+				0pi, 1/6pi, 1/4pi, 1/3pi, 1/2pi, 2/3pi, 3/4pi, 5/6pi, pi, 3/2pi, 2pi 
+
+			Sen: 
+
+				0, 1/2, [2]/2, [3]/2, 1, [3]/2, [2]/2, 1/2, 0, -1, 0
+
+			Cos: 
+
+				1, [3]/2, [2]/2, 1/2, 0, -1/2, -[2]/2, -[3]/2, -1, 0, 1 
+
 
 || LÍMITES
 
@@ -11614,18 +11686,101 @@
 						a
 
 
+		Ejemplos: 
+
+			Calcula el área comprendida entre la función f(x) = 2x-3, el eje x y las rectas x = -1 y x = 2.
+
+				Tenemos dos rectas (lineales) o definidas por el problema (-1 y 2) y una función (2x-3) a la que debemos gráficar y sacar su raíz. 
+
+				De todo esto sacamos las raíces para saber los extremos de las integrales y calcular el área de cada una. 
+
+				Al final operamos los valores absolutos.  
+
+
+				f(x) = 2x-3 
+
+					Raíces: 
+
+						2x-3 = 0  
+						x = 3/2 
+
+					Gráfico: 
+
+						pendiente: 2 
+
+						ordenada: -3  
+
+
+				2
+				|2x-3 dx  
+				-1 
 
 
 
 
 
 
-			Resumen integral definida:
-
-				Integrar, definir, operar extremos
 
 
 
+		Resumen integral definida:
+
+			Función, raíces, gráfico; Integrar, definir, operar extremos. 
+
+				Si nos piden: 
+
+					c
+					|f(x)dx =
+					a	
+
+					Conociendo las raíces:				
+					En los extremos van las raíces: abajo (inicio) arriba(fin) o de izq a der.
+
+
+				Tramo: a-c 
+
+					c
+					|f(x)dx = |5|+ |-4| + |1| = 5 + 4 + 1 = 10u^2 
+					a
+
+
+				Ejemplos: 
+
+					|x²dx = x^3/3 + k 
+
+					4			  4	
+					|x²dx = [x^3/3]
+					1 			  1
+
+						F(4) = 4^3/3 = 64/3
+
+						F(1) = 1^3/3 = 1/3
+
+						F(4)-F(1) = 64/3-1/3 = 63/3 = 21 
+
+
+					|2x+3/x²+3x dx = ln(x^2+3x) + k
+
+					5							 5
+					|2x+3/x^2+3x dx = [ln(x^2+3x)]
+					2 							 2 
+
+						F(5) = ln(5^2+3(5)) = ln40 
+
+						F(2) = ln(2^2+3(2)) = ln10
+
+						F(5)-F(2) = ln40 - ln10 
+
+							ln(40/10) = ln4 = 1,386
+
+
+				Calcula el área comprendida entre la función f(x) = 2x-3, el eje x y las rectas x = -1 y x = 2.
+
+					Tenemos dos rectas (lineales) o definidas por el problema (-1 y 2) y una función (2x-3) a la que debemos gráficar y sacar su raíz. 
+
+					De todo esto sacamos las raíces para saber los extremos de las integrales y calcular el área de cada una. 
+
+					Al final operamos los valores absolutos. 
 
 
 
