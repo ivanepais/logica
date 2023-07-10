@@ -4227,13 +4227,22 @@
 		A -------> B
 		1	(2x)   2
 
-	Una función es una relación entre dos variable, conjunto u objeto; cada valor de una de ellas (variable independiente), le corresponde un único valor de la otra (variable dependiente).
+	Es como una máquina (2x) que transforma los valores que le introducen (A=1), el resultado es siempre un valor único (2). No podemos introducir distintos valores que den un mismo resultado. 
+
+	Ejemplo, si introducimos A = 2, no puede dar B = 2. Sería B = 4.  
+
+	Para que sea función a cada elemento del conjunto A (1°/partida/dominio), le corresponde un único elemento del conjunto B (2°/llegada/rango/imágen)  
+
+	No es función si un elemento del primer conjunto está relacionado con dos elementos del segundo conjunto.
+	
+
+	Formalmente, una función es una relación entre dos variable, conjunto u objeto; cada valor de una de ellas (variable independiente), le corresponde un único valor de la otra (variable dependiente).
 
 	La relación que establecemos entre las dos, puede ser una fórmula o algo que transforme a la otra parte, variable u objeto.
 
-	A la variable independiente le damos el valor que queremos, pero no así a la variable dependiente.
+	A la variable independiente (x o cualquier nombre, letra, etc) le damos el valor que queremos, pero no así a la variable dependiente.
 
-	El valor de la variable dependiente sale automaticamente en el resultado a través de la formula/operaciones
+	El valor de la variable dependiente (y, f(x) u otro nombre) sale automaticamente en el resultado a través de la formula/operaciones
 
 	Por cada valor que le asignamos a la variable independiente, automaticamente aparece otro valor para la variable dependiente, transformada por la relación.
 
@@ -4720,20 +4729,46 @@
 
 		Cuadrada y cúbica:
 
-			3^[x], radicando /> 0
+			[x]
+
+			[x-3]
+
+			3^[x] 
+
+			Raíces: 
+
+				Radicando /> 0
 
 
-			Dominio: [radicando />0, inf)
+			Dominio: 
+
+				[radicando />0, inf)
 
 
-			Rango: vemos el gráfico.
+			Rango: 
+
+				Vemos el gráfico, lo que toma del eje Y
+
+				De [0, inf]
+
+
+		Ej: 
+
+			[x-3]
+
+			x-3 /> 0 
+
+			x /> 3 
+
+			Df: [3,inf)
+			If: [0, inf]
 
 
 		Cortes:
 
-		terminos fuera del radicando:
+			Terminos fuera del radicando:
 
-		si es positivo suben la funcion, si es negativo, baja.
+			Si es positivo suben la funcion, si es negativo, baja.
 
 
 		Traslación: 
@@ -4770,7 +4805,27 @@
 
 		"a" es la base, x es el exponente
 
+
+		Corte eje y: 
+
+			Reemplazar las x por 0, en f(x) -> f(0)
+
+
 		Gráfico:
+
+			Forma:  
+
+				Toma los cuadrante encima del eje x, a menos que rote por base negativa. 
+
+				Creciente: a>1
+
+					ascendente /, de derecha a  izquierda, corta eje y
+
+
+				Decreciente: 0<a<1
+
+					descendente \ de derecha a  izquierda, corta eje y
+
 
 			Tiene Asintota horizontal, se calcula con los terminos fuera del base y exponente.
 
@@ -4787,9 +4842,31 @@
 
 		log a X, "a" es base (sub); "x" es argumento
 
-		Puntos claves (1,0) y (b-base-,1)
+		Puntos claves (1,0) y (b-base-,1) 
+
+
+		Raíces/corte eje x: 
+
+			f(x) = 0 
+
+			Rotamos gráfico cuando base sea negativa. 
+
 
 		Gráfico:
+
+			Forma:  
+
+				Toma el cuadrante izquierdo a menos que rote por base negativa. 
+
+				Creciente: a>1
+
+					ascendente /, de abajo hacia arriba, corta eje x
+
+
+				Decreciente: 0<a<1
+
+					descendente \ de arriba hacia abajo, corta eje x
+
 
 			AV: argumento = 0
 
@@ -4953,6 +5030,38 @@
 				3x - pi = -pi/2 = 
 
 					x = pi/6 = 1/6 pi
+
+
+	Inversa de una función: 
+
+		Solo tienen inversa las funciones biyectivas. 
+
+		Debemos despejar x de la función dada, reemplazar la x por f^-1 y la y por la x: 
+
+			f(x) = x+2 
+
+				y-2 = x 
+
+				x-2 = f^-1(x) 
+
+
+		Redefinir dominio y codominio: 
+
+
+
+
+
+		Forzar inyectividad: 
+
+
+
+
+	Funciones compuestas: 
+
+
+
+
+
 
 
 	Resumen funciones - fórmulas: 
@@ -11769,9 +11878,9 @@
 					 			
 					 	F(3/2)-F(-1) = 
 
-					 		-9/4 - 4 
+					 		|-9/4 - 4| 
 
-					 		-9-4(4)/4 
+					 		|-9-4(4)/4|
 
 					 		|-25/4|
 
@@ -11818,13 +11927,13 @@
 					 			
 					 	F(2)-F(3/2) = 
 
-					 		-2-(-9/4)
+					 		|-2-(-9/4)|
 
-							-2+9/4 
+							|-2+9/4|
 
-							-2(4)+9/4 
+							|-2(4)+9/4| 
 
-							-8+9/4  
+							|-8+9/4|  
 
 					 		|1/4|
 
@@ -11884,7 +11993,7 @@
 
 								x^4/4 - x^3/3 - 6x^2/2 
 
-								x^4/4 - x^3/3 - 3x^2
+								x^4/4 - x^3/3 - 3x^2 + k
 
 
 						Integral definida total: 
@@ -11901,14 +12010,152 @@
 							-2
 								
 								0
-								|/x^3-x^2-6x dx| 
+								|[/x^4/4-x^3/3- 3x^2]| 
 								-2
 
 								+
  								
 								3
- 								|/x^3-x^2-6x dx|
+ 								|[/x^4/4-x^3/3 - 3x^2]|
  								0
+
+
+ 								Tramo -2 a 0: 
+
+ 									F(0) = 
+
+ 										0^4/4-0^3/3-3(0)^2 
+ 										0/4-0/3-0
+
+ 										0 - 0 - 0  
+
+ 										0
+
+
+ 									F(-2) = 
+
+ 										(-2)^4/4-(-2)^3/3-3(-2)^2 
+
+ 										16/4-(-8)/3-3(4)
+
+ 										4+8/3-12 
+
+ 										4(3)/3+8/3-12(3)/3 
+ 										12+8-36/3 
+ 										-16/3
+
+
+ 									F(0)-F(-2) = 
+
+ 										|(0) - (-16/3)|
+
+ 										|16/3| 
+
+
+ 								Tramo 0 a 3:
+
+ 									F(0) = 0
+
+
+ 									F(3) = 
+
+ 										(3)^4/4-(3)^3/3-3(3)^2
+
+ 										81/4-27/3-27 
+
+ 										81/4-9-27 
+ 										81/4-9(4)/4-27(4)/4 
+
+ 										81-36-108/4
+
+ 										-63/4 
+
+
+ 									F(3)-F(0) = 
+
+ 										|(-63/4)-(0)| 
+
+ 										|-63/4| 
+
+
+ 								Suma valores absolutos: 
+
+ 								3
+								|x^3-x^2-6x dx = 
+								-2 
+
+
+									|16/3| + |-63/4|
+
+									16/3 + 63/4 
+
+									64+189/12
+
+									253/12 u^2
+
+
+				Calcula el área comprendida entre la función y = lnx-1, el ejex y las rectas x = 1 y x = 4 
+
+
+					x 
+					x = 1 
+					x = 4 
+
+					f(x) = lnx -1 
+
+						Raíces: 
+
+
+
+
+					Tramos de áreas formado por las raíces: 
+
+
+
+					Integral de la función: 
+
+
+
+					Integral definida total:
+
+
+
+					Integral valor absoluto dividida por tramos/raíces: 
+
+						| dx
+
+							|/| 
+
+							+ 
+
+							|/|
+
+
+						Tramo: 
+
+							F()
+
+							F()
+
+
+							F()-F()
+
+
+						Tramo: 
+
+							F() = 
+
+							F() = 
+
+
+							F()-F() = 
+
+
+					Suma valores absolutos: 
+
+
+
+
 
 
 
@@ -11943,7 +12190,11 @@
 
 					|x^3-x^2-6x dx =
 
+						x^4/4 - x^3/3 - 6x^2/2 
 
+						x^4/4 - x^3/3 - 3x^2 + k
+
+			
 			4. Integral definida total:  
 
 				3
@@ -11958,39 +12209,47 @@
 				-2
 								
 					0
-					|/x^3-x^2-6x dx| 
+					|[/ x^4/4 - x^3/3 - 3x^2]| 
 					-2
 
 					+
  								
 					3
- 					|/x^3-x^2-6x dx|
- 					0
+ 					|[/ x^4/4 - x^3/3 - 3x^2]|
+ 					0 
+
+
+ 					Tramo -2 a 0: 
+
+ 						F(0) =
+
+ 						F(-2) = 
+
+ 						F(0)-F(-2) = |() - ()| 	
+
+
+ 					Tramo 0 a 3:
+
+ 						F(0) = 				
+
+ 						F(3) =
+
+						F(3)-F(0) = |() - ()|
+
+						Dejamos el resultado en absoluto
 
 
  			6. Sumar los valores absolutos
 
+ 				3
+				|x^3-x^2-6x dx = 
+				-2 
 
+					| | + | |
 
+					Sacamos los absolutos
 
-
-				Si nos piden: 
-
-					c
-					|f(x)dx =
-					a	
-
-					Conociendo las raíces:				
-					En los extremos van las raíces: abajo (inicio) arriba(fin) o de izq a der.
-
-
-				Tramo: a-c 
-
-					c
-					|f(x)dx = |5|+ |-4| + |1| = 5 + 4 + 1 = 10u^2 
-					a
-
-
+	
 				Ejemplos: 
 
 					|x²dx = x^3/3 + k 
