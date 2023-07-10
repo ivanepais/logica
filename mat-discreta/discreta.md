@@ -1456,13 +1456,23 @@
 		A -------> B
 		1	(2x)   2
 
-	Una función es una relación entre dos variable, conjunto u objeto; cada valor de una de ellas (variable independiente), le corresponde un único valor de la otra (variable dependiente).
+
+	Es como una máquina (2x) que transforma los valores que le introducen (A=1), el resultado es siempre un valor único (2). No podemos introducir distintos valores que den un mismo resultado. 
+
+	Ejemplo, si introducimos A = 2, no puede dar B = 2. Sería B = 4.  
+
+	Para que sea función a cada elemento del conjunto A (1°/partida/dominio), le corresponde un único elemento del conjunto B (2°/llegada/rango/imágen)  
+
+	No es función si un elemento del primer conjunto está relacionado con dos elementos del segundo conjunto.
+
+
+	Formalmente, una función es una relación entre dos variable, conjunto u objeto; cada valor de una de ellas (variable independiente), le corresponde un único valor de la otra (variable dependiente).
 
 	La relación que establecemos entre las dos, puede ser una fórmula o algo que transforme a la otra parte, variable u objeto.
 
-	A la variable independiente le damos el valor que queremos, pero no así a la variable dependiente.
+	A la variable independiente (x o cualquier nombre, letra, etc) le damos el valor que queremos, pero no así a la variable dependiente.
 
-	El valor de la variable dependiente sale automaticamente en el resultado a través de la formula/operaciones
+	El valor de la variable dependiente (y, f(x) u otro nombre) sale automaticamente en el resultado a través de la formula/operaciones
 
 	Por cada valor que le asignamos a la variable independiente, automaticamente aparece otro valor para la variable dependiente, transformada por la relación.
 
@@ -1949,13 +1959,39 @@
 
 		Cuadrada y cúbica:
 
-			3^[x], radicando /> 0
+			[x]
+
+			[x-3]
+
+			3^[x] 
+
+			Raíces: 
+
+				Radicando /> 0
 
 
-			Dominio: [radicando />0, inf)
+			Dominio: 
+
+				[radicando />0, inf)
 
 
-			Rango: vemos el gráfico.
+			Rango: 
+
+				Vemos el gráfico, lo que toma del eje Y
+
+				De [0, inf]
+
+
+		Ej: 
+
+			[x-3]
+
+			x-3 /> 0 
+
+			x /> 3 
+
+			Df: [3,inf)
+			If: [0, inf]
 
 
 		Cortes:
@@ -1999,7 +2035,27 @@
 
 		"a" es la base, x es el exponente
 
+
+		Corte eje y: 
+
+			Reemplazar las x por 0, en f(x) -> f(0)
+
+
 		Gráfico:
+
+			Forma:  
+
+				Toma los cuadrante encima del eje x, a menos que rote por base negativa. 
+
+				Creciente: a>1
+
+					ascendente /, de derecha a  izquierda, corta eje y
+
+
+				Decreciente: 0<a<1
+
+					descendente \ de derecha a  izquierda, corta eje y
+
 
 			Tiene Asintota horizontal, se calcula con los terminos fuera del base y exponente.
 
@@ -2018,7 +2074,28 @@
 
 		Puntos claves (1,0) y (b-base-,1)
 
+		Raíces/corte eje x: 
+
+			f(x) = 0 
+
+			Rotamos gráfico cuando base sea negativa. 
+
+
 		Gráfico:
+
+			Forma:  
+
+				Toma el cuadrante izquierdo a menos que rote por base negativa. 
+
+				Creciente: a>1
+
+					ascendente /, de abajo hacia arriba, corta eje x
+
+
+				Decreciente: 0<a<1
+
+					descendente \ de arriba hacia abajo, corta eje x
+
 
 			AV: argumento = 0
 
@@ -2184,6 +2261,109 @@
 					x = pi/6 = 1/6 pi
 
 
+	Inversa de una función: 
+
+		Solo tienen inversa las funciones biyectivas. 
+
+		Debemos despejar x de la función dada, reemplazar la x por f^-1 y la y por la x: 
+
+			f(x) = x+2 
+
+				y-2 = x 
+
+				x-2 = f^-1(x) 
+
+
+		Redefinir dominio y codominio: 
+
+
+
+
+
+		Forzar inyectividad: 
+
+
+
+
+	Funciones compuestas: 
+
+
+
+
+
+
+
+	Resumen funciones - fórmulas: 
+
+		Distancia entre puntos: 
+
+			d^2 = (x1-x2)^2 + (y2-y1)^2
+			d = [(x1-x2)^2 + (y2-y1)^2] 
+
+		Lineal: 
+
+			y = mx+b 
+
+			m = ^y/^x = (y2-y1/x2-x1)
+
+		Cuadrática: 
+
+			y = ax^2+bx+c 
+			y = a(x-x1)(x-x2) 
+			y = a(x-xv)^2+yv 
+
+			{x1,x2} = -b+-[b²-4ac]/2a 
+
+			xv = -b/2a = x1+x2/2 
+
+		Homografica: 
+
+			y = ax+b/cx+d 
+
+				(c=/= 0; a,b,c,d e R; ab=/=cd)
+
+			AV: x = -d/c
+
+			AH: y = a/c 
+
+		Exponencial: 
+
+			y = ab^cx+d + e 
+
+		Log natural (ln): 
+
+			y = a*ln(bx+c) + d
+
+			Df(x): bx+c > 0 
+
+		Raíz cuadrada: 
+
+			y = a[bx+c+d] 
+
+			Df(x): bx+c /> 0  
+
+		Trigonometricas: 	
+
+			y = asen(bx+c) + d 
+			y = acos(bx+c) + d 
+			180° = pi 
+
+
+			Grados: 
+
+				0°, 30°, 45°, 60°, 90°, 120°, 135°, 150°, 180°, 270°, 360°
+
+			Radianes: 
+
+				0pi, 1/6pi, 1/4pi, 1/3pi, 1/2pi, 2/3pi, 3/4pi, 5/6pi, pi, 3/2pi, 2pi 
+
+			Sen: 
+
+				0, 1/2, [2]/2, [3]/2, 1, [3]/2, [2]/2, 1/2, 0, -1, 0
+
+			Cos: 
+
+				1, [3]/2, [2]/2, 1/2, 0, -1/2, -[2]/2, -[3]/2, -1, 0, 1 
 	
 
 
