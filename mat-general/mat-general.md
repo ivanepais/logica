@@ -4598,6 +4598,12 @@
 				|x| = a
 				x = a y x = -(a)
 
+				Raíces/corte x: 
+
+					f(x) = 0, despejamos x 
+
+					Debemos sacar el modulo para que queden las dos raíces.  
+
 				Vertice: 
 
 					xv: terminos del modulo igualado a 0 para despejar x y encontrar este valor.
@@ -4810,6 +4816,44 @@
 
 			Reemplazar las x por 0, en f(x) -> f(0)
 
+				y = e^x
+
+					e^0 = 1	
+
+
+				y = 2^x 
+
+					2^0 = 1 
+
+
+				y = e^(x-1) 
+
+					e^0-1 
+
+					e^-1 
+
+					(1/e)^1 
+
+					1/e  
+
+
+				y = e^x - 1 
+
+					e^0 - 1 
+
+					1 - 1 
+
+					0 
+
+
+				y = (1/2)^x 
+
+					(1/2)^0 
+
+					1/1 
+
+					1 
+
 
 		Gráfico:
 
@@ -4847,9 +4891,107 @@
 
 		Raíces/corte eje x: 
 
-			f(x) = 0 
+			f(x) = 0, despejar x
 
 			Rotamos gráfico cuando base sea negativa. 
+
+			lnx = 0 
+
+				Tenemos que pasar ln al otro lado, su inverso es la potencia: convertimos ln en e y su exponente es 0 o lo que haya ahí.
+
+				Tambien podemos convertir log 2 (x) en 2^algo
+
+				x = e^0 
+
+				x = 1 
+
+
+			log x = 0 
+
+				x = 10^0 
+
+				x = 1
+
+
+			log 2 (x) = 0 (base 2)
+
+				x = 2^0 
+
+				x = 1 
+
+
+			ln(x+1) = 0	
+
+				(x+1) = e^0 
+
+				x = 1-1  
+
+				x =  0 
+
+
+			lnx + 1 = 0 
+
+				lnx = -1 
+
+				x = e^-1 
+
+				x = (1/e)^1 
+
+				x = 1/e 
+
+
+			ln(-x) = 0 
+
+				-x = e^0 
+
+				x = -1 
+
+
+			-lnx = 0 
+
+				lnx = 0/-1
+
+				lnx = 0 
+
+				x = e^0 
+
+
+			2lnx = 0 
+
+				lnx = 0/2 
+
+				lnx = 0 
+
+				x = e^0
+
+				x = 1 
+
+
+			ln2x = 0 
+
+				2x = e^0 
+
+				x = 1/2 
+
+
+			log 1/2 (x) =  0 
+
+				x = 1/2^0 
+
+				x = 1/1 
+
+				x =  1 
+
+
+			log 2 (x-3) - 1 = 0 
+
+				log 2 (x-3) = 1 
+
+				x-3 = 2^1 
+
+				x = 2+3
+
+				x = 5
 
 
 		Gráfico:
@@ -5047,21 +5189,53 @@
 
 		Redefinir dominio y codominio: 
 
+			Sacamos dominio e imágen de una función y la reescribimos para que sea biyectiva: 
 
+			Biyectiva: 
 
+				Cada valor de x, tiene distinto valor en y, además, el codominio (todo y) = If (relación con x).  
+
+			Ejemplo: 
+
+				Df: R-{-3} 
+				If: R-{-1}
+
+				f: R-{-3} ->  R-{-1} 
+
+				f(x) = x+2/x+3 
+
+					función original 
 
 
 		Forzar inyectividad: 
 
+			Inyectividad: 
 
+				Cada valor en x, tiene distinto en y. 
+
+			Necesitamos el gráfico de la función, sacamos la parte no inyectiva y nos quedamos con la inyectiva.
+
+			Redefinimos el dominio y codominio para que sea sobreyectiva: 
+
+				necesitamos el Df y la If de la parte inyectiva.
+
+			Ahora que es biyectiva podemos sacar la inversa.
 
 
 	Funciones compuestas: 
 
+		Se reemplaza la función completa en la x de la otra función: 
 
+			   <--			<--
+			(g o f)(x) o (f o g)(x) 
 
+		Solo es posible calcularla si If > Df, no se puede si If </ Df. 
 
+		Calculamos el dominio de la f(x) que se va a inclir en la segunda función y la imágen de esta. 
 
+			y o f(x) es la If 
+
+			x es el Df 
 
 
 	Resumen funciones - fórmulas: 
