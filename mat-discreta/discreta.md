@@ -1457,9 +1457,11 @@
 		1	(2x)   2
 
 
-	Es como una máquina (2x) que transforma los valores que le introducen (A=1), el resultado es siempre un valor único (2). No podemos introducir distintos valores que den un mismo resultado. 
+	Es como una máquina (2x) que transforma los valores que le introducen (A=1), el resultado es siempre un valor único (2).
 
-	Ejemplo, si introducimos A = 2, no puede dar B = 2. Sería B = 4.  
+	Ejemplo, si introducimos A = 2, el resultado sería B = 4. 
+
+	Puede pasar que al introducir un valor distinto a otro en A, puede resultar un mismo valor en B. Resultando una función valida. 
 
 	Para que sea función a cada elemento del conjunto A (1°/partida/dominio), le corresponde un único elemento del conjunto B (2°/llegada/rango/imágen)  
 
@@ -1591,7 +1593,9 @@
 
 		Inyectiva:
 
-			Cada valor del conjunto A (df) tiene un valor distinto en B.
+			Cada valor del conjunto A (df) tiene un valor distinto en B y deben participar todos. 
+
+			En cambio, no hace falta que participen todos los elementos del conjunto B. 
 
 			Identificar:
 
@@ -2122,6 +2126,12 @@
 
 			Rotamos gráfico cuando base sea negativa. 
 
+			*Si lnx = 1, e podría tomar x
+
+				lne = 1 
+
+				x = e (2,71)
+
 			lnx = 0 
 
 				Tenemos que pasar ln al otro lado, su inverso es la potencia: convertimos ln en e y su exponente es 0 o lo que haya ahí.
@@ -2219,18 +2229,6 @@
 				x = 2+3
 
 				x = 5
-
-
-
-
-
-
-		*Si lnx = 1, e podría tomar x
-
-			lne = 1 
-
-			x = e (2,71)
-
 
 
 		Gráfico:
@@ -2448,21 +2446,48 @@
 
 			Ejemplo: 
 
-				Df: R-{-3} 
-				If: R-{-1}
+				Notación de una función: 
 
-				f: R-{-3} ->  R-{-1} 
+					F: R -> R / f(x) = ...
 
-				f(x) = x+2/x+3 
+					"Una función donde el dominio y la imágen son todos los reales. Tal que, la función es igual a..."
 
-					función original 
+				Si el Df y la If de la función son: 
+
+					f(x) = x+2/x+3
+
+					Df: R-{-3} 
+					
+					If: R-{-1}
+
+				Solo tenemos que reescribir o redefinir la notación de la función con las raíces de la función dada: 
+
+					F: R -> R / f(x) = ...
+
+					F: R-{-3} ->  R-{-1} / f(x) = x+2/x+3
+
+				Ahora podemos aplicar inversa: 
+
+					y = x+2/x+3 
+
+					y(x+3) = x+2 
+
+					yx+3y = x+2 
+
+					yx-x = 2-3y 
+
+					x(y-1) = 2-3y 
+
+					x = 2-3y/y-1 
+
+					f^-1(x) = 2-3x/x-1
 
 
 		Forzar inyectividad: 
 
 			Inyectividad: 
 
-				Cada valor en x, tiene distinto en y. 
+				Cada valor en x le corresponde distinto valor en y, además todo x tiene que tener relación con y. 
 
 			Necesitamos el gráfico de la función, sacamos la parte no inyectiva y nos quedamos con la inyectiva.
 
@@ -2475,18 +2500,57 @@
 
 	Funciones compuestas: 
 
+		No siempre se encuentra ni se puede forzar
+
+		El dominio de la función que va a recibir a la otra, debe ser más grande que la imágen de la segunda función. 
+
 		Se reemplaza la función completa en la x de la otra función: 
 
 			   <--			<--
 			(g o f)(x) o (f o g)(x) 
 
-		Solo es posible calcularla si If > Df, no se puede si If </ Df. 
+		Solo es posible calcularla si If > Df, no se puede si If </ Dg. 
 
 		Calculamos el dominio de la f(x) que se va a inclir en la segunda función y la imágen de esta. 
 
 			y o f(x) es la If 
 
 			x es el Df 
+
+		Ejemplo: 
+
+			f(x) = 4x-1, g(x) = x/x-4 	
+
+			Calcular (g o f)(x) de: 
+
+				If(x) = R
+
+				Dg(x) = R-{4} 
+
+				If(x) > Dg(x), no es función. 
+
+			Calcular (f o g)(x): 
+
+				Ig(x) = R-{4} 
+
+				Df(x) = R 
+
+				Ig(x) < Df(x) 
+
+
+		Calcular composición: 
+
+			(f o g)(x) de f(x) = 4x-1, g(x) = x/x-4 
+
+				(f o g)(x) = 4(x/x-4)-1 
+
+					4x/x-4 - 1/1
+
+					4x-1(x-4)/x-4 
+
+					4x-x+4/x-4 
+
+					3x+4/x-4 
 
 
 	Resumen funciones - fórmulas: 
