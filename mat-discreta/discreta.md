@@ -1456,16 +1456,17 @@
 		A -------> B
 		1	(2x)   2
 
-
 	Es como una máquina (2x) que transforma los valores que le introducen (A=1), el resultado es siempre un valor único (2).
 
 	Ejemplo, si introducimos A = 2, el resultado sería B = 4. 
 
 	Puede pasar que al introducir un valor distinto a otro en A, puede resultar un mismo valor en B. Resultando una función valida. 
 
-	Para que sea función a cada elemento del conjunto A (1°/partida/dominio), le corresponde un único elemento del conjunto B (2°/llegada/rango/imágen)  
+	Para que sea función, a cada elemento del conjunto A (1°/partida/dominio) le corresponde un único elemento del conjunto B (2°/llegada/rango/imágen).
 
 	No es función si un elemento del primer conjunto está relacionado con dos elementos del segundo conjunto.
+
+	De otra manera, no es posible introducir un valor en A y que de dos resultados en B al mismo tiempo.
 
 
 	Formalmente, una función es una relación entre dos variable, conjunto u objeto; cada valor de una de ellas (variable independiente), le corresponde un único valor de la otra (variable dependiente).
