@@ -12356,58 +12356,214 @@
 
 						Raíces: 
 
+							lnx-1 = 0 
 
+								lnx = 1
+
+								x = e^1 
+
+								x = e
 
 
 					Tramos de áreas formado por las raíces: 
 
+						1, e, 4: de 0-1 neg, e-4 positivo
+
+						1 a e 
+
+						e a 4 
 
 
 					Integral de la función: 
 
+						|lnx-1 dx = 
 
+							|lnx dx -|dx = 
+
+							|lnx dx - x 
+
+
+						|lnx dx = 
+
+							alpes
+
+							u = lnx
+							dv = dx
+
+							derivada, integral
+							
+							du = 1/x dx
+							v = x dx 
+
+							lnx*x-|x*1/x dx 
+
+							lnx*x-|1dx 
+
+							lnx*x-x
+
+
+						|lnx-1 dx = 
+
+							|lnx dx -|dx = 
+
+							|lnx dx - x
+
+							lnx*x-x-x 
+
+							lnx*x-2x
+							 
 
 					Integral definida total:
 
-
+						4
+						|lnx-1 dx 
+						1
 
 					Integral valor absoluto dividida por tramos/raíces: 
 
-						| dx
+						4
+						|lnx-1 dx
+						1
 
-							|/| 
+									   e
+							|[/lnx*x-2x]| 
+							           1
 
 							+ 
 
-							|/|
+							 		   4
+							|[/lnx*x-2x]|
+									   e
 
 
-						Tramo: 
+						Tramo 1 a e: 
 
-							F()
+							F(1) = lnx*x-2x
 
-							F()
+								ln1*1-2*1 
+
+								0*1-2 
+
+								-2
+
+							F(e) =lnx*x-2x
+
+								lne*e-2*e 
+
+								1*e-2e 
+
+								e-2e 
+
+								-e
 
 
-							F()-F()
+							F(e)-F(1) = |(-e)-(-2)|
+
+								|-e+2|
 
 
-						Tramo: 
+						Tramo e a 4: 
 
-							F() = 
+							F(e) = lnx*x-2x
 
-							F() = 
+								lne*e-2*e 
+
+								1*e-2e 
+
+								e-2e 
+
+								-e
 
 
-							F()-F() = 
+							F(4) = lnx*x-2x
+
+								ln4*4-2*4 
+
+								2ln(2)*4-8 
+
+								8ln(2)-8
+
+
+							F(4)-F(e) = |(8ln(2)-8)-(-e)|
+
+								|8ln(2)-8 + e| + |-e+2|
+
+								|0,263| + |-0,718| 
+
+								0,263 + 0,718 
+
+								0,982 u^2
+
+
 
 
 					Suma valores absolutos: 
+
+						4
+						|lnx-1 dx = 
+						1	
+
+							|8ln(2)-8 + e|+||
+
+
 
 
 		Resumen integral definida:
 
 			Función, raíces, gráfico; Integrar, definir, operar extremos. 
+
+				Raíces: 
+
+					Ruffini:
+
+						Para encontrar el termino que haga 0, es probable que este número sea divisor del termino independiente del dividendo. 
+
+						hasta dar con los valores que tengan resto 0. 
+
+						Cuando llegamos hasta el grado 2 por ruffini, podemos aplicar la formula de segundo grado. 
+
+							2  1   0  4  3 
+						? |   
+
+						? divisor de 3 
+				
+						Los divisores más comúnes son: 1 y si mismo. 
+
+						*intentamos con negativos
+
+						Un número es divisor de otro cuando lo divide exactamente (resto 0).
+						
+							a:b = c
+
+						a dividendo, b divisor; c tambien es divisor de a 
+
+						Al descomponer un número por factores primos podemos conocer todos sus divisores.
+
+						números primos: 
+
+							2, 3, 5, 7, 11, 13   
+
+					Cuadrática: 
+
+						Fórmula o producto/suma y cambio de signo
+
+					factor común, etc
+
+
+			Integrales: indefinida, inmediata/compuesta, por partes, parciales o suma/resta con todo lo anterior. 
+
+				Indefinidas: 
+
+					Tienen fórmula definida.
+
+				Inmediatas: 
+
+					Debemos tener la derivada de la función g para aplicar la fórmula inmediata. En la x de f(x) va la función g.
+
+				por partes: 
+
+					Vemos dos funciones multiplicandose, necesitamos la derivada y la integral estas para aplicar una fórmula.
+
 
 			1. Raíces f(x): 
 
@@ -12685,6 +12841,7 @@
 
 
 	Integrales entre dos áreas: 
+
 
 
 
