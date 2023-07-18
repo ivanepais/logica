@@ -8,6 +8,8 @@
 
 	Usamos símbolos (números, letras) para referirnos de manera abstracta a los objetos reales. Las generalizaciones o fórmulas deben ser intuitivas, usando letras que se ajusten a lo que haga referencia. 
 
+	En los problemas hay una lógica implicita que debemos descrubrir y resolver con distintas herramientas matemáticas, combinaciones entre operaciones y elementos.  
+
 		Caso particular: 
 
 			Una tienda hace un descuento del 15% para los productos con un precio de $2000. 
@@ -12840,6 +12842,13 @@
 						26/4 
 
 						13/2 u^2 
+
+
+		Integral definida limitada por un recinto:
+
+
+
+
 
 
 	Integrales entre dos áreas: 
