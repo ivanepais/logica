@@ -1,6 +1,16 @@
+# Abstracción algorítmos soluciones
+
 || Herramientas
 	
 	En los problemas hay una lógica implicita que debemos descrubrir y resolver con distintos elementos, estructuras y combinaciones entre operaciones con estas. 
+
+	Tomamos un objeto real, debemos conocer como funciona lo desarmamos de a poco y quitamos su esencia o idea general para transformarla en fórmulas. 
+
+	O al revés, buscamos soluciones en el mundo de las ideas para resolver un problema del mundo real.
+
+	Definimos los elementos, variables que interactúan, cada línea de código tiene una interpretación, le ordena a la máquina que haga algo. 
+
+	Frente a un problema muy grande, descomponerlo en partes más simples.
 
 
 	Definición, asignación, valor: 
@@ -10,19 +20,43 @@
 
 	Operaciones:
 
-		+ - * / ^ [] log func derv intr
+		+ - * / ^ [] log func lim derv intr
 
-		y, o, ==, ===, null 
+		y o == === null 
+
+		(var[]) -acceder elemento-
 
 
 	Entrada y salida: 
 
-		input, print 
+		true false
+
+		input() print() 
+
+
+	Instrucciones: 	
+
+		return, for, not, in 
+
+		None, pass, del (eliminar elemento)  
+
+
+	Métodos: 
+
+		.sort() -ordenar- .copy() .append() -agregar- add()
+
+		.lower() .upper() .decode() .replace() -reemplazar elemento- .split() . insert()
+
+		.union() .intersection() .difference() -op.conjuntos/sets-
+
+		.keys() .values() .items()
 
 
 	Funciones nativas: 
 
-		Print, len(), length() 
+		print() len()/length() int() float() str() range() hex()
+
+		list() super() map()
 
 
 	Estructuras de control: 

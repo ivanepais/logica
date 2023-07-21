@@ -1,8 +1,12 @@
+# Matemática general
+
 || MATEMÁTICAS
 	
 	Son un conjunto de herramientas como cualquier otra de la vida real. Una suma o resta, una ecuación, una derivada o una integral, se usan en determinadas situaciones. 
 
 	Son creadas mediante la abstracción, tomando un objeto de la vida real, llevándolo al mundo de las ideas o conceptos; quitandoles su esencia o idea general del objeto para transformarla en fórmulas, principios, propiedades o definiciones.  
+
+	O al revés, buscamos soluciones en el mundo de las ideas para resolver un problema del mundo real. 
 
 	La tecnica consiste en tomar un problema o caso individual con variables determinadas y llevarlo a un caso general para crear una fórmula que acepte cualquier variable.	
 
