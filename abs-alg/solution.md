@@ -10,6 +10,8 @@
 
 	Definimos los elementos, variables que interactúan, cada línea de código tiene una interpretación, le ordena a la máquina que haga algo. 
 
+	Podemos empezar un programa escribiendo las instrucciones en lenguaje natural paso a paso (elementos, variables, funciones, estructuras de control, datos, etc.) y despues pasarlo a lenguaje de programación. 
+
 	Frente a un problema muy grande, descomponerlo en partes más simples.
 
 
@@ -258,6 +260,76 @@
 		Cuando las necesidades cambian, Asegúrate que la abstracción siga siendo eficaz y cumpla con los requisitos actuales.
 
 
+|| Funciones
+
+	Es un bloque de código que realiza una tarea específica y se puede invocar desde cualquier parte del programa.
+
+    Se definen utilizando la palabra clave def, seguida del nombre de la función y paréntesis que pueden contener argumentos.
+
+    Los argumentos son valores que se pasan a la función para realizar operaciones específicas que se escriben dentro del cuerpo de la función. 
+
+    Las operaciones deben tener el nombre del argumento para que se efectúen. 
+
+    Las funciones pueden devolver un valor utilizando la palabra clave return.
+
+    Una vez definida una función, se puede llamar (o invocar) utilizando su nombre y pasando los argumentos necesarios.
+
+	Recursión: Las funciones pueden llamarse a sí mismas, lo que permite la implementación de algoritmos recursivos para problemas que se resuelven de manera iterativa.
+
+
+	Necesitan una serie de cuidados: 
+
+		encapsular: 
+
+			Meter el código que crea los objetos en las definiciones de función.
+
+
+		generalizar:
+
+			Crear variables genericas en el cuerpo de la función, sin valores determinados para pasarles valores en la llamada.
+
+			Así los objetos son diferentes en dimensiones, formas, aspecto, etc.
+
+
+		diseño de interfaz:
+
+			Explica como se utiliza la función: 
+
+			¿cuáles son los parámetros? 
+
+			¿Qué hace la función? 
+
+			¿Y cuál es el valor de retorno? 
+
+			Una interfaz es “limpia” si permite a la sentencia llamadora hacer lo que quiere sin lidiar con detalles innecesarios.		
+
+		refactorización:
+
+			Reorganizar un programa para mejorar las interfaces y facilitar la reutilización de código.
+
+	
+	Podemos poner en práctica: 
+
+		“encapsulamiento y generalización”.
+
+		1. Comenzar escribiendo un programa pequeño sin definiciones de función.
+
+		2. Una vez que el programa funciona, identifica una parte coherente, encapsula la parte en una función y dale un nombre.
+
+		3. Generaliza la función agregando parámetros apropiados.
+	
+		4. Repite los pasos 1–3 hasta que tengas un conjunto de funciones eficaces. Copia y pega código que funcione para evitar repetir (y volver a depurar).
+
+		5. Busca oportunidades para mejorar el programa refactorizando. Por ejemplo, si tienes código similar en muchos lugares, considera factorizarlo dentro de una función general apropiada.
+
+
+
+|| Instrucciones
+
+
+
+
+
 
 || Estructuras de control: 
 
@@ -328,7 +400,7 @@
 		Los conjuntos proporcionan operaciones eficientes para realizar operaciones de conjuntos como uniones, intersecciones y diferencias.
 
 
-	4. Dictionaries (mapa, hast): 
+	4. Dictionaries (mapa, hash): 
 
 		Los diccionarios en Python son estructuras de datos que permiten almacenar pares de claves y valores.
 
@@ -391,3 +463,90 @@
 		Los frozensets se utilizan cuando se necesita un conjunto inmutable, especialmente en casos donde se requiere que un conjunto sea una clave en un diccionario o un elemento en otro conjunto. 
 
 		A diferencia de los conjuntos normales, los frozensets se pueden utilizar como claves en diccionarios debido a su inmutabilidad.
+
+
+
+|| Metodos 
+	
+	Son funciones que están asociadas a objetos específicos que están definidos dentro del cuerpo de una clase, por ejemplo: def nombre_del_metodo(self, otros_argumentos).
+
+	"self" es la instancia del objeto para poder usar los metodos. 
+
+	A diferencia de las funciones, que son independientes y se pueden invocar de manera global, los métodos están vinculados a un objeto en particular y pueden acceder y manipular los datos dentro de ese objeto.
+
+
+	Los métodos son funciones que están definidas dentro de una clase. Cada instancia (objeto) de esa clase puede llamar y ejecutar los métodos asociados.
+
+    Tienen acceso a los datos internos de un objeto a través del parámetro self, que representa la propia instancia del objeto.
+
+    Pueden realizar acciones específicas o realizar operaciones en los datos de un objeto.
+
+    Pueden modificar los datos internos del objeto o devolver resultados basados en esos datos.
+
+    Se definen dentro de la clase utilizando la sintaxis def nombre_del_metodo(self, otros_argumentos).
+
+
+    Usos de los metodos: 
+
+    	1. Manipulación de datos del objeto: 
+
+    		Los métodos pueden acceder a los atributos y datos del objeto en el que están definidos, lo que permite realizar operaciones y modificaciones específicas en esos datos.
+
+    	2. Encapsulación y ocultamiento de datos:
+
+    		Los métodos pueden controlar el acceso a los atributos de un objeto y garantizar que solo se modifiquen o accedan de manera controlada.
+
+    	3. Implementación de comportamiento específico del objeto: 
+
+    		Los métodos definen el comportamiento de un objeto y permiten que responda a diferentes acciones o eventos específicos.
+
+    	4. Interacción entre objetos: 
+
+    		Los métodos de un objeto pueden invocar métodos de otros objetos para lograr una interacción y comunicación entre ellos.
+
+    	5. Reutilización de código:
+
+    		Los métodos pueden definirse una vez en una clase y luego ser invocados por múltiples instancias de ese objeto, lo que promueve la reutilización de código y mejora la legibilidad y mantenibilidad del programa.
+
+
+
+|| Clases
+
+	Son una parte fundamental de la programación orientada a objetos (POO). 
+
+	Una clase es una plantilla o un plano que define la estructura, los atributos y los comportamientos de los objetos que se crean a partir de ella.
+
+	Una clase es una estructura de programación que encapsula datos (atributos) y funciones (métodos) relacionadas en un solo objeto.
+
+    Los objetos son instancias de una clase. Cada objeto creado a partir de una clase tiene sus propios atributos y puede ejecutar los métodos definidos en esa clase.
+
+    Las clases se definen utilizando la palabra clave class, seguida del nombre de la clase y dos puntos. El cuerpo de la clase contiene la definición de atributos y métodos.
+
+    Los atributos son variables que almacenan datos asociados a un objeto específico.
+    Los métodos son funciones que están definidas dentro de una clase y se aplican a los objetos creados a partir de esa clase.
+
+    Los objetos creados a partir de una clase tienen acceso a los métodos y atributos de esa clase utilizando la sintaxis de punto (objeto.metodo() o objeto.atributo).
+
+
+    Usos de los metodos:
+
+    	1. Modelado de objetos del mundo real: 
+
+    		Las clases permiten crear objetos que representan entidades del mundo real y encapsulan sus atributos y comportamientos. Por ejemplo, una clase Persona puede tener atributos como nombre, edad y métodos como saludar.
+
+    	2. Reutilización de código: 
+
+    		Las clases permiten definir una estructura común y crear múltiples objetos basados en esa estructura. Esto promueve la reutilización de código y evita la repetición innecesaria.
+
+    	3. Abstracción y modularidad: 
+
+    		Las clases proporcionan una abstracción de datos y comportamientos complejos, lo que facilita la comprensión y el manejo del código.
+
+    	4. Encapsulación y ocultamiento de datos: 
+
+    		Las clases permiten controlar el acceso a los datos y protegerlos mediante la ocultación de información interna. Esto ayuda a mantener la integridad y la consistencia de los datos.
+
+    	5. Herencia y polimorfismo: 
+
+    		Las clases pueden heredar atributos y métodos de otras clases, lo que permite la creación de jerarquías y relaciones entre objetos. Además, el polimorfismo permite que diferentes objetos respondan de manera diferente a los mismos métodos. 
+
