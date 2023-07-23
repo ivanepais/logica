@@ -10,9 +10,15 @@
 
 	Definimos los elementos, variables que interactúan, cada línea de código tiene una interpretación, le ordena a la máquina que haga algo. 
 
-	Podemos empezar un programa escribiendo las instrucciones en lenguaje natural paso a paso (elementos, variables, funciones, estructuras de control, datos, etc.) y despues pasarlo a lenguaje de programación. 
+	Podemos empezar un programa escribiendo las instrucciones en lenguaje natural paso a paso (elementos, variables, funciones, estructuras de control, datos, etc.). 
 
-	Frente a un problema muy grande, descomponerlo en partes más simples.
+	Después con el lenguaje de programación podemos crear elementos con variables que funcionen individualmente, sin funciones. 
+
+	El siguiente paso es definir funciones simples que hagan una sola cosa y con los argumentos que le pasamos, podemos generalizar todos los elementos anteriores.
+
+	Al final, en la llamada a la función podemos pasarle cualquir valor o inclusive encadenar funciones para que cada tarea simple que realiza cada una, termine creando el programa.
+ 
+	Frente a un problema muy grande podemos descomponerlo en partes más simples con funciones simples, generalizadoras, estructuras, etc. Debemos conocer como funciona o hacerce una idea de como debería funcionar sin programación. 
 
 
 	Definición, asignación, valor: 
@@ -324,16 +330,223 @@
 
 
 
+|| Operadores
+	
+
+	Relacionales:
+
+    	==: Comprueba si dos valores son iguales.
+
+    	!=: Comprueba si dos valores son diferentes.
+
+	    <: Comprueba si el valor de la izquierda es menor que el valor de la derecha.
+
+	    >: Comprueba si el valor de la izquierda es mayor que el valor de la derecha.
+
+	    <=: Comprueba si el valor de la izquierda es menor o igual que el valor de la derecha.
+
+	    >=: Comprueba si el valor de la izquierda es mayor o igual que el valor de la derecha. 
+
+
+	Lógicos:
+
+	    and: Devuelve True si ambas condiciones son verdaderas.
+	    
+	    or: Devuelve True si al menos una de las condiciones es verdadera.
+
+	    not: Devuelve la negación de la condición.
+
+
+	"in": 
+
+		Se utiliza para comprobar si un elemento está presente en una secuencia (como una lista, tupla, cadena o conjunto). 
+
+		Si el elemento está presente, el operador devuelve True; de lo contrario, devuelve False.
+
+
+	"not in": 
+
+		Es la negación del operador "in". Se utiliza para comprobar si un elemento NO está presente en una secuencia. Si el elemento NO está presente, el operador devuelve True; de lo contrario, devuelve False.
+
+
 || Instrucciones
+	
+	Son declaraciones que componen el código fuente del programa y le indican a Python qué acciones realizar.
+
+	1. Asignación (=): 
+
+		Permiten asignar un valor a una variable. Se utilizan para crear y actualizar variables en Python.
+
+
+	2. Control de flujo: 
+
+		Permiten controlar el flujo de ejecución del programa y tomar decisiones basadas en condiciones.
+
+		"if": 
+
+			Se utiliza para ejecutar un bloque de código si se cumple una condición.
+
+		"else": 
+
+			Se utiliza junto con "if" para ejecutar un bloque de código si la condición no se cumple.
+
+		"elif": 
+
+			Se utiliza para evaluar múltiples condiciones.
+
+		"while": 
+
+			Se utiliza para crear un bucle que se ejecuta mientras se cumpla una condición.
+
+		"for": 
+
+			Se utiliza para iterar sobre una secuencia (por ejemplo, listas, tuplas, diccionarios).
+
+
+	3. Funciones (def): 
+
+		Permiten definir funciones, que son bloques de código que pueden ser llamados varias veces en el programa.
+
+
+	4. "try-except": 
+
+		Se utiliza para manejar excepciones (errores) que puedan ocurrir durante la ejecución del programa.
+
+
+	5. "import": 
+
+		Se utiliza para importar módulos y bibliotecas en Python.
+
+
+	6. "return": 
+
+		Se utiliza para devolver un valor desde una función.
 
 
 
+|| Métodos (=/=fx nativ ^ =/= clases)
+
+	Son funciones que se aplican a objetos y realizan operaciones específicas en esos objetos. 
+
+	En Python cada tipo de dato puede tener sus propios métodos que se utilizan para realizar acciones específicas relacionadas con ese tipo de dato. Los métodos se invocan utilizando la sintaxis de punto, es decir, objeto.metodo().
+	
+	1. listas:
+
+        append(): Agrega un elemento al final de la lista.
+
+        insert(): Inserta un elemento en una posición específica de la lista.
+
+        remove(): Elimina la primera aparición de un elemento de la lista.
+
+        pop(): Elimina y devuelve el último elemento de la lista (o un índice específico).
+
+        sort(): Ordena la lista en orden ascendente.
+
+        reverse(): Invierte el orden de los elementos en la lista.
+
+
+    2. Cadenas (strings):
+
+        upper(): Devuelve una copia de la cadena en mayúsculas.
+
+        lower(): Devuelve una copia de la cadena en minúsculas.
+
+        capitalize(): Devuelve una copia de la cadena con el primer carácter en mayúscula.
+
+        count(): Cuenta cuántas veces aparece un subconjunto de caracteres en la cadena.
+
+        split(): Divide la cadena en una lista de subcadenas utilizando un separador específico.
+
+
+    3. Diccionarios:
+
+        keys(): Devuelve una vista de las claves del diccionario.
+
+        values(): Devuelve una vista de los valores del diccionario.
+
+        items(): Devuelve una vista de los pares clave-valor del diccionario.
+
+        get(): Devuelve el valor asociado con una clave, o un valor predeterminado si la clave no está presente.
+
+
+   4. Conjuntos (sets):
+
+        add(): Agrega un elemento al conjunto.
+
+        remove(): Elimina un elemento del conjunto. Si el elemento no existe, se produce un error.
+
+        discard(): Elimina un elemento del conjunto. Si el elemento no existe, no se produce un error.
+
+        union(): Devuelve la unión de dos conjuntos.
+
+        intersection(): Devuelve la intersección de dos conjuntos.
+
+
+    5. Matemáticos:
+
+        abs(): Devuelve el valor absoluto de un número.
+
+        round(): Redondea un número a un número entero o con un número específico de decimales.
+
+        max(): Devuelve el valor más grande de una secuencia.
+
+        min(): Devuelve el valor más pequeño de una secuencia.
+
+
+
+|| FUNCIONES NATIVAS
+	
+	Las funciones integradas, incorporadas, predefinidas o internas son parte del lenguaje Python y están disponibles para su uso directamente sin necesidad de importar ningún módulo adicional.
+
+	1. Funciones de entrada/salida:
+
+    	print(): Imprime un mensaje en la consola.
+
+    	input(): Lee una entrada del usuario desde la consola.
+
+
+    2. Funciones de conversión de tipos de datos:
+
+    	int(): Convierte un valor a un número entero.
+
+	    float(): Convierte un valor a un número de punto flotante (decimal).
+
+	    str(): Convierte un valor a una cadena de texto.
+
+	    list(): Convierte un valor a una lista.
+
+	    tuple(): Convierte un valor a una tupla. 
+
+
+	3. Funciones matemáticas:
+
+	    abs(): Devuelve el valor absoluto de un número.
+
+	    round(): Redondea un número a un número entero o con un número específico de decimales.
+
+	    max(): Devuelve el valor más grande de una secuencia.
+
+	    min(): Devuelve el valor más pequeño de una secuencia.
+
+
+	4. Funciones de secuencias:
+
+   		len(): Devuelve la longitud de una secuencia (cadena, lista, tupla, etc.).
+
+    	range(): Genera una secuencia de números enteros.
+
+
+   	5. Funciones de manejo de listas:
+
+    	sorted(): Ordena una lista.
+
+    	sum(): Devuelve la suma de los elementos de una lista.
 
 
 
 || Estructuras de control: 
 
-	1. if-else (si, entonces): 
+	1. if-elif/else (si, entonces/sino): 
 
 		Se usa para tomar decisiones en base a condiciones y ejecutar diferentes bloques de código en función de los resultados. 
 
@@ -549,4 +762,29 @@
     	5. Herencia y polimorfismo: 
 
     		Las clases pueden heredar atributos y métodos de otras clases, lo que permite la creación de jerarquías y relaciones entre objetos. Además, el polimorfismo permite que diferentes objetos respondan de manera diferente a los mismos métodos. 
+
+
+    Herencia: 
+
+    	Permite que una clase (llamada clase derivada o subclase) herede atributos y métodos de otra clase (llamada clase base o superclase).
+
+    	La clase derivada adquiere todas las características de la clase base y puede agregar sus propios atributos y métodos específicos.
+
+    	Permite establecer relaciones jerárquicas entre las clases, donde las clases más especializadas (subclases) pueden heredar comportamientos y características de clases más generales (superclases).
+
+    	Facilita la reutilización de código y la organización de las clases de manera más coherente.
+
+
+    Polimorfismo: 
+
+    	Se refiere a la capacidad de diferentes clases de responder a un mismo mensaje o llamada de método de manera diferente.
+
+    	Esto significa que objetos de diferentes clases pueden usar el mismo nombre de método y realizar acciones distintas según su propia implementación.
+
+    	Permite que un mismo código funcione con diferentes clases sin tener que preocuparse por la implementación específica de cada clase. Esto mejora la flexibilidad y la modularidad del código.
+
+
+
+
+
 
