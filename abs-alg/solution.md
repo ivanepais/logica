@@ -4,11 +4,27 @@
 	
 	En los problemas hay una lógica implicita que debemos descrubrir y resolver con distintos elementos, estructuras y combinaciones entre operaciones con estas. 
 
-	Tomamos un objeto real, debemos conocer como funciona lo desarmamos de a poco y quitamos su esencia o idea general para transformarla en fórmulas. 
+	Si tomamos un objeto real debemos conocer como funciona, lo desarmamos de a poco y quitamos su esencia o idea general para transformarla en fórmulas. 
 
 	O al revés, buscamos soluciones en el mundo de las ideas para resolver un problema del mundo real.
 
-	Definimos los elementos, variables que interactúan, cada línea de código tiene una interpretación, le ordena a la máquina que haga algo. 
+	Definimos los elementos, variables que interactúan, cada línea de código tiene una interpretación, le ordena a la máquina que haga algo.
+
+	Para leer e interpretar el código línea por línea tenemos que separalo por partes: declaración/asignación, bloque de código/acción y retorno o resultado final. 
+
+	La declaración de un objeto no hace más que reservar un espacio en la memoria para él, no tiene efectos en la ejecución (solo vemos su nombre), pero una asignación le da un valor que se puede imprimir.
+
+	El objeto elegido y las operaciones o fórmula deben representar la lógica que necesita cada parte del programa. 
+
+	En el bloque de código se declaran o asignan las variables o constantes que van a operar allí. 
+
+	El conjunto de nombres de variables, funciones y bloque de código debe describir la operación que efectúa así puede ser leída y mejorada por humanos.
+
+	La operación puede ser una fórmula integradas por otras variables que está guardada en su variable o en bloque de código de función correspondiente. 
+
+	El retorno es el resultado final que produce las operaciones del bloque de código. También es posible asignar una operación con variables a la palabra clave return. 
+
+	Además de intentar entender lógicamente qué hace cada función o bloque de código, podemos testearlo y debbugearlo para ver paso a paso qué es lo que hace efectivamente. 
 
 	Podemos empezar un programa escribiendo las instrucciones en lenguaje natural paso a paso (elementos, variables, funciones, estructuras de control, datos, etc.). 
 
@@ -18,7 +34,9 @@
 
 	Al final, en la llamada a la función podemos pasarle cualquir valor o inclusive encadenar funciones para que cada tarea simple que realiza cada una, termine creando el programa.
  
-	Frente a un problema muy grande podemos descomponerlo en partes más simples con funciones simples, generalizadoras, estructuras, etc. Debemos conocer como funciona o hacerce una idea de como debería funcionar sin programación. 
+	Frente a un problema muy grande podemos descomponerlo en partes más simples con funciones simples, generalizadoras, estructuras, etc. Debemos conocer como funciona o hacerce una idea de como debería funcionar sin programación.
+
+	El programa final debe tener un diseño de producto en todos sus aspectos.  
 
 
 	Definición, asignación, valor: 
@@ -84,7 +102,7 @@
 
 		array([]), list[], tupla() set{}, dict{}, tree, graph
 
-		mutables e inmutables (python)
+		mutables e inmutables
 
 
 	Llamadas:
