@@ -1,6 +1,6 @@
 # Abstracción algorítmos soluciones
 
-|| Herramientas
+|| Una introducción a la solución de problemas
 	
 	En los problemas hay una lógica implicita que debemos descrubrir y resolver con distintos elementos, estructuras y combinaciones entre operaciones con estas. 
 
@@ -67,7 +67,7 @@
 		None, pass, del (eliminar elemento)  
 
 
-	Métodos: 
+	Métodos incorporados: 
 
 		.sort() -ordenar- .copy() .append() -agregar- add()
 
@@ -111,7 +111,105 @@
 
 
 
-|| Soluciones 
+
+|| Decodificando los frameworks
+
+	Un Framework tiene la siguiente estructura: 
+
+		Vista (elementos interactivos, html, etc.)
+
+		Lógica de negocio (Componentes, controladores, dependencias)
+
+		Base de Datos
+
+
+	Para poder leerlos y comprenderlos debemos separar su estructura inalterable: 
+
+		código estructural del fremework que necesita para funcionar, ya sea, importaciones, propiedades, etc. 
+
+	Y debemos concentrarnos en los objetos o componetes que necesitan lógica para funcionar: 
+
+		Objeto, grupo de objetos, variables, clases, condicionales/acciones, funciones/métodos, operaciones/cálculo, parámetros, tipo de resultado, dependencias/inyecciones.  
+
+
+
+
+
+
+|| Una introducción a un plan de desarrollo
+
+	La planificación de un software evita problemas posteriores que pueden surgir al combinar código, funciones, interfaces, etc. 
+
+	Tendríamos que factorizar todo el código de golpe buscando que código sea más general. 
+
+
+	Conceptos: 
+
+		Interfaz: 
+
+			Funciones que interactúan entre si. 
+
+
+		Función: 
+
+			Hace una acción determinada o fija pero podemos cambiar esto para que varie y se adapte a cualquier cosa.
+
+			Generalización: 
+
+				Agregar parametros que generalizen y describan una acción no determinada, 
+
+				Se adaptará a cualquier valor le asignemos al parámetro.  
+
+		Encapsulamiento: 
+
+			Envolver código en una función que describan acciones y poder reutilizarlas. 
+
+
+	Diseño de interfaz: 
+
+		Cómo se utilizará la función: 
+
+			Cuáles son sus parámetros. 
+
+			Qué hace la función.  
+
+			Valor de retorno. 
+
+		Una función es "limpia" si permite a la llamada ejecutar la acción sin tener que conocer detalles innecesarios. 
+
+
+	Proceso para escribir programas: 
+
+		Encapsulamiento y generalización: 
+ 			
+ 			1. Escribir el programa sin defiinir funciones. 
+
+ 			2. Cuando funciona, identificar la parte coherente; encapsularla en una función y darle un nombre. 
+
+ 			3. Generalizarla agregando parámetros. 
+
+ 			4. Repetir paso 1 y 3 hasta tener un conjunto de funciones eficacez. 
+
+ 			5. Refactorización: 
+
+ 				Si tenemos código similar en muchos lugares, refactorizarlo dentro de una función general apropiada. 
+
+ 		Existen procesos alternativos más eficaces, pero ayuda a dividir un programa en funciones, diseñarlo y progresar. 
+
+
+
+
+
+|| Un Planteo más efectivo
+
+
+
+
+
+
+
+
+|| Una aproximación a la abstracción:  
 	
 	Pensar más allá: 
 
@@ -145,14 +243,6 @@
 			Inicio -> Fin
 
 
-|| Algoritmos
-	
-	Lectura: 
-	
-	encapsular
-
-
-
 
 || Ing inversa 
 	
@@ -167,32 +257,10 @@
 		-> Metodo -> reimplementación 
 
 
-|| UI/UX 
-	 
-	Display: 
-
-		normal flow: margin, border ,padding, content
-
-		flex: 
-
-		grid: 
-
-		box-alignment: 
-
-
-	Soporte: 
-
-		Viejo: 
-
-		Moderno: 
-
-
-	
-	Metodos: 
 
 
 
-|| Problemas: 
+|| Análisis de problemas: 
 
 	1. Conceptos claves -> Conceptos relacionados 
 
@@ -331,20 +399,7 @@
 
 			Reorganizar un programa para mejorar las interfaces y facilitar la reutilización de código.
 
-	
-	Podemos poner en práctica: 
 
-		“encapsulamiento y generalización”.
-
-		1. Comenzar escribiendo un programa pequeño sin definiciones de función.
-
-		2. Una vez que el programa funciona, identifica una parte coherente, encapsula la parte en una función y dale un nombre.
-
-		3. Generaliza la función agregando parámetros apropiados.
-	
-		4. Repite los pasos 1–3 hasta que tengas un conjunto de funciones eficaces. Copia y pega código que funcione para evitar repetir (y volver a depurar).
-
-		5. Busca oportunidades para mejorar el programa refactorizando. Por ejemplo, si tienes código similar en muchos lugares, considera factorizarlo dentro de una función general apropiada.
 
 
 
@@ -442,7 +497,7 @@
 
 
 
-|| Métodos (=/=fx nativ ^ =/= clases)
+|| Métodos nativos o incorporados
 
 	Son funciones que se aplican a objetos y realizan operaciones específicas en esos objetos. 
 
@@ -635,7 +690,7 @@
 
 		Los diccionarios en Python son estructuras de datos que permiten almacenar pares de claves y valores.
 
-		Son mutables y muy útiles para representar información estructurada y acceder a ella de forma eficiente utilizando las claves. L
+		Son mutables y muy útiles para representar información estructurada y acceder a ella de forma eficiente utilizando las claves. 
 
 		Son ideales cuando necesitas almacenar y manipular datos relacionados de manera más significativa que solo índices numéricos. 
 
