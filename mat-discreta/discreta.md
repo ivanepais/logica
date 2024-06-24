@@ -3011,6 +3011,105 @@
 
 	
 
+|| Matemática Discreta Rosen 
+	
+	Central: 
+
+		1.1-1.8 (opcional)
+
+		2.1-2.4, 2.7 (opcional)
+
+		3.1-3.4
+
+		4.1-4.3 
+
+		5.1
+
+		6.1, 6.5
+
+		7.1, 7.3, 7,5
+
+		8.1-8.5
+
+		9.1
+
+
+	Cs. Computación: 
+
+		2.5; 3.5; 3.6; 4.6; 5.3; 6.3; 7.2; 9.2; 9.3; 10.1, 10.4; 11.1, 11.5
+
+
+
+|| Matemática Discreta
+
+	Se dedica al estudio de los objetos discretos (construidos por elementos distintos o inconexos).
+
+	Genericamente, se usa siempre que se cuentan objetos, cuando se estudian relaciones entre conjuntos finitos (o numerables) y cuando se analizan procesos con un numero finito de pasos. 
+
+	En equipos informáticos, la información se almacena y manipula de forma discreta. 
+
+	Aporta soluciones como: 
+
+		forma de elección 
+		
+		probabilidad
+		
+		enlace entre dos objetos
+		
+		camino más corto
+		
+		ordenar lista en orden des, cre
+		
+		demostrar orden 
+		
+		diseñar circuitos
+		
+		existencia de direcciones validas en internet
+
+
+	Proporciona Habilidades: 
+
+		Entender y crear argumentos matemáticos. 
+
+		Estructuras de datos y algoritmos.
+
+		Teoría de base de datos, teoría de automátas. 
+
+		Lenguajes formales, teoría de compiladores. 
+
+		Seguridad informática y sistemas operativos.
+
+
+	Matemática: 
+
+		Lógica, teoría de conjuntos, teoría de números, álgebra lineal, álgebra abstracta. 
+
+		Combinatoria, teoría de grafos, teoría de probabilidades (parte discreta).
+
+
+	Problemas: 
+
+		Sin marca, rutinario
+		
+		*, dificil
+		
+		**, muy dificil 
+		
+		->, contiene un resultado usado en el texto
+
+		(Cálculo), requiere límites, cálculo diferencial o integral. 
+
+			diferencial: 
+
+				límites, continuidad, derivadas y aplicaciones de las derivadas.
+
+			integral: 
+
+				Integrales indefinidas, sumas de Riemann, integrales definidas, problemas de aplicación
+
+
+				
+|| 1. Fundamentos de lógica, demostración, conjuntos y funciones
 
 
 
@@ -3018,5 +3117,7 @@
 
 
 
+|| Matemática Discreta Susan Epp
 
 
+	 
