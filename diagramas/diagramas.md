@@ -3312,9 +3312,1907 @@ Diagrama de flujo:
 
 || While
 
+	Ciclo inexacto que significa mientras
+	al contrario del ciclo for era exacto
+
+	Nos permite iterar o girar o repetir instrucciones 
+	como el ciclo o bucle for; tantas veces como necesitemos. 
+
+	Acá no le decimos la cantidad de vueltas que va a dar
+
+	Le damos una condición para que entre al bucle 
+	y ejecutará esas instrucciones y saldrá cuando ya no 
+	suceda esa condición.
+
+
+	diagrama: 
+
+	adentro de una caja, en la parte superior hay un
+	rectángulo. 
+
+	la configuración de while es solo una condición. 
+
+	El ciclo for puede configurar la variable de inicio
+	del ciclo, la condición para la variable y contador
+	de vueltas o incremento: 
+	x=0, x<10, x++
+
+	El ciclo while solo se queda con la condición: 
+	x<10
+
+	Como en el condicional if que solo hay condiciones. 
+
+
+	//if, contador, acumulador, for, bandera(boolean)
+
+
+	While/mientras se cumpla la condición, ejecuta 
+	las instrucciones y gira. 
+
+	es un poco más simple. 
+
+	Cuando cambia la variable controladora/condición saldrá
+	del bucle. 
+
+
+	ej: 
+
+	inicio
+	n=0
+
+	entrada: 
+
+	cálculo: 
+	while
+	 n<10
+	 
+
+	salida: 
+
+
+	fin
+
+	//primero evaluará la condición n<10, entra y ejecuta
+	las instrucciones. 
+
+	//en este ejemplo entra al bucle pero no cambia n, es 
+	infinito. 
+
+	//no hay un acumulador de valor o contador para cambiar
+	la variable controladora, solo está vacio. 
 
 
 
+	Si hacemos un while con la condicion n!=0 (distinto) y 
+	una variable en 10:
+
+	inicio
+	n=10
+
+	entrada: 
+
+	cálculo: 
+	while
+	 n!=10
+	 
+
+	salida: 
+
+	fin
+
+	//es falso, no va a entrar. 
+
+
+	Si hacemos un while con la condicion n==10 (distinto) y 
+	una variable en 10:
+
+	inicio
+	n=10
+
+	entrada: 
+
+	cálculo: 
+	while
+	 n==10
+	 
+
+	salida: 
+
+	fin
+
+	//es verdadero, va a entrar. 
+
+	//al llegar al final, vuelve a preguntar por la variable
+	controladora como el programa está vacio, no cambió la 
+	variable queda un bucle infinito. 
+
+
+	Conclusión: 
+	El while va a funcionar/iterar, mientras la condición 
+	no cambie o siga igual. 
+
+
+
+	ej: imitar el for
+
+	//for
+	//x
+	//x=0 | x<10 | x++
+
+
+	inicio
+	n=0
+
+	entrada: 
+
+	cálculo: 
+	while
+	 n<10
+	 
+	 entrada:      
+
+	 cálculo: 
+	  n++
+
+	salida: 
+
+	fin
+
+
+	//1 vuelta: n=0 cumple con n<10, entra y suma
+	//2 vuelta: n=1 cumple con n<10, entra y suma
+
+
+	Conclusión: 
+	El ciclo while puede tender a infinito
+
+
+	El ciclo for puede tender a infinito haciendo: 
+	x=0, x<10 y x--
+
+	Acá siempre va a ser menor a 10, entonces, nunca va a 
+	para de repetirse.
+
+	Pero es más facil configurar mal un ciclo while que 
+	un ciclo for. 
+
+
+	ejemplo while: 
+	programa para ingresar numeros sin limitar el cantidad
+	de entradas y cortar la entrada cuando ingrese el 
+	numero 0
+
+	//entrada
+
+	//condicion 
+
+	//cont, acum, bandera
+
+
+	inicio
+	n       //controla ciclo while
+	entrada: 
+
+	cálculo: 
+	while     //mientras sea distinto de 0 repeti entrada n
+	 n!=0
+	 
+	 entrada:      
+	  n
+
+	 cálculo: 
+	 
+	salida: 
+
+	fin
+
+	//inicia el programa, pedimos un número, ciclo while
+	mientras sea n!=0 (distinto de 0) entramos al ciclo. 
+
+	//entramos al ciclo para volver a pedir numero, despues
+	vuelve a preguntar n!=0.
+
+	//Va a dejar de pedir el numero cuando n sea 0.
+
+	 
+	Está es una configuración estandar para muchas practicas
+	y ejercicios. 
+
+
+
+	ej: cargar edad de todas las personas del curso de 
+	programación
+
+
+	inicio
+	e       //controla ciclo while
+	entrada: 
+
+	cálculo: 
+	while     //mientras sea distinto de 0 repeti entrada e
+	 e!=0
+	 
+	 entrada:      
+	  e       
+
+	 cálculo: 
+	 
+	salida: 
+	e
+
+	fin
+
+	//cuando termine de cargar, ponemos un 0 para cortar el 
+	bucle. 
+
+	//se cargaron indefinidas edades, las que se necesite
+	en el momento. 
+
+	//la persona que ingresa datos, corta el ciclo. 
+
+
+
+	ej: cargar edad de todas las personas y buscar un 
+	promedio de todas las personas que sean mayores de 
+	25 años
+
+	//cont, acum, bandera, segregación
+
+	inicio
+	e       //controla ciclo while
+	acu=0
+	con=0
+	entrada: 
+
+	cálculo: 
+	while     //mientras sea distinto de 0 repeti entrada n
+	 e!=0
+	 
+	  v-- e>25 --f //pregunta si e>25 acumula la entrada y
+	                  contá cuantos son    
+	  acu+=e
+	  con++       
+
+	   salida:
+	    e        //sino no pasa nada y vuelvo a pedir e
+
+	p=acu/con
+
+	salida: 
+	p
+
+	fin
+
+	//pedimos edad al inicio
+	//mientras sea distinto de 0
+	//si es mayor a 25 acumular y contar
+	//sino no hago nada y vuelvo a pedir e
+
+	//cuando la persona encargada de cargar los datos pone 
+	0, se guarda todos los datos en acu y cont 
+
+	//el programa calcula promedio 
+
+	//el programa muestra promedio
+
+
+
+
+	|| Do While
+
+	el diagrama está al revés
+	empiezan las instrucciones y al final la condición
+
+	Hacer cosas hasta que no se cumpla la condición
+
+	primero ejecuta una vuelta y después pregunta si 'continua'
+
+
+	ej: cargar numeros indefinidamente, hasta cortar el ciclo 
+	con un comando. 
+
+
+	//cont, acum, bandera
+
+	inicio
+
+	entrada: 
+
+	cálculo: 
+	do while    
+	 
+	 entrada:      
+	  n       //pide entrada, controla do while
+
+	 cálculo: 
+	 
+	 n!=0  //mientras sea distinto de 0 repeti entrada n
+
+
+
+	salida: 
+
+	fin
+
+	//la diferencia está en que al numero lo pedimos entro 
+	del ciclo do while 
+
+	//en while lo pediamos afuera, preguntabamos por la 
+	condición y lo volviamos a pedir adentro. 
+
+
+
+	Ciclos más utilizados: 
+	while, for y for each
+
+
+	Usos: 
+
+	Cuando sabemos la cantidad exacta de iteración o vueltas
+	que tenemos que dar usamos un for. 
+
+	Cuando no las sabemos usamos un while. 
+
+
+
+
+
+	|| Conceptos
+
+	mayor, menor, desc porcent,  prom, par/impar, posición, 
+
+
+	1. Mayor/Menor:
+
+	a>b 
+	  b>a
+
+
+	num>10
+
+
+
+	inicio: 
+	cont = 0 
+	acum = 0 
+
+	entrada: 
+
+	cálculo: 
+
+	for 
+	  x
+	  x=0 | x<20 | x++
+	   
+	    entrada:
+	       n   
+
+	    cálculo: 
+	     
+	      v-- n>18-- f
+	      cont++
+	      acum+=n 
+
+
+
+	2. Porcent y Desc:
+
+
+	importe>5000
+	 iF= importe*0,82  
+	      importe>1000
+	           iF =importe*0,90
+
+
+
+
+	3. Prom: 
+
+	(nota1 + nota2 + nota3)/3
+
+
+	inicio
+	acu = 0
+
+	for 
+	  x
+	  x=0 | x<100 | x++
+	   
+	    entrada:
+	       n
+
+	    acu += n    
+
+	promedio = acu/100
+
+
+
+
+	4. Par/Impar:
+	r = num%2
+	   r==0
+
+
+
+
+	5. Max/Min:
+
+	entrada:  
+	num1, num2, num3, num4
+
+	cálculo: 
+
+	v---  num1>num2  ---f 
+
+	m= num1            m=b
+	               
+
+	v---  num3>max
+
+	m= num3   
+
+
+
+	inicio
+
+	max = 0 
+
+	for 
+	  x
+	  x=0 | x<10 | x++
+	   
+	    entrada:
+	       n   
+
+	    cálculo: 
+	     
+	      v-- n>max-- f
+	      
+	      max=n  
+
+
+
+
+	inicio: 
+
+	bi= 0
+	bp= 0
+	for 
+	  x
+	  x=0 | x<20 | x++
+	   
+	    entrada:
+	       n   
+
+	    cálculo: 
+	     
+	      v --            n%/2            -- f
+	      
+	      v   bp==0      f               v--  !bi  --f
+	        
+	      maxP=n     v   n>maxP  f       minI=n   v n<minI f
+	      bp= 1                          bi=1     minI=n
+	                 maxP=n
+	                 
+
+
+
+	6. posicion: 
+
+
+	inicio: 
+
+	for 
+	  x
+	  x=0 | x<10 | x++
+	   
+	    entrada:
+	       n   
+
+	    cálculo: 
+	     
+	      v-- x==0-- f
+	      
+	      max=n      v-- n>max --f
+	      pos=1    
+	                 max = n
+	                 pos = x+1
+
+
+
+
+
+	7. primo: 
+
+	inicio
+
+	contador = 0
+
+	entrada:
+	n
+
+	cálculo: 
+
+
+	for 
+	  x
+	  x=0 | x<100 | x++
+	   
+	    entrada:
+
+
+	    cálculo: 
+	     
+	     v-- n%x == 0 --f
+	     
+	     contador ++
+
+	    salida: 
+
+
+	v-- contador == 2 --f
+
+	'primo'             'no es primo'
+
+
+
+
+
+	inicio
+	primo = 0 
+	entrada: 
+
+	cálculo: 
+
+	for
+	x
+	x=0 | x<10 | x++
+
+	 entrada: 
+	  n
+	 
+	 cálculo: 
+	   for
+	   y=1 | y<=n | y++
+	   
+	   inicio: 
+	    con= 0
+	 
+	   entrada: 
+
+	   cálculo: 
+	    
+	       n%y == 0 //resto de dividir y con n es 0, es divisible
+	    v            f
+	    con++
+
+
+	     con == 2 
+	  v           f
+
+	v  !primo  f
+	  
+	mP=n     v   n>mP  f
+	primo=1  m==N
+
+
+
+
+
+
+
+
+
+	|| Ejercicios While
+
+
+	Ejercicio: 
+	programa para mostrar numeros del 1 al 10, no se debe 
+	realizar ningún pedido de datos
+
+
+
+	Ejercicio: 
+	programa para mostrar los números del 10 al 1, no se debe
+	realizar ningun pedido de datos. 
+
+
+
+
+	Ejercicio: 
+	programa que solicite la edad de un grupo de personas 
+	el programa deberá pedir edades hasta que se ingrese 
+	una edad menor a 18 y debera mostrar por pantalla cuantas
+	personas mayores que registraron. 
+
+
+
+
+	Ejercicio: 
+	programa que solicite dos numeros y luego muestre los 
+	numeros entre el menor y el mayor de ellos. 
+
+
+
+
+
+	Ejercicio: 
+	programa que muestre los numeros 1 al 100, de 5 en 5
+
+
+
+
+	Ejercicio: 
+	programa que solicite un numero y un numero 1 y luego 
+	calcular y emitir un cartel para saber si el primo o no
+
+
+
+
+	Ejercicio: 
+	programa que solicite una lista de numeros y corta cuando
+	se ingresa un 0 y luego mostrar por pantalla el max de 
+	ellos y la posición en la que fue ingresado. 
+
+
+
+
+	Ejercicio: 
+	programa que solicite una lista de numeros que corta 
+	cuando se ingresa un 0 y luego mostrar el menor 
+	y el segundo menor. 
+
+
+
+
+
+	Ejercicio: 
+	realizar el ejercicio anterior pero además tenemos que 
+	devolver la posición en la que fue ingresado cada uno 
+	de los minimos 
+
+	//minimo y segundo minimo
+
+
+
+
+	Ejercicio: 
+	programa que solicite una lista de numeros que corta 
+	cuando se ingresa un 0 y luego emitir por pantalla
+	el maximo de los numeros negativos y el minimo de los 
+	numeros positivos. 
+
+
+	//maximo de los negativos y el minimos de los positivos
+	//segregar datos
+
+
+
+
+	Ejercicio: 
+	programa para ingresar una lista de numeros que corta
+	cuando se ingresa un 0 y luego mostrar la cantidad 
+	de numeros primos, la cantidad de numeros pares y la
+	cantidad de numeros positivos y la cantidad de negativos
+
+
+	//cont, acum, bandera, segregación
+
+	inicio
+	e       //controla ciclo while
+	acu=0
+	con=0
+	entrada: 
+
+	cálculo: 
+	while     //mientras sea distinto de 0 repeti entrada n
+	 e!=0
+	 
+	  v-- e>25 --f //pregunta si e>25 acumula la entrada y
+	                  contá cuantos son    
+	  acu+=e
+	  con++       
+
+	   salida:
+	    e        //sino no pasa nada y vuelvo a pedir e
+
+	p=acu/con
+
+	salida: 
+	p
+
+	fin
+
+
+
+
+
+
+
+
+
+	RS: Algoritm
+
+
+	1. Mayor/Menor:
+
+	cálculo: 
+	v -----a>b ----- F //pregunta/condición 
+	|                |
+	r = a 	     v --b>a-- f  //guardar resultado
+	             |         |
+	             r=b       r="son iguales"
+
+
+
+	ingreso: 
+	num
+
+	calculo: 
+	v -----num>10 ----- F //pregunta/condición
+	|                   |
+	r="numero           r="numero //guardamos el resultado
+	mayor que 10"       no es mayor a 10"
+
+
+
+
+
+
+	2. Porcent y Desc:
+
+
+
+	ingreso: 
+	numHom, numMuj
+
+	cálculo:
+	porcHom = numHom*100/(numHom + numMuj)
+	porcMuj = numMuj*100/(numHom + numMuj)
+
+	salida: 
+	porcHom, porcMuj
+
+
+
+	v---  importe>5000  ---f 
+
+	iF= importe*0,82      v  importe>1000    
+
+	               iF =importe*0,90     
+
+
+
+
+	3. Prom:
+
+
+	entrada:  
+	nota1, nota2, nota3
+
+	cálculo:
+	promedioNotas = (nota1 + nota2 + nota3)/3
+
+
+
+	inicio
+	acu = 0
+
+	entrada:
+
+	cálculo: 
+
+	for 
+	  x
+	  x=0 | x<100 | x++
+	   
+	    entrada:
+	       n
+
+	    acu += n    
+
+	    cálculo: 
+	  
+
+	    salida: 
+
+	promedio = acu/100
+
+	salida: 
+
+	promedio
+
+
+
+
+	4. Par/Impar:
+
+	cálculo: 
+	r = num%2
+
+	v -----r==0 ----- F //pregunta/condición 
+	|                |
+	'par'           'impar' //guardar resultado
+
+
+
+
+
+	5. Max/Min:
+
+	entrada:  
+	num1, num2, num3, num4
+
+	cálculo: 
+
+	v---  num1>num2  ---f 
+
+	m= num1            m=b
+	               
+
+	v---  num3>max
+
+	m= num3            
+
+
+	v---  num4>max
+
+	m= num3            
+
+
+	salida: 
+	m
+
+
+
+
+	inicio
+
+	max = 0 
+
+	for 
+	  x
+	  x=0 | x<10 | x++
+	   
+	    entrada:
+	       n   
+
+	    cálculo: 
+	     
+	      v-- n>max-- f
+	      
+	      max=n   
+	 
+	    salida: 
+	    
+
+	salida: 
+
+
+	fin
+
+
+
+
+
+	inicio: 
+
+	bi= 0
+	bp= 0
+	for 
+	  x
+	  x=0 | x<20 | x++
+	   
+	    entrada:
+	       n   
+
+	    cálculo: 
+	     
+	      v --            n%/2            -- f
+	      
+	      v   bp==0      f               v--  !bi  --f
+	        
+	      maxP=n     v   n>maxP  f       minI=n   v n<minI f
+	      bp= 1                          bi=1     minI=n
+	                 maxP=n
+	                 
+
+	salida: 
+	 
+	maxP, minI 
+
+	fin
+
+
+
+
+
+	6. Posición:
+
+
+	inicio: 
+
+	for 
+	  x
+	  x=0 | x<10 | x++
+	   
+	    entrada:
+	       n   
+
+	    cálculo: 
+	     
+	      v-- x==0-- f
+	      
+	      max=n      v-- n>max --f
+	      pos=1    
+	                 max = n
+	                 pos = x+1
+
+	    salida: 
+	    
+
+	salida: 
+	 
+	max, pos
+
+	fin
+
+
+
+	//mostrar posición del mayor 
+
+	inicio: 
+	cont = 0 
+	acum = 0 
+
+	entrada: 
+
+	cálculo: 
+
+	for 
+	  x
+	  x=0 | x<20 | x++
+	   
+	    entrada:
+	       n   
+
+	    cálculo: 
+	     
+	      v-- n>18-- f
+	      cont++
+	      acum+=n    
+	                             
+	    salida: 
+	   
+	prom = acum/cont 
+
+	salida: 
+	 
+	prom
+
+	fin
+
+
+
+
+	7. primo:
+
+
+	inicio
+
+	contador = 0
+
+	entrada:
+	n
+
+	cálculo: 
+
+
+	for 
+	  x
+	  x=0 | x<100 | x++
+	   
+	    entrada:
+
+
+	    cálculo: 
+	     
+	     v-- n%x == 0 --f
+	     
+	     contador ++
+
+	    salida: 
+
+
+	v-- contador == 2 --f
+
+	'primo'             'no es primo'
+
+
+	salida: 
+	    
+	fin
+
+
+
+
+	inicio
+	primo = 0 
+	entrada: 
+
+	cálculo: 
+
+	for
+	x
+	x=0 | x<10 | x++
+
+	 entrada: 
+	  n
+	 
+	 cálculo: 
+	   for
+	   y=1 | y<=n | y++
+	   
+	   inicio: 
+	    con= 0
+	 
+	   entrada: 
+
+	   cálculo: 
+	    
+	       n%y == 0 //resto de dividir y con n es 0, es divisible
+	    v            f
+	    con++
+
+
+	     con == 2 
+	  v           f
+
+	v  !primo  f
+	  
+	mP=n     v   n>mP  f
+	primo=1  m==N
+
+
+	salida: 
+	mP
+
+	fin
+
+
+
+
+
+
+
+	Ejercicio: 
+	Hacer un programa para ingresar dos números y luego se 
+	emita por pantalla el mayor de ellos con un cartel que 
+	aclare si son iguales en el caso de que lo sean. 
+	Los números pueden ser iguales. 
+
+	entrada: 
+	a, b
+
+	cálculo: 
+	v -----a>b ----- F //pregunta/condición 
+	|                |
+	r = a 	     v --b>a-- f  //guardar resultado
+	             |         |
+	             r=b       r="son iguales"
+
+	salida:   //mostrar resultado
+	r
+
+	1. preguntamos por el verdadero (a)
+	2. la condición es el menor de los dos (a<)
+	3. volvemos a preguntar por el otro numero en mayor (b>)
+	4. si el verdadero lo guardamos ahí, si es falso
+	usamos por descarte la igualdad. 
+	5. ocupamos todos los escenarios/opciones
+
+
+
+
+	Ejercicio: 
+	Hacer un programa para ingresar un número y mostrar 
+	por pantalla cuando si es par o impar. 
+
+
+	entrada: 
+	num
+
+	cálculo: 
+	r = num%2
+
+	v -----r==0 ----- F //pregunta/condición 
+	|                |
+	'par'           'impar' //guardar resultado
+	         
+	salida:   //mostrar resultado
+
+
+
+
+	Ejercicio: 
+	Hacer un programa para ingresar las tres notas de 
+	examen de un alumno y luego cálcule y emita por pantalla
+	el promedio final. 
+
+	ingreso: 
+	nota1, nota2, nota3
+
+	cálculo: 
+	promedioNotas = (nota1 + nota2 + nota3)/3
+
+	salida: 
+	promedioNotas
+
+
+
+
+	6. Una universidad desea conocer los porcentajes de
+	mujeres y hombres en las carreras de ciencias exactas
+	hacer un programa para conocer los porcentajes de mujeres
+	y hombres, se necesita cargar la cantidad de mujeres y 
+	hombres, calcular y emitir por pantalla los porcentajes
+	correspondientes. 
+
+
+	//valor porcentual
+	50 manzanas como porcentaje de 1250 manzanas
+	50/1250 = 0,04 * 100 = 4%
+
+	o
+
+	50*100 = 5000/1250 = 4%
+
+
+
+	// porcentaje como fraccion
+
+	se divide entre 100 y se simplifica
+
+	10% = 10/100 = 1/10 = 0,1
+
+
+
+	// porcentaje de un número
+	de un número, simplemente se multiplica por 0,01
+	es decir, 1/100
+
+	el 25 % de 150 = 25*0,01*150 = 37,5
+
+	Una forma equivalente de tratar esta operación es 
+	considerar que se multiplica por la cifra y se divide
+	por cien (pues 0,01 = 1/100):
+
+	25*150/100
+
+
+	//calculo: 
+	//numHom + numMuj = total
+	//numHom y numMuj es la entrada o valor conocido (num)
+
+	//x = num*porc/100
+
+	//si numHom + numMuj es 100
+	//numHom  -- porcHom
+	//numMuj  -- porcMuj
+
+	//porcHom = numHom*100/(numHom + numMuj)
+	//porcMuj = numMuj*100/numHom + numMuj)
+
+
+
+	ingreso: 
+	numHom, numMuj
+
+	cálculo:
+	porcHom = numHom*100/(numHom + numMuj)
+	porcMuj = numMuj*100/(numHom + numMuj)
+
+	salida: 
+	porcHom, porcMuj
+
+
+
+
+	Ejercicio: 
+	Hacer un programa con dos numeros distintos y luego 
+	mostrar el resultado de restar el mayor de ellos con 
+	el menor de ellos. 
+
+	 
+	ingreso: 
+	a, b
+
+	calculo: 
+	v-- a-b --F //pregunta
+	|           |
+	r=a-b      r=b-a
+
+	salida:
+	r          //mostrar 
+
+
+
+	Ejercicio: 
+	Hacer un programa para ingresar un número y luego
+	se emita por pantalla un cartel aclaratorio si es mayor
+	a 10  o no es mayor a 10. 
+
+
+	ingreso: 
+	num
+
+	calculo: 
+	v -----num>10 ----- F //pregunta/condición
+	|                   |
+	r="numero           r="numero //guardamos el resultado
+	mayor que 10"       no es mayor a 10"
+
+
+	salida:
+	r          //mostrar resultado
+
+
+
+
+	Ejercicio:
+	Una tienda de videojuegos da un descuento dependiendo 
+	del importe de la compra realizada según los siguientes
+	valores: si el importe es menor a 1000 no hay descuentos
+	si es 1000 o más pero menor a 5000 aplica un descuento 
+	del 10% si es de 5000 o más aplica un descuento del 18%
+	El programa debe ingresar un importe de venta y mostrar 
+	el importe final con el descuento que corresponda. 
+
+
+	//descuento = importe * porcDesc
+	//importeFinal = importe-descuento
+
+	//10/100 = 0,1
+	//18/100 = 0,18 
+
+	//importe es menor a 1000
+	//1000 o más pero menor a 5000 10
+	//5000 o más aplica un descuento 18
+
+	entrada: 
+	importe
+
+	cálculo: 
+	v---  importe>=5000   ---f 
+
+	iF= importe*0,82      v  importe>1000 && importe<5000 f        
+
+	               iF =importe*0,90              iF = importe
+
+	salida: 
+	iF
+
+
+	alternativa
+
+	v---  importe>5000  ---f 
+
+	iF= importe*0,82      v  importe>1000    
+
+	               iF =importe*0,90     
+
+
+
+	Ejercicio: 
+	//nos pregunta el maximo de ellos, lo evaluamos indirect
+	mente todos contra todos. 
+	Se hace por partes, preguntamos el primer par y vamos
+	guardando el maximo.  Para el falso, decimos el el otro
+	num es el maximo y cerramos el condicional. 
+
+	//En el segundo condicional preguntamos por el tercer
+	valor si es mayor al maximo. no usamos el falso. 
+
+	//tercer condicional, preguntamos por el cuarto num si es
+	mayor al max, no usamos el falso. 
+
+
+	entrada:  
+	num1, num2, num3, num4
+
+	cálculo: 
+
+	v---  num1>num2  ---f 
+
+	m= num1            m=b
+	               
+
+	v---  num3>max
+
+	m= num3            
+
+
+	v---  num4>max
+
+	m= num3            
+
+
+	salida: 
+	m
+
+
+
+
+	ej con bucle:
+	imprimir 10 veces 'hola mundo!' pero escribiendolo una
+	vez o utilizando una su instrucciones una vez: 
+
+	for 
+	 x 
+	x = 0 | x < 10 | x++
+
+	 'hola mundo!'
+
+
+
+
+
+	Ejercicio: for y Acumulador
+
+	// Ahora necesitamos entender que hacer con los valores
+	en cada vuelta y con el problema que queremos resolver. 
+
+	// Para un promedio no necesitamos tener 100 valores al 
+	mismo tiempo. 
+
+	// Tenemos que sumar los 100 elementos y dividirlos por
+	100
+
+	// Con este código, n (ingreso número) que se repite 100
+	veces, tenemos que guardar su valor antes de que
+	el ciclo for de un vuelta y lo pierda. 
+
+	// Necesitamos un acumulador (var+=, var-=, var*=, etc), 
+	una variable como acumulador antes de que se inicie el
+	ciclo: acu = 0. 
+
+
+	inicio
+
+	acu = 0
+
+
+	entrada:
+
+
+	cálculo: 
+
+	for 
+	  x
+	  x=0 | x<100 | x++
+	   
+	    entrada:
+	       n
+
+	    acu += n    
+
+	    cálculo: 
+	  
+
+	    salida: 
+
+
+	// Ahora antes de que de la vuelta y se pierda el valor, 
+	n se guarda en una sola variable acumuladora (acu) que
+	va sumando. 
+
+	// El ciclo for vuelve a chequear su variable x, 
+	para volver a entrar al código; ahora si número de n 
+	se perdió pero se guardó en acu+=. 
+
+
+	promedio = acu/100
+
+
+	salida: 
+
+	promedio
+
+
+
+
+
+	Ejercicio: for y maximo e if
+
+	//En un contexto dinamico, el punto de partida no puede
+	ser 0, entonces, tomamos el primer elemento que tengamos
+	en nuestra lista; si tenemos 10; el primero que tenga
+	va a ser el maximo, minimo, unico, la situación que sea. 
+
+	//Guardamos ese número y lo que venga a continuación lo 
+	comparamos contra nuestro primer elemento. 
+
+	//Encontrar el primer número/elemento: (estamos frente
+	a 10, no sabemos cuál va a ser el primero)
+
+	//Entonces, creamos el ciclo requerido, con el indice
+	del propio ciclo podemos modificar desde dónde va a 
+	empezar el mismo ciclo. 
+
+	//Podemos preguntar el valor del indice del ciclo para
+	saber su posición:
+
+
+
+	inicio
+
+	//no creamos un acum o cont, entramos en el bucle 
+	al principio. 
+
+	//pedimos un ingreso, después tenemos que averiguar 
+	a qué vuelta o posición corresponde n, la entrada, etc. 
+
+	//preguntamos cuanto vale x(indice, posición bucle)
+	x == 0 (si estamos en la primera vuelta del ciclo)
+	entonces, el max es n. 
+
+	//no la cambiamos para que no se rompa el ciclo que maneja. 
+
+
+	for 
+	  x
+	  x=0 | x<10 | x++
+	   
+	    entrada:
+	       n   
+
+	    cálculo: 
+	     
+	      v-- x==0-- f
+	      
+	      max=n      v-- n>max --f
+	                   
+	                 max = n
+
+	    salida: 
+	    
+
+	salida: 
+	 
+	max
+
+	fin
+
+	//si estamos en la primera vuelta del ciclo, guardamos n 
+	como max. 
+
+	//si no es la primera vuelta, quiere decir que x 
+	no vale 1 y que tenemos un valor max de n (primer elem
+	guardado como max) 
+
+	//cuando es falso, preguntamos si el nuevo número es 
+	mayor al max
+
+	//si es verdadero, reemplazamos el max otra vez, si es
+	falso
+
+	//cerramos el bucle y al final mostramos max. 
+
+
+
+
+
+
+	Ejercicio: for y contador/mostrar unidad/cantidad
+
+	hacer un programa que solicite 20 números y cálcule y 
+	emita por pantalla cuantos son positivos (mayores a 0)
+	mostrar un solo valor, el conteo final. 
+
+	//tenemos muchos números y además nos pide un contador
+
+	//1. cargamos los números, iniciamos un bucle de 20 
+	vueltas. 
+
+	//2. el bucle pedirá un ingreso que se ejecutará 20 veces
+
+	//3. cuántos son positivos: preguntamos por si la 
+	entrada es positiva
+
+	//4. el contador tiene que inicializarce en 0 afuera
+	del ciclo y al inicio del programa. 
+	 
+	inicio
+
+	contador = 0 
+
+	entrada:
+
+	cálculo: 
+
+	for 
+	  x
+	  x=0 | x<20 | x++
+	   
+	    entrada:
+	       n
+
+	    cálculo: 
+	     
+	     v-- n>0-- f
+
+	    salida: 
+
+
+	salida: 
+
+	contador
+
+	fin
+
+
+
+
+
+	Ejercicio: 
+	solicitar un numero y luego calcule y emita un cartel 
+	aclaratorio si el mismo es primo o no es primo. 
+	primo(divisible por 1 y si mismo)
+
+	//No todos los número son primos, dado que son divisibles
+	por otros números. 
+
+	// vamos a chequear cuantas veces es divisible un número
+	si es divisible solo por 1 y si mismo, es primo, 
+	dos veces. si es divisible más de dos veces no es primo 
+
+	//pedimos entrada, dividimos tantas veces como el número
+	sea, contar cuantas veces fue divisible y mostrar. 
+
+
+	inicio
+
+	contador = 0
+
+	entrada:
+	n
+
+	cálculo: 
+
+
+	for 
+	  x
+	  x=0 | x<100 | x++
+	   
+	    entrada:
+
+
+	    cálculo: 
+	     
+	     v-- n%x == 0 --f
+	     
+	     contador ++
+
+	    salida: 
+
+
+	v-- contador == 2 --f
+
+	'primo'             'no es primo'
+
+
+	salida: 
+	    
+	fin
+
+
+
+
+	Ejercicio: for posicion y max, min
+
+	//para el verdadero tambien vamos a reemplazar la posición
+	vamos a correguir el valor desfazado de x, no podemos 
+	asignarlo a mano porque no tenemos la seguridad como 
+	en el primer número. 
+
+	//en la vuelta 0 de x, sabemos que va a ingresar el 
+	primer elemento, en la vuelta 1 va a ingresar el segundo
+	acá es cuando vemos el desfazaje: 
+	 
+	mostrar posición: 
+	 vuelta 1 -> x=0 -> primer elemento -> posición = 1
+	 vuelta 2 -> x=1 -> segundo elemento -> posición = x+1
+	  
+	vemos que si ponemos posición = x va a ser 1, que ya 
+	 la tenemos en primera vuelta, por eso es posición = x+1
+	 
+
+	inicio: 
+
+	for 
+	  x
+	  x=0 | x<10 | x++
+	   
+	    entrada:
+	       n   
+
+	    cálculo: 
+	     
+	      v-- x==0-- f
+	      
+	      max=n      v-- n>max --f
+	      pos=1    
+	                 max = n
+	                 pos = x+1
+
+	    salida: 
+	    
+
+	salida: 
+	 
+	max, pos
+
+	fin
+
+
+
+
+	Ejercicio: 
+	programa que solicite 20 numeros y luego mostrar por
+	pantalla el minimo de ellos y la posición en la que 
+	fue encontrado.
+
+	//tomar el primero numero como maximo para comparar
+	cuando sea la primera vuelta comparando con el indice
+	del bucle
+
+	//como siempre va a haber un max a la primera vuelta
+	queda establecido y en la segunda vuelta ya se 
+	compara con n (entrada)
+
+	//mostrar posición del mayor 
+
+
+	for 
+	  x
+	  x=0 | x<20 | x++
+	   
+	    entrada:
+	       n   
+
+	    cálculo: 
+	     
+	      v-- x==0-- f
+	      
+	      max=n      v-- n<max --f
+	      pos = 1
+	                 min = n
+	                 pos = x+1
+	    
+	    salida: 
+	    
+	salida: 
+	max, pos
+
+
+	Ejercicio: 
+	programa que solicite 20 edades y luego calcule el 
+	promedio de edad de aquellas personas mayores a 18. 
+
+	prom = suma total/cant valores
+	prom = entrada acumulada de mayores /20 
+
+	//tomar el primero numero como maximo para comparar
+	cuando sea la primera vuelta comparando con el indice
+	del bucle
+
+	//como siempre va a haber un max a la primera vuelta
+	queda establecido y en la segunda vuelta ya se 
+	compara con n (entrada)
+
+	//mostrar posición del mayor 
+
+	inicio: 
+	cont = 0 
+	acum = 0 
+
+	entrada: 
+
+	cálculo: 
+
+	for 
+	  x
+	  x=0 | x<20 | x++
+	   
+	    entrada:
+	       n   
+
+	    cálculo: 
+	     
+	      v-- n>18-- f
+	      cont++
+	      acum+=n    
+	                             
+	    salida: 
+	   
+	prom = acum/cont 
+
+	salida: 
+	 
+	prom
+
+	fin
+
+	//como no sabemos cuantas personas van a ser mayor de 
+	18, no podemos dividir para sacar el promedio por eso
+	debemos usar un contador para sacar ese valor
+
+
+
+
+	Ejercicio: 
+	20 numeros pares y luego emitir 
+
+
+	3. buscar max y min: tanto para el max y min tenemos
+	que tomar la primera entrada. Acá no podemos usar x 
+	x==0 para tomar la primera entrada y guardarla. 
+	porque no sabemos cuando x vale (indice) 0. 
+	x solo puede valer 0 una vez. 
+	si ingresamos un número y ademas es par, que no está 
+	garantizado que sea 0; no podemos saber si es par o no. 
+	no podemos inicializar pensando en la primera vuelta:
+	n%2 == 0 &&  ni x==0, dificiles de cumplir
+
+	Debemos inicializar pensando en cualquier número. 
+
+	4. variable bandera: 
+	no podemos saber cuando el usuario va a entrar un numero
+	par o impar. 
+	usamos una variable auxiliar para marcar el camino. 
+	la inicializamos en un valor que vamos a decidir y luego
+	preguntar si ese valor está en esa condición. 
+
+	Es una variable con un tipo de dato booleano (t,f o 1,0)
+
+
+
+	inicio: 
+
+	bi= 0
+	bp= 0
+	for 
+	  x
+	  x=0 | x<20 | x++
+	   
+	    entrada:
+	       n   
+
+	    cálculo: 
+	     
+	      v --            n%/2            -- f
+	      
+	      v   bp==0      f               v--  !bi  --f
+	        
+	      maxP=n     v   n>maxP  f       minI=n   v n<minI f
+	      bp= 1                          bi=1     minI=n
+	                 maxP=n
+	                 
+
+	salida: 
+	 
+	maxP, minI 
+
+	fin
+
+	//creamos una bandera de impares con valor 0 y creamos
+	una bandera de pares con valor 0 tambien. 
+
+	//no preguntamos por la primera vuelta (x==0), preguntamos
+	si tenemos un par, para saberlo, preguntamos cuanto vale
+	la bandera (bp==0); por verdadero quiere decir que no 
+	hay ningún valor par. Determinamos por maximo par a n. 
+	y a la bandera de pares le cambiamos el valor a 1. 
+
+	//para el falso de la bandera par preguntamos si n>maxpar
+	nuevo valor mayor al maximo para que determinamos al 
+	principio. Para verdadero (mayor que el anterior)
+	actualizamos el valor de maxpar = n
+
+	//para el falso del impar n%2==0, preguntamos por la 
+	bandera de impar. 
+
+	alternativa: 
+	si una variable booleana tiene un verdadero o un falso
+	si la ponemos en un if va a ir por el valor que tenga. 
+	bi y bp tiene un 0 (inicializado) que es falso. 
+	entonces, necesitamos que se vaya al verdaero como hicimos
+	con bp, usamos un operador negado (!) negando el valor 
+	que tiene, invertirlo. 
+
+	"si bi tiene falso, !bi hace que que sea verdadero. 
+	guardamos minimo impar como n y cambiamos la bandera impar
+	de valor a 1 (en verdadero)
+
+	cuando la bandera este en 1 va a ir para el falso
+	ahí preguntamos si n<minino impar
+
+
+
+	Ejercicio: 
+	programa para ingresar 10 numeros y luego calcule y emita
+	el mayor de los primos de la lista. En caso de no haber
+	ningun numero primo, deberá aclararlo con un cartel. 
+
+	//podemos crear un ciclo dentro de otro.
+	el primero nos permite pedir los 10 numeros. 
+
+	//tenemos que preguntar si la entrada es num primo. 
+	hacemos un for, dividirlo, contar; si contaba dos veces
+	era primo, si contaba más no lo era. 
+
+	//cuando es primo lo guardamos como max, el primer num
+	primo que aparezca va a ser el max, los siguientes se 
+	comparan contra ese max. 
+
+	//no sabemos si el primer num primo que va a aparecer 
+	en la primera vuelta. 
+	x ==0 no nos sirve para tomar el primer num
+
+
+	inicio
+	primo = 0 
+	entrada: 
+
+	cálculo: 
+
+	for
+	x
+	x=0 | x<10 | x++
+
+	 entrada: 
+	  n
+	 
+	 cálculo: 
+	   for
+	   y=1 | y<=n | y++
+	   
+	   inicio: 
+	    con= 0
+	 
+	   entrada: 
+
+	   cálculo: 
+	    
+	       n%y == 0 //resto de dividir y con n es 0, es divisible
+	    v            f
+	    con++
+
+
+	     con == 2 
+	  v           f
+
+	v  !primo  f
+	  
+	mP=n     v   n>mP  f
+	primo=1  m==N
+
+
+	salida: 
+	mP
+
+	fin
+
+	//primero calculamos un numero primo con otro for
+
+	//con el primer for pedimos los 10 numeros, 
+
+	//con el segundo for en cada uno de los 10 num, 
+	lo inicializamos en 0, dividimos, si es verdaero 
+	contamos, sino no contamos. 
+
+	//el siguiente bloque de código con == 2 preguntamos si 
+	es primo, con lo contrario. 
 
 
 
