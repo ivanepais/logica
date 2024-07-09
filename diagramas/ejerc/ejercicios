@@ -1,0 +1,3047 @@
+Teoria: 
+
+1. if:
+opciones, buscar el verdadero: 
+si buscamos mayor, a>b y b>a, lo correcto es seguir 
+preguntando por mayor. 
+
+con:
+mostrar, cantar cantidad.
+
+acum:
+acumular valor y operar. 
+
+
+
+2. for: 
+cuando vueltas, giros, iteración están definidas
+elemento repetido dentro
+
+operador resto: 
+
+resto; par/impar; multiplo; primo: 
+
+num1%num2 = resto
+(resto de dividir un num1 con num2)
+
+par: resto = 0 
+
+par/impar:
+r= n%2 (guardamos el resultado de dividir n%2 en r)
+r==0
+
+o
+
+n%2==0
+
+multiplo:
+n%5==0
+(resto de dividir n con 5 es igual a 0)
+(puede que un numero/5 no de resto 0)
+
+si no hay resto, es multiplo. 
+
+
+primo: 
+
+x=1 | x<=n |x++ 
+
+// x empieza en 1 y se compara con n
+para entrar, o va a ir hasta ese 
+numero 
+
+v-- n%x == 0 --f  
+
+//preguntamos si el ingreso es divisible
+con++, dividimos n por todos los numeros desde
+1 (x) hasta el valor de ingreso n
+               
+                 
+v-- con == 2 --f  
+primo                  
+                
+//si un numero es divisible por otro, su
+división no deja resto o da resto 0.
+ 
+//fuera de for, preguntamos cuando 
+va a ser primo: si con == 2
+
+
+
+segregar grupos:
+preguntamos por la condición que tiene que tener 
+cada grupo.
+
+//son minis problemas dentro de otro. 
+
+
+ej: tenemos 20 num, en los que hay pares e impares y
+nos piden max par y min impar como resultado.
+
+//par -> condicion/filtro para max par
+
+//impar-> condicion/filtro para min impar
+
+//condicion filtro que transforma la entrada
+
+//max par
+
+//min impar
+
+preguntamos por num es par o impar
+
+despues tenemos que establecer sus características:
+si es par tiene que ser el max de ellos.
+si es impar tiene que ser el min ellos. 
+
+
+//puede haber una condicion para transformar la entrada
+y tomar o mostrar valores. 
+
+
+buscamos max de par y min de impar: 
+tomamos el primer elem y guardarlo
+no podemos usar el indice, porque no sabemos el 
+valor de ingreso =0 (n%2==0), no podemos inicializar 
+pensando en las vueltas. 
+
+acá es cuando usamos una variable auxiliar para marcar 
+el camino
+
+bandera: 
+variable auxiliar, inicializada en un valor:  
+booleano 1/0, t/f
+
+y luego preguntar si este valor esta en un estado u otro. 
+
+bandera par e impar. 
+
+después de preguntar cambiamos este valor. 
+
+
+negar/invertir booleano: 
+!
+
+si tenemos una bandera en 0: 
+b=0 (0 falso/vacia/apagado)
+
+y queremos preguntar por esa bandera: 
+
+si lo hacemos normalmente (if b {...}):
+ esta bandera se resuelve en verdadero o en falso
+ ej: bp == 0, si es v va al verdadero, si es falso, va ahí. 
+
+
+Si el if le damos una variable que adentro tiene un verda
+dero o un falso:  
+ si la variable tiene v, se va al verdadero, si tiene f
+ se va al falso. 
+
+
+Si hacemos un if negando o invirtiendo la bandera: 
+ti tenemos una variable que arranca con un falso: 
+como b=0
+
+
+Si queremos que inicializarla en 0 (falso) y se vaya 
+al verdadero:
+
+usamos una negación: !b su valor pasa a ser verd y se va 
+al verdadero. 
+
+(if !b{...})
+
+// si la variable tiene un falso (b=0), el if lo entienda
+como verdadero, entonces, si tiene falso se va para verda
+dero, si tiene verdadero se va para el falso. 
+
+//establecemos la entrada y cambiamos la bandera de valor. 
+//para la segunda entrada se encuentra con bandera 
+en verdadero. (b=1) y (if !b), lo entiende como falso que
+está en 0, y se va para el falso. 
+
+//pregunta para reemplazar el primer valor
+
+
+rs total: 
+
+si tenemos b = 0 
+
+y preguntamos if b, se va para el falso. 
+
+
+si tenemos b=0
+
+y preguntamos if !b, se va para el verdadero. 
+
+
+en vez de preguntar b == 0 
+
+
+
+
+3. while:
+cuando las iteraciones son indefinidas
+elemento fuera, muestra una vez. 
+
+
+prácticas generales: 
+
+En general no debemos inicializar ingresos del usuario
+con 0 u otro valor
+
+Tomar primer ingreso con indice, usar bandera. 
+
+
+Ej:  
+programa para mostrar numeros del 1 al 10, no se debe 
+realizar ningún pedido de datos
+
+//while no tiene una variable propia que controla el ciclo
+como for. Solo tiene una condición para entrar o salir del
+bucle. 
+
+//Podemos imitar al ciclo for: usando una variable iniciali
+zada que vamos a incluir en la condición. 
+
+inicio
+n=1
+
+entrada: 
+
+cálculo: 
+while n<=10
+ 
+ n          //mostrar valor n (es distinto de mostrar)
+              entrada)              
+
+ n++        //cambiamos el valor para que salga de bucle
+            en un momento y no se quede infinitamente. 
+
+salida: 
+
+
+fin 
+
+//funcionamiento: va a mostar muchas veces n (var/valor)
+1. n inicializa en 1
+2. pregunta si n<=10 
+3. muestra 1
+4. suma 1 a 1 y queda en 2. 
+5. pregunta por 2 <= 10, entra y repite paso 3 y 4. 
+6. cuando llegue a 10, sale del bucle y continua con las 
+instrucciones de abajo. 
+
+//como empieza en 1, tenemos que ajustar n<=10
+o cambiar n a 0, o cambiar 10 a n<11. 
+
+//es como imitar el ciclo for porque inicializamos una 
+variable para controlar el ciclo con una condición y adentro
+hacemos un incremento. 
+
+
+
+programa que solicite la edad de un grupo de personas 
+el programa deberá pedir edades hasta que se ingrese 
+una edad menor a 18 y debera mostrar por pantalla cuantas
+personas mayores que registraron. 
+
+//req y cond: 
+
+//edad: entrada
+
+//cuando/condic: edad>=18 -> mostrar cant >=18 registradad
+
+//cant registrada -> contador
+
+inicio
+con=0 
+
+entrada: 
+edad
+
+cálculo: 
+while edad>=18   //cuando llegue a 0(n)>0, sale 
+                  como la condicion filtra, va a cont 
+ con++            directamente                 
+  
+ edad           //acá el valor para salir del bucle lo
+                 cambia la entrada. 
+   
+                //mostrar entrada edad
+
+salida: 
+con
+
+
+
+programa que solicite dos numeros y luego muestre los 
+numeros entre el menor y el mayor de ellos. 
+
+planteo y pseudocódigo: 
+definimos los requisitos y condiciones. 
+
+//pedimos dos numeros: a, b
+//si a mayor a b: a>b
+ verdadero: el mayor es a y el menor es b
+ falso: si no el mayor es b y el menor es a 
+
+//mostrar numeros entre el menor y el mayor de ellos. 
+como ya tenemos definido los mayores y menores
+creamos la condicion: me<ma -> mostrará menor++ para
+cambiar el valor. 
+
+inicio
+
+entrada
+a, b             //entra fuera while
+
+cálculo
+ v--  a>b  --f
+ |           |
+ ma=a        ma=b
+ me=b        me=a
+
+ while me<ma
+ me
+ me++
+
+
+salida: 
+
+
+fin
+
+//funcionamiento: 
+
+1. en el if si entramos un 5 en a y un 9 en b, preguntará
+5<9, es falso, el mayor va a ser 9 (b) y el menor 5(a)
+
+2. en el while preguntará si 5<9 (me<ma), como es valido
+entra en el bule while, muestra ese valor y lo suma 5+1=6. 
+
+3. sigue activo el ciclo while, mostrando sumando valores
+menores o entre ma y me. Evalua el 6, lo suma, 7, etc. 
+
+4. repite hasta que el valor sumado sea mayor a me. 
+
+
+
+//recta numerica:
+
+<--negativos   0   positivos -->
+
+un numero es más grande mientras más a la derecha este
+y es más chico mientras más a la izq este
+
+//segregamos negativos
+maximo de los negativos: 
+va a ser el que más cerca de 0 este. 
+
+
+//segregamos positivos: 
+minimo de los positovs
+va a ser el que más cerca de 0 este, tambien. 
+
+
+//estructura que nos permite ingresar todos los numeros: 
+entrada n al comienzo, en while n!=0 pedimos n al final
+
+
+//segregar con if: 
+positivos: n>0
+acá buscamos su minimo. 
+
+
+negativos: n<0
+acá buscamos su maximo. 
+
+
+//no podemos tomar el primer numero con entrada n al inicio
+porque no sabemos si va a ser positivo o negativo, ni poner
+su bandera, posicion, contador, etc. 
+
+
+//usamos la bandera de positivos y negativos
+bp=0
+bn=0
+
+
+
+4. lote y sublote
+
+
+Lo mejor es, como ya tenemos una estructura con un ciclo que
+nos permite repetir entradas, podemos crear un for/while
+padre/hijo con otra variable controladora para controlar
+cuantas veces va a aparecer el bucle hijo que tiene solo
+un lote de números para cargar. 
+
+inicio
+
+entrada: 
+n
+
+cálculo: 
+
+for
+y=0 | y<5 | y++    
+
+ for
+ x=0 | x<10 | x++
+  
+   n
+
+salida: 
+
+
+fin 
+
+//inicia el programa con un for, entra dado que y=0 <5 
+pasa al siguiente for, entra 0<10 y pide n. 
+
+//cuando termina de pedir los 10 numeros (1 lote) o vuelta
+y=0, el primer lote termina, sale y chequea y=1 <10 
+
+
+Tenemos un ciclo interno que pide 10 numeros (1 lote) y un 
+ciclo interno que dice cuantas veces tiene que ejecutarse
+el lote. Forma 5 subgrupos de 10 numeros. 
+
+Tenemos un programa que está haciendo uso de un ciclo 
+combinado y también, usa grupos y subgrupos o lote y 
+sublote. 
+
+Lote: es el lote externo o complete
+sublote: es el lote interno que se ejecuta varias veces
+creando un subgrupo y cuando termina empieza a crear otro, 
+así sucesivamente
+
+
+
+Si queremos un programa para cargar 5 sublotes de numeros
+separados entre si por un 0. 
+
+//estructuras principales: 
+1 lote, 5 sublotes
+
+cargar numero
+
+//estructuras secundarias: 
+numeros separados entre si por un 0 
+
+
+inicio
+
+for
+y=0 | y<5 | y++  
+ 
+ entrada: 
+ n
+
+ cálculo: 
+
+ while n!=0
+ 
+  
+   n
+
+salida: 
+
+
+fin 
+
+
+//Con una estructura while tenemos un lote que carga
+numeros hasta que n, entrada sea 0. 
+
+//Con una estructura for tenemos 5 sublotes con x cantidad
+de cargas dado el while. 
+
+//la clave está en que nos pediar separar los lotes por 
+un 0 y ese rol lo cumple el while n!=0 
+
+
+Entonces tenemos 5 sublotes dividios cada uno cuando 
+se ingresa un 0. 
+
+Entonces tenemos un lote dado por todos los numeros (for)
+y 5 sublotes dados por un while n!=0. 
+
+Tambien podemos decir que tenemos un lote exacto y 5 sublotes
+inexactos. 
+
+
+
+
+Ej: cargar todos los numeros positivos que está dividido 
+internamente en sublotes que corta con 0 
+
+//estructuras principales: 
+1 lote positivos, sublotes cuando 0
+
+
+//estructuras secundarias: 
+cargar numeros positivos
+entrada: n
+positivos: solo permitir n>0
+
+
+//tenemos un programa que no nos dice la cantidad de
+sublotes (subL=x).
+
+//el corte general es un numero negativo
+
+//internamente, debemos subdividir el lote en sublotes
+que se separan por 0. 
+
+
+inicio
+ 
+n=1         //parche para pasar el primer while
+              controla y ejecuta primer                
+
+while n>=0 
+  
+ n         //entrada: pedimos un numero para segundo while
+           //estructura origina while: 
+            entrada, while entrada, entrada 
+ 
+ while n>0   //solo toma los positivos
+  
+            
+   n
+              
+salida: 
+
+
+fin 
+
+//si ingresamos 45 al inicio, pasa el 1 while y el segundo
+
+//si ingresamos un 0 al inicio pasa el 1 while y pasa
+el segundo while cortando el lote, cambiando, no ingresamos 
+un numero negativo para cortar el programa. 
+
+//pero para el segundo while 0!=0 es verdad, después vuelve
+al while 1 0>=0, verdad y queda un bucle. 
+
+
+Entonces, tenemos un lote con x cantidad de positivos
+y x cantidad de sublotes y x cantidad de numeros
+
+el programa corta cuando el usuario ingrese negativo
+
+
+
+
+Ejercicio: 
+dada una lista de numeros computesta por 10 subgrupos y 
+cada subgrupo separados por un 0, se piede determinar 
+e informar...A), B), etc. 
+
+//planteo programa
+Además del lote y sublote, el programa pide consignas
+concretas. 
+
+1. armar arquitectura con ciclos combinados que nos 
+permita cargar la arquitectura de lote y sublote 
+
+2. despues armamos las consignas, que nos pide, requisitos
+condiciones para que suceda tal o cual cosa. 
+
+for
+x=0 | x<10 | x++
+ 
+ n
+ 
+ while n!=0 
+
+  
+
+   n
+
+
+para el punto a: 
+para cada uno de los subgrupos, el maximo de los numeros 
+pares y el max de los impares. 
+
+//esto va a ir en el bucle interno. 
+
+//segregar pares n%2==0 
+
+//encontrar par e impar
+
+//mostrar par e impar
+
+bp=0
+bi=0
+
+while n!=0
+
+               v-- n%2 == 0 --f
+               |              |
+ v-- bp == 0 --f              v-- bi==0 --f
+ |             |              |           |
+ maxP=n        v-- n>m        maxI=n      v-- n>maxI
+ bp=1          |              bp=1      |
+               maxP=n                   maxI=n
+                          
+            
+ n
+
+salida: 
+maxP, maxI
+
+
+
+punto b: para cada uno de los subgrupos, el porcentaje
+de numeros negativos y el porcentaje de numeros positivos
+
+debemos contar los pos y neg
+cpos = 0
+cneg = 0 
+pos: n>0
+neg: n<0
+
+r3: 
+total: n -> 100%
+pos x -- x*100/pos+neg
+neg y -- x*100/pos+neg
+k
+  cpos=0 
+  cneg=0
+
+
+
+ while n!=0
+ 
+   v-- n>0 --f
+   |         |
+   cpos++    cneg++
+
+
+salida
+porP=cpos*100/(cneg+cpos)
+porN=cneg*100/(cneg+cpos)
+
+
+
+punto c: cuando numeros habia en total entre los 10 subgrupos 
+sin contar los 0 que separan a cada subgrupo. 
+
+//en la estructura principal/externa/controladora sub bucle
+//aumentamos el contador cuando entra al bucle while. 
+
+inicio
+con=0 
+
+for
+
+ while n!=0
+ con++
+
+
+
+
+
+
+
+
+
+
+
+Ejercicios
+
+
+1. Programa para ingresar los metros cuadrados totales 
+de un predio y los metros cuadrados cubiertos. Cálcular
+y mostrar el porcentaje de metros cuadrados cubiertos 
+y el porcentaje de metros cuadrados descubiertos. 
+
+porcentaje con r3 simple: 
+
+variables: 
+metros cuadrados totales 100%
+metros cuadrados cubiertos x (una parte del total)
+
+metros cuadrados descubiertos: y
+totales - cubiertos
+
+
+metros totales -> 100
+metros cubiertos
+
+metros cubiertos * 100/metros totales
+
+
+metros totales -> 100
+metros descubiertos
+
+metros descubiertos * 100/metros totales
+
+
+
+inicio
+
+entrada: 
+mt, mc
+
+cálculo: 
+md = mt-mc
+
+pmc = mc*100/mt
+pmd = md*100/mt
+
+salida: 
+pmc, pmd
+
+fin
+
+
+
+2. En una promoción que otorga 15% de descuento del total
+del valor de la compra realizada. Hacer un programa para 
+consultar el monto total y que calcule el total a cobrar
+con el descuento otorgado y se muestre en pantalla. 
+
+inicio
+
+entrada: 
+mt
+
+cálculo: 
+tp = mt*0,85 
+
+salida: 
+tp
+
+fin
+
+ 
+
+3. Conocer los porcentajes de mujeres y hombres en una 
+carrera, cargar la cantidad de mujeres y hombres.
+Cálcular y emitir los porcentajes correspondientes. 
+
+
+muj+hom -> 100%
+m
+m*100/(muj+hom)
+
+muj+hom -> 100%
+h
+h*100/(muj+hom)
+
+
+inicio
+
+entrada: 
+m, h
+
+cálculo: 
+pm = m*100/(m+h) 
+ph = h*100/(m+h)
+
+salida: 
+pm, ph 
+
+fin
+
+
+
+4. Ingresar un numero y luego se muestro un cartel 
+si es mayor a 10 o no es
+
+
+inicio
+
+entrada: 
+n
+
+cálculo: 
+
+v--- n>10 ---f
+es mayor    no es mayor
+
+salida: 
+
+fin
+
+
+
+inicio
+
+entrada: 
+n
+
+cálculo: 
+
+v--- n>10 ---f
+es mayor   
+
+salida: 
+
+
+fin
+
+
+
+
+inicio
+
+entrada: 
+n
+
+cálculo: 
+
+v--- n>10 ---f
+           es menor 
+
+salida: 
+
+//es mala práctica preguntar lo contrario 
+
+fin
+
+
+
+5. ingresar dos numeros distintos y luego se muestre 
+el menor de ellos 
+
+inicio
+
+entrada: 
+a, b
+
+cálculo: 
+
+v--- a<b ---f  //preguntamos quién es menor
+a           b   //mostramos para cual para v y f
+                //cubre todas las posibilidades valores<
+salida:          que tenemos: a y b. 
+
+fin
+
+//Buscamos el verdadero 
+
+
+
+6. programa para ingresar dos numeros y luego se emita 
+por pantalla el mayor de ellos o un cartel aclaratorio
+'son iguales' en el caso de que así sean. 
+
+
+inicio
+
+entrada: 
+a, b
+
+cálculo: 
+
+v--- a>b ---f  
+a          v--- b>a ---f
+           b          es igual
+                              
+salida:        
+//preguntamos quién es mayor
+//volvemos a preguntar quién es mayor por eso usamos b
+//porque es el requerimiento (verdadero)
+//los dos valores pueden ser mayores por eso preguntamos
+por > en a y b
+
+//cubre todas las posibilidades valores, >;
+que tenemos: mayor, a, b, igual
+
+fin
+
+
+
+7. programa para ingresar un numero y mostrar por pantalla
+si el mismo es par o impar
+
+operador %, resto, mod, modulo: 
+da el resto entre dos valores 
+
+par: resto = 0 
+cuando dividimos dos valores, si su resto da cero es par
+sino es impar
+
+intuitivamente lo decimos cuando sobra o no sobra algo
+al repartir, dividir. 
+
+
+en la computadora podemos dividirlo y que nos de 
+su cociente, resultado usando /
+
+o dividirlo y que nos de su resto usando %
+
+podemos hacer una division entre un numero cualquiera 
+entre 2 y si se obtiene un resto que no es 0,
+el numero es par, sino es impar
+
+4/2= 2
+4%2= 0 
+
+num%2= resto
+
+
+
+inicio
+
+entrada: 
+n
+
+cálculo: 
+r= n%2
+
+v--- r==0  ---f  
+par          impar
+          
+                              
+salida:   
+
+//guardamos el resultado de dividir n%2 en r     
+
+//preguntamos si lo que está guardado en r es igual 
+a 0 (==0), quiere decir que estamos preguntando si es par
+
+//cubrimos el requerimiento (par) por el verdadero
+y despues seguimos por el falso u otras opciones 
+requeridas, etc. 
+
+
+
+8. ingreso de un numero y que emita un cartel si es 
+multiplo de 5. 
+
+num1%num2 = resto
+(resto de dividir un num1 con num2)
+
+par: resto = 0 
+
+par/impar:
+r= n%2 (guardamos el resultado de dividir n%2 en r)
+r==0
+
+multiplo:
+n%5==0
+(resto de dividir n con 5 es igual a 0)
+(puede que un numero/5 no de resto 0)
+
+si no hay resto, es multiplo. 
+
+
+inicio
+
+entrada: 
+n
+
+cálculo: 
+
+v--- n%5==0  ---f  
+es multiplo         
+                              
+salida:   
+
+fin
+
+
+
+9. Solicitar el ingreso de dos numeros y luego calcular
+a) la resta si el primero es mayor que el segund,
+b) la suma si son iguales, c) el producto si el primero
+es menor que el segundo. 
+
+
+inicio
+
+entrada: 
+a, b
+
+cálculo: 
+
+v--- a>b ---f  
+r=a-b         v--- a==b ---f
+           s=a+b         p= a*b
+                     
+
+                              
+salida:  
+r, s, p       
+
+//si a no es mayor ni igual a b, por descarte usamos
+la ultima opcion en el falso, sin usar otro if
+
+
+fin
+
+
+
+
+10. programa para ingresar dos numeros, si el segundo
+es distinto de 0, calcular la division del primero por
+el segundo y mostrar el resultado, de lo contrario
+damos un advertencia que no se puede dividir por 0. 
+
+inicio
+
+entrada: 
+a, b
+
+cálculo: 
+
+v--- b!=0 ---f  
+d=a/b        no se puede dividir por 0
+           
+                              
+salida:     
+d   
+//preguntamos quién es mayor
+//volvemos a preguntar quién es mayor por eso usamos b
+//porque es el requerimiento (verdadero)
+//los dos valores pueden ser mayores por eso preguntamos
+por > en a y b
+
+//cubre todas las posibilidades valores, >;
+que tenemos: mayor, a, b, igual
+
+fin
+
+
+
+11. un negocio ofrece descuento si vende por un importe
+en al siguiente escala a) si venden menos de 100 l no hay
+descuento, b) si venden entre 101 y 300l, el descuento 
+es del 10%, c) si venden entre 301 y 500l, el descuento 
+es del 15%; d) si la venta es de más de 500l, el descuento
+es del 25%. Debe ingresar importe total de venta y cantidad
+litros vendidos, calcule y emita el importe con el descuento. 
+
+inicio
+
+entrada: 
+i, l
+
+cálculo: 
+
+v--- l>100 && l<=300 ---f  
+i=i*0,90             v--- l>300 && l<=500  ---f
+                     i=i*0,85            v--- l>500 
+                                        i=i*0,75
+salida:        
+i
+
+fin
+ 
+//preguntamos entre escala y reasignamos variable
+sin ocupar otras como importe, importe final, descu,
+ni la opcion sin descuento, etc. 
+
+
+alternativa: 
+//empezar por la escala mayor e ir bajano
+
+inicio
+
+entrada: 
+i, l
+
+cálculo: 
+
+v--- l>500 ---f  
+i=i*0,75    v--- l>300 ---f
+           i=i*0,85    v--- l>100 
+                     i=i*0,90
+salida:        
+i
+
+fin
+
+
+
+12. solicitar el ingreso de las notas del primer parcial
+y del segundo parcial de una alumna de programación, 
+el programa, analizará las notas y emitir la situacion 
+de la alumna, si tiene 8 o más en ambos parciales 
+emitir aprobación directa. si tiene entre 4 y siete 
+en ambos parciales, emitir rinde examen final. 
+si tiene menos de 4 en algunos de los dos parciales 
+emitir debe recuperar. Emitir un solo cartel, el que 
+corresponda. 
+
+inicio
+
+entrada: 
+n1, n2
+
+cálculo: 
+
+v--- n1<4 || n2<4 ---f  
+debe recuperar    v--- n1<8 || n2<8 ---f
+                  final              promoción
+salida:        
+i
+
+fin
+
+
+alternativa: 
+
+inicio
+
+entrada: 
+n1, n2
+
+cálculo: 
+
+v--- n1>=8 && n2>=8 ---f  
+promocion           v--- n1>=4 && n2>=4  ---f
+                    final                recupera
+                                        
+salida:        
+
+
+fin
+
+
+
+13. ingresar la longitud de los tres lados de los triangulos
+y luego informe un cartel a que tipo triangulo pertenece
+equilatero cuando los tres lados sean iguales, isosceles
+cuando dos de los tres lados sean iguales, escaleno 
+cuando todos los lados sean distintos. 
+
+inicio
+
+entrada: 
+a, b, c
+
+cálculo: 
+
+v--- a==b && b==c ---f  // todos sean iguales
+equilatero     v--- a!=b && b!=c && a!=c ---f //todos distintos
+               isosceles                 escaleno
+                                   
+fin
+
+
+
+14. ingresar cuatro numeros y luego analizar e ingresar
+por pantalla si los mismos se encuentran ordenados
+de forma decreciente(mayor a menor). 
+
+
+inicio
+
+entrada: 
+a, b, c, d
+
+cálculo: 
+
+v--- a>b && b>c && c>d---f  //si el primero es el más grande de todos
+ordenados                   si alguna es falsa muestra que 
+                           estan desordenadas. 
+fin
+
+
+
+15. programa que solicite el ingreso de 10 numeros y 
+muestre el mayor de ellos en pantalla. Solo se debe 
+emitir un valor por pantalla. 
+
+
+inicio
+max = 0           //para un max necesitamos un punto de
+                  comparación
+
+entrada: 
+                   
+cálculo:           
+for 
+x=0 | x<10 |x++ //da 10 vueltas
+
+ n              //muestra n en cada vuelta
+  
+                //preguntamos si el numeros es mayor a max
+ 
+ v--- n>max ---f
+                 
+ max=n           //si es mayor reemplazamos el valor
+                  de max por n
+            
+salida:
+max
+
+fin 
+
+
+
+Alternativa: 
+Este programa no funciona para todos los valores, si es
+menor que 0, la descarta como max
+
+Para hacerlo dinamico y que tome todos los valores, 
+necesitamos un punto de partida. 
+
+va a ser el primer elemento ingresado puede ser el max
+min, etc. 
+
+Todo se va a comparar con el primer elemento. 
+Para esto necesitamos saber cuándo es la primera 
+vuelta. 
+
+Tomamos el indice para preguntar por ella. 
+
+En la primera vuelta del ciclo x=0
+
+
+inicio
+
+entrada: 
+                   
+cálculo:           
+for 
+x=0 | x<10 |x++ //da 10 vueltas
+
+ n              //muestra n en cada vuelta
+ v-- x==0 --f
+ max=n   v--  n>max  //preguntamos si el ingreso n corresponde
+         max=n    a la primera vuelta, entonces, el max
+                  es n. 
+                  
+                  si no es la primera vuelta, ya guarda
+                  mos max, entonces, comparamos el nuevo
+                  numero. 
+salida:
+max
+
+fin 
+
+
+
+16. programa que solicite 20 numeros, calcule y emita 
+por pantalla cuantos son positivos (>0), mostrar
+conteno final. 
+
+
+inicio
+con= 0
+
+entrada: 
+                   
+cálculo:           
+for 
+x=0 | x<10 |x++ //da 10 vueltas
+
+ n              //muestra n en cada vuelta
+ v-- n>0 --f
+ con++
+                   
+salida:
+con
+
+fin 
+
+
+
+17. mostrar lo numeros del 1 al 10, no se debe realizar 
+ningun pedido de dato. 
+
+inicio
+
+entrada: 
+                   
+cálculo:           
+for 
+x=1 | x<=10 |x++ 
+
+ x              //mostramos cuanto vale x en cada vuelta   
+
+                   
+salida:
+
+fin 
+
+
+
+18. mostrar los numeros del 10 al 1, no se debe pedir 
+ningun dato. 
+
+
+inicio
+
+entrada: 
+                   
+cálculo:           
+for 
+x=10 | x>0 |x-- // x empieza en 10 >0, entra y lo muestra
+
+ x              //mostramos cuanto vale x en cada vuelta   
+
+                   
+salida:
+
+fin 
+
+
+
+19. programa que solicite un numero y luego calcule y 
+emita un cartel aclaratorio y emita si el mismo es primo
+o no es primo. 
+
+
+num1%num2 = resto
+(resto de dividir un num1 con num2)
+
+par: resto = 0 
+
+par/impar:
+r= n%2 (guardamos el resultado de dividir n%2 en r)
+r==0
+
+multiplo:
+n%5==0
+(resto de dividir n con 5 es igual a 0)
+(puede que un numero/5 no de resto 0)
+
+si no hay resto, es multiplo. 
+
+
+inicio
+con=0
+
+entrada: 
+n               //como solo necesitamos una entrada
+               no la hacemos repetir con el bucle. 
+cálculo:           
+for 
+x=1 | x<=n |x++ // x empieza en 1 y se compara con n
+                   para entrar, o va a ir hasta ese 
+                   numero 
+
+ v-- n%x == 0 --f  //preguntamos si el ingreso es divisible
+ con++             dividimos n por todos los numeros desde
+                   1 (x) hasta el valor de ingreso n
+               
+                  //si un numero es divisible por otro, su
+v-- con == 2 --f  división no deja resto o da resto 0. 
+primo                  
+                  //fuera de for, preguntamos cuando 
+                 va a ser primo: si con == 2
+                   
+salida:
+
+fin 
+
+
+
+20. programa que solicite 10 numeros y luego muestre por
+pantalla el maximo y la posición en la que fue 
+ingresado. 
+
+
+inicio
+
+entrada: 
+                   
+cálculo:           
+for 
+x=0 | x<10 |x++ //da 10 vueltas
+
+ n              //muestra n en cada vuelta
+ v-- x==0 --f
+ max=n   v--  n>max  //preguntamos si el ingreso n corresponde
+ pos=1       max=n    a la primera vuelta, entonces, el max
+             pos=x+1   es n. 
+                  
+                  //si no es la primera vuelta, ya guarda
+                  mos max, entonces, comparamos el nuevo
+                  numero. 
+
+                 //cuando captamos el primer ingreso
+                 tenemos la seguridad de que pos=1 y le
+                 podemos dar el valor nosotros. 
+                 
+                 //para los demas ingresos la posición
+                 es x+1 dado que. 
+                 mostrar posición: 
+
+//vuelta 1 -> x=0 -> primer elemento -> posición = 1
+//vuelta 2 -> x=1 -> segundo elemento -> posición = x+1
+                   
+salida:
+max, pos
+
+fin 
+
+
+
+21. programa que solicite 20 numeros y luego mostrar 
+el menor de ellos y la posición que fue encontrado. 
+
+//ajustamos el código para 20 vueltas y para encontrar
+min solo con un signo en la pregunta para el segundo 
+valor en la segunda vuelta. 
+
+
+inicio
+
+entrada: 
+                   
+cálculo:           
+for 
+x=0 | x<20 |x++ //da 20 vueltas buscando el max/min entre 
+                20 numeros
+
+ n              //muestra n en cada vuelta
+ 
+v-- x==0 --f
+ max=n   v--  n<max  //preguntamos si el ingreso n corresponde
+ pos=1       max=n    a la primera vuelta, entonces, el max
+             pos=x+1   es n. 
+
+                  
+//si no es la primera vuelta, ya guarda
+mos max, entonces, comparamos el nuevo
+numero. Ahora preguntamos si es n<max
+
+//podemos cambiar el max por min, pero logicamente es min: 
+inicia el programa con el for pidiendo n (20 veces),
+preguntamos por el primer numero que entra, lo guarda
+como max, pero en realidad es como un minimo, algo para
+comparar, guardando le primer elemento: unico/max/min es
+lo mismo. 
+
+//cuando no es el primer ingreso, preguntar por el nuevo
+ingreso n < max (si es menor al que teniamos guardado)
+si es verdadero lo reemplaza. si es falso, no lo reemplaza
+
+//cuando captamos el primer ingreso
+tenemos la seguridad de que pos=1 y le
+podemos dar el valor nosotros. 
+                 
+//para los demas ingresos la posición
+es x+1 dado que. 
+mostrar posición: 
+
+//vuelta 1 -> x=0 -> primer elemento -> posición = 1
+//vuelta 2 -> x=1 -> segundo elemento -> posición = x+1
+                   
+salida:
+max, pos
+
+fin 
+
+
+
+22. solicitar 20 edades y luego calcular el promedio 
+de edad de las personas mayores a 18 años. 
+
+
+
+inicio
+con=0
+acu=0
+
+entrada: 
+                   
+cálculo:           
+for 
+x=0 | x<20 |x++ //da 20 vueltas
+
+ e              //muestra input edad en cada vuelta
+ 
+ v-- e>18
+ con++          // tenemos que contar y tambien
+ acu+=e          sumar todas las edades >18
+            
+pro = acum/con  //despues del for cálculamos el prom
+   
+salida:
+prom
+
+fin 
+
+
+
+23. programa que solicite 20 num y luego solicite por 
+pantalla el max de los num pares y el minimo de los impares
+
+//pide entrada
+//resutado de max impar y min impar
+
+//necesitamos 2 valores: max y min
+//discriminamos grupos: 
+tenemos 20 num, en los que hay pares e impares
+nos piden max par y min impar como resultado. 
+
+//preguntamos por la condición que tiene que tener 
+cada grupo:
+//preguntamos por num es par o impar
+//si es par tiene que ser el max de ellos
+//si es impar tiene que ser el min ellos. 
+
+//buscamos max de par y min de impar: 
+tomamos el primer elem y guardarlo
+no podemos usar el indice, porque no sabemos el 
+valor de ingreso =0 (n%2==0), no podemos inicializar 
+pensando en las vueltas. 
+
+//acá es cuando usamos una variable auxiliar para marcar 
+el camino
+
+bandera: 
+booleano 1/0, t/f
+
+y luego preguntar si este valor esta en un estado u otro. 
+
+
+operador resto: 
+
+num1%num2 = resto
+(resto de dividir un num1 con num2)
+
+par: resto = 0 
+
+par/impar:
+r= n%2 (guardamos el resultado de dividir n%2 en r)
+r==0
+
+o
+
+n%2==0
+
+multiplo:
+n%5==0
+(resto de dividir n con 5 es igual a 0)
+(puede que un numero/5 no de resto 0)
+
+si no hay resto, es multiplo. 
+
+
+primo: 
+
+x=1 | x<=n |x++ 
+
+// x empieza en 1 y se compara con n
+para entrar, o va a ir hasta ese 
+numero 
+
+v-- n%x == 0 --f  
+
+//preguntamos si el ingreso es divisible
+con++, dividimos n por todos los numeros desde
+1 (x) hasta el valor de ingreso n
+               
+                 
+v-- con == 2 --f  
+primo                  
+                
+//si un numero es divisible por otro, su
+división no deja resto o da resto 0.
+ 
+//fuera de for, preguntamos cuando 
+va a ser primo: si con == 2
+
+
+
+inicio
+bI=0
+bP=0
+
+entrada: 
+                   
+cálculo:           
+for 
+x=0 | x<20 |x++ //da 20 vueltas
+
+ n                               //muestra input n en cada vuelta
+ 
+             v--  n%==0  --f         //v (par)/f(impar)
+             |             |
+ v-- bP==0 --F             v --  !bI  --f            
+ |           |             |            |
+ maxP=n   v-- n>maxP       minI=n       v-- n<minI-- f
+ bP=1     |                bI=1         minI=n
+          maxP=n
+
+salida:
+maxP, minI
+
+fin 
+
+// creamos bandera de impares y pares
+          preguntamos no por la primera vuelta,
+                               por la bandera/por si tenemos un par
+
+
+// creamos bandera de impares y pares
+preguntamos no por la primera vuelta,
+por la bandera/por si tenemos un par o no tenemos
+
+//si la bandera pares vale 0, quiere decir que no hay par
+por verdadero, decimos que maxP = n y cambiamos el valor
+de la bandera a 1. 
+
+//si es falso(ya hay un par), preguntamos si es mayor 
+al maxP (establecido anteriormente). 
+si es mayor actualizamos
+
+//por el lado de los impares preguntamos si la bandera 
+de los impares preguntamos y le negamos el valor booleano
+
+negar/invertir booleano: 
+!
+
+//si tenemos un falso (0) va a ir hacia el verdadero directamente
+y no hacia el falso. 
+
+//si tenemos un verdadero (1) va a ir hacia el falso. 
+
+
+//guardamos el minimoImpar en n (primer ingreso)
+en una vuelta que no tenemos manera de averiguar. 
+y cambiamos a bandera en verdadero (1)
+
+
+//para el falso vamos a tener la bandera en 1 (por el negado)
+bI=0 -> !bI -> = 1
+volvemos a preguntar n<minI
+reemplazamos minI
+
+
+
+24. programa para ingresar 10 num y luego calcule y emita
+el mayor de los primos de la lista, en caso de no haber 
+ningun numero primo; debera aclararlo con un cartel. 
+
+//necesitamos crear un ciclo dentro de otro. 
+un ciclo para los 10 num y otro para saber si 
+n (cada entreada) es primo
+
+//num primo: 
+necesitabamos un for y dividir n, si contaba dos veces 
+la división era primo, si no, tenía más multiplos. 
+
+
+x=1 | x<=n |x++ 
+
+// x empieza en 1 y se compara con n
+para entrar, o va a ir hasta ese 
+numero 
+
+v-- n%x == 0 --f  
+
+//preguntamos si el ingreso es divisible
+con++, dividimos n por todos los numeros desde
+1 (x) hasta el valor de ingreso n
+               
+                 
+v-- con == 2 --f  
+primo                  
+                
+//si un numero es divisible por otro, su
+división no deja resto o da resto 0.
+ 
+//fuera de for, preguntamos cuando 
+va a ser primo: si con == 2
+
+
+inicio: 
+primo = 0               //bandera
+
+entrada: 
+
+cálculo: 
+for
+x=0 | x<10 | x++
+ 
+ n                      //10 ingresos, 1 en cada vuelta
+ 
+ con=0 
+ 
+
+   for
+   y=1 |y<=n | y++        //buscamos el primo
+ 
+   v-- n%y == 0 --f      //dentro del segundo bucle
+   con++                  averiguamos cuantas veces se divis
+                         
+                        //agregamos un contador para n y div
+ v-- con == 2          fuera y antes de inicio del 2 bucle
+ |                      
+ 
+ v-- !primo -- f          //fuera y al final del 2 bucle
+ |             |           
+ mP=n        v-- n>mP      
+ primo=1     |
+             mP=n
+
+
+			//generamos una bandera al inicio del programa
+			y preguntapor ella al contador.
+salida
+mP
+
+fin
+
+
+//necesitabamos un for y dividir n, si contaba dos veces 
+la división era primo, si no, tenía más multiplos. 
+
+//despues si es primo lo guardamos como max
+//el primer ingreso/entrada es el unico/max/min/todo
+los siguientes se comparan con el numero principal. 
+
+//no sabemos en que vuelta va a aparecer un numero primo. 
+x (indice) no nos sirve para saber el primer numero. 
+
+
+//rs: 
+
+1 bucle todo ej: pedimos los 10 num, y cada uno 
+inicializa en 0
+
+2 bucle divide por la condi, si es verdadero cuenta. 
+
+3. salimos del 2 bucle y llegamos a segunda condicion 
+y preguntamos si es primo, volvemos a preguntar si 
+tenemos primos, si no tenemos, nos guardamos y cambiamos 
+la bandera. 
+
+4. si tenemos primo va a ir para el falso, y pregunta 
+si el nuevo ingreso es mayor
+
+
+
+While: 
+
+//configuración estandar de while: 
+
+//while !=0
+//para input y user sale bucle
+
+
+
+//ejemplo while: 
+programa para ingresar numeros sin limitar el cantidad
+de entradas y cortar la entrada cuando ingrese el 
+numero 0
+
+//entrada
+
+//condicion 
+
+//cont, acum, bandera
+
+
+inicio
+n       //controla ciclo while
+entrada: 
+
+cálculo: 
+while     //mientras sea distinto de 0 repeti entrada n
+ n!=0
+ 
+ entrada:      
+  n
+
+ cálculo: 
+ 
+salida: 
+
+
+
+//ej: cargar edad de todas las personas del curso de 
+programación
+
+
+inicio
+e       //controla ciclo while
+entrada: 
+
+cálculo: 
+while     //mientras sea distinto de 0 repeti entrada e
+ e!=0
+ 
+ entrada:      
+  e       
+
+ cálculo: 
+ 
+salida: 
+e
+
+fin
+
+
+
+//ej: cargar edad de todas las personas y buscar un 
+promedio de todas las personas que sean mayores de 
+25 años
+
+//cont, acum, bandera, segregación
+
+inicio
+e       //controla ciclo while
+acu=0
+con=0
+entrada: 
+
+cálculo: 
+while     //mientras sea distinto de 0 repeti entrada n
+ e!=0
+ 
+  v-- e>25 --f //pregunta si e>25 acumula la entrada y
+                  contá cuantos son    
+  acu+=e
+  con++       
+
+   salida:
+    e        //sino no pasa nada y vuelvo a pedir e
+
+p=acu/con
+
+salida: 
+p
+
+fin
+
+//pedimos edad al inicio
+//mientras sea distinto de 0
+//si es mayor a 25 acumular y contar
+//sino no hago nada y vuelvo a pedir e
+
+//cuando la persona encargada de cargar los datos pone 
+0, se guarda todos los datos en acu y cont 
+
+//el programa calcula promedio 
+
+//el programa muestra promedio
+
+
+
+25. programa para mostrar numeros del 1 al 10, no se debe 
+realizar ningún pedido de datos
+
+//while no tiene una variable propia que controla el ciclo
+como for. Solo tiene una condición para entrar o salir del
+bucle. 
+
+//Podemos imitar al ciclo for: usando una variable iniciali
+zada que vamos a incluir en la condición. 
+
+inicio
+n=1
+
+entrada: 
+
+cálculo: 
+while n<=10
+ 
+ n          //mostrar valor n (distinto de mostrar entrada)
+ 
+ n++        //cambiamos el valor para que salga de bucle
+            en un momento y no se quede infinitamente. 
+
+salida: 
+
+
+fin 
+
+//funcionamiento: va a mostar muchas veces n (var/valor)
+1. n inicializa en 1
+2. pregunta si n<=10 
+3. muestra 1
+4. suma 1 a 1 y queda en 2. 
+5. pregunta por 2 <= 10, entra y repite paso 3 y 4. 
+6. cuando llegue a 10, sale del bucle y continua con las 
+instrucciones de abajo. 
+
+//como empieza en 1, tenemos que ajustar n<=10
+o cambiar n a 0, o cambiar 10 a n<11. 
+
+//es como imitar el ciclo for porque inicializamos una 
+variable para controlar el ciclo con una condición y adentro
+hacemos un incremento. 
+
+
+
+26. programa para mostrar los números del 10 al 1, no se debe
+realizar ningun pedido de datos. 
+
+//en cierta forma nos pide que empezemos con un 10 
+
+inicio
+n=10
+
+entrada: 
+
+cálculo: 
+while n>0   //cuando llegue a 0(n)>0, sale 
+ 
+ n          //mostrar entrada valor n 
+ 
+ n--        //cambiamos el valor para que salga de bucle
+            en un momento y no se quede infinitamente. 
+
+salida: 
+
+
+fin 
+
+
+
+27. programa que solicite la edad de un grupo de personas 
+el programa deberá pedir edades hasta que se ingrese 
+una edad menor a 18 y debera mostrar por pantalla cuantas
+personas mayores que registraron. 
+
+//req y cond: 
+
+//edad: entrada
+
+//cuando/condic: edad>18 -> mostrar cant >18 registradad
+
+//cant registrada -> contador
+
+
+inicio
+con=0 
+
+entrada: 
+edad
+
+cálculo: 
+while edad>=18   //cuando llegue a 0(n)>0, sale 
+                  como la condicion filtra, va a cont 
+ con++            directamente                 
+  
+ edad           //acá el valor para salir del bucle lo
+                 cambia la entrada. 
+   
+                //mostrar entrada edad
+
+salida: 
+con
+
+
+
+
+
+28. programa que solicite dos numeros y luego muestre los 
+numeros entre el menor y el mayor de ellos. 
+
+planteo y pseudocódigo: 
+definimos los requisitos y condiciones. 
+
+//pedimos dos numeros: a, b
+//si a mayor a b: a>b
+ verdadero: el mayor es a y el menor es b
+ falso: si no el mayor es b y el menor es a 
+
+//mostrar numeros entre el menor y el mayor de ellos. 
+como ya tenemos definido los mayores y menores
+creamos la condicion: me<ma -> mostrará menor++ para
+cambiar el valor. 
+
+inicio
+
+entrada
+a, b         //entrada fuera while
+
+cálculo
+ v--  a>b  --f
+ |           |
+ ma=a        ma=b
+ me=b        me=a
+
+ while me<ma
+ me
+ me++
+
+
+salida: 
+
+
+fin
+
+//funcionamiento: 
+
+1. en el if si entramos un 5 en a y un 9 en b, preguntará
+5<9, es falso, el mayor va a ser 9 (b) y el menor 5(a)
+
+2. en el while preguntará si 5<9 (me<ma), como es valido
+entra en el bule while, muestra ese valor y lo suma 5+1=6. 
+
+3. sigue activo el ciclo while, mostrando sumando valores
+menores o entre ma y me. Evalua el 6, lo suma, 7, etc. 
+
+4. repite hasta que el valor sumado sea mayor a me
+
+
+
+
+...........
+
+
+//n1, n1
+
+// n menor y n mayor
+
+//hay que transformar la entrada(?)no
+
+inicio
+ 
+minN1= 0 
+maxN1= 0 
+minN2= 0 
+maxN2= 0 
+
+entrada: 
+n1, n2
+
+cálculo: 
+
+while n1!=0 && n2!=0 
+ 
+ v-- !maxN1 --f  //preguntamos si !maxN1 es 1, da v, if va a 
+ |            |
+ maxN1 = n1   v-- n1 > maxN1 
+ maxN1 = 1    |               
+              maxN1= n1        
+
+ v-- !minN1 --f //preguntamos si !minN1 es 1
+ |            |
+ minN1 = n1   v-- n1 < minN2 
+ minN1 = 1    |               
+              minN1= n1                  
+
+ v-- !maxN2 --f  //preguntamos si !maxN2 es 1, da v, if va a 
+ |            |
+ maxN2 = n2   v-- n2 > maxN2 
+ maxN2 = 1    |               
+              maxN2= n2        
+    
+ v-- !minN2 --f //preguntamos si !minN2 es 1
+ |            |
+ minN2 = n1   v-- n2 < minN2 
+ minN2 = 1    |               
+              minN2= n1        
+        
+
+ v-- n1!=maxN1 && n1!=minN1 || n2!=maxN2 && n2!=maxN2 --f //numeros entre min y max de n1 y n2
+ |            
+ n1   
+ n2                   
+                  
+ 
+
+salida: 
+
+fin
+
+
+
+29. programa que muestre los numeros 1 al 100, de 5 en 5
+
+//empezamos en 0, mientras sea menor a 100, es valido
+//cada vez que checkea la condición le tenemos que sumar
+5. 
+
+
+inicio
+n=0          //empieza en 0
+
+entrada: 
+
+cálculo: 
+while n<100  //0<100 = verdadero, entra 
+ 
+ n           //mostramos 0 
+ 
+ n+=5        //sumamos 5, checkea 5, entra muestra 5, suma5
+
+salida: 
+
+
+fin
+
+
+ 
+30. programa que solicite un numero y un numero 1 y luego 
+calcular y emitir un cartel para saber si el primo o no
+
+//num primo: divisible por 1 y si mismo, dos divisores
+
+//en for hicimos dar vuelta desde 1 hasta entrada n
+contar las divisiones, si habia dos divisiones era primo
+sino, no era primo. 
+
+//en while declaramos una var auxiliar/bandera para
+recorrer el camino desde 1 a la entrada.
+
+
+inicio
+
+divisor = 1  //divisor/num1
+con= 0       //contador div como en for
+      
+entrada:
+n            //entrada fuera del while 
+
+cálculo: 
+while d<=n  //dos valores controlando bucle: entrada y band
+ 
+ v-- n%d == 0
+ |
+ c++
+
+v-- c==2 --f
+|
+es primo   no es primo 
+
+salida: 
+
+
+fin 
+
+
+//preguntamos si n%d == 0, si es verd c++k
+//fuera del while, 
+
+
+
+..........
+
+inicio
+con = 0 
+primo = 0 
+
+entrada: 
+n, 1
+
+cálculo: 
+ 
+for
+x=1 | x<=n |x++ 
+
+
+ v-- n%x == 0 --f  
+ con++
+
+
+v-- con == 2 --f  
+primo                  
+                
+
+v-- !primo --f
+primo
+
+salida: 
+
+
+fin
+
+
+ 
+31. programa que solicite una lista de numeros y corta cuando
+se ingresa un 0 y luego mostrar por pantalla el max de 
+ellos y la posición en la que fue ingresado. 
+
+
+//con while no imitaremos a for: 
+crearmos la estructura principal que nos permite resolver
+el problema, la entrada: 
+
+//n cantidad de num hasta que se ingrese un 0 
+
+entrada: n
+
+while: n!=0
+si n distinto de cero, pedimos un numero, n. 
+
+//esta estructura nos permite cargar un numero hasta que se
+ingrese un 0. que es el objetivo principal 
+
+//de todos estos numeros se nos pide que nos quedemos 
+con el más grande. 
+
+
+//para buscar num maximos/min/unico, tomamos el primer 
+elem de la lista/lote, etc; porque es el unico que tenemos
+
+podiamos usar una bandera, al inicio del programa para 
+preguntar si está vacia, dentro del bucle, etc. 
+
+
+//Pero en while tenemos la primera entrada afuera
+podemos decir que el maximo es n. 
+n
+max=n
+
+//dentro de while preguntamos si n>max
+establecer max a n. 
+
+//la primera vuelta va a dar falso (no cargamos su opcion)
+porque n y max son lo mismo, pero la segunda vuelta
+funciona, ya que tendríamos un numero nuevo. 
+
+//como es distinto de 0, entra y pregunta n>max,
+se establece. 
+
+//mostramos un max, 
+
+//contador como pos en primer valor
+
+
+inicio
+p = 1
+n //entrada
+max=n
+pmax=p
+
+cálculo: 
+while n!=0 
+ 
+ v-- n>max
+ |
+ max=n
+ pmax=p 
+ 
+ p++
+ n
+
+salida: 
+max, pmax
+
+fin 
+
+
+//para mostrar la posición no tenemos x (indice) del for. 
+
+//podemos construir una posición declarando, iniciando
+una variable en 1. 
+
+p = 1
+
+//tambien tenemos que construir la posición maxima
+dado el max inicializado en n al comienzo y le damos
+como valor la variable posición construida. 
+
+pmax=p
+
+//dentro del while, podemos construir que cada vez que 
+pida un numero, aumentamos la variable posición original. 
+
+ p++
+ n
+
+//volviendo al if, actualizamos la posición maxima que
+le habiamos dado el valor de la variable posición 
+
+
+
+
+...........
+
+
+planteo y pseudocódigo: 
+definimos los requisitos, condiciones y operaciones: 
+
+list num: n
+
+condición: n!=0
+
+mostrar max: n 
+
+mostrar pos: n
+
+capturar y comparar con bandera max
+
+//Podemos imitar al ciclo for: usando una variable iniciali
+zada que vamos a incluir en la condición. 
+
+bandera vuelta
+cont
+
+
+inicio
+n=1
+
+entrada: 
+
+cálculo: 
+while n<=10
+ 
+ n          //mostrar valor n (distinto de mostrar entrada)
+ 
+ n++        //cambiamos el valor para que salga de bucle
+            en un momento y no se quede infinitamente. 
+
+
+
+
+inicio
+pos = 0
+max = 0 
+
+entrada: 
+n
+
+cálculo: 
+while n!=0 
+
+v-- !max --f
+|          |
+max=n      v-- n>max 
+max=1      |          
+pos=1      max=n
+           pos=pos+1
+          
+salida: 
+max, pos
+
+fin
+
+
+
+
+.........
+
+
+inicio: 
+max
+entrada: 
+n
+
+cálculo: 
+while n!=0
+ 
+ v-- !max --f  //preguntamos si !max es 1, da v, if va a 
+ |          |
+ max = n   v-- n1 > max 
+ max = 1   |               
+ pos = 1   max= n
+           pos= n+1
+
+salida
+
+fin
+
+
+ 
+32. programa que solicite una lista de numeros que corta 
+cuando se ingresa un 0 y luego mostrar el menor 
+y el segundo menor. 
+
+
+//con while no imitaremos a for: 
+crearmos la estructura principal que nos permite resolver
+el problema, la entrada: 
+
+//n cantidad de num hasta que se ingrese un 0 
+
+entrada: n
+
+while: n!=0
+si n distinto de cero, pedimos un numero, n. 
+
+//para tomar los minimos 1 y 2, tenemos que inicializarlos
+inicializamos el minimo1 afuera porque el tenemos la
+entrada n afuera. 
+
+//adentro del while preguntamos si n, es menor al minimo1
+quiere decir que nuestro n, es el más minimo de todos
+
+//en verdadero desplazamos el primer minimo hacia
+el segundo minimo
+m2=m1
+m1=n
+
+//cuando el nuevo n no es menor, en falso, preguntamos 
+si tenemos un minimo2 inicializado
+
+//si no tenemos un minimo2 inicializado el programa no va 
+a funcionar
+
+inicio
+
+n (entrada) 
+m1=n
+b=0
+
+cálculo: 
+while n!=0 
+
+ v-- n<m1 --f
+ |          |
+ m2=m1      v-- !b --f
+ m1=n       |        | 
+ b=1        m2=n     v-- n<m2
+            b=1      |
+                     m2=n
+ n
+
+salida: 
+m1, m2
+
+fin
+
+
+//para m2 vamos a crear una bandera 0, con un if dentro
+del while la negamos para que vaya a verdadero y no hacia
+el falso. 
+
+//establecemos m2 con n y cambiamos el valor de la bandera
+a 1. 
+
+//Ahora que tenemos m2 podemos preguntar con otro if y 
+comparar m2 contra n
+
+//cambiar el valor a 1 de la bandera para validar la 
+inicialización de m2. 
+
+
+//funcionamiento: 
+1. en la primera vuelta pedimos n e inicializamos
+minimo1 con n. 
+2. creamos una bandera para inicializar el m2
+3. ya en el bucle while n!=0 (corte) 
+4. n<m1 en verdadero m2=m1, m1=n
+5. si n no le gana nos fijamos si tiene un m2, si no tenemos
+lo inicializamos, si tenemos lo comparamos, reemplazamos
+6. al final mostramos m1 y m2. 
+
+
+..........
+
+planteo y pseudocódigo: 
+definimos los requisitos y condiciones. 
+
+//lista de numeros: entrada
+n
+
+//condición: cuando lista numeros == 0, corta
+
+while n!==0
+
+//mostrar menor y segundo menor: 
+tenemos usar/operarlista numeros, menor y segundo menor de 
+esa lista: 
+
+//bandera usada con while
+n o max/min
+
+//bandera preguntaba, negaba su valor para
+establecer uno si estaba vacio, etc. 
+
+
+if 
+
+n<max
+m1 = n 
+
+if 
+
+n<max
+m2 = n
+
+
+inicio
+
+m1= 0 
+m2= 0 
+entrada: 
+n
+
+cálculo: 
+
+while n!=0     //mientras n sea distinto 0 repetir código
+ 
+ v --!m1-- f       //repetimos esta pregunta
+ |         |
+ m1=n      v-- n<m1 
+ m1=1      |
+           m1=n     
+ 
+ 
+ v-- !m2 --f
+ |         |
+ m2=n      v-- n<m2
+ m2=1      |
+           m2=n     
+
+
+salida: 
+
+
+fin 
+
+
+
+
+
+----------
+programa que solicite dos numeros y luego muestre los 
+numeros entre el menor y el mayor de ellos
+
+planteo y pseudocódigo: 
+definimos los requisitos y condiciones. 
+
+//pedimos dos numeros: a, b
+//si a mayor a b: a>b
+ verdadero: el mayor es a y el menor es b
+ falso: si no el mayor es b y el menor es a 
+
+//mostrar numeros entre el menor y el mayor de ellos. 
+como ya tenemos definido los mayores y menores
+creamos la condicion: me<ma -> mostrará menor++ para
+cambiar el valor. 
+
+
+inicio
+
+entrada
+a, b         //entrada fuera while
+
+cálculo
+ v--  a>b  --f
+ |           |
+ ma=a        ma=b
+ me=b        me=a
+
+ while me<ma
+ me
+ me++
+
+
+salida: 
+
+
+fin
+
+
+
+.........
+
+
+//segregación
+
+//n
+//menor1 de n --> como es un menor de n: n-1
+
+tengo que transformar n en condicion para guardar(?)
+
+si n<n
+
+//menor2 de n --> 
+
+inicio
+men1 = 0 
+men2 = 0 
+
+entrada: 
+n
+
+cálculo: 
+while n!=0
+
+ v-- !men1 --f  //preguntamos si !max es 1, da v, if va a 
+ |           |
+ mex1 = n    v-- n1 < men1
+ men1 = 1    |               
+             men1= n
+           
+ v-- !men2 --f  //preguntamos si !max es 1, da v, if va a 
+ |           |
+ mex2 = n    v-- n1 < men2
+ men2 = 1    |               
+             men2= n
+           
+ 
+salida: 
+men1, men2
+
+fin
+
+
+
+33. realizar el ejercicio anterior pero además tenemos que 
+devolver la posición en la que fue ingresado cada uno 
+de los minimos 
+
+//para mostrar la posición, creamos una variable que a 
+inicializamos en 1.
+p=1 
+
+//guardamos la variable inicializada como posición 1 del 
+elemento n, primera entrada 
+p1=p
+
+//Con la posición tambien tenemos que desplazarlas
+la posición 1 va a ser la posición 2: 
+p2=p1
+
+la posición 2 va a ser p.: 
+p2=p
+
+
+//además vamos a incrementar la posición a medida que 
+pide n
+
+
+//p2 se inicializa en maximo 2 cuando no tengamos
+p2=p
+
+//cuando reemplazen a m2 tambien va a mostrar su posición
+
+//en cada vuelta va a actualizar la posición
+
+//cambiar el valor a 1 de la bandera para validar la 
+inicialización de m2. 
+
+
+
+inicio
+p=1 
+n (entrada) 
+m1=n
+b=0
+p1=p
+
+cálculo: 
+while n!=0 
+
+ v-- n<m1 --f
+ |          |
+ m2=m1      v-- !b --f
+ m1=n       |        | 
+ p2=p1      m2=n     v-- n<m2 
+ p1=p       b=1      |        
+ b=1        p2=p     m2=n       
+ p++                 p2=p
+ n
+
+salida: 
+m1, m2, p1, p2
+
+fin
+
+
+
+34. programa que solicite una lista de numeros que corta 
+cuando se ingresa un 0 y luego emitir por pantalla
+el maximo de los numeros negativos y el minimo de los 
+numeros positivos. 
+
+//requisitos y resutados: 
+
+//positivos -> n 
+un positivo es n>0 --> esto que nos piden es el cond 
+
+//negativos -> n
+un negativo es n<0 
+
+
+//maximo de los negativos -> maxN=0 --> esto es lo que 
+verdaderamente tomamos/mostramos
+
+
+//minimos de los positivos -> minP=0 
+
+
+//recta numerica:
+
+<--negativos   0   positivos -->
+
+un numero es más grande mientras más a la derecha este
+y es más chico mientras más a la izq este
+
+//segregamos negativos
+maximo de los negativos: 
+va a ser el que más cerca de 0 este. 
+
+
+//segregamos positivos: 
+minimo de los positovs
+va a ser el que más cerca de 0 este, tambien. 
+
+
+//estructura que nos permite ingresar todos los numeros: 
+entrada n al comienzo, en while n!=0 pedimos n al final
+
+
+//segregar con if: 
+positivos: n>0
+acá buscamos su minimo. 
+
+
+negativos: n<0
+acá buscamos su maximo. 
+
+
+//no podemos tomar el primer numero con entrada n al inicio
+porque no sabemos si va a ser positivo o negativo, ni poner
+su bandera, posicion, contador, etc. 
+
+
+//usamos la bandera de positivos y negativos
+bp=0
+bn=0
+
+
+inicio
+bp=0
+bn=0
+
+entrada
+n
+
+cálculo: 
+while n!=0
+  
+        v--     n>0     --f
+        |                 |
+ v--  bp==0  --f    v-- bn==0 --f
+ |             |    |           |
+ min=n   v-- n<min  max=n   v-- n>max
+ bp=1    |          bn=1    |
+         min=n              max=n
+ n
+
+salida: 
+max, min
+
+fin
+
+
+
+
+
+inicio
+
+
+entrada: 
+n
+
+cálculo: 
+while n!=0
+
+salida: 
+
+
+fin
+
+
+35. programa para ingresar una lista de numeros que corta
+cuando se ingresa un 0 y luego mostrar la cantidad 
+de numeros primos, la cantidad de numeros pares y la
+cantidad de numeros positivos y la cantidad de negativos
+
+//necesitamos cuatro contadores: 
+pos, neg, pares, primos
+
+//si n>0 cuenta positivos
+//si n<0 cuenta negativos o hacerlo por el falso
+//si n%2==0 pares
+//buscar si n tiene mas de dos divisores. 
+
+
+inicio
+
+cpos= 0 
+cneg= 0 
+cpar= 0 
+cpri= 0 
+
+entrada: 
+n
+
+cálculo: 
+while n!=0 
+ 
+ v-- n>0 --f
+ |         |
+ cpos++    cneg++
+
+ v-- n%2==0 
+ |           
+ cpar++      
+
+     con=0 
+     j=1
+ 
+  while j<=n     //dividimos por j
+  
+  v-- n%2==0 --f
+  |            |
+  con++        j++
+
+ v-- con==2
+ |
+ cpri++
+ 
+
+ n
+
+salida: 
+cpos, cneg, cpar, cpri
+
+fin 
+
+
+
+
+
+.............
+
+// n 
+
+// while n!=0
+
+// n primos, n pares, n positivos, n negativos: 
+contador
+
+prim++
+pares++
+pos++
+neg++
+
+//tomar=/=mostrar los neg, primos, pares, pos y neg
+
+bandera 
+
+condicion: si es par muestro, si es primo muestro nprimo
+npar
+
+
+
+segregar grupos:
+preguntamos por la condición que tiene que tener 
+cada grupo.
+
+ej: tenemos 20 num, en los que hay pares e impares y
+nos piden max par y min impar como resultado.
+
+preguntamos por num es par o impar
+
+despues tenemos que establecer sus características:
+si es par tiene que ser el max de ellos.
+si es impar tiene que ser el min ellos.
+
+
+//puede haber una condicion para transformar la entrada
+y tomar o mostrar valores. 
+
+
+
+
+
+
+5. corte de control
+
+
+
+Ej: factura
+numero, tipo y monto de factura. 
+
+//numero, tipo y monto como datos/ingreso
+
+//el lote general corta (bucle externo) cuando el numero
+de facturas sea negativo
+
+//en el bucle externo, mientras el numero de facturas
+sea distinto de 0
+
+//cuando el usuario no quiera cargar más facturas o no tenga
+más que cargar, va a introducir nf = 0 y termina. 
+
+
+Estructura básica: 
+
+1. bucle externo while corte/fin programa en numero de factura
+tiene 1era entradas. 
+
+2. en bucle interno while tiene 2 entradas, nf, tf y m
+
+
+inicio
+nf, tf, m     //1 entrada
+
+while nf!=0
+ 
+
+
+
+ while
+
+
+
+
+
+    nf, tf, m  //2 entrada
+
+
+
+
+Claves en corte de control: 
+
+1. bucle interno con su condición 
+2. entrada/operaciones externas/1entrada/1operaciones
+para bucle externo. 
+
+
+inicio
+nf, tf, m     //1era entrada para lote
+
+while nf!=0   //valida la 1 entrada
+ 
+
+
+            //clave 2: entradas/op para bucle interno
+
+ while     //clave 1: valida entrada para bucle interno
+
+
+
+
+
+    nf, tf, m  //2da entrada para repetir sublotes
+
+
+//Hasta ahora tenemos registros (nf, tf, m), tienen
+que pasar la condición del bucle 1 (nf!=0). 
+en el segundo bucle volvemos a pedir los registros. 
+
+
+
+
+Estructura avanzada: 
+
+bucle interno 
+
+
+//como digimos que se agrupa por tipos de factura
+
+1. Vamos a agregar una asignación fuera del bucle interno. 
+
+El tipo de factura actual es el tipo de factura. 
+
+tfACT = tf
+
+
+2. en la condición el bucle interno preguntamos si 
+el tipo de factura es igual al tipo de factura actual
+
+tf == tfACT
+
+Con esto entra al bucle para procesar las instrucciones. 
+
+
+
+inicio
+nf, tf, m     //1era entrada de registros
+
+while nf!=0
+ 
+
+
+  tfACT=tf         //clave2: entradas/op para bucle interno
+   
+ while tf==tfACT  //clave1: valida entrada para bucle interno
+
+
+
+
+  nf, tf, m  //2da entrada de registros al final de procesar
+               instrucciones
+
+
+
+//Hasta ahora tenemos que cuando llega al segundo pedido
+de registro, si cargamos nf, m nueva; pero si cargamos 
+el mismo tipo de factura, va a validarse con la condición 
+del bucle inteno. 
+
+ej: 
+
+tfACT = B asignamos
+
+B == B entra al segundo bucle, procesa las instrucciones y 
+al final pide otro registro (nf, tf, m). 
+
+Cargamos una factura nueva pero el tipo es el mismo, entonces, 
+volvemos a cargar el misto tipo de factura. 
+
+Si vuelve a ser el mismo tipo entra y sigue procesando. 
+Así sucesivamente, hasta que no sea el mismo tipo. 
+
+Sale del bucle interno, vuelve al final, del bucle externo, 
+para preguntar en su condición: numero de factura es 
+distinto de 0; nf!=0, si es verdaero, sigue procesando. 
+
+Entra y actualiza la factura actual. 
+Pisa el valor B y le pone C 
+
+tfACT = C asignamos
+
+C == C entra al segundo bucle, procesa las instrucciones y 
+al final pide otro registro (nf, tf, m). 
+
+
+//claves nf(controlador externo), tf(controlador interno)
+
+Claves a saber/encontrar: 
+
+1. saber porqué parametro se está agrupando
+tipos de factura -a,b,c-
+
+para cargar numero factura, tipo factura, monto
+-nf, tf, m-
+
+1. mientras el nf!=0, seguimos cargando facturas: 
+lote general para cargar todas (tipos a,b,c)
+
+2. mientras tf==tfACT (la factura y tipo de factura) sea 
+el mismo, seguimos procesando en este bucle o sublote
+que vuelve a pedir nf, tf, m. 
+sublote para cargar del mismo tipo, que es el valor 
+que guardamos afuera del segundo bucle (tfACT=tf)
+
+3. cuando terminamos de cargar el mismo tipo, sale y vuelve
+a chequear 1 condicional (nf!=0) para seguir cargando 
+tipos de facturas, si lo cambiamos, se actualiza 
+TfACT=tf
+
+
+//notas, aclaraciones, cuestiones: 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

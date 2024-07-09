@@ -5215,6 +5215,662 @@ Diagrama de flujo:
 	es primo, con lo contrario. 
 
 
+|| Ciclos Combinados: Lotes y Sublotes
 
+	Ejercicios combinados de ciclo for con lotes, sublotes
+	o grupos y subgrupos. 
+
+	No permite hacer combinaciones de una manera distinta. 
+
+	Se trata de combinar dos o más ciclos, exactos o inexactos.
+
+
+	Cuando hacemos un ejercicio como: 
+
+	programa para ingresar una lista de numeros que corta
+	cuando se ingresa un 0 y luego mostrar la cantidad 
+	de numeros primos, la cantidad de numeros pares y la
+	cantidad de numeros positivos y la cantidad de negativos
+
+	//necesitamos cuatro contadores: 
+	pos, neg, pares, primos
+
+	//si n>0 cuenta positivos
+	//si n<0 cuenta negativos o hacerlo por el falso
+	//si n%2==0 pares
+	//buscar si n tiene mas de dos divisores. 
+
+
+	inicio
+
+	cpos= 0 
+	cneg= 0 
+	cpar= 0 
+	cpri= 0 
+
+	entrada: 
+	n
+
+	cálculo: 
+	while n!=0 
+	 
+	 v-- n>0 --f
+	 |         |
+	 cpos++    cneg++
+
+	 v-- n%2==0 
+	 |           
+	 cpar++      
+
+	     con=0 
+	     j=1
+	 
+	  while j<=n     //dividimos por j
+	  
+	  v-- n%2==0 --f
+	  |            |
+	  con++        j++
+
+	 v-- con==2
+	 |
+	 cpri++
+	 
+
+	 n
+
+	salida: 
+	cpos, cneg, cpar, cpri
+
+	fin 
+
+
+
+	Cuando combinamos dos o más ciclos, exactos o inexactos
+	estamos tratando con los conceptos de lote y sublote, 
+	(aunque depende los problemas). 
+
+
+	Cuando analizamos las consignas de los problemas, 
+	como puede ser ingresar cierta cantidad de numeros/obj
+	 o hasta que...
+
+	Vamos a crear una estructura para cargar o ingresar lo que 
+	se denomina, lote de numeros o lote de registro. 
+
+	Aunque un registro es una entidad compuesta que tiene 
+	caracteristicas; nombre, edad, profesión, etc. 
+
+	Lote de registros o números: 
+	Puede ser que necesitemos cargar 50 personas, nos está 
+	pidiendo un lote de registro o numeros o un lote de 50. 
+
+
+	Con ese lote tenemos que operarlos con las cosas o condiciones
+	que requiere el programa. 
+	ej: promedio de todos los ingresos/numeros, menor, mayor, etc. 
+
+	for es más apropiado cuando tenemos la cifra exacta
+	de ese lote. 
+
+	while es más apropiado cuando no tenemos la cifra del lote. 
+
+	En los dos hay un lote de registros. 
+
+
+	Existe el concepto cuando haya o creamos una subdivisión 
+	dentro de ese lote. 
+
+	Ej: hacer un programa para ingresar 10 números. 
+
+	podemos hacerlo con un for con 10 vueltas. 
+
+
+	inicio
+
+	entrada: 
+	n
+
+	cálculo:
+	for
+	x=0 | x<10 | x++   //empieza en 0, 0<10: v, entra y pide n
+
+	 n 
+
+	salida: 
+
+
+	//Nos permite ingresar un lote de 10 numeros. 
+
+
+
+	Ej: programa para ingresar 5 sublotes o grupos de números. 
+
+	[//multiplicamos x5 la entrada o el for(? con while(?
+	una atras o despues o  afuera de otro. 
+	si lo pongo adentro del primer lote estaría dividiendo el 1
+	(?]
+
+
+	Pero no sería lo más optimo de programar
+	[//entonces usamos condicionales para subdividir las 
+	entradas dentro de un ciclo solo(?]
+
+
+	Lo mejor es, como ya tenemos una estructura con un ciclo que
+	nos permite repetir entradas, podemos crear un for/while
+	padre/hijo con otra variable controladora para controlar
+	cuantas veces va a aparecer el bucle hijo que tiene solo
+	un lote de números para cargar. 
+
+	inicio
+
+	entrada: 
+	n
+
+	cálculo: 
+
+	for
+	y=0 | y<5 | y++    
+
+	 for
+	 x=0 | x<10 | x++
+	  
+	   n
+
+	salida: 
+
+
+	fin 
+
+	//inicia el programa con un for, entra dado que y=0 <5 
+	pasa al siguiente for, entra 0<10 y pide n. 
+
+	//cuando termina de pedir los 10 numeros (1 lote) o vuelta
+	y=0, el primer lote termina, sale y chequea y=1 <10 
+
+
+	Tenemos un ciclo interno que pide 10 numeros (1 lote) y un 
+	ciclo interno que dice cuantas veces tiene que ejecutarse
+	el lote. Forma 5 subgrupos de 10 numeros. 
+
+	Tenemos un programa que está haciendo uso de un ciclo 
+	combinado y también, usa grupos y subgrupos o lote y 
+	sublote. 
+
+	Lote: es el lote externo o complete
+	sublote: es el lote interno que se ejecuta varias veces
+	creando un subgrupo y cuando termina empieza a crear otro, 
+	así sucesivamente. 
+
+
+	Ej: creando un lote y sublote usando for y while
+
+
+	inicio
+
+	entrada: 
+	n          //entrada principal/controlador while, externa
+
+	cálculo: 
+
+	while n!=0
+	 
+	  
+	  n       //mientras n sea distinto de 0, pide n, interna
+	 
+	salida: 
+
+
+	fin 
+
+	//así solo, es un programa que permite cargar un lote de 
+	numeros hasta que n sea distinto de 0. 
+
+
+	Si queremos un programa para cargar 5 sublotes de numeros
+	separados entre si por un 0. 
+
+	//estructuras principales: 
+	1 lote, 5 sublotes
+
+	cargar numero
+
+	//estructuras secundarias: 
+	numeros separados entre si por un 0 
+
+
+	inicio
+
+	for
+	y=0 | y<5 | y++  
+	 
+	 entrada: 
+	 n
+
+	 cálculo: 
+
+	 while n!=0
+	 
+	  
+	   n
+
+	salida: 
+
+
+	fin 
+
+
+	//Con una estructura while tenemos un lote que carga
+	numeros hasta que n, entrada sea 0. 
+
+	//Con una estructura for tenemos 5 sublotes con x cantidad
+	de cargas dado el while. 
+
+	//la clave está en que nos pediar separar los lotes por 
+	un 0 y ese rol lo cumple el while n!=0 
+
+
+	Entonces tenemos 5 sublotes dividios cada uno cuando 
+	se ingresa un 0. 
+
+	Entonces tenemos un lote dado por todos los numeros (for)
+	y 5 sublotes dados por un while n!=0. 
+
+	Tambien podemos decir que tenemos un lote exacto y 5 sublotes
+	inexactos. 
+
+
+
+	Ej: cargar todos los numeros positivos que está dividido 
+	internamente en sublotes que corta con 0 
+
+	//estructuras principales: 
+	1 lote positivos, sublotes cuando 0
+
+
+	//estructuras secundarias: 
+	cargar numeros positivos
+	entrada: n
+	positivos: solo permitir n>0
+
+
+	//tenemos un programa que no nos dice la cantidad de
+	sublotes (subL=x).
+
+	//el corte general es un numero negativo
+
+	//internamente, debemos subdividir el lote en sublotes
+	que se separan por 0. 
+
+
+	inicio
+	 
+	n=1         //parche para pasar el primer while
+	              controla y ejecuta primer                
+
+	while n>=0 
+	  
+	 n         //entrada: pedimos un numero para segundo while
+	           //estructura origina while: 
+	            entrada, while entrada, entrada 
+	 
+	 while n>0   //solo toma los positivos
+	  
+	            
+	   n
+	              
+	salida: 
+
+
+	fin 
+
+	//si ingresamos 45 al inicio, pasa el 1 while y el segundo
+
+	//si ingresamos un 0 al inicio pasa el 1 while y pasa
+	el segundo while cortando el lote, cambiando, no ingresamos 
+	un numero negativo para cortar el programa. 
+
+	//pero para el segundo while 0!=0 es verdad, después vuelve
+	al while 1 0>=0, verdad y queda un bucle. 
+
+
+	Entonces, tenemos un lote con x cantidad de positivos
+	y x cantidad de sublotes y x cantidad de numeros
+
+	el programa corta cuando el usuario ingrese negativo
+
+
+
+	[mi altern ]
+
+	inicio
+
+	entrada: 
+	n=1         //parche para pasar el primer while
+
+	while n>=0 
+	 
+	 entrada: 
+	 n         //pedimos un numero para segundo while
+
+	 cálculo: 
+
+	 while n!=0
+	  
+	   v-- n>0  //solo vamos a mostrar la entrada cuando n>0
+	   |
+	   n        //volvemos a pedir 
+	             
+	salida: 
+
+
+	fin 
+
+
+
+	Ejercicio: 
+	dada una lista de numeros computesta por 10 subgrupos y 
+	cada subgrupo separados por un 0, se piede determinar 
+	e informar...A), B), etc. 
+
+	//planteo programa
+	Además del lote y sublote, el programa pide consignas
+	concretas. 
+
+	1. armar arquitectura con ciclos combinados que nos 
+	permita cargar la arquitectura de lote y sublote 
+
+	2. despues armamos las consignas, que nos pide, requisitos
+	condiciones para que suceda tal o cual cosa. 
+
+	for
+	x=0 | x<10 | x++
+	 
+	 n
+	 
+	 while n!=0 
+
+	  
+
+	   n
+
+
+	para el punto a: 
+	para cada uno de los subgrupos, el maximo de los numeros 
+	pares y el max de los impares. 
+
+	//esto va a ir en el bucle interno. 
+
+	//segregar pares n%2==0 
+
+	//encontrar par e impar
+
+	//mostrar par e impar
+
+	bp=0
+	bi=0
+
+	while n!=0
+
+	               v-- n%2 == 0 --f
+	               |              |
+	 v-- bp == 0 --f              v-- bi==0 --f
+	 |             |              |           |
+	 maxP=n        v-- n>m        maxI=n      v-- n>maxI
+	 bp=1          |              bp=1      |
+	               maxP=n                   maxI=n
+	                          
+	            
+	 n
+
+	salida: 
+	maxP, maxI
+
+
+
+	punto b: para cada uno de los subgrupos, el porcentaje
+	de numeros negativos y el porcentaje de numeros positivos
+
+	debemos contar los pos y neg
+	cpos = 0
+	cneg = 0 
+	pos: n>0
+	neg: n<0
+
+	r3: 
+	total: n -> 100%
+	pos x -- x*100/pos+neg
+	neg y -- x*100/pos+neg
+	k
+	  cpos=0 
+	  cneg=0
+
+
+
+	 while n!=0
+	 
+	   v-- n>0 --f
+	   |         |
+	   cpos++    cneg++
+
+
+	salida
+	porP=cpos*100/(cneg+cpos)
+	porN=cneg*100/(cneg+cpos)
+
+
+
+	punto c: cuando numeros habia en total entre los 10 subgrupos 
+	sin contar los 0 que separan a cada subgrupo. 
+
+	//en la estructura principal/externa/controladora sub bucle
+	//aumentamos el contador cuando entra al bucle while. 
+
+	inicio
+	con=0 
+
+	for
+
+	 while n!=0
+	 con++
+ 
+
+
+|| Corte de Control
+
+
+	En los sublotes podiamos cambiar o cortar el sublote con 
+	una condición, acá lo hacemos controlado. 
+
+	Además se trabaja con registros complejos o compuestos
+	especificos y tienen que estar agrupados según sus 
+	características. 
+
+	También tenemos que segregar los registros. 
+
+	Tenemos que saber como se van a procesar esos datos 
+	para obtener información. 
+
+	Nosotros debemos poder tomar cada sublote y cargar los 
+	datos. 
+
+	El programa va a ir cortando ciclos automaticamente. 
+
+	Vamos a trabajar con lotes agrupados y con lotes y sublotes
+
+
+	Estructura básica de un corte de control: 
+
+	Es un ciclo while dentro de otro while. 
+
+
+
+	Ej: factura
+	numero, tipo y monto de factura. 
+
+	//numero, tipo y monto como datos/ingreso
+
+	//el lote general corta (bucle externo) cuando el numero
+	de facturas sea negativo
+
+	//en el bucle externo, mientras el numero de facturas
+	sea distinto de 0
+
+	//cuando el usuario no quiera cargar más facturas o no tenga
+	más que cargar, va a introducir nf = 0 y termina. 
+
+
+	Estructura básica: 
+	bucle externo while corte/fin programa en numero de factura
+	tiene 1era entradas. 
+
+	en bucle interno while tiene 2 entradas, nf, tf y m
+
+	inicio
+	nf, tf, m     //1 entrada
+
+	while nf!=0
+	 
+
+
+
+	 while
+
+
+
+
+	  nf, tf, m  //2 entrada
+
+
+
+	Claves en corte de control: 
+
+	1. bucle interno con su condición 
+	2. entrada/operaciones externas/1entrada/1operaciones
+	para bucle externo. 
+
+
+	inicio
+	nf, tf, m     //1era entrada
+
+	while nf!=0
+	 
+
+
+	               //clave2: entradas/op para bucle interno
+	   
+	 while         //clave1: valida entrada para bucle interno
+
+
+
+
+	  nf, tf, m  //2da entrada
+
+
+	//Hasta ahora tenemos registros (nf, tf, m), tienen
+	que pasar la condición del bucle 1 (nf!=0). 
+	en el segundo bucle volvemos a pedir los registros. 
+
+
+
+	Estructura avanzada: 
+
+	bucle interno:  
+
+
+	//como digimos que se agrupa por tipos de factura
+
+	1. Vamos a agregar una asignación fuera del bucle interno. 
+
+	El tipo de factura actual es el tipo de factura. 
+
+	tfACT = tf
+
+
+	2. en la condición el bucle interno preguntamos si 
+	el tipo de factura es igual al tipo de factura actual
+
+	tf == tfACT
+
+	Con esto entra al bucle para procesar las instrucciones. 
+
+
+
+	inicio
+	nf, tf, m     //1era entrada de registros
+
+	while nf!=0
+	 
+
+
+	  tfACT=tf         //clave2: entradas/op para bucle interno
+	   
+	 while tf==tfACT  //clave1: valida entrada para bucle interno
+
+
+
+
+	  nf, tf, m  //2da entrada de registros, al final de procesar
+	               instrucciones
+
+
+
+	//Hasta ahora tenemos que cuando llega al segundo pedido
+	de registro, si cargamos nf, m nueva; pero si cargamos 
+	el mismo tipo de factura, va a validarse con la condición 
+	del bucle inteno. 
+
+	ej: 
+
+	tfACT = B asignamos
+
+	B == B entra al segundo bucle, procesa las instrucciones y 
+	al final pide otro registro (nf, tf, m). 
+
+	Cargamos una factura nueva pero el tipo es el mismo, entonces, 
+	volvemos a cargar el misto tipo de factura. 
+
+	Si vuelve a ser el mismo tipo entra y sigue procesando. 
+	Así sucesivamente, hasta que no sea el mismo tipo. 
+
+	Sale del bucle interno, vuelve al final, del bucle externo, 
+	para preguntar en su condición: numero de factura es 
+	distinto de 0; nf!=0, si es verdaero, sigue procesando. 
+
+	Entra y actualiza la factura actual. 
+	Pisa el valor B y le pone C 
+
+	tfACT = C asignamos
+
+	C == C entra al segundo bucle, procesa las instrucciones y 
+	al final pide otro registro (nf, tf, m). 
+
+
+	//claves nf(controlador externo), tf(controlador interno)
+
+	Claves a saber/encontrar: 
+
+	1. saber porqué parametro se está agrupando
+	tipos de factura -a,b,c-
+
+	para cargar numero factura, tipo factura, monto
+	-nf, tf, m-
+
+	1. mientras el nf!=0, seguimos cargando facturas: 
+	lote general para cargar todas (tipos a,b,c)
+
+	2. mientras tf==tfACT (la factura y tipo de factura) sea 
+	el mismo, seguimos procesando en este bucle o sublote
+	que vuelve a pedir nf, tf, m. 
+	sublote para cargar del mismo tipo, que es el valor 
+	que guardamos afuera del segundo bucle (tfACT=tf)
+
+	3. cuando terminamos de cargar el mismo tipo, sale y vuelve
+	a chequear 1 condicional (nf!=0) para seguir cargando 
+	tipos de facturas, si lo cambiamos, se actualiza 
+	TfACT=tf
+
+
+	//notas, aclaraciones, cuestiones: 
 
 
