@@ -608,7 +608,7 @@ r3:
 total: n -> 100%
 pos x -- x*100/pos+neg
 neg y -- x*100/pos+neg
-k
+
   cpos=0 
   cneg=0
 
@@ -643,6 +643,657 @@ for
 
 
 
+|| Ejercicios Corte de Control y ciclos
+
+Los de corte de control tienen registros que piden agruparlos. 
+los de ciclo son los que piden repetir ciertas instrucciones. 
+
+
+ejercicio: 
+se dispone de una lista de 10 grupos de numeros enteros
+separados entre ellos por cero. 
+se pide determinar e informar: a), b), c). 
+
+
+enteros: 
+positivos y negativos: n>0, v pos, f neg
+recta numerica: a>b y b>a
+hacia la der los más grandes y hacia a izq los más pequeños
+
+
+Tipo ejercicio: 
+lote y sublote pero no hay corte de control. 
+
+tipo de bucle: hay definido el numero de sublotes 
+por lo que usamos un for en 10 vueltas. 
+
+Estructura básica: 
+permite cargar datos
+
+n 
+
+ while n!=0
+  
+ 
+  n 
+
+
+
+Estructura avanzada: 
+operaciones: tenemos que repetir la estructura para 
+cargar los datos 10 veces. 
+
+inicio: 
+
+for 
+x=0 | x>10 | x++
+ 
+ n 
+
+ while n!=0
+  
+ 
+  n         
+
+
+fin
+
+
+
+
+|| funciones 
+
+ programa principal modular-reutilizable
+
+Podemos hacer al programa principal modular usando 
+una función para resolver operaciones o problemas. 
+
+Escribiendo una sola vez la función. 
+
+Primero definimos una función: 
+tiene tres partes: 
+
+1. tipo de función  (tipo de datos/valores para la func)
+basicos: int, float, bool, char)
+
+Int: podemos guardar numeros enteros: positivos y negativos. 
+Float: numeros reales: decimales positivos y negativos.
+bool: guardar v o f. 
+char: guardar caracter [string es un objeto]
+void: especial para funciones que no devuelven valor
+
+Además de guardar el tipo de dato, también es el que va 
+a retornar y vamos a recibir. 
+
+entonces, una función tiene que tener un tipo. 
+
+
+2. Tambien tiene que tener un nombre significativo que 
+exprese o represente a su contenido/valor guardado. 
+tambien tiene que seguir las reglas de nomenclatura 
+como camelCase, no espacio, no empezar con número, 
+no palabra reservada, etc. 
+
+
+3. Paramétros: datos que la función necesita para trabajar
+Los parametros tambien deben tener y ser del tipo de dato
+que guarda o trabaja la función. 
+
+el orden importa, se tiene que respetar. 
+
+
+4. Dentro de la función tenemos que poner las instrucciones
+u operaciones que la función va a realizar 
+
+
+5. Al final valor a devolver el resultado: 
+return
+
+
+
+
+
+
+
+
+
+Ejercicio: 
+hacer una función de tipo void -porque no va a devolver nada-
+llamada positivo negativo cero que reciba un numero por 
+valor y una variable por referencia. Que analice el numero
+y escriba la variable referida con 1 si el numero es 
+positivo, -1 si es numero es negativo y cero si el numero 
+es 0. 
+hacer un programa main que permite ingresar 100 num y 
+emitir por pantalla cuantos son positivos y cuantos son 
+negativos y cuantos son cero. 
+
+func: 
+void posNegCero
+int n | int j
+
+ v-- n==0 --f
+ |         |
+ j=0       v-- n>0 --f
+           |         |
+           j=1       j=-1
+
+
+
+//la funcion por referencia no tiene return
+//no podemos asignarla a una var en main dado 
+esta falta de  return
+
+
+void main: 
+pos=0
+neg=0
+cero=0
+int ban
+
+for
+x=0 | x<100 | x++
+
+ a
+ 
+ posNegCero
+  a | ban 
+ 
+         ban
+  0      -1       1
+  |       |       |
+ cero++  neg++   pos++
+  
+salida
+pos, neg, cero
+
+
+fin 
+
+
+
+
+
+Ejercicio: 
+programa que permita ingresar una lista de numeros que 
+corta cuando se ingresa un cero. a partir de dichos datos
+informar mayor de num pares, cantidad de num impares, 
+menor de num primo
+hacer uso de las funciones previamente desarrolladas
+
+//func par, primo
+
+
+void main: 
+bmaxpar=0
+imp=0
+bmin=0 
+
+n
+
+while n!=0
+
+  bp=par
+   n|
+  
+  v-- bp --f        //preguntamos si es par, si es v 
+  |        |         preguntamos por bmaxpar vacia
+  |        imp++
+  | 
+  v-- !bmaxpar --f
+  |              |
+  maxp=n         v-- n>maxp 
+  bmaxpar=1      |
+                 maxp=n
+ 
+  pri=primo
+   n |
+  
+  v-- prim 
+  |
+  v-- !bmin --f
+  |           |
+  minp=n      v-- n<minp
+  bmin=1      |
+              minp=n
+
+salida
+maxpar, imp, minp
+
+
+
+
+
+|| vectores
+
+
+Declarar vector antes de asignarle valores: 
+
+inicio
+int vNum[6]
+
+//declaración de un vector de tipo entero de 6 elementos
+llamado vNum (vector de números)
+
+
+Espacio en memoria: 
+
+en variable: 
+ocupa o se reserva un espacio de memoria que permite 
+guardar un elemento
+
+|int num = 5 |       |        |
+
+
+el peso o el espacio de memoria también depende del lenguaje
+y tipo de dato.
+
+
+en vector: 
+de manera aleatoria, el sistema operativo define distintos
+espacios de memoria. 
+
+|int num = 5|           |int vNum[6]|
+
+va a reservar/ocupar tantos espacios seguidos como necesite 
+los elementos
+
+internamente en los vectores hay muchas variables dado 
+que el vector ocupas muchas espacios de memoria. 
+
+
+Asignar o guardar valores en un vector: 
+escritura de datos
+
+usamos el operador de asignación =, pero antes tenemos
+que apuntar con el indice al lugar o ubicación kque queremos
+ocupar con el valor. 
+
+int vNum[6]
+
+Hacemos referencia a algunos de esos espacios de memoria. 
+
+|int vNum[6]|
+|0|1|2|3|4|5| indices
+
+
+Obtener el ultimo espacio del vector: 
+v[n]: total
+v[0]: primer elemento/espacio
+v[n-1]: ultimo elemento/espacio dado que empiezan en 0
+
+
+Los indices representa cada celda/espacio de memoria del 
+vector. 
+
+vNum[3]=9 
+
+
+Lectura de dato o espacio de memoria: 
+acceso a los datos
+
+vNum[3]; //9
+
+n = vNum[3]+1 //10
+
+//n lee 9 y suma 1. 
+
+
+pedir 4 numeros: 
+
+inicio: 
+n1, n2, n3, n4
+
+fin
+
+
+
+pedir 100 numeros: 
+creabamos un bucle for que repetia la entrada 100 veces
+
+inicio: 
+
+for
+x=0 | x<100 | x++
+ 
+ n
+
+fin
+
+// estos numeros no los guardaba, los opera en cada ciclo,
+guardamos en acumuladores o contadores, band, etc;
+y al final de la iteración los pierde. 
+
+//crear tantos elementos manualmente es ineficiente, 
+además que despues lo tenemos que operar, manipular, 
+etc. 
+
+
+
+pedir 10 numeros y guardarlos: 
+podemos crear un vector definido en 10 elemetnos
+
+inicio: 
+
+int v[10]
+
+for
+x=0 | x<10 | x++
+ 
+ n
+
+ v[x] = n
+
+fin 
+
+
+//para asignarle valores en cada vuelta usamos un valor
+variable como es x del for y le asignamos el valor 
+de la entrada de usuario. 
+
+
+
+Uso del vector con elementos: 
+
+ej: cargar vector de 10 y determinar el valor max dentro
+de ese vector, cual es el promedio, cantidad de valores
+positivos, negativos, etc. cualquier operación que se
+necesite. 
+
+
+inicio: 
+
+int v[10]
+
+for
+x=0 | x<10 | x++
+ 
+ n
+
+ v[x] = n
+
+fin 
+
+//vector cargado
+
+
+//para realizar las operaciones tenemos que leer el 
+vector 
+
+entonces, primero se cargo todos los numeros; antes era
+vuelta por vuelta. 
+
+ej: sacar promedio: 
+
+leemos el vector ya cargado usando un ciclo. 
+
+
+inicio: 
+
+acu=0
+
+for
+x=0 | x<10 | x++
+
+ acu+= v[x]      
+
+prom = acu/10
+
+salida 
+prom  
+                    
+fin 
+
+//al acumulador le asignamos en cada vuelta del ciclo
+lo que tenga el vector en la variable x. 
+
+
+
+
+
+Ejercicio: 
+programa que solicite 50 numeros enteros y los guarde en
+un vector. 
+recorrer el vector y determinar e informar cuál es la suma 
+de los valores del mismo. 
+usar dos ciclos, uno para el vector y otro para recorrerlo 
+y leerlo. 
+
+inicio
+
+int v[50]           //definimos vector: nombre y tamaño
+
+
+for
+x=0 | x<50 | x++   //repetimos el bucle 50 veces
+
+ n                 //pedimos los n, tenemos que guardar n
+                      50 veces en el vector. 
+
+ v[x] = n          //el vector en x: v[x] = n, guardamos 
+                     en cada vuelta x del ciclo, cuando x
+                     valga 0 a 50, el valor de n en estas. 
+
+                     lo inicializamos tomando x como indice
+                     y le asignamos la entrada de datos. 
+
+
+acu=0              //definimos o declaramos el acumulador
+
+for
+x=0 | x<50 | x++   //como estamos en otro ciclo separado
+                    podemos volver a utilizar x           
+ 
+ acu+=v[x]         //en cada vuelta le asignará el valor
+                    del indicie al acumulador. 
+                  
+                   //asignamos en acu, lo que vamos a leer
+                     del vector en x (v[x]) en cada vuelta. 
+
+salida
+acu                //mostramos la variable acu que tiene
+                    la suma de todos los valores. 
+
+fin 
+
+
+
+
+
+Ejercicio: 
+programa que solicite 50 numeros enteros y los guarde en 
+un vector, luego recorrer todos los elementos del vector 
+y determinar cuál es el valor maximo y su posición dentro
+del vector 
+
+
+inicio
+
+int v[50]
+
+for 
+x=0 | x<50 | x++
+
+ n
+ 
+ v[x]=n 
+
+
+
+b=0
+pos=0
+
+for 
+x=0 | x<50 | x++
+ 
+  v-- !b --f
+  |        |
+  max=v[x] v-- n>maxp 
+  b=1      |
+  pos=1    maxp=v[x]
+           pos=x+1
+
+
+//hacemos 50 veces una asignación la del vector y la de 
+la operación. 
+
+//en el segundo bucle tenemos que recorrer todos los valores
+antes asignados. 
+Realizar la operacion indicada: en este caso, encontrar 
+el maximo de todos los valores del vector. 
+
+
+
+alternativa: 
+
+inicio
+
+max=v[0]            //max es lo que tiene el vector en pos 0
+pos=1               tomamos el primer elemento como max, etc. 
+                    
+                    //pos=1 asegura que si el primero es el
+                     max, el indice quede como 1 y no 0. 
+for                   
+x=0 | x<50 | x++
+ 
+  v-- v[x]>max     //preguntamos elemento en posición x>max
+  |                 entonces (v), el max es el vector que está
+  max=v[x]          en esa posición. 
+  pos=x+1       
+ 
+
+salida
+max, pos
+
+fin 
+
+
+
+
+alternativa: 
+
+
+max=0
+
+for 
+x=0 | x<50 | x++
+ 
+  v-- x==0--f
+  |         |
+  max=x     v-- n>maxp 
+  b=1       |
+            maxp=v[x]
+ 
+
+
+
+Ejercicio: 
+hacer un programa que solicite 100 numeros enteros y los
+guarde en un vector. 
+luego recorrer ese vector para calcular el promedio y 
+mostrar por pantalla los valores del vector que son mayores
+al promedio calculado. 
+-hacer 3 ciclos for- uno para los elementos, otro para 
+leerlos/operarlos y otro para ver el promedio que calculamos
+si algun elemento es mayor al promedio calculado. 
+
+inicio
+
+int v[100]
+
+for
+x=0 | x<100 | x++
+ n
+
+ v[x]=n 
+
+
+acu=0
+
+for
+x=0 | x<100 | x++
+ 
+ acu+= v[x] 
+
+ 
+prom = acu/100         //una alternativa sería dividirlo
+                        por x, dadas sus 100 vueltas
+
+
+for 
+x=0 | x<100 | x++
+ 
+ v-- v[x]>prom       //si el contenido del vector en la 
+ |                    posición x (0, 1, 2, 3, etc)
+ v[x]            
+                     //en cada vuelta va mostrando si es mayor
+                      no va fijando mayores
+salida                va a mostrar el valor mayor al prom
+max                   en esa posición. 
+
+
+
+
+
+Ejercicio: 
+dada una lista de 10 numeros enteros, cargarlos en un vector
+luego determinar e informar si el vector está ordenado 
+en forma creciente, por ejemplo, el vector por los valores
+1,3,5,7,9; está ordenado, el vector 1,5,3,9,7 está desordenado
+
+
+inicio
+
+int v[10]
+
+for
+x=0 | x<10 | x++
+ n
+
+ v[x]=n 
+
+
+//para ordenar un vector podemos hacer una especie de 
+busqueda de max, guardamos el primer elemento y preguntamos
+si el siguiente es mayor y guardarlo, así sucesivamente. 
+
+//otra forma es poner un contador con 10 vueltas
+
+//podemos usar una bandera y asumir que están ordenados. 
+declaramos una bandera en 1, verdadero. 
+en otros ejercicio lo haciamos en falso. 
+
+//despues declaramos un max que va a ser el vector en 
+su primera posición. 
+
+
+ban=1 
+max=v[0]
+
+for
+x=0 | x<10 | x++   //for para recorrer los elementos guard
+ 
+ v-- v[x]           //preguntamos si el vector en x>=max
+ max=v[x]           en primera vuelta tenemos v[0] contra x
+                    va a dar verdadero. 
+                    reemplaza max=v[x]
+v--  ban  --f
+|           |
+'ordenados' 'desordenados'
+  
+fin 
+
+//si el valor en x >= al valor en max, actualizamos el max
+
+//en la siguiente vuelta preguntamos si el nuevo valor
+es mayor al maximo preguntamos si es verdadero. 
+así todas las vueltas. 
+necesitamos actualizar para preguntar si el nuevo valor
+de la nueva vuelta es el valor max
+
+//si una sola vez va hacia el falso, ponemos la bandera 
+en 0 (falso) para preguntar al final si la bandera 
+está ordenada
 
 
 

@@ -5871,6 +5871,2331 @@ Diagrama de flujo:
 	TfACT=tf
 
 
-	//notas, aclaraciones, cuestiones: 
+
+//notas, aclaraciones, cuestiones: 
+
+1. no usamos 0 en condicional para cambiar de sublote.
+(que salga del bucle interno y chequee en bucle externo)
+
+cambia automaticamente cuando cambiamos el registro. 
+factura tipo a, b, c
+
+2. tampoco tiene un limite de sublotes, solo tenemos tipos
+de factura y le podemos sumar otros como comprobantes, etc.  
+
+lo importante es que cargamos las pilas agrupadas si las
+mezclamos, cálculo otra cosa. 
+
+3. siempre que carguemos los sublotes agrupados, podemos 
+cargar la cantidad de sublotes, tipos de remito que queramos
 
 
+
+Ej: 
+cargar registro personaje (personaje, serie, n° de serie, 
+sueldo y edad) agrupados por numero de serie. 
+
+
+Segregar: 
+
+1. qué es lo que estamos cargano: 
+-registro: personajes de series-
+con los datos que componen ese registro/personaje de serie. 
+
+2. cómo están agrupados: 
+-por n° serie-. 
+
+
+Estructura principal:
+necesitamos cargar personajes hasta que se ingrese un 
+numero de serie 0 y los personajes van a estar agrupados
+por numero de serie. 
+
+
+//condicion 1while: n!=0
+
+//condicion 2while: Serie == numSerie por ej
+
+son los cortes de los dos bucles, como en el ej de las 
+facturas: num facturas para corte primer bucle  o lote
+y tipo de factura para corte de segundo bucle o sublote. 
+
+o tambien llamado corte general para el lote y 
+corte de control para el sublote. 
+
+Los ejercicios de corte de control se tratan de agrupar
+datos por algunas características. 
+
+
+Estructura principal: 
+al inicio pedimos los registros/entradas.
+
+la estructura general y su corte: 
+numero de serie 0 -> ns!=0
+
+
+Estructura avanzada: 
+la estructura interna y su corte: 
+sublotes agrupados por numero de serie -> nsACT = ns
+como variable controladora del segundo while
+
+en while, mientras el numero de serie sea igual a numero
+de serie actual; procesar instrucciones. 
+
+entre las instrucciones a procesar está volver a pedir 
+registros. 
+
+inicio
+np, se, ns, su, e      //entrada reg
+
+while ns!=0            //controlador/condicion 1while
+
+ 	     
+  nsACT=ns             //controlador/operad 2while
+
+ while ns==nsACT       //cond/control 
+
+
+
+   np, se, ns, su, e   //2 entrada sublote
+
+
+fin 
+
+
+//lo importante que esten agrupados y no ordenados. 
+está agrupados por numero de serie y no ordenados por edad, 
+sueldo, etc. 
+
+//funcionamiento: 
+inicio, despues pide cada registro: nombre personaje, 
+después, serie, numero de serie, sueldo y edad. 
+
+ np: goku
+ se: db
+ ns: 3
+
+chequea bucle de lote: 3!=0, verdadero; entra. 
+después, a nsACT le va a asignar el numero de serie
+chequea bucle sublote: 3==3, verdadero; entra. 
+procesar las instrucciones hasta que vuelve a pedir 
+registros, cargamos los registros de la serie correspondiente
+db, num 3. 
+
+ np: bulma
+ se: db
+ ns: 3
+ su, e, etc. 
+
+al final del registro, chequea numero de serie que es 3==3
+vuelve a entrar, procesar instrucciones y pedir registros. 
+
+ np: roshi
+ se: db
+ ns: 3
+ su, e, etc. 
+
+al final del registro, chequea numero de serie que es 3==3
+vuelve a entrar, procesar instrucciones y pedir registros. 
+no tenemos más personajes de db para cargar. 
+
+Si cargamos los registro de otra serie: 
+
+ np: fring
+ se: bb
+ ns: 1
+ su, e, etc.
+
+Termina con todos los registros y chequea el valor que 
+tiene en este momento ns = 1. 
+
+ns==nsACT
+1==3
+
+nsACT lo habiamos definido al ingresar al primer bucle 
+y a se primer bucle ingresamos con el primer registro. 
+
+1==3 es falso, no entra al ciclo, sale y llega al final
+para chequear lote: 
+ns!=0
+1!=0
+
+es verdadero, entra y volvemos a definir nsACT con el 
+valor 1 que tenemos en ns. 
+
+Ahora chequea ns==nsACT -> 1==1, verdadero
+entra procesa al personaje que teniamos (fring), 
+sigue con las instrucciones y vuelve a pedir los 
+registros. 
+
+ np: jesse
+ se: bb
+ ns: 1
+ su, e, etc.
+
+
+//Así es como el programa por su cuenta gestiona solo
+los registros de manera desordenada pero agrupada por 
+numero de serie.  
+
+
+Nos pueden pedir el promedio de edad de los personajes de
+cada serie. 
+
+Podemos procesar/operar y mostrar info en 3 momentos: 
+
+1. en el sublote: info/operaciones relacionada a los 
+elementos del sublote
+
+2. en el lote: info relacionada al sublote como grupo
+
+3. afuera del lote: infor relacionada al lote. 
+
+Entonces: 
+
+1. mostrar por registro: ej, por pj
+
+2. mostrar por sublote: ej, por serie
+
+3. mostrar por lote: ej, info sobre todos los lotes, 
+series, personaje, etc. 
+
+Entonces, 
+
+1. entre elemento
+
+2. entre grupo
+
+3. entre todos  
+
+
+La instrucciones/operación va a entrar y salir de los 
+lote, sublote para buscar info, operarla. 
+
+
+Si nos piden el promedio de edad. 
+No nos especifican, entonces, asumimos que se refiere 
+a todo; lote y sublote. 
+
+Lo mostramos fuera del lote. 
+
+
+promedio de edad de todos los personajes: 
+prom: sum todos los elem/cantidad elem
+código: acu/con
+
+inicio
+acuE=0
+con=0
+
+np, se, ns, su, e
+
+while ns!=0
+ 
+ nsACT=ns 
+ 
+ while ns==nsACT
+ 
+    
+  acu+=e
+  con++
+
+  np, se, ns, su, e
+
+prom = acu/con
+  
+salida
+prom
+
+fin
+
+//inicializamos afuera al inicio del programa y 
+lo mostramos  afuera del bucle externo lote al final
+
+
+
+Si nos piden mayor sueldo de cada serie: 
+buscamos un max, aveces podemos hacerlo con max = 0, 
+otras veces con bandera, etc. 
+
+
+inicio
+
+np, se, ns, su, e
+
+while ns!=0 
+
+ nsACT=ns 
+ 
+ max=0 
+
+ while ns==nsACT
+ 
+
+  np, se, ns, su, e
+
+
+ max
+
+salida
+
+fin
+
+
+//inicializamos dentro del lote y lo mostramos dentro
+al minal del lote. 
+cuando terminamos de procesar la serie, para mostrar 
+el sueldo max de esa serie. 
+así con cada serie o sublote. 
+
+
+Entonces, dentro del sublote toma todo, no es especifico. 
+dentro de lote, toma un grupo y fuera por el lote total. 
+
+Entonces, inicializamos inicio, mostrar final
+ya sea lote, sublote, programa. 
+
+
+
+............
+
+//estructura principal:
+inicio
+nf, tf, m     //1era entrada
+
+while nf!=0
+ 
+               //clave2: entradas/op para bucle interno
+   
+ while         //clave1: valida entrada para bucle interno
+
+
+  nf, tf, m  //2da entrada
+
+
+//Hasta ahora tenemos registros (nf, tf, m), tienen
+que pasar la condición del bucle 1 (nf!=0). 
+en el segundo bucle volvemos a pedir los registros. 
+
+
+//estructura avanzada:
+
+bucle interno:  
+
+//como digimos que se agrupa por tipos de factura
+
+1. Vamos a agregar una asignación fuera del bucle interno. 
+El tipo de factura actual es el tipo de factura. 
+
+tfACT = tf
+
+2. en la condición el bucle interno preguntamos si 
+el tipo de factura es igual al tipo de factura actual
+
+tf == tfACT
+
+Con esto entra al bucle para procesar las instrucciones. 
+
+
+inicio
+nf, tf, m     //1era entrada de registros
+
+while nf!=0
+
+  tfACT=tf         //clave2: entradas/op para bucle interno
+   
+ while tf==tfACT  //clave1: valida entrada para bucle interno
+
+  nf, tf, m  //2da entrada de registros, al final de procesar
+               instrucciones
+
+
+
+
+
+|| Ejercicios Corte de Control y ciclos
+
+Los de corte de control tienen registros que piden agruparlos. 
+los de ciclo son los que piden repetir ciertas instrucciones. 
+
+
+ejercicio: 
+se dispone de una lista de 10 grupos de numeros enteros
+separados entre ellos por cero. 
+se pide determinar e informar: a), b), c). 
+
+
+enteros: 
+positivos y negativos: n>0, v pos, f neg
+recta numerica: a>b y b>a
+hacia la der los más grandes y hacia a izq los más pequeños
+
+
+Tipo ejercicio: 
+lote y sublote pero no hay corte de control. 
+
+tipo de bucle: hay definido el numero de sublotes 
+por lo que usamos un for en 10 vueltas. 
+
+Estructura básica: 
+permite cargar datos
+
+n 
+
+ while n!=0
+  
+ 
+  n 
+
+
+
+Estructura avanzada: 
+operaciones: tenemos que repetir la estructura para 
+cargar los datos 10 veces. 
+
+inicio: 
+
+for 
+x=0 | x>10 | x++
+ 
+ n 
+
+ while n!=0
+  
+ 
+  n         
+
+
+fin
+
+
+
+Consignas: 
+Las consignas no tienen porqué compartir código, estructura
+relacionadas. 
+
+Tampoco es necesario hacerlas en orden. 
+
+
+a. el numero de grupo con mayor porcentajes de numeros
+impares positivos respecto al total de numeros que forman 
+el grupo. 
+
+b. 
+
+c. 
+
+
+
+
+|| Funciones
+
+Es un pequeño programa, bloque de código o diagrama que 
+tiene que resolver una sola cosa. 
+
+
+Suponiendo que tenemos un programa principal con un montón
+de líneas de código: 
+
+int main(){
+ 
+ //code...
+
+}
+
+
+Con las funciones, el programa se desglosa en varias partes: 
+en un programa principal y en varias funciones. 
+
+El programa principal se va a encargar de manejar las demás
+funciones o partes del programa. 
+
+A medida que main va avanzando le va a pedir cosas a las 
+funciones, etc. 
+
+Las funciones resuelven pequeños problemas como operaciones
+matemáticas concretas como sumar, sacar porcentaje, promediar; 
+tambien operaciones con cadenas, mostrar mensajes, etc. 
+
+ 
+En vez de hacer todo el programa imperativo una instrucción
+después de otra, con operaciones matemáticas 'sueltas', 
+llamamos a una función, pasamos parametros par que ejectute
+su código con esas operaciones.  
+
+De esta manera hacemos que el programa y el código sea 
+módular, reutilizable y mantenible. 
+
+
+Las funciones tiene ciertas características: 
+como un programa, tiene un inicio y un final. 
+
+La idea de la función es que reciba cosas y no que pida
+como hace el programa principal con las funciones, usuarios. 
+
+El programa principal comparte datos con las funciones 
+para que puedan funcionar y le devuelva al programa 
+principal lo que necesita saber. 
+
+La información que recibe del programa principal se llama
+parámetros para que la función trabaje. 
+
+Retorno de la función: cuando la función trabaja, devuelve
+un resultado o no. 
+
+Proceso: 
+1. llamada a la función 
+2. paso de argumentos
+3. retorno de resultado
+
+
+Función Main: 
+
+Ejemplo de programa principal imperativo no modular: 
+
+inicio
+
+entrada: 
+a, b        //el programa principal pide numeros
+
+cálculo: 
+r=a+b       //procesa numeros
+
+salida: 
+r           //muestra un resultado
+
+fin 
+
+
+
+Ej: programa principal modular-reutilizable
+
+Podemos hacer al programa principal modular usando 
+una función para resolver operaciones o problemas. 
+
+Escribiendo una sola vez la función. 
+
+Primero definimos una función: 
+tiene tres partes: 
+
+1. tipo de función  (tipo de datos/valores para la func)
+basicos: int, float, bool, char)
+
+Int: podemos guardar numeros enteros: positivos y negativos. 
+Float: numeros reales: decimales positivos y negativos.
+bool: guardar v o f. 
+char: guardar caracter [string es un objeto]
+void: especial para funciones que no devuelven valor
+
+Además de guardar el tipo de dato, también es el que va 
+a retornar y vamos a recibir. 
+
+entonces, una función tiene que tener un tipo. 
+
+
+2. Tambien tiene que tener un nombre significativo que 
+exprese o represente a su contenido/valor guardado. 
+tambien tiene que seguir las reglas de nomenclatura 
+como camelCase, no espacio, no empezar con número, 
+no palabra reservada, etc. 
+
+
+3. Paramétros: datos que la función necesita para trabajar
+Los parametros tambien deben tener y ser del tipo de dato
+que guarda o trabaja la función. 
+
+el orden importa, se tiene que respetar. 
+
+
+4. Dentro de la función tenemos que poner las instrucciones
+u operaciones que la función va a realizar 
+
+
+5. Al final valor a devolver el resultado: 
+return
+
+
+inicio
+
+func: 
+int suma
+int n1, int n2 | param referenc
+param valor    | ....
+ |
+ r = n1+n2
+ |
+ return r
+
+o 
+
+ |
+ rtn r
+
+fin 
+
+
+//la función recibio los valores (int n1 e int n2)
+lee valores (n1+n2), realiza la suma que la va a asignar 
+a una variable llamada r y va a retornarla. 
+
+//funcionamiento: 
+recibe los numeros del exterior, realiza la operación y la 
+guarda en una variable y luego retorna r (operación). 
+
+return: le asegura el resultado al programa principal que
+la llamo. 
+
+
+
+
+Main: 
+Programa principal modular que llama a funciones. 
+
+Cuando llamamos a las funciones 
+
+inicio
+
+entrada: 
+a, b         //el programa principal pide numeros a y b
+              distintos a los de la func
+
+cálculo: 
+h = suma     //llamada a la funcion: no toma tipos, debemos
+a, b |        pasarle el tipo esperado. 
+              debemos guardar lo que devuelve en algun lado
+              guardamos toda la func en la variable h. 
+              una vez que se ejecuta se guarda en h y
+              podemos mostrar h
+salida: 
+h            //muestra un resultado
+
+fin 
+
+
+//funcionamiento: 
+inicia main, pide dos numeros a, b, le pasan 7 y 5, llama a la
+función suma, procesa 7 y 5.
+
+viaja a los paramétros int n1 e int n2, 7 y 5 se guardan 
+en n1 y n2; lee 7, 5, suma, guarda el resultado en r
+y retorna 12. 
+
+Cuando retorna 12, vuelve al programa principal, 
+el programa principal guarda 12 en la variable h. 
+
+Al final va a mostrar 12 en pantalla
+
+
+//los parametros a y b de main son distintos a los
+parametros int n1 e int n2 de suma; son copias de los 
+valores guardadas en memoria. 
+
+
+Cuestiones: 
+A la funcion se le pueden pasar todos paramétros que quieras
+pero se recomienda que se le pasen los paramétros necesarios
+
+Solo va a devolver un valor. 
+
+Se rompe si no le pasamos los parametros definidos
+
+
+
+Paramétros por valor y Paramétros por referencia:
+
+inicio
+
+func: 
+int suma
+int n1, int n2 |  param referenc
+ param valor   |  ......
+ 
+ |
+ r = n1+n2
+ |
+ return r 
+
+Los parametros a y b de main son distintos a los
+parametros int n1 e int n2 de suma. 
+
+Hay dos tipos de parametros, los que se pasan por valor 
+y los parametros que se pasan por referencia. 
+
+Cuando hacemos un pasaje de paramétro por valor: 
+int n1 e int n2, volviendo a la memoria de la computadora;
+cuando creamos una variable, nos daba un espacio para
+esa memoria y una dirección. 
+
+|a=7 |     |     | b=5 | 
+
+entonces, cuando pasamos las variables a y b por valor a 
+la función, nacen dos variables nuevas n1 y n2
+
+
+|a=7 |     |     |b=5 | 
+   
+|    |n1=7 |n2=5 |    |
+
+
+con una copia del valor, a=7 se va a copiar en n1
+y b=5 se va a copiar en n2. 
+n1=7 y n2=5
+
+
+Mientras este la función en proceso, viva; vamos a tener 
+en memoria duplicados los valores. 
+
+Si definimos un paramétro de la función con un valor
+
+n1=0
+r = n1+n2
+
+estamos asignando 0 en el espacio de memoria de n1 que es
+distinto de a o b del programa main. 
+dado que los parametros a y b son pasados por valor (copia)
+y no por referencia. 
+
+
+Cuando termina de ejecutarse la función, se eliminan esos
+valores copias. 
+De la misma manera que la variable locar r creada dentro 
+de a función. 
+Como la guardamos en otra variable distinta, va a quedar 
+en h. 
+
+al final van a quedar a, b y h. 
+
+Se conoce como dimensión, scope o alcance de la función. 
+
+Las variables en una función nacen al inicio y mueren al 
+final de la función y lo mismo para el programa principal
+las variables en el programa principal quedan, cada uno 
+con sus propias variables. 
+
+Incluso se pueden llamar de la misma forma, pero van a 
+seguir siendo distintas dados que son distintos ambientes
+o dimensiones. 
+
+Por el scope: 
+Si queremos mostrar una variable que está en la dimensión 
+o alcance de una función en el programa principal, 
+como lo es la variable r, no podemos. 
+
+
+
+Pasar valor por referencia: 
+
+Función de tipo void: 
+no devuelve nada, no tiene retorno
+vamos a mandar a la variable por referencia
+No vamos a tener guardado h. 
+
+Vamos a pasar al programa principal la referencia H
+
+inicio
+
+func: 
+void suma
+int n1, int n2 |  param referenc
+ param valor   | int j
+ |
+ r = n1+n2
+
+
+
+inicio
+
+entrada:
+a, b 
+
+cálculo: 
+h= suma    
+a, b | h
+
+
+salida:
+h
+
+
+
+
+
+Tenemos en memoria: 
+
+|a=7 | h   |     |b=5 | 
+   
+|    |n1=7 |n2=5 |    |
+
+
+
+//la función va a recibir 7 y 5 por valor, mandamos 
+por referencia h (main) a la función. 
+
+main: 
+cálculo: 
+h= suma    
+a, b | h
+
+func: 
+void suma
+int n1, int n2 | param referenc
+ param valor   | int j
+ |
+ j = n1+n2
+
+
+
+mandamos por referencia h (main) a la función, quiere
+decir que no vamos a hacer una copia, no va a haber 
+en memoria un espacio y dirección para j; va a ocupar,
+compartir el espacio con h, mientras la función este
+ejecutandose.
+
+En memoria: 
+
+|a=7 | h/j |     |b=5 | 
+   
+|    |n1=7 |n2=5 |    |
+
+
+Al pasarle la referencia desde main (le prestamos h), 
+le indicamos dónde está la ubicación del valor; ambas 
+apuntan al mismo espacio en memoria. 
+
+la función lee las ubicaciones de n1 y n2, y va a guardar
+el resultado en j
+
+Al terminar la función
+
+
+
+
+
+|| Ejercicio Funciones
+
+hacer una función llamada producto y que reciba dos num 
+enteros y devuelva el producto de ambos. 
+Luego hacer un programa que pida el precio de un articulo
+y la cantidad vendida y muestro el monto total a pagar
+
+
+func: 
+
+inicio
+
+func: 
+int producto
+int n1, int n2 | param referenc
+param valor    | ....
+ |
+ r = n1*n2
+ |
+ return r
+
+fin 
+
+o 
+
+rtn a*b
+
+
+
+inicio
+
+void main: 
+
+//precio -> entrada
+//cantidad vendida -> entrada
+//monto total = p*c
+
+entrada: 
+p, c
+
+cálculo: 
+m = producto
+p, c |
+
+salida: 
+m
+
+fin 
+
+
+//el programa principal se encarga de interactuar con la 
+persona y las funciones hacen el trabajo. 
+
+
+
+
+Ejercicio: 
+hacer un función llamada mayor que reciba dos enteros
+y devuelva el mayor de los enteros o cero si son iguales. 
+
+
+inicio
+
+func: 
+int mayor
+int n1, int n2 | param referenc
+param valor    | ....
+ |
+ 
+ v---n1==b
+ |         
+ return 0        
+ 
+ v---n1>n2---f
+ |           |      
+ rtn n1      rtn n2          
+ 
+
+fin 
+
+
+//que tengamos 3 return no queire decir que pueda devolver
+3 valores al mismo tiempo. 
+Quiere decir que va a devolver uno de ellos dependiendo 
+del camino que tome el programa dado el if. 
+
+
+
+
+Ejercicio: 
+hacer un función llamada par que reciba un numero entero
+y devuelva 1 si es par o cero si no lo es. 
+hacer un programa para ingresar 20 numeros y mostrar 
+por pantalla cuantos son pares. 
+
+
+
+inicio
+
+func: 
+bool par 
+int n | param referenc
+param valor    | ....
+ |
+ 
+ v---n%2==0---f     //si el resto de dividir por 2 a n es 0
+ |            |
+ return 1     return 0
+
+fin 
+
+
+
+
+inicio
+con=0
+
+void main: 
+
+for
+x=0 | x<20 | x++
+ 
+ a
+
+ b=par            //creamos una bandera para guardar el 
+  a |               el resutado de la funcion                                 
+                          
+
+ v-- b             //en la siguiente instrucción preguntamos
+ |                  si el resultado es booleano que cuente.
+ con++                
+
+salida: 
+con
+
+fin
+
+
+
+
+Alternativa a: 
+
+ b=par       
+  a |                                                                      
+
+ v-- b             
+ |
+ con++ 
+
+
+hacer un if directo dado que va a asignarle el resultado 
+al if. 
+
+ v-- par --f
+ |    a    | 
+ con++
+
+
+
+
+
+
+Ejercicio: 
+hacer una funcion llamada primo que reciba un numero entero
+y devuelva 1 si es primo o 0 si no lo es. 
+hacer un programa para ingresar numeros, el lote corta
+cuando se ingresa un numero 0, informar el promedio teniendo
+en cuenta solo los numeros primos. 
+
+
+//crear numero primo en un función
+
+inicio
+
+func: 
+bool primo
+int n | param referenc
+param valor    | ....
+ |
+ 
+ con=0
+
+ for
+ x=1 | x<=n |x++ 
+ 
+  v-- n%x == 0  
+  |            
+  con++
+
+ v-- con == 2 --f  
+ |              |
+ return 1   return  0                  
+ 
+       
+fin 
+
+
+
+//programa principal: 
+
+no se trata de un corte de control dado que no dice 
+en ningun momento agrupar registros, etc. 
+
+pide n cantidad de numeros 
+
+
+inicio
+
+void main: 
+ con=0
+ acu=0 
+
+ a
+
+ while a!=0
+  
+  
+  p=primo
+   a |
+     
+  v-- p
+  con++  
+  acum+=p
+
+  a
+
+prom=acum/con
+
+salida: 
+prom
+
+fin 
+
+
+
+
+
+Ejercicio: 
+hacer funcion llamada pagos que reciba un monto float y 
+una cantidad de pago int y que devuelva el monto de cada 
+pago. 
+hacer un programa para ingresar 10 ventas, para cada venta
+se conoce el monto y la cantidad de pagos, el programa 
+debera mostrar la cantidad de pago y el monto de pago 
+para cada una de las ventas 
+
+
+func: 
+float pagos
+float m, int p | 
+ |
+ cp=m/p
+ |
+ rtn cp
+
+
+//el tipo de la función, no de los parametros; 
+está relacionado con el retorno, tiene que coincidir 
+tenemos una variable que opera float e int, entonces, 
+el retorno y func serán float. 
+
+//la función tiene que devolver lo que vale cada pago
+monto dividido la cantidad de pago
+
+
+
+void main: 
+
+for
+x=0 | x<10 | x++
+ 
+ mon, cp
+
+ mc=pagos
+  mon, cp | 
+
+
+salida
+mon, cp
+
+
+
+
+
+Ejercicio: 
+hacer funcion que se llame suma resta que reciba dos num
+y que devuelva la suma y la resta del primer numero 
+con el segundo. 
+nota: las func solo pueden devolver un valor por return 
+como se puede hacer para tener ambos resultados en main. 
+
+
+func: 
+int sumaResta
+int n1, int, n2
+ | 
+
+ v-- n1>n2 --f 
+ |           |
+ r=n1+n2     v-- n2<n1
+ rtn r       |
+             r=n1-n2
+             rtn r
+
+
+
+//podemos hacerlo de dos maneras: 
+una función solo puede devolver un valor, pero dependiendo
+de como le pasemos los paramétros podria devolver muchos
+valores. 
+Tenemos la posibilidad de pasar una variable por referencia
+pasar, un atributo, un paramétro pasarlo por referencia
+(prestar ubicación en memoria de variable main a la variable
+de la función) para que la función pueda modificar este valor
+o para que pueda asignarselo. 
+
+
+//hacemos una función de tipo void y le podemos pasar 
+cuatro variables: dos variables para los valores y dos
+variables para los resultados por referencia. 
+
+o 
+
+//hacemos un función de tipo entero para que nos devuelva 
+una de los datos por valor y el otro resultado por referencia
+
+
+func: 
+int sumaResta
+int n1 | int n2      
+ |
+ suma=n1+n2       //hacemos suma que devolvemos al final
+                   con rtn
+
+ n2=n2-n1        //pisamos n2 con resta asignada a la
+                   variable referencia. 
+               
+ rtn suma
+
+
+
+void main: 
+a, b
+
+sum=sumaResta
+    a | b
+ 
+salida
+sum, b
+
+
+
+
+
+
+Ejercicio: 
+hacer una función de tipo void -porque no va a devolver nada-
+llamada positivo negativo cero que reciba un numero por 
+valor y una variable por referencia. Que analice el numero
+y escriba la variable referida con 1 si el numero es 
+positivo, -1 si es numero es negativo y cero si el numero 
+es 0. 
+hacer un programa main que permite ingresar 100 num y 
+emitir por pantalla cuantos son positivos y cuantos son 
+negativos y cuantos son cero. 
+
+func: 
+void posNegCero
+int n | int j
+
+ v-- n==0 --f
+ |         |
+ j=0       v-- n>0 --f
+           |         |
+           j=1       j=-1
+
+
+
+//la funcion por referencia no tiene return
+//no podemos asignarla a una var en main dado 
+esta falta de  return
+
+
+void main: 
+pos=0
+neg=0
+cero=0
+int ban
+
+for
+x=0 | x<100 | x++
+
+ a
+ 
+ posNegCero
+  a | ban 
+ 
+         ban
+  0      -1       1
+  |       |       |
+ cero++  neg++   pos++
+  
+salida
+pos, neg, cero
+
+
+fin 
+
+
+
+
+
+Ejercicio: 
+programa que permita ingresar una lista de numeros que 
+corta cuando se ingresa un cero. a partir de dichos datos
+informar mayor de num pares, cantidad de num impares, 
+menor de num primo
+hacer uso de las funciones previamente desarrolladas
+
+//func par, primo
+
+
+void main: 
+bmaxpar=0
+imp=0
+bmin=0 
+
+n
+
+while n!=0
+
+  bp=par
+   n|
+  
+  v-- bp --f        //preguntamos si es par, si es v 
+  |        |         preguntamos por bmaxpar vacia
+  |        imp++
+  | 
+  v-- !bmaxpar --f
+  |              |
+  maxp=n         v-- n>maxp 
+  bmaxpar=1      |
+                 maxp=n
+ 
+  pri=primo
+   n |
+  
+  v-- prim 
+  |
+  v-- !bmin --f
+  |           |
+  minp=n      v-- n<minp
+  bmin=1      |
+              minp=n
+
+salida
+maxpar, imp, minp
+
+
+
+
+
+
+func: 
+void posNegCero
+int n | int j
+
+ v-- n==0 --f
+ |         |
+ j=0       v-- n>0 --f
+           |         |
+           j=1       j=-1
+
+
+
+//la funcion por referencia no tiene return
+//no podemos asignarla a una var en main dado 
+esta falta de  return
+
+
+void main: 
+pos=0
+neg=0
+cero=0
+int ban
+
+for
+x=0 | x<100 | x++
+
+ a
+ 
+ posNegCero
+  a | ban 
+ 
+         ban
+  0      -1       1
+  |       |       |
+ cero++  neg++   pos++
+  
+salida
+pos, neg, cero
+
+
+fin 
+
+
+
+
+
+
+
+
+//hacemos una función de tipo void y le podemos pasar 
+cuatro variables: dos variables para los valores y dos
+variables para los resultados por referencia. 
+
+o 
+
+//hacemos un función de tipo entero para que nos devuelva 
+una de los datos por valor y el otro resultado por referencia
+
+
+func: 
+int sumaResta
+int n1 | int n2      
+ |
+ suma=n1+n2       //hacemos suma que devolvemos al final
+                   con rtn
+
+ n2=n2-n1        //pisamos n2 con resta asignada a la
+                   variable referencia. 
+               
+ rtn suma
+
+
+
+void main: 
+a, b
+
+sum=sumaResta
+    a | b
+ 
+salida
+sum, b
+
+
+
+
+
+
+
+
+func: 
+float pagos
+float m, int p | 
+ |
+ cp=m/p
+ |
+ rtn cp
+
+
+//el tipo de la función, no de los parametros; 
+está relacionado con el retorno, tiene que coincidir 
+tenemos una variable que opera float e int, entonces, 
+el retorno y func serán float. 
+
+//la función tiene que devolver lo que vale cada pago
+monto dividido la cantidad de pago
+
+
+
+void main: 
+
+for
+x=0 | x<10 | x++
+ 
+ mon, cp
+
+ mc=pagos
+  mon, cp | 
+
+
+salida
+mon, cp
+
+
+
+...........
+
+
+//crear numero primo en un función
+
+inicio
+
+func: 
+bool primo
+int n | param referenc
+param valor    | ....
+ |
+ 
+ con=0
+
+ for
+ x=1 | x<=n |x++ 
+ 
+  v-- n%x == 0  
+  |            
+  con++
+
+ v-- con == 2 --f  
+ |              |
+ return 1   return  0                  
+ 
+       
+fin 
+
+
+
+//programa principal: 
+
+no se trata de un corte de control dado que no dice 
+en ningun momento agrupar registros, etc. 
+
+pide n cantidad de numeros 
+
+
+inicio
+
+void main: 
+ con=0
+ acu=0 
+
+ a
+
+ while a!=0
+  
+  
+  p=primo
+   a |
+     
+  v-- p
+  con++  
+  acum+=p
+
+  a
+
+prom=acum/con
+
+salida: 
+prom
+
+fin 
+
+
+
+
+
+
+
+
+
+
+
+inicio
+
+func: 
+int mayor
+int n1, int n2 | param referenc
+param valor    | ....
+ |
+ 
+ v---n1==b
+ |         
+ return 0        
+ 
+ v---n1>n2---f
+ |           |      
+ rtn n1      rtn n2          
+ 
+
+fin 
+
+
+
+
+inicio
+
+void main: 
+
+//precio -> entrada
+//cantidad vendida -> entrada
+//monto total = p*c
+
+entrada: 
+p, c
+
+cálculo: 
+m = producto
+p, c |
+
+salida: 
+m
+
+fin
+
+
+
+
+
+inicio
+
+func: 
+bool par 
+int n | param referenc
+param valor    | ....
+ |
+ 
+ v---n%2==0---f     //si el resto de dividir por 2 a n es 0
+ |            |
+ return 1     return 0
+
+fin 
+
+
+
+
+inicio
+con=0
+
+void main: 
+
+for
+x=0 | x<20 | x++
+ 
+ a
+
+ b=par            //creamos una bandera para guardar el 
+  a |               el resutado de la funcion                                 
+                          
+
+ v-- b             //en la siguiente instrucción preguntamos
+ |                  si el resultado es booleano que cuente.
+ con++                
+
+salida: 
+con
+
+fin
+
+
+
+Alternativa a: 
+
+ b=par       
+  a |                                                                      
+
+ v-- b             
+ |
+ con++ 
+
+
+hacer un if directo dado que va a asignarle el resultado 
+al if. 
+
+ v-- par --f
+     a | 
+ |
+ con++
+
+
+
+
+
+//crear numero primo en un función
+
+inicio
+
+func: 
+bool primo
+int n | param referenc
+param valor    | ....
+ |
+ 
+ con=0
+
+ for
+ x=1 | x<=n |x++ 
+ 
+  v-- n%x == 0  
+  |            
+  con++
+
+ v-- con == 2 --f  
+ |              |
+ return 1   return  0                  
+ 
+       
+fin 
+
+
+
+//programa principal: 
+
+no se trata de un corte de control dado que no dice 
+en ningun momento agrupar registros, etc. 
+
+pide n cantidad de numeros 
+
+
+inicio
+
+void main: 
+ con=0
+ acu=0 
+
+ a
+
+ while a!=0
+  
+  
+  p=primo
+   a |
+     
+  v-- p
+  con++  
+  acum+=p
+
+  a
+
+prom=acum/con
+
+salida: 
+prom
+
+fin 
+
+
+
+
+
+
+|| vectores/array/matriz/arreglo
+
+kcolección de elementos del mismo tipo
+
+tipos de datos primitivos
+int, float, bool, char
+
+una variable solo puede guardar un valor de un tipo de dato
+si a la misma variable le queremos guardar otro valor, 
+se va a reemplazar el anterior. 
+
+con un array podemos guardar varias cosas en la misma 
+'variable' u objeto. 
+
+int num = 5;
+int num[5]; //array de 5 numeros/elementos del tipo int
+
+
+Declarar vector antes de asignarle valores: 
+
+inicio
+int vNum[6]
+
+//declaración de un vector de tipo entero de 6 elementos
+llamado vNum (vector de números)
+
+
+Espacio en memoria: 
+
+en variable: 
+ocupa o se reserva un espacio de memoria que permite 
+guardar un elemento
+
+|int num = 5 |       |        |
+
+
+el peso o el espacio de memoria también depende del lenguaje
+y tipo de dato.
+
+
+en vector: 
+de manera aleatoria, el sistema operativo define distintos
+espacios de memoria. 
+
+|int num = 5|           |int vNum[6]|
+
+va a reservar/ocupar tantos espacios seguidos como necesite 
+los elementos
+
+internamente en los vectores hay muchas variables dado 
+que el vector ocupas muchas espacios de memoria. 
+
+
+Asignar o guardar valores en un vector: 
+escritura de datos
+
+usamos el operador de asignación =, pero antes tenemos
+que apuntar con el indice al lugar o ubicación kque queremos
+ocupar con el valor. 
+
+int vNum[6]
+
+Hacemos referencia a algunos de esos espacios de memoria. 
+
+|int vNum[6]|
+|0|1|2|3|4|5| indices
+
+
+Obtener el ultimo espacio del vector: 
+v[n]: total
+v[0]: primer elemento/espacio
+v[n-1]: ultimo elemento/espacio dado que empiezan en 0
+
+
+Los indices representa cada celda/espacio de memoria del 
+vector. 
+
+vNum[3]=9 
+
+
+Lectura de dato o espacio de memoria: 
+acceso a los datos
+
+vNum[3]; //9
+
+n = vNum[3]+1 //10
+
+//n lee 9 y suma 1. 
+
+
+
+Ejemplos: 
+
+pedir numero: 
+
+inicio
+n
+
+fin
+
+
+
+pedir 4 numeros: 
+
+inicio: 
+n1, n2, n3, n4
+
+fin
+
+
+
+pedir 100 numeros: 
+creabamos un bucle for que repetia la entrada 100 veces
+
+inicio: 
+
+for
+x=0 | x<100 | x++
+ 
+ n
+
+fin
+
+// estos numeros no los guardaba, los opera en cada ciclo,
+guardamos en acumuladores o contadores, band, etc;
+y al final de la iteración los pierde. 
+
+//crear tantos elementos manualmente es ineficiente, 
+además que despues lo tenemos que operar, manipular, 
+etc. 
+
+
+
+pedir 10 numeros y guardarlos: 
+podemos crear un vector definido en 10 elemetnos
+
+inicio: 
+
+int v[10]
+
+for
+x=0 | x<10 | x++
+ 
+ n
+
+ v[x] = n
+
+fin 
+
+
+//para asignarle valores en cada vuelta usamos un valor
+variable como es x del for y le asignamos el valor 
+de la entrada de usuario. 
+
+
+
+Uso del vector con elementos: 
+
+ej: cargar vector de 10 y determinar el valor max dentro
+de ese vector, cual es el promedio, cantidad de valores
+positivos, negativos, etc. cualquier operación que se
+necesite. 
+
+
+inicio: 
+
+int v[10]
+
+for
+x=0 | x<10 | x++
+ 
+ n
+
+ v[x] = n
+
+fin 
+
+//vector cargado
+
+
+//para realizar las operaciones tenemos que leer el 
+vector 
+
+entonces, primero se cargo todos los numeros; antes era
+vuelta por vuelta. 
+
+ej: sacar promedio: 
+
+leemos el vector ya cargado usando un ciclo. 
+
+
+inicio: 
+
+acu=0
+
+for
+x=0 | x<10 | x++
+
+ acu+= v[x]      
+
+prom = acu/10
+
+salida 
+prom  
+                    
+fin 
+
+//al acumulador le asignamos en cada vuelta del ciclo
+lo que tenga el vector en la variable x. 
+
+
+
+
+
+|| Ejercicios Vectores
+
+
+Ejercicio: 
+programa que solicite 50 numeros enteros y los guarde en
+un vector. 
+recorrer el vector y determinar e informar cuál es la suma 
+de los valores del mismo. 
+usar dos ciclos, uno para el vector y otro para recorrerlo 
+y leerlo. 
+
+
+inicio
+
+int v[50]           //definimos vector: nombre y tamaño
+
+
+for
+x=0 | x<50 | x++   //repetimos el bucle 50 veces
+
+ n                 //pedimos los n, tenemos que guardar n
+                      50 veces en el vector. 
+
+ v[x] = n          //el vector en x: v[x] = n, guardamos 
+                     en cada vuelta x del ciclo, cuando x
+                     valga 0 a 50, el valor de n en estas. 
+
+                     lo inicializamos tomando x como indice
+                     y le asignamos la entrada de datos. 
+
+
+acu=0              //definimos o declaramos el acumulador
+
+for
+x=0 | x<50 | x++   //como estamos en otro ciclo separado
+                    podemos volver a utilizar x           
+ 
+ acu+=v[x]         //en cada vuelta le asignará el valor
+                    del indicie al acumulador. 
+                  
+                   //asignamos en acu, lo que vamos a leer
+                     del vector en x (v[x]) en cada vuelta. 
+
+salida
+acu                //mostramos la variable acu que tiene
+                    la suma de todos los valores. 
+
+fin 
+
+
+
+
+
+Ejercicio: 
+programa que solicite 50 numeros enteros y los guarde en 
+un vector, luego recorrer todos los elementos del vector 
+y determinar cuál es el valor maximo y su posición dentro
+del vector 
+
+
+inicio
+
+int v[50]
+
+for 
+x=0 | x<50 | x++
+
+ n
+ 
+ v[x]=n 
+
+
+
+b=0
+pos=0
+
+for 
+x=0 | x<50 | x++
+ 
+  v-- !b --f
+  |        |
+  max=v[x] v-- n>maxp 
+  b=1      |
+  pos=1    maxp=v[x]
+           pos=x+1
+
+
+//hacemos 50 veces una asignación la del vector y la de 
+la operación. 
+
+//en el segundo bucle tenemos que recorrer todos los valores
+antes asignados. 
+Realizar la operacion indicada: en este caso, encontrar 
+el maximo de todos los valores del vector. 
+
+
+
+alternativa: 
+
+inicio
+
+max=v[0]            //max es lo que tiene el vector en pos 0
+pos=1               tomamos el primer elemento como max, etc. 
+                    
+                    //pos=1 asegura que si el primero es el
+                     max, el indice quede como 1 y no 0. 
+for                   
+x=0 | x<50 | x++
+ 
+  v-- v[x]>max     //preguntamos elemento en posición x>max
+  |                 entonces (v), el max es el vector que está
+  max=v[x]          en esa posición. 
+  pos=x+1       
+ 
+
+salida
+max, pos
+
+fin 
+
+
+
+
+alternativa: 
+
+
+max=0
+
+for 
+x=0 | x<50 | x++
+ 
+  v-- x==0--f
+  |         |
+  max=x     v-- n>maxp 
+  b=1       |
+            maxp=v[x]
+ 
+
+
+
+
+Ejercicio: 
+hacer un programa que solicite 100 numeros enteros y los
+guarde en un vector. 
+luego recorrer ese vector para calcular el promedio y 
+mostrar por pantalla los valores del vector que son mayores
+al promedio calculado. 
+-hacer 3 ciclos for- uno para los elementos, otro para 
+leerlos/operarlos y otro para ver el promedio que calculamos
+si algun elemento es mayor al promedio calculado. 
+
+inicio
+
+int v[100]
+
+for
+x=0 | x<100 | x++
+ n
+
+ v[x]=n 
+
+
+acu=0
+
+for
+x=0 | x<100 | x++
+ 
+ acu+= v[x] 
+
+ 
+prom = acu/100         //una alternativa sería dividirlo
+                        por x, dadas sus 100 vueltas
+
+
+for 
+x=0 | x<100 | x++
+ 
+ v-- v[x]>prom       //si el contenido del vector en la 
+ |                    posición x (0, 1, 2, 3, etc)
+ v[x]            
+                     //en cada vuelta va mostrando si es mayor
+                      no va fijando mayores
+salida                va a mostrar el valor mayor al prom
+max                   en esa posición. 
+
+
+
+
+
+Ejercicio: 
+dada una lista de 10 numeros enteros, cargarlos en un vector
+luego determinar e informar si el vector está ordenado 
+en forma creciente, por ejemplo, el vector por los valores
+1,3,5,7,9; está ordenado, el vector 1,5,3,9,7 está desordenado
+
+
+inicio
+
+int v[10]
+
+for
+x=0 | x<10 | x++
+ n
+
+ v[x]=n 
+
+
+//para ordenar un vector podemos hacer una especie de 
+busqueda de max, guardamos el primer elemento y preguntamos
+si el siguiente es mayor y guardarlo, así sucesivamente. 
+
+//otra forma es poner un contador con 10 vueltas
+
+//podemos usar una bandera y asumir que están ordenados. 
+declaramos una bandera en 1, verdadero. 
+en otros ejercicio lo haciamos en falso. 
+
+//despues declaramos un max que va a ser el vector en 
+su primera posición. 
+
+
+ban=1 
+max=v[0]
+
+for
+x=0 | x<10 | x++   //for para recorrer los elementos guard
+ 
+ v-- v[x]           //preguntamos si el vector en x>=max
+ max=v[x]           en primera vuelta tenemos v[0] contra x
+                    va a dar verdadero. 
+                    reemplaza max=v[x]
+v--  ban  --f
+|           |
+'ordenados' 'desordenados'
+  
+fin 
+
+//si el valor en x >= al valor en max, actualizamos el max
+
+//en la siguiente vuelta preguntamos si el nuevo valor
+es mayor al maximo preguntamos si es verdadero. 
+así todas las vueltas. 
+necesitamos actualizar para preguntar si el nuevo valor
+de la nueva vuelta es el valor max
+
+//si una sola vez va hacia el falso, ponemos la bandera 
+en 0 (falso) para preguntar al final si la bandera 
+está ordenada
+
+
+
+
+
+Ejercicio: 
+Hacer un programa que solicite una serie de valores tipo 
+char. se entiende por caracteres a cada elemento que se 
+obtiene de presionar una tecla. 
+por ejemplo el valor 25, son dos caracteres; si quisieramos
+guardarlo en variables enteras nos alcanza con una (pero
+es un numero), si quisieramos guardarlo en variable char
+necesitaremos dos. 
+la frase 'maxi programa' tiene tiene 13 variables
+de forma char/caracteres. 
+la cantidad de valores será como maximo 50 pero el programa
+puede cortar antes si se ingresa el caracter punto. 
+Una vez cargado el vector de char, recorrerlo y reemplazar
+todas las apariciones de la letra a por la letra e. 
+por ejemplo, vector, char original; hola muchachada como 
+están. 
+vector char modificado: hole muchechede como esten
+finalmente mostrar el resultado en pantalla. 
+necesitaremos un vector char de 50, pero no se cargará 
+con un for 
+
+//primero creamos el vector char de 50
+
+//necesitamos un bucle que se pueda cortar y además nos 
+pide un caracter como entrada
+lo cargamos con un while, pero antes pedimos una letra. 
+
+//como no tenemos x/posición del for, para trabajar como un
+indice la tenemos que crear. 
+
+i=0
+
+
+inicio
+
+char v[50]          //definición tamaño vector
+
+l                   //pedimos letra/caracter
+
+i=0                 //indice en 0
+
+while l!='.' && i<50 //definimos entrada/corte bucle
+                     mientras i<50 no se rompe, tiene que 
+                     cumplir las dos condiciones. 
+ 
+ char v[]=l         //carga/inicialización del vector en 
+                     una posición
+ 
+ l                  //volvemos a pedir la letra
+
+ i++                //aumentamos indice después de cada letra
+
+
+
+//funcionamiento de while:
+inicia el programa. 
+en cada vuelta pedimos una letra (la de afuera del while)
+chequea si no es un punto, entra. 
+guardamos la letra en la posición/valor de i (1°vuelta es 0)
+vuelve a pedir letra e incrementa el indice. 
+chequea la letra (la que está dentro del bucle) si no es 
+un punto, entra, la guarda en el indice aumentado (1). 
+vuelve a peidr letra y chequear, así sucesivamente. 
+
+//el while funciona hasta ahora para una carga infinita
+pero solo podemos cargar hasta 50. le agregamos una condición
+and/&&
+
+&& i<50
+
+
+//ahora tenemos que recorrer el vector para detectar el
+caracter o la letra a dentro y reemplazarla por la letra e. 
+
+//lo podemos hacer con un for dado que sabemos al extension
+del vector aunque no este cargado completamente. 
+
+for
+x=0 | x<50 | x++     //for de 50
+ 
+ v-- v[x]=='a'       //si en el vector en posición x, 
+ |                    tenemos una letra a, asignamos 
+ v[x]='e'             (si el caracter que está en ese indice)
+                      en ese lugar v[x], una letra e. 
+
+
+//o lo podemos hacer con un while para recorrer solo 
+los elementos que fueron cargados. 
+
+el while sigue la misma estructura para cargar datos, 
+y además tenemos que recorrer y mostrar los elementos. 
+
+i=0                     //inicializamos el indice en 0
+                         para recorrer correctamente el while
+
+while v[i]!='.' && i<50 //queremos chequear/preguntar hasta 
+                         donde cargó la persona y el tamaño
+ v[i]
+ i++
+
+
+
+
+
+Ejercicio
+dar una lista de 10 numeros y cargarlos en un vector. 
+luego detectar si en el vector hay un elemento repetido. 
+de haberlo indicarlo con un cartel aclaratorio 'hay repetidos'
+de lo contrario 'no hay repetidos'. 
+
+
+inicio
+
+int v[10]
+
+for
+x=0 | x<10 | x++
+
+ n
+
+ v[x]=n 
+
+
+
+//buscar repetidos y no repetidos
+buscamos cada elemento del vector y ver si existe otra vez
+ese elemento. 
+tomamos un elemento y recorremos otra vez desde la posición
+de este elemento si existe otro igual
+
+rep=0
+
+for  
+x=0 | x<10 | x++       //ciclo grande para recorrer todos
+                        los elementos.
+
+ r=v[x]                //guardamos el elemento repetido
+                        en las vuelta va a guardar el elem
+                        que está en la posición x en la 
+ con=0                  variable r. 
+ 
+  for                  //usamos un ciclo interno para
+  y=0 | y<10 | y++      recorrer y preguntar si r existe
+                        en algunas de las posiciones del 
+  v-- r==v[y] --f       vector. 
+  |
+  con++
+ 
+ v-- con==2            //dentro del bucle externo.
+ |
+ rep=1
+
+
+v-- rep --v           //fuera del bucle externo. 
+|         | 
+'hay'     'no hay'
+
+
+//funcionamiento
+en la primera vuelta ciclo externo, agarramos un primer
+elemento; en la primera vuelta de este, va a dar 10 vueltas
+el ciclo interno. 
+cuando el ciclo externo termine de dar sus 10 vueltas 
+va a llegar al final del ciclo externo y va a chequear 
+la segunda vuelta de este ciclo externo. 
+va a tomar el segundo elemento que está en x=1, lo va a 
+guardar en r y va a dar 10 vueltas más; así sucesivamente. 
+
+rs: va a dar 10 vueltas por cada elemento del vector. 
+
+entonces, guardamos el elemento y preguntamos si hay similitud
+//creamos un contador afuera al inicio del bucle interno y 
+cuando hay coincidencia, vamos a sumar ese contador. 
+
+con=0
+
+v-- r==v[x]
+|
+con++
+
+//naturalmente un conteo va a haber (detalle) en la primera
+vuelta va a decirnos que son iguales y va a contar. 
+entonces, vamos a tener en cuenta, el conteo a partir de 2. 
+
+//entonces, al final del bucle interno, afuera, preguntamos
+si contador >= 2, quiere decir que hay repetidos. 
+en verdadero creamos una bandera rep y le asignamos 1. 
+tambien creamos la bandera rep afuera del bucle externo grande
+
+v-- con>=2
+|
+rep = 1
+
+asumimos que no hay repetidos, entonces, creamos la bandera
+en 0. 
+
+
+//funcionamiento desde bucle externo: 
+para evaluar, agarramos el primer elemetno
+
+r=v[x]
+
+iniciamos el contador en 0
+ 
+con=0 (no repetidos)
+
+recorremos y evaluamos 10 veces r==v[x]
+y aumentará contador si encuentra coincidencias
+la primera coincidencia es obligatoria por eso empezamos 
+a contar de a 2. 
+
+
+//al final mostramos el resultados que nos pedian: 
+con if si hay repetidos
+
+v-- rep --v
+|         | 
+'hay'     'no hay'
+mostramos la frase 'hay repetidos y es falso 'no hay 
+repetidos'
