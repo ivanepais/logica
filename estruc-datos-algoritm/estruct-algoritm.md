@@ -1860,9 +1860,694 @@ Estructuras de Datos y Algoritmos
 
 
 
-|| Algoritmos de Ordenación
+
+|| Algoritmos de Ordenación de matrices (Array Sorting): 
+
+ Sirven para reorganizar el orden de los elementos de una estructura, como un vector. 
+
+ Ej: 4 2 6 1 3 6 -> 1 2 3 4 5 6, de desordenado a ordenado o podemos hacerlo de menor a mayor o mayor a menor
+
+ 
+ Es mucho más eficiente trabajar con datos cuando la información está ordenada. 
+
+ Cómo encontrar elementos que hay dentro de un array de 10.000.000 de objetos tardando poco tiempo. 
+
+  
+ Los algoritmos de ordenación muestran de forma estructurada cómo ordenar los elementos que haya dentro de una estructura, como un array. 
+
+ Seguramente sea mucho más fiable seguir un algoritmo que funciona a ordenar a nuestro modo. 
+ 
+ 
+ Podemos ordenar cualquier estructura con elementos que sean ordenable. 
+
+  Ordenar números, porque unos son mayores que otros. 
+
+  Ordenar meses, porque unos vienen antes que otros. 
+
+ 
+ Hay muchas cosas que se pueden ordenar: 
+
+  Cómo ordenar expedientes
+   
+  Cómo ordenar libros  
+
+  Cómo ordenar facturas
+
+ Si tiene un número que le identifica (como un código de árticulo, un número de identificación), lo podemos ordenar usando ese valor. 
+
+ Tiene que tener algo por lo que nos permita ordenar. 
 
 
+ Algoritmos de Ordenación: 
+
+  Ordenamiento por inserción. 
+  
+  Ordenamiento por selección. 
+
+  Ordenamiento por mezcla (merge sort). 
+
+  Etc. 
+
+ 
+ Eficiencia en los algoritmos: 
+
+  Algunos son más eficientes que otros. 
+
+  La eficiencia trata en ser mejor para realizar una tarea, en el menor tiempo posible. 
+
+
+ Propiedad Orden: 
+
+  Indica el número de operaciones que hay que hacer para ordenar una estructura de N elementos. 
+
+  Ej: Entrada y Salida de datos. 
+
+   N = número de elemetos: 
+
+
+   1. Orden N = se hacen N operaciones (lineal) 
+     
+    Curva proporcional, orden proporcional entre la entrada y salida. 
+    
+    Facil implementar, lento de ejecutar (muchas comparaciones)
+
+    Un vector que tenga 10 elementos, habrá que hacer 10 operaciones.  
+
+
+   2. Orden N² = se hacen N² operaciones (exponencial) 
+    
+    Curva crece o baja rapidamente 
+    
+    Intermedio, no funciona con muchos elementos.     
+
+    Hay que hacer el cuadrado de cada elemento.     
+
+    
+   3. Orden ln N = se hacen ln N operaciones (logaritmica)
+    
+    Curva extremo neg a extremo pos
+
+    Dificil de implementar, rapido de ejecutar. 
+ 
+  
+  Comparaciones: 
+
+   Hay que elegir elegir algoritmos con orden pequeño, como Orden N (lineal). 
+
+    Orden N = Orden lineal: si hay 10 veces más elementos, hay que hacer 10 veces más operaciones. 
+  
+     Le tomará 10 pasos en ordenar el vector de 10 
+ 
+    Orden N² = Orden exponencial: si hay 10 veces más elementos, hay que hacer 100 veces más de operaciones. 
+
+     Le tomará 100 pasos ordenar el vector de 10. 
+
+    Cuántos más elementos haya más operaciones se tiene que hacer. 
+
+
+     
+|| Algoritmo de Ordenación por Selección (Selection Sort)
+
+ Recorremos el array buscando el elemento mínimo. 
+
+ Intercambiamos ese elemetnos con el que esté en la primera posición. 
+
+ Buscamos el siguiente mínimo que no hayamos ordeando. 
+
+ Lo cambiamos por el segundo. 
+
+ Así hasta terminar. 
+
+
+ Ej: vector desordenado 6 4 2 1 3 5
+
+ Buscamos el minimo, empieza a recorrer y preguntar por el 6
+
+ Como es el primero y no tenemos otro para comparar, queda como minimo. 
+
+ Después pasa a preguntar por el 4, comparamos con el primer elemento y efectivamente es el minimo. 
+
+ Ahora le toca el 2 compararse con el 4, después al 2 compararse con el 1. 
+
+ El 1 se compara con el 3 y el 5, llegamos al minimo. 
+
+
+ Cuando tengamos el minimo de todos, buscamos la primera posición para poner este elemento. 
+
+ En la segunda recorrida, el minimo ya está ordenado; ahora recorre los demás. 
+
+ Vector: 1 4 2 6 3 5. 
+
+
+ Toma el 4 y se compara con el 2 que pasa a ser el minimo, dado que 6 3 y 5 son mayores. 
+
+ Ahora toca darle lugar al nuevo minimo, será el primer elemento que esté al lado del primer minimo/elemento ordenado.  
+ 
+ Vector: 1 2 4 6 3 5. 
+
+
+ Así sucesivamente, el vector quedará 1 2 3 4 5 6
+
+ Al llegar al último elemento (n elementos-1) asumimos que es el minimo/ordenado. 
+
+
+ Proceso al recorrer el array: 
+
+  1. Cuestionar elementos. 
+
+  2. Encontrar el minimo de todos. 
+   
+  3. Ubicar el minimo intercambiando de posición, lugar. 
+
+  4. Ordenar elementos. 
+ 
+
+ Código para ordenar elementos por selección: 
+
+  Necesitamos: 
+
+   1. Posición en la que va a ir el elemento ordenado: 1, 2, 3, ..., N. 
+
+   2. Elemento a partir del cual vamos a buscar el mínimo. 
+
+   3. El mínimo en cada repetición. 
+
+
+  FOR i = 1 TO n - 1
+   min = i
+   FOR j = i + 1 TO n
+    IF v[j] < v[min] THEM min = j
+   END FOR
+   
+  END FOR
+
+
+  Recorremos cada elemento desde el primero hasta el penúltimo. 
+
+  El primer elemento será el minimo automaticamente. 
+  
+  Como tenemos que buscar el minimo dentro de toda la estructura, recorremos el resto de elementos que nos quedan  
+
+  Nos preguntamos si cada elemento que vamos viendo si es el nuevo minimo. 
+
+  Comprobamos si el elemento que se encuentra en esa misma posición es menor que el que asumimos a la primera 
+
+  Cuando no sea, decidimos el nuevo minimo.  
+  
+  Si lo repetimos dentro de una estructura repetitiva; obtenemos el min, la posición que tiene el elemento minimo. 
+
+  Nos queda intercambiar elementos. 
+
+
+  Intercambiar dos variables: var min con i. 
+
+  No podemos hacerlo en un único paso. 
+
+  Ej: A B, dos variables
+  
+  Creamos una variable temporal C que después eliminaremos. 
+
+   A B |C
+
+  Creamos una copia de A en C.
+
+   A B |A
+
+  Sobreescribimos A original por B
+
+   B B |A
+
+  Llamar el valor de la variable temporal 
+
+   B A <- |A
+
+  Eliminamos la variable temporal. 
+
+   B A
+
+
+  Ahora lo hacemos usando i y min: 
+
+  FOR i = 1 TO n - 1
+   min = i
+   FOR j = i + 1 TO n
+    IF v[j] < v[min] THEM min = j
+   END FOR
+   temp = v[i]
+   v[i] = v[min]
+   v[min] = temp
+  END FOR
+
+
+  Primero guardamos uno de los valores. 
+
+  Después nos llevamos uno de los valores a la posición que guardamos antes. 
+
+  Cambiamos los valores
+
+  
+
+|| Ordenación por inserción (Insertion Sort)
+
+ Para ordenar los elementos de una matriz cada elemento i tiene que ser menor o igual al elementos i+1. 
+
+
+ Recorremos cada elemento del array. 
+
+ Cada elemento del array se ordena: si a su izquierda tiene un elemento mayor que él, entonces, los intercambiamos de sitio. 
+ 
+ Lo seguimos moviendo a la izquierda hasta que tenga un elemento menor que él o hasta qeu llegue el límite izquierdo. 
+
+
+ Ej: 6 4 2 1 3 5, el vector desordenado empieza en la posición * que tiene valor 6
+     * 
+     -     
+
+ Con *indice/puntero marcamos la posición en la que estamos ordenando actualmente. 
+
+ Los intercambios u operaciones se hacen tomando el primer elemento y recorriendo, comparando con los restantes. 
+
+ A medida que vayamos moviendo el elemento a la izquierda cuando se está ordenando y lo marcamos  
+
+ 
+ Empezamos ordenando por la primera posición que tiene valor 6 o al elemento 6. 
+
+ 
+ Formula: el elemento se moverá si: 
+
+  Está en la primera posición, o si el elemento de su izquierda ya es menor que él, entonces, este elemento está ordenado y pasamos al siguiente. 
+
+ 
+ Como 6 es el primer elemento y no hay nada a su izquierda, está ordenado y pasamos al siguiente. 
+
+ En la siguiente posición se mueve * y marcamos el siguiente 4. 
+
+ 6 4 2 1 3 5
+   *
+   -
+
+ Comprobamos la formula: 4 no está en la primera posición y lo que tiene a su izquierda es mayor (6). 
+
+ Intercambiamos el 4 con el 6. 
+
+ 4 6 2 1 3 5
+ - *
+ 
+ Volvemos a comprobar, el 4 está en la primera posición y no hay nada a su izquierda; está ordenado. 
+
+ Pasamos al siguiente:  
+ 
+       4 6 2 1 3 5
+ ordenados * no ordenados
+           -
+
+ A medida que vamos recorriendo los elemento se puede comprobar que cada vez que pasamos el puntero * se cumple que los elementos a su izquierda está ordenados y los que está a la derecha están desordenados. 
+
+ 6 > 2, el dos está mal ordenado; lo intercambiamos y preguntamos si 4>2, el dos sigue estando desordenado lo intercambiamos o lo movemos. 
+
+ El 2 que tomamos con *, está los más a la izquierda posible, no se puede mover; ordenado. 
+
+ 2 4 6 1 3 5
+       *
+       -
+
+ 6 > 1, el uno está desordenado asi que lo movemos o intercambiamos y chequeamos contra los de su izquierda. 
+
+ 4 > 1, o movemos y 2 > 1, lo movemos; ya no se puede mover, ordenado. 
+
+ 1 2 4 6 3 5; pasamos el 6 y el 4 que son mayores 
+         * 
+         -
+
+ 1 2 3 4 6 5; 6 > 5, movemos 5 y está ordenado. 
+           * 
+           -
+ 
+ 1 2 3 4 5 6  vector ordenado. 
+            *
+
+
+ Necesitamos conocer: 
+
+  1. La flecha que recorre cada posición. Se convierte en un bucle de tipo FOR. 
+        *
+  
+  2. El elemento que se mueve a la izquierda. Necesitamos recordar en una variable cuál es la posición del elemento que está siendo ordenado según se mueve. 
+        -
+
+  Método no eficiente: n^2
+
+  FOR i = 1 TO n
+   pos = i
+   WHILE pos > 1 AND m[pos] < m[pos - 1]
+    temp = m[pos - 1]  
+    m[pos - 1] = m[pos]
+    m[pos] = temp
+    pos = pos - 1
+   END WHILE
+  END FOR
+
+
+  La flecha que se movia a la derecha. Empieza en el primer elemento y termina en el último (n elementos). 
+     *
+  Guardamos en una variable temporal llamada pos = i, al elemento que estamos ordenando actualmente. 
+                                                         *
+  Mover el elemento a la izquierda siempre que sea posible, como esto es algo que hacemos varias veces mientras se cumpla una condición, tenemos un while con varias condiciones: podiamos mover el elemento hacia la izquierda si para empezar no estaba ya en la primera posición. Si pos vale 1 significa que es el primer elemento y como pos de 0 no existe porque empezamos en 1; no podemos moverlo más a la izquierda.      
+  
+  La otra condición para que se pudiera mover a la izquierda, era que el elemento que estuviese a su izqueirda fuese mayor que el elemento que estamos intentando mover: la posición sea menor que la posición que tiene a su izquierda. 
+
+  Si ambas condiciones se cumplen, movemos el elemento (-pos a la izq). 
+
+  Hacemos un cambio de variable como vimos en el algoritmo de selección. 
+
+  Guardamos un elemento (m[pos - 1]), lo reemplazamos (m[pos - 1] = m[pos]) y cambiamos el otro. 
+
+  Al final del WHILE reducimos en uno el valor del pos al intentar mover el elemento anterior. 
+
+  En resumen: nos desplazamos con el for y luego nos movemos o reducimos dada las condiciones while; cuando pos estuviese en una posición como la primera (pos > 1) o que este ordenada (m[pos] < m[pos-1]), dejaría de moverse. 
+
+
+  Ineficiencia: 
+   
+   Estamos haciendo muchos intercambios
+  
+    temp = m[pos - 1]  
+    m[pos - 1] = m[pos]
+    m[pos] = temp
+
+   
+  Método eficiente: 
+
+   FOR i = 1 TO n 
+    pos = i 
+    valor = m[i]
+    WHILE pos > 1 && valor < m[pos-1]
+     m[pos] = m[pos-1]
+     pos = pos - 1
+    END WHILE
+    m[pos] = valor
+   END FOR
+             
+  
+   Antes de empezar a movernos, guardamos cuál es el valor que es la posición que intentamos ordenar valor = m[i]
+   
+   En vez de intercambiar, comprobamos si el valor es menor que la posición del elemento marcado. 
+ 
+   Desplazamos (m[pos] = m[pos-1]), el elemento de la izquierda hacia la derecha. 
+
+   Una vez en la posición, escribimos el valor (m[pos] = valor) en su nueva posición. 
+
+   El valor se va a escribir una vez y no ir moviendolo por todo el recorrido. 
+
+  
+
+
+|| Ordenación por Burbuja (Bubble Sort)
+
+ Es muy ineficiente al lado de otros algoritmos de ordenación. 
+
+ Se usa para aprender algoritmos de ordenación, pero no se debería aplicar para ordenar datos, incluso el algoritmo de inserción suele ser más eficiente. 
+
+
+ Funcionamiento: 
+
+  1. Recorremos el array y cada elemento del array, si nos encontramos dos elementos que no estén en orden (a[i]>a[i+1), por ej; los intercambiamos. 
+
+  2. Repetimos el paso 1 N-1 veces, es lo que tardaría un elemento muy desordenado, de ser necesario, en recorrer toda la matriz de derecha a izquierda. 
+
+  
+ El objetivo de ordenar es terminar con el array que este ordenado en orden creciente, elemento i > i+1. 
+ 
+ Los elementos que sean iguales, ej 7 y 7, cuentan como ordenados y da igual su posición; en todo caso lo que tenemos que hacer es buscar elementos que no sean menor o igual. 
+
+ Si encontramos dos elementos, tal que, a[i] < a[i+1]; significa que están desordenados y debemos intercambiarlos. 
+
+ Debemos repetir lo anterior N-1 veces, N como tamaño de array y -1 veces es lo que tardaria el elemento más desordenado. 
+
+ N-1 veces es la causa de la ineficiencia del algoritmo, hace repeticiones de más que podría evitar. 
+
+
+ Ej: 6 4 2 5 3 1, su tamaño es N=6 total elementos. 
+
+ Repetimos N=6 en una serie de pasos 1 (a[i] < a[i+1); N=5 veces. 
+
+ En el primer paso hacemos la comparación (a[i] < a[i+1). 
+
+ 6 4 2 5 3 1; 
+ - -
+ i  
+ 
+ 6 es el elemento i, comparamos 6<4 (comparamos los valores de las posiciones 0 < 0+1 en pos)
+
+ Como es mayor o no es menor lo intercambiamos. 
+
+ Comparamos:  4 6 2 5 3 1; como 6 es mayor lo intercambiamos. 
+                - -
+                i  
+
+ Así sucesivamente: 4 2 6 5 3 1 -> 4 2 5 6 3 1 -> 4 2 5 3 6 1 -> 4 2 5 3 1 6
+
+ Vemos que estamos haciendo muchas operaciones para solo ordenar 1 elemento. 
+
+ El paso 2 recien va a ordenar el numero 4. 
+
+ 
+ Incluso el algoritmo por inserción es más eficiente. 
+
+
+ Código: 
+
+  FOR i = 1 TO n-1
+   FOR j = 1 To n-1
+    IF m[j] > m[j+1]
+     tmp = m[j]
+     m[j] = m[j+1]
+     m[j+1] = tmp
+    END IF
+   END FOR
+  END FOR
+    
+  Lo repetimos n-1 veces
+ 
+  Para cada paso, recorremos de izquierda a derecha, se forma una matriz, recorremos el elemento n-1 para la comparación con el siguiente tenemos que comparar el elemento n; si lo hiciesemos hasta n, la comparación sería n+1 que no existe dado que el tamaño es hasta N. 
+
+  Para cada uno de los elementos teníamos que hacer la comparación, si el elemento j era mayor que el elemento j+1; que quiere decir desordenado. 
+
+  Tenemos que intercambiarlos de posición, usando una variable temporal. 
+
+  
+  Si tenemos que hacerlo más eficiente: 
+
+   1. Usar otro algoritmo. 
+
+   2. Evitar dar pasos innecesarios: puede ser que el vector no esté tan desordenado y se ordene antes de dar todos los pasos. Si usamos una variable para saber si hemos hecho un intercambio; la ordenación ha terminado cuando ya no nos ha hecho falta. 
+  
+   DO
+    desorden = False
+     FOR j = 1 TO n-1
+      IF m[j] > m[j+1]
+       tmp = m[j]
+       m[j] = m[j+1]
+       m[j+1] = tmp
+       desorden = TRUE
+      END IF
+     End FOR
+   WHILE desorden
+
+
+   Intercambiamos las repeticiones de paso (toda la estructura FOR externa)
+  
+   Por una variable desorden booleana, que va a marcar si hay o no desorden. 
+
+   Habrá desorden cuando hacemos intercambios y repetimos los pasos mientras haya desorden. 
+
+   En el momento que no tengamos que hacer intercambios, desorden valdrá 0/false; en el momento de terminar el bucle do while; por lo tanto será la ultima vez que se ejecute. 
+
+   Cuando la matriz este muy desordenada no vale la pena hacer bubble sort eficiente porque se van a repetir los 5 pasos. 
+
+   
+   
+
+
+
+
+|| Recursividad
+
+ Para poder definir algo como puede ser una función o un proceso:
+
+ f(x)
+
+ Dentro del cuerpo de la función tiene que ir además la propia cosa definida: 
+
+ f(x) = n * f(x)
+
+ 
+ Ejemplos Basico: 
+
+  Factoriales: 
+
+   El factorial de un numero n equivale a multiplicar ese numero n por todos sus anteriores 
+       n
+   n!=sum k; o comprendido entre 1 y n
+      k=1
+  
+   5! = 1*2*3*4*5
+
+   
+   También se puede definir de forma recursiva: 
+
+    5! = 4!*5
+
+
+ Caso Base: 
+
+  Cuando uno construye funciones recursivas es importante establecer un caso base. 
+
+  En el que no necesitemos recurrir de nuevo. 
+
+  Es importante ya que si nuestra función se recurre infinitamente nunca tendrá solución. 
+
+   3! = 3*2! (n! = n*n-1!)
+   
+   2! = 2*1!
+
+   1! = 1*0!
+ 
+   0! = 0*(-1)!
+
+   (-1)! = -1*(-2)!
+
+  
+  Por ejemplo, si usamos recursividad para calcular un factorial, debemos establecer un caso base en el que retornar el factorial sin tener que 
+         
+         1 (caso base)  si n = 0 -> el factorial de 0 es 1.    
+   n! = {
+         n*(n-1)!       si n > 0 
+
+    
+ Torres de Hanói: 
+
+  Nos encontramos con tres torres con discos apilados   
+
+  En un momento inicial tenemos una torre con discos apilados en forma de piramide. 
+ 
+  Dónde cada disco es más pequeño que el disco anterior. 
+
+  
+  El problema de lógica plantea que tenemos que pasar la piramide de la primera de las torres a la tercera, recordando un par de reglas. 
+  
+  Podemos usar todas las torres para ir moviendo e intercambiando discos. 
+
+  Reglas: 
+
+   1. La torre final tiene que quedar en forma de piramide (ordenada de la más pequeña a la más grande). 
+   
+   2. Solo podemos mover un disco a la vez. 
+
+   3. Un disco no puede descansar sobre otro que sea más pequeño que él. 
+
+   
+ Recursividad en Torres de Hanói: 
+
+  Es la forma más fácil de resolver el problema. 
+
+  El truco está en dividir un problema grande (mover discos de una torre a otra)
+
+  Y transformarlo en un problema más sencillo: 
+  
+   Si queremos mover una piramide de n discos de una torre a otra. 
+
+   Lo mejor que podemos hacer: 
+
+    1. Mover en uno o varios pasos, los primeros n-1 discos a la torre (tomar todos los elementos - 1) a la torre del medio que hace de auxiliar, temporal.
+   
+    2. Después movemos el disco que queda de la primera torre a la tercera. 
+
+    3. Tomamos la torre intermedia y movemos todos sus elementos a la tercera en uno o varios pasos. 
+
+  
+  Solucionamos el problema recursivo: 
+
+   Para mover unos discos de una torre a otra, el paso intermedio es que movemos todos los disco de una a la otra. 
+
+   En todos los casos tenemos una torre origen, destino y una torre que usaremos como auxiliar para ayudarnos de mover los discos de una torre a otra. 
+
+ 
+ Definición:    
+   
+  Definimos un caso base que no dependa de la recursividad. 
+
+  En el caso de las torres, es cuando la torre de origen solo tiene un disco. 
+
+  No necesitaríamos operaciones intermedias, nos alcanza con moverlo de origen hasta destino. 
+
+  
+ Código: 
+
+  Lo más sencillo es representar cada disco con un número comprendido entre 1 y m, dónde los números más altos representan a los más grandes. 
+
+  Lo apropiado es representar las torres como pilas donde introducimos enteros, ya que en una pila al igual que en una torres, solo podemos poner y sacar elementos que esten en al cima.  
+   
+   Pilas t1, t2, t3; 
+   Disco d = t1.desapilar(); 
+   t2. apilar(d); 
+
+  
+  HANOI(n: INT, o,d,a: STACK)
+   IF n = 1 {
+    Sacar disco de 0; Poner en A
+    }ELSE{
+     HANOI (n-1, o,a,d)
+     Sacar disco de 0; Poner en A 
+     Hanoi(n-1, a, d, o)
+    }
+   }
+ 
+  Le pasamos o indicamos cuantos discos tiene la torre, ya que sino nuestra torre no sabrá cuando ha llegado al último disco. 
+
+  Cuales son las torres de origen, auxiliar y destino. 
+
+  El algoritmo tiene que determinar el caso base, cuando solo tiene que mover un disco; entonces lo va a mover directamente de la torre origen a la torre destino. 
+
+  Si tenemos más de un disco, primero tiene que mover los primeros n-1 discos de la torre origen a la torre auxiliar. 
+  
+  (Se puede ver como en cada subproblema cambia el orden de los parámetros.)
+
+  Después debemos mover el disco que queda en origen a la torre destino. 
+
+  Finalmente debe mover los n-1 discos que hay en la torre auxiliar a la torre destino. 
+  
+
+  HANOI(n: INT, o,d,a: STACK) {
+   IF n = 1 {
+    a.apilar(o.desapilar())
+   }ELSE{
+    HANOI(n-1, o, a, d)
+    a.apilar(o.desapilar())
+    HANOI(n-1, a, d, o)
+   }
+  }
+
+  Pasos necesarios para desplazar n discos: 
+
+   Usamos un modelo inductivo: 
+
+    Para mover un disco, usamos un paso. 
+
+    Para mover dos discos, usamos un paso para mover el disco a la segunda torre y un paso para mover el disco a destino y un paso para mover los discos de la torre intermedia a la torre de destino. 
+
+    Son tres pasos en total. 
+
+    
+    Sucesivamente Para mover 3 discos son 7 pasos en total. 
+
+    Así podemos inducir que para mover n discos necesitamos 2^n-1
+    
+     P(n) = 2^n - 1 
+
+     Ej: para mover 7 discos
+
+      P(7) = 2^7-1 = 127. 
 
 
 
