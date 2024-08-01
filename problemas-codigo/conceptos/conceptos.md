@@ -3,14 +3,34 @@ Conceptos
 
 || C
 
+
 || Punteros
 
 
+|| Structs
+
+
+|| Enum
+
+
+|| Memoria
+
+
+|| Recursividad
+
+
+|| Prototipos
+
+
+|| Datos opacos
 
 ....
 
 
-|| JS
+|| JS/TS
+
+
+|| Genéricos
 
 
 || Callbacks
@@ -18,22 +38,19 @@ Conceptos
 
 || Promesas
 
-....
-
-
-
-|| TS
-
-|| Genéricos
-
-
-|| 
-
 
 ....
 
 || Java
 
 
-||
+|| Genérico
+
+
+|| Wildcards
+
+
+|| Comparable <T>
+
+
 
