@@ -3240,3 +3240,1953 @@ Con run ejecutamos el binario.
 
  
   
+
+
+
+......
+
+C89
+
+
+
+|| Comenetarios
+
+ Buenos comentarios documenta bien el código para explicar qué es lo que hace.   
+
+ También demuestra el nivel de entendimiento del mismo. 
+
+ Para un desarrollo se prefiere varias lineas y para algo especifico se usa el comentario de una linea. 
+
+ Una linea: //
+
+ Varias lineas: /* */ 
+
+
+
+|| Función main 
+
+ El la primerá que buscará el sistema operativo para ejecutar el programa. 
+
+ Main puede tomar parámetros como int argc, char* argv[] para cuando ejecutemos el programa desde el sistema o la linea de comandos y pasarle valores para que haga cosas especificas. 
+ 
+ Dado que las computadoras trabajan con bits, los tipos de datos indican que significa esos bits, entidad o clasifican esos bits; como int será un número, float será un decimal, char será un caracterer y void será nada.
+
+ Int usa 32 bits en plataformas de 32 bits o x86. 
+
+ Los tipos de datos tiene sus tamaño. 
+
+ Las instrucciones son sentencias que pueden ser de varios tipos y terminan en punto y coma (;). 
+
+ El punto y coma separa las instrucciones para que el compilador se de cuenta dónde termina una y otra. 
+
+ La palabra return se usa para indicar que termina una función. 
+
+ Cuando una función llegue a return, terminará la ejecución de la función actual y volver a la función anterior. 
+
+ En cado de main, el return termina de ejecutar main y le devuelve el control al sistema operativo. 
+
+ A la función main la llamó el sistema operativo, por eso, cuando termina, vuelve el control a él. 
+
+ En funciones normales, return devolverá el controla a a función que haya llamada a la función actual. 
+
+ Si una función es de tipo int, el retorno tendrá que ser un valor entero entre 0 y 2 mil millones en una plataforma de 32 bits. 
+
+ 
+ Proceso: 
+
+  Al compilar el programa con la función main, se creará un binario ejecutable. 
+
+  Si lo ejecutamos, el sistema operativo buscará a main, lo ejecuta y al terminar, la función main le devuelve el control al sistema. 
+
+ 
+ ```
+ int main(){
+  return 0; 
+ }
+
+ ```
+
+
+
+|| Programación estructurada
+
+ Un paradigma es al filosofía que se usa para desarrollar un programa. 
+
+ Como la programación imperativa, declarativa, objetos, estructurada o funcional. 
+
+ La programación imperativa se basa en hacer cambios de estado en el programa. 
+
+ La declarativa no hace cambios de estado, se lo encarga al sistema. 
+
+ En objetos se representarán todos los elementos de un programa, interactuarán entre si. 
+
+ En estructurada se implementarán los programas usando bloques de código fijos que tendrán variables, datos, etc. 
+
+ En funcional se divide los programas en modulos que se llaman unos a otros. 
+
+  
+ Dadas las características de C, se pueden aplicar los paradigmas imperativo, funcional y estructurado.
+
+ 
+ Imperativo: 
+ 
+  Se basa en cambios de estado. 
+  
+  Por medio de instrucciones secuenciales: 
+
+   Cada instrucción modifica un dato. 
+
+   El conjunto de los datos es el estado. 
+  
+  Se usan variables para guardar los datos:  
+ 
+   Tendrán memoria reservada y una dirección para encontrarla. 
+
+  
+  Se puede ver como una receta que nos dice que hacer en cada paso.
+  
+  A medida que avanzamos vemos los diferentes estados, combinaciones, cambios. 
+
+  
+ Funcional: 
+  
+  Anidación de código en funciones. 
+
+  Funciones: bloques que contienen código. 
+
+  Una función llama a otra, y a otra, y a otra sucesivamente. 
+ 
+
+ Estructurado: 
+
+  Instrucciones que hacen cosas diferentes. 
+
+  Tres tipos de instrucciones: 
+
+   Sentencia (asignación): 
+
+    Asignar datos a variables. 
+
+   Condicional (decisión): 
+
+    El sistema se encarga de elegir cual instrucciones de código ejecutar. 
+
+    Ej: bifurcación, selección. 
+
+   Iteración (repetición): 
+   
+    Momento en el que el programa repite una serie de instrucciones una y otra vez hasta que sucede una determinada condición. 
+
+    Ej: desde, mientras, hasta
+ 
+
+
+|| Funciones
+
+ Podríamos aplicar cosas como estas, aunque no fueran estandar. 
+
+ ```
+ int main () {
+  return 4; 
+
+  x = main(); 
+ }
+
+ ```  
+ 
+ main va a devolver 4 y x va a haceptar un número. 
+
+  
+ Funcion suma: 
+ 
+  Va a tomar dos números y va a devolver su suma. 
+
+  Usamos los parámetros y tipos de retorno. 
+
+  Si es una suma, el tipo de dato debe ser igual que los operandos. 
+
+  Podemos hacer una suma de enteros. 
+  
+
+  ```
+  int suma (int a, int b) {
+   int x; 
+   x = x+b; 
+   return x; 
+  }
+
+  ```  
+  Crea variable x, guardará el cálculo y retorna x. 
+
+  Dependiendo de cuan complejo es el cálculo de una función podemos desarrollarlas con distintas prácticas. 
+
+  Si el cálculo es simple y se sobreentiende con el identificador, a los parámetros le damos un nombre simple. 
+
+  También podemos hacer el cálculo en el return, sin variable local que lo guarde. 
+
+  Si es más complicado, usamos parámeros y variables locales significativos. 
+
+  Usamos una variable para guardar el resutaldo y se la pasamos a return. 
+
+   
+ Invocar funciones: 
+
+  La invocamos ejecutandola en el main. 
+ 
+  ```
+  int suma (int a, int b) {
+   int x; 
+   x = x+b; 
+   return x; 
+  } 
+
+  int main(){
+   int a = 5, b = 4; 
+   int resultado; 
+   resultado = suma(a, b); 
+
+   return 0; 
+  }
+ 
+  ```   
+  
+  Declaramos y asignamos variables en main para pasarlas como argumento. 
+
+  Declaramos una variable para guardar un resultado. 
+
+  Asignamos a esa variable el resultado de llamar a la función suma. 
+
+  La lista de parametros tiene que ser la misma que en la definición de la función. 
+
+   
+  Así como las prácticas para definiciones pueden ser unas u otras, dependiendo de lo que tenemos que hacer. 
+
+  Para invocarlas también pasa algo parecido. 
+
+  Incluso se puede calcular directamente en un print como podemos calcular en un return. 
+
+  Hacer esto tiene sus consecuencias. 
+
+  
+  Cuando en main llega a resultado, como es una asignación de función, se empieza a ejecutar la función. 
+
+  Se pasa los operandos/parámetros definidos en main. 
+
+  Se declaran o ejecutan las cosas definidas en la función. 
+  
+  Como x; x = x+b, return x. 
+
+  a + b; es 5 + 4, etc. 
+
+  Retorna x que vale 9. 
+
+  El retorno de la función equivale a la función suma. 
+
+  Se guardará 9 en la var resultado del main. 
+
+  
+  Si planteamos prints como forma de depuración, vemos que está sucediendo en cada paso. 
+
+  ```
+  int suma (int a, int b) {
+   int x; 
+   x = x+b; 
+   return x; 
+  } 
+
+  int main(){
+   int a = 5, b = 4; 
+   int resultado; 
+   resultado = suma(a, b); 
+
+   printf("%d + %d = %d\n", a, b, resultado); 
+
+   return 0; 
+  }
+ 
+  ```    
+   
+
+
+|| Arrays
+
+ Son muchas variables bajo un mismo identificador. 
+ 
+ Cada variable estará en una posición. 
+
+ Se accede mediante la posición i: v[i]
+
+ Se asigna: v[i] = x
+
+ Si guardamos números, su tipo será int[]. 
+
+ Si guardamos caracteres, será char[]. 
+  
+ Definir y dar tamaño: int v[8]
+
+ 
+ ```
+ #include <stdio.h>
+  
+ int main() {
+  int i = 1; 
+  int v[10]; 
+
+  v[0] = 5; 
+
+  return 0;   
+ }
+
+ ```
+
+ En main declaramos e inicializamos un entero i = 1. 
+
+ Declaramos un vector con 10 posiciones.  
+
+ Podemos asignar un valor a una posición como v[0] = 5;  
+ 
+
+ Crear un bucle for: 
+  
+  Para recorrer cada una de las posiciones (v[10]). 
+
+  Creamos otra variable j = 1.
+  
+  Para seguir el estandar c89.  
+
+  Guardamos en cada posición j y luego multiplicamos j*3. 
+
+  ```
+  #include <stdio.h>
+  
+  int main() {
+   int i, j = 1; 
+   int v[10]; 
+
+   for(i = 0; i < 10; i++) {
+    v[i] = j; 
+    j *= 3; 
+    
+   }
+
+   for(i = 0; i < 10 ; i++) {
+    print("v[%d] = %d\n", i, v[i]); 
+   }
+
+   return 0;   
+  }
+ 
+  ```   
+  
+  Empezamos el for en 0, para acceder a la posición v[i].
+
+  Recorremos hasta 10, aumentamos la posición cada vez que se llega al final de las instrucciones. 
+
+  Para cada valor de i (v[i]) será j. 
+
+  Luego operamos j. 
+
+  Imprimimos sus valores, con otro for. 
+
+  Emprimimos la posición i del vector v[%d] y el valor del vector. 
+
+ 
+ Cadenas de carácteres: 
+   
+  Podemos guardar indidualmente un caracter. 
+
+  char k = 'x'; 
+
+  O podemos hacer un vector de carácteres para guardar cadenas. 
+
+  char[20] = "a, b, c, d";
+
+  Las cadenas son un conjunto de caracteres.      
+
+  Podemos declaralos de forma dinámica usando otra variable o entrada de usuario. 
+
+  O de forma estática dandole nosotros un tamaño.  
+
+  Ej: vector de caracter (cadena) estática: 
+  
+
+  ```
+  #include <stdio.h>
+
+  int main() {
+   char nombre[20] = "Bob"; 
+
+   return 0; 
+  }
+
+  ```
+ 
+  En este ejemplo de decimos cuantos caracteres va a tener o guardar la cadena nombre.  
+  
+  C va a guardar cada letra en una posición, desde 0 a v[i]-1 .
+ 
+  en p0 = B, p1 = o y p2 = b; como no ocupamos todas las posiciones. 
+ 
+  v[0] = B, v[1] = o, v[2] = b; en este caso sería nombre[0] -> B. 
+
+  C, en la p3 o v[3] va a guardar un carácter/número especial que es el 0. 
+
+  v[3] = 0; represeta el limite de la cadena. 
+
+  
+  Podemos acceder a los valores individualmente o usando un bucle. 
+
+  nombre[0] -> B
+
+  o usando nombre[i] con un for, el valor de i se lo dará el bucle. 
+
+  ```
+  #include <stdio.h>
+
+  int main() {
+   char nombre[20] = "Bob"; 
+
+   int i; 
+   for(i = 0; i < 3; i++) {
+    printf("nombre [%d] = %c\n", i, nombre[i]); 
+   }  
+
+   return 0; 
+  }
+
+  ```  
+  Cada vuelta del for imprimirá el valor que hay en la posición i. 
+
+  Imprimirá posición y valor. 
+ 
+  
+  También podemos mostrar en pantalla la palabra completa. 
+
+  Usando el for y quitando salto de linea para cada vuelta. 
+
+  ```
+  #include <stdio.h>
+
+  int main() {
+   char nombre[20] = "Bob"; 
+
+   int i; 
+   for(i = 0; i < 3; i++) {
+    printf("%c\n", nombre[i]); 
+   }  
+
+   return 0; 
+  }
+
+  ```     
+
+
+  Para mostrar de forma eficiente una cadena lo hacemos con print: 
+
+  Además de print necesitamos un escape %s. 
+
+  ```
+  #include <stdio.h>
+
+  int main() {
+   char nombre[20] = "Bob"; 
+
+   int i; 
+   for(i = 0; i < 3; i++) {
+    printf("%s", nombre; 
+   }  
+
+   return 0; 
+  }
+
+  ```
+
+
+ 
+|| Punteros 
+
+ Otra de las estructuras de C. 
+
+ Es una variable. 
+
+
+ En una variable normal como i; puede tener un valor como i = 6.  
+
+ Si accedemos a la variable llamando a i; accedermos a 6. 
+  
+
+ Memoria de la computadora: 
+
+  Cada celda de memoria tiene una posición o dirección como 0, 1, 2, 3 o 0x1, 0x2, etc. 
+
+  Si llamamos a una variable normal, nos referimos a su valor. 
+
+  Con un puntero nos referimos a una posición de memoria en la que está la variable. 
+
+  Entonces, un puntero almacena la dirección de la variable. 
+
+  
+ Declaración de punteros: 
+
+  Tambien se debe especificar su tipo de dato. 
+
+  Una variable normal que guarda un entero sería: int i; 
+
+  Un puntero que guarda una dirección de un entero sería: int* p; 
+
+
+  Si definimos una variable normal:  int i; 
+  
+  Y un puntero: int* p; 
+
+  Podemos almacenar en i:  i = 6; 
+
+  Con el puntero p, podemos guardar la dirección de memoria en la que está el valor de i. 
+
+  Mediante el simbolo & (dirección de memoria de...). 
+
+  Apuntamos a la posición de memoria de i. 
+
+  p = &i. 
+
+  ```
+  int i;
+  i = 6; 
+  
+  int* p; 
+  p = &i; 
+    
+  ```
+ 
+  P = direccion de memoria
+  p no será valor de i. 
+
+   
+  Ahora para acceder al contenido del puntero o la dirección de memoria. 
+
+  Usamos otra vez, *; pero a la izquierda del puntero. 
+
+  *p. 
+
+  Devuelve lo que hay en la posición de memoria P.   
+
+  ```
+  int i;
+  i = 6; 
+  
+  int* p; 
+  p = &i; 
+  
+  *p;    
+ 
+  ```
+
+  Entonces: 
+
+  ``` 
+  int i; //variable i
+  int *p; //variable puntero que apunta dir memo entero
+
+  i // nos devuelve variable int
+  &i // nos devuelve variable int puntero: int*
+
+  p // nos devuelve int*
+  *p // nos devuelve int
+  ```
+
+ Ejemplos: 
+ 
+ ```
+ #include <stdio.h>
+ 
+ int main() {
+  int i; 
+  int *p; 
+
+  return 0; 
+ }
+
+ ```
+ 
+ Declaramos una variable i. 
+ 
+ Declaramos variable de tipo puntero p. 
+
+
+ Si le damos valor a i: 
+
+ ```
+ #include <stdio.h>
+ 
+ int main() {
+  int i = 5; 
+  int *p; 
+
+  return 0; 
+ }
+
+ ```
+ 
+ Si en p queremos guardar la posición de memoria de i. 
+
+ Le asignamos a p, &i. 
+
+ p = &i; 
+
+ ```
+ #include <stdio.h>
+ 
+ int main() {
+  int i = 5; 
+  int *p; 
+
+  p = &i; 
+
+  return 0; 
+ }
+
+ ```
+
+ Podemos imprimir está dirección o posición como una variable normal. 
+ 
+ Usamos el escape %p.  
+
+ ```
+ #include <stdio.h>
+ 
+ int main() {
+  int i = 5; 
+  int *p; 
+
+  p = &i; 
+  printf("%p\n", p); 
+
+  return 0; 
+ }
+
+ ``` 
+
+ 
+ Acceder al valor del puntero: 
+
+  Podemos desreferenciar el puntero. 
+  
+  Usamos *p. 
+
+  Al imprimirlo tenemos que cambiar el escape. 
+
+  Ya que no vuelve a ser un puntero, es un entero. 
+
+  Usamos el escape %d. 
+
+  ```
+  #include <stdio.h>
+ 
+  int main() {
+   int i = 5; 
+   int *p; 
+
+   p = &i; 
+   printf("%d\n", *p); 
+
+   return 0; 
+  }
+
+  ``` 
+
+  Imprime el valor entero que hay en la posición de memoria que apunta a p. 
+  
+  Va a imprimir el valor 5.   
+
+  
+  Alternativamente si queremos la dirección de memoria del valor. 
+
+  Podemos usar &i un print: 
+
+  Usamos el escape del puntero: %p 
+
+  ```
+  #include <stdio.h>
+ 
+  int main() {
+   int i = 5; 
+   int *p; 
+
+   p = &i; 
+   printf("%p\n", &i); 
+
+   return 0; 
+  }
+
+  ```   
+
+
+ Acceder a posiciones de memoria no valida: 
+
+  ```
+  #include <stdio.h>
+ 
+  int main() {
+   int i = 5; 
+   int *p; 
+
+   p = &i; 
+   printf("%d\n", *p); 
+
+   return 0; 
+  }
+
+  ```  
+
+  La variable puntero p guarda una posición de memoria. 
+
+  Como es una variable y que además la posición de memoria es un número entero, podemos hacer operaciones. 
+
+  Si modificamos su contendio, la posición de memoria, el programa fallará. 
+
+
+  Como es una variable, podemos hacer operaciones como: 
+
+  ```
+  #include <stdio.h>
+ 
+  int main() {
+   int i = 5; 
+   int *p; 
+
+   p = &i; 
+   printf("%d\n", *p); 
+
+   return 0; 
+  }
+
+  ```  
+  
+  p apunta a dirección de i, i tiene 5. 
+
+  Cuando imprimimos la desreferencia al puntero, nos da el valor de i, 5. 
+
+  
+  Si hacemos p++ (aumentando o cambiando la dirección del puntero)
+  
+  Y despues imprimimos la desreferencia nos muestra un valor que no va a ser el 5 de la variable i. 
+
+   ```
+  #include <stdio.h>
+ 
+  int main() {
+   int i = 5; 
+   int *p; 
+
+   p = &i; 
+   p++;
+   printf("%d\n", *p); 
+
+   return 0; 
+  }
+
+  ```
+
+  Como detalle, no podemos siquiera imprimir el entero, usando el escape %d.
+
+  Tenemos que usar %p para poder imprimir un puntero. 
+
+  Además tenemos que cambiar la desreferencia *p por el puntero p. 
+
+  ```
+  #include <stdio.h>
+ 
+  int main() {
+   int i = 5; 
+   int *p; 
+
+   p = &i; 
+   p++;
+   printf("%p\n", p); 
+
+   return 0; 
+  }
+
+  ```
+  
+  Ahora al querer imprimir el valor de i con el escape y la desreferencia: 
+  
+  ```
+  #include <stdio.h>
+ 
+  int main() {
+   int i = 5; 
+   int *p; 
+
+   p = &i; 
+   p++;
+   printf("%d\n", *p); 
+
+   return 0; 
+  }
+
+  ```
+
+  En la posición de memoria nueva está un valor de una dirección de memoria que no deja de ser un entero. 
+
+  Intentará devolver el valor de la dirección de int *p. 
+
+
+  Si hacemos una operación como: 
+
+  ```
+  #include <stdio.h>
+ 
+  int main() {
+   int i = 5; 
+   int *p; 
+
+   p = &i; 
+   p = p + 150; 
+   printf("%d\n", *p); 
+
+   return 0; 
+  }
+
+  ```
+  
+  p intenta guardar su posición o valor de memoria + 150. 
+
+  Accede a valores que no se sabe que contenido puede tener. 
+
+ 
+  Cuando el sistema operativo detecte que queremos acceder a una posición no valida dado que no nos reservó, nos cerrá el programa que estamos cerrando. 
+
+  Nos dará un fallo como 'Acceso a memoria o segmento no permitido o ilegal', dependiendo del sistema operativo. 
+
+ 
+
+|| Parámetros argc y argv en Main 
+
+ 
+ Si declaramos un vector de esta forma: int v[]. 
+
+ No podemos darle valor de esta forma: v = 5. 
+ 
+ Dado que v es un puntero a la posición de memoria dónde empieza el array. 
+
+ Cuando accedemos a un valor del array: v[0]. 
+
+ Estamos estamos desreferenciando al puntero/array + 0. 
+
+ *(v+0). 
+
+ Es v+0 dado que se forma con lo que apunte v + pos 0. 
+ 
+ Si accedemos a v[1]. 
+
+ Desreferenciamos v y la siguiente posición de memoria desde 0. 
+ 
+ *(v+1). 
+
+
+ Aunque el incremento se multiplica por el tamaño del tipo de datos. 
+
+ Si v fuera de tipo int[] incrementamos 4 bytes, no 1. 
+
+
+ Parámetros en main: 
+
+  El sistema va a añadir dos parámtros: argc y argv, aunque no lo veamos. 
+ 
+  argc es un entero y argv es un puntero a un array de caracteres. 
+
+  argc es argumento cuenta/count
+
+  argv es un argumento de vector de vectores, dado que es un vector de cadena de caracteres. 
+   
+  Una cadena de caracteres es un vector y un vector de cadenas de caracteres. 
+
+  Es un vector de punteros a cadenas de caracters. 
+
+  Se puede escribir: char* argv[]
+                      |      |
+            puntero a cad y otro puntero (= vector) cadenas de caracteres. 
+ 
+  También se puede escribir char** argv. 
+
+
+  Entonces,  main (int argc, char* argv[]) {}
+  
+  arg count y arg vector, son argumentos de de llamada. 
+
+  ```
+  int main (int argc, char* argv[]) {
+   
+   return 0; 
+  }
+  
+  ```
+  
+  Se usan para pasar valores por la linea de comandos. 
+ 
+  Desde una terminal podemos abrir un programa escribiendo su nombre.
+  
+  O usar ese programa desde la terminal y pasarle valores para que haga o devuelva ciertas acciones, valores, resultados. 
+
+
+  Con las variables argc y argv podemos acceder a las variables que se pasan por la linea de comandos. 
+ 
+  argc va a contar los parametros pasados por terminal. 
+
+  argv va a ser el vector a cada cadena (vector que contiene los parametros). 
+
+ 
+  Imprimir el número de parametros que se pasan por la terminal. 
+  
+  ```
+  int main (int argc, char* argv[]) {
+   printf("%d\n", argc);    
+
+   return 0; 
+  }
+
+  ```
+  Si ejecutamos el programa con su nombre, argc lo contará como 1. 
+
+  Si le pasamos además de su nombre, varias cadenas; las contará. 
+
+  El valor devuelto es lo que vale argc. 
+
+  
+  Imprimir el vector de vectores argv: 
+
+  ```
+  int main (int argc, char* argv[]) {
+   printf("%d\n", argc);    
+
+   int i: 
+   for (i = 0; i < argc; i++) {
+    printf("%s\n", argv[i]); 
+   }
+
+   return 0; 
+  }
+
+  ```
+    
+  En cada vuelta vamos a imprimir cadenas con el escape %s. 
+
+  A print le pasamos argv[i], la posicion i de argv.  
+
+  argv[1], [2], etc. 
+
+  La posición i nos devolverá una cadena. 
+
+ 
+    
+|| Structs
+
+ Los registros o estructuras son una especie de contenedor.
+
+ Tiene un nombre y es de tipo struct. 
+
+ Almacena variables, punteros, etc. 
+
+ Nos permite crear una varible de tipo struct para acceder o usar las variables almacenadas. 
+ 
+ 
+ Similar a los array pero guarda todo tipo de dato. 
+
+ Ej: podriamos crear una estructura llamada fecha. 
+  
+ Almacenará variables o campos como dia, mes, año. 
+
+ Podríamos acceder a los campos usando fecha.dia, fecha.mes, fecha.año, etc. 
+
+  
+ Los mismo si queremos crear una biblioteca. 
+
+ Tendra campos como autor, nombre del libro, isbn, etc. 
+
+ La biblioteca será de tipo struct y las variables de tipo int, float, char; lo que se necesite. 
+
+ Todas las estructuras cierran con punto y coma después de la llave. 
+ 
+ ```
+ #include <stdio.h>
+
+ struct fecha {
+  char dia, mes; 
+  int anio; 
+ }; 
+
+ int main(int argc, char* argv[]) {
+  struct fecha f; 
+  
+  f.dia = 14; 
+  f.ms = 6; 
+  f.anio = 2030; 
+
+  print("%d/%d/%d\n", f.dia, f.mes, f,anio); 
+
+  return 0; 
+ }
+
+ ```
+
+ Definimos la estructura y después la usamos y asignamos valores en main. 
+
+ Para usar la estructura tenemos que crear una variable de tipo struct fecha. 
+
+ struct fecha + nombre var. 
+  
+ Para asignar los campos llamamos a la variable struct. 
+ 
+ f.dia, f.mes, f.anio. 
+ 
+
+ Función que devuelve un struct: 
+
+  Es mucho más eficiente que andar definiendo o implementado cosas en main. 
+
+  Separamos el programa en muchas y pequeñas funciones. 
+  
+  Debemos crear la función llamando a la estructura.
+
+  struct fecha + nombre func. + param + cálculo   
+ 
+  Debemos llamar a la estructura dentro de la función para usarla. 
+  
+  La asignación ya no lo hacemos nosotros, sino, quién use la función. 
+ 
+  Sus valores serán los argumentos pasados a los parametros. 
+
+  ``` 
+  struct fecha fecha_crear(char dia, char mes, int anio) {
+   struct fecha f; 
+   f.dia = dia; 
+   f.mes = mes; 
+   f.anio = anio; 
+   
+   return f; 
+  }
+ 
+  ```
+
+
+ Usar la función struct en main: 
+ 
+  En main creamos una variable struct fecha. 
+
+  Y guardamos la función en la variable struct. 
+
+  ```
+  #include <stdio.h>
+
+  struct fecha {
+   char dia, mes; 
+   int anio; 
+  }; 
+
+  struct fecha fecha_crear(char dia, char mes, int anio) {
+   struct fecha f; 
+   f.dia = dia; 
+   f.mes = mes; 
+   f.anio = anio; 
+   
+   return f; 
+  }
+
+  int main(int argc, char* argv[]) {
+   
+   struct fecha f; 
+   f = fecha_crear(10, 12, 2030);
+   print("%d/%d/%d\n", f.dia, f.mes, f,anio); 
+
+   return 0; 
+  }
+
+  ```  
+
+  Sintaxis alternativa: 
+ 
+  El valido hacer uso de la declaración inline. 
+
+  Solo cuando declaramos su tipo: struct fecha f...
+
+  ```
+  struct fecha fecha_crear(char dia, char mes, int anio) {
+   struct fecha f = {dia, mes, anio}
+   return f; 
+  }
+
+  ```   
+ 
+ No es valido: 
+
+ ```
+ struct fecha f; 
+ 
+ f = {dia, mes, anio}; 
+
+ ```
+
+ A f le falta struct fecha: 
+
+ ```
+ struct fecha f;
+
+ struct fecha f = {//...}; 
+
+ ```
+
+ O podemos castear
+
+ ```
+ struct fecha f;
+
+ fecha = (struct fecha) {//...}; 
+
+ ```
+
+ Usar return para simplificar aún más la sintaxis de struct: 
+ 
+ ``` 
+ return (struct fecha) = {dia, mes, anio};
+
+ ```
+
+
+|| Punteros a estructuras
+
+ Formas de pasar parámetros: 
+
+  1. Valor: 
+
+   Las variables de la función y las variables main están en zonas distintas. 
+
+   ```
+   void a (int x) {
+    x++            //cálculo
+   }
+
+   int main () {
+    int i = 5    
+    a (i);       //llamada a función
+ 
+    return 0; 
+   }
+
+   ```
+
+   las variables a y x están es direcciones o posiciones o zonas de memoria distintas
+
+   El valor 5 se transferirá a x, pero no la dirección de memoria de i. 
+
+   Se crea una copia de i sobre la cual la función va a hacer sus cálculos, lo hace en una dirección distinta. 
+
+   La función podrá aumentar ese valor 5 en 6 (dado el contador). 
+
+   Sin modificar i.   
+  
+
+  2. Referencia: 
+  
+   El parámetro de la función será un puntero. 
+
+   Le pasamos la dirección de memoria de la variable que queremos modificar. 
+   
+   Cuando ejecutemos la función se va a crear una variable puntero para almacenar la dirección de memoria &i.
+  
+   Lo hacemos para apuntar a una variable y cambiarle el valor.
+
+   Guardamos el cálculo de la función en esa misma variable. 
+   
+   Para esto tenemos que desreferenciar el puntero para que devuelva un valor. 
+ 
+   ```
+   void a (int* x) {
+    *x++            //cálculo
+   }
+
+   int main () {
+    int i = 5    
+    a (&i);       //llamada a función
+ 
+    return 0; 
+   }
+
+   ```
+  
+   i pasa a valer 6. 
+  
+
+   Pasamos la dirección de memoria &i a int* x. 
+   
+   Después tenemos que tomar el valor que hay en esa dirección y modificarlo
+
+   Usamos la desreferencia y aplicamos el cálculo: *x++
+
+   Aunque sea una copia apunta a la misma dirección. 
+
+   
+
+ Estructuras por referencia: 
+
+  Prototipamos las funciones antes de main (solo defiendolas).
+
+  Creamos una estructura. 
+
+  Creamos una función struct 
+  
+  Creamos una funcion print con un puntero de parametro. 
+ 
+  La variable puntero almacenará una dirección de memoria.  
+ 
+  Y creamos función incrementar con un puntero. 
+   
+  Debemos pasarle una dirección de memoria con &varX. 
+
+  Definimos las funciones después de main. 
+
+  
+  ```
+  #include <stdio.h>
+  
+  struct fecha {
+   char dia, mes; 
+   int anio;   
+  };
+
+  struct fecha fecha_crear(char dia, char mes, int anio); 
+  void fecha_print(struct fecha* f); 
+  vodi fecha_incrementar(struct fecha* f);   
+
+  int main (int argc, char* argv[]) {
+   struct fecha f; 
+   f = fecha_crear(10, 12, 2030); 
+   fecha_print(&f); 
+   fecha_incrementar(&f); 
+   fecha_print(&f); 
+   
+   return 0; 
+  }
+
+
+  struct fecha fecha_crear(char dia, char mes, int anio) {
+   return (struct fecha_crear) {dia, mes anio}; 
+  }
+ 
+  void fecha_print(struct fecha* f) {
+   printf("%d/%d/%d\n", f->dia, f->mes, f->anio); 
+  }
+
+  void fecha_incrementar(struct fecha* f) {
+   f->dia++
+   if(f->dia > 30) {
+    f->dia = 1; 
+    f->mes++; 
+    if(f->mes > 12) {
+     f->mes = 1; 
+     f->anio++; 
+    }
+   }
+  }
+  
+  ``` 
+  
+  El operador de acceso para campos a traves de punteros es la flecha.
+ 
+  Es para desreferenciar el valor o devolver el valor. 
+
+  Una función void no devuelve ningún valor, no hace falta poner return. 
+   
+  Aunque podemos ponerlo al final como: return; 
+
+
+  Podemos hacer lo mismo pero pasando los parámetros por valor. 
+
+  Sería más ineficiente. 
+
+
+  Tendríamos que cambiar las fechas de acceso al valor de los punteros. 
+  
+  Por puntos de acceso a campos de la estructura. 
+  
+  Y cambiar &, * de los parametros y variables. 
+
+  ```
+  #include <stdio.h>
+  
+  struct fecha {
+   char dia, mes; 
+   int anio;   
+  };
+
+  struct fecha fecha_crear(char dia, char mes, int anio); 
+  void fecha_print(struct fecha f); 
+  vodi fecha_incrementar(struct fecha f);   
+
+  int main (int argc, char* argv[]) {
+   struct fecha f; 
+   f = fecha_crear(10, 12, 2030); 
+   fecha_print(f); 
+   fecha_incrementar(f); 
+   fecha_print(f); 
+   
+   return 0; 
+  }
+
+
+  struct fecha fecha_crear(char dia, char mes, int anio) {
+   return (struct fecha_crear) {dia, mes anio}; 
+  }
+ 
+  void fecha_print(struct fecha f) {
+   printf("%d/%d/%d\n", f.dia, f.mes, f.anio); 
+  }
+
+  void fecha_incrementar(struct fecha f) {
+   f.dia++
+   if(f.dia > 30) {
+    f.dia = 1; 
+    f.mes++; 
+    if(f.mes > 12) {
+     f.mes = 1; 
+     f.anio++; 
+    }
+   }
+   fecha_print(f); 
+  }
+  
+  ```
+
+  Imprime 3 valores, uno repetido dado que no se ha modificado la variable. 
+
+  Los otros valores son los parametros. 
+
+  
+  Rs: 
+
+  ```
+   Punteros: 
+ 
+   int* i // guarda dirección
+  
+    Recibe &i //dirección 
+    
+    Toma el valor con *i //hacer cálculos o modificar var
+     cuando operamos solo param
+        
+   -> // operador de acceso: desreferencia y accede al valor de los punteros
+    cuando necesitamos acceder a valor en punteros.  
+
+  ```
+
+
+
+|| Punteros a funciones
+
+ a(){//...}
+
+ Una función se debe guardar en una posición de la pila de memoria. 
+
+ Como está en una posición de memoria podemos pasar su dirección. 
+
+ Usando &a. 
+
+ Definimos una función y la llamamos en main.  
+
+ Ej: 
+
+ ```
+ #include <stdio.h>
+
+ void print() {
+  printf("Hola mundo\n"); 
+ }
+
+ int main(int argc, char* argv[]) {
+  print(); 
+
+  return 0; 
+ }
+
+ ``` 
+ 
+
+ Puntero a una función: 
+
+  Para declarar punteros a una variable haciamos: int* x; 
+
+  Declarar un puntero a una función es más complicado porque el tipo de dato de una función es más complejo que el de una variable. 
+
+  El tipo de dato de una función como: 
+  
+  ```
+  void print() {
+   printf("Hola mundo\n"); 
+  } 
+
+  ```
+  
+  Se compone de dos partes:
+
+  1. Tipo de dato de retorno de la función. 
+
+  2. Lista de parámetros. 
+
+ 
+ Declarar puntero a una función:     
+  
+  Escribimos su tipo de retorno. 
+
+  Entre parentesis (*+nombre del puntero). 
+
+  Será el nombre de la variable puntero que guardará una dirección de memoria. 
+
+  Seguido de otro parentesis con los parámetros que tiene la función. 
+
+  Si no tiene parámetros escribimos void: (void). 
+ 
+  Ej: void (*funcion) (void)
+
+  Este sería un puntero nulo con parámetros nulos, llamado funcion.  
+
+  Después podemos darle valores que serán de tipo void. 
+
+  funcion = &print; 
+
+  Guarda la dirección de la función print. 
+
+  La función print retorna void y no tiene parámetros. 
+ 
+  Es compatible con el puntero que creamos. 
+
+  
+ Ejecutar puntero a función: 
+
+  Hacemos: (*funcion)(). 
+
+  Desreferenciamos el puntero función con su lista de parámetros vacio. 
+  
+  Esto es para devolver el valor de la función print. 
+
+  ```
+  #include <stdio.h>
+
+  void print() {
+   printf("Hola mundo\n"); 
+  } 
+
+  int main (int argc, char* argv[]) {
+   void (*funcion)(void);
+   funcion = &print; 
+   (*funcion)(); 
+
+   return 0; 
+  }
+   
+  ```
+
+  Se ejecuta la función. 
+  
+  Alternativamente podemos quitar el parentesis y el *. 
+
+  ```
+  void (*funcion)(void);
+  funcion = &print; 
+  funcion(); 
+
+  ```  
+
+
+ Puntero a función con parámetro: 
+
+  ```
+  void print2(int x) {
+   printf("Has dicho %d", x); 
+  }
+ 
+  ```
+ 
+  Imprime el valor pasado por parámetro
+
+
+  Podemos crear su puntero, como lo hicimos con la función anterior. 
+
+  Tenemos un tipo void y un parámetro. 
+
+  ```
+  int main() {
+   void (*funcion2)(int);
+   funcion2 = &print2; 
+   (*funcion2)(5); 
+
+   return 0; 
+  }
+ 
+  ```
+ 
+  Ponemos otro nombre, escribimos el parámetro int (solo el tipo). 
+
+  Al puntero de función le asignamos la dirección de la print2. 
+
+  Ahora para ejecutarla debemos pasarle un valor al parámetro. 
+
+  Se va a ejecutar: "Has dicho 5". 
+
+
+ Puntero a función entero y con parámetro: 
+  
+ ```
+ int print3 (int x) {
+  print("2*%d=%d", x, 2*x)
+ 
+  return 2*x; 
+ }
+ 
+ ```
+
+ Ahora para crear el puntero tenemos que ajustar el tipo de retorno int. 
+
+ Y creamos una variable para guardar la ejecución de la función. 
+
+ ```
+ int main(int argc, char* argv[]) {
+   int (*funcion3)(int);
+   funcion3 = &print3; 
+   int val = (*funcion3)(5); 
+   print("El resultado es %d\n", val); 
+ 
+  return 0; 
+ }
+ ```
+
+ O alternativamente usamos print2 para pasarle un entero. 
+
+ Este entero será la variable que guarda la ejecución print3. 
+
+ ```
+ int main(int argc, char* argv[]) {
+   int (*funcion3)(int);
+   void (*funcion2)(int); 
+   funcion3 = &print3;  
+   función2 = &print2; 
+   int val = (*funcion3)(5); 
+   (*funcion2)(val); 
+  return 0; 
+ }
+ 
+ ```
+ Ahora imprime, "Has dicho 10". 
+
+ El cálculo o valor es de funcion3. 
+
+ 
+ Emular programación orientada a objetos en C: 
+
+  Un uso avanzado de punteros sería emular con estructuras la POO. 
+
+  Nos faltaría la extensión de propiedades pero se puede hacer algo parecido. 
+
+
+  ```
+  struct obj {
+   int campo1, campo2; 
+   obj* x;                        //puntero a otro objeto
+   void (*func1)(int, char, int   //metodos
+  };
+
+  ```
+
+  El puntero a objeto emula relación entre objetos
+
+
+ Callback: 
+
+  Pasar una función como parámetro en la llamada a otra función. 
+
+  ```
+  int sumar (int a, int b, void (*callback)(int)) {
+   int suma = a + b; 
+   (*callback)(suma); 
+   return suma; 
+  }
+  ```
+
+
+
+|| Memoria Dinámica
+
+ No se crea en tiempo de compilación, cuando se crea al programa. 
+ 
+ Se crea en tiempo de ejecución, cuando se está corriendo el programa. 
+
+ 
+ Memoria en tiempo de compilación:
+  
+  Cuando creamos variables, es memoria estatica. 
+
+  El compilador va a buscar las variables y darle lugar en la memoria. 
+
+  Van a quedar para siempre en el programa, desde su inicial hasta el final del mismo. 
+
+  ```
+  int main() {
+   int var1, var2, var3; 
+   char var4; 
+
+   return 0; 
+  }
+
+  ```
+  
+
+ Memoria dinámica en tiempo de ejecución: 
+  
+  Asigamos memoria en el momento del programa que la necesitemos. 
+
+  Podemos pedir tanto como tenga disponible el sistema. 
+
+  Cuando ya no la necesitemos podemos liberarla. 
+
+  La memoria que va a usar un programa se compone de la memoria estática, dinámica y la pila de llamada o ejecución para los valores que se le pasan a los parámetros. 
+
+  
+  Podemos acceder a ella mediante punteros. 
+
+  Almacenará una dirección de memoria vacía o reservada para uso. 
+ 
+  Usamos la función malloc() gestionar la parte de memoria dinámica de los programas. 
+
+  En esa zona se crean variables punteros que guardan direcciones de memoria dinámica. 
+
+  Usamos la función free() para eliminar la memoria dinámica cuando ya no nos haga falta. 
+
+  Para usar malloc y free necesitamos agregar la cabezera <stdlib.h>
+
+
+ Usando memoria estática: 
+  
+  Declaramos las variables normalmente. 
+   
+  ```  
+  #include <stdio.h>
+  #include <stdlib.h>
+
+  int main(int argc, char* argv[]) {
+   int x = 5; 
+
+   printf("%d\n", x); 
+
+   return 0; 
+  }
+ 
+  ``` 
+  
+ 
+ Usando memoria dinámica: 
+
+  Debemos usar un puntero por ej x. 
+ 
+  Si creamos la var x es estático. 
+
+  El puntero es una variable normal o estática que guarda una dirección de memoria. 
+
+  Lo que guardará va a ser dinámico.  
+
+  ```
+  #include <stdio.h>
+  #include <stdlib.h>
+
+  int main(int argc, char* argv[]) {
+   int *x; 
+
+   printf("%d\n", *x); 
+
+   return 0; 
+  }
+ 
+  ```
+  Si queremos imprimir su dirección estará vacía. 
+
+  No apunta a nada hasta el momento. 
+    
+
+  Tenemos que inicializarlo creando memoria dinámica. 
+  
+  Usamos malloc. 
+  
+  ```
+  #include <stdio.h>
+  #include <stdlib.h>
+
+  int main(int argc, char* argv[]) {
+   int *x; 
+   x = malloc(); 
+
+   printf("%d\n", *x); 
+
+   return 0; 
+  }
+
+  ```
+
+  malloc() crea un bloque de memoria y va a devolver una posición de memoria que guardamos en un puntero. 
+
+  x = malloc(); 
+
+  Tiene un parámetro (size_t) que es el número de bytes que podemos reservar. 
+
+  Las necesidades de memoria se planifican según el tipo de dato y el tamaño del contenido a guardar. 
+
+  Si guardamos un entero ocupará 4 bytes. 
+    
+  ```
+  #include <stdio.h>
+  #include <stdlib.h>
+
+  int main(int argc, char* argv[]) {
+   int *x; 
+   x = malloc(4); 
+
+   printf("%d\n", *x); 
+
+   return 0; 
+  }
+
+  ```
+
+  O podemos hacer una buena practica usando (sizeof(tipoDato)).
+
+  ```
+  #include <stdio.h>
+  #include <stdlib.h>
+
+  int main(int argc, char* argv[]) {
+   int *x; 
+   x = malloc(sizeof(int)); 
+
+   printf("%d\n", *x); 
+
+   return 0; 
+  }
+
+  ``` 
+    
+  Le asignamos valor al puntero desreferenciandolo. 
+
+  Después liberamos la memoria dinámica con free(puntero)
+
+  ```
+  #include <stdio.h>
+  #include <stdlib.h>
+
+  int main(int argc, char* argv[]) {
+   int *x;                   //crea un puntero
+   x = malloc(sizeof(int));  //inicializa con memoria dinamica
+   *x = 5;                   //asigna un valor
+
+   printf("%d\n", *x);       //imprime al valor apuntado
+
+   free(x);                  //libera memoria del puntero. 
+
+   return 0; 
+  }  
+
+  ```
+
+
+  Si intentamos imprimir el puntero después de liberar memoria, fallará o devolverá una dirección random. 
+
+  ```
+  free(x); 
+
+  printf("%d\n", *x);
+ 
+  ```
+
+
+
+|| Strings y Vectores Dinámicos
+
+ Memoria dinámica en un array dinámico: 
+  
+  Como podemos pedir con malloc() memoria en bytes para enteros. 
+
+  Podemos pedir para vectores, aunque tiene que ser bytes más grande. 
+
+  En vez de 4, pedimos 128 por ejemplo. 
+
+ 
+  Como los vectores son punteros ya sea a un grupo de int o char. 
+
+  Al crear un malloc de 128 nos devuelve su puntero. 
+
+  Podemos acceder a cada una de las 128 posiciones. 
+
+  Usando el puntero como si vuera un vector. 
+
+  
+  Nos permite crear un vector dinámico. 
+
+  En vez de crear un vector: char v[20]; 
+  
+  Creamos un puntero, lo inicializamos y le asignamos un valor.   
+
+  ``` 
+  #include <stdio.h>
+  #include <stdlib.h>
+ 
+  int main(int argc, char* argv[]) {
+   char* cadena = malloc(sizeof(char) * 128); 
+
+   printf("Introduce una cadena: "); 
+   scanf("%s", cadena);   
+
+   printf("Has dicho %s.\n", cadena); 
+
+   free(cadena); 
+  
+   return 0; 
+  }
+
+  ```
+   
+  Creamos un puntero cadena. 
+
+  Le pasamos a malloc(128) directamente o una practica segura es usar sizeof(tipoDato). 
+
+  Debemos multiplicar el tamaño de la estructura que queremos crear por el numero de veces que queremos crear esa estructura.  
+  
+  malloc(sizeof(char)*128); dado que un char mide 1 byte
+
+  Después podemos escribir un valor en él, como lo hicimos anteriormente con el entero. 
+
+  O podemos usar la función scanf para introducir un valor. 
+
+  El valor que escaneamos se va a guardar en el puntero. 
+
+  scanf acepta punteros o direcciones de memoria: var punt o *p y &p. 
+
+  
+  Al compilar solo retorna hola, scanf tiene problemas para imprimir cadenas, es inseguro imprimir cadenas. 
+
+  scanf lee el teclado y asigna el valor. 
+
+  No hace ninguna comparación. 
+
+  Es seguro para leer números porque los corta si no cabe en la memoria. 
+
+  Pero para leer cadenas es inseguro, dado que si hemos creado un espacio dinámico limitado e introducimos un valor muy grande. 
+
+  Va a intentar escribir todo el valor en ese lugar y cuando pase el limite de memoria dinámica creado va a seguir escribiendo. 
+
+  Puede borrar otras variables o acceder a memoria no reservada. 
+  
+  Otro motivo es que cuando detecta un espacio lo interpreta como un final de cadena. 
+
+  Si le pasamos varias cadenas, va guardarlas en una posición; pero no hará ninguna comparación. 
+
+  Es peligroso porque no podemos saber cuánto estamos introduciendo. 
+
+
+  Para leer cadenas de tipo char*, usamos fgets es más complejo dado que lee multiples cosas como archivos. 
+
+  El primer parámetro es el puntero en el que queremos que se guarde lo introducido. 
+
+  El segundo va a ser un número máximo de carácterse al leer. 
+  
+  El tercero es el sitio del que queremos leer los datos. 
+
+  Puede ser de cualquier lugar, archivo. 
+
+  Con stdin le pedimos que lea el teclado. 
+
+  ``` 
+  #include <stdio.h>
+  #include <stdlib.h>
+ 
+  int main(int argc, char* argv[]) {
+   char* cadena = malloc(sizeof(char) * 128); 
+
+   printf("Introduce una cadena: "); 
+   fgets(cadena, 128, stdin);   
+
+   printf("Has dicho %s.\n", cadena); 
+
+   free(cadena); 
+  
+   return 0; 
+  }
+
+  ```
+
+  fgets lee hasta los saltos de line \n. 
+
+  Si nos pasamos del limite de memoria, llega un momento en el que corta el valor introducido. 
+
+  
+  Acceder a las posiciones de la cadena dinámica: 
+
+   Como si fuera un vector porque los punteros no dejan de ser un vector. 
+
+   Podemos acceder a la posición individualmente
+
+   ```
+   printf("Caracter 1: %c\n", cadena[1]); 
+
+   ```
+   Imprime el segundo carácter: u. 
+
+
+
+  Creamos un espacio de memoria grande para poder guardar muchas cosas. 
+  
+  ```
+  #include <stdio.h>
+  #include <stdlib.h>
+
+  int main (int argc, char* argv[]) {
+   int* numeros; 
+   numeros = malloc(sizeof(int)* 2000)
+
+   free(numeros); 
+   return 0; 
+  }
+
+  ```
+  
+  Creamos un espacio para guardar 2000 enteros, en vez de uno solo; en ese caso usariamos solo int. 
+
+  (sizeof(int)) -> 1 entero. 
+
+  (sizeof(int) * 2000) -> 2000 enteros. 
+
+
+  Asignamos un valor a una ubicación: 
+
+  ```
+  #include <stdio.h>
+  #include <stdlib.h>
+
+  int main (int argc, char* argv[]) {
+   int* numeros; 
+   numeros = malloc(sizeof(int)* 2000)
+
+   numeros[1234] = 1234; 
+   printf("%d", numeros[1234]); 
+
+   free(numeros); 
+   return 0; 
+  }
+
+  ``` 
+   
+  En resumen, los punteros son vectores. 
+
+  Con malloc podemos trabajar con ellos. 
+
+  
+  
+  
+ 
+ 
+
