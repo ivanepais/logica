@@ -37,13 +37,22 @@ riesgo
 
 
 ----
-apalancamiento
+deuda/apalancamiento
 
 desbalance activo/pasivo:
 deflación de activos comprados con deuda que se encarece. 
 
+tiempos de pagar deuda adquirida en tiempos flexibles. 
 
+inflación de deuda 
+
+
+flexibilidad:
 inflación de activos comprados con deuda que se abarata. 
+
+tiempos de adquicición de deuda
+
+deflación de deuda. 
 
 -----
 apreciación/depreciación divisa/act
