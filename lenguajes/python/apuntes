@@ -1,0 +1,1527 @@
+|| Código
+ 
+ Debugear problema, crear paso a paso los obj involucrados o necesarios. 
+
+ Agregando comentarios sobre lo que queremos hacer. 
+
+ Revisar su sintaxis, métodos, argumentos, etc. 
+
+ Después combinarlos.
+
+
+ Tipo de dato/estructura que trata el problema.  
+
+ Cuál es la entrada y cómo debería verse la salida
+
+ Condiciones o elementos que hay por el camino. 
+ 
+
+ Si tienes que buscar un tutorial, comprende no solo la solución
+ 
+ Sino también el flujo lógico detrás de ella
+
+ Cómo se dividió el problema en pasos y se abordó.
+
+ En DSA se guardan los obj y hace eficiente el programa, es crucial.
+
+
+|| Intro
+
+ El código se ejecuta de arriba hacia abajo.  
+
+ A veces hay instrucciones que dependen de cierto valor en una condición. 
+
+ El nombre de la variable (izq) expresa la accion o una relación.
+
+ Con su valor o contenido (der). 
+
+ ```
+ passwordFile = open('SecretPasswordFile.txt')
+ 
+ secretPassword = passwordFile.read()
+
+ ```
+
+ Abrirá un archivo y después lo leerá. 
+
+ 
+ Escribir programas implica dividir un problema en pasos individuales y detallados. 
+
+ De manera similar, al depurar programas (es decir, encontrar y corregir errores), observarás pacientemente lo que hace el programa y encontrarás la causa de los errores.
+
+ 
+ Foro: 
+
+  leer las secciones de preguntas frecuentes 
+  
+  Explique lo que está tratando de hacer, no solo lo que hizo. 
+
+  Especifique el punto en el que ocurre el error. ¿Ocurre al comienzo del programa o solo después de realizar una determinada acción?
+
+  Copie y pegue el mensaje de error completo y su código:
+
+  https://pastebin.com/ o https://gist.github.com/
+
+  Explique lo que ya ha intentado hacer para resolver su problema. 
+
+  Esto le indica a las personas que ya ha trabajado un poco para resolver las cosas por su cuenta.
+
+  Diga si puede reproducir el error cada vez que ejecuta el programa o si ocurre solo después de realizar ciertas acciones. 
+
+  Si es esto último, explique cuáles son esas acciones.
+
+  autbor.com/help/
+  
+  https://www.reddit.com/r/learnprogramming/wiki/faq/
+
+  https://www.reddit.com/r/cscareerquestions/wiki/index/
+
+  https://inventwithpython.com/blog/
+
+  al@inventwithpython.com
+
+  https://reddit.com/r/inventwithpython/
+
+
+
+|| Básico
+
+ Python tiene una amplia gama de construcciones sintácticas, funciones de biblioteca estándar y características de entorno de desarrollo interactivo. 
+
+ Abrir shell interactivo, también llamado REPL (Read-Evaluate-Print Loop), que le permite ejecutar instrucciones de Python una a la vez y le muestra los resultados al instante.
+
+ ```
+ #instruccion
+ >>> 2+2
+ 
+ #respuesta o evaluacion
+ 4
+ 
+ #nueva instruccion
+ >>
+
+ ```
+ 
+ 2 + 2 se denomina expresión, que es el tipo de instrucción de programación más básico del lenguaje.
+ 
+ Las expresiones constan de valores (como 2) y operadores (como +), y siempre pueden evaluarse (es decir, reducirse) a un único valor.
+
+ Un único valor sin operadores también se considera una expresión, aunque se evalúa solo como sí mismo, como se muestra aquí:
+
+ ```
+ >>> 2
+ 2
+
+ ```
+
+ 
+ Los programas se bloquearán si contienen código que la computadora no puede entender, lo que hará que Python muestre un mensaje de error
+
+ Si desea saber más sobre un error, puede buscar el texto exacto del mensaje de error en línea para obtener más información. 
+
+ También puede consultar los recursos en https://nostarch.com/automatestuff2/ para ver una lista de mensajes de error comunes de Python y sus significados.
+
+
+ Operadores en expresiones: 
+
+  Como pueden ser lo matemáticos. 
+
+  +, -, *, /, **, //, %
+
+  El orden de operaciones (también llamado precedencia) de los operadores matemáticos de Python es similar al de las matemáticas. 
+  
+  El operador ** se evalúa primero; los operadores *, /, // y % se evalúan a continuación, de izquierda a derecha. 
+
+  Los operadores + y - se evalúan al final (también de izquierda a derecha). 
+
+  Puede utilizar paréntesis para anular la precedencia habitual si lo necesita. 
+
+  Los espacios en blanco entre los operadores y los valores no importan para Python (excepto la sangría al principio de la línea
+
+
+ Python se encarga de la parte difícil de evaluarla hasta obtener un único valor.
+
+ Empieza por los parentesis y después por los operadores, hasta llegar a único valor.
+
+ Combinar operadores y valores para formar expresiones son una parte fundamental de Python
+
+ Ayuda a comunicarnos, como las reglas gramaticales. 
+
+ Como debemos seguir las reglas gramáticales de un lenguaje nativo.
+
+ Debemos seguir las reglas de python. 
+
+ Si ingresa una instrucción incorrecta en Python, no podrá entenderla y mostrará un mensaje de error SyntaxError,
+ 
+
+ Tipos de datos: 
+
+  Las expresiones son simplemente valores combinados con operadores y que siempre se evalúan hasta obtener un único valor. 
+
+  Un tipo de datos es una categoría de valores y cada valor pertenece exactamente a un tipo de datos. 
+
+  Los tipos de datos más comunes son los enteros, los decimales y las cadenas. 
+   
+  ```
+  >>> 'Alice' + 'Bob'
+' AliceBob'
+
+  >>> 'Alice' + 42
+  TypeError: can only concatenate str (not "int") to str
+
+  >>> 'Alice' * 5
+ 'AliceAliceAliceAliceAlice'
+
+  >>>'Alice' * 'Bob'
+   TypeError: can't multiply sequence by non-int of type 'str'
+
+  >>> 'Alice' * 5.0
+   TypeError: can't multiply sequence by non-int of type 'float'
+
+  ```     
+
+  Errores: 
+   1. solo se puede concatenar str (no "int") con str
+   2. no se puede multiplicar una secuencia por un valor distinto de int del tipo 'str'
+   3. no se puede multiplicar una secuencia por un valor que no sea entero del tipo 'float'
+
+
+  Un operador puede cambiar en función de los tipos de datos de los valores que se encuentran junto a él. 
+
+  Por ejemplo, + es el operador de suma cuando opera sobre dos valores enteros o de punto flotante.
+
+  El mensaje de error can only concatenate str (not "int") to str significa que Python pensó que estaba intentando concatenar un entero a la cadena 'Alice'. 
+
+  Su código tendrá que convertir explícitamente el entero a una cadena porque Python no puede hacer esto automáticamente
+
+
+  Conversion tipos:
+     
+   La función str() es útil cuando tienes un entero o un flotante que quieres concatenar a una cadena. 
+
+   La función int() también es útil si tienes un número como valor de cadena que quieres usar en algunas operaciones matemáticas.   
+
+   ```
+   >>> str(29)
+   '29'
+   
+   >>> print('I am ' + str(29) + ' years old.')
+   I am 29 years old.
+
+   >>> str(0)
+   '0'
+   
+   >>> str(-3.14)
+   '-3.14'
+
+   >>> int('42')
+   42
+
+   >>> int('-99')
+   -99
+   
+   >>> int(1.25) 
+   1
+
+   >>> int(1.99)
+   1
+
+   >>> float('3.14')
+   3.14
+
+   >>> float(10)
+   10.0
+
+   ```
+
+   la función input() siempre devuelve una cadena, incluso si el usuario ingresa un número. 
+
+   Introduce spam = input() en el shell interactivo e introduce 101 cuando espere tu texto.
+  
+   ```
+   >>> spam = input()
+   101
+
+   >>> spam
+   '101'
+
+   >>> spam = int(spam)
+   >>> spam
+   101
+
+   >>> spam * 10 / 5
+   202.0
+
+   
+   ```
+
+   Tenga en cuenta que si pasa un valor a int() que no puede evaluar como un entero, Python mostrará un mensaje de error
+
+   ```
+   >>> int('99.99')
+    ValueError: invalid literal for int() with base 10: '99.99'
+
+   >>>int('twelve')
+    ValueError: invalid literal for int() with base 10: 'twelve'
+
+   ```
+
+
+   La función int() también es útil si necesita redondear hacia abajo un número de punto flotante.
+  
+   ```
+   >>> int(7.7) 
+   7
+   
+   >>> int(7.7) + 1
+   8
+
+   ```
+
+
+   Utilizó las funciones int() y str() en las últimas tres líneas de su programa para obtener un valor del tipo de datos apropiado para el código.
+ 
+   ```
+   print('What is your age?') # ask for their age
+   myAge = input()
+   print('You will be ' + str(int(myAge) + 1) + ' in a year.')
+  
+   ```
+  
+   str(int())
+
+
+  Equivalencia de texto y número: 
+
+   Aunque el valor de cadena de un número se considera un valor completamente diferente de la versión entera o de punto flotante, un entero puede ser igual a un punto flotante.
+ 
+   ```
+   >>> 42 == '42'
+   False
+
+   >>> 42 == 42.0
+   True
+   
+   >>> 42.0 == 0042.000 
+   True
+
+   ```   
+   
+   Los enteros y decimales son números, mientras que las cadenas no. 
+
+   
+   La variable myAge contiene el valor devuelto por input(). 
+
+   Debido a que la función input() siempre devuelve una cadena (incluso si el usuario escribió un número), puede usar el código int(myAge) para devolver un valor entero de la cadena en myAge. 
+
+   Este valor entero se suma a 1 en la expresión int(myAge) + 1.
+
+   El resultado de esta suma se pasa a la función str(): str(int(myAge) + 1). 
+
+   El valor de cadena devuelto se concatena con las cadenas 'You will be ' y ' in a year.' para evaluarlo como un valor de cadena grande. 
+
+   Esta cadena grande finalmente se pasa a print() para que se muestre en la pantalla.
+
+   Digamos que el usuario ingresa la cadena '4' para myAge. 
+
+   La cadena '4' se convierte en un entero, por lo que puede agregarle uno. 
+
+   El resultado es 5. 
+
+   La función str() convierte el resultado nuevamente en una cadena, por lo que puede concatenarlo con la segunda cadena, 'in a year.', para crear el mensaje final. 
+
+   Estos pasos de evaluación se verían de la siguiente manera
+  
+   ```
+   print('You will be ' + str(int(myAge) + 1) + ' in a year.')
+
+   ```
+   
+   str(int('4') + 1)
+ 
+   str(4 + 1)
+
+   str(5)
+  
+   '5'
+ 
+   print('... 5 ...')
+
+
+   Como input devuelve una cadena aunque le pasemos un número. 
+
+   Tenemos que convertirlo en entero para sumarlo con +1. 
+
+   Después convertimos este resultado entero para poder imprimirlo como cadena. 
+
+ 
+  Preguntas: 
+
+   De qué se compone una expresión, qué es lo que se supone que hace?
+     
+    Las expresiones son simplemente valores combinados con operadores y que siempre se evalúan hasta obtener un único valor. 
+  
+ 
+  En este capítulo se presentaron declaraciones de asignación, como spam = 10. 
+  ¿Cuál es la diferencia entre una expresión y una declaración?
+   
+   Una expresión se evalúa como un único valor, mientras que una declaración no.
+
+
+  ¿Qué contiene la variable bacon después de ejecutar el siguiente código?
+   
+   La variable bacon se establece en 20. 
+   La expresión bacon + 1 no reasigna el valor en bacon (eso necesitaría una declaración de asignación: bacon = bacon + 1).
+
+
+  ¿Cuáles son las tres funciones que se pueden utilizar para obtener la versión entera, de punto flotante o de cadena de un valor?
+
+   Las funciones int(), float() y str() se evaluarán como las versiones entera, de punto flotante y de cadena del valor que se les pasa.
+
+
+
+|| Control de Flujo
+
+ Según cómo se evalúan las expresiones, un programa puede decidir omitir instrucciones, repetirlas o elegir una de varias instrucciones para ejecutar.
+
+ Casi nunca quieres que tus programas comiencen desde la primera línea de código y simplemente ejecuten cada línea, directamente hasta el final.
+
+ Los diagramas de flujo representan estos puntos de ramificación con rombos, mientras que los demás pasos se representan con rectángulos. 
+
+ Los pasos de inicio y fin se representan con rectángulos redondeados.
+ 
+
+ Valores booleanos: 
+
+  Tiene solo dos valores: True y False. 
+
+  ```
+  >>> spam = True
+  >>> spam
+  True
+
+  >>> true
+  NameError: name 'true' is not defined
+
+  >>> True = 2 + 2
+  SyntaxError: can't assign to keyword
+
+  ```
+
+  Los valores booleanos se usan en expresiones y se pueden almacenar en variables
+  
+  Si los escribimos con minus dará error. 
+
+  Ni podemos usar como variable una palabra reservada. 
+ 
+  
+ Comparadores booleanos: 
+
+  ==, !=, <, >, <=, >=
+
+  ```
+  >>> 42 == 42
+  True
+  
+  >>> 42 == 99
+  False
+  
+  >>> 2 != 3
+  True
+  
+  >>> 2 != 2
+  Fals
+
+  ```
+
+  == (igual a) evalúa como Verdadero cuando los valores en ambos lados son iguales
+
+  != (no igual a) evalúa como Verdadero cuando los dos valores son diferentes. 
+
+  Los operadores == y != pueden funcionar con valores de cualquier tipo de datos.
+   
+  
+  ```
+  >>> 42 < 100
+  True
+
+  >>> 42 > 100
+  False
+
+  >>> 42 < 42
+  False
+
+  >>> eggCount = 42
+  >>> eggCount <= 42
+  True
+
+  >>> myAge = 29
+  >>> myAge >= 10
+  True
+
+  ```
+
+  Tenga en cuenta que un valor entero o de punto flotante siempre será distinto de un valor de cadena. 
+
+  La expresión 42 == '42' se evalúa como Falso porque Python considera que el entero 42 es diferente de la cadena '42'.
+
+  Los operadores <, >, <= y >=, por otro lado, funcionan correctamente solo con valores enteros y de punto flotante.
+
+
+ Operadores booleanos: 
+
+  and, or y not.
+
+  Se utilizan para comparar valores booleanos (T o F). 
+
+  Al igual que los operadores de comparación, evalúan estas expresiones hasta obtener un valor booleano.
+  
+
+  and y or siempre toman dos valores booleanos (o expresiones), por lo que se consideran operadores binarios. 
+
+  El operador and evalúa una expresión como Verdadero si ambos valores booleanos son Verdaderos; de lo contrario, se evalúa como Falso
+
+  ```
+  >>> True and True
+  True
+
+  >>> True and False
+  False
+
+
+  >>> False or True
+  True
+
+  >>> False or False
+  False
+
+  ```
+
+
+  El operador not opera solo sobre un valor booleano (o expresión). 
+
+  Esto lo convierte en un operador unario. 
+
+  El operador not simplemente evalúa el valor booleano opuesto.
+  
+  ```
+  >>> not True
+  False
+
+  >>> not not not not True
+  True
+
+  ```
+
+
+ Combinación de operadores booleanos y de comparación:
+  
+  Dado que los operadores de comparación se evalúan como valores booleanos, puede utilizarlos en expresiones con operadores booleanos.
+
+  Recuerde que los operadores and, or y not se denominan operadores booleanos porque siempre operan sobre los valores booleanos True y False. 
+
+  Si bien expresiones como 4 < 5 no son valores booleanos, son expresiones que se evalúan como valores booleanos.
+
+  ```
+  >>> (4 < 5) and (5 < 6)
+  True
+  
+  >>> (4 < 5) and (9 < 6)
+  False
+  
+  >>> (1 == 2) or (2 == 2)
+  True
+
+  ```
+  
+  Evaluará primero la expresión de la izquierda y luego evaluará la expresión de la derecha. 
+
+  Cuando conozca el valor booleano de cada una, evaluará toda la expresión hasta obtener un valor booleano.
+
+  (4 < 5) and (5 < 6)
+  
+    True and (5 < 6)
+
+    True and True
+   
+        True
+
+
+
+  ```
+  >>> 2 + 2 == 4 and not 2 + 2 == 5 and 2 * 2 == 2 + 2
+  True
+
+  ```
+   
+  Los operadores booleanos tienen un orden de operaciones al igual que los operadores matemáticos. 
+
+  Después de que se evalúen los operadores matemáticos y de comparación, Python evalúa primero los operadores not, luego los operadores and y luego los operadores or.
+
+  
+ Elementos del control de flujo: 
+
+  Las sentencias de control de flujo suelen comenzar con una parte llamada condición y siempre van seguidas de un bloque de código llamado cláusula.
+
+  
+  Condiciones: 
+   
+   Las expresiones booleanas (valores, comparadores y operadores)
+
+   Podrían considerarse condiciones, que son lo mismo que expresiones
+
+   Su nombre particular es por el contexto en el flujo de datos. 
+
+   Se evalúan hasta un valor booleano, Verdadero o Falso.
+
+   Una sentencia de control de flujo decide qué hacer en función de si su condición es Verdadera o Falso
+
+
+  Bloque de código: 
+
+   Las líneas de código de Python se pueden agrupar en bloques. Puede saber cuándo comienza y termina un bloque a partir de la sangría de las líneas de código
+  
+   Dado que no hay llaves. 
+  
+ 
+ Ejecución de un programa: 
+
+  No todos los programas se ejecutan simplemente yendo hacia abajo. 
+
+  Probablemente se encuentre saltando por el código fuente en función de las condiciones y probablemente se salte cláusulas enteras.
+
+ 
+ Sentencias de control de flujo: 
+
+  En diagramas se representa con un diamante. 
+
+ 
+  If statements: 
+   
+   Su clausula o bloque se ejecutará cuando la condición de la sentencia es Verdadera. 
+
+   La cláusula se omite si la condición es Falsa.
+
+   Una sentencia if podría leerse como: 
+
+   “Si esta condición es verdadera, ejecute el código en la cláusula”.
+
+   ```
+   if name == 'Alice':
+   	print('Hi, Alice.')
+
+   ```  
+  
+   Diagrama: 
+
+    inicio
+    |
+    if -> True |print("Hi, Alice")|
+    |               |
+    False           |
+    |               |
+    |               |    
+    fin <------------
+
+
+  Else statements: 
+
+   if puede ir seguida opcionalmente de una sentencia else. 
+   
+   La cláusula else se ejecuta solo cuando la condición de la sentencia if es falsa. 
+
+   else podría leerse como “Si esta condición es verdadera, ejecuta este código. 
+
+   O bien, ejecuta ese código”. 
+
+   else no tiene una condición. 
+
+   ```
+   if name == 'Alice':
+   	print('Hi, Alice.')
+   else:
+   	print('Hello, stranger.')	
+
+   ```
+
+
+  Elif statements: 
+ 
+   Si bien solo se ejecutará una de las cláusulas if o else, es posible que tenga un caso en el que desee que se ejecute una de las muchas cláusulas posibles. 
+
+   La sentencia elif es una sentencia “else if” que siempre sigue a una sentencia if u otra sentencia elif. 
+
+   Proporciona otra condición que se verifica solo si todas las condiciones anteriores fueron falsas.  
+  
+   ```
+   if name == 'Alice':
+   	print('Hi, Alice.')
+   elif age < 12:
+   	print('You are not Alice, kiddo.')
+
+   ```
+
+   No se garantiza que al menos una de las cláusulas se ejecute.
+  
+   Cuando hay una cadena de declaraciones elif, solo una o ninguna de las cláusulas se ejecutará. U
+
+   Una vez que se determina que una de las condiciones de las declaraciones es True, el resto de las cláusulas elif se omiten automáticamente.
+
+
+   El orden de las sentencias elif sí importa. 
+   
+   Recuerde que el resto de las cláusulas elif se omiten automáticamente una vez que se encuentra una condición True. 
+
+   ```
+   name = 'Carol'
+   age = 3000
+   if name == 'Alice':
+     print('Hi, Alice.')
+   elif age < 12:
+     print('You are not Alice, kiddo.')
+   elif age > 100:
+     print('You are not Alice, grannie.')
+   elif age > 2000:
+     print('Unlike you, Alice is not an undead, immortal vampire.')
+
+   ```
+  
+   Se va a imprimir >100 antes que >2000
+   
+
+   Opcionalmente, puede tener una declaración else después de la última declaración elif. 
+
+   En ese caso, se garantiza que se ejecutará al menos una (y solo una) de las cláusulas. 
+
+   Si las condiciones en cada enunciado if y elif son falsas, entonces se ejecuta la cláusula else. 
+
+   Sería “Si la primera condición es verdadera, haga esto. 
+
+   De lo contrario, si la segunda condición es verdadera, haga aquello. 
+
+   De lo contrario, haga otra cosa”. 
+
+  Cuando utilice las instrucciones if, elif y else juntas, recuerde estas reglas sobre cómo ordenarlas para evitar errores
+
+  ```
+  name = 'Carol'
+  age = 3000
+  if name == 'Alice':
+    print('Hi, Alice.')
+  elif age < 12:
+    print('You are not Alice, kiddo.')
+  else:
+    print('You are neither Alice nor a little kid.')  
+
+  ```
+
+  
+ While loop statements: 
+
+  Hacer que un bloque de código se ejecute una y otra vez. 
+  
+  Al final de una cláusula while, la ejecución del programa salta de nuevo al inicio de la sentencia while. 
+
+  Se llama bucle while o bucle. 
+
+  Con if: 
+
+  ```
+  spam = 0
+  if spam < 5:
+    print('Hello, world.')
+    spam = spam + 1
+
+  ```
+  Hello, world.
+
+  Con while: 
+
+  ```
+  spam = 0
+  while spam < 5:
+    print('Hello, world.')
+    spam = spam + 1
+
+  ```
+  Hello, world.
+  Hello, world.
+  Hello, world.
+  Hello, world.
+  Hello, world.
+
+  Vuelve al while o bucle hasta que la condición sea falsa. 
+
+  O mientras la condición sea verdadera repetirá el bucle. 
+
+  Si es falsa sale y sigue ejecutando las demás instrucciones. 
+
+
+  En el bucle while, la condición siempre se comprueba al comienzo de cada iteración (es decir, cada vez que se ejecuta el bucle). 
+
+  Si la condición es Verdadera, entonces se ejecuta la cláusula y, después, se vuelve a comprobar la condición. 
+
+  La primera vez que se descubre que la condición es Falso, se omite la cláusula while.  
+
+  ```
+  name = ''
+  while name != 'your name':
+    print('Please type your name.')
+    name = input()
+  print('Thank you!')
+
+  ```
+
+  Para salir del bucle, el nombre debe ser your name
+
+  Primero, el programa establece la variable de nombre ➊ en una cadena vacía.
+
+  Esto es para que la condición name != 'your name' evalúe a True y la ejecución del programa ingrese a la cláusula ➋ del bucle while.
+
+
+ break Statements: 
+
+  Lograr que la ejecución del programa salga antes de tiempo de la cláusula de un bucle while.
+
+  Si la ejecución llega a una sentencia break, sale inmediatamente de la cláusula del bucle while
+
+  ```
+  while True:
+    print('Please type your name.')
+    name = input()
+    if name == 'your name':
+        break
+  print('Thank you!')
+
+  ```
+
+  Sin importar que while sea True, cuando se llega a break, rompe el bucle. 
+
+  Una sentencia if comprueba ➌ si name es igual a 'your name'. 
+  
+  Si esta condición es True, se ejecuta la sentencia break ➍, y la ejecución sale del bucle para imprimir ('¡Gracias!') ➎. 
+
+  De lo contrario, se omite la cláusula de la sentencia if que contiene la sentencia break, lo que pone la ejecución al final del bucle while. 
+
+  En este punto, la ejecución del programa salta de nuevo al inicio de la sentencia while ➊ para volver a comprobar la condición.
+  
+
+ continue Statements: 
+
+  Cuando la ejecución del programa llega a una sentencia continue, la ejecución del programa salta inmediatamente al inicio del bucle y reevalúa la condición del bucle. 
+  
+  (Esto también es lo que sucede cuando la ejecución llega al final del bucle).
+  
+  
+  En un bucle infinito, presione CTRL-C o seleccione Shell ▸ Restart Shell en el menú de IDLE
+
+  Enviará un error KeyboardInterrupt a su programa y hará que se detenga inmediatamente.
+
+  ```
+  while True:
+    print('Hello, world!')
+
+  ```
+
+  
+  Programa que pide usuario y contraseña: 
+ 
+  ```
+  while True:
+    print('Who are you?')
+    name = input()
+    
+    if name != 'Joe':
+        continue
+    
+    print('Hello, Joe. What is the password? (It is a fish.)')
+    password = input()
+    
+    if password == 'swordfish':
+        break
+    
+  print('Access granted.')
+
+  ```
+  
+  Si el usuario ingresa cualquier nombre que no sea Joe.
+
+  La instrucción continue hace que la ejecución del programa salte de nuevo al inicio del bucle. 
+
+  Cuando el programa reevalúa la condición, la ejecución siempre ingresará al bucle, ya que la condición es simplemente el valor True. 
+
+  Una vez que el usuario pasa la instrucción if, se le solicita una contraseña. 
+
+  Si la contraseña ingresada es swordfish, entonces se ejecuta la instrucción break
+
+  y la ejecución salta fuera del bucle while para imprimir Access allowed. 
+
+
+  Si te equivocas en la contraseña vuelve automaticamente al primer input. 
+
+ 
+  Valores equivalentes a True y False: 
+
+   Las condiciones considerarán que algunos valores en otros tipos de datos son equivalentes a Verdadero y Falso.
+  
+   Cuando se utilizan en condiciones, 0, 0.0 y '' (la cadena vacía) se consideran Falso
+
+   Mientras que todos los demás valores se consideran Verdaderos.
+
+   ```
+   name = ''
+   while not name:
+     print('Enter your name:')
+     name = input()
+   print('How many guests will you have?')
+   numOfGuests = int(input())
+   if numOfGuests:
+     print('Be sure to have enough room for all your guests.')
+   print('Done')   
+
+   ```
+
+   Si el usuario ingresa una cadena en blanco para el nombre, entonces la condición de la declaración while será Verdadera ➊,
+
+   y el programa continúa solicitando un nombre. 
+
+   Si el valor para numOfGuests no es 0 ➋, 
+
+   entonces la condición se considera Verdadera, y el programa imprimirá un recordatorio para el usuario ➌.
+
+   Podría haber ingresado not name != '' en lugar de not name, 
+
+   y numOfGuests != 0 en lugar de numOfGuests, pero usar los valores verdaderos y falsos puede hacer que su código sea más fácil de leer.
+    
+  
+ for Loops and the range() Function:
+ 
+  El bucle while sigue funcionando mientras su condición sea Verdadera (que es la razón de su nombre)
+
+  pero ¿qué pasa si quieres ejecutar un bloque de código solo una cierta cantidad de veces? 
+
+  Puedes hacer esto con una declaración de bucle for y la función range().
+  
+  Sintaxis: 
+
+  ```
+  for i in range(5):
+
+  ```
+  for keyword
+
+  Nombre variable
+
+  in keyword
+
+  Llamada a range(), puede tomar tres enteros
+
+  Los dos puntos
+
+  después el bloque de código con identación. 
+
+ 
+  ```
+  print('My name is')
+  for i in range(5):
+      print('Jimmy Five Times (' + str(i) + ')')
+
+  ```
+  
+  i toma de 0 a valor de range.
+
+  Jimmy Five Times (0)
+  Jimmy Five Times (1) 
+  Jimmy Five Times (2)
+  Jimmy Five Times (3)
+  Jimmy Five Times (4)
+
+  Primer se ejecuta my name is. 
+
+  i se asigna con 0. 
+
+  despues se imprime la cadena jimmy y el valor de i. 
+
+
+  La primera vez que se ejecuta, la variable i se establece en 0. La llamada print() en la cláusula imprimirá Jimmy Five Times (0). 
+
+  Después de que Python termina una iteración a través de todo el código dentro de la cláusula del bucle for, la ejecución vuelve al principio del bucle y la instrucción for incrementa i en uno. 
+
+  Es por eso que range(5) da como resultado cinco iteraciones a través de la cláusula, con i establecida en 0, luego en 1, luego en 2, luego en 3 y luego en 4. 
+
+  La variable i irá hasta, pero no incluirá, el entero pasado a range(). 
+  
+  
+  También puede usar las instrucciones break y continue dentro de los bucles for. 
+
+  La instrucción continue continuará hasta el siguiente valor del contador del bucle for, como si la ejecución del programa hubiera llegado al final del bucle y hubiera regresado al inicio. 
+
+  De hecho, puede usar las instrucciones continue y break solo dentro de los bucles while y for.
+
+  Si intenta usar estas instrucciones en otro lugar, Python le dará un error.
+  
+  ```
+  total = 0
+  for num in range(101):
+     total = total + num
+  print(total)
+
+  ```
+  
+  sumaran todos los números del 0 al 100.
+
+  la variable total se establece en 0 ➊.
+  
+  Luego, el bucle for ➋ ejecuta total = total + num ➌ 100 veces. 
+
+  Cuando el bucle haya terminado sus 100 iteraciones, todos los números enteros del 0 al 100 se habrán sumado a total. 
+
+  En este punto, total se imprime en la pantalla ➍. 
+
+  Hay 50 pares de números que suman 101: 1 + 100, 2 + 99, 3 + 98, y así sucesivamente, hasta 50 + 51.
+
+  Como 50 × 101 es 5050, la suma de todos los números del 0 al 100 es 5050.
+
+
+ Equivalent while Loop:
+  
+  puedes usar un bucle while para hacer lo mismo que un bucle for; 
+ 
+  los bucles for son simplemente más concisos 
+  
+  ```
+  print('My name is')
+  i = 0
+  while i < 5:
+     print('Jimmy Five Times (' + str(i) + ')')
+     i = i + 1
+
+  ```
+
+
+ Los argumentos de inicio, detención y paso a paso de range(): 
+
+  Algunas funciones pueden llamarse con múltiples argumentos separados por una coma, y ​​range() es uno de ellos. 
+
+  Esto le permite cambiar el entero pasado a range() para que siga cualquier secuencia de enteros, incluido el inicio en un número distinto de cero.
+
+  ```
+  for i in range(12, 16):
+    print(i)
+
+  ```
+
+  inicia en 12 se detiene antes de 16. 
+
+  El primer argumento será el punto donde comienza la variable del bucle for
+  
+  y el segundo argumento será hasta el número en el que se detendrá, pero sin incluirlo.
+
+ 
+  puede llamarse con tres argumentos. 
+
+  Los dos primeros argumentos serán los valores de inicio y detención
+
+  y el tercero será el argumento de paso. 
+
+  El paso es la cantidad en la que se incrementa la variable después de cada iteración.
+
+  ```
+  for i in range(0, 10, 2):
+    print(i)
+
+  ```
+
+  contará desde cero hasta ocho en intervalos de dos.
+
+
+  La función range() es flexible en la secuencia de números que produce para los bucles for. 
+
+  Por ejemplo, puedes usar un número negativo para el argumento step para hacer que el bucle for cuente hacia atrás en lugar de hacia arriba.
+
+  ```
+  for i in range(5, -1, -1):
+    print(i)
+
+  ```
+
+  desde cinco hasta cero
+
+
+ Import modulos: 
+
+  Python pueden llamar a un conjunto básico de funciones llamadas funciones integradas, incluidas las funciones print(), input() y len() que ya has visto antes. 
+
+  Python también viene con un conjunto de módulos llamados biblioteca estándar. 
+
+  Cada módulo es un programa Python que contiene un grupo relacionado de funciones que se pueden incorporar en tus programas. 
+
+  Por ejemplo, el módulo math tiene funciones relacionadas con las matemáticas, el módulo random tiene funciones relacionadas con los números aleatorios, etc.
+
+  Antes de poder usar las funciones en un módulo, debes importar el módulo con una declaración import
+
+  
+  Sintaxis: 
+  
+   La palabra clave import
+   
+   El nombre del módulo
+    
+   Opcionalmente, más nombres de módulos, siempre que estén separados por comas
+  
+  
+  El módulo random, que nos dará acceso a la función random.randint().
+
+  ```
+  import random
+  for i in range(5):
+     print(random.randint(1, 10))
+
+  ```
+
+  La llamada a la función random.randint() se evalúa como un valor entero aleatorio entre los dos enteros que le pasa. 
+
+  Como randint() está en el módulo random, primero debe escribir random. 
+
+  delante del nombre de la función para indicarle a Python que busque esta función dentro del módulo random.
+
+
+  NO SOBRESCRIBAS LOS NOMBRES DE LOS MÓDULOS: 
+
+   Cuando guardes tus scripts de Python, ten cuidado de no darles un nombre que sea usado por uno de los módulos de Python, como random.py, sys.py, os.py o math.py. 
+
+   Si accidentalmente nombras uno de tus programas, por ejemplo, random.py, y usas una declaración import random en otro programa, tu programa importará tu archivo random.py en lugar del módulo random de Python. 
+
+   Esto puede generar errores como AttributeError: module 'random' has no attribute 'randint', ya que tu random.py no tiene las funciones que tiene el módulo random real. 
+
+   Tampoco uses los nombres de ninguna función incorporada de Python, como print() o input().
+
+
+  Declaración de importación que importa cuatro módulos diferentes:
+  
+  ```
+  import random, sys, os, math
+
+  ```
+
+  Ahora podemos usar cualquiera de las funciones en estos cuatro módulos.
+
+
+ from import Statements:
+
+  forma alternativa de la declaración import se compone de la palabra clave from, seguida del nombre del módulo, la palabra clave import y un asterisco
+  
+  por ejemplo, from random import *.
+ 
+  Las llamadas a funciones en random no necesitarán el prefijo random. 
+
+  Sin embargo, el uso del nombre completo hace que el código sea más legible, por lo que es mejor utilizar la forma import random de la declaración.
+
+
+ Finalización anticipada de un programa con la función sys.exit():
+
+  El último concepto de control de flujo que se tratará es cómo finalizar el programa. 
+  
+  Los programas siempre finalizan si la ejecución del programa llega al final de las instrucciones. 
+
+  Sin embargo, puede hacer que el programa finalice o salga antes de la última instrucción llamando a la función sys.exit(). 
+
+  Dado que esta función está en el módulo sys, debe importar sys antes de que su programa pueda utilizarla.
+
+ 
+ Guess Number: 
+
+  En primer lugar, un comentario en la parte superior del código explica lo que hace el programa. 
+  Luego, el programa importa el módulo aleatorio para poder usar la función random.randint() para generar un número que el usuario debe adivinar.
+  El valor de retorno, un entero aleatorio entre 1 y 20, se almacena en la variable secretNumber.
+
+  ```
+  # This is a guess the number game.
+  import random
+  secretNumber = random.randint(1, 20)
+
+  ```
+
+  El programa le dice al jugador que ha encontrado un número secreto y le dará seis oportunidades para adivinarlo. 
+  El código que permite al jugador ingresar una suposición y verifica que esa suposición esté en un bucle for que se repetirá como máximo seis veces. 
+  Lo primero que sucede en el bucle es que el jugador ingresa una suposición. 
+  Como input() devuelve una cadena, su valor de retorno se pasa directamente a int(), que traduce la cadena a un valor entero. 
+  Este se almacena en una variable llamada guess.
+
+  ```
+  print('I am thinking of a number between 1 and 20.')
+
+  # Ask the player to guess 6 times.
+  for guessesTaken in range(1, 7):
+     print('Take a guess.')
+     guess = int(input())
+
+  ```
+
+  Estas pocas líneas de código verifican si la suposición es menor o mayor que el número secreto. 
+  En cualquier caso, se imprime una pista en la pantalla.
+  
+  ```
+  if guess < secretNumber:
+      print('Your guess is too low.')
+  elif guess > secretNumber:
+      print('Your guess is too high.')
+
+  ```
+
+
+  Si la suposición no es mayor ni menor que el número secreto, entonces debe ser igual al número secreto; en cuyo caso, desea que la ejecución del programa salga del bucle for.
+
+  ```
+  else:
+      break    # This condition is the correct guess!
+
+  ```
+
+  Después del bucle for, la instrucción if...else anterior verifica si el jugador ha adivinado correctamente el número y luego imprime un mensaje apropiado en la pantalla. 
+  En ambos casos, el programa muestra una variable que contiene un valor entero (guessesTaken y secretNumber). 
+  Como debe concatenar estos valores enteros en cadenas, pasa estas variables a la función str(), que devuelve la forma de valor de cadena de estos números enteros. 
+  Ahora, estas cadenas se pueden concatenar con los operadores + antes de pasarlas finalmente a la llamada de la función print()
+
+  ```
+  if guess == secretNumber:
+     print('Good job! You guessed my number in ' + str(guessesTaken) + ' guesses!')
+  else:
+     print('Nope. The number I was thinking of was ' + str(secretNumber))
+
+  ```
+
+
+ Rock, Paper, Scissors:
+
+ ```
+ import random, sys
+
+ print('ROCK, PAPER, SCISSORS')
+
+ # These variables keep track of the number of wins, losses, and ties.
+ wins = 0
+ losses = 0
+ ties = 0
+ 
+ ```  
+
+ Primero, importamos el módulo random y sys para que nuestro programa pueda llamar a las funciones random.randint() y sys.exit(). 
+ También configuramos tres variables para llevar un registro de cuántas victorias, derrotas y empates ha tenido el jugador.
+
+
+ ```
+ while True: # The main game loop.
+    print('%s Wins, %s Losses, %s Ties' % (wins, losses, ties))
+    while True: # The player input loop.
+        print('Enter your move: (r)ock (p)aper (s)cissors or (q)uit')
+        playerMove = input()
+        if playerMove == 'q':
+            sys.exit() # Quit the program.
+        if playerMove == 'r' or playerMove == 'p' or playerMove == 's':
+            break # Break out of the player input loop.
+        print('Type one of r, p, s, or q.')
+
+ ```
+
+ Este programa utiliza un bucle while dentro de otro bucle while. 
+ El primer bucle es el bucle principal del juego y se juega un único juego de piedra, papel o tijera en cada iteración de este bucle. 
+ El segundo bucle solicita la entrada del jugador y continúa hasta que el jugador haya ingresado una r, p, s o q para su movimiento. 
+ La r, p y s corresponden a piedra, papel o tijera, respectivamente, mientras que la q significa que el jugador tiene la intención de abandonar. 
+ En ese caso, se llama a sys.exit() y el programa sale. 
+ Si el jugador ha ingresado r, p o s, la ejecución sale del bucle. 
+ De lo contrario, el programa le recuerda al jugador que ingrese r, p, s o q y vuelve al inicio del bucle.
+
+
+ ```
+ # Display what the player chose:
+ if playerMove == 'r':
+     print('ROCK versus...')
+ elif playerMove == 'p':
+     print('PAPER versus...')
+ elif playerMove == 's':
+     print('SCISSORS versus...')
+
+ ```
+
+ El movimiento del jugador se muestra en la pantalla.
+
+
+ ```
+ # Display what the computer chose:
+ randomNumber = random.randint(1, 3)
+ if randomNumber == 1:
+     computerMove = 'r'
+     print('ROCK')
+ elif randomNumber == 2:
+     computerMove = 'p'
+     print('PAPER')
+ elif randomNumber == 3:
+     computerMove = 's'
+     print('SCISSORS')
+
+ ```
+
+ A continuación, se selecciona aleatoriamente el movimiento de la computadora. 
+ Dado que random.randint() solo puede devolver un número aleatorio, el valor entero 1, 2 o 3 que devuelve se almacena en una variable llamada randomNumber. 
+ El programa almacena una cadena "r", "p" o "s" en computerMove en función del número entero de randomNumber, y también muestra el movimiento de la computadora.
+
+
+ ```
+ # Display and record the win/loss/tie:
+ if playerMove == computerMove:
+     print('It is a tie!')
+     ties = ties + 1
+ elif playerMove == 'r' and computerMove == 's':
+     print('You win!')
+     wins = wins + 1
+ elif playerMove == 'p' and computerMove == 'r':
+     print('You win!')
+     wins = wins + 1
+ elif playerMove == 's' and computerMove == 'p':
+     print('You win!')
+     wins = wins + 1
+ elif playerMove == 'r' and computerMove == 'p':
+     print('You lose!')
+     losses = losses + 1
+ elif playerMove == 'p' and computerMove == 's':
+     print('You lose!')
+     losses = losses + 1
+ elif playerMove == 's' and computerMove == 'r':
+     print('You lose!')
+     losses = losses + 1
+
+ ```
+
+ Por último, el programa compara las cadenas de playerMove y computerMove y muestra los resultados en la pantalla. 
+ También incrementa la variable de victorias, derrotas o empates según corresponda. 
+ Una vez que la ejecución llega al final, vuelve al inicio del bucle principal del programa para comenzar otro juego.
+
+
+ Ejercicios: 
+
+ 1. ¿Cuáles son los dos valores del tipo de datos booleano? ¿Cómo se escriben?
+  
+  True, False.   
+
+
+ 2. ¿Cuáles son los tres operadores booleanos?
+   
+  And, Or Not  
+
+
+ 3. Escriba las tablas de verdad de cada operador booleano (es decir, cada combinación posible de valores booleanos para el operador y lo que evalúan).
+
+   x  |  y  | x and y
+   t     t      t
+   f     t      f
+   t     f      f
+   f     f      f 
+
+   x  |  y  | x or y
+   t     t      t
+   f     t      t
+   t     f      t
+   f     f      f
+
+   x | not x
+   t    f
+   f    t
+
+
+ 4. ¿A qué equivalen las siguientes expresiones?
+  
+  (5 > 4) and (3 == 5)
+     t  and  f
+     f
+   
+  not (5 > 4)
+   not t
+   f
+
+  (5 > 4) or (3 == 5) 
+    t  or  f
+    t
+ 
+  not ((5 > 4) or (3 == 5))
+   not ((t) or (f))
+    not t
+     f
+  
+  (True and True) and (True == False)
+    t and f
+     f
+
+  (not False) or (not True)
+   t or f
+   t
+
+
+ 5. ¿Cuáles son los seis operadores de comparación?
+  
+  <, >, ==, !=, <=, >= 
+
+
+ 6. Cuál es la diferencia entre el operador igual y el operador de asignación?
+  
+  == compara dos valores, x == y
+  
+  = asigna valor o guarda valor o dato en una variable
+
+
+ 7. Explica qué es una condición y dónde utilizarías una.
+  
+  Es una expresion (valores, operadores y comparadores) que se evalue por T o F que se utiliza para tomar diferentes decisiones, caminos, acciones en el programa. 
+
+  Decide qué hacer en función de si su condición es Verdadera o Falso
+
+
+ 8. Identifica los tres bloques en este código:
+
+  ```
+  spam = 0
+  if spam == 10:    #1
+     print('eggs')
+     if spam > 5:   #2
+        print('bacon')
+     else:          #3
+        print('ham')
+     print('spam')
+  print('spam')
+
+  ```
+
+ 9. Escriba el código que imprima Hola si 1 está almacenado en spam, 
+  
+  imprima Howdy si 2 está almacenado en spam
+
+  imprima ¡Saludos! si cualquier otra cosa está almacenada en spam.
+  
+  ```
+  spam = 1
+
+  while spam < 4: 
+
+   if spam == 1: 
+    print('Hello')
+    spam += 1
+  
+   elif spam == 2 : 
+    print('Howdy')
+    spam += 1
+  
+   else: 
+    print('Greetings!')
+    spam += 1
+
+  ```
+
+
+  ```
+  for spam in range(1, 4): 
+   if spam == 1: 
+    print('Hello')
+   elif spam == 2: 
+    print('Howdy')
+   else: 
+    print('Greetings!')
+    
+  ```
+
+
+  ```
+  for spam in range(1, 4, 1): 
+   if spam == 1: 
+    print('Hello')
+   elif spam == 2: 
+    print('Howdy')
+   else: 
+    print('Greetings!')
+
+  ```
+
+ 
+ 10. ¿Qué teclas puedes presionar si tu programa está atrapado en un bucle infinito?
+  
+  ctrl+c o restart shell in shell. 
+
+
+ 11. ¿Cuál es la diferencia entre break y continue?
+  
+  break rompe el bucle cuando llega a esta sentencia.
+  
+  continue vuelve al bucle cuando llega a esta sentencia. 
+
+
+ 12. ¿Cuál es la diferencia entre range(10), range(0, 10) y range(0, 10, 1) en un bucle for?
+ 
+  inicia en 10
+  
+  inicia en 0 y termina antes de 10
+  
+  inicia en 0, termina en 10 y avanza de a 1
+
+
+ 13. Escriba un programa breve que imprima los números del 1 al 10 mediante un bucle for. 
+  Luego escriba un programa equivalente que imprima los números del 1 al 10 mediante un bucle while.
+  
+  ```
+  for i in range (01, 11): 
+   print(i)
+
+  ```
+
+  ```
+  i = 1
+  while i <= 10: 
+   print(i)
+   i += 1 
+ 
+  ```
+
+ 14. Si tuvieras una función llamada bacon() dentro de un módulo llamado spam, ¿cómo la llamarías después de importar spam?
+  
+  ```
+  #mod spam
+  def bacon(): 
+   //
+ 
+  ``` 
+  
+  ```
+  import spam
+
+  spam.bacon()
+
+  ```  
+ 
+ 
+ Resp lib: 
+
+  6. == es el operador igual a que compara dos valores y evalúa a un valor booleano
+
+    x == y? o valor1 == valor2?
+
+
+    mientras que = es el operador de asignación que almacena un valor en una variable.
+
+
+  7. Una condición es una expresión utilizada en una declaración de control de flujo que evalúa a un valor booleano.
+
+
+  11. La declaración break moverá la ejecución fuera y justo después de un bucle. 
+ 
+   La declaración continue moverá la ejecución al inicio del bucle.
+
+
+  12. Todas hacen lo mismo. 
+   
+   La llamada range(10) va desde 0 hasta (pero sin incluir) 10 
+ 
+   range(0, 10) le dice explícitamente al bucle que comience en 0 
+  
+   range(0, 10, 1) le dice explícitamente al bucle que aumente la variable en 1 en cada iteración.
+  
+  
+
+
