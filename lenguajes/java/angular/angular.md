@@ -326,7 +326,281 @@ Arquitectura:
  
 
 
-|| 
+|| Crear Proyecto y Practica
+
+
+	```
+	npm install -g @angular/cli
+	
+	node --version 
+	
+	npm --version
+	
+	```
+	
+	
+	Entornos de node: 
+	
+	```
+	nvm list
+	
+	```
+	
+	versiones de node instaladas 
+	
+	nvm nos permite elegir la version de node. 
+	
+	```
+	nvm install 18
+	
+	```
+	Descargará la esa versión 
+	
+	
+	```
+	nvm use 18
+	
+	```
+	
+	Elegimos la version para usar. 
+	
+	Ahora debemos usar otra vez el comando para instalar angular. 
+	
+	Dado que estamos en otra instancia dentro de node. 
+	
+	```
+	npm install -g @angular/cli
+	
+	ng --help 
+	
+	```
+	
+	ng nos da las herramientas para gestionar el proyecto. 
+	
+	
+	En la carpeta deseada, creamos la app. 
+	
+	```
+	ng new miapp
+	
+	```
+	
+	Nos va a preguntar si queremos una serie dependencias. 
+	
+	Como Angular routing 
+	
+	Tipo de preprocesador para CSS o CSS 
+	
+	
+	Posteriormente nos creará con npm las dependencias fundamentales.
+	
+	Como el readme.md
+	
+	angular.json (configuracion de angular)
+	package.json (dependencias)
+	tsconfig.json (config typescript)
+	
+	Después viene la carpeta src que es el código fuente de la app. 
+	
+	
+	Al entrar en la carpeta nos encontramos con la estructura base del proyecto. 
+	
+	Vemos un directorio node_modules 
+	
+	El directorio de las dependencias que agregaremos al proyecto 
+	
+	Al entrar nos encontramos con muchas dependencias iniciales. 
+	
+	De todos estas herramientas depende nuestro proyecto. 
+	
+	
+	
+	Arrancar la app en modo desarrollo. 
+	
+	En la carpeta del proyecto: 
+	
+	```
+	ng serve
+	
+	```
+
+	Genera la app para usar en el navegador. 
+	
+	Compila y crea archivos. 
+	
+	vendor.js (dependencias de angular)
+	
+	polyfills.js (arreglos para correr la app en navegador)
+	
+	crea un css de estilos
+	
+	un main.js (la app)
+	
+	Que fue traducida de TypeScrip a JavaScript
+	
+
+	Si en el navegador vamos al puerto 
+	
+	localhost:4200
+	
+	Nos da una pantall de inicio de angular 
+	
+	Podemos entrar al sitio de aprendizaje 
+	
+	Al sitio de documentacion 
+	
+	generar componentes visuales con Material
+	
+	Angular dev/tools para cargar desde el nav
+	
+	Y ver los componentes de nuestra app. 
+	
+	Tendremos botones para crear componentes
+	
+	añadir angular material
+	
+	añadir pwa support 
+	
+	dependencias
+	
+	correr testing
+
+	y ejecutar o crear app para produccion 
+	
+	
+	
+|| Directivas
+
+	
+	Crear componentes para manejar directivas
+	
+	En la carpeta miapp
+	
+	```
+	ng g c Directivas
+	
+	```
+	ng g c: va a generar un componentes
+	
+	"generate component" + nombre de nuestro componenten
+	
+	va a ser Directivas
+	
+	Dentro de la carpeta App 
+	
+	Va a crear otra como Directivas
+	
+	Después agregará esta al archivo (autom(?))
+	
+	app.module.ts para utilizarla
+	
+	
+	Vamos a app.component.html (como un "main" app)
+	
+	Y añadirlo a la plantilla html 
+	
+	Es una etiqueta appDirectivas
+	
+	```html 
+	
+	<div class="content" role="main">
+
+		<app-directivas></app-directivas>
+	
+	</div>
+	
+	```
+	
+	
+	Podemos ir al navegador, dirá directivas works
+	
+	Tenemos que tener arrancada la app ng serve
+	
+	
+	Ahora en component.ts (de la directiva)
+	
+	podemos crear la lógica
+	
+	Para esta directiva 
+	
+	Cada componente tiene su propio html, css, ts
+	
+	Como lo tiene main, etc. 
+	
+	
+	```ts
+	
+	import { component } from '@angular/core';
+	
+	@Component ({
+		
+		selector: 'app-directivas', 
+		
+		templateUrl: './directivas.component.html', 
+		
+		styleUrls: [./directivas.component.css]
+		
+	})
+	export class DirectivasComponent {
+		
+		booleano: boolean = true;  
+		
+			
+	}
+		
+		
+	```
+	
+	var booleano de tipo boolean
+	
+	Esta variable ya la podemos usar en nuestro código. 
+
+	
+	Dentro del código de este html
+	
+	Podemos crer código Angular para html. 
+	
+	```html 
+	
+	<div>
+		
+		<h2 #ngif="booleano"> 
+			
+			La variable booleana es true
+		
+		</h2>
+	
+	</div>
+	
+	```
+	
+	Le podemos pasar variables, propiedades, estados
+	
+	Funciones, etc; después escribimos el contenido en función a este código. 
+	
+	
+	Cuando la variable sea verdadero 
+	
+	Va a presentar el contenido en pantalla. 
+	
+	
+	Como tiene un valor inicial true, va a aparecer
+	
+	
+	Podemos probar las angular dev Tools
+	
+	para modifcar todo este código en el navegador. 
+	
+	Y poder probar estas cosas. 
+	
+	Debemos instalar la extension de los navegadores. 
+	
+	
+	
+	
+
+
+
 
 
 
