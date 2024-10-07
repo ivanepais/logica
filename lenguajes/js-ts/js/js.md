@@ -137,12 +137,156 @@
 		
 		```
 		
+	
+	Carga de JS: 
+		
+		Externo: 
+		
+			```
+			<head>
+				...
+
+				<script src="script.js" defer></script>
+			
+			</head>
+			
+			```
+
 
 	Estrategias de carga:
 	
-	
-	
+		Si está utilizando JavaScript para manipular elementos en la página (o más exactamente, el modelo de objetos de documento), su código no funcionará si JavaScript se carga y analiza antes que el HTML al que está intentando hacer algo.
+		
+		En los ejemplos de código anteriores, en los ejemplos internos y externos, JavaScript se carga y ejecuta en el encabezado del documento, antes de que se analice el cuerpo HTML. 
 
+		Esto podría provocar un error, por lo que hemos utilizado algunas estructuras para solucionarlo.
+
+		
+	
+		JS Interno: 
+
+			Se puede ver esta estructura alrededor del código.
+
+			```js
+
+			document.addEventListener("DOMContentLoaded", () => {
+			  // …
+			});
+
+
+			```
+
+			Es un detector de eventos, que escucha el evento 'DOMContentLoaded' del navegador, lo que significa que el cuerpo HTML está completamente cargado y analizado. 
+
+			El JavaScript dentro de este bloque no se ejecutará hasta que se active ese evento, por lo tanto se evita el error.
+
+
+				JS Externo: 
+
+			Utilizamos una característica de JavaScript más moderna para resolver el problema, el atributo defer, que le indica al navegador que continúe descargando el contenido HTML una vez que se haya alcanzado el elemento de etiqueta <script>.
+
+			```js
+
+			<script src="script.js" defer></script>
+
+			```
+
+			Tanto el script como el HTML se cargarán simultáneamente y el código funcionará.
+
+
+			En el caso externo, no necesitábamos usar el evento 'DOMContentLoaded' porque el atributo defer resolvió el problema por nosotros. 
+
+			No utilizamos la solución de aplazar para el ejemplo de JavaScript interno porque aplazar solo funciona para scripts externos.
+
+			Una solución antigua a este problema solía ser colocar el elemento del script justo en la parte inferior del cuerpo (por ejemplo, justo antes de la etiqueta </body>), para que se cargara después de que se hubiera analizado todo el HTML. 
+
+			El problema con esta solución es que la carga/análisis del script está completamente bloqueado hasta que se haya cargado el DOM HTML. 
+
+			En sitios más grandes con mucho JavaScript, esto puede causar un problema importante de rendimiento y ralentizar su sitio.
+
+			
+	Atributos async y defer: 
+
+		En realidad, hay dos funciones modernas que podemos utilizar para evitar el problema del script de bloqueo: asíncrono y diferido (que vimos anteriormente). 
+
+		Veamos la diferencia entre estos dos.
+
+		Los scripts cargados usando el atributo async: 
+
+			Descargarán el script sin bloquear la página mientras se recupera el script. 
+
+			Sin embargo, una vez que se completa la descarga, se ejecutará el script, lo que bloqueará la visualización de la página. 
+
+			Esto significa que se impide que el resto del contenido de la página web se procese y se muestre al usuario hasta que el script termine de ejecutarse.
+
+			No tiene garantía de que los scripts se ejecuten en un orden específico. 
+
+			Es mejor utilizar async cuando los scripts de la página se ejecutan de forma independiente y no dependen de ningún otro script de la página.
+
+
+		Los scripts cargados con el atributo defer: 
+
+			Se cargarán en el orden en que aparecen en la página. 
+
+			No se ejecutarán hasta que todo el contenido de la página se haya cargado, lo cual es útil si sus scripts dependen de que el DOM esté implementado (por ejemplo, modifican uno o más elementos en la página).
+	
+			Ejemplo async: 	
+
+			```html
+
+			<script async src="js/vendor/jquery.js"></script>
+
+			<script async src="js/script2.js"></script>
+
+			<script async src="js/script3.js"></script>
+
+			```
+
+			No puede confiar en el orden en que se cargarán los scripts. 
+
+			jquery.js puede cargarse antes o después de script2.js y script3.js y, si este es el caso, cualquier función en esos scripts que dependa de jquery producirá un error porque jquery no se definirá en el momento en que se ejecute el script.
+
+			async debe usarse cuando tiene un montón de scripts en segundo plano para cargar y solo desea implementarlos lo antes posible. 
+
+			Por ejemplo, tal vez tengas que cargar algunos archivos de datos del juego, que serán necesarios cuando el juego realmente comience, pero por ahora solo quieres continuar mostrando la introducción del juego, los títulos y el lobby, sin que se bloqueen al cargar el script.
+
+
+		Ejemplo defer:	
+
+
+			```html
+
+			<script defer src="js/vendor/jquery.js"></script>
+
+			<script defer src="js/script2.js"></script>
+
+			<script defer src="js/script3.js"></script>
+
+			```
+
+			Los scripts cargados usando el atributo defer se ejecutarán en el orden en que aparecen en la página y se ejecutarán tan pronto como se descarguen el script y el contenido.
+
+			Podemos estar seguros de que jquery.js se cargará antes que script2.js y script3.js y que script2.js se cargará antes que script3.js. 
+
+			No se ejecutarán hasta que todo el contenido de la página se haya cargado, lo cual es útil si sus scripts dependen de que el DOM esté implementado (por ejemplo, modifican uno o más elementos en la página).
+
+
+		async y defer indican al navegador que descargue los scripts en un hilo separado, mientras se descarga el resto de la página (el DOM, etc.), por lo que la carga de la página no se bloquea durante el proceso de recuperación.
+		
+		Los scripts con un atributo async se ejecutarán tan pronto como se complete la descarga. 
+
+		Esto bloquea la página y no garantiza ninguna orden de ejecución específica.
+
+
+		Los scripts con un atributo defer se cargarán en el orden en que se encuentran y solo se ejecutarán una vez que todo haya terminado de cargarse.
+		
+		Si sus scripts deben ejecutarse inmediatamente y no tienen ninguna dependencia, utilice async.
+		
+		Si sus scripts necesitan esperar a ser analizados y dependen de otros scripts y/o del DOM implementado, cárguelos usando aplazar y coloque sus elementos <script> correspondientes en el orden en que desea que el navegador los ejecute.
+
+		
+		
+	
 	Juego js + html: 
 
 		Divs para form y parrafos que están vinculados con constantes de JS. 
