@@ -2849,3 +2849,1530 @@ La propiedad target se usa comúnmente en la delegación de eventos
 */
 
 
+
+
+/* Objetos
+ * ----------------------------------------------
+ */
+ 
+//en otros lenguajes un objeto es una instancia
+//de una clase que tiene propieadades/estad/var
+//y metodos/funciones. 
+
+//inicialización y definición
+
+const person = {};
+
+
+//En la console se ve algo como
+[object Object]
+Object { }
+{ }
+
+
+//Es un objeto vacío. 
+
+
+//Pero puede tener propiedades y métodos. 
+
+
+const person = {
+  name: ["Bob", "Smith"],
+  age: 32,
+  bio: function () {
+	console.log(`${this.name[0]} ${this.name[1]} is ${this.age} years old.`);
+  },
+  introduceSelf: function () {
+	console.log(`Hi! I'm ${this.name[0]}.`);
+  },
+};
+
+person.name;
+person.name[0];
+person.age;
+person.bio();
+// "Bob Smith is 32 years old."
+person.introduceSelf();
+// "Hi! I'm Bob."
+
+
+
+// Sintaxis de Objeto y Objeto Literal
+
+const objectName = {
+  member1Name: member1Value,
+  member2Name: member2Value,
+  member3Name: member3Value,
+};
+
+/*
+1. propiedades del objeto:
+		
+	Son elementos de datos: 
+	
+	Los dos primeros elementos son
+
+
+2. Métodos del objeto 
+
+	Las funciones: 
+	
+	permiten al objeto manipular esos datos. 
+	
+
+Cuando los miembros del objeto son funciones, hay una sintaxis más simple
+
+En lugar de bio: función () 
+
+Podemos escribir bio().
+
+*/
+
+const person = {
+  name: ["Bob", "Smith"],
+  age: 32,
+  bio() {
+	console.log(`${this.name[0]} ${this.name[1]} is ${this.age} years old.`);
+  },
+  introduceSelf() {
+	console.log(`Hi! I'm ${this.name[0]}.`);
+  },
+};
+
+
+/*
+Usaremos esta sintaxis más corta.
+
+Un objeto como este se conoce como objeto literal
+
+Literalmente, hemos escrito el contenido del objeto a medida que lo creamos
+
+*/
+
+		
+//Esto es diferente en comparación 
+//con los objetos instanciados
+
+
+//Notación de puntos/dot notation
+
+//acceso al objeto (namespace) y sus datos. 
+
+person.age;
+person.bio();
+
+//despues del punto podemos acceder a: 
+//elemento: 
+//1. nombre de una propiedad simple
+//2. Un elemento de una propiedad de matriz
+
+
+
+//Objetos complejos: 
+
+//Objeto como propiedades de objeto. 
+ const person = {
+	  name: {
+		first: "Bob",
+		last: "Smith",
+	  },
+	  age: 32,
+	  bio() {
+		console.log(`${this.name.first} ${this.name.last} is ${this.age} years old.`);
+	  },
+	  introduceSelf() {
+		console.log(`Hi! I'm ${this.name.first}.`);
+	  },
+	
+  };
+
+//para acceder a estos debemos modificar algunas cosas: 
+//De:
+name[0];
+name[1];	
+
+//A 
+name.first;
+name.last;
+
+person.name.first;
+person.name.last;
+
+
+
+//Notación de corchete, alternativa a los puntos
+
+//para acceso a objetos complejos/con secuencias
+
+
+//De: 
+person.age;
+person.name.first;
+
+//A:
+person["age"];
+person["name"]["first"];
+
+//se utiliza el nombre asociado con el valor 
+//de cada miembro
+
+//En lugar de usar un número de índice para
+//seleccionar un elemento
+
+
+//si el nombre de una propiedad de un objeto 
+//se encuentra en una variable
+//no se puede acceder con notación de puntos. 
+
+const person = {
+  name: ["Bob", "Smith"],
+  age: 32,
+};
+
+function logProperty(propertyName) {
+  console.log(person[propertyName]);
+}
+
+logProperty("name");
+// ["Bob", "Smith"]
+logProperty("age");
+// 32
+
+
+
+//Establecer miembros de objetos
+
+//también puede establecer (actualizar) el valor de los miembros de objetos declarando el miembro que desea configurar
+//usando notación de puntos o corchetes
+person.age = 45;
+person["name"]["last"] = "Cratchit";
+
+//tambien crear propiedades y funciones: 
+person["eyes"] = "hazel";
+person.farewell = function () {
+  console.log("Bye everybody!");
+};
+
+
+//acceder a los nuevos miembros: 
+person["eyes"];
+person.farewell();
+// "Bye everybody!"
+
+
+
+//Establecer nombre de miembros:
+
+//usando notación entre corchetes
+
+/*
+Digamos que queremos que los usuarios puedan almacenar tipos de valores personalizados
+en los datos de sus personas
+escribiendo el nombre del miembro y el valor en dos entradas de texto.
+Podríamos obtener esos valores así:
+
+*/
+
+const myDataName = nameInput.value;
+const myDataValue = nameValue.value;
+
+//Luego podríamos agregar este nuevo nombre 
+//de miembro y valor al objeto persona de 
+//esta manera:
+person[myDataName] = myDataValue;
+
+
+//pide los inputs, los guarda
+//después los asigna
+
+//Ej:
+const myDataName = "height";
+const myDataValue = "1.75m";
+person[myDataName] = myDataValue;
+
+
+person.height;
+
+
+/*
+Agregar una propiedad a un objeto usando el método
+anterior no es posible con la notación de puntos
+
+que solo puede aceptar un nombre de miembro 
+literal
+
+no un valor de variable que apunte a un nombre
+ 
+*/
+
+
+
+//This
+const person1 = {
+  name: "Chris",
+  introduceSelf() {
+	console.log(`Hi! I'm ${this.name}.`);
+  },
+};
+
+const person2 = {
+  name: "Deepti",
+  introduceSelf() {
+	console.log(`Hi! I'm ${this.name}.`);
+  },
+};
+
+//this se refiere al objeto en el que se llama el método
+		
+//Lo que permite que la misma definición de
+//método funcione para múltiples objetos.
+
+/*
+No es muy útil cuando se escriben literales de objetos a mano
+ya que usar el nombre del objeto
+persona1 y persona2
+conduce exactamente al mismo resultado
+
+
+Pero será esencial cuando comencemos 
+a usar constructores para crear más de un objeto
+a partir de una única definición de objeto
+ 
+*/
+
+
+//Introducción a Constructores
+
+//Usar objetos literales está bien 
+//cuando sólo necesitas crear un objeto
+
+
+//Podemos usar una funcion
+
+function createPerson(name) {
+  const obj = {};
+  obj.name = name;
+  obj.introduceSelf = function () {
+	console.log(`Hi! I'm ${this.name}.`);
+  };
+  return obj;
+}
+
+//El objeto tendrá dos miembros:
+//un nombre de propiedad
+//un método introducirSelf().
+
+const salva = createPerson("Salva");
+salva.introduceSelf();
+// "Hi! I'm Salva."
+
+const frankie = createPerson("Frankie");
+frankie.introduceSelf();
+// "Hi! I'm Frankie."
+
+
+
+// o usando new
+//llama a una funcion 	
+
+/*		
+constructor, puede:
+		
+crear un nuevo objeto
+
+vincular this al nuevo objeto
+para que pueda hacer referencia
+a this en su código de constructor
+
+ejecutar el código en el constructor
+
+devolver el nuevo objeto
+
+comienzan con mayus, por convencion
+
+*/
+
+function Person(name) {
+  this.name = name;
+  this.introduceSelf = function () {
+	console.log(`Hi! I'm ${this.name}.`);
+  };
+}
+
+const salva = new Person("Salva");
+salva.introduceSelf();
+// "Hi! I'm Salva."
+
+const frankie = new Person("Frankie");
+frankie.introduceSelf();
+// "Hi! I'm Frankie."
+
+
+
+// Objetos en todos lados
+
+//Cuando usamos la notacion por puntos
+//Puden ser una instancia de otros
+//esto habilita a usar los métodos y propieadades
+//de su clase padre
+
+myString.split(",");
+
+const myDiv = document.createElement("div");
+const myVideo = document.querySelector("video");
+
+
+// A veces se requiere un constructor 
+//como paso intermedio
+const myNotification = new Notification("Hello!");
+
+
+
+/* Prototipos
+ * ----------------------------------------------
+ */
+
+
+//literal
+
+//constructor: funcion y new 
+
+//prototipo
+
+
+//cadena prototipo 
+
+const myObject = {
+  city: "Madrid",
+  greet() {
+	console.log(`Greetings from ${this.city}`);
+  },
+};
+
+myObject.greet(); // Greetings from Madrid
+
+
+myObject.
+//lista de todas las propiedades disponibles para este objeto
+//además de las suyas, city y greet()
+
+myObject.toString(); // "[object Object]"
+
+//Cada objeto en JavaScript tiene una 
+//propiedad incorporada, se llama prototipo
+//El prototipo es en sí mismo un objeto
+
+//por lo que tendrá su propio prototipo
+//se llama una cadena de prototipos.
+//La cadena termina cuando llegamos a un prototipo que tiene nulo como su propio prototipo
+
+//La propiedad de un objeto que apunta a su 
+//prototipo no se llama prototipo. 
+//los navegadores utilizan __proto__.
+
+//acceder al prototipo
+//Object.getPrototypeOf(myObject); 
+
+
+// Orden de acceso a las propiedades de un objeto
+
+//1. busca en el objeto mismo
+//2. si no, busca la propiedad en el prototipo.
+//3. se busca el prototipo del prototipo
+//4. hasta el final de la cadena
+//5. si no la encuentra, devuelve undefined. 
+
+myObject.toString():
+//solo definimos city y greet(), no toString
+
+/*
+
+busca toString en myObject			
+No puedo encontrarlo allí
+así que busca en el objeto prototipo de myObject toString.
+
+(Object.getPrototypeOf(myObject); // Object { })
+
+lo encuentra allí y lo llama.
+
+*/
+
+
+//Object { }
+//object called Object.prototype
+//most basic prototype
+
+/*
+myObject				Object.prototype
+city	-> __proto__ -> hasOwnProperty() -> __proto__ -> null
+greet()					isPrototypeOf()
+*/
+
+
+//El prototipo de un objeto no siempre 
+//es Object.prototype
+
+//Puede haber otros en el medio. 
+
+
+const myDate = new Date();
+let object = myDate;
+
+do {
+  object = Object.getPrototypeOf(object);
+  console.log(object);
+} while (object);
+
+// Date.prototype
+// Object { }
+// null
+
+/*
+crea un objeto Date
+recorre la cadena de prototipos y registra los prototipos.
+muestra que el prototipo de myDate es un objeto Date.prototype
+*/
+
+/*
+myDate -> __proto__ -> Date.prototype -> __proto__ -> Object.prototype -> __proto__ -> null
+					   getMonth()			          hasOwnProperty()
+					   getYear()				      isPrototypeOf()
+*/
+
+/*
+cuando llamas a métodos familiares		
+como myDate2.getTime(),
+estás llamando a un método definido en Date.prototype.	
+*/
+
+
+// Shadowing Properties: 
+
+//Si define una propiedad en un objeto
+//cuando se define una propiedad con el mismo 
+//nombre en el prototipo del objeto
+
+const myDate = new Date(1995, 11, 17);
+
+console.log(myDate.getTime()); // 819129600000
+
+myDate.getTime = function () {
+  console.log("something else!");
+};
+
+myDate.getTime(); // 'something else!'
+
+/*
+dada la descripción de la cadena del prototipo
+Cuando llamamos a getTime(),  
+
+El navegador primero busca en myDate una propiedad con ese nombre
+y solo verifica el prototipo si myDate no lo define. 
+Pero como lo definimos en nuestro objeto, lo usa primero.
+
+agregamos getTime() a myDate, se llama a la versión en myDate.
+  
+*/
+
+
+// Configurar Prototipo 
+
+
+// Antes, repaso:
+
+//1. Crear propieades y metodos
+  
+//Establecer miembros de objetos
+
+//también puede establecer (actualizar) el valor de los miembros de objetos declarando el miembro que desea configurar
+//usando notación de puntos o corchetes
+person.age = 45;
+person["name"]["last"] = "Cratchit";
+
+//tambien crear propiedades y funciones: 
+person["eyes"] = "hazel";
+person.farewell = function () {
+  console.log("Bye everybody!");
+};
+
+
+//acceder a los nuevos miembros: 
+person["eyes"];
+person.farewell();
+// "Bye everybody!"
+  
+
+//2. Uso de constructor: usando function y this
+//para crear multiples objetos
+
+//comienzan con mayus, por convencion
+
+function Person(name) {
+  this.name = name;
+  this.introduceSelf = function () {
+	console.log(`Hi! I'm ${this.name}.`);
+  };
+}
+
+const salva = new Person("Salva");
+salva.introduceSelf();
+// "Hi! I'm Salva."
+
+const frankie = new Person("Frankie");
+frankie.introduceSelf();
+// "Hi! I'm Frankie."
+
+
+// Esto era para crear un objeto
+
+
+// Ahora podemos crear algo anterior al objeto. 
+// su prototipo 
+
+
+//varias formas
+
+//1. Object.create()
+
+//2. Constructor
+
+
+//1. Object.create():
+
+/*
+crea un nuevo objeto
+y le permite especificar un objeto
+que se utilizará como prototipo del nuevo objeto
+*/
+const personPrototype = {
+  greet() {
+	console.log("hello!");
+  },
+};
+
+const carl = Object.create(personPrototype);
+carl.greet(); // hello!
+
+//antes creo un objeto literal
+//carl es el objeto y personPrototype es el prototipo. 
+//transformó ese objeto literal en prototipo de carl
+
+//el prototipo proporciona su implementación.
+//para el objeto carl
+
+
+
+//2. Constructor:
+/*
+En JavaScript, todas las funciones tienen una 
+propiedad denominada prototipo
+Cuando llamas a una función como constructor, 
+esta propiedad se establece como el prototipo 
+del objeto recién construido
+por convención, en la propiedad denominada __proto__
+
+Entonces, si configuramos el prototipo de un constructor
+podemos asegurarnos de que todos los objetos creados con ese constructor reciban ese prototipo.
+*/
+
+const personPrototype = {
+  greet() {
+	console.log(`hello, my name is ${this.name}!`);
+  },
+};
+
+function Person(name) {
+  this.name = name;
+}
+
+Object.assign(Person.prototype, personPrototype);
+// or
+// Person.prototype.greet = personPrototype.greet;
+
+//creamos objeto literal
+//constructor para crear multiples objetos
+//asignamos el constructor como prototipo
+//al literal prototipo
+
+
+/*
+
+un objeto personPrototype, que tiene un método 
+greet()
+		
+una función constructora Person() que inicializa
+el nombre de la persona a crear.
+
+Luego colocamos los métodos definidos en 
+personPrototype
+
+en la propiedad prototipo de la función Person
+usando Object.assign.
+
+Después de este código, los objetos creados 
+usando Person()
+
+obtendrán Person.prototype como prototipo, 
+que contiene automáticamente el método de bienvenida.
+
+*/
+
+//Después de este código, los objetos creados 
+//usando Person()
+		
+//obtendrán Person.prototype como prototipo,
+//que contiene automáticamente el método de bienvenida.
+
+const reuben = new Person("Reuben");
+reuben.greet(); // hello, my name is Reuben!
+
+//Esto también explica por qué dijimos anteriormente 
+//que el prototipo de myDate se llama Date.prototype:
+
+//es la propiedad prototipo del constructor Date.
+
+
+//Propiedades Propias
+
+/*
+objeto usando el constructor Persona
+tienen dos propiedades:
+ 
+ nombre:
+	que se establece en el constructor
+	por lo que aparece directamente en 
+	los objetos Persona	
+	* 
+greet(), que se establece en el prototipo.
+
+Es común ver este patrón, en el que los métodos 
+se definen en el prototipo
+
+pero las propiedades de los datos se definen 
+en el constructor. 
+
+Esto se debe a que los métodos suelen ser los
+mismos para cada objeto que creamos,
+
+mientras que a menudo queremos que cada objeto
+tenga su propio valor para sus propiedades de datos
+
+como aquí donde cada persona tiene un nombre 
+diferente
+
+*/
+
+
+/*
+Las propiedades que se definen directamente 
+en el objeto
+
+como el nombre aquí, se denominan propiedades
+propias
+
+puede comprobar si una propiedad es una propiedad
+propia utilizando el método estático 
+Object.hasOwn():
+
+*/
+
+const irma = new Person("Irma");
+
+console.log(Object.hasOwn(irma, "name")); // true
+console.log(Object.hasOwn(irma, "greet")); // false
+
+//También puede utilizar el método no estático 
+//Object.hasOwnProperty()
+
+//recomendamos que utilice Object.hasOwn() si puede.
+		
+
+/*
+Los prototipos permiten reutilizar código 
+y combinar objetos.
+
+soportan una versión de herencia
+
+
+La herencia es una característica de los 
+lenguajes de programación orientados a objetos
+
+permite a los programadores expresar la idea 
+de que algunos objetos en un sistema son versiones 
+más especializadas de otros objetos.
+ 
+*/
+
+
+// Prototipos y Herencia
+/*
+si estamos modelando una escuela, podríamos tener profesores y estudiantes:
+ambos son personas, por lo que tienen algunas características en común
+por ejemplo, ambos tienen nombres
+pero cada uno podría agregar características adicionales
+por ejemplo, profesores tienen una materia que enseñan
+o podrían implementar la misma característica de diferentes maneras. 
+
+En un sistema POO podríamos decir que tanto los profesores como los estudiantes heredan de las personas.
+
+Si los objetos Profesor y Estudiante pueden tener prototipos de Persona,
+entonces pueden heredar las propiedades comunes
+al tiempo que agregan y redefinen aquellas propiedades que deben diferir.
+*/
+
+
+//Las cadenas de objetos de prototipos permiten 
+//que los objetos hereden características entre sí
+
+//la propiedad del prototipo y cómo se puede usar
+//para agregar métodos a los constructores
+
+
+
+/* POO
+ * ----------------------------------------------
+ */
+
+//objeto literal 
+//constructor 
+//prototipo
+
+
+/*
+Sus conceptos principales: clases e instancias, 
+herencia y encapsulación
+
+un estilo orientado a objetos es 
+la basada en clases o "clásica".
+
+En JS están los constructores 
+y la cadena de prototipos que tienen sus diferencias
+
+*/
+
+/*
+
+La programación orientada a objetos 	
+Consiste en modelar un sistema como una colección de objetos
+Donde cada objeto representa algún aspecto particular del sistema
+Los objetos contienen funciones (o métodos) y datos.
+Un objeto proporciona una interfaz pública
+a otro código que quiere usarlo pero mantiene su propio estado interno privado
+otras partes del sistema no tienen que preocuparse por lo que sucede dentro del objeto.
+   
+*/
+
+class Professor
+	properties
+		name
+		teaches
+	methods
+		grade(paper)
+		introduceSelf()
+
+
+/*
+es una plantilla para crear objetos ese tipo
+Cada profesor concreto que creamos 
+se denomina instancia de la clase Profesor
+El proceso de creación de una instancia
+lo realiza una función especial 
+llamada constructor.
+*/
+
+/*
+Pasamos valores al constructor
+para cualquier estado interno
+que queramos inicializar en la nueva instancia.
+
+el constructor se escribe como parte 
+de la definición de la clase
+normalmente tiene el mismo nombre 
+que la clase misma.
+*/
+
+class Professor
+	properties
+		name
+		teaches
+	constructor
+		Professor(name, teaches)
+	methods
+		grade(paper)
+		introduceSelf()
+
+/*
+podemos inicializar name y teaches		
+cuando creamos un nuevo profesor concreto.
+
+Con un constructor 
+podemos crear algunos profesores.
+Los lenguajes suelen utilizar 'new'
+para indicar que se está llamando a un constructor. 
+*/
+
+walsh = new Professor("Walsh", "Psychology");
+lillian = new Professor("Lillian", "Poetry");
+
+walsh.teaches; // 'Psychology'
+walsh.introduceSelf(); // 'My name is Professor Walsh and I will be your Psychology professor.'
+
+lillian.teaches; // 'Poetry'
+lillian.introduceSelf(); // 'My name is Professor Lillian and I will be your Poetry professor.'
+
+
+/*
+Sería útil si pudiéramos representar
+estudiantes y profesores comparten algunas propiedades
+
+o más exactamente, el hecho de que, en algún nivel, son el mismo tipo de cosas.
+La herencia nos permite hacer esto.
+
+tanto estudiantes como profesores son personas
+las personas tienen nombres y quieren presentarse
+
+Podemos modelar esto definiendo una nueva clase Persona
+donde definimos todas las propiedades comunes de las personas
+
+Profesor y Estudiante pueden derivar de Persona
+agregando sus propiedades adicionales
+
+*/
+
+class Person
+	properties
+		name
+	constructor
+		Person(name)
+	methods
+		introduceSelf()
+
+class Professor : extends Person
+	properties
+		teaches
+	constructor
+		Professor(name, teaches)
+	methods
+		grade(paper)
+		introduceSelf()
+
+class Student : extends Person
+	properties
+		year
+	constructor
+		Student(name, year)
+	methods
+		introduceSelf()
+
+/*
+Persona es la superclase o clase padre
+tanto del Profesor como del Estudiante.
+Profesor y Estudiante son subclases o clases secundarias de Persona.
+*/
+
+/*
+introduceSelf() está definido en las tres clases.
+las personas quieren presentarse
+la forma en que lo hacen es diferente:
+*/
+
+walsh = new Professor("Walsh", "Psychology");
+walsh.introduceSelf(); // 'My name is Professor Walsh and I will be your Psychology professor.'
+
+summers = new Student("Summers", 1);
+summers.introduceSelf(); // 'My name is Summers and I'm in the first year.'
+
+
+/*
+Es posible que tengamos una implementación
+predeterminada de introduceSelf()
+
+para personas que no son estudiantes ni 
+profesores:
+
+Podemos usar o crear una instancia de Person
+no de profesor ni estudiante
+*/
+
+pratt = new Person("Pratt");
+pratt.introduceSelf(); // 'My name is Pratt.'
+
+/*
+Esta característica
+cuando un método tiene el mismo nombre
+pero una implementación diferente en diferentes clases
+se llama polimorfismo
+Cuando un método en una subclase reemplaza la implementación de la superclase
+decimos que la subclase anula la versión de la superclase.
+*/
+		
+
+/*
+
+Encapsulación: 
+		
+Los objetos proporcionan una interfaz para otro código que quiere usarlos
+pero mantienen su propio estado interno
+El estado interno del objeto se mantiene privado
+lo que significa que solo se puede acceder a él
+mediante los métodos propios del objeto
+no desde otros objetos
+*/
+
+/*
+Mantener privado el estado interno de un objeto
+y en general, hacer una división clara entre 
+su interfaz pública 
+y su estado interno privado
+se denomina encapsulación.
+*/
+
+/* 
+permite al programador cambiar la implementación 
+interna de un objeto
+
+sin tener que buscar y actualizar todo el código
+que lo utiliza: 
+
+crea una especie de firewall entre este objeto 
+y el resto del sistema.
+
+*/
+
+
+/*
+Ej, supongamos que a los estudiantes se les permite estudiar tiro con arco 
+si están en el segundo año o más
+Podríamos implementar esto simplemente exponiendo
+la propiedad del año del estudiante
+y otro código podría examinarla para decidir 
+si el estudiante puede tomar el curso.
+*/
+if (student.year > 1) {
+  // allow the student into the class
+}
+
+/*
+El problema es que, si decidimos cambiar 
+los criterios
+para permitir que los estudiantes estudien
+tiro con arco 
+ 
+necesitaríamos actualizar todos los lugares 
+de nuestro sistema que realizan esta prueba	
+	
+Sería mejor tener un método canStudyArchery() 
+en objetos Student, que implemente la lógica 
+en un solo lugar:
+*/
+class Student : extends Person
+	properties
+	   year
+	constructor
+	   Student(name, year)
+	methods
+	   introduceSelf()
+	   canStudyArchery() { return this.year > 1 }
+
+if (student.canStudyArchery()) {
+  // allow the student into the class
+}
+
+/*
+De esa manera, si queremos cambiar las reglas
+sobre el estudio del tiro con arco
+
+sólo tendremos que actualizar la clase Estudiante
+
+y todo el código que la utilice seguirá 
+funcionando. 
+ 
+*/
+
+/*
+En muchos lenguajes de programación orientada 
+a objetos, podemos evitar que otro código acceda
+al estado interno de un objeto
+
+marcando algunas propiedades como privadas.
+Esto generará un error si el código externo al 
+objeto intenta acceder a ellos:
+*/
+
+class Student : extends Person
+	properties
+	   private year
+	constructor
+		Student(name, year)
+	methods
+	   introduceSelf()
+	   canStudyArchery() { return this.year > 1 }
+
+student = new Student('Weber', 1)
+student.year // error: 'year' is a private property of Student
+
+/*
+En lenguajes que no imponen un acceso como este
+los programadores usan convenciones de nomenclatura
+como comenzar el nombre con un guión bajo
+para indicar que la propiedad debe considerarse privada
+*/
+
+
+// POO y JavaScript
+
+/*
+Los constructores en JavaScript nos proporcionan
+algo así como una definición de clase
+
+lo que nos permite definir la "forma" de un objeto,
+incluidos los métodos que contiene, en un solo lugar
+
+Pero aquí también se pueden utilizar prototipos. 
+si un método se define en la propiedad prototipo 
+de un constructor
+
+entonces todos los objetos creados usando
+ese constructor  obtienen ese método a través 
+de su prototipo
+
+y no necesitamos definirlo en el constructor.
+
+la cadena de prototipos parece una forma natural
+de implementar la herencia.
+
+si podemos tener un objeto Estudiante cuyo 
+prototipo sea Persona
+		
+entonces puede heredar el nombre y anular
+introduceSelf().
+ 
+*/
+
+
+/*
+en la programación orientada a objetos basada 
+en clases
+		
+las clases y los objetos son dos construcciones
+ separadas
+
+y los objetos siempre se crean como instancias
+de clases.
+
+Además, existe una distinción entre la 
+característica utilizada para definir una clase
+la sintaxis de la clase misma
+
+y la característica utilizada para crear una
+instancia de un objeto
+un constructor
+
+En JavaScript, podemos crear objetos
+sin ninguna definición de clase separada
+ya sea usando una función o un objeto literal.
+
+Esto puede hacer que trabajar con objetos sea mucho más liviano 
+que en la programación
+*/
+
+
+/*
+aunque una cadena prototipo parece una jerarquía
+de herencia
+		
+y se comporta como ella en algunos aspectos, 
+es diferente en otros. 
+
+Cuando se crea una instancia de una subclase
+se crea un único objeto que combina las 
+propiedades definidas en la subclase con 
+las propiedades definidas más arriba en la
+jerarquía.
+
+Con la creación de prototipos, cada nivel 
+de la jerarquía está representado por un objeto
+separado
+
+y están vinculados entre sí mediante la propiedad
+ __proto__.
+
+El comportamiento de la cadena de prototipos 
+se parece menos a una herencia y más a una 
+delegación
+
+La delegación es un patrón de programación 
+en el que un objeto, cuando se le pide que 
+realice una tarea
+
+puede realizarla él mismo o pedirle a otro objeto (su delegado) que realice la tarea en su nombre.
+
+En muchos sentidos, la delegación es una forma
+más flexible de combinar objetos que la herencia
+
+por un lado, es posible cambiar o reemplazar 
+completamente el delegado en tiempo de ejecución
+
+
+Se pueden utilizar constructores y prototipos
+
+para implementar patrones de programación 
+orientada a objetos basados ​​en clases en 
+JavaScript
+
+Pero usarlos directamente para implementar 
+funciones como la herencia es complicado
+
+por lo que JavaScript proporciona funciones 
+adicionales
+
+superpuestas al modelo prototipo, que se asignan
+más directamente a los conceptos de programación
+orientada a objetos basada en clases. 
+
+*/
+
+
+
+/* Clases JS
+ * ----------------------------------------------
+ */
+
+// Clase-plantilla: props/mets
+// Constructor-objetos
+ 
+// Herencia-extends: objeto base/padre - subobjetos
+// metodos base->metodos particulares
+// Polomorfismo: sobrescribir metodos 
+
+// Encapsulacion:
+// uso interno de propiedades privadas
+// metodos publicos que acceden a props privadas
+// de lo contrario, codigo externo al objeto
+// no puede invocar props priv
+
+// Toda la logica este en un solo lugar/método
+// es lo más importante. 
+// sin romper ningún código que use la clase y sus metodos.
+
+
+
+/*
+Palabras claves: 
+class 
+constructor(props) y this 
+extends y super(prop) 
+metodos literal: sin function, solo nombre() y this
+#, encapsulación
+*/
+
+
+class Person {
+  name;
+
+  constructor(name) {
+	this.name = name;
+  }
+
+  introduceSelf() {
+	console.log(`Hi! I'm ${this.name}`);
+  }
+}
+
+
+const giles = new Person("Giles");
+
+giles.introduceSelf(); // Hi! I'm Giles
+
+
+// omintir constructores 
+class Animal {
+  sleep() {
+	console.log("zzzzzzz");
+  }
+}
+
+const spot = new Animal();
+
+spot.sleep(); // 'zzzzzzz'
+
+
+//Herencia 
+class Professor extends Person {
+  teaches;
+
+  constructor(name, teaches) {
+	super(name);
+	this.teaches = teaches;
+  }
+
+  introduceSelf() {
+	console.log(
+	  `My name is ${this.name}, and I will be your ${this.teaches} professor.`,
+	);
+  }
+
+  grade(paper) {
+	const grade = Math.floor(Math.random() * (5 - 1) + 1);
+	console.log(grade);
+  }
+}
+
+
+const walsh = new Professor("Walsh", "Psychology");
+walsh.introduceSelf(); // 'My name is Walsh, and I will be your Psychology professor'
+
+walsh.grade("my paper"); // some random grade
+
+
+// Encapsulación
+class Student extends Person {
+  #year;
+  
+  constructor(name, year) {
+	super(name);
+	this.#year = year;
+  }
+
+  introduceSelf() {
+	console.log(`Hi! I'm ${this.name}, and I'm in year ${this.#year}.`);
+  }
+
+  canStudyArchery() {
+	return this.#year > 1;
+  }
+}
+
+
+const summers = new Student("Summers", 2);
+
+summers.introduceSelf(); // Hi! I'm Summers, and I'm in year 2.
+summers.canStudyArchery(); // true
+
+summers.#year; // SyntaxError
+
+
+// Métodos Privados
+
+class Example {
+  somePublicMethod() {
+	this.#somePrivateMethod();
+  }
+
+  #somePrivateMethod() {
+	console.log("You called me?");
+  }
+}
+
+const myExample = new Example();
+
+myExample.somePublicMethod(); // 'You called me?'
+
+myExample.#somePrivateMethod(); // SyntaxError
+
+
+
+/* JSON
+ * ----------------------------------------------
+ */
+
+//Objeto literal 
+
+const person = {
+  name: ["Bob", "Smith"],
+  age: 32,
+  bio() {
+	console.log(`${this.name[0]} ${this.name[1]} is ${this.age} years old.`);
+  },
+  introduceSelf() {
+	console.log(`Hi! I'm ${this.name[0]}.`);
+  },
+
+}; 
+ 
+
+// Objeto dentro de objeto
+//cambia acceso
+ const person = {
+  name: {
+	first: "Bob",
+	last: "Smith",
+  },
+  age: 32,
+  bio() {
+	console.log(`${this.name.first} ${this.name.last} is ${this.age} years old.`);
+  },
+  introduceSelf() {
+	console.log(`Hi! I'm ${this.name.first}.`);
+  },
+	
+ };
+
+
+//Establecer miembros de objetos
+
+//también puede establecer (actualizar) el valor de los miembros de objetos declarando el miembro que desea configurar
+//usando notación de puntos o corchetes
+person.age = 45;
+person["name"]["last"] = "Cratchit";
+
+//tambien crear propiedades y funciones: 
+person["eyes"] = "hazel";
+person.farewell = function () {
+  console.log("Bye everybody!");
+};
+
+
+//acceder a los nuevos miembros: 
+person["eyes"];
+person.farewell();
+// "Bye everybody!"
+
+
+//Uso de constructor: usando function y this
+//para crear multiples objetos
+
+//comienzan con mayus, por convencion
+
+function Person(name) {
+  this.name = name;
+  this.introduceSelf = function () {
+	console.log(`Hi! I'm ${this.name}.`);
+  };
+}
+
+const salva = new Person("Salva");
+salva.introduceSelf();
+// "Hi! I'm Salva."
+
+const frankie = new Person("Frankie");
+frankie.introduceSelf();
+// "Hi! I'm Frankie."
+
+
+// Crer prototipo 
+
+// Ahora podemos crear algo anterior al objeto. 
+// su prototipo 
+
+//1. Object.create():
+
+/*
+crea un nuevo objeto
+y le permite especificar un objeto
+que se utilizará como prototipo del nuevo objeto
+*/
+const personPrototype = {
+  greet() {
+	console.log("hello!");
+  },
+};
+
+const carl = Object.create(personPrototype);
+carl.greet(); // hello!
+
+
+//2. Constructor:
+/*
+En JavaScript, todas las funciones tienen una 
+propiedad denominada prototipo
+Cuando llamas a una función como constructor, 
+esta propiedad se establece como el prototipo 
+del objeto recién construido
+por convención, en la propiedad denominada __proto__
+
+Entonces, si configuramos el prototipo de un constructor
+podemos asegurarnos de que todos los objetos creados con ese constructor reciban ese prototipo.
+*/
+
+const personPrototype = {
+  greet() {
+	console.log(`hello, my name is ${this.name}!`);
+  },
+};
+
+function Person(name) {
+  this.name = name;
+}
+
+Object.assign(Person.prototype, personPrototype);
+// or
+// Person.prototype.greet = personPrototype.greet;
+
+
+const reuben = new Person("Reuben");
+reuben.greet(); // hello, my name is Reuben!
+
+
+// Propieadad del prototipo 
+const irma = new Person("Irma");
+
+console.log(Object.hasOwn(irma, "name")); // true
+console.log(Object.hasOwn(irma, "greet")); // false
+
+//También puede utilizar el método no estático 
+//Object.hasOwnProperty()
+
+//recomendamos que utilice Object.hasOwn() si puede.
+		
+
+// JSON 
+
+
+
+// Request-Fetch (solicitudes/recuperación)
+
+/*
+hacemos la solicitud de red usando (network request)
+
+usando la función fetch() (recuperación)
+
+y esto devuelve un objeto Response (objeto de respuesta)
+
+*/
+
+//async function para usar fetch
+//await antes de llamar a una función async
+
+//request
+//fetch
+//response objetct
+
+//clase Request
+//fetch funct
+
+async function populate() {
+  const requestURL =
+	"https://mdn.github.io/learning-area/javascript/oojs/json/superheroes.json";
+  const request = new Request(requestURL);
+
+  const response = await fetch(request);
+  const superHeroes = await response.json();
+
+  populateHeader(superHeroes);
+  populateHeroes(superHeroes);
+}
+
+
+//Funcion async populate()
+//guarda una url en requestURL
+//crea un objeto/instancia de Request
+//pasandole una url a su constructor
+ 
+//guardamos una respuesta de fetch en response
+//pasandole a su consturctor 
+//el objeto request/url
+//guardamos los superheroes con el .json() 
+//el archivo será la respuesta/fetch
+//que tenía el objeto request/url 
+
+//tenemos dos llamadas a funciones
+//toman el json.  
+//para llenar los elementos de html
+
+
+
+// Llenar el HTML 
+
+// Header 
+
