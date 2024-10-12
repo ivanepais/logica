@@ -4371,8 +4371,382 @@ async function populate() {
 //para llenar los elementos de html
 
 
-
 // Llenar el HTML 
 
 // Header 
 
+function populateHeader(obj) {
+  const header = document.querySelector("header");
+  const myH1 = document.createElement("h1");
+  myH1.textContent = obj.squadName;
+  header.appendChild(myH1);
+
+  const myPara = document.createElement("p");
+  myPara.textContent = `Hometown: ${obj.homeTown} // Formed: ${obj.formed}`;
+  header.appendChild(myPara);
+}
+
+/*
+funcion completar header, toma obj
+guarda el elem html header
+creamos el elem html h1
+modifica contendio h1: 
+será el parámetro llamando a squadName (json)
+agregamos h1 al header
+
+creamos un elem p
+modifica con el contenido del json, llamandoló.
+agregamos el p al header
+
+*/
+
+function populateHeroes(obj) {
+  const section = document.querySelector("section");
+  const heroes = obj.members;
+
+  for (const hero of heroes) {
+    const myArticle = document.createElement("article");
+    const myH2 = document.createElement("h2");
+    const myPara1 = document.createElement("p");
+    const myPara2 = document.createElement("p");
+    const myPara3 = document.createElement("p");
+    const myList = document.createElement("ul");
+
+    myH2.textContent = hero.name;
+    myPara1.textContent = `Secret identity: ${hero.secretIdentity}`;
+    myPara2.textContent = `Age: ${hero.age}`;
+    myPara3.textContent = "Superpowers:";
+
+    const superPowers = hero.powers;
+    for (const power of superPowers) {
+      const listItem = document.createElement("li");
+      listItem.textContent = power;
+      myList.appendChild(listItem);
+    }
+
+    myArticle.appendChild(myH2);
+    myArticle.appendChild(myPara1);
+    myArticle.appendChild(myPara2);
+    myArticle.appendChild(myPara3);
+    myArticle.appendChild(myList);
+
+    section.appendChild(myArticle);
+  }
+}
+
+/*
+la funcion populateHeroes toma un obj
+para completar las tarjetas de información. 
+ 
+section será el elem html section 
+heroes será el obj.members 
+
+//Con un bucle recorreremos cada objeto 
+de la matriz members del obj json. 
+//para para cada uno, haremos algo:
+
+recorremos en hero, los elementos que guardamos
+en heroes que son todos los elem del obj.members
+
+en cada iteracion/por cada heroe: 
+creamos articulo html 
+un h2, 3 p, y una lista no ordenada
+
+// con el obj json que guardamos en heroes
+// modificamos los elem creados: 
+
+h2 será gual a hero.name 
+p1 será hero.sercretIdentity del  
+p2 sera la edad 
+p3 será una cadena a completar 
+
+// Al terminar de recorrer todo el contenido hero
+// del obj, cada objeto, uno a uno, haremos algo. 
+
+// recorremos otro como son los poderes
+
+en superPowers guardamos hero.powers
+recorremos superPowers con power
+
+por cada elem, crearémos: 
+
+un li, modificamos su contenido, será power
+incluimos listItem en myList 
+
+después incluimos h2, p1, p2, p3 y myList
+en myArticle 
+
+al final incluimos myArticle en section  
+ 
+*/
+
+
+// Llamar a la funcion principal  			
+
+populate();
+
+
+// Convertir entre Objetos y Texto 
+
+/*
+El ejemplo anterior fue simple en términos de acceso al objeto JavaScript
+convertimos la respuesta de la red directamente en un objeto JavaScript 
+usando Response.json().
+
+A veces no lo tenemos
+recibimos una cadena JSON sin formato
+y necesitamos convertirla en un objeto nosotros mismos.
+Y cuando queremos enviar un objeto JavaScript
+a través de la red
+debemos convertirlo a JSON
+(una cadena)
+antes de enviarlo.
+
+estos dos problemas son tan comunes
+hay un objeto JSON integrado
+disponible en los navegadores
+contiene los dos métodos siguientes:
+		
+/*	
+	
+1. parse():	
+acepta una cadena JSON como parámetro
+devuelve el objeto JavaScript correspondiente
+
+2. stringify():
+acepta un objeto como parámetro
+devuelve la cadena JSON equivalente
+
+En un ej: 
+heroes-finished-json-parse.html
+hace exactamente lo mismo que el anterior 
+
+Pero cambia: 
+1. fetch/recuperacion de response 
+	como texto en lugar de JSON
+	llamando al método text()
+	de response 
+	
+2. usamos parse():
+para convertir el texto en un objeto JavaScript.
+*/
+			
+
+async function populate() {
+
+  const requestURL = 'https://mdn.github.io/learning-area/javascript/oojs/json/superheroes.json';
+  const request = new Request(requestURL);
+
+  const response = await fetch(request);
+  const superHeroesText = await response.text();
+
+  const superHeroes = JSON.parse(superHeroesText);
+  populateHeader(superHeroes);
+  populateHeroes(superHeroes);
+
+}
+	
+			
+//stringify() funciona al revés. 
+
+//ingresar las siguientes líneas en la consola:
+
+
+let myObj = { name: "Chris", age: 38 };
+myObj;
+
+let myString = JSON.stringify(myObj);
+myString;
+
+
+//devuelve el objeto en string 
+
+'{"name":"Chris","age":38}' 
+
+/*				
+estamos creando un objeto JavaScript
+luego comprobamos lo que contiene,
+luego lo convertimos en una cadena JSON 
+usando stringify()
+guardamos el valor de retorno en una nueva variable
+luego lo comprobamos nuevamente.
+*/
+
+
+
+/* Intro a JavaScript asincrónico
+ * ----------------------------------------------
+ */
+
+// Long sync function
+
+// Async:
+
+// Event Handlers  
+
+// Callbacks-Callback hell
+
+
+
+/* Promise 
+ * ----------------------------------------------
+ */
+
+// base de la programación asincrónica
+// es un objeto devuelto por una función asincrónica
+// representa el estado actual de la operación
+// En el momento en que se devuelve la promesa
+// a la persona que llama, la operación a menudo no finaliza
+// pero el objeto de promesa proporciona métodos
+// para manejar el eventual éxito o fracaso de la operación.
+
+// Con una API basada en promesas
+// la función asincrónica inicia la operación
+// y devuelve un objeto Promise
+// Luego puede adjuntar controladores 
+// a este objeto de promesa
+// estos controladores se ejecutarán
+// cuando la operación haya tenido éxito
+// o haya fallado.
+
+
+// cuando se usa callbacks para implementar 
+// funciones asincrónicas, no existe async-await
+
+
+// Request-Fetch (solicitudes/recuperación)
+
+// hacemos la solicitud de red usando (network request)
+// usando la función fetch() (recuperación)
+// y esto devuelve un objeto Response (objeto de respuesta)
+
+// async function para usar fetch
+// await antes de llamar a una función async
+
+// request
+// fetch
+// response objetct
+
+// clase Request
+// fetch funct
+
+// async 
+// Event Handlers  
+
+
+// fetch() API:
+
+// Solicitud/request HTTP a un servidor remoto
+// enviando un mensaje de solicitud/request message 
+// y el servidor nos envia una Respuesta/response 
+// enviaremos una solicitud para objetener un JSON 
+
+
+const fetchPromise = fetch(
+  "https://mdn.github.io/learning-area/javascript/apis/fetching-data/can-store/products.json",
+);
+
+console.log(fetchPromise);
+
+fetchPromise.then((response) => {
+  console.log(`Received response: ${response.status}`);
+});
+
+console.log("Started request…");
+
+//guardamos en un objeto a fetch
+//la mostramos 
+//nuestro objeto llama a then (después responde)
+//tiene un parametro que imprimirá una propiedad 
+//imprimimos cadena 
+
+
+/*
+llamar a la API fetch()
+asignar el valor de retorno
+a la variable fetchPromise
+			
+después, registrando la variable fetchPromise
+Esto debería generar algo como
+Promise { <state>: "pending" }
+nos indica que tenemos un objeto Promise
+y que tiene un estado 
+cuyo valor es "pending".
+El estado "pendiente" 
+significa que la operación fetch (recuperación)
+aún continúa
+
+pasando una función de controlador
+controlador al método then() de Promise
+Cuando (y si)
+la operación fetch tiene éxito
+la promesa llamará a nuestro controlador
+y pasará un objeto Response
+que contiene la respuesta del servidor
+
+registrando un mensaje
+de que hemos iniciado la request/solicitud 
+			 
+*/
+
+
+// fetchPromise = fetch(url):  
+// es una promesa 
+
+// fetchPromise.then:
+// controlador a una promesa
+
+// ((response) => { 
+//  console.log(`Received response: ${response.status}`);
+// });
+
+/*
+pasando una función de controlador
+controlador al método then() de Promise
+Cuando (y si)
+la operación fetch tiene éxito
+la promesa llamará a nuestro controlador
+
+y pasará un objeto Response
+que contiene la respuesta del servidor
+
+registrando un mensaje
+de que hemos iniciado la request/solicitud 
+
+*/
+
+// y para manipular todos estos datos 
+// creamos funciones que toman un objeto 
+// lo obtenido con fetch 
+// con otros objetos que manipulan dom 
+
+//Encadenando promesas 
+
+// promesa: var dónde guardamos fetch())
+// controlador: then o lo que tenga una func 
+// llamada: response como param o response.func())
+// nueva promesa: para llamada a response
+// controlador then dentro del original 
+// se pasará a la nueva promesa 
+// devuelta por response.json 
+
+const fetchPromise = fetch(
+  "https://mdn.github.io/learning-area/javascript/apis/fetching-data/can-store/products.json",
+);
+
+fetchPromise.then((response) => {
+  const jsonPromise = response.json();
+  jsonPromise.then((data) => {
+    console.log(data[0].name);
+  });
+});
+
+/*
+como antes
+agregamos un controlador then()
+a la promesa devuelta por fetch().
+Pero esta vez nuestro controlador llama a 
+response.json()
+y luego pasa un nuevo controlador then()
+a la promesa devuelta por response.json().
+*/
