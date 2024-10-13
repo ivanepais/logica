@@ -4750,3 +4750,351 @@ response.json()
 y luego pasa un nuevo controlador then()
 a la promesa devuelta por response.json().
 */
+
+
+// reescribir promise anidad
+// evitar hell. 
+// dado que la anidación de promise devuelve 
+// usanod el controlador then, devuelve una promesa
+
+const fetchPromise = fetch(
+  "https://mdn.github.io/learning-area/javascript/apis/fetching-data/can-store/products.json",
+);
+
+fetchPromise
+  .then((response) => response.json())
+  .then((data) => {
+    console.log(data[0].name);
+  });
+
+
+// En:
+//.then((response) => response.json())
+// .then((data) => {console.log(data[0].name);}); 
+
+// (response) => response.json()
+// (data) => {console.log(data[0].name)
+
+// Es devolver la promesa por json() o lo que sea 
+// y usar otra func async then()
+// y acceder con data
+
+
+// Verificar que el servidor acepto la request 
+
+const fetchPromise = fetch(
+  "https://mdn.github.io/learning-area/javascript/apis/fetching-data/can-store/products.json",
+);
+
+fetchPromise
+  .then((response) => {
+	if (!response.ok) {
+	  throw new Error(`HTTP error: ${response.status}`);
+	}
+	return response.json();
+  })
+  .then((data) => {
+	console.log(data[0].name);
+  });
+  
+
+// Manejo de errores
+
+/*
+los objetos Promise		
+proporcionan un método catch().
+
+parecido a then():
+lo llamas y le pasas una función de controlador
+
+mientras que el controlador pasado a then()
+se llama cuando la operación asincrónica
+tiene éxito, el controlador pasado a catch()
+se llama cuando la operación asincrónica falla. 
+*/
+		  
+/*
+Si agrega catch()		
+al final de una cadena de promesa
+se llamará cuando falle
+cualquiera de las llamadas a funciones asincrónicas
+y tener un solo lugar para manejar todos los errores.
+*/
+
+/*
+Agregamos un controlador de errores usando catch() 
+también modificamos la URL para que la solicitud falle.
+*/
+
+const fetchPromise = fetch(
+  "bad-scheme://mdn.github.io/learning-area/javascript/apis/fetching-data/can-store/products.json",
+);
+
+fetchPromise
+  .then((response) => {
+    if (!response.ok) {
+      throw new Error(`HTTP error: ${response.status}`);
+    }
+    return response.json();
+  })
+  .then((data) => {
+    console.log(data[0].name);
+  })
+  .catch((error) => {
+    console.error(`Could not get products: ${error}`);
+  });
+
+
+// Terminología en promesas 
+
+// pending/pendiente
+// fulfilled/completado 
+// rejected/rechazado 
+
+// alternativo: settled para fulfilled o rejected
+
+
+// succeeded" or "failed:
+
+// settled o locked in: 
+// estado cuando se resuelve una promesa 
+ 
+/*
+pending: 
+la promesa se ha creado
+la función asincrónica -> fetch/then((response))
+a la que está asociada
+no ha tenido éxito o no ha fallado todavía.
+Este es el estado en el que se encuentra
+su promesa cuando se devuelve
+de una llamada a fetch()
+y la request aún se está realizando.
+
+fulfilled:
+la función asincrónica ha tenido éxito.
+Cuando se cumple una promesa
+se llama a su controlador then().
+
+rejected:
+la función asincrónica ha fallado.
+Cuando se rechaza una promesa
+se llama a su controlador catch().  
+*/
+
+/*
+"tuvo éxito" o "falló"			
+depende de la API en cuestión
+fetch() rechaza la promesa devuelta
+si (entre otras razones)
+un error de red impidió
+que se enviara la solicitud
+pero cumple la promesa		
+si el servidor envió response
+incluso si la respuesta fue un error como 
+404 No encontrado. 
+*/
+
+
+// Cadena de multiples promesas 
+
+/*
+es lo que necesita cuando su operación 
+consta de varias funciones asincrónicas 
+*/
+
+// promise.all():
+
+/*
+A veces es necesario que se cumplan 
+todas las promesas
+pero no dependen unas de otras
+En un caso como ese,
+es mucho más eficiente 
+comenzar con todos juntos y 
+luego recibir una notificación 
+cuando se hayan cumplido.
+El método Promise.all()
+es lo que necesita aquí. 
+Toma una serie de promesas
+y devuelve una única promesa.
+*/
+
+
+
+
+const fetchPromise1 = fetch(
+  "https://mdn.github.io/learning-area/javascript/apis/fetching-data/can-store/products.json",
+);
+const fetchPromise2 = fetch(
+  "https://mdn.github.io/learning-area/javascript/apis/fetching-data/can-store/not-found",
+);
+const fetchPromise3 = fetch(
+  "https://mdn.github.io/learning-area/javascript/oojs/json/superheroes.json",
+);
+
+Promise.all([fetchPromise1, fetchPromise2, fetchPromise3])
+  .then((responses) => {
+    for (const response of responses) {
+      console.log(`${response.url}: ${response.status}`);
+    }
+  })
+  .catch((error) => {
+    console.error(`Failed to fetch: ${error}`);
+  });
+
+
+// Response
+
+// Exito y response: 
+// estan relacionados
+// fetch()), then(), response/accion/func/ 
+
+
+Promise.all().
+//exito cuando se cumplen todas
+//si falla una, falla todas 
+
+Promise.any()
+//falla cuando fallan todas
+//se necestia que 1 se cumpla
+
+//necesitan de un array 
+
+
+
+// Async y Await 
+
+/*
+evita la necesidad de 
+crear cadenas de promesas explícitas
+y le permite escribir código
+que parece código sincrónico
+
+facilitan la creación de una operación
+a partir de una serie de llamadas 
+a funciones asincrónicas consecutivas		 
+*/
+
+async function fetchProducts() {
+  try {
+	// después de esta línea, nuestra función esperará a que se resuelva la llamada `fetch()`
+	// la llamada `fetch()` devolverá una respuesta o lanzará un error
+	const response = await fetch(
+	  "https://mdn.github.io/learning-area/javascript/apis/fetching-data/can-store/products.json",
+	);
+	if (!response.ok) {
+	  throw new Error(`HTTP error: ${response.status}`);
+	}
+	// después de esta línea, nuestra función esperará a que se resuelva la llamada `response.json()`
+	// la llamada `response.json()` devolverá el objeto JSON analizado o arrojará un error
+	const data = await response.json();
+	console.log(data[0].name);
+  } catch (error) {
+	console.error(`Could not get products: ${error}`);
+  }
+}
+
+fetchProducts();
+
+
+
+// Manejo de errores 
+
+// devolver promesa, devolver objeto respuesta 
+
+
+//por lo que no puede hacer algo como:
+
+async function fetchProducts() {
+  try {
+	const response = await fetch(
+	  "https://mdn.github.io/learning-area/javascript/apis/fetching-data/can-store/products.json",
+	);
+	if (!response.ok) {
+	  throw new Error(`HTTP error: ${response.status}`);
+	}
+	const data = await response.json();
+	return data;
+  } catch (error) {
+	console.error(`Could not get products: ${error}`);
+  }
+}
+
+const promise = fetchProducts();
+console.log(promise[0].name); // "promise" is a Promise object, so this will not work
+
+
+// Debería hacer algo como: 
+
+async function fetchProducts() {
+  const response = await fetch(
+	"https://mdn.github.io/learning-area/javascript/apis/fetching-data/can-store/products.json",
+  );
+  if (!response.ok) {
+	throw new Error(`HTTP error: ${response.status}`);
+  }
+  const data = await response.json();
+  return data;
+}
+
+const promise = fetchProducts();
+promise
+  .then((data) => {
+	console.log(data[0].name);
+  })
+  .catch((error) => {
+	console.error(`Could not get products: ${error}`);
+  });
+
+
+
+//que no puedes hacer esto en un script normal:
+//await fuera de async function 
+
+try {
+  // using await outside an async function is only allowed in a module
+  const response = await fetch(
+    "https://mdn.github.io/learning-area/javascript/apis/fetching-data/can-store/products.json",
+  );
+  if (!response.ok) {
+    throw new Error(`HTTP error: ${response.status}`);
+  }
+  const data = await response.json();
+  console.log(data[0].name);
+} catch (error) {
+  console.error(`Could not get products: ${error}`);
+  throw error;
+}
+
+
+
+// Hay como dos practicas principales
+// promise con catch 
+// async y await con catch 
+// despues promise.all y promise.any 
+
+
+// Componentes para Completar una Promesa:
+
+// fetch 
+// then()
+// (response)
+// (otra prop/obj/accion)
+// registrar respuesta: ok (200), failed (404)
+// catch 
+
+
+// fetch y objeto response 
+
+
+// lo más importante async y await 
+// están dentro de una función 
+// no solo fetch y los objetos en variables globales 
+
+
+
+/* Implementar promise-based API
+ * ----------------------------------------------
+ */
+
+
