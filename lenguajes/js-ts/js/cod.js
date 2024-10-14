@@ -5091,6 +5091,1114 @@ try {
 // están dentro de una función 
 // no solo fetch y los objetos en variables globales 
 
+//promise
+//response
+//then() 
+//catch()) 
+
+
+// RS:
+
+/*
+promise: 
+objeto devuelto por una func async
+representa el estado actual de la operación
+
+En el momento en que se devuelve la promesa
+a la persona que llama, la operación a menudo no finaliza
+
+promise proporciona metodos para el exito o fracaso de la operacion 
+la función asincrónica inicia la operación
+	
+y devuelve un objeto Promise
+Luego puede adjuntar controladores 
+a este objeto de promesa
+
+estos controladores se ejecutarán
+cuando la operación haya tenido éxito
+o haya fallado.
+
+*/
+
+/*
+Realizaremos una HTTP request al servidor
+enviamos un mensaje de solicitud
+(request message) a un servidor remoto
+y este nos envía una respuesta
+ 
+enviaremos una solicitud para obtener 
+un archivo JSON del servidor.
+Usamos API fetch() para realizar solicitudes 
+*/
+
+
+const fetchPromise = fetch(
+  "https://mdn.github.io/learning-area/javascript/apis/fetching-data/can-store/products.json",
+);
+
+console.log(fetchPromise);
+
+fetchPromise.then((response) => {
+  console.log(`Received response: ${response.status}`);
+});
+
+console.
+
+/*
+1. llamar a la API fetch()	
+	asignar el valor de retorno
+	a la variable fetchPromise
+
+2. después, registrando la variable fetchPromise	
+	Esto debería generar algo como
+	Promise { <state>: "pending" }
+	nos indica que tenemos un objeto Promise
+	y que tiene un estado 
+	cuyo valor es "pending".
+	El estado "pendiente" 
+	significa que la operación fetch (recuperación)
+	aún continúa.
+
+3. pasando una función de controlador
+	controlador al método then() de Promise
+	Cuando (y si)
+	la operación fetch tiene éxito
+	la promesa llamará a nuestro controlador
+	y pasará un objeto Response
+	que contiene la respuesta del servidor
+	
+4. registrando un mensaje	
+	de que hemos iniciado la request/solicitud 
+
+*/
+
+
+/*
+La salida completa sería: 
+	
+	Promise { <state>: "pending" }
+	Started request…
+	Received response: 200
+
+
+Tenga en cuanta que Star request...
+se registra antes
+de que recibamos la respuesta
+
+A diferencia de una función síncrona,
+
+fetch() regresa mientras la request 
+aún está en curso
+permite que el programa siga respondiendo
+	
+La respuesta muestra el código de estado 200 (OK)
+significa que nuestra request 
+se realizó correctamente.  
+*/
+
+/*
+Encadenando Promesas: 
+		
+Con la API fetch()
+una vez que obtienes un objeto response
+necesitas llamar a otra función
+para obtener los datos de response. 
+
+En este caso queremos obtener 
+los datos de respuesta como JSON
+por lo que llamaríamos al método json()
+del objeto Response.
+
+json() también es asincrónico
+Este es un caso en el que tenemos que llamar
+a dos funciones asincrónicas sucesivas 
+*/
+
+const fetchPromise = fetch(
+  "https://mdn.github.io/learning-area/javascript/apis/fetching-data/can-store/products.json",
+);
+
+fetchPromise.then((response) => {
+  const jsonPromise = response.json();
+  jsonPromise.then((data) => {
+	console.log(data[0].name);
+  });
+});
+
+/*
+como antes
+agregamos un controlador then()
+a la promesa devuelta por fetch().
+Pero esta vez nuestro controlador llama a 
+response.json()
+y luego pasa un nuevo controlador then()
+a la promesa devuelta por response.json().
+
+Esto debería registrar baked beans
+el nombre del primer producto enumerado en 
+"products.json"
+*/
+
+
+/*
+con las llamadas then()
+la característica elegante de promises 
+es que el propio then() 
+devuelve una promesa
+que se completará con el resultado de la 
+función que se le pasa
+
+significa que podemos y deberíamos 
+reescribir el código 
+*/
+
+const fetchPromise = fetch(
+  "https://mdn.github.io/learning-area/javascript/apis/fetching-data/can-store/products.json",
+);
+
+fetchPromise
+  .then((response) => response.json())
+  .then((data) => {
+	console.log(data[0].name);
+  });
+
+//fetch: objeto promesa/devuelve una promesa
+//controlador then() al objeto promesa
+//objeto response 
+//controlador al objeto response
+
+//then puede devolver una promesa como fetch
+
+/*
+podemos devolver la promesa por json()
+y llamar al segundo then() 
+con ese valor de retorno
+*/
+
+/*
+Hay una pieza más que agregar
+Necesitamos verificar que el servidor 
+aceptó y pudo manejar la request 
+*/
+const fetchPromise = fetch(
+  "https://mdn.github.io/learning-area/javascript/apis/fetching-data/can-store/products.json",
+);
+
+fetchPromise
+  .then((response) => {
+	if (!response.ok) {
+	  throw new Error(`HTTP error: ${response.status}`);
+	}
+	return response.json();
+  })
+  .then((data) => {
+	console.log(data[0].name);
+  });
+
+
+// Capturar Errores: 
+
+/*
+Manejar errores en la API fetch() 
+puede generar un error por muchas razones
+Ej, no había conectividad de red 
+o la URL tenía un formato incorrecto
+y nosotros mismos estamos generando un error
+si el servidor devolvió un error.
+*/
+
+/*
+los objetos Promise
+proporcionan un método catch().
+parecido a then():
+ 
+lo llamas y le pasas una función de controlador
+mientras que el controlador pasado a then()
+se llama cuando la operación asincrónica
+tiene éxito, el controlador pasado a catch()
+se llama cuando la operación asincrónica falla.
+
+Si agrega catch()
+al final de una cadena de promesa
+se llamará cuando falle cualquiera de las llamadas
+a funciones asincrónicas
+
+puede implementar una operación
+como varias llamadas a funciones asincrónicas consecutivas 
+y tener un solo lugar para manejar todos los errores.
+*/
+
+/*
+también podemos modificar 
+la URL para que la solicitud falle. 
+*/
+
+const fetchPromise = fetch(
+  "bad-scheme://mdn.github.io/learning-area/javascript/apis/fetching-data/can-store/products.json",
+);
+
+fetchPromise
+  .then((response) => {
+	if (!response.ok) {
+	  throw new Error(`HTTP error: ${response.status}`);
+	}
+	return response.json();
+  })
+  .then((data) => {
+	console.log(data[0].name);
+  })
+  .catch((error) => {
+	console.error(`Could not get products: ${error}`);
+  });
+
+
+
+// Estado de una promesa: 
+
+/*
+1. pending: 			
+ la promesa se ha creado
+ la función asincrónica 
+ a la que está asociada
+ no ha tenido éxito o no ha fallado todavía.
+ Este es el estado en el que se encuentra
+ su promesa cuando se devuelve
+ de una llamada a fetch()
+ y la request aún se está realizando.
+
+2. fulfilled:
+ la función asincrónica ha tenido éxito.
+ Cuando se cumple una promesa
+ se llama a su controlador then().
+
+3. rejected:
+ la función asincrónica ha fallado.
+ Cuando se rechaza una promesa
+ se llama a su controlador catch(). 
+*/
+
+/*
+Lo que significa: "tuvo éxito" o "falló"
+depende de la API en cuestión
+fetch() rechaza la promesa devuelta
+si (entre otras razones)
+un error de red impidió
+que se enviara la solicitud
+
+pero cumple la promesa		
+si el servidor envió response
+incluso si la respuesta fue un error 
+como 404 No encontrado. 
+
+A veces se usa el termino settled
+para el cumplimiento como el rechazo.
+(fulfilled o rejected)
+
+Una promesa se resuelve/resolve
+si se liquida o si ha sido "bloqueada"
+(settled o locked in)
+para seguir el estado de otra promesa.
+*/
+
+
+
+
+
+
+// Async y Await 
+
+/*
+async
+ofrece una forma más sencilla de trabajar
+con código asincrónico basado en promesas
+
+dentro de una función 
+puede utilizar await
+antes de llamar a una función
+que devuelve una promesa
+
+Esto hace que el código espere en ese punto
+hasta que se resuelva la promesa
+
+momento en el cual el valor cumplido de la promesa		
+se trata como un valor de retorno
+o se arroja el valor rejected
+
+le permite escribir código
+que utiliza funciones asincrónicas
+pero que parece código sincrónico
+*/
+
+async function fetchProducts() {
+  try {
+	// después de esta línea, nuestra función esperará a que se resuelva la llamada `fetch()`
+	// la llamada `fetch()` devolverá una respuesta o lanzará un error
+	const response = await fetch(
+	  "https://mdn.github.io/learning-area/javascript/apis/fetching-data/can-store/products.json",
+	);
+	if (!response.ok) {
+	  throw new Error(`HTTP error: ${response.status}`);
+	}
+	// después de esta línea, nuestra función esperará a que se resuelva la llamada `response.json()`
+	// la llamada `response.json()` devolverá el objeto JSON analizado o arrojará un error
+	const data = await response.json();
+	console.log(data[0].name);
+  } catch (error) {
+	console.error(`Could not get products: ${error}`);
+  }
+}
+
+fetchProducts();
+
+/*
+estamos llamando a await fetch(),
+y en lugar de obtener una Promesa
+
+nuestra persona que llama
+obtiene un objeto de respuesta 
+completamente completo
+como si fetch() fuera una función sincrónica!
+*/
+
+/*
+Incluso podemos usar un bloque try...catch
+para el manejo de errores
+exactamente como lo haríamos si el código
+fuera sincrónico
+*/
+
+/*
+tenga en cuenta que las funciones asíncronas
+siempre devuelven una promesa
+por lo que no puede hacer algo como:
+*/
+async function fetchProducts() {
+  try {
+	const response = await fetch(
+	  "https://mdn.github.io/learning-area/javascript/apis/fetching-data/can-store/products.json",
+	);
+	if (!response.ok) {
+	  throw new Error(`HTTP error: ${response.status}`);
+	}
+	const data = await response.json();
+	return data;
+  } catch (error) {
+	console.error(`Could not get products: ${error}`);
+  }
+}
+
+const promise = fetchProducts();
+console.log(promise[0].name); 
+// "promise" is a Promise object, 
+//so this will not work
+
+
+//En su lugar, necesitarías hacer algo como:
+async function fetchProducts() {
+  const response = await fetch(
+	"https://mdn.github.io/learning-area/javascript/apis/fetching-data/can-store/products.json",
+  );
+  if (!response.ok) {
+	throw new Error(`HTTP error: ${response.status}`);
+  }
+  const data = await response.json();
+  return data;
+}
+
+const promise = fetchProducts();
+promise
+  .then((data) => {
+	console.log(data[0].name);
+  })
+  .catch((error) => {
+	console.error(`Could not get products: ${error}`);
+  });
+
+/*
+movimos el try...catch		
+nuevamente al controlador de captura
+en la promesa devuelta. 
+Esto significa que nuestro controlador then()
+no tiene que lidiar con el caso
+en el que se detectó un error
+dentro de la función fetchProducts
+lo que provocó que los datos
+no estuvieran definidos
+Maneje los errores
+como último paso de su cadena de promesas. 
+*/
+
+
+/*
+tenga en cuenta que solo puede usar await		
+dentro de una función asíncrona
+a menos que su código esté 
+en un módulo de JavaScript
+Eso significa que no puedes hacer esto
+en un script normal: 
+*/
+try {
+  // using await outside an async function is only allowed in a module
+  const response = await fetch(
+	"https://mdn.github.io/learning-area/javascript/apis/fetching-data/can-store/products.json",
+  );
+  if (!response.ok) {
+	throw new Error(`HTTP error: ${response.status}`);
+  }
+  const data = await response.json();
+  console.log(data[0].name);
+} catch (error) {
+  console.error(`Could not get products: ${error}`);
+  throw error;
+}
+
+
+
+/*
+al igual que una cadena de promesas
+await obliga a que las operaciones asincrónicas
+se completen en serie. 
+
+Esto es necesario si el resultado
+de la siguiente operación depende 
+del resultado de la última
+pero si ese no es el caso, entonces 
+algo como Promise.all() 
+tendrá más rendimiento.
+*/
+
+
+// Return en Promise
+
+/*
+La funcion/accion al tener exito/respuesta la promesa
+va a tener un parámetro. 
+Va a ser el return de la función que hemos delegado 
+a otro hilo con la promesa. 
+
+El return nos va a volver con este param
+Dentro de la función podemos usar este param
+podemos tener acceso a lo que nos haya devuelto
+o resuelto la promesa
+
+requestPermission() es la función que 
+devuelve o resuelve una promesa 
+
+default, denied o granted en función si el usuario
+ha dicho si o no a las notificaciones
+*/
+
+const prom = Notification.requestPermission(); 
+prom.then(function(param) {
+	if (param == "granted") {
+		console.log("Nos ha dicho que si");
+	} else {
+		
+		console.log("Nos ha dicho que no");
+	}
+	
+}); 
+
+/*
+Las promesas también pueden fallar
+Para eso, le pasamos catch al objeto promesa. 
+también tendrá una función y un parámetro. 
+el parámetro será una instancia de algún tipo 
+de error.  
+*/
+prom.catch(function (err){
+	console.error(err);
+});
+
+/*
+Podemos poner un console.error 
+o podemos tratarlo, enviandolo a nuestro sistema 
+*/
+
+prom.finally (funciton () {
+	console.log("Ya estaría");
+}); 
+/*
+es parecido a catch pero se va a ejecutar siempre
+independiente de que si sale bien o mal. 
+Podemos usarlo para quitar cosas de la pantalla
+o programa
+Independiente si haya salido bien o mal. 
+*/
+
+//todas estás funciones son callbacks 
+//le pasamos una función a otra como then, catch y finally
+/*
+Es lo que se va a ejecutar. 
+Las promesas son un mundo de funciones encadenadas 
+o callbacks encadenados. 
+
+El callback que se ejecuta con .requestPermission
+en otro hilo
+Y los demás callbacks de then, catch y finally
+se van a ir ejecutando a medida que unas promesas 
+vayan terminando. 
+*/
+
+
+// Encadenar then
+
+/*
+Devolverán otra promesa 
+Podemos ir transformando promesas de una a otra
+Has que las terminemos de procesar. 
+
+Podemos fabricar nuestras propias tuberías. 
+Ejecutamos una promesa
+En el then la transformamos y devolver otra cosa
+como parte de esta transformación 
+Luego habrá otras promesas que vayan tratando 
+todo lo que vayamos devolviendo. 
+
+Dentro de then o dentro de la función ('callback')
+que le pasamos a la función then. 
+podemos tener return  
+*/
+
+const prom = Notification.requestPermission(); 
+prom.then(function(param) {
+	if (param == "granted") {
+		console.log("Nos ha dicho que si");
+		return true; 
+	} else {
+		
+		console.log("Nos ha dicho que no");
+		return false; 
+	}
+	
+}); 
+prom.catch(function (err){
+	console.error(err);
+});
+prom.finally (funciton () {
+	console.log("Ya estaría");
+}); 
+
+/*
+Podmeos devolver verdadero o falso
+según si ha dicho que si o que no.  
+
+Al hacer esto podemos tratarlo como si fuera 
+otra promesa adicional
+
+*/
+const prom = Notification.requestPermission(); 
+const prom2 = prom.then(function(param) {
+	if (param == "granted") {
+		console.log("Nos ha dicho que si");
+		return true; 
+	} else {
+		
+		console.log("Nos ha dicho que no");
+		return false; 
+	}
+	
+});
+prom2.then(function (r) {
+	
+}); 
+prom.catch(function (err){
+	console.error(err);
+});
+/*
+Tenemos una segunda promesa llamada prom2 
+A a cual le podemos adjuntar otro then
+Que va a recibir otro parámetro que es otro callback
+Que es el que se va a ejecutar cuando prom y prom2
+su callback (function(param){})
+hayan terminado de ejecutarse. 
+*/
+
+//Podemos poner una función tras otra y así ir 
+//avanzando por nuestra cadena de then
+
+/*
+Al implementar prom2.then(function (r){});
+La r va a ser verdadero o falso 
+
+Pero si en return true o return false 
+devolviesemos otra promesa 
+
+js ejecutará primero la promesa que hemos devuelto 
+Y cuando termine, el retorno de la segunda promesa 
+Es lo que entraría en r
+*/
+
+// Funciona en las APIs que hacen peticiones de red 
+
+/*
+fetch es una funcion que hace petición de red 
+HTTP para pedirle datos a un servidor.
+Lo hace de forma asíncrona, sin tener que recargar 
+la página, lo hace por debajo. 
+
+Lo hace utilizando promesas
+A fetch lo que es una promesa 
+
+*/
+fetch("/api/data"). 
+/*
+Al hacer punto, vemos catch, finally, then 
+
+Le podemos poner un then directamente para obtener 
+la respuesta: lo que va a ocurrir cuando se termina 
+de procesar la petición de red 
+*/
+
+fetch("/api/data").then(response -> {
+	 
+});
+
+/*
+Podemos ir encadenandolas, poniendo .then() 
+sucesivamente y al final resolverlas 
+Al final siempre ponemos un catch para tratar
+el error
+*/
+fetch("/api/data").then(response -> {
+	 
+}).catc(e -> console.error(e));
+
+/*
+Response va a contener el resultado de la petición 
+de red que es lo que la propia promesa 
+nos devuelve una vez que se haya terminado de ejecutar 
+
+Al hacer punto, tenemos acceso a método y prop 
+como ok, status (muestra info sobre la petición hecha),
+url(muestra la url al que el hicimos la petición)
+
+método json() para transformar la respuesta en 
+un json 
+Para hacer peticiones de red a una api que usa 
+json para enviar sus respuestas. 
+
+Es una función que devuelve otra promesa 
+json(): Promise<any>; 
+porque hay veces que las respuestas pueden ejecutarse 
+antes de que tengamos el body completo de la petición
+
+el then puede ejecutarse cuando la petición 
+nos haya devuelto las tres primeras lineas 
+pero todavía no hemos terminado de recibir
+el resto de la respuesta. 
+
+devuelve otra promesa para asegurarse que por lo
+menos recibe toda la petición antes de continuar 
+su ejecución. 
+
+*/
+
+fetch("/api/data").then(response -> {
+	 response.json();
+}).catc(e -> console.error(e));
+
+
+fetch("/api/data").then(response -> {
+	console.log("Termina con estado " + response.status);
+	return response.json();
+}).catch(e -> console.error(e));
+/*
+Dentro del response ponemos un mensaje de que 
+hemos terminado, luego hacemos un return del response 
+dado que nos interesa el cuerpo de la respuesta. 
+*/
+
+/*
+Como hemos puesto return, el then va a devolver 
+otra promesa 
+
+Podemos poner otro then entre then y catch 
+*/
+fetch("/api/data").then(response -> {
+	console.log("Termina con estado " + response.status);
+	return response.json();
+}).then(body -> {
+	body.username;
+	//o console.log(body);
+}).catch(e -> console.error(e));
+
+/*
+el segundo then va a tener el body 
+lo que se obtiene cuando se termina de ejecutar 
+la promesa json 
+*/
+
+/*
+Lo importante es que llamamos a una función 
+que devuelve una promesa (fetch), al instante 
+
+luego, mediante then decimos lo que queremos que  
+que vaya ocurriendo a medida que esas promesas 
+vayan resolviendose (correctamente, si no pasa a catch). 
+*/
+
+
+// Hasta ahora usamos promesas con funciones 
+// de la biblioteca estandar 
+
+// Podemos crear nuestras propias promesas:
+
+/*
+Con la estructura Promise 
+llamamos al constructor new 
+esto nos devolverá una promesa 
+
+Tendrá su propio then, catch, finally, al hacer punto 
+ 
+*/
+const prom = new Promise(); 
+prom. 
+
+/*
+lo que ocurre en el constructor es lo importante. 
+le proporcionamos una funcion como parámetro 
+la accion asincrona en otro hilo, de manera paralela
+una operación de mucha carga de calculo, mucho tiempo de ejecución 
+*/
+
+/*
+Con cosas de mucha complejidad se podría usar 
+un worker 
+*/
+
+const prom = new Promise(funcition() {
+	console.log("Me ejecuto asincronamente");
+}); 
+
+/*
+Está función va a recibir como parámetro 2 
+funciones/callbacks 
+llamados resolve y reject
+como una practica estandar, podemos ponerle otro 
+nombre más pequeño o significativo. 
+
+resolve: resolverá la promesa 
+
+reject: rechazará la promesa 
+nos permite terminar con la ejecución de una promesa 
+
+Una promesa no simplemente es una función 
+con un return. 
+
+tenemos que hacerlo manualmente 
+diciendole que ha terminado y mostrando un resultado
+mediante la función resolve 
+
+llamamos al parametro resolve 
+es de tipo función
+como parámetro le proporcionamos lo que queramos 
+que sea el resultado de toda la promesa 
+*/
+const prom = new Promise(funcition(resolve, reject) {
+	console.log("Me ejecuto asincronamente");
+	
+	resolve(42);
+}); 
+
+/*
+llamamos a resolver con el parámetro 42
+cuando esto ocurra, la promesa terminará su ejecución 
+y automaticamente el then de la misma se ejecutará
+si está disponible
+
+Y como parámetro a la función que le pasemos 
+al then, le entrará todo lo que hayamos puesto 
+en el resolve 
+*/
+const prom = new Promise(funcition(resolve, reject) {
+	console.log("Me ejecuto asincronamente");
+	
+	resolve(42);
+}); 
+prom.then(res) -> console.log("Termina mi promesa con", res);
+/*
+Cuando lo ejecutemos se va a escribir el valor 42 
+
+//Respuesta 
+node index.js 
+
+// Me ejecuto asíncronamente (lo que está dentro de la promesa)
+// Termina mi promesa con 42 (valor que imprime then)
+*/
+
+//asíncronia 
+/*
+
+*/
+
+const prom = new Promise(funcition(resolve, reject) {
+	console.log("Me ejecuto asincronamente");
+	
+	resolve(42);
+}); 
+
+prom.then ((res) -> {
+	console.log("Termina mi promesa con", res);
+});
+
+console.log("Estoy al final de mi programa")
+
+/*
+console.log se va a escribir antes del then 
+a pesar de estar después  
+Es probable que nodejs hasta que no termine 
+con la función principal, no despache la promesa. 
+es la naturaleza asincrona
+Nos sirve cuando una función tarde en ejecutarse.  
+*/
+//Out: 
+//Me ejecuto asíncronamente 
+//Estoy al final de mi programa 
+//Termina mi promesa con 42 
+
+
+//callback de un setTimeOut tardará en ejectuarse
+/*
+espera una milisegundo para ejecutar el callback.
+que el pasemos como parámetro. 
+*/
+
+const prom = new Promise(funcition(resolve, reject) {
+	console.log("Me ejecuto asincronamente");
+	setTimeout(function() {
+		resolve(42); 
+	}, 1000);
+		
+}); 
+
+prom.then ((res) -> {
+	console.log("Termina mi promesa con", res);
+});
+
+console.log("Estoy al final de mi programa")
+
+/*
+Al cabo de 1 segundo se va a ejecutar la función 
+que llama a resolve de la promesa
+la promesa va a tardar 1 segundo en finalizar. 
+
+La acción en then(res) tardará 1 segundo en aparecer
+en la consola
+
+Con llamar a resolve tenemos todo listo 
+para pasarselo al then
+*/
+
+/*
+Normalmente utilizaremos las promesas sin variables
+Las tendremos todas encadenadas. 
+
+*/
+
+new Promise(funcition(resolve, reject) {
+	console.log("Me ejecuto asincronamente");
+	setTimeout(function() {
+		resolve(42); 
+	}, 1000);
+		
+}).then ((res) -> {
+	console.log("Termina mi promesa con", res);
+});
+
+console.log("Estoy al final de mi programa");
+
+
+//Funcion generadora con return 
+/*
+podemos tenerla para hacer un return de la promesa
+ 
+*/
+function generadora(){
+	return new Promise(funcition(resolve, reject) {
+		console.log("Me ejecuto asincronamente");
+		setTimeout(function() {
+			resolve(42); 
+		}, 1000);			
+	})
+}	
+generadora().then ((res) -> {
+	console.log("Termina mi promesa con", res);
+});
+
+console.log("Estoy al final de mi programa");
+
+/*
+Las variables pueden confundir, si no es necesario 
+no usarlas, trabajar con then y catch 
+*/
+
+/*
+Podemos modificar el return de la promesa 
+y poner otros then 
+para poder volver a imprimir otro return de  
+la siguiente o nueva parte encadenada 
+*/
+function generadora(){
+	return new Promise(funcition(resolve, reject) {
+		console.log("Me ejecuto asincronamente");
+		setTimeout(function() {
+			resolve(42); 
+		}, 1000);			
+	})
+}	
+generadora().then ((res) -> {
+	console.log("Termina mi promesa con", res);
+	return 2 * res; 
+}).ten((res) -> {
+	console.log("Termina mi promesa con", res);
+});
+
+console.log("Estoy al final de mi programa");
+
+//Out:
+// Me ejecuto asincronamente 
+// Estoy al final de mi programa 
+// Termina mi promesa con 42 
+// Termina mi promesa con 84  
+
+/*
+then no simplemente tiene resolve y reject 
+tiene que hacer un return sincrono 
+
+Si queremos hacer un código asincrono desde 
+este return tenemos que devolver otra promesa 
+*/
+function generadora(){
+	return new Promise(funcition(resolve, reject) {
+		console.log("Me ejecuto asincronamente");
+		setTimeout(function() {
+			resolve(42); 
+		}, 1000);			
+	})
+}	
+generadora().then ((res) -> {
+	console.log("Termina mi promesa con", res);
+	return new Promise(function (resolve, reject) {
+		setTimeout(function() {
+			resolve (res * 2); 	
+		}, 1000);
+	
+	});
+		
+}).ten((res) -> {
+	console.log("Termina mi promesa con", res);
+});
+
+console.log("Estoy al final de mi programa");
+
+/*
+Mediante setTimeout se espera 1 segund 
+antes de volver a devolver el doble del regreso 
+original, los then son sincronos 
+*/
+
+/*
+Resolvermos al cabo de 1 segundo, el 42 
+En el primer then vamos a devolver una promesa 
+que al cabo de 1 segundo devuelve otro valor 
+El then final terminará con e lsegundo resultado. 
+*/
+
+// Reject
+/*
+Es la función de rechazo
+la que utilizamos para lanzar un error
+cuando la promesa no puede satisfactoriamente 
+utilizamos el reject para decir que no podemos 
+concluir debido a una situación. 
+
+En JS podemos usar un Throw de cualquier objeto
+numero, string; de cualquier cosa que no sean 
+errores 
+
+Lo más aceptado es usar reject para lanzar instancias 
+de objetos de tipo error 
+
+va conectado con un catch 
+
+*/
+function generadora(){
+	return new Promise(funcition(resolve, reject) {
+		console.log("Me ejecuto asincronamente");
+		setTimeout(function() {
+			resolve(42); 
+		}, 1000);	
+		reject(new Error("No me apetece trabajar"));		
+	})
+}	
+generadora().then ((res) -> {
+	console.log("Termina mi promesa con", res);
+	return new Promise(function (resolve, reject) {
+		setTimeout(function() {
+			resolve (res * 2); 	
+		}, 1000);
+	
+	});
+		
+}).ten((res) -> {
+	console.log("Termina mi promesa con", res);
+}).catch((e) -> console.error("Ha fallado porque: ", e.message));
+
+console.log("Estoy al final de mi programa");
+
+// Output 
+// Se va a ejecutar el mensaje de error 
+// No se ejectua el then, pero si el setTimeout primero 
+
+/*
+En Js, cuando llamamos a resolve y reject 
+a quién llamemos primero gana 
+Si llamamos a resolve, establecemos que la promesa 
+ha salido bien 
+Si llamamos a reject, todo la promesa ha salido mal. 
+y pasa al catch 
+
+No podemos llamar a reject y luego llamar a resolve
+Y esperar a que se hagan los dos bloques 
+Una promesa o sale bien o sale mal 
+
+Lo común es hacer que si no se cumplen los 
+requisitos, hagamos un reject o sino hagamos 
+un resolve
+
+En este código llamamos a reject antes que a resolve 
+dado que resolve va a tardar 1 segundo 
+por la función setTimeout, la promesa está setted 
+y no se ejectua then (que solo se ejecuta
+cuando la promesa tiene exito)
+
+No podemos dejar un reject o resolve suelto 
+debemos fijarnos que estámos devolviendo 
+*/
+
+/*
+Promise tiene una serie de funciones 
+como reject y resolve
+*/
+Promise.reject 
+Promise.resolve 
+
+/*
+Son dos promesas que cuando le pasamos un valor 
+*/
+Promise.reject(4);
+/*
+devuelve una promesa que instantaneamente resuelve 
+lo que le hayamos pasado. 
+
+Podemos usarlo para fabricar rapidamente promesas 
+En las que no necesitamos hacer nada 
+Es más facil que crear todo una estructura 
+como la anterior 
+*/
+
+
 
 
 /* Implementar promise-based API
