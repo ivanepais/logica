@@ -6205,4 +6205,784 @@ como la anterior
  * ----------------------------------------------
  */
 
+// API alarm()
 
+<button id="set-alarm">Set alarm</button>
+<div id="output"></div>
+
+const output = document.querySelector("#output");
+const button = document.querySelector("#set-alarm");
+
+function setAlarm() {
+  setTimeout(() => {
+	output.textContent = "Wake up!";
+  }, 1000);
+}
+
+button.addEventListener("click", setAlarm);
+
+
+//Constructor promise 
+
+function alarm(person, delay) {
+  return new Promise((resolve, reject) => {
+	if (delay < 0) {
+	  throw new Error("Alarm delay must not be negative");
+	}
+	setTimeout(() => {
+	  resolve(`Wake up, ${person}!`);
+	}, delay);
+  });
+}
+
+
+// Usando API alarm()
+
+const name = document.querySelector("#name");
+const delay = document.querySelector("#delay");
+const button = document.querySelector("#set-alarm");
+const output = document.querySelector("#output");
+
+function alarm(person, delay) {
+  return new Promise((resolve, reject) => {
+	if (delay < 0) {
+	  throw new Error("Alarm delay must not be negative");
+	}
+	setTimeout(() => {
+	  resolve(`Wake up, ${person}!`);
+	}, delay);
+  });
+}
+
+button.addEventListener("click", () => {
+  alarm(name.value, delay.value)
+	.then((message) => (output.textContent = message))
+	.catch((error) => (output.textContent = `Couldn't set alarm: ${error}`));
+});
+			
+
+
+// Usando async y await en alarm() 
+
+const name = document.querySelector("#name");
+const delay = document.querySelector("#delay");
+const button = document.querySelector("#set-alarm");
+const output = document.querySelector("#output");
+
+function alarm(person, delay) {
+  return new Promise((resolve, reject) => {
+	if (delay < 0) {
+	  throw new Error("Alarm delay must not be negative");
+	}
+	setTimeout(() => {
+	  resolve(`Wake up, ${person}!`);
+	}, delay);
+  });
+}
+
+button.addEventListener("click", async () => {
+  try {
+	const message = await alarm(name.value, delay.value);
+	output.textContent = message;
+  } catch (error) {
+	output.textContent = `Couldn't set alarm: ${error}`;
+  }
+});
+
+
+
+/* Workers
+ * ----------------------------------------------
+ */
+
+/*
+permiten ejecutar tareas
+en un hilo de ejecución separado
+
+tarea sincrónica de larga duración
+toda la ventana deja de responder por completo.
+la razón de esto es que el programa 
+es de un solo subproceso
+
+Un hilo es una secuencia de instrucciones 	
+que sigue un programa
+Debido a que el programa consta de un solo hilo
+solo puede hacer una cosa a la vez
+
+Los workers brindan la posibilidad de ejecutar
+algunas tareas en un subproceso diferente
+
+Una preocupación es que si varios subprocesos
+pueden tener acceso a los mismos datos compartidos
+es posible que los cambien de forma
+independiente e inesperada (entre sí). 
+Esto puede provocar errores difíciles de encontrar
+	
+Para evitar estos problemas en la web
+su código principal y su código de trabajo
+nunca obtienen acceso directo a las variables
+de cada uno y solo pueden "compartir" datos
+en casos muy específicos
+
+Los workers y el código principal	
+se ejecutan en mundos completamente separados
+y solo interactúan enviándose mensajes entre sí. 
+significa que los workers no pueden acceder
+al DOM  (la ventana, el documento, los elementos de la página, etc.).
+	
+*/
+
+// HTML
+
+<script src="main.js" defer></script>
+<link href="style.css" rel="stylesheet" />
+
+<body>
+<label for="quota">Number of primes:</label>
+<input type="text" id="quota" name="quota" value="1000000" />
+
+<button id="generate">Generate primes</button>
+<button id="reload">Reload</button>
+
+<textarea id="user-input" rows="5" cols="62">
+Try typing in here immediately after pressing "Generate primes"
+</textarea>
+
+<div id="output"></div>
+</body>
+
+
+// CSS 
+
+textarea {
+  display: block;
+  margin: 1rem 0;
+}
+
+
+// main js 
+
+// Crea un nuevo worker, dándole el código en "generate.js"
+const worker = new Worker("./generate.js");
+
+// Cuando el usuario hace clic en "Generar números primos", envía un mensaje al worker.
+// El comando del mensaje es "generar" y el mensaje también contiene "cuota",
+// cuál es el número de números primos a generar.
+document.querySelector("#generate").addEventListener("click", () => {
+  const quota = document.querySelector("#quota").value;
+  worker.postMessage({
+    command: "generate",
+    quota,
+  });
+});
+
+// Cuando el worker envía un mensaje al hilo principal,
+// actualiza el cuadro de salida con un mensaje para el usuario, incluido el número de
+// números primos que se generaron, tomados de los datos del mensaje.
+worker.addEventListener("message", (message) => {
+  document.querySelector("#output").textContent =
+    `Finished generating ${message.data} primes!`;
+});
+
+document.querySelector("#reload").addEventListener("click", () => {
+  document.querySelector("#user-input").value =
+    'Try typing in here immediately after pressing "Generate primes"';
+  document.location.reload();
+});
+
+/*
+Primero, estamos creando el worker 
+usando el constructor Worker().
+Le pasamos una URL que apunta al script 
+del worker.
+Tan pronto como se crea el worker
+se ejecuta el script del trabajador.
+
+
+A continuación, como en la versión síncrona
+controlador de eventos de clic al botón 
+"Generar números primos". 
+Pero ahora, en lugar de llamar a una 
+función generatePrimes(), 
+enviamos un mensaje al worker 
+worker.postMessage().
+
+Este mensaje puede recibir un argumento
+en este caso, pasamos un objeto JSON
+que contiene dos propiedades:
+
+command:
+	una cadena que identifica lo que 
+	queremos que haga el worker 
+	(en caso de que nuestro worker 
+	pueda hacer más de una cosa)
+	
+quota:
+	el número de números primos a generar
+
+A continuación, agregamos
+un controlador de eventos de mensaje 
+al worker, es para que el worker 
+pueda decirnos cuando ha terminado
+y pasarnos los datos resultantes. 
+
+Nuestro controlador toma los datos
+de la propiedad de datos del mensaje
+y los escribe en el elemento de salida
+(los datos son exactamente
+los mismos que la cuota,
+por lo que esto es un poco inútil
+pero muestra el principio).
+
+Finalmente, implementamos
+el controlador de eventos
+de clic para el botón "Recargar". 
+Esto es exactamente igual que en la versión síncrona.
+*/
+
+
+
+// Worker
+
+// Escuche los mensajes del hilo principal.
+// Si el comando del mensaje es "generar", llame a `generatePrimes()`
+addEventListener("message", (message) => {
+  if (message.data.command === "generate") {
+    generatePrimes(message.data.quota);
+  }
+});
+
+// Genera números primos (muy ineficientemente)
+function generatePrimes(quota) {
+  function isPrime(n) {
+    for (let c = 2; c <= Math.sqrt(n); ++c) {
+      if (n % c === 0) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  const primes = [];
+  const maximum = 1000000;
+
+  while (primes.length < quota) {
+    const candidate = Math.floor(Math.random() * (maximum + 1));
+    if (isPrime(candidate)) {
+      primes.push(candidate);
+    }
+  }
+
+// Cuando hayamos terminado, enviamos un mensaje al hilo principal,
+// incluyendo el número de números primos que generamos.
+  postMessage(primes.length);
+}
+
+/*
+Esto se ejecuta tan pronto como el 
+script principal crea el worker 
+Lo primero que hace el worker 
+es empezar a escuchar
+mensajes del script principal
+Lo hace usando addEventListener()
+que es una función global en un worker 
+Dentro del controlador de eventos del mensaje
+la propiedad de datos del evento
+contiene una copia del argumento pasado
+desde el script principal
+Si el script principal pasó el comando generar
+llamamos a generarPrimes(),  
+pasando el valor de cuota del evento del mensaje.
+
+La función generatePrimes()
+es como la versión síncrona
+excepto que en lugar de devolver un valor
+enviamos un mensaje al script principal
+cuando terminamos
+Usamos la función postMessage() para esto
+que al igual que addEventListener() 
+es una función global en un trabajador
+Como ya vimos, el script principal
+está escuchando este mensaje
+y actualizará el DOM cuando se reciba el mensaje.
+
+Para ejecutar este sitio
+deberá ejecutar un servidor web local
+porque las URL file://
+no pueden cargar workers 
+configurar un servidor de pruebas local
+con node(js) o django(python)
+Una vez hecho esto
+debería poder hacer clic en "Generar números primos"
+y hacer que su página principal siga respondiendo.
+*/
+
+
+
+/* Client-side web APIs
+ * ----------------------------------------------
+ */
+
+// Framework vs Biblioteca 
+/*
+Con una biblioteca, nosotros llamamos a las funciones que nos proporcionan. 
+Con el framework, sus funciones llaman a nuestro código.  
+*/
+
+
+// Funcionamiento de una API: 
+/*
+Mediante objetos y métodos (propiedades)
+
+nombreObjeto.metodo()
+construct    funcionalidad 
+instancia
+*/
+
+/*
+AudioContext:
+representa un gráfico de audio (audio graph) 
+que se puede utilizar para manipular la reproducción
+de audio dentro del navegador
+y tiene varios métodos y propiedades disponibles 
+para manipular ese audio.
+
+MediaElementAudioSourceNode:
+representa un elemento <audio>
+que contiene el sonido que desea reproducir
+y manipular dentro audio context.
+
+AudioDestinationNode:	
+representa el destino del audio, es decir, el dispositivo de su computadora que realmente lo emitirá
+generalmente sus parlantes o auriculares.
+*/
+
+<audio src="outfoxing.mp3"></audio>
+
+<button class="paused">Play</button>
+<br />
+<input type="range" min="0" max="1" step="0.01" value="1" class="volume" />
+
+
+const audioCtx = new AudioContext();
+
+const audioElement = document.querySelector("audio");
+const playBtn = document.querySelector("button");
+const volumeSlider = document.querySelector(".volume");
+
+const audioSource = audioCtx.createMediaElementSource(audioElement);
+
+// Funcionamiento de una API: 
+/*
+Mediante objetos y métodos (propiedades)
+
+nombreObjeto.metodo()
+construct    funcionalidad 
+instancia
+*/
+
+// a la variable audioSource le pasamos la instancia 
+// para usar un metodo de ella 
+// al parametro de este método le pasamos 
+// el elemento html en donde está el audio. 
+
+// audioSource es el elemento intermedio 
+// entre la instancia y el elem html que tiene audio
+
+// Entonces:
+// var ref elem html 
+// var instancia/obj para api 
+// var guarda instancia para usar metódo 
+// y pasa como parámetro el elem html 
+
+// después eventos para los diferentes elem html 
+// usan todas las apis disponibles, elem, dom, etc. 
+
+// play/pause audio
+playBtn.addEventListener("click", () => {
+  // check if context is in suspended state (autoplay policy)
+  if (audioCtx.state === "suspended") {
+    audioCtx.resume();
+  }
+
+// El elem html playBtn tiene una funcion click 
+// chequea propiedad de la instancia (AudioContext)
+// y activa metodo  
+
+// AudioContext: 
+/*
+representa un gráfico de audio (audio graph) 
+que se puede utilizar para manipular la reproducción
+de audio dentro del navegador
+y tiene varios métodos y propiedades disponibles 
+para manipular ese audio.
+*/
+
+
+// if track is stopped, play it
+if (playBtn.getAttribute("class") === "paused") {
+	audioElement.play();
+	playBtn.setAttribute("class", "playing");
+	playBtn.textContent = "Pause";
+// if track is playing, stop it
+} else if (playBtn.getAttribute("class") === "playing") {
+	audioElement.pause();
+	playBtn.setAttribute("class", "paused");
+	playBtn.textContent = "Play";
+}
+});
+
+// if track ends
+audioElement.addEventListener("ended", () => {
+playBtn.setAttribute("class", "paused");
+playBtn.textContent = "Play";
+});
+
+/*
+pueden notar que los métodos play() y pause()
+que se utilizan para reproducir y pausar la pista
+no son parte de la API de Web Audio
+son parte de la API HTMLMediaElement
+que es diferente pero está estrechamente relacionada.
+*/
+
+
+// volume
+const gainNode = audioCtx.createGain();
+
+volumeSlider.addEventListener("input", () => {
+  gainNode.gain.value = volumeSlider.value;
+});
+
+/*
+gainNode toma la instancia y usa un metodo 
+al elem html volumeSlider se le adjunto una 
+funcion de apretar, llama a propieadades 
+de gainNode y les dice que sean igual a 
+la propieada .value de volumeSlider
+*/
+
+
+/*
+Lo último que hay que hacer para que esto funcione
+es conectar los diferentes nodos en el gráfico de audio
+lo cual se hace usando el método AudioNode.connect()
+disponible en cada tipo de nodo:
+*/
+
+audioSource.connect(gainNode).connect(audioCtx.destination);
+
+/*
+El audio comienza en la fuente
+que luego se conecta al nodo de ganancia
+para que se pueda ajustar el volumen del audio. 
+Luego, el nodo de ganancia se conecta al nodo de destino
+para que el sonido se pueda reproducir en su computadora
+(la propiedad AudioContext.destination
+representa el AudioDestinationNode
+predeterminado disponible en el hardware de su computadora
+por ejemplo, sus parlantes).
+*/
+
+
+// Punto de entrada 
+/*
+  
+*/
+
+
+// Dom API: punto de entrada
+/*
+la entrada es objeto document o referencia a un elem 
+para manipular elem, hacer diferentes cosas, etc. 
+*/
+
+// crear un nuevo elemento em
+const em = document.createElement("em"); 
+
+// hace referencia a un elemento p existente
+const para = document.querySelector("p"); 
+
+// dales algo de contenido de texto
+em.textContent = "Hello there!";
+	
+// incrustarlos dentro del párrafo
+para.appendChild(em);
+
+
+// var ref elem html 
+// var instancia/obj para api 
+// var guarda instancia para usar metódo 
+// y pasa como parámetro el elem html 
+
+// después eventos para los diferentes elem html 
+// usan todas las apis disponibles, elem, dom, etc. 
+
+
+// Canvas API
+/*
+Canvas necesita un elemento <canva> 
+Su objeto de contexto se crea obteniendo una referencia
+al elemento <canvas> que desea dibujar
+y luego llamando a su método HTMLCanvasElement.getContext():
+
+*/
+
+//ctx guarda instancia y llama al metodo 
+//y le pasa un valor como parametro 
+const canvas = document.querySelector("canvas");
+const ctx = canvas.getContext("2d");
+
+Ball.prototype.draw = function () {
+  ctx.beginPath();
+  ctx.fillStyle = this.color;
+  ctx.arc(this.x, this.y, this.size, 0, 2 * Math.PI);
+  ctx.fill();
+};
+// la función modifica la instancia ctx 
+
+
+
+/* DOM API 
+ * ----------------------------------------------
+ */
+ 
+// Conjuntos de APIs
+
+
+// Partes de una navegador que afectan a la visualización 
+
+/*
+Window, Navigator, Document 
+* 
+*/
+
+
+// Objeto Document 
+/*
+DOM (para los navegadores)
+punto de entrada para javascript 
+
+Puede utilizar este objeto para devolver y manipular información sobre
+HTML y CSS que compone el documento
+
+pobtener una referencia a un elemento en el DOM
+cambiar su contenido de texto
+aplicarle nuevos estilos
+crear nuevos elementos y agregarlos a el elemento actual como hijo
+o incluso eliminarlo por completo			
+*/
+
+/*
+Como un arbol, el DOM tiene sus ramificaciones 			
+Empieza con el elemento HTML que el la raíz. 
+tiene como ramas al HEAD y al BODY 
+A su vez, estos tiene como ramas a otros elementos. 
+*/
+
+
+// Selectores estandar 
+
+/*
+document.querySelector()
+funcion del documento, toma un parametro entre ""
+Si le pasas un selector de etiqueta toma el primero 
+ 
+document.querySelectorAll()  
+nodelist
+*/
+
+// Antiguos 
+
+
+// Crear y Colocar elem/nodes 
+
+// Funcionamiento de una API: 
+/*
+Mediante objetos y métodos (propiedades)
+
+nombreObjeto.metodo()
+construct    funcionalidad 
+instancia
+
+nombreObjeto.propiedad = modificacion/valor 
+la diferencia está en el igual
+no func, no parame
+*/
+
+// var ref elem html 
+// var instancia/obj para api 
+// var guarda instancia para usar metódo 
+// y pasa como parámetro el elem html 
+
+const sect = document.querySelector("section");
+const para = document.createElement("p");
+para.textContent = "We hope you enjoyed the ride.";
+
+sect.appendChild(para);
+
+// Agrega un pedazo de texto al parrafo (unico/primero)
+const text = document.createTextNode(
+  " — the premier source for web development knowledge.",
+);
+
+const linkPara = document.querySelector("p");
+linkPara.appendChild(text);
+
+
+// Mover y eliminar elementos 
+
+// Mover elem a otro (linkPara a sect)
+sect.appendChild(linkPara);
+
+// Eliminar hijo (linkPara) de padre (sect)
+sect.removeChild(linkPara);
+
+// Eliminar elem nav modern
+linkPara.remove();
+
+// Eliminar elem nav antiguos 
+linkPara.parentNode.removeChild(linkPara);
+
+
+
+// Agregar estilo
+
+// la 1era forma moderna es hacerlo en linea con js
+para.style.color = "white";
+para.style.backgroundColor = "black";
+para.style.padding = "10px";
+para.style.width = "250px";
+para.style.textAlign = "center";
+//se refleja en el html del elem
+
+
+// la 2da necesita css definido en una clase 
+// para el elem dinamico que aparecerá despues 
+// a este elemento le agregamos el nombre de la clase 
+.highlight {
+color: white;
+background-color: black;
+padding: 10px;
+width: 250px;
+text-align: center;
+}
+  
+para.setAttribute("class", "highlight");
+
+
+
+/* Fetch
+ * ----------------------------------------------
+ */
+
+// Acelerar los sitios
+/*
+JSON y   vez
+consumiendo más datos y relentizar la experiencia usuario. 
+*/
+
+// Fetch API 
+/*
+Recuperar u obtener datos o recursos. 
+*/
+
+// Fetch contenido de texto
+/*
+en una aplicación real
+sería más probable que usáramos
+un lenguaje del lado del servidor
+para solicitar nuestros datos de una base de datos
+
+Porque un lenguaje de backend interactuar
+con una computadora/servidor que almacena archivos, datos, recursos 
+Un lenguaje frontend interactua con el navegador
+cliente/programa 
+*/
+
+
+//ej; 
+const verseChoose = document.querySelector("select");
+const poemDisplay = document.querySelector("pre");
+
+verseChoose.addEventListener("change", () => {
+  const verse = verseChoose.value;
+  updateDisplay(verse);
+});
+
+/*
+agrega un detector al elemento <select>		
+de modo que cuando el usuario selecciona
+un nuevo valor
+
+el nuevo valor se pasa a la función 
+updateDisplay() como parámetro. 
+*/
+
+function updateDisplay(verse) {
+
+	verse = verse.replace(" ", "").toLowerCase();
+	const url = `${verse}.txt`;
+
+	// Llama a `fetch()`, pasando la URL.
+	fetch(url)
+	  // fetch() devuelve una promesa. Cuando hayamos recibido una respuesta del servidor,
+	  // el controlador `then()` de la promesa se llama con la respuesta.
+		.then((response) => {
+		// Nuestro controlador arroja un error si la solicitud no tuvo éxito.
+		if (!response.ok) {
+		  throw new Error(`HTTP error: ${response.status}`);
+		}
+		// De lo contrario (si la respuesta fue exitosa), nuestro controlador recupera la respuesta
+		// como texto llamando a respuesta.text(), y devuelve inmediatamente la promesa
+		// devuelto por `respuesta.text()`
+		return response.text();
+		})
+	  // Cuando respuesta.text() ha tenido éxito, se llama al controlador `then()` con
+	  // el texto, y lo copiamos en el cuadro `poemDisplay`.
+	  .then((text) => {
+		poemDisplay.textContent = text;
+	  })
+	  // Detecta cualquier error que pueda ocurrir y muestra un mensaje
+	  // en el cuadro `poemDisplay`.
+	  .catch((error) => {
+		poemDisplay.textContent = `Could not fetch verse: ${error}`;
+	  });
+
+}
+
+updateDisplay("Verse 1");
+verseChoose.value = "Verse 1";
+
+
+/*
+Comenzaremos construyendo una URL relativa
+que apunte al archivo de texto que queremos cargar
+ya que lo necesitaremos más adelante
+
+El valor del elemento <select>
+en cualquier momento es el mismo
+que el texto dentro de la <opción> 
+seleccionada (a menos que especifique un valor diferente en un atributo de valor),
+por ejemplo, "Verso 1"
+El archivo de texto de verse correspondiente es "verse1.txt"
+está en el mismo directorio que el archivo HTML
+bastará con el nombre del archivo.
+
+Sin embargo, los servidores web
+tienden a distinguir entre mayúsculas y minúsculas
+y el nombre del archivo no tiene espacios. 
+Para convertir "Verse 1" a "verse1.txt"
+necesitamos convertir la 'V' a minúscula
+eliminar el espacio y agregar ".txt" al final
+
+Esto se puede hacer con replace(),
+toLowerCase() y literal de plantilla. 
+
+*/
+
+
+/*
+
+
+*/
