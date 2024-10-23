@@ -6896,8 +6896,11 @@ para solicitar nuestros datos de una base de datos
 
 Porque un lenguaje de backend interactuar
 con una computadora/servidor que almacena archivos, datos, recursos 
+Su entorno de ejecución es un servidor/sistema
+
 Un lenguaje frontend interactua con el navegador
 cliente/programa 
+Su entorno de ejecución es el navegador. 
 */
 
 
@@ -6986,3 +6989,379 @@ toLowerCase() y literal de plantilla.
 
 
 */
+
+
+
+/* Server-side
+ * ----------------------------------------------
+ */
+ 
+/*
+un lenguaje de backend interactuar
+con una computadora/servidor que almacena archivos, datos, recursos 
+Su entorno de ejecución es un servidor/sistema operativo
+
+Un lenguaje frontend interactua con el navegador
+cliente/programa 
+Su entorno de ejecución es el navegador. 
+*/
+
+
+// Características de un sitio dinámico
+
+/*
+Almacenamiento y entrega eficiente de información
+Experiencia de usuario personalizada
+Acceso controlado al contenido
+Almacenar información de sesión/estado
+Notificaciones y comunicación
+Análisis de datos
+*/
+
+// Características de Client-side 
+
+// Al realizar una solicitud/click en un sitio
+// Contiene algunos de estos métodos
+
+/*
+GET: obtener recurso, body
+POST: crear recurso
+HEAD: info/metadata de un recurso, no body
+PUT: actualizar recurso o crea si no existe. 
+DELETE: eliminar recurso. 
+TRACE, OPTIONS, CONNECT, PATCH 
+*/
+
+//URL parametros 
+//POST data: solicitud agrega recursos nuevos
+//client-side cookies
+
+
+/*
+Los servidores web esperan los mensajes de solicitud del cliente
+Los procesan cuando llegan.
+Responden al navegador web con un mensaje de respuesta HTTP.
+La respuesta contiene un código de estado de respuesta HTTP.
+Indica si la solicitud tuvo éxito o no.
+Por ejemplo, 200 OK para éxito, 404 No encontrado si no se puede encontrar el recurso.
+403 Prohibido si el usuario no está autorizado a ver el recurso, etc.
+El cuerpo de la respuesta a una solicitud GET exitosa.
+Contiene el recurso solicitado.
+*/
+
+/*
+Cuando se devuelve una página HTML, el navegador web la representa.
+El navegador puede descubrir enlaces a otros recursos.
+Por ejemplo, una página HTML generalmente hace referencia a archivos JavaScript y CSS.
+Enviará solicitudes HTTP separadas para descargar estos archivos.
+
+*/
+
+
+// Request/response
+/*
+Información sobre que sucede en Head/er o body 
+cuando hacemos una solicitud/accion de algún tipo 
+GET, POST, PUT, DELETE 
+tanto en la solicitud como en la respuesta. 
+*/
+
+
+// Request de una app dinámica: GET y POST 
+/*
+1. url params o url patterns
+solicitud de tipo get (porque buscamos/recurar/
+u obtener) datos, no intentamos modificar nada. 
+
+
+*/
+
+
+// App web 
+/*
+su tarea es recibir solicitudes HTTP y devolver respuestas HTTP
+
+*/
+
+
+// Server-side Framework
+/*
+función tipica: tipo solicitud, url y func flecha
+asignar URL de diferentes recursos/páginas
+a funciones de controlador específicas
+
+*/
+
+// modulo view, modulo funciones 
+/*
+definimos vistas, urls, funciones 
+*/
+
+
+//  Request y Response HTTP directas: 
+/*	
+servidores web y los navegadores se comunican a través del protocolo HTTP.
+servidores esperan solicitudes HTTP del navegador.
+luego devuelven información en respuestas HTTP.
+*/
+
+/*
+Django:
+Cada función de "vista" (un controlador  de solicitudes)
+recibe un objeto HttpRequest que contiene información de la solicitud
+debe devolver un objeto HttpResponse con la salida formateada (en este caso, una cadena).
+*/
+
+/*
+# Django view function
+from django.http import HttpResponse
+
+def index(request):
+	# Get/Obtener una HttpRequest (solicitud)
+	# realizar operaciones utilizando información de la solicitud.
+	# Devolver respuesta HTTP
+	return HttpResponse('Output string to return')
+*/
+
+
+// Enrutar solicitudes al controlador apropiado:
+/*		
+los sitios proporcionarán una serie de recursos diferentes
+accesibles a través de distintas UR
+
+Manejar todo esto en una sola función sería difícil de mantener
+Los frameworks proporcionan mecanismos simples para asignar patrones de URL
+a funciones de controlador específicas
+
+puede cambiar la URL utilizada para ofrecer una característica particular sin tener que cambiar el código subyacente
+
+Flask (Python) agrega rutas para ver funciones usando un decorador.
+
+@app.route("/")
+def hello():
+	return "Hello World!"
+			
+
+Mientras que Django espera que los desarrolladores
+definan una lista de asignaciones de URL
+entre un patrón de URL y una función de visualización.
+
+urlpatterns = [
+    url(r'^$', views.index),
+    # example: /best/myteamname/5/
+    url(r'^best/(?P<team_name>\w.+?)/(?P<team_number>[0-9]+)/$', views.best),
+]
+
+*/
+
+
+
+// Acceso a los datos 
+/*
+Una solicitud HTTP GET para obtener archivos o datos del servidor o datos del servidor
+puede codificar qué datos se requieren en los parámetros de la URL o dentro de la estructura de la URL.
+
+En cambio, una solicitud HTTP POST
+para actualizar un recurso en el servidor incluirá la información de actualización como "POST data"
+La solicitud HTTP también puede incluir información sobre la sesión
+o el usuario actual en una cookie del lado del cliente.
+
+mecanismos apropiados para acceder a la info
+
+El objeto HttpRequest que Django pasa a cada función de vista contiene métodos y propiedades para acceder a la URL de destino
+el tipo de solicitud (por ejemplo, un HTTP GET)
+parámetros GET o POST, cookies y datos de sesión, etc.
+Django también puede pasar información codificada en la estructura de la URL
+definiendo "patrones de captura" en el asignador de URL
+Como lo vimos anteriormente. 
+
+*/
+
+
+/*
+ORM simpifica las cosa
+
+Creamos un objeto, una funcion
+*/
+
+
+
+// Renderizar info en html
+
+/*
+usando template, escribiendo sobre html
+
+*/
+
+
+
+// RS 
+
+// view (request/response http)
+/*
+cada funcion controlador view
+recibe un objeto HttpResquest que tiene info de la request 
+debe devolver un objeto HttpResponse
+con la salida formateada (en este caso, una cadena).
+*/
+def index(request):
+	# Get an HttpRequest (request) //param
+	# perform operations using information from the request.
+	# Return HttpResponse
+	return HttpResponse('Output string to return')
+		
+// routes
+/*
+acceso recursos/pages a través de urls
+mecanismos simples para asignar patrones de URL
+a funciones de controlador específicas
+puede cambiar la URL utilizada para ofrecer
+una característica particular sin tener que 
+cambiar el código subyacente
+
+*/
+@app.route("/")
+def hello():
+	return "Hello World!"
+
+urlpatterns = [
+	url(r'^$', views.index),
+	# example: /best/myteamname/5/
+	url(r'^best/(?P<team_name>\w.+?)/(?P<team_number>[0-9]+)/$', views.best),
+]
+
+// data access
+/*
+El objeto HttpRequest que Django pasa a cada función de vista contiene métodos y propiedades para acceder a la URL de destino
+el tipo de solicitud (por ejemplo, un HTTP GET)
+parámetros GET o POST, cookies y datos de sesión, etc.
+Django también puede pasar información codificada en la estructura de la URL
+definiendo "patrones de captura" en el asignador de URL
+Como lo vimos anteriormente. 
+*/
+//Ej anterior:
+#best/views.py
+
+from django.shortcuts import render
+
+from .models import Team
+
+def junior(request):
+    list_teams = Team.objects.filter(team_type__exact="junior")
+    context = {'list': list_teams}
+    return render(request, 'best/index.html', context)
+
+
+// ORM (DB)
+/*
+Los frameworks proporcionan una capa de base de datos
+que abstrae las operaciones de lectura, escritura,
+consulta y eliminación de la base de datos.
+
+Esta capa de abstracción se conoce como Mapeador 
+relacional de objetos (ORM).
+
+beneficios: reemplazar db, validacion de datos 
+todo sin cambiar de lenguaje. 
+
+Ej: objeto Team
+Esto almacena el nombre del equipo
+el nivel del equipo como campos de caracteres
+especifica una cantidad máxima de caracteres
+que se almacenarán para cada registro.
+
+team_level es un campo de elección
+por lo que proporcionamos una asignación 
+entre las opciones que se mostrarán y los datos
+que se almacenarán
+junto con un valor predeterminado
+*/
+#best/models.py
+
+from django.db import models
+
+class Team(models.Model):
+    team_name = models.CharField(max_length=40)
+
+    TEAM_LEVELS = (
+        ('U09', 'Under 09s'),
+        ('U10', 'Under 10s'),
+        ('U11', 'Under 11s'),
+        # List our other teams
+    )
+    team_level = models.CharField(max_length=3,choices=TEAM_LEVELS,default='U11')
+/*
+Esto puede comparar varios campos a la vez utilizando diferentes criterios
+(por ejemplo, exacto, que no distingue entre mayúsculas y minúsculas, mayor que, etc.)
+puede admitir declaraciones complejas
+(por ejemplo, puede especificar una búsqueda en equipos U11 que tengan un equipo nombre que comienza con "Fr" o termina con "al").
+*/
+
+
+/*
+muestra una función de visualización
+(controlador de recursos) para mostrar todos nuestros equipos U09.
+especificamos que queremos filtrar todos los registros donde el campo team_level
+tenga exactamente el texto 'U09' (observe a continuación cómo se pasa este criterio a la función filter() 
+como argumento con el nombre del campo y el tipo de coincidencia separados por doble guiones bajos: 
+nivel_equipo__exacto).
+*/
+#best/views.py
+
+from django.shortcuts import render
+from .models import Team
+
+def youngest(request):
+    list_teams = Team.objects.filter(team_level__exact="U09")
+    context = {'youngest_teams': list_teams}
+    return render(request, 'best/index.html', context)
+
+
+// Template/rendering data 
+/*
+representacion, muestra de la info
+
+usando una sintaxis de "doble llave" (por ejemplo, {{ nombre_variable }})
+que será reemplazada por valores pasados ​​desde la función de vista cuando se represente una página.
+El sistema de plantillas también proporciona soporte para expresiones, sintaxis: {% expresión %})
+permiten que las plantillas realicen operaciones simples como iterar valores de lista pasados ​​a la plantilla.
+
+la vista pasa a la plantilla HTML una variable de lista llamada youngest_teams.
+Dentro del esqueleto HTML tenemos una expresión que primero verifica si la variable youngest_teams existe y luego la itera en un bucle for.
+En cada iteración, la plantilla muestra el valor nombre_equipo del equipo en un elemento de la lista.
+
+*/
+		
+#best/templates/best/index.html
+
+<!doctype html>
+<html lang="en">
+  <body>
+	{% if youngest_teams %}
+	  <ul>
+		{% for team in youngest_teams %}
+		  <li>{{ team.team_name }}</li>
+		{% endfor %}
+	  </ul>
+	{% else %}
+	  <p>No teams are available.</p>
+	{% endif %}
+  </body>
+</html>
+		
+
+
+// RS
+//Views, Routes, ORM, Template
+//1. solicitud tipo get/post..etc a una ruta / return response 
+//2. controlador de la ruta
+//3. acceso a la DB 
+//4. visualización/renderización
+
+
+
+/* Seguridad en la Web
+ * ----------------------------------------------
+ */
+ 
+ 
