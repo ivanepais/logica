@@ -6985,10 +6985,312 @@ toLowerCase() y literal de plantilla.
 */
 
 
+// the can store
 /*
+en lugar de usar json(), usamos blob().
+queremos devolver nuestra respuesta como un archivo de imagen
+el formato de datos que usamos para eso es Blob
+"Binary Large Object" 
+representar objetos grandes similares a archivos
+como como imágenes o archivos de vídeo).
 
+cuando lo recibimos exitosamente
+lo pasamos a nuestra función showProduct(), 
+que lo muestra.
+*/
+
+
+//XMLHttpRequest API
+
+const request = new XMLHttpRequest();
+
+try {
+  request.open("GET", "products.json");
+
+  request.responseType = "json";
+
+  request.addEventListener("load", () => initialize(request.response));
+  request.addEventListener("error", () => console.error("XHR error"));
+
+  request.send();
+} catch (error) {
+  console.error(`XHR error ${request.status}`);
+}
+
+/*
+1. Creación de un nuevo objeto XMLHttpRequest.
+2. Llamada a su método open() para inicializarlo.
+3. Agregar un detector de eventos a su evento de carga
+	que se activa cuando la respuesta se completa correctamente
+	En el listener llamamos a inicializar() con los datos.
+4. Agreguar un detector de eventos a su evento de error
+	se activa cuando la solicitud encuentra un error
+5. Enviar la solicitud
+
+tenemos que envolver todo en el bloque try...catch,
+para manejar cualquier error arrojado por open() o send().
 
 */
+
+
+/* API's de Terceros
+ * ----------------------------------------------
+ */
+
+// Acceso a las apis de terceros
+/*
+Mediante el elem script
+o Mediante una solicitud HTTP a una url pattern
+para recuperar al información
+*/
+
+
+// Seguridad Apis del navegador y de terceros 
+/*
+para las apis del navegador se utilizan 
+solicitudes de permiso (permission prompts)
+para que el usuario sepa lo que está pasando 
+como al activar notificaciones web
+
+para las apis de terceros 
+Se necesita una API Key 
+para acceder a las funcion
+
+L.mapquest.key = "YOUR-API-KEY-HERE";
+
+*/
+
+
+/* Client-side Storage 
+ * ----------------------------------------------
+ */
+
+/*
+cookies http: 
+forma antigua de almacenamiento
+hoy usado para ciertas cosas 
+*/
+
+/*
+Nuevas formas:
+web storage
+datos. objetos, infor simple
+
+indexedDB 
+objetos complejos y completos 
+
+*/
+
+// las formas nuevas y viejas tiene un limite de almacenamiento 
+// (storage quotas and eviction criteria)
+
+// Cache API
+/*
+almacenamiento de assets 
+uso sin conexion 
+*/
+
+
+// web storage API 
+/*
+datos simples, clave valor/propiedad y valor/nombre valor
+(cadenas, numeros,etc)
+*/
+localStorage.setItem("name", "Chris");
+
+let myName = localStorage.getItem("name");
+myName;
+
+localStorage.removeItem("name");
+myName = localStorage.getItem("name");
+myName;
+
+
+// Datos persistentes 
+// en un navegador diferente
+localStorage.setItem("name", "Chris");
+let myName = localStorage.getItem("name");
+myName;
+
+
+// Ejemplo simple storage 
+/*
+tomamos el nombre que el usuario ingresó en el cuadro de entrada de texto		
+lo guardamos en el almacenamiento web usando setItem(),
+luego ejecutamos
+*/
+
+/*
+agregamos funcion que elimina el elem guardado con setItem 
+
+*/
+
+
+// IndexDB: Almacenar información compleja 
+
+/*
+es un sistema de base de datos completo disponible en el navegador
+*/
+
+
+// Service worker 
+/*
+cuando un navegador accede a él.
+Cuando se registra, puede controlar las páginas disponibles en ese origen.
+Para ello, se sitúa entre una página cargada y la red e intercepta las solicitudes de red dirigidas a ese origen.
+
+Cuando intercepta una solicitud, puede hacer lo que desee
+pero el ejemplo clásico es guardar las respuestas de la red fuera de línea y luego proporcionarlas en respuesta a una solicitud en lugar de las respuestas de la red. 
+De hecho, le permite hacer que un sitio web funcione completamente sin conexión.
+
+La API de caché es otro mecanismo de almacenamiento del lado del cliente, con una pequeña diferencia
+está diseñada para guardar respuestas HTTP y, por lo tanto, funciona muy bien con los trabajadores del servicio.
+*/
+
+
+/* Forms
+ * ----------------------------------------------
+ */
+
+// Simple form 
+
+/*
+Los formularios web son uno de los principales puntos de interacción entre un usuario y un sitio web o aplicación.
+Permiten a los usuarios ingresar datos, que generalmente se envían a un servidor web para su procesamiento y almacenamiento
+O se usan en el lado del cliente para actualizar inmediatamente la interfaz de alguna manera
+(por ejemplo, agregar otro elemento a una lista, o mostrar u ocultar una característica de la interfaz de usuario).
+*/	
+
+/*
+Los controles pueden ser campos de texto de una o varias líneas	
+cuadros desplegables, botones, casillas de verificación o botones de opción
+en su mayoría se crean utilizando el elemento <input>
+aunque también hay algunos otros elementos 
+*/
+
+/*
+Crearemos un formulario de contacto simple. Hagamos un boceto
+ej: Contacto (titulo), nombre, email y mensaje (campos) y botón enviar mensaje al final. 
+Contiene tres campos de texto y un botón. 
+Al presionar el botón se enviarán sus datos a un servidor web.
+*/
+
+/*
+Elem principales:
+*/
+<form>, <label>, <input>, <textarea> y <button>.
+
+/*
+form 
+*/
+<form action="/my-handling-form-page" method="post">
+…
+</form>
+
+
+/*
+Elementos <label>, <input> y <textarea>:
+
+la parte de entrada de datos contiene tres campos de texto
+cada uno con su correspondiente <label> 
+
+El campo de entrada para el nombre es un campo de texto de una sola línea
+El campo de entrada para el correo electrónico es una entrada de tipo correo electrónico
+un campo de texto de una sola línea que acepta solo direcciones de correo electrónico.
+El campo de entrada para el mensaje es <textarea>
+un campo de texto de varias líneas.
+
+Para implementarlos, necesitamos
+*/
+
+
+<form action="/my-handling-form-page" method="post">
+  <p>
+    <label for="name">Name:</label>
+    <input type="text" id="name" name="user_name" />
+  </p>
+  <p>
+    <label for="mail">Email:</label>
+    <input type="email" id="mail" name="user_email" />
+  </p>
+  <p>
+    <label for="msg">Message:</label>
+    <textarea id="msg" name="user_message"></textarea>
+  </p>
+</form>
+
+/*
+Los elementos <p> están ahí para estructurar convenientemente nuestro código
+y facilitar el estilo (ver más adelante en el artículo).
+*/
+
+/*
+Por motivos de usabilidad y accesibilidad
+incluimos una etiqueta explícita para cada control de formulario
+*/
+
+/*
+el uso del atributo for en todos los elementos <label>,
+toma como valor la identificación del control de formulario con el que está asociado
+así es como se asocia un control de formulario con su etiqueta.
+
+Hacer esto tiene un gran beneficio: asocia la etiqueta con el control de formulario
+lo que permite a los usuarios de mouse, trackpad y dispositivos táctiles 
+hacer clic en la etiqueta para activar el control correspondiente
+también proporciona un nombre accesible para que los lectores de pantalla lo lean en voz alta
+*/
+
+/*
+Elemento button:
+Va dentro del form, al final 
+
+El elemento <button> también acepta un atributo de tipo
+este acepta uno de tres valores: enviar, restablecer o botón.
+
+Un click en un botón de envío (el valor predeterminado)
+envía los datos del formulario a la página web definida por el atributo de acción del elemento <form>.
+
+*/
+
+<p class="button">
+  <button type="submit">Send your message</button>
+</p>
+
+
+// Estilo básico 
+/*
+Se destacan la propieadad display inline-block
+*/
+
+
+// Estructura de un formulario 
+
+
+/*Controles Basicos y Nativos
+Anteriormente vimos algunos controles de formulario y elementos estructurales comunes
+centrándonos en las mejores prácticas de accesibilidad
+Ahora veremos en detalle la funcionalidad de los diferentes controles de formulario
+estudiando todas las diferentes opciones disponibles para recopilar diferentes tipos de datos
+veremos el conjunto original de controles de formulario
+disponibles en todos los navegadores desde los primeros días de la web
+*/	
+
+/*
+Ya conoce algunos elementos de formulario, incluidos 
+*/
+<form>, <fieldset>, <legend>, <textarea>, <label>, <button> y <input>.
+
+/*
+Los tipos de entrada:
+*/
+button, checkbox, file, hidden, image, password, radio, reset, submit, and text.
+
+/*
+Algunos de los atributos que son comunes a todos los controles de formulario
+*/
+
+
+//
 
 
 
