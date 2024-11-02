@@ -960,6 +960,225 @@ def initlog(*args):
 
 # Funciones
 
+def fib(n): # escribe la serie de Fibonacci hasta n
+    """Escribe la serie de Fibonacci hasta n."""
+    a, b = 0, 1
+    while a < n:
+        print(a, end=' ')
+        a, b = b, a+b
+    print()
+    
+# Ahora llamamos a la funcion que acabamos de definir:
+fib(2000)
 
+"""
+def se usa para definir funciones.
+Debe seguirle el nombre de la función y la lista de parámetros
+formales entre paréntesis.
+Las sentencias que forman el cuerpo de la función empiezan en la línea siguiente, y deben estar
+con sangría.
+
+docstring: opcionalmente
+esta es la cadena de texto
+de documentación de la función,
+
+Hay herramientas que usan las docstrings para producir
+automáticamente documentación en línea o imprimible, o para
+permitirle al usuario que navegue el código en forma interactiva; es una buena práctica incluir docstrings en el código que
+uno escribe, por lo que se debe hacer un hábito de esto.
+"""
+
+"""
+La ejecución de una función introduce una nueva tabla de símbolos usada para las variables locales de la función.
+precisamente, todas las asignaciones de variables en la función almacenan el valor en la tabla de símbolos local;
+así mismo
+la referencia a variables primero mira la tabla de símbolos local,
+luego en la tabla de símbolos local de las funciones
+externas,
+luego la tabla de símbolos global, y finalmente la tabla de nombres predefinidos.
+
+Así, no se les puede asignar
+directamente un valor a las variables globales dentro de una función
+(a menos se las nombre en la sentencia global),
+aunque si pueden ser referenciadas.
+"""
+
+"""
+Los parámetros reales (argumentos) de una función se introducen en la tabla de símbolos local de la función llamada cuando
+esta es ejecutada;
+así, los argumentos son pasados por valor (dónde el valor es siempre una referencia a un objeto, no el
+valor del objeto).
+Cuando una función llama a otra función, una nueva tabla de símbolos local es creada para esa llamada.
+"""
+
+"""
+La definición de una función introduce el nombre de la función en la tabla de símbolos actual.
+El valor del nombre de la
+función tiene un tipo que es reconocido por el interprete como una función definida por el usuario.
+Este valor puede ser asignado a otro nombre que luego puede ser usado como una función.
+Esto sirve como un mecanismo general para
+renombrar:
+"""
+
+fib
+#<function fib at 10042ed0>
+f = fib
+f(100)
+#0 1 1 2 3 5 8 13 21 34 55 89
+
+"""
+Viniendo de otros lenguajes, podés objetar que fib no es una función,
+sino un procedimiento, porque no devuelve un valor.
+De hecho, técnicamente hablando, los procedimientos sí retornan un valor, aunque uno aburrido.
+
+Este valor se llama None
+(es un nombre predefinido).
+El intérprete por lo general no escribe el valor None si va a ser el único valor escrito.
+Si
+realmente se quiere, se puede verlo usando la función print():
+"""
+fib(0)
+print(fib(0))
+#None
+
+
+"""
+Es simple escribir una función que retorne una lista
+con los números de la serie de Fibonacci en lugar de imprimirlos:
+"""
+
+def fib2(n): # devuelve la serie de Fibonacci hasta n
+"""Devuelve una lista conteniendo la serie de Fibonacci hasta n."""
+    result = []
+    a, b = 0, 1
+    while a < n:
+        result.append(a)
+        # ver abajo
+        a, b = b, a+b
+    return result
+
+f100 = fib2(100)
+# llamarla
+
+f100
+# escribir el resultado
+#[0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89]
+
+"""
+demuestra algunas características más de Python:
+La sentencia return devuelve un valor en una función.
+return sin una expresión como argumento retorna None.
+Si
+se alcanza el final de una función, también se retorna None.
+
+La sentencia result.append(a) llama a un método del objeto lista result.
+Un método es una función que 'pertenece' a un objeto
+se nombra obj.methodname, dónde obj es algún objeto (puede ser una expresión),
+y
+methodname es el nombre del método que está definido por el tipo del objeto
+
+Distintos tipos definen distintos métodos.
+Métodos de diferentes tipos pueden tener el mismo nombre
+sin causar ambigüedad.
+
+(Es posible definir tipos
+de objetos propios, y métodos, usando clases, mirá Clases).
+El método append() mostrado en el ejemplo está
+definido para objetos lista; añade un nuevo elemento al final de la lista
+
+En este ejemplo es equivalente a
+result = result + [a], pero más eficiente.
+"""
+
+# Definir funciones con un número variable de argumentos.
+
+"""
+Hay tres formas que pueden ser combinadas.
+"""
+
+#Argumentos con valores por omisión
+"""
+especificar un valor por omisión para uno o más argumentos.
+Esto crea una función que puede ser
+llamada con menos argumentos que los que permite.
+"""
+def pedir_confirmacion(prompt, reintentos=4, recordatorio='Por favor, intente nuevamente!'):
+    while True:
+    ok = input(prompt)
+    if ok in ('s', 'S', 'si', 'Si', 'SI'):
+        return True
+    if ok in ('n', 'no', 'No', 'NO'):
+        return False
+    reintentos = reintentos - 1
+    if reintentos < 0:
+        raise ValueError('respuesta de usuario inválida')
+    print(recordatorio)
+
+"""
+Esta función puede ser llamada de distintas maneras:
+pasando sólo el argumento obligatorio:
+pedir_confirmacion('¿Realmente queres salir?')
+
+pasando uno de los argumentos opcionales:
+pedir_confirmacion('¿Sobreescribir archivo?', 2)
+
+o pasando todos los argumentos:
+pedir_confirmacion('¿Sobreescribir archivo?', 2, "Vamos, solo si o no!)
+"""
+
+"""
+introduce la palabra reservada in, la cual prueba si
+una secuencia contiene o no un determinado valor.
+"""
+
+"""
+Los valores por omisión son evaluados en el momento
+de la definición de la función, en el ámbito de la definición,
+entonces:
+imprimirá 5
+"""
+
+i = 5
+def f(arg=i):
+    print(arg)
+i = 6
+f()
+#5
+
+"""
+Advertencia importante: El valor por omisión
+es evaluado solo una vez.
+Existe una diferencia cuando el valor por omisión
+es un objeto mutable como una lista, diccionario, o instancia de la mayoría de las clases.
+
+la siguiente función
+acumula los argumentos que se le pasan en subsiguientes llamadas
+"""
+def f(a, L=[]):
+    L.append(a)
+    return L
+print(f(1))
+print(f(2))
+print(f(3))
+
+"""
+Imprimirá:
+[1]
+[1, 2]
+[1, 2, 3]
+"""
+
+"""
+Si no se quiere que el valor por omisión sea compartido entre
+subsiguientes llamadas, se pueden escribir la función así:
+"""
+def f(a, L=None):
+if L is None:
+L = []
+L.append(a)
+return L
+
+
+# Palabras claves como argumento
 
 
