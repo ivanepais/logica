@@ -7290,7 +7290,10 @@ Algunos de los atributos que son comunes a todos los controles de formulario
 */
 
 
-//
+// Otros controles además de inputs en HTML5 
+
+
+
 
 
 
