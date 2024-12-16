@@ -314,7 +314,7 @@ Terminal:
 	git merge origin master
 
 
-	o podemo hacer: 
+	o podemos hacer: 
 	git pull --rebase
 
 
