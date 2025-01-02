@@ -18,269 +18,16 @@ TypeScript:
 
 
 
-|| Instalación
+# Tipos de datos
 
-	node: 
+# Tipos de datos exclusivos de TypeScript
 
-		node --version
 
-	npm: 
 
-		npm --version
-
-	typescript: 
-
-		global install: 
-
-			npm i -g typescript
-
-			Asume que la persona que use el proyecto, lo tenga instalado. 
-
-			Le estamos dando permiso de super usuario a npm 
-
-		local/proyec: 
-
-			TypeScrip puede funcionar desde la carpeta del proyecto. 
-
-			Se instala como dependencia y fijarla en el packaje.json. 
-
-			npm init 
-
-			Creará un proyecto. 
-
-			instalarlo como dependencia. 
-
-			npm i --save-dev typescript 
-
-
-			Tendremos un packaje.json 
-
-			Que tiene en sus dependencias a typescript
-
-			En node .bin tendremos tcs que es el compilador de TypeScript. 
-
-			Podemos ejecutarlo
-
-			Con esto comprobamos que podemos correr de forma local typescript. 
-
-
-		Comandos: 
-
-			tsc 
-
-			Abre el compilador, comprueba que typescript funcionará.  
-
-
-
-|| Código JS y TS
-
-	Podemos pasar todo el código js a un archivo .ts y funcionará. 
-
-
-	Compilar: 
-
-		tsc archivo.ts
-
-
-	desde npm: 
-
-		En package.json 
-
-			"build": "tsc archivo.ts" 
-
-			"scripts": {
-    			"build": "tsc 1.ts"
-    		}
-
-    		npm run build
-
-
-    Desde la web: 
-
-    	TypeScript Playground
-
-
-
-
-JS/TS
-
-
-|| TS
-
-
-|| Proyecto en TS
-
-
-|| Código
-
-
-|| Tipado
-
-
-|| Tipos de Datos Primitivos
-
-
-|| Tipos de Datos Especiales
-
-
-|| Arrays y Tuplas
-
-
-|| Tipo Object
-
-
-|| Funciones
-
-
-|| Genéricos 
-
- Es una manera de meter parámetros en definiciones de tipos. 
-
- Desde afuera vamos a introducir el tipo como si fuera un parámetro. 
-
- En la implementación o llamada al genérico, reemplazamos <T> que habiamos definido en la declaración. 
-
- Por el tipo de dato a utilizar, se pone en la llamada o cabezera. 
-
- Y en en el campo o propiedad escribimos lo que representará el tipo de dato elegido. 
-
+# Callbacks
 
  
-
-|| Genéricos Avanzado y Prácticas
-
-
-
-|| Genéricos en Funciones
-
-
- 
-|| Tipos de Utilidad
- 
- Genéricos listos para usar que proporciona el lenguaje TS. 
-
- Lista de Genéricos Integrados: 
-
-  Partial<Type>
-  Readonly<Type>
-  Record<Keys, Type>
-  Pick<Type, Key>
-  Omit<Type, Key>
-  Exclude<Type, ExcludeUnion>
-  etc...
-  
-
- Partial: 
-  
-  Crea interfaces parciales (subsets). 
-  
-  El parámetro <Type> hace referencia al tipo de dato que debemos llamar y después escribir el contenido de ese tipo. 
-
-  En otros lenguajes sería <T>. 
-
-
-  Cuando le pasemos un tipo, nos va a devolver una versión minimalista de ese tipo. 
- 
-  En la cual todos los campos son opcionales. 
-
-  Como una interrogación, el tipo que toque o undefined, NULL. 
-
-  
-  ```ts
-  interface Todo {
-   Title: string; 
-   descrition: string; 
-  }
-  
-  ```
-   
-  Es una interfaz llamada Todo que representa una tarea. 
-  
-  La tarea tiene un titulo y descripción en string. 
-
-  
-  ```
-  function updateTodo(todo: Todo, fieldsToUpdate: Partial<Todo>) {
-   return { ... todo, ...fieldsToUpdate }; 
-  }
-
-  ``` 
- 
-  Tenemos un parámetro todo (tipo Todo) 
-
-  Un parámetro llamado fieldsToUpdate (tipo Partial<Todo>). 
-
-
-  ``` 
-  const todo1 = {
-   title: "organize desk", 
-   description: "clear clutter", 
-  }; 
-
-  ```
-
-  ``` 
-  const todo2 = updateTodo(todo1, { 
-   description: "throw out trash", 
-  });
-
-  ```
-
-
-  La consecuencia del tipo Partial: 
-
-  
-   ``` 
-   let t: Partial<Todo> = {
-    title: 'Hola', 
-    
-
-   };
-
-   ```
-
-   Hacemos una implementación de la estructura. 
-
-   Si declaramos una propiedad/var lladamda t de tipo Todo. 
-
-   Si omitimos la propiedad descripción, no nos da error en compilador. 
-
-  
-   Si no implementamos partial, nos daría error en el compilador. 
-
-   ``` 
-   let t: Todo = {
-    title: 'Hola', 
-    
-
-   };
-
-   ```
-   Hacemos una implementación de la estructura. 
-
-   Declaramos una propiedad/var lladamda t de tipo Todo. 
-
-
- Readonly: 
-   
-  Crea una copia de solo lectura. 
-   
-
- NonNullable: 
-
-  Retira el NULL. 
-
-  Se puede usar cuando queremos forzar a que que no pasemos o devuelva un NULL. 
-  
-  Forzar a pasar un valor, no puede ser NULL. 
-
- 
-
-|| Callbacks
-
- 
-
-|| Promesas
+# Promesas
 
  O futuros en otros lenguajes. 
   
@@ -393,10 +140,10 @@ JS/TS
  
  Código: 
  
-  ```
+  
   const prom = Notification.requestPermission(); 
   
-  ```
+  
   
   La función requestPermission(); devolverá una promesa  
    
@@ -409,24 +156,24 @@ JS/TS
   
   Si debajo llamamos a otra función, 
   
-  ```
+  
   const prom = Notification.requestPermission(); 
   continuarCargandoPagina();   
   SeguirHaciendoOperaciones(); 
   
-  ``` 
+  
   Inmediatamente después, se cargarán las demás funciones o instrucciones. 
 
  
   Otra cosa importante, es que no podemos sacar el valor de la promesa; porque no sabemos cuando tendremos respuesta. 
 
-  ```
+  
   const prom = Notification.requestPermission(); 
   continuarCargandoPagina();   
   SeguirHaciendoOperaciones();
   prom.value 
 
-  ```
+  
 
   No podemos tomar decisiones o depender del valor de las promesas para nuestro código. 
 
@@ -442,26 +189,26 @@ JS/TS
 
    Pasar una función como parámetro en la llamada a otra función. 
 
-   ```
+   
    int sumar (int a, int b, void (*callback)(int)) {
     int suma = a + b; 
     (*callback)(suma); 
     return suma; 
    }
  
-   ```
+  
 
   A then y catch le pasamos como parámetro una función. 
 
   Se ejecutará cuando la promesa se resuelva. 
 
-  ```
+  
   const prom = Notification.requestPermission();   
   prom.then(function(){
    console.log('Hola'); 
   }); 
 
-  ```
+  
    
   Así conocemos cuándo la promesa termina de ejecutarse. 
   
@@ -480,7 +227,7 @@ JS/TS
    
   Puede ejecutarse la función siguente() antes o después del la función en then. 
 
-  ```
+  
   const prom = Notification.requestPermission();   
   prom.then(function(){
    console.log('Hola'); 
@@ -488,14 +235,14 @@ JS/TS
 
   siguiente() 
 
-  ```
+  
 
  
  Parámetro en then y catch: 
 
   Va a tener un parámetro, va a ser el return de la función que metimos en otro hilo. 
    
-  ```
+  
   const prom = Notification.requestPermission();   
   prom.then(function(param){
    if(param === "granted"){
@@ -508,7 +255,7 @@ JS/TS
 
   siguiente() 
 
-  ```
+  
   
   Si dentro de la función tenemos el parámetro, podemos manipularlo y tener acceso a lo que nos haya devuelto. 
 
@@ -531,7 +278,7 @@ JS/TS
 
   También va a aceptar como parámetro otro callback. 
 
-  ```
+ 
   const prom = Notification.requestPermission();   
   prom.then(function(param){
    if(param === "granted"){
@@ -548,7 +295,7 @@ JS/TS
   siguiente(); 
 
   
-  ```
+  
   Solo se va a llamar cuando la promesa lance en error, promesa rechaza/da. 
 
   Podemos ponerle un console.error(err); o mandarlo nuestro sistema de registro o tratamiento de errores. 
@@ -564,7 +311,7 @@ JS/TS
 
   Cuando se haya resuelto, bien o mal, lo limpiamos. 
 
-  ```
+  
   const prom = Notification.requestPermission();   
   prom.then(function(param){
    if(param === "granted"){
@@ -582,13 +329,13 @@ JS/TS
   };
    
   siguiente(); 
-
-  ```
+  
+ 
   
  
   También aceptará un callback como parametro que es lo que se va a ejecutar. 
  
-  ```
+  
   const prom = Notification.requestPermission();   
   prom.then(function(param){
    if(param === "granted"){
@@ -606,58 +353,6 @@ JS/TS
   };
  
   siguiente();  
-  
-  ```
- 
-  La promesas son funciones o callbacks encadenados. 
-
-  Desde la función que devuelve una promesa que se ejecutará en otro hilo. 
- 
-  Hasta las que se pasan internamente en then, catch y finally. 
-
-  
-
- Promesas Encadenadas: 
-
-  Podemos encadenar then
-
-
-
- Promesas Propias: 
-
-  new Promise  
-
-
-  Se usa para crear nuestro propio código sincrono. 
-
-  Para ejecutar cosas pesadas, que bloquearían el programa por mucho tiempo si lo hacemos con código asincrono. 
-  
-
-
- Función reject en Promise: 
-   
-  Es la función de rechazo. 
-
-  Utilizada para lanzar un error. 
-
-  Cuando Promise no puede resolver satisfactoriamete, utilizamos el reject para dar un mensaje sobre lo que pasó con la promesa, accion. 
-
-  
-  Una promesa o sale bien o mal. 
-
-  Llamamos a resolve o a reject. 
-
-  No podemos llamar a uno y después a otro esperando a que se hagan los dos uno. 
-
-
- 
- Funciones en Promise: 
-
-  Como Promise.resolve() o Promise.reject()
-
-  Al pasarle un valor, nos devuelve una promesa que la resuelve instantaneamente según lo que le pasamos. 
-
-  Se usa para fabricar rapidamente promesas simples. 
   
     
 
