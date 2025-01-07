@@ -2901,4 +2901,347 @@ Desarrollo:
 Implementar los componentes en React y documentarlos en Storybook
 
 
+# Data Structures: Grokking's
 
+## Arrays: para organizar un conjunto de datos y no crear variables individuales.
+
+1. Almacena una colección de datos:
+2. Se puede acceder a sus elementos por índice.
+3. No es necesario acceder a los elementos de forma secuencial; es decir, si necesito el décimo elemento
+de una matriz, puedo acceder a él directamente sin tener que leer los 9 elementos almacenados en la matriz
+antes.
+
+
+## Indices en arrays: n y n-1 
+
+Para una matriz de tamaño n, n-1 es el último índice válido.
+Porque suelen empezar en 0 y dar len(n) como último o max elem es pasarte del tamaño total. 
+
+## Usando DS para resolver problemas
+
+Understand the problem -> Identify a solution -> ds needed
+
+Implement -> Does the solution work?
+
+false -> Identifiy a solution and ds needed
+
+true -> is the solution efficient?
+
+false -> Identify the ds needed
+
+
+Los pasos son los siguientes:
+
+1. Comprenda el problema que está resolviendo.
+2. Bosqueja una posible solución.
+3. Identifique las estructuras de datos que necesita.
+4. Implementar una solución.
+5. Compruebe si la solución funciona; si no, itere.
+6. Compruebe si la solución es lo suficientemente buena (eficiente); si no, itere.
+
+Las partes clave para nosotros son los pasos 3 y 6:
+
+Pensamos en las estructuras de datos que podemos usar en nuestra solución (paso 3).
+
+Evaluamos si nuestra solución (en funcionamiento) es demasiado lenta, utiliza demasiada memoria,
+
+o infringe nuestros requisitos de cualquier otra manera (paso 6).
+
+
+## Encapsulación 
+
+## OOP sobre funciones imperativas
+
+## Composición sobre herencia
+ 
+## Estas prácticas que la programación imperativa no ofrece
+
+## Usar Excepciones bajo los supuestos lo lógica o uso del programa o función/clase, no ocultar errores para decirle al cliente como manejarlos. 
+
+
+
+# Algoritmos: Grokking
+
+## Binary Search
+
+Supongamos que estás buscando una palabra en un diccionario y comienza con O. 
+
+Nuevamente, comenzarás cerca del medio.
+
+
+Si un elemento es
+buscando está en esa lista, la búsqueda binaria devuelve la posición
+donde está ubicado
+
+De lo contrario, la búsqueda binaria devuelve ```null```
+
+Ejemplo: un número entre 1 y 100.
+
+|1|2|3|...|100|
+
+Tienes que intentar adivinar mi número en el menor número de intentos posibles. Con
+En cada suposición, le diré si su suposición es demasiado baja, demasiado alta o correcta.
+Supongamos que empiezas a adivinar así: 1, 2, 3, 4…. Así es como sería
+ir.
+
+Esta es una búsqueda simple (tal vez una búsqueda estúpida sería un término mejor). Con
+En cada suposición, estás eliminando solo un número. Si mi número fuera 99,
+¡Podrías necesitar 99 conjeturas para llegar allí!
+
+Ej: (50) -> to low; (70) -> to high
+
+¡Demasiado alto, pero nuevamente redujiste la mitad de los números restantes! Con
+búsqueda binaria, adivinas el número del medio y eliminas la mitad del
+números restantes cada vez. El siguiente es el 63 (a medio camino entre 50 y 75).
+
+### Siempre a medio camino entre las dos puntas
+
+
+
+### Logaritmos
+
+log10 100 es como preguntar: "¿Cuántos decenas multiplicamos?"
+¿Juntos para conseguir 100?
+
+La respuesta es 2: 10 × 10. Entonces log10 100 = 2.
+
+10^2 = 100 <-> log10 100 = 2
+
+10^3 = 1000 <-> log10 1000 = 3
+
+2^3 = 8 <-> log2 8 = 3
+
+2^4 = 16 <-> log2 16 = 4
+
+2^5 = 32 <-> log2 32 = 5
+
+
+En este libro, cuando hablo del tiempo de ejecución en notación Big O (explicado
+un poco más tarde), log siempre significa log2.
+
+Cuando buscas un elemento usando
+búsqueda simple, en el peor de los casos es posible que tengas que mirar cada uno de ellos
+elemento.
+
+Entonces, para obtener una lista de 8 números, tendrías que marcar 8 números como máximo.
+
+Para la búsqueda binaria, debe verificar ```log n``` elementos en el peor de los casos.
+
+Para una lista de 8 elementos, log 8 == 3, porque 2^3 == 8. 
+
+Entonces, para una lista de 8 números,
+Tendrías que marcar 3 números como máximo.
+
+Para obtener una lista de 1.024 elementos,
+log 1.024 = 10, porque 2^10 == 1.024.
+
+Entonces, para obtener una lista de 1024 números,
+Tienes que comprobar 10 números como máximo.
+
+
+### Orden de los elementos 
+Nota
+La búsqueda binaria sólo funciona cuando la lista está ordenada.
+Por ejemplo,
+Los nombres en una guía telefónica están ordenados alfabéticamente, para que pueda
+Utilice la búsqueda binaria para buscar un nombre. ¿Qué pasaría si los nombres
+no fueron ordenados?
+
+### Big O 
+
+### Tiempo lineal y tiempo logarítmico
+
+### Orden, intentos, ms, tiempos diferentes 
+
+El tiempo de ejecución para simple
+La búsqueda con mil millones de elementos será de mil millones de ms, ¡lo que equivale a 11 días! El
+El problema es que los tiempos de ejecución para la búsqueda binaria y la búsqueda simple no
+crecer al mismo ritmo.
+
+Por eso no es suficiente
+Para saber cuánto tiempo tarda en ejecutarse un algoritmo, es necesario saber cuánto tiempo tarda en ejecutarse.
+el tiempo de ejecución aumenta a medida que aumenta el tamaño de la lista.
+
+Ahí es donde Big O entra la notación.
+
+Esto le indica la cantidad de operaciones que realizará un algoritmo.
+
+El tiempo de ejecución en notación Big O es ```O (n)```.
+Dónde son los segundos? son los segundos? No hay ninguno: 
+Big O no te dice la velocidad en segundos. 
+
+Le permite comparar el número de operaciones. 
+Él te dice qué tan rápido crece el algoritmo.
+
+
+### Máximo n oper: Big O establece un tiempo de ejecución en el peor de los casos
+
+
+### Recap 1
+
+1. La búsqueda binaria es mucho más rápida que la búsqueda simple.
+2. O(log n) es más rápido que O(n), pero se vuelve mucho más rápido a medida que la lista de elementos
+que estás buscando crece.
+3. La velocidad del algoritmo no se mide en segundos.
+4. Los tiempos del algoritmo se miden en términos de crecimiento de un algoritmo.
+5. Los tiempos del algoritmo se escriben en notación Big O.
+
+Ejercicios:
+
+Da el tiempo de ejecución para cada uno de estos escenarios en términos de Big O.
+
+1.3 Tienes un nombre y quieres encontrar el número de teléfono de la persona
+en la guía telefónica.
+
+O(n) O(log n)
+O(1) O(log 1)
+1	 2^0 = 1
+
+O(nombre) O(log nombre)
+nombre	 2^x = nombre 
+
+punta a, punta b: arr y elem a buscar
+nombre   num en guía
+
+1.4 Tienes un número de teléfono y quieres encontrar el nombre de la persona
+en la guía telefónica. (Pista: ¡tendrás que buscar en toda la guía telefónica!)
+
+O(n) O(log n)
+O(1) O(log 1)
+1	 2^0 = 1
+
+O(numero) O(log numero)
+numero	 2^x = numero 
+
+punta a, punta b: arr y elem a buscar
+num		nomb en guía
+
+1.5 Quieres leer los números de todas las personas en la guía telefónica.
+
+O(numeros) 
+
+punta a, punta b: arr y elem a buscar
+todos num todos pers
+
+1.6 Quieres leer solo los números de las A. (¡Este es un tema complicado!
+Involucra conceptos que se cubren más en el capítulo 4. 
+Lee la respuesta; ¡puede que te sorprendas!)
+
+punta a, punta b: arr y elem a buscar
+todos num a 
+
+1. O(log n), también conocido como tiempo logarítmico. Ejemplo: búsqueda binaria.
+
+2. ​O(n), también conocido como tiempo lineal. Ejemplo: búsqueda simple.
+
+3. O(n * log n). Ejemplo: un algoritmo de ordenamiento rápido, como quicksort
+(próximamente en el capítulo 4).
+
+4. O(n^2). Ejemplo: un algoritmo de ordenamiento lento, como el ordenamiento por selección
+(próximamente en el capítulo 2).
+
+5. O(n!). Ejemplo: Un algoritmo muy lento, como el del vendedor
+viajero (¡próximamente!).
+
+
+## Selection Sort
+
+### Arrays, linked list y combinación de los dos. 
+
+1. La memoria de su computadora es como un conjunto gigante de cajones.
+2. Cuando desee almacenar múltiples elementos, utilice una matriz o una lista.
+3. Con una matriz, todos sus elementos se almacenan uno al lado del otro.
+4. Con una lista, los elementos se encuentran dispersos por todas partes y un elemento almacena
+la dirección del siguiente.
+5. Las matrices permiten lecturas rápidas.
+6. Las listas enlazadas permiten inserciones y eliminaciones rápidas.
+7. Todos los elementos de la matriz deben ser del mismo tipo (todos enteros, todos dobles, etc.).
+
+
+## Uso de recursion para solucionar problmas
+
+Llamar a la funcion principal cuando lleguemos al cierto caso. 
+Necesitamos un caso base, para no caer en un bucle infinito 
+
+La recursión es cuando una función se llama a sí misma.
+
+Cuando escribes una función recursiva, tienes que indicarle cuándo dejar de
+recursar:
+
+Por eso, cada función recursiva tiene dos partes: el caso base y el caso recursivo. 
+1. El caso recursivo es cuando la función se llama a sí misma. 
+2. El caso base es cuando la función no se llama a sí misma de nuevo... para
+no entrar en un bucle infinito. 
+```
+def countdown(i):
+	print i
+	if i <= 0:	#Base case
+		return
+	else:	#Recursive case
+		countdown(i-1)
+
+```
+
+Ahora la función funciona como se esperaba. Es algo como esto.
+
+	 print
+	/     \
+if i<=1	  else call countdown(i-1)
+done	  countdown(i-1)
+
+base case	recursive case
+
+
+### Pila de llamada (stack) y recursion
+
+push
+(agregar un nuevo elemento a la parte superior)
+
+pop
+(eliminar el elemento superior y leerlo)
+
+Ahora, el cuadro superior de la pila es para la función de saludo, lo que
+significa que regresaste a la función de saludo. Cuando llamaste a la función
+greet2, la función de saludo se completó parcialmente. Esta es
+la gran idea detrás de esta sección: cuando llamas a una función desde otra función, la función que llama se detiene en un estado parcialmente completado. Todos
+(recursividad)
+
+los valores de las variables para esa función aún están almacenados en la memoria.
+Ahora que terminaste con la función de saludo2, regresas a la función
+greet y continúas donde lo dejaste. Primero imprimes
+preparándote para decir adiós…. Llamas a la función de adiós.
+
+Se agrega un cuadro para esa función en la parte superior de la pila. Luego, imprime
+ok bye! y regresa de la llamada a la función.
+
+| greet2() | ->
+^	 
+| greet()  |
+
+
+| bye()  | ->
+^	 
+| greet()|
+
+
+Ejercicio: 
+
+3.1 Supongamos que le muestro una pila de llamadas como ésta.
+
+| greet2() |
+............
+| greet()  |
+
+¿Qué información me puede dar, basándose únicamente en esta pila de llamadas?
+
+Primero tiene que asignar/reservar una caja/memoria vacia para la funcion
+La computadora guarda los valores de todas las variables para esa llamada asignando espacio en la memoria
+Está usando una pila para guardar espacio para los valores de las funciones. 
+
+La segunda función se agrega por encima de la primera. 
+Se ejecuta la segunda función 
+Luego regresas de la llamada a la primera función. 
+Cuando esto sucede, la función que está en la parte superior de la pila se quita.
+
+Cuando llamas a una función desde otra función, la función que llama se detiene en un estado parcialmente completado
+Los valores de las variables para la primera función aún están almacenados en la memoria.
