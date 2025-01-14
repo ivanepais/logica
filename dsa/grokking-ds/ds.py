@@ -347,20 +347,573 @@ El proceso es iterativo y requiere verificar la calidad de su solución hasta qu
 
 #arrays estáticos
 """
+Primer estructura de datos. 
+
+Estructura de datos fundamental: matrices
+
+Matrices estáticas y dinámicas. 
+
+Operaciones típicas que se pueden realizar en matrices.
+
+Usar matrices para resolver un problema
+
+
+Cómo funcionan las estructuras de datos y cómo para implementarlos
+
+Proceso que vamos a seguir a lo largo del libro.
+
+
+Arrays estáticas:
+
+Las matrices organizan los datos manteniendo una colección de elementos y haciéndolos accesibles por índices.
+
+
+¿Por qué? matrices?
+
+
+Memoria y cajones:
+
+Cómo se organiza la memoria. 
+
+Pensar en la memoria como un estante modular que contiene cajones extraíbles.
+
+Si la estructura del estante es memoria, entonces los cajones son variables.
+
+Piensa en la memoria como potencial: si quieres utilizarla
+algo de memoria, puede crear variables, los cajones que pueden contener sus datos desde los cuales
+puedes recuperarlo.
+
+El tamaño del estante determina el número máximo de cajones.
+
+Puedes crear variables (cajones) de diferentes tamaños, siempre que encajen en el espacio del estante.
+
+También llene esos cajones con datos, y los cajones más grandes pueden contener tipos de datos más grandes
+
+Por ejemplo, necesitará un cajón más grande para un valor de punto flotante que para caracteres o
+números enteros (cortos).
+
+
+¿Cuándo necesito una matriz?
+
+El calendario tiene forma de
+casita de jengibre, con cajoncitos marcados con
+números del 1 al 24.
+
+El cajón es como una variable, un contenedor de datos. En
+En este caso, una variable entera llamada cajón sería
+contiene el valor 5
+
+Recibirás un dulce todos los días entre el 1 y el 24 de diciembre. 
+
+Cada cajón de un calendario de Adviento contiene una galleta, algunas
+chocolates u otros dulces, y los niños pueden abrir cada cajón solo el día correspondiente.
+respondiendo al número de cajón.
+
+supongamos que reutiliza parte del estante de almacenamiento grande para el
+Calendario de Adviento. Los 24 cajones se pueden colocar en cualquier lugar de la estantería: ni siquiera
+tienen que estar uno al lado del otro y no tienen que estar en ningún orden en particular
+
+Pero si nosotros tuviéramos que crear estos cajones numerados, querríamos ponerlos en orden ascendente
+y uno al lado del otro. De lo contrario, sería difícil encontrarlos.
+
+De manera similar, si quisiéramos modelar un calendario de adviento en software, podríamos crear 24
+pequeñas variables y llámelas advent_drawer_1, advent_drawer_2, etc.
+
+Sería un desastre de práctica para producción.  
+
+
+Ya sería doloroso crear 24 variables diferentes a mano, pero lo que es peor,
+cada vez que necesitáramos acceder a uno de los cajones del código, tendríamos que usar el correcto
+nombre de la variable, por lo que normalmente, en la mayoría de los lenguajes de programación, tendríamos que saber cuál
+variable que necesitamos en el momento de la compilación (es decir, cuando escribimos código).
+
+A veces, sin embargo, sólo obtenemos esta información en tiempo de ejecución, cuando se ejecuta el código.
+
+Por ejemplo, si tenemos un programa que pregunta al usuario qué cajón necesitamos revisar,
+No sabríamos de antemano qué variable necesitamos porque solo obtenemos la información.
+a través de E/S mientras nuestro programa se ejecuta
+
+¿Te imaginas el lío que sería pasar por todos los
+cajones sin bucle for?
+
+
+Tamaño estático vs dinámico:
+
+¿Qué es entonces una matriz?
+
+
+¿Qué es entonces una matriz? Así es como se vería nuestro calendario de Adviento como una matriz.
+
+|4| |1| |2| |7|... |3| |5| |6|
+(elementos)
+
+1 2 3 4... 23 24 25 (índice de los elementos)
+
+Esto es una matriz de números enteros para el Adviento
+calendario
+
+Las matrices no se limitan a almacenar números enteros o en general.
+Pueden almacenar numbers (int, float), string y otros objetos. 
+
+Si un un array almacenamos muchos caramelos, sería un array de caramelos. 
+
+
+En su definición más simple, una matriz es una colección de datos indexados. 
+Indexado significa que
+una matriz almacena una secuencia de elementos (generalmente llamados elementos), y solo puedes acceder
+por su posición (también conocida como índice).
+
+Por ejemplo, en el calendario de Adviento,
+podemos acceder al cajón indexado con 1 para conseguir el premio del 1 de diciembre, pero no podemos
+acceder a los cajones por su contenido
+
+debemos hacer una distinción
+porque podemos mirar la definición de matriz desde diferentes ángulos
+
+Si nos centramos en la funcionalidad de las matrices en un nivel alto y semiabstracto
+los datos de la matriz
+La estructura tiene algunas características clave:
+
+Almacena una colección de datos.
+Se puede acceder a sus elementos mediante índice.
+No es necesario acceder a los elementos de forma secuencial; es decir, si necesito el décimo elemento
+de una matriz, puedo acceder a ella directamente sin tener que leer los 9 elementos almacenados en
+la matriz anterior.
+
+Estos pocos puntos definen una matriz a nivel abstracto (fácil/simple).
+
+Técnicamente, estos puntos definen una
+matriz como un tipo de datos abstracto. 
+Tenga este término en mente
+
+Desde un punto de vista diferente, las matrices son una de las características principales de muchos lenguajes de programación.
+Sin embargo, muchos lenguajes de programación se adhieren a algunas características comunes cuando
+implementar matrices como característica central del lenguaje
+
+Los arreglos se asignan en la memoria como un único bloque de memoria ininterrumpido con
+ubicaciones secuenciales, lo que ahorra tiempo y memoria.
+
+Las matrices están restringidas a almacenar datos del mismo tipo. Esta restricción también surge
+de la necesidad de optimización porque permite que la misma memoria sea
+asignado para cada elemento en la matriz y el compilador/intérprete para rápidamente
+conocer la dirección de memoria de cada elemento.
+
+El tamaño de las matrices, es decir, el número de elementos contenidos en una matriz, debe ser
+decide cuándo se crea la matriz y ese tamaño no se puede cambiar.
+
+Los últimos tres puntos representan una definición de nivel inferior para matrices de tamaño estático. 
+una característica central de muchos lenguajes de programación como C, C ++, Java, etc.
+
+En este capítulo, nos centramos en matrices estáticas. 
+
+Matrices dinámicas (también conocidas como de tamaño dinámico),
+cuyo tamaño puede cambiar en tiempo de ejecución, son otra variante de esta estructura de datos.
+
+Tenga en cuenta que también es posible relajar el cuarto
+punto de la lista y permite contenido heterogéneo para las matrices, lo que significa que puede
+mezclar diferentes tipos de datos para los elementos de la matriz: Python, el lenguaje de programación que utilizamos
+uso en este libro, proporciona de forma nativa listas, un tipo de matriz de tamaño dinámico que permite
+tipo de datos para sus elementos.
+
+
+Valores e índices:
+
+Aprendimos que las matrices son una estructura de datos indexados.
+Esto significa que un array asocia un índice a cada uno de los elementos que contiene, y sólo a través de un
+index podemos acceder al elemento correspondiente.
+
+Cuando hablamos de matrices estáticas, señalé que en muchos idiomas, las matrices obligan a todos
+sus elementos sean del mismo tipo de datos. Este requisito es útil por varias razones.
+
+En primer lugar, como ilustra la siguiente figura, le permite asignar la cantidad exacta de memoria
+En segundo lugar, permite calcular rápidamente la memoria.
+dirección para cada elemento porque todos los elementos tendrán el mismo tamaño y por lo tanto serán igualmente
+espaciado, lo que facilita el cálculo de la ubicación de memoria de un elemento
+
+Implementación de matrices y direcciones de memoria:
+
+Memory word, Array’s index, Array’s boundaries (limite de matriz) y Memory address.
+
+	   0 1 2 3 4
+| | | |2|0|-1|4|5| |
+0xf0 0xf1 0xf2 0xf3... 0xf8
+
+
+Acostumbrados a índices que comienzan en 0, así que hablemos de ello
+
+Si bien muchos lenguajes de programación comienzan los índices en 0, algunos tienen índices de matriz.
+comenzando en 1. Algunos de los ejemplos más conocidos son Julia, MATLAB, R y Fortran.
+
+Python es uno de esos lenguajes que utilizan indexación de base cero, por lo que seguimos el
+convención a lo largo del libro de que los índices de las matrices comiencen en 0.
+
+La indexación de base cero, como se puede imaginar (y quizás ya haya experimentado), obliga a los desarrolladores a tener cuidado al pensar en los índices
+especialmente si necesitan implementar algoritmos que accedan a posiciones específicas o cuando deben tener cuidado de mantenerse dentro de los límites. de los índices válidos.
+
+Por ejemplo, el último elemento de una matriz indexada de base cero de tamaño n estará en el índice n-1, y al intentar acceder al elemento en el índice n se producirá un error
+
+elementos: |4|1|2|7
+indices:    0 1 2 3
+
+
+Inicialización:
+
+el resto de este capítulo se centra en arreglos estáticos.
+
+Lo que se menciona brevemente es que cuando crea una matriz estática, debe decidir su tamaño en
+avance.
+
+Por ejemplo, si necesita almacenar cinco elementos en una matriz, deberá asignar la memoria para todos esos elementos cuando cree la matriz.
+Es decir, al declarar
+una matriz, creamos la estructura que contendrá cinco valores de un cierto tipo, que deben
+también se decidirá en ese momento.
+
+Estamos preparando el espacio para albergar esos elementos, pero ¿qué sucede antes de actuar?
+¿Asignarles valores aliados?
+
+
+Para empezar, hay dos formas de crear una matriz: podemos simplemente declararla o (en la mayoría de los casos)
+lenguajes de programación) podemos inicializar los elementos del array al mismo tiempo que lo declaramos.
+
+Inicializar una matriz significa asignar valores (válidos) a todos sus elementos.
+
+En este caso,
+el compilador, mientras traduce su código a un programa que pueda ejecutarse en su máquina,
+simultáneamente asigna memoria para la matriz y la llena con los valores que decidimos en
+tiempo de compilación, antes de pasar a la siguiente instrucción
+
+¿Qué sucede cuando simplemente declaras la matriz sin inicializarla? ¿Se mantienen sus elementos “vacíos”?
+No existe el concepto de vacío, lo que significa que cuando declaras una variable, el compilador debe asignarle un valor. En el caso de los arrays, a todos los elementos se les debe asignar un valor
+
+El valor real depende del lenguaje de programación y del tipo de matriz; por ejemplo, en Java, una matriz de números enteros tendrá todos sus elementos establecidos en 0 si se crea sin inicialización. Alguno
+los lenguajes de programación tienen un valor especial para representar el vacío;
+
+Una matriz "vacía":
+¿Qué valores encontraremos? ¡Simplemente no lo sabemos!
+
+| | | | | | 
+0 1 2 3 4
+
+Por ejemplo, Python tiene el valor None y Java usa null.
+Tenga en cuenta que estos son especiales
+valores que se asignan explícitamente a los elementos de la matriz.
+
+La esencia es que debes tener cuidado al crear una matriz si planeas acceder a su
+elementos sin asignarlos primero
+En caso de duda, consulte las especificaciones de idioma.
+para entender lo que realmente sucederá.
+
+
+Arrays en Python: 
+
+aprendiendo
+Python y quiere realizar un seguimiento de su calendario de Adviento, por lo que cada mañana-
+tan pronto como abre su cajón del día, quiere actualizar su
+Versión digital del calendario.
+
+También planea actualizarlo cada vez que
+come un trozo de chocolate para poder vigilar a su hermano pequeño Ian,
+de quien se sospecha fuertemente que robó las golosinas de Mario en Halloween
+
+¡Ayudemos a Mario a crear una aplicación sencilla utilizando matrices!
+
+
+Python lists vs. the array.array class:
+
+Ya mencioné que Python ofrece la clase de lista como su solución nativa similar a una matriz.
+Las listas de Python están más cerca de las matrices dinámicas y tampoco tienen la limitación de mantener
+ing datos del mismo tipo: puede crear una lista con números, cadenas u otras listas, todas
+juntos
+
+Las listas de Python son más poderosas que las matrices estáticas: por ejemplo, admiten dinámicas.
+cambiar el tamaño
+mientras que array.array, que viene con la biblioteca estándar de Python, no
+
+el precio por admitir el cambio de tamaño dinámico es un rendimiento degradado y una velocidad más lenta
+Para ser claros, en muchos casos,
+estará bien usando listas y no notará la diferencia en su aplicación
+
+Pero si lo eres
+escribir secciones críticas de su código, posibles cuellos de botella donde el rendimiento es crítico
+cal, entonces quizás quieras asegurarte de utilizar la opción de mayor rendimiento
+
+consejo:
+
+Solo recuerda que la optimización también tiene un costo (en términos de desarrollo
+tiempo, mantenimiento y claridad), así que evite optimizar demasiado pronto o sin
+beneficios
+
+Antes de decidir optimizar algún código, asegúrese de ejecutarlo y
+Identificar las secciones críticas donde la optimización sería más beneficiosa.
+diferencia
+
+Es importante que comprenda cómo funcionan los arreglos estáticos antes de abordar su
+su contraparte dinámica en un capítulo posterior
+
+Desafortunadamente, Python no ofrece una versión nativa.
+alternativa de matriz estática.
+
+Lo más cerca que estamos es el módulo de matriz de Python, que impone el tipo
+consistencia pero sigue siendo una matriz dinámica
+
+Se puede encontrar una verdadera matriz estática en NumPy
+que es una biblioteca matemática optimizada para ser eficiente en el cálculo de vectores.
+Con
+numpy.array, puede crear matrices de dobles de tamaño fijo, aún algo diferentes de
+matrices de Java
+
+Para ayudarle a experimentar con estática
+matrices, creamos una clase personalizada basada en array.array, que simula cómo una estática
+la matriz funciona
+
+(Puede encontrar esta clase personalizada en el repositorio del libro: https://mng.bz/VxpG).
+En este punto, no deberías preocuparte por los detalles de cómo implementamos una matriz estática.
+
+El punto importante es que una vez que importas la clase
+puedes crear una nueva matriz de tamaño n usando el siguiente código:
+
+"""
+
+from arrays.core import Array
+a = Array(n)
+
+"""
+
+Luego puede acceder a todos los elementos de a, desde el índice 0 hasta n-1, y asignarlos como un array regular. 
+Por otro lado, no puede expandir ni reducir esta matriz.
+
+De forma predeterminada, se crea una matriz de números enteros.
+Si desea crear una matriz (de cinco elementos) float, puede utilizar:
+
+"""
+
+b = Array(5, 'f')
+
+"""
+Entonces, por ejemplo, puedes ejecutar:
+
+"""
+
+print(b)
+print(b[2])
+b[3] = 3.1415
+
+"""
+Tenga en cuenta que todos los elementos de la matriz recién creada se inicializan en 0 (o 0,0 para flotantes).
 
 """
 
 
+"""
+Indexing:
+
+Python usa indexación de base cero para matrices, lo que significa que
+para una matriz con n elementos, el primer elemento de la matriz siempre está en el índice 0, y el
+El último elemento está en el índice n-1
+
+Encontraremos el día 1 en el índice 0, cuando hubiera sido más intuitivo encontrarlo en
+Índice 1.
+
+Incluso con
+listas de Python, mientras que -1 es un índice válido (específicamente, el índice del último elemento en el
+array), acceder a [n] bloqueará su aplicación.
+
+Ahora usted podría estar preguntando: ¿Qué pasa con
+[-n]? ¿Y un[n+1]?
+
+Para evitar tener que lidiar con este tipo de truco mental Jedi, hemos desactivado los indices negativos.
+para nuestra clase de matrices estáticas.
 
 
+Operaciones sobre arrays:
+
+Ahora que sabes cómo crear una matriz, la siguiente pregunta es qué hacer con ella.
+Inicialmente, nuestra matriz es un contenedor vacío, no en el sentido de que sus elementos sean activos.
+sino que los valores asignados a las celdas de la matriz no tienen sentido
+
+La clase auxiliar inicializa arbitrariamente cada elemento de la matriz a 0, como se hace en muchos lenguajes
+
+La suposición que debe hacer es que, a menos o hasta que inicialice la matriz, sus datos son
+sin sentido.
+
+Puedes llenar la matriz como quieras. No tienes que seguir ningún orden cuando
+asignando nuevos valores a sus elementos, pero aquí está la advertencia: 
+
+es posible que desee realizar un seguimiento
+de qué elementos son significativos para su aplicación
+
+En la mayoría de los casos, no importará el orden en el que almacenemos los elementos. Si ese es el caso,
+simplemente podemos agregar los nuevos elementos en el primer índice no utilizado en la matriz y mantener el
+matriz justificada a la izquierda: esto significa que si agregamos k≤n elementos a nuestra matriz, estarán en
+los índices de 0 a k-1
+
+Con matrices justificadas a la izquierda, resulta muy conveniente realizar un seguimiento de qué elementos
+son significativos y solo necesitamos almacenar el tamaño del fragmento lleno de la matriz.
+
+NOTA Esta es una forma posible de hacerlo; de hecho, una entre muchas. si tu eliges
+Para trabajar con una matriz justificada a la izquierda, es su responsabilidad realizar un seguimiento de cómo
+Muchos elementos están actualmente almacenados en la matriz.
 
 
+Ahora veamos cómo realizar algunas operaciones básicas en nuestra matriz (sin clasificar/ordenar).
 
 
+Clase para unsorted arrays:
+
+Podríamos escribir un conjunto de funciones globales que tomen un objeto core.Array como argumento.
+y manipularlo.
+Sin embargo, no voy a adoptar este enfoque.
+
+Sé que podemos tener un
+implementación más limpia escribiendo una clase UnsortedArray que envuelve y
+aísla (encapsula) nuestra matriz.
+
+¿Por qué? Hay muchas buenas razones para preferir la programación orientada a objetos a la
+paradigma imperativo. 
+
+Una cosa que quizás ya haya considerado es que debemos realizar un seguimiento del tamaño de
+la parte llena de la matriz.
+Con una matriz justificada a la izquierda, eso es suficiente para separar la parte
+de la matriz que contiene datos de la parte vacía.
+
+Si implementamos una clase para la matriz no ordenada, podemos almacenar su tamaño en un atributo y
+actualícelo como parte de las operaciones en la matriz.
+
+Sin envolver nuestra matriz sin clasificar en
+una clase, tendríamos que almacenar el tamaño del array en una variable global y pasar ese valor
+a cada una de las funciones que manipulan la matriz sin clasificar.
 
 
+Encapsulación: un pilar de la programación moderna
+
+El hecho de que cualquiera pueda cambiar la variable con el tamaño de la matriz es terriblemente propenso
+a errores.
+En cambio, debemos esforzarnos por lograr algo llamado encapsulación.
+
+Cada instancia de un
+La matriz debe tener este valor incluido e, idealmente, solo puede modificarse internamente mediante el
+instancia misma.
+
+(Python no nos ayuda mucho aquí ya que no tiene acceso privado real a la clase.
+atributos.)
 
 
+Implementaremos matrices sin clasificar como una clase:
+
+"""
+
+class UnsortedArray:
+	def __init__(self, max_size, typecode = 'l'):
+		self._array = Array(max_size, typecode)
+		self._max_size = max_size
+		self._size = 0
+
+"""
+En el constructor, mantenemos la misma firma que para nuestra clase auxiliar de matriz estática principal.
+De hecho, incluso utilizamos una de esas matrices estáticas internamente para alojar los datos.
+
+Tenga en cuenta que si bien podríamos heredar de core.Array, en su lugar creamos una instancia de
+core.Array y asignarlo a un atributo del objeto: usamos composición con un
+instancia de core.Array.
+
+CONSEJO: 
+Una regla general es favorecer la composición sobre la herencia:
+le brinda más flexibilidad en el diseño.
 
 
+Agregar una nueva entrada:
 
+Para el contexto, creamos nuestra matriz arr = UnsortedArray(n), donde n es el número de
+elementos que asignamos para la matriz (su capacidad máxima).
+
+Digamos que ya tenemos
+Agregó k elementos a la matriz. No podemos hacer ninguna suposición sobre el orden de los
+elementos, y ni siquiera nos importa su orden.
+
+Bajo estos supuestos, podemos agregar la siguiente entrada de la matriz en el índice k, justo después de la última entrada, es decir, ¡si hay espacio en la matriz! Lo primero que tenemos que hacer es comprobar que k es un índice válido.
+Si es así, podemos continuar con la asignación, recordando incrementar k, el tamaño actual.
+Si la matriz está llena, generamos una excepción para alertar a la persona que llama sobre el problema.
+
+
+arr de 9 elem:
+
+|0|7|-1|3|?|?|?|?|?|
+
+add(-2):
+
+|0|7|-1|3|-2|?|?|?|?|
+
+La operación resulta en: 
+
+Agregar la quinta entrada a una matriz
+con tamaño n=9
+
+Consejo:
+No ocultes los errores. No necesariamente tienes que usar excepciones, pero es importante dejar que el
+el cliente lo sepa, para que pueda descubrir y manejar el fracaso.
+Una ventaja de las excepciones sobre, por ejemplo, devolver un valor especial en caso de error, es que
+Las excepciones obligan a la persona que llama a preocuparse y comprobar si la operación se realizó correctamente, mientras que el retorno
+Los valores pueden ser ignorados y serán ignorados.
+
+Así es como se vería el código como método de nuestra clase:
+
+"""
+
+def insert(self, new_entry):
+	if self._size >= len(self._array):
+		raise ValueError('The array is already full')
+	else:
+		self._array[self._size] = new_entry
+		self._size += 1
+
+"""
+Eliminar una entrada:
+
+Agregar nuevos elementos a una matriz sin ordenar es bastante sencillo, ¿verdad? las cosas se ponen
+Un poco más interesante cuando queremos eliminar una entrada existente.
+
+En el escenario más común, querrás eliminar una entrada en algún momento a mitad de camino.
+de la matriz. Desafortunadamente, simplemente “borrar” la entrada en el índice dado dejaría
+un espacio en el medio del fragmento de la matriz donde almacenamos nuestras entradas válidas, rompiendo
+nuestra suposición de que las entradas están justificadas a la izquierda.
+
+|0|7|-1|3|-2|?|?|?|?|
+		  *	
+remove(-1) 
+		  *	
+|0|7|?|3|-2|?|?|?|?|
+
+Para solucionar esta situación, en abstracto, tendríamos que desplazar todas las entradas a la derecha del espacio una posición hacia la izquierda. Esto solucionaría el problema, pero también supondría mucho trabajo.
+Esto es desafortunado: ¡sería mucho más fácil si tuviéramos que eliminar la última entrada de la matriz! Podríamos simplemente actualizar el tamaño de la matriz para ignorar esa última entrada.
+Existe un caso especial, una estructura de datos llamada pila, que solo permite eliminar su última entrada. Estudiaremos las pilas en el capítulo 8, pero mientras tanto, resulta que, después de todo, tenemos suerte: hay una manera de manipular matrices desordenadas y caer en el mismo escenario, donde solo eliminamos la última entrada.
+Como la matriz no está ordenada y asumimos que el orden de las entradas no importa, podemos simplemente intercambiar la última entrada
+Tenemos que ocuparnos de algunos casos extremos, especialmente verificar si la matriz está vacía, pero las cosas son mucho más fáciles de lo que pensábamos:
+
+remove(-1):
+
+|0|7|-1|3|-2|?|?|?|?|
+
+swap (2,4):
+
+|0|7|-2|3|1|?|?|?|?|
+
+remove_at (4):
+
+|0|7|-2|3|?|?|?|?|?|
+
+"""
+
+def delete(self, index):
+	if self._size == 0:
+		raise ValueError('Delete from an empty array')
+	elif index < 0 or index >= self._size:
+		raise ValueError(f'Index {index} out of range.')
+	else:
+		self._array[index] = self._array[self._size-1]
+		self._size -= 1
+
+"""
+El último elemento estará fuera del fragmento poblado (una advertencia: la matriz merodea).
+“Intercambio inteligente” al sobrescribir el elemento eliminado (no necesitamos almacenar el valor que vamos a eliminar).
+
+"""

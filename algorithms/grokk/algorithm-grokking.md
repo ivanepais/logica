@@ -1489,5 +1489,440 @@ Ahora veamos la pila de llamadas en acción con una función recursiva.
 
 ### Call stack con recursion
 
+¡Las funciones recursivas también usan la pila de llamadas! Veamos esto en acción
+con la función factorial. factorial(5) se escribe como 5!, y se
+define así: 5! = 5 * 4 * 3 * 2 * 1. De manera similar, factorial(3) es
+3 * 2 * 1. Aquí hay una función recursiva para calcular el factorial de un
+número:
+
+```
+def fact(x):
+	if x == 1:
+		return 1
+	else:
+		return x * fact(x-1)
+
+```
+
+Ahora llamas a fact(3). Repasemos esta llamada línea por línea y veamos
+cómo cambia la pila. Recuerda, el cuadro superior de la pila te indica en qué llamada a fact estás actualmente.
+
+Code: 			Call stack: 
+
+Instruccioens y valores para las lineas 1, 2, 3, etc
+
+fact(3)			| fact  |  En la primera llamada, x es 3
+				| x | 3 |
+
+if x == 1		| fact  |
+				| x | 3 |
+				
+else: 			| fact  |
+				| x | 3 |
+				
+return x*fact(x-1)	| fact  |  Llamada recursiva: 
+					| x | 2 |  Se apila fact: x = 2
+					| fact  |
+					| x | 3 |
+
+if x == 1: 			| fact  |  Ahora estamos en la segunda llamada a fact. x es 2
+					| x | 2 |  La llamada de función superior es la llamada en la que estamos actualmente
+					| fact  |
+					| x | 3 |
+
+else: 				| fact  |  Nota: ambas llamadas de función tienen una variable llamada x y el valor de x es diferente en ambas
+					| x | 2 |
+					| fact  |
+					| x | 3 |
+
+return x*fact(x-1)  | fact  |  No puedes acceder a la x de esta llamada desde esta llamada y viceversa
+					| x | 1 |
+					| fact  |
+					| x | 2 |
+					| fact  |
+					| x | 3 |
+
+if x == 1: 			| fact  |
+					| x | 1 |
+					| fact  |
+					| x | 2 |
+					| fact  |
+					| x | 3 |
+
+return 1			   | fact  | ->
+					   | x | 1 |
+					| fact  |
+					| x | 2 |  Vaya, hicimos tres llamadas a fact, pero no habíamos terminado ninguna hasta ahora. 
+					| fact  |  Este es el primer cuadro que se saca de la pila, lo que significa que es la primera llamada desde la que regresamos. 
+					| x | 3 |  retorna 1
+
+
+return x*fact(x-1) 	   | fact  | ->
+					   | x | 2 |  Esta x*fact(x-1) es la llamada de función que acabamos de devolver
+					| fact  |     En (return x -x es 2-)
+					| x | 3 |     devuelve 2
+
+
+return x*fact(x-1) 	   		| fact  | ->
+						  | x | 2 |   En (return x -x es 3-)
+									  Esta llamada (x*fact(x-1))
+
+
+Tenga en cuenta que cada llamada a fact tiene su propia copia de x. No puede acceder a la copia de x de una función
+diferente.
+
+La pila juega un papel importante en la recursión. En el ejemplo inicial, había
+dos enfoques para encontrar la clave. 
+
+Aquí está la primera forma nuevamente.
+
+De esta manera, crea una pila de casillas para buscar, de modo que siempre
+sabe qué casillas aún necesita buscar.
+
+Pero en el enfoque recursivo, no hay pila.
+Si no hay pila, ¿cómo sabe su algoritmo qué casillas aún tiene que buscar? Aquí hay un ejemplo.
+
+En este punto, la pila de llamadas se ve así.
+
+|box d| -|  Casillas aún por revisar
+|box b| -|
+|box a| c|
+
+
+¡La “pila de cajas” se guarda en la pila! Esta es una pila de llamadas de función a medio completar, cada una con su propia lista de cajas a medio completar
+para revisar. Usar la pila es conveniente porque no tiene que
+hacer un seguimiento de una pila de cajas usted mismo: la pila lo hace por usted.
+
+Usar la pila es conveniente, pero tiene un costo: guardar toda esa información puede
+ocupar mucha memoria. Cada una de esas llamadas de función ocupa algo de memoria, y cuando su pila es demasiado alta, eso significa que su computadora está
+guardando información para muchas llamadas de función. En ese punto, tiene dos
+opciones:
+
+1. Puedes reescribir tu código para usar un bucle en su lugar.
+
+2. Puedes usar algo llamado recursión de cola. Ese es un tema de recursión
+avanzada que está fuera del alcance de este libro. Además, solo lo admiten algunos lenguajes, no todos.
+
+
+## Ejercicio
+
+3.2 Supongamos que escribes accidentalmente una función recursiva que se ejecuta
+indefinidamente. Como viste, tu computadora asigna memoria en la pila
+para cada llamada de función. ¿Qué sucede con la pila cuando tu función recursiva se ejecuta
+indefinidamente?
+
+Al olvidar el caso base para parar la ejecución del programa, se llama a la función original, una y otra vez; se llena la memoria, bloqueando el programa y la pc. 
+
+
+## Recap
+
+1. La recursión es cuando una función se llama a sí misma.
+2. Toda función recursiva tiene dos casos: el caso base
+y el caso recursivo.
+3. Una pila tiene dos operaciones: push y pop.
+4. Todas las llamadas a funciones van a la pila de llamadas.
+5. La pila de llamadas puede llegar a ser muy grande, lo que ocupa mucha memoria.
+
+
+
+# Quicksort
+
+1. Aprendes sobre el método divide y vencerás. A veces
+te encontrarás con un problema que no se puede resolver
+con ningún algoritmo que hayas aprendido. Cuando un buen
+algoritmista se encuentra con un problema de este tipo,
+no se da por vencido. Tiene una caja de herramientas llena de
+técnicas que usa para resolver el problema, tratando de
+dar con una solución. Divide y vencerás
+es la primera técnica general que aprendes.
+
+2. Aprendes sobre quicksort, un elegante algoritmo de
+ordenación que se usa a menudo en la práctica. Quicksort
+usa el método divide y vencerás.
+
+
+Aprendiste todo sobre la recursión en el capítulo anterior. Este capítulo
+se centra en el uso de tu nueva habilidad para resolver problemas. Exploraremos
+dividir y vencer (D&C), una técnica recursiva muy conocida para
+resolver problemas.
+
+Este capítulo realmente profundiza en la esencia de los algoritmos. Después de todo,
+un algoritmo no es muy útil si solo puede resolver un tipo de
+problema. En cambio, D&C te ofrece una nueva forma de pensar en la resolución de problemas. D&C es otra herramienta en tu caja de herramientas. Cuando tienes un nuevo
+problema, no tienes por qué quedarte atascado. En cambio, puedes preguntar: "¿Puedo
+resolverlo si uso dividir y vencer?"
+
+Al final del capítulo, aprenderás tu primer algoritmo D&C importante:
+quicksort. Quicksort es un algoritmo de ordenamiento, y uno mucho más rápido que el ordenamiento por selección (que aprendiste en el capítulo 2). Es un buen ejemplo de código
+elegante.
+
+
+### Divide y vencerás 
+
+Divide y vencerás
+
+Puede llevar algo de tiempo comprender D&C. Por eso, haremos tres
+ejemplos. Primero, te mostraré un ejemplo visual. Luego, haré un ejemplo de código que es menos atractivo, pero tal vez
+más sencillo. Por último, veremos quicksort, un algoritmo de ordenamiento
+que utiliza D&C.
+
+Supón que eres un granjero con una parcela de tierra.
+
+|		|
+1680x640
+
+
+Quieres dividir esta granja de manera uniforme en parcelas cuadradas. 
+Quieres que las parcelas sean lo más grandes posible. 
+Por lo tanto, ninguna de estas opciones funcionará.
+
+| | | ...
+
+
+¿Cómo se calcula el tamaño cuadrado más grande que se puede utilizar para un terreno?
+¡Utilice la estrategia D&C! Los algoritmos D&C son algoritmos recursivos.
+Para resolver un problema utilizando D&C, hay dos pasos:
+
+1. Determine el caso base. Este debe ser el caso más simple posible.
+
+2. Divida o disminuya su problema hasta que se convierta en el caso base.
+
+Usemos D&C para encontrar la solución a este problema. ¿Cuál es el tamaño cuadrado más grande que se puede utilizar?
+
+
+Primero, determine el caso base. 
+El caso más fácil sería si un lado fuera un múltiplo del otro lado.
+
+50m
+|	|25m 
+
+= 
+   25m	 
+| |	|25m
+
+Supongamos que un lado mide 25 metros (m) y el otro lado mide 50 m. Entonces, la
+caja más grande que puedes usar es de 25 m × 25 m. Necesitas dos de esas cajas para
+dividir el terreno.
+
+Ahora necesitas resolver el caso recursivo. 
+Aquí es donde entra en juego D&C. 
+Según D&C, con cada llamada recursiva, debes reducir tu problema. ¿Cómo reduces el problema aquí? 
+Comencemos marcando las cajas más grandes que puedes usar.
+
+two boxes Queda espacio en la granja para dividir
+|	|	|  | 640m
+640m 640m 400m
+
+En ese espacio caben dos cajas de 640 × 640 y todavía queda algo de tierra por dividir. 
+Ahora llega el momento de la revelación. 
+Queda un segmento de granja por dividir. 
+¿Por qué no aplicas el mismo algoritmo a este segmento?
+
+(Aplicando lo mismo que anteriormente)
+	
+				400m
+|---|---|  | -> |  | 640m
+				Se dividirán nuevas tierras 
+				
+Entonces, comenzaste con una granja de 1680 × 640 que necesitabas dividir.
+Pero ahora necesitas dividir un segmento más pequeño, 640 × 400. 
+Si encuentras la caja más grande que funcionará para este tamaño, esa será la caja más grande que funcionará para toda la granja. 
+¡Acabas de reducir el problema de una granja de 1680 × 640 a una de 640 × 400!			
+	
+
+### Algoritmo de Euclides
+
+“Si encuentras la caja más grande que funcionará para este tamaño, esa será la
+caja más grande que funcionará para toda la granja”. Si no te resulta obvio
+por qué esta afirmación es cierta, no te preocupes. No es obvio. Desafortunadamente, la
+prueba de por qué funciona es demasiado larga para incluirla en este libro, así que
+tendrás que creerme cuando digo que funciona. Si quieres entender la prueba,
+busca el algoritmo de Euclides.
+
+
+| | 240m
+...
+|-| 400m
+|-|
+400m
+
+Apliquemos nuevamente el mismo algoritmo. 
+Si comenzamos con una granja de 640 × 400 m, la caja más grande que puedes crear es de 400 × 400 m.
+
+Y eso te deja con un segmento más pequeño, 400 × 240 m.
+
+|	|240m
+ 400m
+
+Y puedes dibujar un cuadro sobre eso para obtener un segmento aún más pequeño, 240 × 160 m.
+
+|---| | 240m
+240m 160m 
+
+
+Y luego dibuja un cuadro sobre él para obtener un segmento aún más pequeño.
+
+|   |80
+.....
+|---|
+|---|160
+160m
+
+
+Estás en el caso base: 80 es un factor de 160. 
+Si divides este segmento usando cajas, ¡no te sobra nada!
+
+|   |80m
+160m
+
+|  |  |80m
+80m 80m 
+
+
+Entonces, para la granja original, el tamaño de parcela más grande que puedes usar es 80 × 80 m.
+
+|  |  |
+|  |  |
+|  |  |
+
+Para resumir, así es como funciona D&C:
+
+1. Determine un caso simple como caso base.
+2. Determine cómo reducir su problema y llegar al caso base.
+
+D&C no es un algoritmo simple que se puede aplicar a un problema. En cambio,
+es una forma de pensar en un problema. Veamos otro ejemplo.
+
+
+Se le proporciona una serie o array de números.
+
+|2|4|6|
+
+Tienes que sumar todos los números y obtener el total. 
+Es bastante fácil hacerlo con un bucle:
+
+```
+def sum(arr):
+	total = 0
+	for x in arr:
+		total += x
+	return total
+print sum([1, 2, 3, 4])
+
+```
+
+Pero, ¿cómo se haría esto con una función recursiva?
+
+1. Paso 1: Determine el caso base. 
+¿Cuál es la matriz más simple que podría obtener? 
+Piense en el caso más simple y luego continúe leyendo. 
+
+|2|4|6|
+(2+4+6=12, 2+2+2+2+2+2 =12, 2^2x3, 12/2=6, 6/2=3, 3/3=1)
+
+|1|2|3|4 
+(10, 2*5, 10/2=5, 5/5=1)
+
+Si obtiene una matriz con 0 o 1 elemento, es bastante fácil resumir.
+
+```
+base case 
+{[] 0 elementos =  sum es 0}
+{[7] 1 elemento = sum es 7}
+
+```
+
+Así que ese será el caso base.
+
+
+2. Paso 2: Debes acercarte a una matriz vacía con cada llamada recursiva. 
+¿Cómo reduces el tamaño del problema? 
+Aquí tienes una forma.
+  
+sum(|2|4|6|) = 12
+
+Es lo mismo que esto.
+
+2+sum(4|6) = 2+10 = 12
+
+En cualquier caso, el resultado es 12. 
+Pero en la segunda versión, estás pasando
+una matriz más pequeña a la función de suma. 
+Es decir, ¡redujiste el tamaño de tu problema!
+
+Tu función de suma podría funcionar así.
+
+obtener una lista:
+
+si la lista está vacía, devuelve cero.
+
+de lo contrario, la suma total es el primer número de la lista + la suma del resto de la lista.
+
+
+Aquí está en acción:
+
+sum (2|4|6)  Ambos son iguales
+2+sum(|4|6)
+
+4+sum(|6|)  ¡Caso base! La suma (|6|) es 6
+
+4+6 = 10 -> 2+10 = 12  Resultado final 
+
+Recuerde, la recursión realiza un seguimiento del estado.
+
+
+¡Ninguna de estas llamadas de función se completa hasta que se llega al caso base!:
+sum(2|4|6) y 2+sum(|4|6).
+
+Esta es la primera llamada de función que realmente se completa:
+4+sum(|6|)  ¡Caso base! La suma (|6|) es 6
+
+Recuerde, Recursion guarda la estadística de estas llamadas de función parcialmente completadas
+4+6 = 10 -> 2+10 = 12  
+
+Consejo:
+Cuando escribes una función recursiva que involucra una matriz, el caso base suele ser una matriz vacía o una matriz con un elemento. 
+Si no sabes qué hacer, prueba con eso primero.
+
+
+### Un adelanto de la programación funcional
+
+"¿Por qué haría esto de forma recursiva si puedo hacerlo fácilmente con un bucle?",
+puede que estés pensando. Bueno, ¡este es un adelanto de la programación funcional!
+Los lenguajes de programación funcional como Haskell no tienen bucles, por lo que
+tienes que usar la recursión para escribir funciones como esta. Si tienes un buen conocimiento de la recursión, los lenguajes funcionales serán más fáciles de aprender.
+Por ejemplo, así es como escribirías una función de suma en Haskell:
+
+```
+sum [] = 0 //caso base 
+sum (x:xs) = x + (sum xs) //caso recursivo
+
+```
+
+Observa que parece que tienes dos definiciones para la función. 
+La primera definición se ejecuta cuando llegas al caso base.
+La segunda definición se ejecuta en el caso recursivo. 
+También puedes escribir esta función en Haskell usando una declaración if:
+
+```
+sum arr = if arr == []
+			then 0
+			else (head arr) + (sum (tail arr))
+
+```
+
+Pero la primera definición es más fácil de leer.
+Debido a que Haskell hace un uso intensivo de la recursión, incluye todo tipo de detalles como este para que la recursión sea fácil. 
+Si te gusta la recursión o te interesa aprender un nuevo lenguaje, echa un vistazo a Haskell.
+
+
+## Ejercicios
+
+4.1 Escribe el código para la función suma anterior.
+4.2 Escribe una función recursiva para contar la cantidad de elementos en una lista.
+4.3 Encuentra el número máximo en una lista.
+4.4 ¿Recuerdas la búsqueda binaria del capítulo 1? También es un algoritmo de divide y vencerás. 
+¿Puedes pensar en el caso base y el caso recursivo para la búsqueda binaria?
+
 
 
