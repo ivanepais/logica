@@ -3592,7 +3592,7 @@ El enfoque principal del libro se basa en seguir un esquema llamado el "proceso 
 
 HTDP enfatiza el uso de la recursión para resolver problemas complejos.
 
-    Los problema
+    Los problemas
 
     ;; Calcular la longitud de una lista
     (define (longitud lst)
