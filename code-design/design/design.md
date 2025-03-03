@@ -5425,3 +5425,173 @@ El autor utiliza un enfoque interactivo, donde cada capítulo incluye:
 
 El mensaje principal de Learn to Code by Solving Problems es que aprender programación debe estar centrado en resolver problemas prácticos. El dominio de Python y de técnicas de resolución de problemas prepara al lector no solo para escribir código, sino también para abordar desafíos computacionales de manera estructurada y lógica
 
+
+
+# The Design of Everyday Things - Don Norman
+
+Libro fundamental sobre diseño centrado en el usuario. 
+
+Explica cómo los objetos cotidianos deben diseñarse para ser intuitivos y fáciles de usar.
+
+1. La importancia del diseño centrado en el usuario
+
+    Los productos deben diseñarse teniendo en cuenta cómo piensan y actúan las personas, en lugar de forzarlas a adaptarse a diseños poco intuitivos.
+
+2. La psicología de la interacción con los objetos
+
+    Norman explora cómo las personas perciben, interpretan y utilizan los objetos con base en señales visuales y experiencia previa.
+
+3. La carga cognitiva y la facilidad de uso
+
+    Un buen diseño minimiza la cantidad de información que un usuario debe recordar, proporcionando pistas y restricciones naturales.
+
+4. Los 7 principios del buen diseño
+
+    Visibilidad: El usuario debe ver claramente las funciones y estados del objeto.
+    Relación entre controles y efectos (Mapping): La correspondencia entre los controles y sus efectos debe ser intuitiva.
+    Retroalimentación (Feedback): El sistema debe informar al usuario sobre las acciones que ha realizado.
+    Restricciones: Se deben establecer límites para evitar errores.
+    Consistencia: El diseño debe seguir patrones familiares.
+    Afinidad natural (Affordances): Los objetos deben sugerir su uso con su forma y apariencia.
+    Modelo conceptual: Un buen diseño permite que los usuarios formen un modelo mental claro de cómo funciona el objeto.
+
+5. El problema del error humano
+
+    Muchos errores ocurren debido a un mal diseño, no por culpa del usuario. Un buen diseño previene errores en lugar de castigar a los usuarios cuando los cometen.
+
+6. El ciclo de acción y evaluación
+
+    Explica cómo los usuarios interactúan con los productos en dos fases:
+        Gulf of Execution: Qué tan fácil es entender cómo usar el objeto.
+        Gulf of Evaluation: Qué tan fácil es entender el resultado de una acción.
+
+7. Ejemplos prácticos
+
+    Norman usa ejemplos de diseño de puertas, estufas y sistemas tecnológicos para mostrar cómo un mal diseño puede confundir a los usuarios
+
+
+
+# A Philosophy of Software Design - John Ousterhout
+
+Aborda los principios y estrategias para escribir software limpio, modular y mantenible. 
+
+Se enfoca en reducir la complejidad del software, que según el autor, es la principal causa de código difícil de entender y mantener.
+
+1. La Complejidad es el Problema Principal
+
+Ousterhout argumenta que el mayor enemigo del buen software es la complejidad, que se manifiesta en:
+
+    Código difícil de entender
+    Múltiples interdependencias
+    Dificultad para modificar y extender el software
+
+Para combatir la complejidad, el autor propone principios de diseño que faciliten la comprensión del código.
+
+2. Diseño Profundo vs. Diseño Superficial
+
+    Diseño profundo: Un módulo tiene una interfaz simple pero una implementación poderosa.
+    Diseño superficial: Un módulo tiene una interfaz compleja pero no aporta mucho valor.
+
+El objetivo es que las interfaces sean pequeñas, pero el código detrás de ellas haga el trabajo pesado.
+
+3. Modularidad y Encapsulación Efectiva
+
+    Los módulos deben ocultar detalles de implementación.
+    La encapsulación no es solo usar private, sino evitar que los detalles internos de un módulo se filtren a otros módulos.
+    Un buen módulo reduce la cantidad de conocimiento que los demás módulos necesitan sobre él.
+
+4. Código Autodocumentado es un Mito
+
+    Aunque un buen código es claro, los comentarios son esenciales para explicar la intención y los conceptos detrás de las decisiones de diseño.
+    No basta con escribir qué hace el código; hay que explicar por qué se hizo de esa manera.
+
+5. La Técnica del "Proactive Decomposition"
+
+    En lugar de escribir primero un bloque de código grande y luego modularizarlo, Ousterhout recomienda pensar en modularidad desde el inicio.
+    Dividir el código en piezas pequeñas y manejables para evitar que crezca de forma caótica.
+
+6. Evitar la "Fragmentación del Código"
+
+    A veces, dividir demasiado el código en pequeños métodos y clases hace que la lógica sea más difícil de seguir.
+    Un buen diseño debe equilibrar modularidad y coherencia.
+
+7. Diseñar para el Futuro (pero sin sobrecomplicar)
+
+    Es importante pensar en cómo evolucionará el código a largo plazo.
+    Sin embargo, no se debe sobre-ingenierizar con abstracciones innecesarias por miedo al cambio.
+
+8. La Diferencia entre "Tactical Programming" y "Strategic Programming"
+
+    Tactical programming: Resolver un problema de la manera más rápida posible, sin pensar en la mantenibilidad.
+    Strategic programming: Diseñar el código con una visión a largo plazo, lo que reduce la deuda técnica.
+
+El autor recomienda siempre optar por el enfoque estratégico.
+
+9. Código Limpio vs. Código Simple
+
+    El código limpio es importante, pero hacerlo simple y fácil de entender es aún más crítico.
+    A veces, intentar que el código sea "demasiado limpio" introduce complejidad innecesaria
+
+
+
+# Software Design - David Budgen
+
+Proporciona un enfoque académico y estructurado sobre el diseño de software. 
+
+Explora principios, métodos y enfoques para diseñar sistemas robustos y escalables.
+
+1. El Diseño de Software como un Proceso
+
+Budgen describe el diseño de software como una serie de decisiones que transforman los requisitos en una estructura concreta.
+
+    Se enfoca en arquitectura, modularidad y abstracción.
+    Es una actividad iterativa, no una fase única en el desarrollo.
+
+2. Modelos de Diseño de Software
+
+Se presentan distintos modelos y enfoques para diseñar software:
+
+    Estructurado (top-down) → Basado en descomposición jerárquica.
+    Orientado a Objetos → Usa clases, herencia y encapsulación.
+    Basado en Componentes → Se enfoca en reusar módulos independientes.
+
+Cada modelo tiene ventajas y desventajas según el contexto.
+
+3. Principios Fundamentales del Diseño
+
+Budgen enfatiza varios principios clave para un buen diseño de software:
+
+    Abstracción: Simplificar conceptos y ocultar detalles innecesarios.
+    Modularidad: Dividir el sistema en partes independientes.
+    Acoplamiento y Cohesión: Minimizar dependencias entre módulos (bajo acoplamiento) y asegurarse de que cada módulo tenga un propósito claro (alta cohesión).
+    Reutilización: Usar componentes existentes para mejorar la eficiencia.
+
+4. Patrones de Diseño
+
+    Budgen analiza cómo los patrones de diseño proporcionan soluciones probadas a problemas comunes.
+    Se exploran patrones como Singleton, Factory, Observer, Adapter, entre otros.
+    También se estudian patrones arquitectónicos como MVC (Model-View-Controller).
+
+5. Evaluación y Métricas de Diseño
+
+Para medir la calidad del diseño, se consideran factores como:
+
+    Facilidad de mantenimiento
+    Flexibilidad ante cambios
+    Escalabilidad
+    Claridad y documentación
+
+Se usan métricas para evaluar complejidad del código, dependencias y estructura del sistema.
+
+6. Diseño y Desarrollo Ágil
+
+    Se analiza cómo los enfoques de diseño han evolucionado con metodologías ágiles.
+    Se enfatiza la importancia del refactoring y la mejora continua del diseño.
+
+7. Diseño Basado en Componentes y Servicios
+
+    Se exploran enfoques modernos como Arquitectura Basada en Microservicios y SOA (Service-Oriented Architecture).
+    Se estudia cómo integrar componentes reutilizables en sistemas grandes
+
+
+
