@@ -3527,7 +3527,341 @@ Al menos en la versión estatica.
 
 8. app(){}
 
-Asi en una página/componente o separados por componentes
+
+Arq: 
+
+1. en una página/componente.
+
+2. separados por componentes y despues anidarlos a app. 
+
+los componentes con subcomponentes irían juntos 
+
+
+#### Crear componentes para app: están formados por props, var, func, estruct control, bucles, met, obj y jsx que renderiza html y elem de los objetos del componente
+
+los componentes y las funciones internas pueden ser definidas con arrow func
+
+#### export e import react 
+
+import
+
+1. Importación combinada (export default + export nombrado)
+
+Si un archivo tiene una exportación por defecto y exportaciones nombradas, puedes importar ambas así:
+
+```
+// math.ts
+export const PI = 3.14;
+export default function multiplicar(a: number, b: number) {
+  return a * b;
+}
+
+```
+
+```
+import multiplicar, { PI } from "./math";
+
+console.log(multiplicar(2, 3)); // 6
+console.log(PI); // 3.14
+
+```
+
+2. React con multiples componentes 
+
+archivo: components/Button.tsx
+
+```
+export function PrimaryButton() {
+  return <button style={{ backgroundColor: "blue", color: "white" }}>Primario</button>;
+}
+
+export function SecondaryButton() {
+  return <button style={{ backgroundColor: "gray", color: "white" }}>Secundario</button>;
+}
+
+```
+
+importarlos en otro archivo (App.tsx)
+
+```
+import { PrimaryButton, SecondaryButton } from "./components/Button";
+
+function App() {
+  return (
+    <div>
+      <PrimaryButton />
+      <SecondaryButton />
+    </div>
+  );
+}
+
+```
+
+Importación de Archivos CSS
+
+Puedes importar archivos CSS en tus componentes usando
+
+```
+import "./styles.css";
+
+```
+
+Importación Dinámica (import())
+
+Permite cargar módulos de manera asíncrona (útil para lazy loading en React).
+
+React.lazy
+
+```
+const LazyComponent = React.lazy(() => import("./LazyComponent"));
+
+function App() {
+  return (
+    <React.Suspense fallback={<div>Cargando...</div>}>
+      <LazyComponent />
+    </React.Suspense>
+  );
+}
+
+```
+
+
+export
+
+exportar un componente o función de dos maneras:
+
+1. Exportación nombrada (export):
+
+Permite exportar múltiples elementos de un mismo archivo. Al importarlos, debes usar llaves {}.
+
+```
+// utils.ts
+export const suma = (a: number, b: number) => a + b;
+export const resta = (a: number, b: number) => a - b;
+
+```
+
+```
+import { suma, resta } from "./utils";
+
+console.log(suma(2, 3)); // 5
+console.log(resta(5, 2)); // 3
+
+```
+
+Nota: Si intentas importar suma sin llaves, obtendrás un error.
+
+
+2. Exportación por defecto (export default):
+
+Cada archivo puede tener una sola exportación por defecto. 
+
+()
+
+No requiere llaves {} al importarlo.
+
+```
+// UserProfile.tsx
+export default function UserProfile() {
+  return <h1>Perfil de Usuario</h1>;
+}
+
+```
+
+```
+import UserProfile from "./UserProfile"; // No necesita llaves
+
+function App() {
+  return <UserProfile />;
+}
+
+```
+
+Nota: Puedes cambiar el nombre al importar:
+
+```
+import MiPerfil from "./UserProfile"; // Funciona aunque el componente se llame UserProfile
+
+```
+
+
+
+
+
+
+### Agregar estilo 
+
+En React, especificas una clase CSS con className. 
+Funciona de la misma manera que el atributo de clase HTML:
+
+```
+<img className="avatar" />
+
+```
+
+Luego escribes las reglas CSS para ella en un archivo CSS separado:
+
+```
+.avatar {
+border-radius: 50%;
+}
+
+```
+
+React no prescribe cómo agregar archivos CSS. 
+En el caso más simple, agregarás una etiqueta <link> a tu HTML. 
+Si usas una herramienta de compilación o un marco, consulta su documentación para aprender a agregar un archivo CSS a tu proyecto.
+
+
+### “escapar hacia JavaScript” desde los atributos de JSX, pero debe usar llaves en lugar de comillas. 
+
+Por ejemplo, className="avatar" pasa la cadena "avatar" como la clase CSS, pero src={user.imageUrl} lee el valor de la variable user.imageUrl de JavaScript y luego pasa ese valor como el atributo src:
+
+```
+return (
+<img
+className="avatar"
+src={user.imageUrl}
+/>
+);
+
+```
+
+También puede colocar expresiones más complejas dentro de las llaves de JSX, por ejemplo, la concatenación de cadenas:
+
+```
+const user = {
+  name: 'Hedy Lamarr',
+  imageUrl: 'https://i.imgur.com/yXOvdOSs.jpg',
+  imageSize: 90,
+};
+
+export default function Profile() {
+  return (
+    <>
+      <h1>{user.name}</h1>
+      <img
+        className="avatar"
+        src={user.imageUrl}
+        alt={'Photo of ' + user.name}
+        style={{
+          width: user.imageSize,
+          height: user.imageSize
+        }}
+      />
+    </>
+  );
+}
+
+```
+
+style={{}} no es una sintaxis especial, sino un objeto {} normal dentro de las llaves JSX style={ }. 
+
+Puedes usar el atributo style cuando tus estilos dependen de variables de JavaScript.
+
+
+### Renderizado condicional 
+
+```
+let content;
+if (isLoggedIn) {
+  content = <AdminPanel />;
+} else {
+  content = <LoginForm />;
+}
+return (
+  <div>
+    {content}
+  </div>
+);
+
+```
+
+Si prefieres un código más compacto, puedes usar conditional ? operator. 
+
+A diferencia de if, funciona dentro de JSX:
+
+```
+<div>
+  {isLoggedIn ? (
+    <AdminPanel />
+  ) : (
+    <LoginForm />
+  )}
+</div>
+
+```
+
+Cuando no necesite la rama else, también puede utilizar una sintaxis lógica && más corta:
+
+```
+<div>
+{isLoggedIn && <AdminPanel />}
+</div>
+
+```
+
+
+## Renderizar listas
+
+Dependerá de las funciones de JavaScript, como el bucle for y la función map() de matriz, para representar listas de componentes.
+
+Por ejemplo, supongamos que tiene una matriz de productos
+
+```
+const products = [
+  { title: 'Cabbage', id: 1 },
+  { title: 'Garlic', id: 2 },
+  { title: 'Apple', id: 3 },
+];
+
+```
+
+Dentro de su componente, utilice la función map() para transformar una matriz de productos en una matriz de elementos <li>:
+
+```
+const listItems = products.map(product =>
+  <li key={product.id}>
+    {product.title}
+  </li>
+);
+
+return (
+  <ul>{listItems}</ul>
+);
+
+```
+
+Observa cómo <li> tiene un atributo key.
+Para cada elemento de una lista, debes pasar una cadena o un número que identifique de forma única ese elemento entre sus hermanos
+Por lo general, una clave debe provenir de tus datos, como un ID de base de datos. 
+React usa tus claves para saber qué sucedió si luego insertas, eliminas o reordenas los elementos.
+
+```
+const products = [
+  { title: 'Cabbage', isFruit: false, id: 1 },
+  { title: 'Garlic', isFruit: false, id: 2 },
+  { title: 'Apple', isFruit: true, id: 3 },
+];
+
+export default function ShoppingList() {
+  const listItems = products.map(product =>
+    <li
+      key={product.id}
+      style={{
+        color: product.isFruit ? 'magenta' : 'darkgreen'
+      }}
+    >
+      {product.title}
+    </li>
+  );
+
+  return (
+    <ul>{listItems}</ul>
+  );
+}
+
+```
 
 ## 3. estado minimo y completo
 
@@ -3703,7 +4037,379 @@ const Padre = () => {
 ```
 
 
+### Interactividad/eventos 
+
+Puede responder a eventos declarando funciones de controlador de eventos (event handler) dentro de sus componentes
+
+```
+function MyButton() {
+  function handleClick() {
+    alert('You clicked me!');
+  }
+
+  return (
+    <button onClick={handleClick}>
+      Click me
+    </button>
+  );
+}
+
+```
+
+ onClick={handleClick} no tiene paréntesis al final! 
+ No llame a la función del controlador de eventos: solo necesita pasarla.  
+ React llamará a su controlador de eventos cuando el usuario haga clic en el botón.
+
+
 
 ## 5. invertir el flujo de datos 
  
 pasar el estado al componente padre
+
+
+### hooks
+
+Las funciones que comienzan con use se denominan Hooks. 
+
+Hay integrados por React y personalizados. 
+
+Los Hooks son más restrictivos que otras funciones. 
+
+Solo puedes llamar Hooks en la parte superior de tus componentes (u otros Hooks). 
+
+Si quieres usar useState en una condición o un bucle, extrae un nuevo componente y colócalo allí.
+
+
+### compartir datos 
+
+Si renderizas un hook el mismo componente varias veces, cada uno tendrá su propio estado. 
+Observe cómo cada botón “recuerda” su propio estado de conteo y no afecta a los demás botones.
+
+En el ejemplo anterior, cada MyButton tenía su propio recuento independiente y, cuando se hacía clic en cada botón, solo cambiaba el recuento del botón en el que se hacía clic: 
+
+		MyApp
+		/   \
+MyButton	MyButton
+(count=0)	(count=0)
+
+Inicialmente, el estado de conteo de cada MyButton es 0
+
+		MyApp
+		/   \
+MyButton	MyButton
+(count=1)	(count=0)
+
+El primer MyButton actualiza su conteo a 1
+
+Sin embargo, a menudo necesitarás componentes que compartan datos y se actualicen siempre juntos.
+Para que ambos componentes MyButton muestren el mismo recuento y se actualicen juntos, necesitas mover el estado de los botones individuales "hacia arriba/upwards" al componente más cercano que los contenga a todos.
+
+En este ejemplo, es MyApp:
+
+		MyApp
+		count=0
+		/   \
+(count=0)	(count=0)
+	|			|
+MyButton	MyButton
+
+Inicialmente, el estado de conteo de MyApp es 0 y se transmite a ambos hijos.
+Al hacer clic, MyApp actualiza su estado de conteo a 1 y lo pasa a ambos hijos.
+
+		MyApp
+		count=1
+		/   \
+(count=1)	(count=1)
+	|			|
+MyButton	MyButton
+
+
+Ahora, cuando haga clic en cualquiera de los botones, el recuento en MyApp cambiará, lo que cambiará ambos recuentos en MyButton. 
+Aquí se muestra cómo puede expresar esto en código.
+Primero, mueva el estado de MyButton a MyApp:
+
+```
+export default function MyApp() {
+  const [count, setCount] = useState(0);
+
+  function handleClick() {
+    setCount(count + 1);
+  }
+
+  return (
+    <div>
+      <h1>Counters that update separately</h1>
+      <MyButton />
+      <MyButton />
+    </div>
+  );
+}
+
+function MyButton() {
+  // ... we're moving code from here ...
+}
+
+```
+
+Luego, pasa el estado desde MyApp a cada MyButton, junto con el controlador de clic compartido. 
+Puedes pasar información a MyButton usando las llaves JSX, tal como lo hiciste anteriormente con las etiquetas integradas como <img>:
+
+```
+export default function MyApp() {
+  const [count, setCount] = useState(0);
+
+  function handleClick() {
+    setCount(count + 1);
+  }
+
+  return (
+    <div>
+      <h1>Counters that update together</h1>
+      <MyButton count={count} onClick={handleClick} />
+      <MyButton count={count} onClick={handleClick} />
+    </div>
+  );
+}
+
+```
+
+La información que pasas de esta manera se llama props. 
+
+### Ahora el componente MyApp contiene el estado de conteo y el controlador de eventos handleClick, y pasa ambos como props a cada uno de los botones.
+
+### Por último, cambia MyButton para que lea los props que has pasado desde su componente principal:
+
+```
+function MyButton({ count, onClick }) {
+  return (
+    <button onClick={onClick}>
+      Clicked {count} times
+    </button>
+  );
+}
+
+```
+
+Cuando haces clic en el botón, se activa el controlador onClick. 
+La propiedad onClick de cada botón se estableció en la función handleClick dentro de MyApp, por lo que el código dentro de ella se ejecuta. 
+Ese código llama a setCount(count + 1), lo que incrementa la variable de estado count. 
+
+
+El nuevo valor de count se pasa como una propiedad a cada botón, por lo que todos muestran el nuevo valor. 
+Esto se llama "elevar el estado/“lifting state up”". Al subir el estado, lo has compartido entre componentes.
+
+```
+import { useState } from 'react';
+
+export default function MyApp() {
+  const [count, setCount] = useState(0);
+
+  function handleClick() {
+    setCount(count + 1);
+  }
+
+  return (
+    <div>
+      <h1>Counters that update together</h1>
+      <MyButton count={count} onClick={handleClick} />
+      <MyButton count={count} onClick={handleClick} />
+    </div>
+  );
+}
+
+function MyButton({ count, onClick }) {
+  return (
+    <button onClick={onClick}>
+      Clicked {count} times
+    </button>
+  );
+}
+
+```
+
+
+### Buenas prácticas componentes 
+
+1. Dividir en Componentes Pequeños y Reutilizables
+
+Evita crear componentes monolíticos. En su lugar, divídelos en partes más pequeñas y reutilizables.
+
+```
+// Componente muy grande con demasiadas responsabilidades
+function UserProfile({ user }) {
+  return (
+    <div>
+      <h1>{user.name}</h1>
+      <img src={user.avatar} alt="Avatar" />
+      <p>Email: {user.email}</p>
+      <button>Seguir</button>
+    </div>
+  );
+}
+
+// Dividido en componentes reutilizables
+function UserAvatar({ src }) {
+  return <img src={src} alt="Avatar" />;
+}
+
+function UserProfile({ user }) {
+  return (
+    <div>
+      <h1>{user.name}</h1>
+      <UserAvatar src={user.avatar} />
+      <UserDetails email={user.email} />
+      <FollowButton />
+    </div>
+  );
+}
+
+```
+
+2. Usar Props de Manera Clara y Tipadas
+
+Si usas TypeScript, define interfaces para los props.
+
+Ejemplo con TypeScript:
+
+```
+interface UserProfileProps {
+  user: {
+    name: string;
+    email: string;
+    avatar: string;
+  };
+}
+
+const UserProfile: React.FC<UserProfileProps> = ({ user }) => {
+  return <h1>{user.name}</h1>;
+};
+
+```
+
+3. Evitar Prop Drilling, Usar Context o Redux
+
+Si necesitas pasar datos a muchos componentes anidados, usa Context API o Redux en lugar de props anidadas.
+
+Ejemplo con Context API:
+
+```
+const UserContext = createContext(null);
+
+const UserProvider = ({ children }) => {
+  const user = { name: "John Doe", email: "john@example.com" };
+  return <UserContext.Provider value={user}>{children}</UserContext.Provider>;
+};
+
+const UserProfile = () => {
+  const user = useContext(UserContext);
+  return <h1>{user.name}</h1>;
+};
+
+```
+
+
+4. Usar useEffect de Forma Correcta
+
+Evita efectos innecesarios y usa dependencias correctamente.
+
+Ejemplo incorrecto:
+
+```
+useEffect(() => {
+  fetchUserData();
+}, []); // ⚠️ Falta la dependencia, podría usar datos obsoletos
+
+```
+
+Ejemplo correcto:
+
+```
+useEffect(() => {
+  fetchUserData();
+}, [userId]); // Se ejecuta solo cuando userId cambia
+
+```
+
+
+5. Evitar Re-renderizados Innecesarios
+
+Usa React.memo para componentes puros y useCallback / useMemo para optimizar funciones y valores.
+
+Ejemplo:
+
+```
+const ExpensiveComponent = React.memo(({ data }) => {
+  return <div>{data}</div>;
+});
+
+```
+
+6. Usar CSS Modules o Styled Components en Lugar de Clases Globales
+
+Evita estilos globales para prevenir conflictos.
+
+Ejemplo con CSS Modules:
+
+```
+import styles from "./UserProfile.module.css";
+
+function UserProfile() {
+  return <h1 className={styles.title}>Perfil de Usuario</h1>;
+}
+
+```
+
+Ejemplo con Styled Components:
+
+```
+const Title = styled.h1`
+  color: blue;
+  font-size: 20px;
+`;
+
+function UserProfile() {
+  return <Title>Perfil de Usuario</Title>;
+}
+
+```
+
+
+7. Implementar Manejo de Errores con Error Boundaries
+
+Para evitar que un error en un componente rompa toda la aplicación.
+
+Ejemplo de un Error Boundary:
+
+```
+class ErrorBoundary extends React.Component {
+  state = { hasError: false };
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  render() {
+    if (this.state.hasError) return <h1>Algo salió mal.</h1>;
+    return this.props.children;
+  }
+}
+
+```
+
+
+8. Escribir Pruebas Unitarias para Componentes
+
+Usa Jest y Testing Library para pruebas unitarias.
+
+Ejemplo de prueba con Testing Library:
+
+```
+import { render, screen } from "@testing-library/react";
+import UserProfile from "./UserProfile";
+
+test("Muestra el nombre del usuario", () => {
+  render(<UserProfile user={{ name: "John Doe" }} />);
+  expect(screen.getByText("John Doe")).toBeInTheDocument();
+});
+
+```
