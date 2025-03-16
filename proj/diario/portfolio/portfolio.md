@@ -3685,10 +3685,6 @@ import MiPerfil from "./UserProfile"; // Funciona aunque el componente se llame 
 ```
 
 
-
-
-
-
 ### Agregar estilo 
 
 En React, especificas una clase CSS con className. 
@@ -3802,6 +3798,7 @@ Cuando no necesite la rama else, también puede utilizar una sintaxis lógica &&
 ```
 
 
+
 ## Renderizar listas
 
 Dependerá de las funciones de JavaScript, como el bucle for y la función map() de matriz, para representar listas de componentes.
@@ -3862,6 +3859,285 @@ export default function ShoppingList() {
 }
 
 ```
+
+
+### Orden de los subcomponente en el componente principal 
+
+Como figura en el layout 
+
+app va en index.html(punto de entrada)
+los componentes/subcomp van en app
+
+public:
+src: carpeta para componentes, hooks personalizados, serv, etc 
+test: 
+archivos config
+
+
+### Arq portfolio
+
+modulos: home, 
+
+app 		 	 	1
+
+  mypic 	 	 	2
+
+  main 		 	 	3
+    txt-dev  	 	4
+	bio-btn	 	 	5
+	  bio-content   6
+	proj-btn 	 	7
+	  proj-content 	8
+  icons				9
+
+
+1. icons(){}
+
+2. proj-btn(){}
+	3. proj-content(){}
+
+4. bio-btn(){} 	
+	  5.bio-content(){}
+
+6. txt-dev(){}
+
+7. main(){}
+
+8. app(){}
+
+
+main: 
+
+main 		 	 	3
+    txt-dev  	 	4
+	bio-btn	 	 	5
+	  bio-content   6
+	proj-btn 	 	7
+	  proj-content 	8
+
+
+Ej: 
+
+```
+FilterableProductTable
+	SearchBar
+	ProductTable
+		ProductCategoryRow
+		ProductRow
+```
+
+
+```
+function ProductCategoryRow({ category }) {
+  return (
+    <tr>
+      <th colSpan="2">
+        {category}
+      </th>
+    </tr>
+  );
+}
+
+function ProductRow({ product }) {
+  const name = product.stocked ? product.name :
+    <span style={{ color: 'red' }}>
+      {product.name}
+    </span>;
+
+  return (
+    <tr>
+      <td>{name}</td>
+      <td>{product.price}</td>
+    </tr>
+  );
+}
+
+function ProductTable({ products }) {
+  const rows = [];
+  let lastCategory = null;
+
+  products.forEach((product) => {
+    if (product.category !== lastCategory) {
+      rows.push(
+        <ProductCategoryRow
+          category={product.category}
+          key={product.category} />
+      );
+    }
+    rows.push(
+      <ProductRow
+        product={product}
+        key={product.name} />
+    );
+    lastCategory = product.category;
+  });
+
+  return (
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Price</th>
+        </tr>
+      </thead>
+      <tbody>{rows}</tbody>
+    </table>
+  );
+}
+
+function SearchBar() {
+  return (
+    <form>
+      <input type="text" placeholder="Search..." />
+      <label>
+        <input type="checkbox" />
+        {' '}
+        Only show products in stock
+      </label>
+    </form>
+  );
+}
+
+function FilterableProductTable({ products }) {
+  return (
+    <div>
+      <SearchBar />
+      <ProductTable products={products} />
+    </div>
+  );
+}
+
+const PRODUCTS = [
+  {category: "Fruits", price: "$1", stocked: true, name: "Apple"},
+  {category: "Fruits", price: "$1", stocked: true, name: "Dragonfruit"},
+  {category: "Fruits", price: "$2", stocked: false, name: "Passionfruit"},
+  {category: "Vegetables", price: "$2", stocked: true, name: "Spinach"},
+  {category: "Vegetables", price: "$4", stocked: false, name: "Pumpkin"},
+  {category: "Vegetables", price: "$1", stocked: true, name: "Peas"}
+];
+
+export default function App() {
+  return <FilterableProductTable products={PRODUCTS} />;
+}
+
+```
+
+
+FilterableProductTable
+	SearchBar
+	ProductTable
+		ProductCategoryRow
+		ProductRow
+		
+		
+1. ProductCategoryRow
+{ category }
+retorna celda; tr, th
+
+2. ProductRow
+{ product }
+var name condicional 
+
+
+3. ProductTable
+{ products }
+row, foreach
+push
+
+anida:
+
+push:
+<ProductCategoryRow
+  category={product.category}
+  key={product.category} />
+
+push:
+<ProductRow
+product={product}
+key={product.name} />
+
+
+4. SearchBar
+retorna form 
+
+5. FilterableProductTable
+{ products }
+
+anida: 
+<SearchBar />
+<ProductTable products={products} />
+
+6. datos
+
+
+7. app
+
+
+#### arq main 
+
+comp separados: 
+
+main 		 	 	3
+    txt-dev  	 	4
+	bio-btn	 	 	5
+	  bio-content   6
+	proj-btn 	 	7
+	  proj-content 	8
+
+
+pic()
+main() -> content (article)
+dev() -> title (p)
+bio() -> btn func/event (div - flex - icon)
+bio-content() -> param -> actv default
+proj() -> btn func/event (div - flex - icon)
+proj-content -> links (display block)
+
+main render/return: txt-dev, bio-btn, proj-btn
+bio: bio-content
+proj: proj-content
+
+logica bio y proj:
+props/estruct/content
+func
+
+bio-btn:
+si activ no click(?)
+
+proj-btn:
+
+obj: props clave valor, func, otras estruct
+obj.prop
+obj.func()
+
+bio-btn.prop/func
+proj-btn.prop/func 
+
+param
+links
+
+en var txt que almacene txt param
+
+
+### Diseño, display y orden de componentes React 
+
+1. flex: 
+
+div flex
+  se mostraran flex colum horiz
+div
+
+
+2. flex y bloque:
+
+div flex
+
+div
+
+div 
+  
+div
+
 
 ## 3. estado minimo y completo
 
@@ -4014,6 +4290,97 @@ No se puede cambiar directamente
 
 
 
+### Arq portf props
+
+main() -> content (article)
+dev() -> title (p)
+bio() -> btn func/event (div - flex - icon)
+bio-content() -> param -> actv default
+proj() -> btn func/event (div - flex - icon)
+proj-content -> links (display block)
+
+main render/return: txt-dev, bio-btn, proj-btn
+bio: bio-content
+proj: proj-content
+
+
+```
+<Main />
+<Bio />
+<Biotxt />
+<Links />
+<Icons type="button" />
+
+```
+
+
+### Arq minima y completa portfolio 
+
+Se necesita props y estado 
+
+Arq abajo hacia arriba: 
+
+#### props (datos de componente padre a hijo):
+
+##### Escribimos el prop en el componente hijo y para pasar datos renderizamos el componente hijo en el padre
+
+Escribimos el nombre del componente hijo en el padre, la prop y su valor. 
+
+
+#### estado (datos cambiantes que su aplicación necesita recordar): 
+
+Aplicar DRY (no repetirse)
+
+Guardar/representar datos en estructuras de datos. 
+
+Ej: Por ejemplo, si está creando una lista de compras, puede almacenar los artículos como una matriz en el estado. 
+
+Si también desea mostrar la cantidad de artículos en la lista, no almacene la cantidad de artículos como otro valor de estado; en su lugar, lea la longitud de su matriz.
+
+
+##### Piense en todos los datos de la app
+
+1. La lista original de productos
+2. El texto de búsqueda que ingresó el usuario
+3. El valor de la casilla de verificación
+4. La lista filtrada de productos
+
+
+##### ¿Cuáles de estos son estados? Identifica los que no lo son:
+
+1. ¿Permanece sin cambios con el tiempo? Si es así, no es estado.
+2. ¿Se pasa desde un padre a través de propiedades? Si es así, no es estado.
+3. ¿Puedes calcularlo en función del estado o las propiedades existentes en tu componente? Si es así, ¡definitivamente no es estado!
+
+La lista original de productos se pasa como propiedades, por lo que no es estado.
+El texto de búsqueda parece ser estado ya que cambia con el tiempo y no se puede calcular a partir de nada.
+El valor de la casilla de verificación parece ser estado ya que cambia con el tiempo y no se puede calcular a partir de nada.
+La lista filtrada de productos no es estado porque se puede calcular tomando la lista original de productos y filtrándola según el texto de búsqueda y el valor de la casilla de verificación.
+
+
+pic() -> img
+main() -> content (article)
+  dev() -> title (p)
+  bio() -> btn func/event (div - flex - icon)
+    bio-content() -> param -> actv default
+  proj() -> btn func/event (div - flex - icon)
+    proj-content -> links (display block)
+
+main render/return: txt-dev, bio-btn, proj-btn
+bio: bio-content
+proj: proj-content
+
+
+datos: 
+
+estado: 
+
+func con distinto contenido 
+bio-content
+proj-content
+
+
+
 ## 4. ubicación del estado 
 
 en los componentes hijo o padre
@@ -4061,10 +4428,92 @@ function MyButton() {
  React llamará a su controlador de eventos cuando el usuario haga clic en el botón.
 
 
+### Ubicación del estado en port 
+
+identificar qué componente es responsable de cambiar este estado o es el propietario del estado. 
+
+Para cada parte del estado de tu aplicación:
+
+1. Identifica cada componente que renderiza algo en función de ese estado.
+2. Encuentra su componente principal común más cercano (un componente por encima de todos ellos en la jerarquía).
+3. Decide dónde debería estar el estado:
+	1. A menudo, puedes colocar el estado directamente en su componente principal común.
+	2. También puedes colocar el estado en algún componente por encima de su componente principal común.
+	3. Si no puede encontrar un componente donde tenga sentido poseer el estado, cree un nuevo componente únicamente para contener el estado y agréguelo en algún lugar de la jerarquía por encima del componente principal común.
+
+pic() -> img
+main() -> content (article)
+  dev() -> title (p)
+  bio() -> btn func/event (div - flex - icon)
+    bio-content() -> param -> actv default
+  proj() -> btn func/event (div - flex - icon)
+    proj-content -> links (display block)
+
+main render/return: txt-dev, bio-btn, proj-btn
+bio: bio-content
+proj: proj-content
+
+
+datos: 
+
+estado: 
+
+func con distinto contenido 
+bio-content
+proj-content
+
+
+
+En el ejemplo, siempre aparecen juntos, por lo que tiene sentido colocarlos en el mismo lugar.
+
+Ahora, analicemos nuestra estrategia para ellos:
+
+1. Identifique los componentes que usan el estado:
+
+	ProductTable debe filtrar la lista de productos en función de ese estado (texto de búsqueda y valor de la casilla de verificación).
+
+	SearchBar debe mostrar ese estado (texto de búsqueda y valor de la casilla de verificación).
+
+2. Encuentre su componente principal común: el primer componente principal que comparten ambos componentes es FilterableProductTable.
+
+3. Decida dónde se encuentra el estado: mantendremos el texto de filtro y los valores del estado marcado en FilterableProductTable.
+
+
+```
+function FilterableProductTable({ products }) {
+  const [filterText, setFilterText] = useState('');
+  const [inStockOnly, setInStockOnly] = useState(false);
+
+```
+
+Luego, pase filterText y inStockOnly a ProductTable y SearchBar como propiedades:
+
+```
+<div>
+  <SearchBar 
+    filterText={filterText} 
+    inStockOnly={inStockOnly} />
+  <ProductTable 
+    products={products}
+    filterText={filterText}
+    inStockOnly={inStockOnly} />
+</div>
+
+```
+
+Puedes empezar a ver cómo se comportará tu aplicación. 
+
+Edita el valor inicial de filterText de useState('') ​​a useState('fruit') en el código de sandbox que aparece a continuación. 
+
+Verás tanto el texto de entrada de búsqueda como la actualización de la tabla:
+
+
 
 ## 5. invertir el flujo de datos 
  
 pasar el estado al componente padre
+
+
 
 
 ### hooks
@@ -4413,3 +4862,2060 @@ test("Muestra el nombre del usuario", () => {
 });
 
 ```
+
+
+## error-boundaries 
+
+
+# Apps Ej: 
+
+## Product table
+
+```
+import { useState } from 'react';
+
+function FilterableProductTable({ products }) {
+  const [filterText, setFilterText] = useState('');
+  const [inStockOnly, setInStockOnly] = useState(false);
+
+  return (
+    <div>
+      <SearchBar 
+        filterText={filterText} 
+        inStockOnly={inStockOnly} 
+        onFilterTextChange={setFilterText} 
+        onInStockOnlyChange={setInStockOnly} />
+      <ProductTable 
+        products={products} 
+        filterText={filterText}
+        inStockOnly={inStockOnly} />
+    </div>
+  );
+}
+
+function ProductCategoryRow({ category }) {
+  return (
+    <tr>
+      <th colSpan="2">
+        {category}
+      </th>
+    </tr>
+  );
+}
+
+function ProductRow({ product }) {
+  const name = product.stocked ? product.name :
+    <span style={{ color: 'red' }}>
+      {product.name}
+    </span>;
+
+  return (
+    <tr>
+      <td>{name}</td>
+      <td>{product.price}</td>
+    </tr>
+  );
+}
+
+function ProductTable({ products, filterText, inStockOnly }) {
+  const rows = [];
+  let lastCategory = null;
+
+  products.forEach((product) => {
+    if (
+      product.name.toLowerCase().indexOf(
+        filterText.toLowerCase()
+      ) === -1
+    ) {
+      return;
+    }
+    if (inStockOnly && !product.stocked) {
+      return;
+    }
+    if (product.category !== lastCategory) {
+      rows.push(
+        <ProductCategoryRow
+          category={product.category}
+          key={product.category} />
+      );
+    }
+    rows.push(
+      <ProductRow
+        product={product}
+        key={product.name} />
+    );
+    lastCategory = product.category;
+  });
+
+  return (
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Price</th>
+        </tr>
+      </thead>
+      <tbody>{rows}</tbody>
+    </table>
+  );
+}
+
+function SearchBar({
+  filterText,
+  inStockOnly,
+  onFilterTextChange,
+  onInStockOnlyChange
+}) {
+  return (
+    <form>
+      <input 
+        type="text" 
+        value={filterText} placeholder="Search..." 
+        onChange={(e) => onFilterTextChange(e.target.value)} />
+      <label>
+        <input 
+          type="checkbox" 
+          checked={inStockOnly} 
+          onChange={(e) => onInStockOnlyChange(e.target.checked)} />
+        {' '}
+        Only show products in stock
+      </label>
+    </form>
+  );
+}
+
+const PRODUCTS = [
+  {category: "Fruits", price: "$1", stocked: true, name: "Apple"},
+  {category: "Fruits", price: "$1", stocked: true, name: "Dragonfruit"},
+  {category: "Fruits", price: "$2", stocked: false, name: "Passionfruit"},
+  {category: "Vegetables", price: "$2", stocked: true, name: "Spinach"},
+  {category: "Vegetables", price: "$4", stocked: false, name: "Pumpkin"},
+  {category: "Vegetables", price: "$1", stocked: true, name: "Peas"}
+];
+
+export default function App() {
+  return <FilterableProductTable products={PRODUCTS} />;
+}
+
+```
+
+
+### arq product table 
+
+De: 
+
+```
+FilterableProductTable
+	SearchBar
+	ProductTable
+		ProductCategoryRow
+		ProductRow
+```
+
+A: 
+
+1. FilterableProductTable({ products })
+retorna: 
+
+<SearchBar 
+  filterText={filterText}  
+  inStockOnly={inStockOnly} 
+  onFilterTextChange={setFilterText} 
+  onInStockOnlyChange={setInStockOnly} />
+
+<ProductTable 
+  products={products} 
+  filterText={filterText}
+  inStockOnly={inStockOnly} />
+
+2. ProductCategoryRow({ category })
+tr>
+  <th colSpan="2">
+	{category}
+  </th>
+</tr>
+
+3. ProductRow({ product })
+
+4. ProductTable({ products, filterText, inStockOnly })
+
+rows.push(
+        <ProductCategoryRow
+          category={product.category}
+          key={product.category} />
+      );
+
+rows.push(
+      <ProductRow
+        product={product}
+        key={product.name} />
+    );
+ 
+
+5.  searchBar
+
+filterText,
+  inStockOnly,
+  onFilterTextChange,
+  onInStockOnlyChange
+
+
+6. datos 
+
+
+7. app()
+return <FilterableProductTable products={PRODUCTS} />;
+
+
+
+## tic tac toe
+
+```
+import { useState } from 'react';
+
+function Square({ value, onSquareClick }) {
+  return (
+    <button className="square" onClick={onSquareClick}>
+      {value}
+    </button>
+  );
+}
+
+function Board({ xIsNext, squares, onPlay }) {
+  function handleClick(i) {
+    if (calculateWinner(squares) || squares[i]) {
+      return;
+    }
+    const nextSquares = squares.slice();
+    if (xIsNext) {
+      nextSquares[i] = 'X';
+    } else {
+      nextSquares[i] = 'O';
+    }
+    onPlay(nextSquares);
+  }
+
+  const winner = calculateWinner(squares);
+  let status;
+  if (winner) {
+    status = 'Winner: ' + winner;
+  } else {
+    status = 'Next player: ' + (xIsNext ? 'X' : 'O');
+  }
+
+  return (
+    <>
+      <div className="status">{status}</div>
+      <div className="board-row">
+        <Square value={squares[0]} onSquareClick={() => handleClick(0)} />
+        <Square value={squares[1]} onSquareClick={() => handleClick(1)} />
+        <Square value={squares[2]} onSquareClick={() => handleClick(2)} />
+      </div>
+      <div className="board-row">
+        <Square value={squares[3]} onSquareClick={() => handleClick(3)} />
+        <Square value={squares[4]} onSquareClick={() => handleClick(4)} />
+        <Square value={squares[5]} onSquareClick={() => handleClick(5)} />
+      </div>
+      <div className="board-row">
+        <Square value={squares[6]} onSquareClick={() => handleClick(6)} />
+        <Square value={squares[7]} onSquareClick={() => handleClick(7)} />
+        <Square value={squares[8]} onSquareClick={() => handleClick(8)} />
+      </div>
+    </>
+  );
+}
+
+export default function Game() {
+  const [history, setHistory] = useState([Array(9).fill(null)]);
+  const [currentMove, setCurrentMove] = useState(0);
+  const xIsNext = currentMove % 2 === 0;
+  const currentSquares = history[currentMove];
+
+  function handlePlay(nextSquares) {
+    const nextHistory = [...history.slice(0, currentMove + 1), nextSquares];
+    setHistory(nextHistory);
+    setCurrentMove(nextHistory.length - 1);
+  }
+
+  function jumpTo(nextMove) {
+    setCurrentMove(nextMove);
+  }
+
+  const moves = history.map((squares, move) => {
+    let description;
+    if (move > 0) {
+      description = 'Go to move #' + move;
+    } else {
+      description = 'Go to game start';
+    }
+    return (
+      <li key={move}>
+        <button onClick={() => jumpTo(move)}>{description}</button>
+      </li>
+    );
+  });
+
+  return (
+    <div className="game">
+      <div className="game-board">
+        <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay} />
+      </div>
+      <div className="game-info">
+        <ol>{moves}</ol>
+      </div>
+    </div>
+  );
+}
+
+function calculateWinner(squares) {
+  const lines = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6],
+  ];
+  for (let i = 0; i < lines.length; i++) {
+    const [a, b, c] = lines[i];
+    if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
+      return squares[a];
+    }
+  }
+  return null;
+}
+
+```
+
+### arq tic tac toe
+
+1. Square({ value, onSquareClick })  
+<button className="square" onClick={onSquareClick}>
+  {value}
+</button>
+
+2. Board({ xIsNext, squares, onPlay })
+return grilla
+
+3. function Game()
+props 
+functions 
+
+4. calculateWinner(squares)
+
+
+## CSS y Componentes
+
+importar app.css en los comp secundarios 
+para que hereden 
+
+o al estar anidados heredan directamente
+
+
+## Nav estruc arch
+
+### Ruta Absoluta
+Linux/macOS: /home/usuario/Documentos/reporte.pdf
+Windows: C:\Usuarios\usuario\Documentos\reporte.pdf
+
+Siempre comienza desde la raíz (/ en Linux/macOS, una unidad como C:\ en Windows).
+Funciona desde cualquier ubicación
+
+### Ruta Relativa
+Es una ruta que depende de la ubicación actual (el directorio en el que estás).
+
+Ejemplo:
+Si estás en /home/usuario/ y quieres acceder a reporte.pdf en Documentos/, puedes usar:
+
+Linux/macOS: cd Documentos/reporte.pdf
+Windows: cd Documentos\reporte.pdf
+
+Más corta y flexible.
+Depende de la ubicación actual.
+
+
+### Caracteres rutas relativas: 
+
+.   El directorio actual. Ejemplo: ./script.sh (ejecuta un script en la carpeta actual).
+..  El directorio padre (uno arriba).
+
+    Ejemplo: cd .. (sube un nivel).
+    Ejemplo: cd ../Proyectos (sube un nivel y entra en Proyectos).
+
+~ 	Tu carpeta de usuario.
+
+    Linux/macOS: cd ~/Descargas (entra a Descargas del usuario).
+    Windows (PowerShell): cd $HOME\Descargas (hace lo mismo).
+
+
+
+# Desactivar recarga en btn
+
+1. en onClick
+
+```
+onClick={(e) => { this.callAPI('api'); e.preventDefault() }}
+
+```
+
+
+2. type button
+
+¿Está dentro de un formulario? Si es así, se convierte en un botón de envío.
+
+```
+import React from "react";
+
+function Button({ type, style = "default", className, children, onClick }) {
+
+  return (
+    <button type={type} onClick={onClick} className={["btn btn-lg", `btn-${style}`, 
+    className].join(" ")}>
+    {children}
+    </button>
+  );
+}
+
+export default Button;
+
+```
+
+Intenta pasarle el tipo de botón:
+
+```
+<Button type="button">Reload</Button>
+
+```
+
+
+3. Con Class de React: 
+
+```
+class SomeComponent extends React.Component {
+   constructor(props) {
+     super(props)
+     this.onClick = this.onClick.bind(this);
+   }
+   onClick(e) {
+   e.preventDefault();
+   // Do something
+   }
+   render() {
+     return (
+        <button onClick={this.onClick}>Button Text</button>
+   }
+
+}
+
+```
+
+
+4. onClick en componente 
+
+```
+
+function Button({ type = "default", className, children, onClick }) {
+
+  return (
+    <button type="button" onClick={onClick} className={["btn btn-lg", `btn-${type}`, 
+    className].join(" ")}>
+    {children}
+    </button>
+  );
+}
+
+export default Button;
+
+
+
+<Button
+    onClick={(e) => {e.preventDefault();this.callAPI('api');}}
+    type="success"
+    className="input-lg">
+    Search
+</Button>
+
+```
+
+
+## RS  prevent reload: 
+
+1. type prop, value button en Compon
+2. onClick={(e) => {e.preventDefault();...code 
+  en Comp renderiz
+3. en Onclick de return elem
+  onClick={(e) => { this.callAPI('api'); e.preventDefault() }}
+
+
+
+# Mostrar contenido con un click
+
+
+
+# Ocultar y mostrar contenido
+
+
+1. 
+
+Necesitas tener el contenido original en el ternario para que se oculte al activar o desactivar la visualización. 
+
+También cambié "setShow" para que "mostrar" sea falso en lugar del valor anterior, ya que no importa, ya que el botón no se puede activar o desactivar, ya que una vez que haces clic en él, no se puede volver a activar o desactivar el contenido original.
+
+```
+import React, { useState } from 'react'
+
+function Body() {    
+    const [show, setShow] = useState(true);
+
+    return (
+        <div className='container'>
+            {show ? (
+               <div className="start-container">
+                  <h2>Click Start To View The Application</h2>
+                  <button onClick={() => setShow(false)} className='btn'>Start!</button>         
+               </div>
+            ) : (
+               <form action="GET">
+                  <input type="text" />
+                  <button className='btn'>Submit</button>
+               </form>
+            )
+        </div>
+  )
+}
+
+export default Body
+
+```
+
+
+2. 
+
+No necesita ocultar el estado y puede alternar la visibilidad solo con mostrar el estado. 
+
+Pruebe esto:
+
+```
+ { show ? <form action="GET">
+  <input type="text" />
+  <button className='btn'>Submit</button>
+    </form> : null
+ }
+
+```
+
+
+3. 
+
+```
+
+import React, { useState } from 'react';
+
+function Body() {
+const [show, setShow] = useState(false);
+
+return (
+    <>
+        <div className="container">
+            {/* URL Link Input */}
+            <div>
+                {show ? (
+                    <form action="GET">
+                        <input type="text" />
+                        <button className="btn">Submit</button>
+                    </form>
+                ) : (
+                    <div className="start-container">
+                        <h2>Click Start To View The Application</h2>
+                        <button onClick={() => setShow(!show)} className="btn">
+                            Start!
+                        </button>
+                    </div>
+                )}
+            </div>
+        </div>
+    </>
+);
+}
+
+export default Body;
+
+```
+
+
+4. 
+
+Podrías usar un estado de inicio de la aplicación y luego renderizar tu componente de manera condicional:
+
+```
+const { useState } = React
+
+function Body() {
+  const [appStarted, setAppStarted] = useState(false)
+
+  return (
+    <div className="container">
+      {appStarted ? (
+        <div>
+          <h2>Hidden Content</h2>
+        </div>
+      ) : (
+        <div className="start-container">
+          <h2>Click Start To View The Application</h2>
+          <button onClick={ () => setAppStarted(true) } className='btn'>Start!</button>
+        </div>
+      )}
+    </div>
+  )
+}
+
+
+ReactDOM.render(<Body />, document.getElementById("root"))
+
+```
+
+
+# Reemplazar un contenido por otro
+
+1. create dynamic regex
+
+```
+const word = "something";
+const sentence = "This is something";
+
+let first = "\\b",
+  second = "\\b";
+
+const regex = new RegExp(first + word + second, "g");
+
+const newSent = sentence.replace(regex, "Inder");
+console.log(newSent);
+
+```
+
+
+2. literal de plantilla/template literal
+
+replace espera una expresión regular o una cadena (coincidencia exacta, no una cadena que parezca una expresión regular). Necesitará crear una expresión regular a partir de un literal de plantilla:
+
+```
+const oldText = "the sly brown fox is sly"
+const dynamic_word = "sly"
+const newText = oldText.replaceAll(
+  new RegExp(`\\b${dynamic_word}\\b`, 'g'),
+  `<span class='dynamic-word'>${dynamic_word}</span>`
+);
+
+console.log(newText)
+
+```
+
+El indicador de salto de palabra \b debe estar escapado en el literal de plantilla.
+Debe usar el indicador g o solo reemplazará la primera ocurrencia.
+
+
+3. 
+
+```
+const dynamic_word = word.word?.[0].text;
+      const first = '\\b';
+      const second = '\\b';
+      const regex = new RegExp(first + dynamic_word + second, 'g');
+      const newText = text.replace(regex, `<span class="dynamic-word">${dynamic_word}</span>`);
+
+```
+
+
+# Llamar a otro componente con un Evento/click
+
+
+
+
+
+# Eventos/acciones 
+
+onClick 
+
+```
+const Boton = () => {
+  const handleClick = () => {
+    alert("¡Botón clickeado!");
+  };
+
+  return <button onClick={handleClick}>Haz clic</button>;
+};
+
+```
+
+Se define la función handleClick.
+
+Se asocia a la propiedad onClick del botón.
+
+Cuando el usuario hace clic, se ejecuta la función
+
+
+### Pasar Parámetros
+
+Pasar un valor a la función del evento, puedes hacerlo con una arrow function.
+
+```
+const Boton = () => {
+  const handleClick = (mensaje) => {
+    alert(mensaje);
+  };
+
+  return <button onClick={() => handleClick("Hola desde React!")}>Haz clic</button>;
+};
+
+```
+
+handleClick recibe "Hola desde React!" cuando el botón es presionado.
+
+
+# Interactividad portfolio 
+
+1. funcs, click y contenido
+2. logica visible por defecto, ocultar/mostrar 
+
+
+
+# RS React 
+
+Mostrar código js 
+
+1. anidación
+
+```
+function MyButton() {
+  return (
+    <button>
+      I'm a button
+    </button>
+  );
+}
+
+export default function MyApp() {
+  return (
+    <div>
+      <h1>Welcome to my app</h1>
+      <MyButton />
+    </div>
+  );
+}
+
+```
+
+
+2. jsx, escapar js, llaves 
+
+encapsular varios elementos en div o conten vacío <></>
+
+```
+return (
+<h1>
+{user.name}
+</h1>
+);
+
+return (
+<img
+className="avatar" //cadena como valor
+src={user.imageUrl} //lee y toma valor de la variable user.imageUrl
+/>
+);
+
+```
+
+Objetos: 
+
+```
+const user = {
+  name: 'Hedy Lamarr',
+  imageUrl: 'https://i.imgur.com/yXOvdOSs.jpg',
+  imageSize: 90,
+};
+
+export default function Profile() {
+  return (
+    <>
+      <h1>{user.name}</h1>
+      <img
+        className="avatar"
+        src={user.imageUrl}
+        alt={'Photo of ' + user.name}
+        style={{
+          width: user.imageSize,
+          height: user.imageSize
+        }}
+      />
+    </>
+  );
+}
+
+```
+
+style={{}} no es una sintaxis especial, sino un objeto {} normal dentro de las llaves JSX style={ }. 
+
+Puedes usar el atributo style cuando tus estilos dependen de variables de JavaScript.
+
+
+3. Renderizado condicional 
+
+```
+let content;
+if (isLoggedIn) {
+  content = <AdminPanel />;
+} else {
+  content = <LoginForm />;
+}
+return (
+  <div>
+    {content}
+  </div>
+);
+
+```
+
+A diferencia de if, funciona dentro de JSX (las llaves {}):
+
+```
+<div>
+  {isLoggedIn ? (
+    <AdminPanel />
+  ) : (
+    <LoginForm />
+  )}
+</div>
+
+```
+
+Cuando no necesite la rama else está la sintaxis más corta && 
+
+```
+<div>
+{isLoggedIn && <AdminPanel />}
+</div>
+
+```
+
+
+4. Eventos 
+
+Puede responder a eventos declarando funciones de controlador de eventos (event handler) dentro de sus componentes
+
+```
+function MyButton() {
+  function handleClick() {
+    alert('You clicked me!');
+  }
+
+  return (
+    <button onClick={handleClick}>
+      Click me
+    </button>
+  );
+}
+
+```
+
+onClick={handleClick} no tiene paréntesis al final! 
+ 
+No llame a la función del controlador de eventos: solo necesita pasarla. 
+ 
+React llamará a su controlador de eventos cuando el usuario haga clic en el botón.
+
+
+5. Estado 
+
+componente “recuerde” cierta información y la muestre
+
+Para ello, agrega un estado a tu componente.
+
+Primero, importa useState desde React:
+
+```
+import { useState } from 'react';
+
+```
+
+Ahora puedes declarar una variable de estado dentro de tu componente:
+
+```
+function MyButton() {
+  const [count, setCount] = useState(0);
+  // ...
+
+```
+
+Obtendrás dos cosas de useState: el estado actual (count) y la función que te permite actualizarlo (setCount). 
+
+Puedes darles cualquier nombre, pero la convención es escribir ([algo, setSomething]).
+
+
+La primera vez que se muestra el botón, count será 0 porque pasaste 0 a useState(). 
+
+Cuando quieras cambiar el estado, llama a setCount() y pásale el nuevo valor. Al hacer clic en este botón, se incrementará el contador:
+
+```
+function MyButton() {
+  const [count, setCount] = useState(0);
+
+  function handleClick() {
+    setCount(count + 1);
+  }
+
+  return (
+    <button onClick={handleClick}>
+      Clicked {count} times
+    </button>
+  );
+}
+
+```
+
+React volverá a llamar a la función de tu componente. 
+
+Esta vez, el conteo será 1. Luego será 2. Y así sucesivamente.
+
+Si renderizas el mismo componente varias veces, cada uno tendrá su propio estado. 
+
+Haz clic en cada botón por separado:
+
+```
+import { useState } from 'react';
+
+export default function MyApp() {
+  return (
+    <div>
+      <h1>Counters that update separately</h1>
+      <MyButton />
+      <MyButton />
+    </div>
+  );
+}
+
+function MyButton() {
+  const [count, setCount] = useState(0);
+
+  function handleClick() {
+    setCount(count + 1);
+  }
+
+  return (
+    <button onClick={handleClick}>
+      Clicked {count} times
+    </button>
+  );
+}
+
+```
+
+Observe cómo cada botón “recuerda” su propio estado de conteo y no afecta a los demás botones.
+
+Cada uno se actualiza por su cuenta o cuando el usuario haga algo para actualizarlo. 
+
+
+6. Hooks 
+
+Las funciones que comienzan con use se denominan Hooks. 
+
+También puedes escribir tus propios Hooks combinando los existentes.
+
+Los Hooks son más restrictivos que otras funciones. 
+
+Solo puedes llamar Hooks en la parte superior de tus componentes (u otros Hooks). 
+
+Si quieres usar useState en una condición o un bucle, extrae un nuevo componente y colócalo allí.
+
+
+Compartir datos entre componentes
+
+a menudo necesitarás componentes que compartan datos y se actualicen siempre juntos.
+
+Para que ambos componentes MyButton muestren el mismo recuento y se actualicen juntos, necesitas mover el estado de los botones individuales "hacia arriba/upwards" al componente más cercano que los contenga a todos.
+
+Ahora, cuando haga clic en cualquiera de los botones, el recuento en MyApp cambiará, lo que cambiará ambos recuentos en MyButton. 
+
+
+Primero, mueva el estado de MyButton a MyApp:
+
+```
+export default function MyApp() {
+  const [count, setCount] = useState(0);
+
+  function handleClick() {
+    setCount(count + 1);
+  }
+
+  return (
+    <div>
+      <h1>Counters that update separately</h1>
+      <MyButton />
+      <MyButton />
+    </div>
+  );
+}
+
+function MyButton() {
+  // ... we're moving code from here ...
+}
+
+```
+
+
+Luego, pasa el estado desde MyApp a cada MyButton, junto con el controlador de clic compartido. 
+
+Puedes pasar información a MyButton usando las llaves JSX, tal como lo hiciste anteriormente con las etiquetas integradas como <img>:
+
+```
+export default function MyApp() {
+  const [count, setCount] = useState(0);
+
+  function handleClick() {
+    setCount(count + 1);
+  }
+
+  return (
+    <div>
+      <h1>Counters that update together</h1>
+      <MyButton count={count} onClick={handleClick} />
+      <MyButton count={count} onClick={handleClick} />
+    </div>
+  );
+}
+
+```
+
+La información que pasas de esta manera se llama props. 
+
+Ahora el componente MyApp contiene el estado de conteo y el controlador de eventos handleClick, y pasa ambos como props a cada uno de los botones.
+
+Por último, cambia MyButton para que lea los props que has pasado desde su componente principal:
+
+```
+function MyButton({ count, onClick }) {
+  return (
+    <button onClick={onClick}>
+      Clicked {count} times
+    </button>
+  );
+}
+
+```
+
+
+Cuando haces clic en el botón, se activa el controlador onClick. 
+
+La propiedad onClick de cada botón se estableció en la función handleClick dentro de MyApp, por lo que el código dentro de ella se ejecuta. 
+
+Ese código llama a setCount(count + 1), lo que incrementa la variable de estado count. 
+
+
+El nuevo valor de count se pasa como una propiedad a cada botón, por lo que todos muestran el nuevo valor. 
+
+Esto se llama "elevar el estado/“lifting state up”". Al subir el estado, lo has compartido entre componentes.
+
+```
+import { useState } from 'react';
+
+export default function MyApp() {
+  const [count, setCount] = useState(0);
+
+  function handleClick() {
+    setCount(count + 1);
+  }
+
+  return (
+    <div>
+      <h1>Counters that update together</h1>
+      <MyButton count={count} onClick={handleClick} />
+      <MyButton count={count} onClick={handleClick} />
+    </div>
+  );
+}
+
+function MyButton({ count, onClick }) {
+  return (
+    <button onClick={onClick}>
+      Clicked {count} times
+    </button>
+  );
+}
+
+```
+
+
+7. Sintaxis abreviada: 
+
+arrow funct, return sin (), eventos en component renderiz 
+
+```
+const Saludo = (props) => {
+  return <h1>Hola, {props.nombre}!</h1>;
+};
+
+```
+
+
+```
+import { useState } from 'react';
+
+const Contador = () => {
+  const [count, setCount] = useState(0);
+
+  return (
+    <div>
+      <p>Contador: {count}</p>
+      <button onClick={() => setCount(count + 1)}>Incrementar</button>
+    </div>
+  );
+};
+
+```
+
+
+```
+const Hijo = () => {
+  return <p>¡Soy el componente Hijo!</p>;
+};
+
+const Padre = () => {
+  return (
+    <div>
+      <h1>Componente Padre</h1>
+      <Hijo />
+    </div>
+  );
+};
+
+```
+
+```
+const Hijo = ({ mensaje }) => {
+  return <p>{mensaje}</p>;
+};
+
+const Padre = () => {
+  return (
+    <div>
+      <h1>Componente Padre</h1>
+      <Hijo mensaje="Hola desde el Padre!" />
+    </div>
+  );
+};
+
+```
+
+A veces queremos que un componente pueda recibir otros componentes dentro de él de forma más flexible.
+
+```
+const Contenedor = ({ children }) => {
+  return <div className="contenedor">{children}</div>;
+};
+
+const App = () => {
+  return (
+    <Contenedor>
+      <h2>Este es un título dentro del contenedor</h2>
+      <p>Y este es un párrafo.</p>
+    </Contenedor>
+  );
+};
+
+```
+
+Contenedor actúa como un "envoltorio" y puede recibir cualquier contenido.
+
+
+```
+const Saludo = ({ nombre }) => {
+  return <h1>Hola, {nombre}!</h1>;
+};
+
+```
+
+
+
+```
+const Usuario = ({ nombre, edad }) => {
+  return (
+    <p>
+      Nombre: {nombre}, Edad: {edad}
+    </p>
+  );
+};
+
+const App = () => {
+  return <Usuario nombre="Ana" edad={25} />;
+};
+
+```
+
+
+```
+const Saludo = ({ nombre = "Invitado" }) => {
+  return <h1>Hola, {nombre}!</h1>;
+};
+
+```
+
+```
+Saludo.defaultProps = {
+  nombre: "Invitado"
+};
+
+```
+
+```
+import { useState } from "react";
+
+const Contador = () => {
+  const [contador, setContador] = useState(0); // Estado inicial: 0
+
+  return (
+    <div>
+      <p>Valor del contador: {contador}</p>
+      <button onClick={() => setContador(contador + 1)}>Incrementar</button>
+    </div>
+  );
+};
+
+export default Contador;
+
+```
+
+```
+const Usuario = () => {
+  const [usuario, setUsuario] = useState({ nombre: "Juan", edad: 25 });
+
+  const cambiarNombre = () => {
+    setUsuario({ ...usuario, nombre: "Carlos" }); // Se mantiene la edad
+  };
+
+  return (
+    <div>
+      <p>Nombre: {usuario.nombre}</p>
+      <p>Edad: {usuario.edad}</p>
+      <button onClick={cambiarNombre}>Cambiar Nombre</button>
+    </div>
+  );
+};
+
+```
+
+usuario es un objeto { nombre, edad }.
+
+setUsuario({ ...usuario, nombre: "Carlos" }) usa spread operator (...usuario) para evitar perder la edad al actualizar el nombre
+
+
+Puedes manejar arreglos en el estado
+
+```
+const ListaTareas = () => {
+  const [tareas, setTareas] = useState(["Estudiar", "Comprar"]);
+
+  const agregarTarea = () => {
+    setTareas([...tareas, "Nueva Tarea"]); // Agregar al final
+  };
+
+  return (
+    <div>
+      <ul>
+        {tareas.map((tarea, index) => (
+          <li key={index}>{tarea}</li>
+        ))}
+      </ul>
+      <button onClick={agregarTarea}>Agregar Tarea</button>
+    </div>
+  );
+};
+
+```
+
+tareas almacena una lista de strings.
+
+setTareas([...tareas, "Nueva Tarea"]) crea un nuevo array con la tarea agregada.
+
+Se usa map para renderizar las tareas dinámicamente.
+
+
+state: 
+
+lo define: El propio componente
+
+cambio: Sí
+
+actualización: useState o this.setState
+
+
+props:
+
+El componente padre
+
+No
+
+No se puede cambiar directamente
+
+
+
+8. Tipos de hooks 
+
+Son funciones especiales que permiten usar características como estado y ciclo de vida en componentes funcionales, sin necesidad de clases.
+
+Antes de los hooks, solo los componentes de clase podían manejar estado y ciclo de vida.
+
+
+1. useState: maneja el estado 
+
+```
+const [contador, setContador] = useState(0);
+
+```
+
+2. useEffect: maneja efectos secundarios (fetch, timers, eventos)
+
+```
+useEffect(() => {
+  console.log("El componente se montó o el contador cambió.");
+}, [contador]);
+
+```
+
+```
+import { useState, useEffect } from "react";
+
+const Contador = () => {
+  const [contador, setContador] = useState(0);
+
+  useEffect(() => {
+    console.log("El contador cambió:", contador);
+  }, [contador]); // Se ejecuta cuando cambia `contador`
+
+  return (
+    <div>
+      <p>Contador: {contador}</p>
+      <button onClick={() => setContador(contador + 1)}>Incrementar</button>
+    </div>
+  );
+};
+
+```
+
+useEffect se ejecuta después del render y puede hacer cosas como:
+
+Llamadas a APIs (fetch).
+Suscribirse/desuscribirse a eventos.
+Actualizar el DOM.
+
+
+3. useContext: compartir estado global sin prop drilling
+
+```
+const TemaContext = React.createContext();
+const valor = useContext(TemaContext);
+
+```
+
+```
+import { createContext, useContext } from "react";
+
+const TemaContext = createContext("claro");
+
+const Hijo = () => {
+  const tema = useContext(TemaContext);
+  return <p>El tema actual es: {tema}</p>;
+};
+
+const App = () => {
+  return (
+    <TemaContext.Provider value="oscuro">
+      <Hijo />
+    </TemaContext.Provider>
+  );
+};
+
+```
+
+useContext evita tener que pasar props manualmente por varios niveles.
+
+
+4. useReducer: alternativa a useState para estados complejos
+
+```
+const [state, dispatch] = useReducer(reducer, initialState);
+
+```
+
+```
+import { useReducer } from "react";
+
+const reducer = (state, action) => {
+  switch (action.type) {
+    case "incrementar":
+      return { contador: state.contador + 1 };
+    case "decrementar":
+      return { contador: state.contador - 1 };
+    default:
+      return state;
+  }
+};
+
+const Contador = () => {
+  const [state, dispatch] = useReducer(reducer, { contador: 0 });
+
+  return (
+    <div>
+      <p>Contador: {state.contador}</p>
+      <button onClick={() => dispatch({ type: "incrementar" })}>+</button>
+      <button onClick={() => dispatch({ type: "decrementar" })}>-</button>
+    </div>
+  );
+};
+
+```
+
+useReducer es útil para gestionar lógica más compleja que useState.
+
+
+5. useRef: referencias a elementos del DOM
+
+```
+const inputRef = useRef(null);
+
+```
+
+```
+import { useRef } from "react";
+
+const EnfocarInput = () => {
+  const inputRef = useRef(null);
+
+  const enfocar = () => {
+    inputRef.current.focus();
+  };
+
+  return (
+    <div>
+      <input ref={inputRef} type="text" />
+      <button onClick={enfocar}>Enfocar</button>
+    </div>
+  );
+};
+
+```
+
+useRef se usa para:
+
+Acceder a elementos del DOM sin useState.
+Mantener valores sin provocar re-render
+
+
+#### Utilidad de los hooks 
+
+useState: Manejar estado en componentes funcionales
+ 
+useEffect: Efectos secundarios (fetch, eventos, timers
+
+useContext: Compartir estado global sin props
+
+useReducer: Alternativa a useState para lógica compleja
+
+useRef: Referencias a elementos del DOM
+
+Custom Hooks: Reutilizar lógica en varios componentes
+
+
+
+9. Tipos de eventos 
+
+1. Se manejan mediante camelCase (ejemplo: onClick en lugar de onclick).
+
+2. Se pasan como funciones dentro de JSX (ejemplo: {handleClick} en lugar de "handleClick()").
+
+3. Se usa event.preventDefault() en lugar de return false para prevenir comportamientos por defecto.
+
+
+### Manejo de eventos 
+
+onClick 
+
+```
+const Boton = () => {
+  const handleClick = () => {
+    alert("¡Botón clickeado!");
+  };
+
+  return <button onClick={handleClick}>Haz clic</button>;
+};
+
+```
+
+Se define la función handleClick.
+
+Se asocia a la propiedad onClick del botón.
+
+Cuando el usuario hace clic, se ejecuta la función
+
+
+### Pasar Parámetros
+
+Pasar un valor a la función del evento, puedes hacerlo con una arrow function.
+
+```
+const Boton = () => {
+  const handleClick = (mensaje) => {
+    alert(mensaje);
+  };
+
+  return <button onClick={() => handleClick("Hola desde React!")}>Haz clic</button>;
+};
+
+```
+
+handleClick recibe "Hola desde React!" cuando el botón es presionado.
+
+
+### event 
+
+Se pasa un objeto de evento (event) automáticamente.
+
+event.target:
+
+```
+const Input = () => {
+  const handleChange = (event) => {
+    console.log("Valor:", event.target.value);
+  };
+
+  return <input type="text" onChange={handleChange} />;
+};
+
+```
+
+Cada vez que el usuario escribe, se imprime el valor en la consola.
+
+
+### Prevenir Comportamiento por Defecto (preventDefault)
+
+Ej: evitar que un form recargue la página 
+
+```
+const Formulario = () => {
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    alert("Formulario enviado");
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <button type="submit">Enviar</button>
+    </form>
+  );
+};
+
+```
+
+
+### Eventos con useState
+
+Contador con onClick y useState
+
+```
+import { useState } from "react";
+
+const Contador = () => {
+  const [contador, setContador] = useState(0);
+
+  return (
+    <div>
+      <p>Contador: {contador}</p>
+      <button onClick={() => setContador(contador + 1)}>Incrementar</button>
+    </div>
+  );
+};
+
+```
+
+
+### Eventos Compuestos (onMouseEnter, onKeyDown, etc.)
+
+onClick: Cuando se hace clic en un elemento
+
+onChange: Cuando cambia el valor de un input
+
+onMouseEnter: Cuando el mouse entra en un elemento
+
+onMouseLeave: Cuando el mouse sale de un elemento
+
+onKeyDown: Cuando se presiona una tecla
+
+onSubmit: Cuando se envía un formulario
+
+
+Ej: onMouseEnter y onMouseLeave
+
+```
+const HoverBox = () => {
+  const handleMouseEnter = () => console.log("Mouse encima");
+  const handleMouseLeave = () => console.log("Mouse fuera");
+
+  return (
+    <div onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} style={{ padding: 20, background: "lightblue" }}>
+      Pasa el mouse sobre mí
+    </div>
+  );
+};
+
+```
+
+Cada vez que el mouse entra o sale del área azul, se imprime un mensaje en la consola.
+
+
+### Eventos en Listas
+
+Lista con map y onClick
+
+```
+const Lista = () => {
+  const elementos = ["Elemento 1", "Elemento 2", "Elemento 3"];
+
+  const handleClick = (item) => {
+    alert("Seleccionaste: " + item);
+  };
+
+  return (
+    <ul>
+      {elementos.map((item, index) => (
+        <li key={index} onClick={() => handleClick(item)}>
+          {item}
+        </li>
+      ))}
+    </ul>
+  );
+};
+
+```
+
+Al hacer clic en un ítem de la lista, se muestra una alerta con su nombre.
+
+
+### Evento Sintético de React
+
+React usa su propio SyntheticEvent, que es una capa sobre los eventos nativos de JavaScript.
+
+Ej con event.persist()
+
+```
+const Boton = () => {
+  const handleClick = (event) => {
+    event.persist(); // Permite acceder al evento fuera del callback
+    setTimeout(() => {
+      console.log("Clic en:", event.type);
+    }, 1000);
+  };
+
+  return <button onClick={handleClick}>Haz clic</button>;
+};
+
+```
+
+event.persist() es útil cuando usas eventos dentro de funciones asincrónicas.
+
+
+Eventos en React son similares a los de JavaScript, pero usan camelCase y pasan funciones.
+Puedes pasar parámetros a eventos con arrow functions.
+Usa event.preventDefault() para evitar comportamientos predeterminados.
+Hay eventos para mouse, teclado, formularios, etc.
+React usa un SyntheticEvent para optimizar el rendimiento.
+
+
+10. ## Custom Hooks 
+
+Son funciones de JavaScript que utilizan los hooks de React (useState, useEffect, etc.) para encapsular y reutilizar lógica de estado o efectos secundarios en múltiples componentes.
+
+Son ideales para: 
+
+Evitar código duplicado.
+
+Mantener los componentes más limpios.
+
+Mejorar la reutilización y organización del código.
+
+
+Es una función que:
+
+Comienza con use (ejemplo: useContador).
+
+Puede usar otros hooks (useState, useEffect, etc.).
+
+Devuelve un valor (estado, función, etc.).
+
+```
+import { useState } from "react";
+
+const useContador = (valorInicial = 0) => {
+  const [contador, setContador] = useState(valorInicial);
+
+  const incrementar = () => setContador(contador + 1);
+  const decrementar = () => setContador(contador - 1);
+
+  return { contador, incrementar, decrementar };
+};
+
+export default useContador;
+
+```
+
+
+### Uso del Custom Hook en un Componente
+
+```
+import React from "react";
+import useContador from "./useContador";
+
+const Contador = () => {
+  const { contador, incrementar, decrementar } = useContador(5);
+
+  return (
+    <div>
+      <p>Contador: {contador}</p>
+      <button onClick={incrementar}>+</button>
+      <button onClick={decrementar}>-</button>
+    </div>
+  );
+};
+
+export default Contador;
+
+```
+
+### Custom Hook con useEffect (Fetch de API)
+
+useFetch para hacer peticiones a una API
+
+```
+import { useState, useEffect } from "react";
+
+const useFetch = (url) => {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    setLoading(true);
+    fetch(url)
+      .then((res) => res.json())
+      .then((data) => {
+        setData(data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        setError(error);
+        setLoading(false);
+      });
+  }, [url]);
+
+  return { data, loading, error };
+};
+
+export default useFetch;
+
+```
+
+Uso en un Componente
+
+```
+import React from "react";
+import useFetch from "./useFetch";
+
+const ListaUsuarios = () => {
+  const { data, loading, error } = useFetch("https://jsonplaceholder.typicode.com/users");
+
+  if (loading) return <p>Cargando...</p>;
+  if (error) return <p>Error: {error.message}</p>;
+
+  return (
+    <ul>
+      {data.map((usuario) => (
+        <li key={usuario.id}>{usuario.name}</li>
+      ))}
+    </ul>
+  );
+};
+
+export default ListaUsuarios;
+
+```
+
+useFetch encapsula la lógica de fetch.
+
+Puede ser reutilizado en cualquier componente.
+
+
+### useRef (Manejo de Input):
+
+useInput para manejar inputs de forma más limpia
+
+```
+import { useState } from "react";
+
+const useInput = (valorInicial) => {
+  const [valor, setValor] = useState(valorInicial);
+
+  const onChange = (e) => setValor(e.target.value);
+
+  return { valor, onChange };
+};
+
+export default useInput;
+
+```
+
+Uso en un componente:
+
+```
+import React from "react";
+import useInput from "./useInput";
+
+const Formulario = () => {
+  const nombre = useInput("");
+  const email = useInput("");
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    alert(`Nombre: ${nombre.valor}, Email: ${email.valor}`);
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <input type="text" placeholder="Nombre" {...nombre} />
+      <input type="email" placeholder="Email" {...email} />
+      <button type="submit">Enviar</button>
+    </form>
+  );
+};
+
+export default Formulario;
+
+```
+
+Evita escribir useState para cada input.
+
+Se pueden manejar múltiples inputs con el mismo hook.
+
+
+### Custom Hook con useContext (Tema Global)
+
+```
+import { createContext, useContext, useState } from "react";
+
+const TemaContext = createContext();
+
+export const TemaProvider = ({ children }) => {
+  const [tema, setTema] = useState("claro");
+
+  const alternarTema = () => setTema(tema === "claro" ? "oscuro" : "claro");
+
+  return (
+    <TemaContext.Provider value={{ tema, alternarTema }}>
+      {children}
+    </TemaContext.Provider>
+  );
+};
+
+export const useTema = () => useContext(TemaContext);
+
+```
+
+Uso en un Componente
+
+```
+import React from "react";
+import { TemaProvider, useTema } from "./useTema";
+
+const BotonTema = () => {
+  const { tema, alternarTema } = useTema();
+
+  return (
+    <button onClick={alternarTema} style={{ background: tema === "oscuro" ? "black" : "white", color: tema === "oscuro" ? "white" : "black" }}>
+      Cambiar a {tema === "oscuro" ? "claro" : "oscuro"}
+    </button>
+  );
+};
+
+const App = () => (
+  <TemaProvider>
+    <BotonTema />
+  </TemaProvider>
+);
+
+export default App;
+
+```
+
+useTema permite acceder al tema desde cualquier componente.
+
+TemaProvider maneja el estado de manera global.
+
+
+useContador: Manejar contadores de forma reutilizable
+
+useFetch: Hacer peticiones a APIs de forma limpia
+
+useInput: Manejar inputs sin escribir useState cada vez
+
+useTema: Gestionar temas (modo oscuro/claro) de forma global
+
+
+## RS: Arq React 
+
+### 1: Divida la interfaz de usuario en una jerarquía de componentes
+ 
+1. FilterableProductTable (gris) contiene toda la aplicación.
+2. SearchBar (azul) recibe la entrada del usuario.
+3. ProductTable (lavanda) muestra y filtra la lista según la entrada del usuario.
+4. ProductCategoryRow (verde) muestra un encabezado para cada categoría.
+5. ProductRow (amarillo) muestra una fila para cada producto.
+
+
+
+Ahora que ha identificado los componentes en la maqueta, organícelos en una jerarquía.
+
+Los componentes que aparecen dentro de otro componente en la maqueta deben aparecer como elementos secundarios en la jerarquía:
+
+```
+FilterableProductTable
+	SearchBar
+	ProductTable
+		ProductCategoryRow
+		ProductRow
+```
+
+
+### 2: Crea una versión estática en React
+
+El enfoque más sencillo es crear una versión que represente la interfaz de usuario de tu modelo de datos sin agregar ninguna interactividad... ¡todavía! 
+
+#### Para crear una versión estática de tu aplicación que represente tu modelo de datos, deberás crear componentes que reutilicen otros componentes y pasen datos mediante props. 
+
+Los props son una forma de pasar datos de padre a hijo. 
+
+#### Puede crear de "arriba hacia abajo" comenzando por crear los componentes que se encuentran más arriba en la jerarquía (como FilterableProductTable) o de "abajo hacia arriba" trabajando desde los componentes que se encuentran más abajo (como ProductRow). 
+
+En los ejemplos más simples, suele ser más fácil hacerlo de arriba hacia abajo. 
+
+En proyectos más grandes, es más fácil hacerlo de abajo hacia arriba.
+
+Después de crear los componentes, tendrás una biblioteca de componentes reutilizables que representan tu modelo de datos. 
+
+Como se trata de una aplicación estática, los componentes solo devolverán JSX. 
+
+#### El componente en la parte superior de la jerarquía (FilterableProductTable) tomará tu modelo de datos como propiedad. 
+
+#### Esto se denomina flujo de datos unidireccional porque los datos fluyen hacia abajo desde el componente de nivel superior hasta los que se encuentran en la parte inferior del árbol.
+
+
+### 3: Encuentra la representación mínima pero completa del estado de la interfaz de usuario
+
+Para que la interfaz de usuario sea interactiva, debe permitir que los usuarios cambien el modelo de datos subyacente. 
+
+Para ello, utilizará el estado.
+
+#### Piense en el estado como el conjunto mínimo de datos cambiantes que su aplicación necesita recordar. 
+
+El principio más importante para estructurar el estado es mantenerlo DRY (no repetirse). 
+
+
+Por ejemplo, si está creando una lista de compras, puede almacenar los artículos como una matriz en el estado. 
+
+Si también desea mostrar la cantidad de artículos en la lista, no almacene la cantidad de artículos como otro valor de estado; en su lugar, lea la longitud de su matriz.
+
+Ahora piense en todos los datos de esta aplicación de ejemplo:
+
+1. La lista original de productos
+2. El texto de búsqueda que ingresó el usuario
+3. El valor de la casilla de verificación
+4. La lista filtrada de productos
+
+ 
+¿Cuáles de estos son estados? Identifica los que no lo son:
+
+1. ¿Permanece sin cambios con el tiempo? Si es así, no es estado.
+2. ¿Se pasa desde un padre a través de propiedades? Si es así, no es estado.
+3. ¿Puedes calcularlo en función del estado o las propiedades existentes en tu componente? Si es así, ¡definitivamente no es estado!
+
+Lo que queda es probablemente estado.
+
+Repasémoslos uno por uno nuevamente:
+
+La lista original de productos se pasa como propiedades, por lo que no es estado.
+El texto de búsqueda parece ser estado ya que cambia con el tiempo y no se puede calcular a partir de nada.
+El valor de la casilla de verificación parece ser estado ya que cambia con el tiempo y no se puede calcular a partir de nada.
+La lista filtrada de productos no es estado porque se puede calcular tomando la lista original de productos y filtrándola según el texto de búsqueda y el valor de la casilla de verificación.
+
+¡Esto significa que solo el texto de búsqueda y el valor de la casilla de verificación son estado! ¡Bien hecho!
+
+
+### 4: Identifica dónde debería estar tu estado
+
+Para cada parte del estado de tu aplicación:
+
+1. Identifica cada componente que renderiza algo en función de ese estado.
+2. Encuentra su componente principal común más cercano (un componente por encima de todos ellos en la jerarquía).
+3. Decide dónde debería estar el estado:
+	1. A menudo, puedes colocar el estado directamente en su componente principal común.
+	2. También puedes colocar el estado en algún componente por encima de su componente principal común.
+	3. Si no puede encontrar un componente donde tenga sentido poseer el estado, cree un nuevo componente únicamente para contener el estado y agréguelo en algún lugar de la jerarquía por encima del componente principal común.
+
+
+En el paso anterior, encontró dos partes del estado en esta aplicación: el texto de entrada de búsqueda y el valor de la casilla de verificación. 
+
+En este ejemplo, siempre aparecen juntos, por lo que tiene sentido colocarlos en el mismo lugar.
+
+Ahora, analicemos nuestra estrategia para ellos:
+
+1. Identifique los componentes que usan el estado:
+
+	ProductTable debe filtrar la lista de productos en función de ese estado (texto de búsqueda y valor de la casilla de verificación).
+
+	SearchBar debe mostrar ese estado (texto de búsqueda y valor de la casilla de verificación).
+
+2. Encuentre su componente principal común: el primer componente principal que comparten ambos componentes es FilterableProductTable.
+
+3. Decida dónde se encuentra el estado: mantendremos el texto de filtro y los valores del estado marcado en FilterableProductTable.
+
+
+```
+function FilterableProductTable({ products }) {
+  const [filterText, setFilterText] = useState('');
+  const [inStockOnly, setInStockOnly] = useState(false);
+
+```
+
+Luego, pase filterText y inStockOnly a ProductTable y SearchBar como propiedades:
+
+```
+<div>
+  <SearchBar 
+    filterText={filterText} 
+    inStockOnly={inStockOnly} />
+  <ProductTable 
+    products={products}
+    filterText={filterText}
+    inStockOnly={inStockOnly} />
+</div>
+
+```
+
+Puedes empezar a ver cómo se comportará tu aplicación. 
+
+Edita el valor inicial de filterText de useState('') ​​a useState('fruit') en el código de sandbox que aparece a continuación. 
+
+Verás tanto el texto de entrada de búsqueda como la actualización de la tabla:
+
+
+
+
+
