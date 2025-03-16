@@ -1567,7 +1567,7 @@ Análisis de Variaciones: Comparación entre presupuesto real y estimado para de
     
 
 
-# Plan Estudio Marketing 
+MKT 
 
 ## 1. Fundamentos de Marketing
 
@@ -1654,10 +1654,534 @@ Análisis de Variaciones: Comparación entre presupuesto real y estimado para de
 
 
 
-
-
-
 ###
+
+
+
+# LOGIS
+
+Conjunto de procesos y actividades que garantizan el flujo eficiente de bienes, servicios e información desde el proveedor hasta el cliente final. 
+Su objetivo principal es optimizar recursos, reducir costos y mejorar la satisfacción del cliente.
+
+
+## Componentes clave de la logística en una empresa
+
+### Gestión de suministros y abastecimiento:
+	Selección de proveedores.
+	Adquisición de materia prima o productos.
+	Control de inventario de insumos.
+
+### Almacenamiento y gestión de inventarios:
+	Organización de productos en almacenes.
+	Monitoreo de existencias (stock).
+	Implementación de estrategias como Just in Time (JIT) para reducir costos.
+
+### Distribución y transporte:
+	Elección de los medios de transporte adecuados (terrestre, aéreo, marítimo).
+	Planificación de rutas para reducir tiempos y costos.
+	Seguimiento y control de envíos.
+
+### Procesamiento de pedidos:
+	Recepción y gestión de pedidos de clientes.
+	Coordinación con almacenes y transporte.
+	Uso de software ERP o WMS para automatizar procesos.
+
+### Logística inversa:
+	Devoluciones de productos.
+	Reciclaje y gestión de residuos.
+	Reacondicionamiento y reutilización de materiales.
+
+### Tecnología y automatización:
+	Uso de sistemas de trazabilidad y monitoreo.
+	Aplicación de inteligencia artificial y big data en optimización logística.
+	Implementación de robots en almacenes para mejorar eficiencia.
+
+
+### Importancia de la logística en una empresa
+
+Reduce costos operativos.
+Aumenta la eficiencia y competitividad.
+Mejora la experiencia del cliente con entregas rápidas y confiables.
+Permite la expansión del negocio a nivel nacional e internacional
+
+
+## Estudio 
+
+Logística Empresarial
+
+### 1. Introducción a la Logística
+
+Conceptos básicos de logística
+Importancia de la logística en una empresa
+Tipos de logística: interna, externa, inversa
+Cadena de suministro vs. logística
+
+
+### 2. Gestión de Inventarios y Almacenes
+
+Tipos de inventarios y su control
+Técnicas de gestión de stock (FIFO, LIFO, JIT)
+Almacenamiento y distribución
+Tecnologías en almacenes (WMS, RFID, códigos de barras
+
+
+### 3. Transporte y Distribución
+
+Modos de transporte: terrestre, aéreo, marítimo
+Optimización de rutas y costos logísticos
+Incoterms y comercio internacional
+Tercerización de transporte (3PL, 4PL)
+
+
+### 4: Logística Internacional y Comercio Exterior
+
+Importación y exportación de mercancías
+Regulaciones y aduanas
+Incoterms 2020 y su aplicación
+Documentación en comercio exterior (BL, factura comercial)
+
+
+### 5: Tecnología y Digitalización en Logística
+
+Sistemas ERP y WMS en logística
+Inteligencia Artificial y Big Data en la cadena de suministro
+Automatización y robots en almacenes
+Trazabilidad con Blockchain
+
+
+### 6: Logística Verde y Sostenibilidad
+
+Impacto ambiental del transporte y almacenamiento
+Estrategias de logística sostenible
+Economía circular en la cadena de suministro
+
+
+
+## 1. Introducción a la Logística
+
+Conjunto de procesos que permiten el movimiento eficiente de bienes, servicios e información dentro de una empresa. 
+
+Su objetivo es llevar el producto correcto, en la cantidad correcta, al lugar correcto, en el momento adecuado y al menor costo posible.
+
+
+### Conceptos básicos de logística
+
+Flujo de bienes y servicios: Desde la adquisición de materia prima hasta la entrega del producto al cliente.
+Optimización de recursos: Minimizar costos y mejorar tiempos de entrega.
+Coordinación entre áreas: Compras, producción, almacenamiento, distribución y atención al cliente.
+
+Ejemplo: En una tienda online como Amazon, la logística incluye recibir pedidos, gestionar inventarios, seleccionar rutas de entrega y asegurar que el producto llegue en el tiempo prometido.
+
+
+### Importancia de la logística en una empresa:
+
+Reduce costos operativos: Optimiza procesos y evita desperdicios.
+Mejora la experiencia del cliente: Entregas rápidas y precisas aumentan la satisfacción.
+Aumenta la competitividad: Empresas con mejor logística pueden ofrecer precios más bajos y mejor servicio.
+Facilita la expansión del negocio: Permite vender productos a nivel nacional e internacional.
+
+Ejemplo: Empresas como Walmart y Amazon son exitosas porque han perfeccionado sus sistemas logísticos, permitiéndoles vender más rápido y barato.
+
+
+### Tipos de logística
+
+Logística interna: Movimientos dentro de la empresa (materias primas, producción, almacenamiento).
+Logística externa: Transporte y distribución de productos hasta el cliente.
+Logística inversa: Manejo de devoluciones y reciclaje de productos.
+Logística internacional: Envío de productos entre países, regulaciones aduaneras, Incoterms.
+
+Ejemplo: Un supermercado usa logística interna para mover productos en su almacén y logística externa para llevar pedidos a domicilio.
+
+
+### Cadena de Suministro vs. Logística
+
+Cadena de suministro: Incluye a todos los proveedores, fabricantes y distribuidores involucrados en la producción y entrega de un producto.
+
+Logística: Es una parte de la cadena de suministro enfocada en el transporte, almacenamiento y distribución eficiente.
+
+Ejemplo:
+Cadena de suministro: Desde que se cultiva el café hasta que se vende en una cafetería.
+Logística: El transporte de los granos de café desde la finca hasta la tienda
+
+
+## 2. Gestión de Inventarios y Almacenes
+
+Permite a las empresas mantener un equilibrio entre la oferta y la demanda. Su objetivo es garantizar que los productos estén disponibles en el momento adecuado, sin generar excesos que aumenten costos ni escasez que afecte las ventas.
+
+¿Qué es el Inventario?
+
+El inventario es el conjunto de productos o materiales que una empresa tiene almacenados para su uso o venta.
+
+
+### Tipos de inventario:
+
+Materia prima: Materiales que se usan para fabricar productos.
+Producto en proceso: Artículos que están en fase de fabricación.
+Producto terminado: Listo para ser vendido o distribuido.
+Inventario de seguridad: Stock adicional para evitar problemas por demanda inesperada.
+Inventario en tránsito: Productos que están siendo transportados entre almacenes o hacia clientes.
+
+Ejemplo: En una tienda de ropa, la materia prima serían telas, el producto en proceso serían prendas a medio confeccionar y el producto terminado serían las camisetas listas para la venta.
+
+
+### Métodos de Gestión de Inventarios
+
+Existen varias técnicas para gestionar el inventario y evitar pérdidas por exceso o falta de stock:
+
+1. FIFO (First In, First Out) – Primero en entrar, primero en salir
+
+Se venden primero los productos más antiguos del inventario.
+Evita que los productos se vuelvan obsoletos o caduquen.
+Muy usado en alimentos y productos perecederos.
+
+Ejemplo: En un supermercado, los productos con fecha de caducidad más cercana se colocan al frente para que sean vendidos primero.
+
+2. LIFO (Last In, First Out) – Último en entrar, primero en salir
+
+Se venden primero los productos más nuevos.
+Útil cuando los costos de compra cambian mucho (inflación).
+No se recomienda en productos perecederos.
+
+Ejemplo: Una ferretería que vende cemento puede usar LIFO porque los costos cambian con el tiempo.
+
+3. JIT (Just In Time) – Producción Justo a Tiempo
+
+Se almacena solo la cantidad necesaria para evitar costos de almacenamiento.
+Reduce desperdicios y mejora la eficiencia.
+Requiere una planificación precisa para evitar escasez.
+
+Ejemplo: Toyota usa JIT en sus fábricas para reducir costos de almacenamiento y producir autos solo cuando hay demanda.
+
+
+### Gestión de Almacenes
+
+Un almacén es el lugar donde se guardan productos antes de ser distribuidos o vendidos. Una buena gestión de almacenes ayuda a reducir costos y mejorar la eficiencia.
+
+#### Funciones de un almacén:
+Recibir y registrar productos.
+Organizar el inventario de manera eficiente.
+Controlar la entrada y salida de productos.
+Usar tecnología para mejorar la eficiencia.
+
+#### Tipos de almacenes:
+Almacenes de distribución: Se usan para repartir productos a distintos puntos de venta.
+Almacenes de materias primas: Guardan los insumos antes de la producción.
+Almacenes de tránsito: Temporales, donde los productos esperan ser transportados.
+Almacenes automatizados: Usan robots y sistemas digitales para gestionar el inventario.
+Tecnología en la Gestión de Inventarios y Almacenes
+
+Hoy en día, muchas empresas usan tecnología para mejorar la eficiencia de su logística:
+
+Sistemas WMS (Warehouse Management System): Controlan la gestión del almacén en tiempo real.
+RFID y códigos de barras: Permiten rastrear productos de forma rápida y precisa.
+Big Data e Inteligencia Artificial: Predicen la demanda y optimizan el inventario.
+
+Ejemplo: Amazon usa robots en sus almacenes para organizar productos y acelerar los envíos.
+
+
+### Beneficios de una buena gestión de inventarios y almacenes
+
+Menos costos de almacenamiento y reducción de desperdicios.
+Mayor eficiencia en la distribución y tiempos de entrega más rápidos.
+Menos pérdidas por productos dañados, caducados o desactualizados.
+Mayor satisfacción del cliente al tener siempre productos disponibles
+
+
+
+## 3. Transporte y Distribución en Logística
+
+Se encargan de llevar los productos desde el almacén hasta el cliente final de manera eficiente y al menor costo posible. Una mala gestión del transporte puede generar retrasos, aumentar costos y afectar la satisfacción del cliente.
+
+
+### ¿Qué es la Distribución Logística?
+
+La distribución logística es el conjunto de procesos que permiten que un producto llegue desde el fabricante o almacén hasta el consumidor final.
+
+#### Fases de la distribución:
+1. Recepción y almacenamiento de productos en centros de distribución.
+2. Procesamiento de pedidos y preparación de envíos.
+3. Transporte de productos a los puntos de venta o clientes.
+4. Entrega final y seguimiento del pedido.
+
+Ejemplo: En un supermercado, los productos llegan desde distintos proveedores, se almacenan en un centro de distribución y luego se envían a las tiendas o a los clientes en compras en línea.
+
+
+### Tipos de Transporte en Logística
+
+El transporte es clave en la distribución, ya que influye en la rapidez, costo y confiabilidad de las entregas.
+
+
+#### Transporte Terrestre (camiones, furgonetas, trenes)
+
+Flexible y útil para distancias cortas y medianas.
+Mayor control sobre las entregas y seguimiento.
+Costos pueden variar por combustible y peajes.
+
+Ejemplo: Amazon usa furgonetas y camiones para hacer entregas locales y nacionales.
+
+
+#### Transporte Aéreo (aviones de carga)
+
+Más rápido para largas distancias.
+Útil para productos urgentes o de alto valor.
+Costoso y limitado en volumen de carga.
+
+Ejemplo: Empresas como FedEx y DHL usan transporte aéreo para entregas internacionales en 24-48 horas.
+
+
+#### Transporte Marítimo (barcos de carga)
+
+Más barato para grandes volúmenes.
+Ideal para comercio internacional.
+Lento (semanas o meses de tránsito).
+
+Ejemplo: Las importaciones de China a América suelen transportarse en contenedores marítimos.
+
+
+#### Transporte Ferroviario (trenes de carga)
+
+Económico para grandes volúmenes en tierra.
+Más sostenible y eficiente en combustible.
+Depende de la infraestructura ferroviaria.
+
+Ejemplo: En Europa, los trenes transportan mercancías entre países de manera eficiente.
+
+
+### Optimización de Transporte y Costos Logísticos
+
+Para reducir costos y mejorar la eficiencia, las empresas usan diferentes estrategias:
+
+Optimización de rutas: Se usan GPS e inteligencia artificial para reducir tiempos y consumo de combustible.
+Carga consolidada: Se combinan envíos de varias empresas para llenar un camión o contenedor y reducir costos.
+Uso de operadores logísticos (3PL y 4PL): Empresas externas se encargan del transporte y la distribución.
+
+Ejemplo: Empresas como UPS y FedEx ofrecen soluciones logísticas para e-commerce, optimizando entregas de última milla.
+
+
+### Última Milla: La Entrega al Cliente Final
+
+La última milla es la fase más crítica de la distribución, ya que representa el último tramo del transporte hasta el cliente final.
+
+#### Desafíos de la última milla:
+Costos elevados por envíos individuales.
+Retrasos en zonas urbanas con tráfico.
+Demandas de entregas rápidas (mismo día o 24h).
+
+#### Soluciones para mejorar la última milla:
+Uso de puntos de recogida (pick-up points) en tiendas o lockers.
+Implementación de drones y vehículos autónomos.
+Plataformas digitales para mejorar el seguimiento de pedidos.
+
+Ejemplo: Amazon Prime ofrece entregas en el mismo día en muchas ciudades, optimizando la última milla con centros de distribución locales.
+
+Importancia de una Buena Gestión del Transporte y la Distribución
+
+Reduce costos logísticos y evita desperdicios.
+Mejora la experiencia del cliente con entregas más rápidas.
+Aumenta la competitividad al ofrecer mejores tiempos de entrega.
+Optimiza la sostenibilidad con transportes más ecológicos 
+
+
+
+## 4. Logística Internacional y Comercio Exterior
+
+Se encargan del movimiento de bienes y servicios entre diferentes países. 
+
+Su objetivo es garantizar que los productos sean transportados de manera eficiente, cumpliendo con regulaciones aduaneras y optimizando costos.
+
+
+### ¿Qué es la Logística Internacional?
+
+La logística internacional abarca todas las actividades necesarias para transportar mercancías de un país a otro, considerando regulaciones, tiempos de entrega, costos y diferentes modos de transporte.
+
+Elementos clave de la logística internacional:
+Transporte internacional (aéreo, marítimo, terrestre).
+Documentación y regulaciones aduaneras.
+Incoterms (términos de comercio internacional).
+Costos de importación y exportación.
+Almacenamiento y distribución en mercados extranjeros.
+
+Ejemplo: Una empresa en México exporta autopartes a Alemania. Debe coordinar el transporte marítimo, cumplir con regulaciones aduaneras y asegurarse de que el producto llegue a tiempo.
+
+
+### Transporte en Logística Internacional
+
+Para mover productos entre países se usan distintos medios de transporte, dependiendo del costo, tiempo y tipo de carga:
+
+#### Transporte Marítimo
+
+Ideal para cargas grandes y pesadas.
+Menor costo por unidad transportada.
+Tiempos de entrega largos (semanas o meses).
+
+Ejemplo: China exporta grandes volúmenes de productos electrónicos a EE.UU. usando contenedores en barcos de carga.
+
+
+#### Transporte Aéreo
+
+Más rápido para largas distancias.
+Útil para productos urgentes o de alto valor.
+Costoso y limitado en volumen.
+
+Ejemplo: Empresas farmacéuticas envían medicamentos en avión para garantizar tiempos de entrega rápidos y control de temperatura.
+
+
+### Transporte Terrestre
+
+Útil para comercio entre países vecinos.
+Permite entregas puerta a puerta.
+Puede verse afectado por restricciones aduaneras y tráfico.
+
+Ejemplo: México exporta aguacates a EE.UU. en camiones refrigerados que cruzan la frontera.
+
+
+### Regulaciones Aduaneras y Documentación
+
+Cuando una empresa transporta productos a otro país, debe cumplir con las normas aduaneras, que regulan la entrada y salida de mercancías.
+
+#### Documentos clave en el comercio internacional:
+
+Factura comercial: Describe los productos, valor y términos de venta.
+Packing List (Lista de empaque): Detalla cómo está distribuida la carga.
+Conocimiento de embarque (Bill of Lading - BL): Documento que prueba el transporte marítimo.
+Carta de porte aéreo (AWB - Air Waybill): Documento para envíos aéreos.
+Certificado de origen: Acredita el país donde se fabricó el producto.
+Declaración de aduana: Documento para pagar aranceles y cumplir regulaciones.
+
+Ejemplo: Una empresa en España que importa vino de Argentina debe presentar el certificado de origen para evitar impuestos extra bajo un acuerdo comercial.
+
+
+### Incoterms 2020: Condiciones de Venta Internacional
+
+Los Incoterms (International Commercial Terms) son reglas que definen quién paga el transporte, seguros y aranceles en una transacción internacional.
+
+
+Ejemplos de Incoterms:
+
+#### EXW (Ex Works - En Fábrica):
+El comprador asume todos los costos y riesgos desde el almacén del vendedor.
+
+#### FOB (Free On Board - Libre a Bordo):
+El vendedor paga hasta que la carga esté en el barco, luego el comprador asume los costos.
+
+#### CIF (Cost, Insurance and Freight - Costo, Seguro y Flete):
+El vendedor cubre los costos hasta el puerto de destino, pero el comprador asume riesgos después.
+
+Ejemplo: Un exportador de café en Colombia usa FOB, lo que significa que paga el transporte hasta que el café sube al barco, pero el comprador se encarga del resto.
+
+
+### Costos en Logística Internacional
+
+Aranceles e impuestos: Tarifas que los países imponen a las importaciones.
+Costos de transporte: Dependiendo del tipo de carga y destino.
+Seguros de carga: Para proteger productos en caso de daños o pérdida.
+Costos de almacenamiento en zonas aduaneras: Algunas mercancías deben permanecer en depósitos fiscales hasta cumplir con regulaciones.
+
+Ejemplo: Un minorista en EE.UU. que importa ropa de China paga un 10% de aranceles sobre el valor de los productos, además del transporte y almacenamiento en aduana.
+
+
+### Distribución y Almacenamiento en Comercio Internacional
+
+Centros de distribución en países destino: Empresas establecen almacenes en mercados clave para reducir tiempos de entrega.
+Zonas de libre comercio (FTZ - Free Trade Zones): Áreas donde las mercancías pueden almacenarse sin pagar aranceles hasta su venta.
+Logística de última milla internacional: Empresas como DHL, UPS y FedEx entregan productos importados directamente a los clientes.
+
+Ejemplo: Amazon tiene centros de distribución en Europa para almacenar productos importados y acelerar las entregas a clientes locales.
+
+
+### Retos de la Logística Internacional
+
+Diferencias en regulaciones aduaneras: Cada país tiene normas distintas.
+Costos variables: Cambios en precios de transporte, impuestos y tarifas.
+Demoras en puertos y aduanas: Inspecciones y trámites pueden retrasar envíos.
+Impacto de crisis globales: Pandemias, conflictos y bloqueos pueden interrumpir la logística.
+
+Ejemplo: Durante la pandemia de COVID-19, hubo retrasos en la importación de productos desde China debido a restricciones portuarias y escasez de contenedores.
+
+
+Importancia de una Buena Logística Internacional:
+
+Reduce costos operativos con una planificación eficiente.
+Mejora la competitividad al permitir a las empresas expandirse a otros mercados.
+Garantiza el cumplimiento de normativas para evitar sanciones y retrasos.
+Optimiza los tiempos de entrega para mejorar la experiencia del cliente
+
+
+
+## 5. han revolucionado la forma en que las empresas gestionan sus cadenas de suministro, mejorando la eficiencia, reduciendo costos y optimizando los tiempos de entrega. Hoy en día, las empresas utilizan herramientas digitales para el seguimiento de envíos, la gestión de inventarios y la automatización de almacenes.
+
+### Beneficios de la Digitalización en Logística
+
+Mayor visibilidad y control: Seguimiento en tiempo real de los envíos.
+Reducción de costos: Optimización del transporte y almacenamiento.
+Automatización de procesos: Menos errores y mayor velocidad.
+Mejora en la experiencia del cliente: Entregas más rápidas y precisas.
+Sostenibilidad: Uso eficiente de recursos y reducción de desperdicios.
+
+Ejemplo: Empresas como Amazon y DHL usan tecnología avanzada para reducir tiempos de entrega y mejorar la eficiencia operativa.
+
+
+### Tecnologías Clave en la Logística Digital
+
+1. Sistemas de Gestión Logística (TMS y WMS)
+
+TMS (Transportation Management System): Software para planificar y optimizar rutas de transporte.
+WMS (Warehouse Management System): Sistemas para gestionar almacenes de manera eficiente.
+
+Ejemplo: Walmart usa un WMS avanzado para monitorear su inventario en tiempo real y optimizar la distribución.
+
+2. ️Internet de las Cosas (IoT) en Logística
+
+Los dispositivos IoT permiten la comunicación entre vehículos, almacenes y centros de distribución.
+
+Sensores en camiones y contenedores para rastrear temperatura y ubicación.
+Etiquetas RFID y códigos de barras para un control de inventario preciso.
+Drones y robots para automatizar procesos en almacenes.
+
+Ejemplo: FedEx usa sensores IoT para monitorear la temperatura en envíos de productos farmacéuticos.
+
+3. Big Data y Análisis Predictivo
+
+Permite analizar grandes volúmenes de datos para prever la demanda.
+Optimiza rutas de transporte en función del tráfico y el clima.
+Reduce desperdicios y mejora la gestión del inventario.
+
+Ejemplo: UPS usa Big Data para calcular las mejores rutas y reducir costos de combustible.
+
+4. Inteligencia Artificial (IA) y Machine Learning
+
+Automatización de procesos logísticos complejos.
+Chatbots para servicio al cliente y seguimiento de pedidos.
+Predicción de demanda para evitar desabastecimiento o exceso de stock.
+
+Ejemplo: Amazon usa IA para predecir qué productos serán más demandados y distribuirlos estratégicamente en sus centros logísticos.
+
+5. Blockchain en la Cadena de Suministro
+
+Mayor transparencia en los procesos logísticos.
+Seguimiento seguro de productos en cada etapa de la cadena.
+Reducción de fraudes y errores en documentación.
+
+Ejemplo: Maersk usa blockchain para rastrear contenedores marítimos y mejorar la eficiencia en el comercio internacional.
+
+6. Robótica y Automatización en Almacenes
+
+Uso de robots para mover y organizar productos.
+Reducción de tiempos de carga y descarga.
+Mayor precisión en el picking y empaque de pedidos.
+
+Ejemplo: Los almacenes de Amazon emplean robots Kiva para optimizar la gestión del inventario y reducir tiempos de entrega.
+
+
+### Retos de la Digitalización en Logística
+
+Inversión inicial alta: Implementar tecnología puede ser costoso.
+Resistencia al cambio: Algunas empresas tardan en adoptar nuevas herramientas.
+Ciberseguridad: Protección de datos sensibles en la cadena de suministro.
+Falta de infraestructura tecnológica: Algunas regiones tienen conectividad limitada
+
+ 
+
 
 
 
