@@ -6917,5 +6917,520 @@ Verás tanto el texto de entrada de búsqueda como la actualización de la tabla
 
 
 
+# Renderizar componente 
+
+
+## Componente dentro de otro 
+
+### Directa
+
+```
+const Child = () => {
+  return <p>Soy un componente hijo</p>;
+};
+
+const Parent = () => {
+  return (
+    <div>
+      <h1>Componente Padre</h1>
+      <Child />
+    </div>
+  );
+};
+
+```
+
+
+### props para Renderizado Dinámico
+
+componente como prop y renderizarlo dentro del padre
+
+```
+const Child = () => <p>Hola desde el hijo</p>;
+
+const Parent = ({ Component }) => {
+  return (
+    <div>
+      <h1>Componente Padre</h1>
+      <Component />
+    </div>
+  );
+};
+
+// Uso
+<Parent Component={Child} />;
+
+```
+
+Child se pasa como una prop (Component) y se renderiza en Parent.
+
+
+### children para Composición
+
+```
+const Parent = ({ children }) => {
+  return (
+    <div>
+      <h1>Componente Padre</h1>
+      {children}
+    </div>
+  );
+};
+
+// Uso
+<Parent>
+  <p>Este es un hijo dentro del Parent</p>
+  <button>Botón hijo</button>
+</Parent>
+
+```
+
+
+### Renderización Condicional
+
+renderizar un componente hijo dependiendo de una condición.
+
+```
+const Child = () => <p>Componente Hijo Renderizado</p>;
+
+const Parent = ({ showChild }) => {
+  return (
+    <div>
+      <h1>Componente Padre</h1>
+      {showChild && <Child />}
+    </div>
+  );
+};
+
+// Uso
+<Parent showChild={true} />;
+
+```
+
+Si showChild es true, se renderiza <Child />.
+
+
+### mediante Funciones como Prop
+
+función como prop y ejecutarla dentro del padre.
+
+```
+const Parent = ({ renderChild }) => {
+  return (
+    <div>
+      <h1>Componente Padre</h1>
+      {renderChild()}
+    </div>
+  );
+};
+
+// Uso
+<Parent renderChild={() => <p>Renderizado desde función</p>} />;
+
+```
+
+control más flexible sobre qué se renderiza dentro del componente padre.
+
+
+### Context API para Renderizado Global
+
+```
+const MyContext = React.createContext();
+
+const Child = () => {
+  const value = React.useContext(MyContext);
+  return <p>Valor desde el contexto: {value}</p>;
+};
+
+const Parent = () => {
+  return (
+    <MyContext.Provider value="Hola desde el Context">
+      <Child />
+    </MyContext.Provider>
+  );
+};
+
+```
+
+Child accede al valor de MyContext sin necesidad de que Parent lo pase explícitamente como prop.
+
+
+## Con click 
+
+### Mostrar/Ocultar un Componente al Hacer Clic
+
+Usamos el hook useState para manejar si el componente hijo debe mostrarse o no
+
+```
+import { useState } from "react";
+
+const Child = () => {
+  return <p>Soy el Componente Hijo</p>;
+};
+
+const Parent = () => {
+  const [showChild, setShowChild] = useState(false);
+
+  return (
+    <div>
+      <h1>Componente Padre</h1>
+      <button onClick={() => setShowChild(!showChild)}>
+        {showChild ? "Ocultar" : "Mostrar"} Hijo
+      </button>
+      {showChild && <Child />}
+    </div>
+  );
+};
+
+export default Parent;
+
+```
+
+useState(false) inicia el estado showChild como false (el hijo no se muestra).
+
+Al hacer clic en el botón, setShowChild(!showChild) cambia el estado.
+
+Si showChild es true, se renderiza <Child />; si es false, no se muestra
+
+
+### Múltiples Clics: Renderizar Diferentes Componentes
+
+cambiar el componente mostrado al hacer clic en diferentes botones.
+
+```
+import { useState } from "react";
+
+const ChildOne = () => <p>Componente Hijo 1</p>;
+const ChildTwo = () => <p>Componente Hijo 2</p>;
+
+const Parent = () => {
+  const [selectedChild, setSelectedChild] = useState(null);
+
+  return (
+    <div>
+      <h1>Componente Padre</h1>
+      <button onClick={() => setSelectedChild("one")}>Mostrar Hijo 1</button>
+      <button onClick={() => setSelectedChild("two")}>Mostrar Hijo 2</button>
+      <button onClick={() => setSelectedChild(null)}>Ocultar</button>
+
+      {selectedChild === "one" && <ChildOne />}
+      {selectedChild === "two" && <ChildTwo />}
+    </div>
+  );
+};
+
+export default Parent;
+
+```
+
+useState(null) inicia el estado selectedChild sin ningún componente seleccionado.
+
+Al hacer clic en un botón, setSelectedChild("one") o setSelectedChild("two") cambia el estado.
+
+Dependiendo del valor de selectedChild, se renderiza <ChildOne /> o <ChildTwo />.
+
+
+### Modal al Hacer Clic
+
+renderizar un componente tipo modal al hacer clic en un botón:
+
+```
+import { useState } from "react";
+
+const Modal = ({ onClose }) => {
+  return (
+    <div style={{ background: "rgba(0,0,0,0.5)", padding: "20px", position: "fixed", top: 0, left: 0, width: "100%", height: "100%", display: "flex", justifyContent: "center", alignItems: "center" }}>
+      <div style={{ background: "white", padding: "20px", borderRadius: "5px" }}>
+        <p>Este es un Modal</p>
+        <button onClick={onClose}>Cerrar</button>
+      </div>
+    </div>
+  );
+};
+
+const Parent = () => {
+  const [showModal, setShowModal] = useState(false);
+
+  return (
+    <div>
+      <h1>Componente Padre</h1>
+      <button onClick={() => setShowModal(true)}>Abrir Modal</button>
+
+      {showModal && <Modal onClose={() => setShowModal(false)} />}
+    </div>
+  );
+};
+
+export default Parent;
+
+```
+
+
+
+## Renderizar componentes mediante eventos 
+
+renderizar componentes en respuesta a eventos como clicks, cambios de input, eventos del teclado, etc. 
+
+Usando el estado (useState) y los manejadores de eventos (onClick, onChange, onMouseOver, etc.), puedes mostrar u ocultar componentes dinámicamente.
+
+
+### click
+
+```
+import { useState } from "react";
+
+const Child = () => <p>Soy el componente hijo</p>;
+
+const Parent = () => {
+  const [showChild, setShowChild] = useState(false);
+
+  return (
+    <div>
+      <h1>Componente Padre</h1>
+      <button onClick={() => setShowChild(!showChild)}>
+        {showChild ? "Ocultar" : "Mostrar"} Hijo
+      </button>
+      {showChild && <Child />}
+    </div>
+  );
+};
+
+export default Parent;
+
+```
+
+Se usa useState(false) para controlar la visibilidad del hijo.
+
+Al hacer clic en el botón, el estado cambia y el componente se muestra o se oculta
+
+
+### Respuesta a un Input (onChange)
+
+mostrar un componente cuando el usuario escribe cierto valor en un input.
+
+```
+import { useState } from "react";
+
+const Message = () => <p>¡Hola, bienvenido!</p>;
+
+const Parent = () => {
+  const [inputValue, setInputValue] = useState("");
+
+  return (
+    <div>
+      <h1>Componente Padre</h1>
+      <input
+        type="text"
+        placeholder="Escribe 'React'"
+        onChange={(e) => setInputValue(e.target.value)}
+      />
+      {inputValue.toLowerCase() === "react" && <Message />}
+    </div>
+  );
+};
+
+export default Parent;
+
+```
+
+Cuando el usuario escribe "React", el componente Message se renderiza.
+
+
+### Evento del Teclado (onKeyDown)
+
+mostrar un componente cuando el usuario presiona una tecla específica.
+
+```
+import { useState } from "react";
+
+const Child = () => <p>Tecla presionada: Enter</p>;
+
+const Parent = () => {
+  const [showChild, setShowChild] = useState(false);
+
+  return (
+    <div>
+      <h1>Presiona Enter para mostrar el componente</h1>
+      <input
+        type="text"
+        placeholder="Escribe aquí..."
+        onKeyDown={(e) => {
+          if (e.key === "Enter") setShowChild(true);
+        }}
+      />
+      {showChild && <Child />}
+    </div>
+  );
+};
+
+export default Parent;
+
+```
+
+Si el usuario presiona Enter dentro del input, se muestra el componente Child.
+
+
+### onMouseOver (Pasar el Mouse)
+
+mostrar un componente cuando el usuario pasa el mouse sobre un elemento.
+
+```
+import { useState } from "react";
+
+const Tooltip = () => <p style={{ color: "blue" }}>Este es un tooltip</p>;
+
+const Parent = () => {
+  const [showTooltip, setShowTooltip] = useState(false);
+
+  return (
+    <div>
+      <h1>Componente Padre</h1>
+      <button
+        onMouseOver={() => setShowTooltip(true)}
+        onMouseOut={() => setShowTooltip(false)}
+      >
+        Pasa el mouse aquí
+      </button>
+      {showTooltip && <Tooltip />}
+    </div>
+  );
+};
+
+export default Parent;
+
+```
+
+Al pasar el mouse sobre el botón (onMouseOver), se muestra el tooltip.
+
+Cuando se quita el mouse (onMouseOut), el tooltip desaparece.
+
+
+### Doble Click (onDoubleClick)
+
+Mostrar componente cuando el usuario haga doble click
+
+```
+import { useState } from "react";
+
+const Message = () => <p>Hiciste doble clic</p>;
+
+const Parent = () => {
+  const [showMessage, setShowMessage] = useState(false);
+
+  return (
+    <div>
+      <h1>Haz doble clic en el cuadro</h1>
+      <div
+        style={{
+          width: "200px",
+          height: "100px",
+          backgroundColor: "lightgray",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          cursor: "pointer"
+        }}
+        onDoubleClick={() => setShowMessage(!showMessage)}
+      >
+        Doble clic aquí
+      </div>
+      {showMessage && <Message />}
+    </div>
+  );
+};
+
+export default Parent;
+
+```
+
+
+ 
+
+
+# Events
+
+
+
+# Hooks
+
+
+
+# Lifecycle
+
+
+
+# Vista
+
+ w ## Cambiar la vista completa de una página en React
+
+
+# Ruta
+
+## Cambiar la vista con un ruta 
+
+
+
+
+# UX
+
+## Botones 
+
+transition:
+
+bordes: 
+
+border 0 y border-bottom-color: solid y sacar radius
+
+hover
+
+active
+
+
+### button active react
+
+el mismo click que lo mantine activado/renderizado
+aplique la propiedad active y aplique css
+
+
+#### setActive(e.)
+
+al hacer click que renderize componente 
+y guarde pseudoclase de css :active 
+con borde y color
+
+
+
+# Diseño, arq comp
+
+estado propio
+estado compartido 
+
+var estad actual y setState: 
+su valor inicial va a ser lo que le pasemos a setState.
+setState define su valor.  
+Después con el evento llamamos a setState y dentro a la variable de estado para modificarla. 
+Al final renderizamos al variable de estado actualizada
+
+Estado individual y compartido: 
+
+individual: el estado y la funcion controladora a en el mismo componente
+Cada componente renderizado en el padre tendrá su propio valor. 
+
+compartido: el estado y la función controladora va en el padre
+al hijo le pasamos props: onClick y la variable estado 
+en el padre renderizamos los componentes 
+en el hijo le damos valor a las props
+Cada componente renderizado en el padre tendra el valor mismo valor
+el valor que guarda en su variable estado. 
+
+
+
+# Ejemplos de cada evento: click, onChange...
+
+
+
+# Ejemplos de cada hook: useState, ...
+
+
 
 
