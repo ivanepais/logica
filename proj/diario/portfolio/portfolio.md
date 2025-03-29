@@ -8561,6 +8561,52 @@ export default function PackingList() {
 
 ## Organización de la lógica: ubicada en el return de un componente hijo, que suele tener props que espera código js, etc; este devolverá un resultado, objeto, componente o lo que sea; cuando desde el padre llamen a este componente, le pasen sus props con valores. 
 
+Otro Ej: 
+
+### fuera del return, guarda los componentes un una variable.  
+
+```
+let content;
+if (isLoggedIn) {
+  content = <AdminPanel />;
+} else {
+  content = <LoginForm />;
+}
+return (
+  <div>
+    {content}
+  </div>
+);
+
+```
+
+en return: 
+ 
+```
+<div>
+  {isLoggedIn ? (
+    <AdminPanel />
+  ) : (
+    <LoginForm />
+  )}
+</div>
+
+```
+
+y
+
+
+```
+<div>
+{isLoggedIn && <AdminPanel />}
+</div>
+
+```
+
+
+
+
+
  
 5. Listas
 
