@@ -7344,20 +7344,6 @@ export default Parent;
 ```
 
 
- 
-
-
-# Events
-
-
-
-# Hooks
-
-
-
-# Lifecycle
-
-
 
 # Vista
 
@@ -7400,7 +7386,7 @@ con borde y color
 
 
 
-# Diseño, arq comp
+# Rs conceptos Diseño, arq comp, etc
 
 estado propio
 estado compartido 
@@ -7424,12 +7410,1326 @@ Cada componente renderizado en el padre tendra el valor mismo valor
 el valor que guarda en su variable estado. 
 
 
+Props 
+Si el Padre necesita pasar información al Hijo, puede hacerlo mediante props
+Son inmutables, lo que significa que un componente hijo no puede modificar las props que recibe, solo puede usarlas.
 
+El componente hijo toma un prop como parámetro 
+lo llamamos/invocamos/escribimos dentro de su retorno. 
+Renderizamos el componente hijo dentro del padre
+invocamos a la prop y le pasamos un valor/contenido. 
+
+
+prop children
+
+la llamamos children, creamos un div dentro de este componente
+Para renderizar varios elementos más. 
+llamamos a children dentro de este contenedor. 
+Renderizamos el contenedor en un componente padre 
+No usamos como contenedor <div></div o <></> 
+Pasamos a usar <Contenedor>...elementos...</contenedor> 
+
+Ej: App puede pasar un h2 y un p como contenido del contenedor.
+
+
+Estado vs props
+
+
+Es un objeto que almacena datos internos de un componente y puede cambiar con el tiempo.
+A diferencia de props, que son inmutables y vienen de un componente padre, el estado es mutable y lo maneja el propio componente
+
+
+
+Objetos y arrays en state:
+
+
+Hooks
+
+useEffect: maneja efectos secundarios (fetch, timers, eventos)
+useEffect se ejecuta después del render y puede hacer cosas como:
+
+Llamadas a APIs (fetch).
+Suscribirse/desuscribirse a eventos.
+Actualizar el DOM.
+
+useContext: compartir estado global sin prop drilling
+useContext evita tener que pasar props manualmente por varios niveles.
+
+useReducer: alternativa a useState para estados complejos
+useReducer es útil para gestionar lógica más compleja que useState.
+
+
+useRef: referencias a elementos del DOM
+se usa para:
+Acceder a elementos del DOM sin useState.
+Mantener valores sin provocar re-render
+
+Custom Hooks: Reutilizar lógica en varios componentes
+
+
+
+Eventos
+
+Se manejan mediante camelCase (ejemplo: onClick en lugar de onclick).
+Se pasan como funciones dentro de JSX (ejemplo: {handleClick} en lugar de "handleClick()").
+Se usa event.preventDefault() en lugar de return false para prevenir comportamientos por defecto.
+
+Pueden recibir parámetros y el objeto event con sus props y metodos
+event.preventDefault()
+
+Eventos Compuestos (onMouseEnter, onKeyDown, etc.)
+
+onClick: Cuando se hace clic en un elemento
+
+onChange: Cuando cambia el valor de un input
+
+onMouseEnter: Cuando el mouse entra en un elemento
+
+onMouseLeave: Cuando el mouse sale de un elemento
+
+onKeyDown: Cuando se presiona una tecla
+
+onSubmit: Cuando se envía un formulario
+
+
+Eventos con listas (key e item) y eventos sinteticos
+
+
+props, eventos y estado: 
+
+variable de estado, funcion para cambiar variable estado o darle un valor 
+en un controlador de evento llamamos a la func y la variable para actualizar su valor. 
+
+renderizado condicional: 
+Con un if evaluamos el valor actual de la variable de estdo
+Si tiene un valor hacemos una cosa y si tiene un valor distinto hacemos otra.
+O directamente chequeamos el valor que tiene y devolvemos una cosa. 
+
+
+diseño arq: 
+
+maqueta: componentes en jerarquia 
+
+version estatica: props información que tienen que recibir los componentes
+No puede cambiar 
+
+estado: información o contenido que tienen que almacenar.
+Puede cambiar. 
+
+ubicación: 
+
+Inversion de estado: compartir datos almacenados. 
+
+1. interfaz de usuario en una jerarquía de componentes: 
+
+Componente o funcion; una responsabilidad
+
+Programación: use las mismas técnicas para decidir si debe crear una nueva función u objeto. 
+Una de esas técnicas es el principio de responsabilidad única, es decir, un componente idealmente solo debería hacer una cosa. 
+Si termina creciendo, debe descomponerse en subcomponentes más pequeños.
+
+CSS: considere para qué crearía selectores de clase. 
+(Sin embargo, los componentes son un poco menos granulares).
+
+Diseño: considere cómo organizaría las capas del diseño.
+
+(app, pic, main (bio, links), icons)
+
+
+2. versión estática
+crear una versión estática que represente tu modelo de datos
+interfaz de usuario de tu modelo de datos pasen datos mediante props.
+componentes que reutilicen otros componentes 
+(app y main reutilizan componentes)
+
+props son una forma de pasar datos de padre a hijo
+esta familiarizado con el concepto de estado/state. 
+El estado es para la interactividad, los datos que cambian con el tiempo
+
+Puede crear de "arriba hacia abajo" comenzando por crear los componentes que se encuentran más arriba en la jerarquía 
+o de "abajo hacia arriba" trabajando desde los componentes que se encuentran más abajo. 
+En los ejemplos más simples, suele ser más fácil hacerlo de arriba hacia abajo. 
+En proyectos más grandes, es más fácil hacerlo de abajo hacia arriba.
+
+Después de crear los componentes, tendrás una biblioteca de componentes reutilizables que representan tu modelo de datos. 
+Como se trata de una aplicación estática, los componentes solo devolverán JSX. 
+
+El componente en la parte superior de la jerarquía (FilterableProductTable) tomará tu modelo de datos como propiedad. 
+(la api products)
+Esto se denomina flujo de datos unidireccional porque los datos fluyen hacia abajo desde el componente de nivel superior hasta los que se encuentran en la parte inferior del árbol.
+
+(App, Pic, Main (bio (Biotxt y Links), Icons)
+icons(prop: onClick)
+links(prop: onClick)
+bio (prop: onClick)
+
+
+3. Encuentra la representación mínima pero completa del estado de la interfaz de usuario
+
+Para que la interfaz de usuario sea interactiva, debe permitir que los usuarios cambien el modelo de datos subyacente. 
+Para ello, utilizará el estado.
+conjunto mínimo de datos cambiantes que su aplicación necesita recordar. 
+mantenerlo DRY (no repetirse).
+
+Determine la representación mínima absoluta del estado que necesita su aplicación y calcule todo lo demás a pedido. 
+Las estructuras para almacenar los datos. 
+Piense en todos los datos que la app necesita
+Los elementos de la app. 
+
+Clasificar cuales no son estado. 
+1. ¿Permanece sin cambios con el tiempo? Si es así, no es estado.
+2. ¿Se pasa desde un padre a través de propiedades? Si es así, no es estado.
+3. ¿Puedes calcularlo en función del estado o las propiedades existentes en tu componente? Si es así, ¡definitivamente no es estado!
+
+Si es prop no es estado; debe ser cambiante. 
+
+(App, Pic, Main (bio (Biotxt y Links)), Icons):
+Icons(prop: onClick)
+Links(prop: onClick)
+Bio (prop: onClick)
+  biotxt y links (eventos)
+  selectedContent y active (estados)
+
+
+4. Identifica dónde debería estar tu estado 
+
+identificar qué componente es responsable de cambiar este estado o es el propietario del estado. 
+
+React utiliza un flujo de datos unidireccional, que pasa los datos a lo largo de la jerarquía de componentes, desde el componente principal al secundario. 
+
+Para cada parte del estado de tu aplicación:
+
+1. Identifica cada componente que renderiza algo en función de ese estado.
+2. Encuentra su componente principal común más cercano (un componente por encima de todos ellos en la jerarquía).
+3. Decide dónde debería estar el estado:
+	1. A menudo, puedes colocar el estado directamente en su componente principal común.
+	2. También puedes colocar el estado en algún componente por encima de su componente principal común.
+	3. Si no puede encontrar un componente donde tenga sentido poseer el estado, cree un nuevo componente únicamente para contener el estado y agréguelo en algún lugar de la jerarquía por encima del componente principal común.
+	
+Una vez encontrado los estados en esta aplicación:
+
+En este ejemplo, siempre aparecen juntos, por lo que tiene sentido colocarlos en el mismo lugar.
+nuestra estrategia para ellos:
+
+Ej:
+1. Identifique los componentes que usan el estado:
+
+	ProductTable debe filtrar la lista de productos en función de ese estado (texto de búsqueda y valor de la casilla de verificación).
+
+	SearchBar debe mostrar ese estado (texto de búsqueda y valor de la casilla de verificación).
+
+2. Encuentre su componente principal común: el primer componente principal que comparten ambos componentes es FilterableProductTable.
+
+3. Decida dónde se encuentra el estado: mantendremos el texto de filtro y los valores del estado marcado en FilterableProductTable.
+
+
+Luego, pase filterText y inStockOnly a ProductTable y SearchBar como propiedades:
+
+Son las variables de estado actual pasadas como prop. 
+
+```
+function FilterableProductTable({ products }) {
+  const [filterText, setFilterText] = useState('');
+  const [inStockOnly, setInStockOnly] = useState(false);
+
+<div>
+  <SearchBar 
+    filterText={filterText} 
+    inStockOnly={inStockOnly} />
+  <ProductTable 
+    products={products}
+    filterText={filterText}
+    inStockOnly={inStockOnly} />
+</div>
+
+```
+
+
+(App, Pic, Main (bio (Biotxt y Links)), Icons):
+Icons(prop: onClick)
+Links(prop: onClick)
+Bio (prop: onClick) -> tiene los elementos que necesitan eventos y estados cambiantes. 
+  biotxt y links (eventos)
+  selectedContent y active (estados)  
+
+
+5. Agrega un flujo de datos inverso
+
+Actualmente, tu aplicación se renderiza correctamente con propiedades y estados que fluyen hacia abajo en la jerarquía. 
+Pero para cambiar el estado de acuerdo con la entrada del usuario, necesitarás admitir que los datos fluyan en sentido contrario: 
+los componentes del formulario en las profundidades de la jerarquía deben actualizar el estado en FilterableProductTable.
+React hace que este flujo de datos sea explícito, pero requiere un poco más de escritura que el enlace de datos bidireccional. 
+
+Si intentas escribir o marcar la casilla en el ejemplo anterior, verás que React ignora tu entrada. 
+Dado que el estado filterText nunca se establece, la entrada nunca cambia.
+Quieres que cada vez que el usuario cambie las entradas del formulario, el estado se actualice para reflejar esos cambios. 
+
+
+ 
 # Ejemplos de cada evento: click, onChange...
 
 
 
+
 # Ejemplos de cada hook: useState, ...
+
+
+
+
+# Estilo dinamico con react 
+
+1. 
+Ej: 
+
+```
+function ProductRow({ product }) {
+  const name = product.stocked ? product.name :
+    <span style={{ color: 'red' }}>
+      {product.name}
+    </span>;
+    
+    return (
+    <tr>
+      <td>{name}</td>
+      <td>{product.price}</td>
+    </tr>
+  );
+}
+```
+
+Tomará product del modelo como prop.
+name es un condicional que guardará cuando verifique que el producto esté en stock. 
+Si no lo está, aplica un estilo al elemento span. 
+span contiene product.name del modelo de datos. 
+
+renderizará name y product.price
+
+
+2. 
+
+
+
+
+# Renderización condicional directa 
+
+Sin var == valorA; var == valorB
+(aunque puede ser que los necesite para guardar contenido/dats)
+No usan la variable estado. 
+Directamente setState() con valorA o valorB
+Sin props 
+
+
+```
+const { useState } = React
+
+function Body() {
+  const [appStarted, setAppStarted] = useState(false)
+
+  return (
+    <div className="container">
+      {appStarted ? (
+        <div>
+          <h2>Hidden Content</h2>
+        </div>
+      ) : (
+        <div className="start-container">
+          <h2>Click Start To View The Application</h2>
+          <button onClick={ () => setAppStarted(true) } className='btn'>Start!</button>
+        </div>
+      )}
+    </div>
+  )
+}
+
+
+ReactDOM.render(<Body />, document.getElementById("root"))
+
+```
+
+
+
+# React Docs
+
+
+## Props
+
+
+## Events
+
+
+## Hooks
+
+
+## Lifecycle
+
+
+
+# Entendimiento Log, Vista React 
+
+Log: prop, vars, estado, func, etc; estruct, etc. 
+
+return() -> representa la vista
+tambien se puede aplicar código con {}
+
+Va a leer todo lo que este en un estado "activo" -> {}()
+no todo el código. 
+
+Antes del evento solo funciona estado, la log del estado y los element
+El evento es lo ultimo de todo o como lo haga el usuario. 
+
+
+```
+function Bio() {
+  
+  const styleActive = () => {
+    
+    const activeBtn = document.querySelector(".bp-btn"); 
+    //activeBtn.classList.add("active");
+    
+    activeBtn.style.borderBottomColor = "aqua";
+    activeBtn.style.borderBottomStyle = "solid";
+
+  }
+
+  const [selectedContent, setSelectedContent] = useState("btxt");
+  const [active, setActive] = useState(true); 
+
+
+  const biotxt = (e) => {
+    e.preventDefault(); 
+    setSelectedContent("btxt");
+    //styleActive();  
+    setActive(true); 
+  };
+  
+  const links = (e) => {
+    e.preventDefault();
+    setSelectedContent("blinks");
+    //styleActive(); 
+    setActive(true);
+  };
+
+  return (
+
+    
+    <div className="bio-container">
+
+      <div className="bio-proj">
+        <button name="button" onClick={biotxt} className="bp-btn"><img src={bio} alt="bio icon"></img></button>     
+        <button name="button" onClick={links} className="bp-btn"><img src={proyects} alt="projects icon"></img></button>
+      </div>
+
+      {selectedContent === "btxt" && <Biotxt />}
+      {selectedContent === "blinks" && <Links onClick={(e) => {e.preventDefault()}} />}
+      {active ? styleActive() : null}
+
+    </div>
+
+  );  
+}
+export default Bio;
+
+```
+
+
+# Elementos sincronizados: elem, event, estado 
+
+Para que funcione btn activ y estilo activ
+
+la solucion es compartir el estado. 
+
+
+## Diseño compartir estado
+
+(App, Pic, Main (bio (Biotxt y Links)), Icons):
+Icons(prop: onClick)
+Links(prop: onClick)
+Bio (prop: onClick) -> tiene los elementos que necesitan eventos y estados cambiantes. 
+  biotxt y links (eventos)
+  selectedContent y active (estados)  
+
+bio tiene el estado, los eventos
+y los btn que activan los eventos 
+Estos van a renderizar los componentes Biotxt y Links
+
+
+# Renderizar un componente a la vez
+
+1. Con useState
+
+```
+import { useState } from "react";
+
+const ComponentA = () => <div>Componente A</div>;
+const ComponentB = () => <div>Componente B</div>;
+const ComponentC = () => <div>Componente C</div>;
+
+const App = () => {
+  const [activeComponent, setActiveComponent] = useState("A");
+
+  return (
+    <div>
+      <button onClick={() => setActiveComponent("A")}>Mostrar A</button>
+      <button onClick={() => setActiveComponent("B")}>Mostrar B</button>
+      <button onClick={() => setActiveComponent("C")}>Mostrar C</button>
+
+      {activeComponent === "A" && <ComponentA />}
+      {activeComponent === "B" && <ComponentB />}
+      {activeComponent === "C" && <ComponentC />}
+    </div>
+  );
+};
+
+export default App;
+
+```
+
+
+2. Objeto de componentes
+
+muchos componentes, puedes mapearlos en un objeto 
+
+para evitar múltiples comparaciones:
+
+```
+const components = {
+  A: () => <div>Componente A</div>,
+  B: () => <div>Componente B</div>,
+  C: () => <div>Componente C</div>,
+};
+
+const App = () => {
+  const [activeComponent, setActiveComponent] = useState("A");
+
+  const ActiveComponent = components[activeComponent];
+
+  return (
+    <div>
+      <button onClick={() => setActiveComponent("A")}>A</button>
+      <button onClick={() => setActiveComponent("B")}>B</button>
+      <button onClick={() => setActiveComponent("C")}>C</button>
+      <ActiveComponent />
+    </div>
+  );
+};
+
+export default App;
+
+```
+
+
+3. React Router (Para cambiar componentes con rutas)
+
+Si los componentes representan vistas diferentes en una app, usar react-router-dom
+
+```
+import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
+
+const ComponentA = () => <div>Componente A</div>;
+const ComponentB = () => <div>Componente B</div>;
+const ComponentC = () => <div>Componente C</div>;
+
+const App = () => (
+  <Router>
+    <nav>
+      <Link to="/a">A</Link>
+      <Link to="/b">B</Link>
+      <Link to="/c">C</Link>
+    </nav>
+
+    <Routes>
+      <Route path="/a" element={<ComponentA />} />
+      <Route path="/b" element={<ComponentB />} />
+      <Route path="/c" element={<ComponentC />} />
+    </Routes>
+  </Router>
+);
+
+export default App;
+
+```
+
+Si los componentes son secciones que cambian dentro de la misma vista → Usa useState.
+
+Si tienes muchos componentes y quieres mantenerlo más limpio → Usa un objeto de componentes.
+
+Si los componentes representan páginas o vistas separadas → Usa react-router-dom
+
+
+
+# Btns con estilo al hacer click 
+
+1. useState para manejar el botón activo
+
+```
+import { useState } from "react";
+
+const App = () => {
+  const [activeButton, setActiveButton] = useState("A");
+
+  return (
+    <div>
+      {["A", "B", "C"].map((btn) => (
+        <button
+          key={btn}
+          onClick={() => setActiveButton(btn)}
+          style={{
+            padding: "10px 20px",
+            margin: "5px",
+            border: "none",
+            borderRadius: "5px",
+            cursor: "pointer",
+            backgroundColor: activeButton === btn ? "#4CAF50" : "#ddd",
+            color: activeButton === btn ? "white" : "black",
+          }}
+        >
+          {btn}
+        </button>
+      ))}
+    </div>
+  );
+};
+
+export default App;
+
+```
+
+
+2. styles.module.css
+
+```
+.button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  background-color: #ddd;
+  color: black;
+  transition: all 0.3s;
+}
+
+.active {
+  background-color: #4CAF50;
+  color: white;
+}
+
+```
+
+```
+import { useState } from "react";
+import styles from "./styles.module.css";
+
+const App = () => {
+  const [activeButton, setActiveButton] = useState("A");
+
+  return (
+    <div>
+      {["A", "B", "C"].map((btn) => (
+        <button
+          key={btn}
+          onClick={() => setActiveButton(btn)}
+          className={`${styles.button} ${activeButton === btn ? styles.active : ""}`}
+        >
+          {btn}
+        </button>
+      ))}
+    </div>
+  );
+};
+
+export default App;
+
+```
+
+
+
+# btns con varias clases 
+
+1. Concatenar Clases Manualmente
+
+```
+import { useState } from "react";
+
+const App = () => {
+  const [activeButton, setActiveButton] = useState("A");
+
+  return (
+    <div>
+      {["A", "B", "C"].map((btn) => (
+        <button
+          key={btn}
+          onClick={() => setActiveButton(btn)}
+          className={`px-4 py-2 rounded-md transition-all ${
+            activeButton === btn ? "bg-green-500 text-white" : "bg-gray-300 text-black"
+          }`}
+        >
+          {btn}
+        </button>
+      ))}
+    </div>
+  );
+};
+
+export default App;
+
+```
+
+
+2. Usando clsx o classnames (Mejor Legibilidad)
+
+escribir clases de forma más limpia, puedes usar clsx o classnames
+
+```
+npm install clsx   # O bien
+npm install classnames
+
+```
+
+
+con clsx
+
+```
+import { useState } from "react";
+import clsx from "clsx";
+
+const App = () => {
+  const [activeButton, setActiveButton] = useState("A");
+
+  return (
+    <div>
+      {["A", "B", "C"].map((btn) => (
+        <button
+          key={btn}
+          onClick={() => setActiveButton(btn)}
+          className={clsx(
+            "px-4 py-2 rounded-md transition-all",
+            activeButton === btn ? "bg-blue-500 text-white" : "bg-gray-300 text-black"
+          )}
+        >
+          {btn}
+        </button>
+      ))}
+    </div>
+  );
+};
+
+export default App;
+
+```
+
+
+con classnames
+
+```
+import { useState } from "react";
+import classNames from "classnames";
+
+const App = () => {
+  const [activeButton, setActiveButton] = useState("A");
+
+  return (
+    <div>
+      {["A", "B", "C"].map((btn) => (
+        <button
+          key={btn}
+          onClick={() => setActiveButton(btn)}
+          className={classNames("px-4 py-2 rounded-md transition-all", {
+            "bg-green-500 text-white": activeButton === btn,
+            "bg-gray-300 text-black": activeButton !== btn,
+          })}
+        >
+          {btn}
+        </button>
+      ))}
+    </div>
+  );
+};
+
+export default App;
+
+```
+
+
+3. Usando un Objeto de Estilos
+
+definir un objeto de estilos y asignarlo dinámicamente
+
+```
+import { useState } from "react";
+
+const buttonStyles = {
+  base: "px-4 py-2 rounded-md transition-all",
+  active: "bg-purple-500 text-white",
+  inactive: "bg-gray-300 text-black",
+};
+
+const App = () => {
+  const [activeButton, setActiveButton] = useState("A");
+
+  return (
+    <div>
+      {["A", "B", "C"].map((btn) => (
+        <button
+          key={btn}
+          onClick={() => setActiveButton(btn)}
+          className={`${buttonStyles.base} ${
+            activeButton === btn ? buttonStyles.active : buttonStyles.inactive
+          }`}
+        >
+          {btn}
+        </button>
+      ))}
+    </div>
+  );
+};
+
+export default App;
+
+```
+
+
+# useState
+
+Manejar el estado en componentes funcionales
+
+Cuando llamas a useState dentro de un componente, retorna un array con dos elementos
+
+1. El valor actual del estado.
+
+2. Una función para actualizar ese estado
+
+```
+const [estado, setEstado] = useState(valorInicial);
+
+```
+
+estado: es la variable que contiene el valor actual.
+
+setEstado: es la función que se usa para actualizar el estado.
+
+valorInicial: es el valor con el que se inicia el estado (puede ser un número, cadena, objeto, array, etc.).
+
+
+Cada actualización de estado provoca que el componente se vuelva a renderizar, mostrando el nuevo valor
+
+1. Re-renderizado: 
+
+Cada vez que actualizas el estado con setEstado, React vuelve a renderizar el componente, reflejando los cambios en la interfaz.
+
+
+2. Inmutabilidad: 
+
+Aunque actualizas el estado, no debes mutar el valor original directamente. 
+
+Usa la función setEstado para garantizar la inmutabilidad, lo cual es esencial para que React detecte los cambios.
+
+
+3. Funciones como actualización: 
+
+Si el nuevo estado depende del estado anterior, es recomendable usar una función en setEstado para asegurarte de que usas el valor más reciente:
+
+```
+setContador(prevContador => prevContador + 1);
+
+```
+
+Múltiples estados: Puedes usar varios hooks useState para manejar diferentes piezas de estado en el mismo componente.
+
+
+## useState Avanzado 
+
+Manejar objetos o arrays
+
+```
+import React, { useState } from 'react';
+
+const Usuario = () => {
+  const [user, setUser] = useState({ nombre: 'Juan', edad: 25 });
+
+  const actualizarEdad = () => {
+    // Siempre se recomienda mantener la inmutabilidad usando el spread operator
+    setUser(prevUser => ({ ...prevUser, edad: prevUser.edad + 1 }));
+  };
+
+  return (
+    <div>
+      <h2>{user.nombre}</h2>
+      <p>Edad: {user.edad}</p>
+      <button onClick={actualizarEdad}>Cumplir años</button>
+    </div>
+  );
+};
+
+export default Usuario;
+
+```
+
+Se usa un objeto para representar un usuario, y se actualiza una de sus propiedades sin modificar las demás
+
+
+
+# useEffect 
+
+Permite realizar efectos secundarios en componentes funcionales
+
+Obtener datos (fetch)
+
+Suscribirse a eventos
+
+Manipulación directa del DOM
+
+Configuración y limpieza de recursos (timers, listeners, etc.)
+
+
+Cada vez que un componente se renderiza, useEffect se ejecuta después del renderizado
+
+Puedes controlar cuándo se ejecuta pasando un array de dependencias
+
+
+1. Sin array de dependencias:
+
+Se ejecuta después de cada renderizado
+
+```
+useEffect(() => {
+  // Se ejecuta en cada renderizado
+  console.log("Renderizado o actualización");
+});
+
+```
+
+2. Array de dependencias vacío ```([])```:
+
+Se ejecuta solo una vez, similar a componentDidMount
+
+```
+useEffect(() => {
+  // Se ejecuta solo al montar el componente
+  console.log("Componente montado");
+}, []);
+
+```
+
+
+3. Dependencias específicas:
+
+Se ejecuta cuando alguna de las dependencias cambia
+
+```
+useEffect(() => {
+  // Se ejecuta cuando 'count' cambia
+  console.log(`El contador cambió a ${count}`);
+}, [count]);
+
+```
+
+## Uso de useEffect 
+
+Actualizar el título del documento cada vez que cambie un contador:
+
+```
+import React, { useState, useEffect } from "react";
+
+const ContadorConEfecto = () => {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    // Actualiza el título del documento usando la API del navegador
+    document.title = `Has clickeado ${count} veces`;
+  }, [count]); // Se ejecuta cada vez que 'count' cambia
+
+  return (
+    <div>
+      <p>Has clickeado {count} veces</p>
+      <button onClick={() => setCount(count + 1)}>Incrementar</button>
+    </div>
+  );
+};
+
+export default ContadorConEfecto;
+
+```
+
+
+## Limpieza de Efectos
+
+Algunos efectos requieren una limpieza para evitar fugas de memoria o comportamientos no deseados
+
+Por ejemplo, cuando se crea un timer o se suscribe a un evento, se recomienda limpiar en la función de retorno del efecto:
+
+```
+import React, { useState, useEffect } from "react";
+
+const Reloj = () => {
+  const [time, setTime] = useState(new Date());
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTime(new Date());
+    }, 1000);
+
+    // Función de limpieza: se ejecuta antes de desmontar el componente
+    return () => clearInterval(timer);
+  }, []); // Se ejecuta solo una vez al montar
+
+  return <div>{time.toLocaleTimeString()}</div>;
+};
+
+export default Reloj;
+
+```
+
+
+## Claves useEffect 
+
+useEffect es esencial para manejar operaciones asíncronas y efectos secundarios en componentes funcionales de React
+
+Con el manejo correcto de las dependencias y la limpieza, puedes asegurarte de que tu componente se comporte de forma predecible y eficiente
+
+
+
+# Practicas para React 
+
+# Practicas para Componentes
+
+# Practicas para CSS 
+
+
+# Practicas para useState 
+
+
+# Practicas para useEffect
+
+
+# Renderizado condicional
+
+
+# Remove event click React 
+
+
+# Importar padre en componentes hijos
+
+
+
+# JSX, JS con llaves, Renderización condicional, encapsulación de lógica y componentes puros
+
+
+1. Aplicar JSX depende de un div o un contenedor vacío. 
+
+```
+export default function TodoList() {
+  return (
+    <>
+      <h1>Hedy Lamarr's Todos</h1>
+      <img
+        src="https://i.imgur.com/yXOvdOSs.jpg"
+        alt="Hedy Lamarr"
+        className="photo"
+      />
+      <ul>
+        <li>Invent new traffic lights</li>
+        <li>Rehearse a movie scene</li>
+        <li>Improve spectrum technology</li>
+      </ul>
+    </>
+  );
+}
+
+```
+
+
+2. Se puede aplicar JS con llaves en cualquier parte del documento que guarde espacio para JS con las llaves. 
+
+```
+const person = {
+  name: 'Gregorio Y. Zara',
+  theme: {
+    backgroundColor: 'black',
+    color: 'pink'
+  }
+};
+
+export default function TodoList() {
+  return (
+    <div style={person.theme}>
+      <h1>{person.name}'s Todos</h1>
+      <img
+        className="avatar"
+        src="https://i.imgur.com/7vQD0fPs.jpg"
+        alt="Gregorio Y. Zara"
+      />
+      <ul>
+        <li>Improve the videophone</li>
+        <li>Prepare aeronautics lectures</li>
+        <li>Work on the alcohol-fuelled engine</li>
+      </ul>
+    </div>
+  );
+}
+
+```
+
+
+3. Props
+
+Los componentes de React usan props para comunicarse entre sí. 
+
+Cada componente padre puede pasar información a sus componentes hijos mediante props. 
+
+Los props pueden parecer atributos HTML, pero puedes pasar cualquier valor de JavaScript a través de ellos, incluyendo objetos, arrays, funciones e incluso JSX.
+
+Representa un espacio para completar información cuando lo invoquemos desde un componente padre
+
+```
+import { getImageUrl } from './utils.js'
+
+export default function Profile() {
+  return (
+    <Card>
+      <Avatar
+        size={100}
+        person={{
+          name: 'Katsuko Saruhashi',
+          imageId: 'YfeOqp2'
+        }}
+      />
+    </Card>
+  );
+}
+
+function Avatar({ person, size }) {
+  return (
+    <img
+      className="avatar"
+      src={getImageUrl(person)}
+      alt={person.name}
+      width={size}
+      height={size}
+    />
+  );
+}
+
+function Card({ children }) {
+  return (
+    <div className="card">
+      {children}
+    </div>
+  );
+}
+
+```
+
+## A los componentes hijos les pasas props en la definición, en sus atributos de html le pasas esta prop. A llamarlos desde el componente padre, la prop toma el lugar del atributo del componente hijo. 
+
+
+4. Las condiciones y la lógica 
+
+Tus componentes suelen necesitar mostrar diferentes elementos según las condiciones. 
+
+```
+function Item({ name, isPacked }) {
+  return (
+    <li className="item">
+      {name} {isPacked && '✅'}
+    </li>
+  );
+}
+
+export default function PackingList() {
+  return (
+    <section>
+      <h1>Sally Ride's Packing List</h1>
+      <ul>
+        <Item
+          isPacked={true}
+          name="Space suit"
+        />
+        <Item
+          isPacked={true}
+          name="Helmet with a golden leaf"
+        />
+        <Item
+          isPacked={false}
+          name="Photo of Tam"
+        />
+      </ul>
+    </section>
+  );
+}
+
+```
+
+## Organización de la lógica: ubicada en el return de un componente hijo, que suele tener props que espera código js, etc; este devolverá un resultado, objeto, componente o lo que sea; cuando desde el padre llamen a este componente, le pasen sus props con valores. 
+
+ 
+5. Listas
+
+A menudo querrás mostrar varios componentes similares de una colección de datos. 
+
+Puedes usar las funciones filter() y map() de JavaScript con React para filtrar y transformar tu array de datos en un array de componentes.
+
+Para cada elemento del array, deberás especificar una clave. 
+
+Normalmente, usarás un ID de la base de datos como clave. 
+
+Las claves permiten a React registrar la posición de cada elemento en la lista, incluso si esta cambia.
+
+```
+import { people } from './data.js';
+import { getImageUrl } from './utils.js';
+
+export default function List() {
+  const listItems = people.map(person =>
+    <li key={person.id}>
+      <img
+        src={getImageUrl(person)}
+        alt={person.name}
+      />
+      <p>
+        <b>{person.name}:</b>
+        {' ' + person.profession + ' '}
+        known for {person.accomplishment}
+      </p>
+    </li>
+  );
+  return (
+    <article>
+      <h1>Scientists</h1>
+      <ul>{listItems}</ul>
+    </article>
+  );
+}
+
+```
+
+## Lógica de listas: tomamos un objeto con otros, guardaremos el resultado unitario un una variable, usamos un metodo para tomar cada uno; lo guardamos un una variable temporal o interna que puede ser un parametro para manipular el objeto. El resultado/la variable principal lo mostraremos en el return padre/hijo. 
+
+
+6. Componentes puros
+
+. Se ocupa de sus propios asuntos. 
+
+No modifica ningún objeto ni variable existente antes de ser llamada.
+
+2. Mismas entradas, misma salida. 
+
+Con las mismas entradas, una función pura siempre debería devolver el mismo resultado.
+
+Al escribir estrictamente sus componentes como funciones puras, puede evitar toda una serie de errores desconcertantes y comportamientos impredecibles a medida que crece su código.
+
+
+### Ej componente impuro: 
+
+```
+let guest = 0;
+
+function Cup() {
+  // Bad: changing a preexisting variable!
+  guest = guest + 1;
+  return <h2>Tea cup for guest #{guest}</h2>;
+}
+
+export default function TeaSet() {
+  return (
+    <>
+      <Cup />
+      <Cup />
+      <Cup />
+    </>
+  );
+}
+
+```
+
+
+## Puedes hacer que este componente sea puro pasando una propiedad en lugar de modificar una variable preexistente:
+
+```
+function Cup({ guest }) {
+  return <h2>Tea cup for guest #{guest}</h2>;
+}
+
+export default function TeaSet() {
+  return (
+    <>
+      <Cup guest={1} />
+      <Cup guest={2} />
+      <Cup guest={3} />
+    </>
+  );
+}
+
+```
+
+## Dividimos la variable/propiedad que ibamos a manipular en un componente hijo que recibe una prop, desde el padre le pasamos el valor "dinamico". 
+
+
+7. Árboles en React
+
+React utiliza árboles para modelar las relaciones entre componentes y módulos.
+
+
+## 1. Un árbol de renderizado de React es una representación de la relación padre-hijo entre los componentes.
+
+```
+		Root Component -> top level component
+         /         \     (renders)
+     ComponA     ComponC           
+       /             \   (renders)
+    ComponB       ComponD
+       (leaf component)
+       
+```
+
+Los componentes cerca de la parte superior del árbol, cerca del componente raíz, se consideran componentes de nivel superior. 
+
+Los componentes sin componentes secundarios se denominan componentes hoja. 
+
+Esta categorización de componentes es útil para comprender el flujo de datos y el rendimiento de renderizado.
+
+
+## 2. Modelar la relación entre los módulos de JavaScript es otra forma útil de comprender la aplicación. 
+
+Lo llamamos árbol de dependencias de módulos (module dependency tree).
+
+```
+		RootModule.js
+		/     |     \      (imports)
+   ModA.js ModB.js ModC.js 
+                     \      (imports)
+                    ModD.js 
+```
+
+Las herramientas de compilación suelen utilizar un árbol de dependencias para agrupar todo el código JavaScript relevante para que el cliente lo descargue y renderice. 
+
+Un paquete grande perjudica la experiencia del usuario en aplicaciones React. 
+
+Comprender el árbol de dependencias del módulo es útil para depurar estos problemas.
+
+
+8. UI blocks
+
+Al igual que con las etiquetas HTML, puedes componer, ordenar y anidar componentes para diseñar páginas completas. 
+
+React te permite combinar tu marcado, CSS y JavaScript en "componentes" personalizados, elementos de interfaz de usuario reutilizables para tu aplicación. 
+
+```
+<PageLayout>
+  <NavigationHeader>
+    <SearchBar />
+    <Link to="/docs">Docs</Link>
+  </NavigationHeader>
+  <Sidebar />
+  <PageContent>
+    <TableOfContents />
+    <DocumentationText />
+  </PageContent>
+</PageLayout>
+
+```
+
+
+# Construcción de un componente
 
 
 
