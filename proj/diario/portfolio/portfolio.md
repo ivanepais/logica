@@ -8603,10 +8603,6 @@ y
 
 ```
 
-
-
-
-
  
 5. Listas
 
@@ -8779,4 +8775,367 @@ React te permite combinar tu marcado, CSS y JavaScript en "componentes" personal
 
 
 
+# Marcado y javascript en jsx 
 
+Cuando creamos código js en variables, obj, etc tenemos que invocarlos con {}.
+
+
+
+# Uso de lógica en props
+
+## 1. Pasar propiedades al componente hijo
+
+Primero, pasa algunas propiedades a Avatar. 
+
+Por ejemplo, pasemos dos propiedades: person (un objeto) y size (un número):
+
+```
+export default function Profile() {
+  return (
+    <Avatar
+      person={{ name: 'Lin Lanying', imageId: '1bX5QH6' }}
+      size={100}
+    />
+  );
+}
+
+```
+
+Ahora puedes leer estas propiedades dentro del componente Avatar.
+
+
+## 2. Leer props dentro del componente hijo
+
+Puedes leer estas propiedades indicando sus nombres (persona y tamaño) separados por comas dentro de ({ y }) justo después de la función Avatar. 
+
+Esto te permite usarlas dentro del código de Avatar, como lo harías con una variable.
+
+```
+function Avatar({ person, size }) {
+  // person and size are available here
+}
+
+```
+
+### Agrega lógica a Avatar que use las propiedades persona y tamaño para renderizar, y listo.
+
+Ahora puedes configurar Avatar para que se renderice de muchas maneras diferentes con diferentes propiedades.
+
+Utils.js:
+
+```
+export function getImageUrl(person, size = 's') {
+  return (
+    'https://i.imgur.com/' +
+    person.imageId +
+    size +
+    '.jpg'
+  );
+}
+
+```
+
+App.js:
+
+```
+import { getImageUrl } from './utils.js';
+
+function Avatar({ person, size }) {
+  return (
+    <img
+      className="avatar"
+      src={getImageUrl(person)}
+      alt={person.name}
+      width={size}
+      height={size}
+    />
+  );
+}
+
+export default function Profile() {
+  return (
+    <div>
+      <Avatar
+        size={100}
+        person={{ 
+          name: 'Katsuko Saruhashi', 
+          imageId: 'YfeOqp2'
+        }}
+      />
+      <Avatar
+        size={80}
+        person={{
+          name: 'Aklilu Lemma', 
+          imageId: 'OKS67lh'
+        }}
+      />
+      <Avatar
+        size={50}
+        person={{ 
+          name: 'Lin Lanying',
+          imageId: '1bX5QH6'
+        }}
+      />
+    </div>
+  );
+}
+
+```
+
+Las propiedades te permiten considerar los componentes padre e hijo de forma independiente. 
+
+Por ejemplo, puedes cambiar las propiedades de persona o tamaño dentro del Perfil sin tener que pensar en cómo las usa el Avatar. 
+
+De igual forma, puedes cambiar cómo el Avatar usa estas propiedades sin mirar el Perfil.
+
+
+# Formas de props
+
+1. Como atributo
+
+```
+export default function Profile() {
+  return (
+    <Avatar
+      person={{ name: 'Lin Lanying', imageId: '1bX5QH6' }}
+      size={100}
+    />
+  );
+}
+
+```
+
+```
+function Avatar({ person, size }) {
+  // person and size are available here
+}
+
+```
+
+
+2. Como valor/javascript que reemplaza los atributos 
+
+Utils.js:
+
+```
+export function getImageUrl(person, size = 's') {
+  return (
+    'https://i.imgur.com/' +
+    person.imageId +
+    size +
+    '.jpg'
+  );
+}
+
+```
+
+App.js:
+
+```
+import { getImageUrl } from './utils.js';
+
+function Avatar({ person, size }) {
+  return (
+    <img
+      className="avatar"
+      src={getImageUrl(person)}
+      alt={person.name}
+      width={size}
+      height={size}
+    />
+  );
+}
+
+export default function Profile() {
+  return (
+    <div>
+      <Avatar
+        size={100}
+        person={{ 
+          name: 'Katsuko Saruhashi', 
+          imageId: 'YfeOqp2'
+        }}
+      />
+      <Avatar
+        size={80}
+        person={{
+          name: 'Aklilu Lemma', 
+          imageId: 'OKS67lh'
+        }}
+      />
+      <Avatar
+        size={50}
+        person={{ 
+          name: 'Lin Lanying',
+          imageId: '1bX5QH6'
+        }}
+      />
+    </div>
+  );
+}
+
+```
+
+
+## Propagación de props
+
+A veces, el paso de props se vuelve muy repetitivo:
+
+```
+function Profile({ person, size, isSepia, thickBorder }) {
+  return (
+    <div className="card">
+      <Avatar
+        person={person}
+        size={size}
+        isSepia={isSepia}
+        thickBorder={thickBorder}
+      />
+    </div>
+  );
+}
+
+```
+
+```
+function Profile(props) {
+  return (
+    <div className="card">
+      <Avatar {...props} />
+    </div>
+  );
+}
+
+```
+
+
+## Pasando JSX como children
+
+```
+<Text />
+<Avatar />
+
+<Card>    //{children} es un espacio para js
+  <Text />
+  <Avatar />
+<Card/>
+
+```
+
+### Card se transforma en un contenedor como div o <></>
+
+Avatar.js: 
+
+```
+import { getImageUrl } from './utils.js';
+
+export default function Avatar({ person, size }) {
+  return (
+    <img
+      className="avatar"
+      src={getImageUrl(person)}
+      alt={person.name}
+      width={size}
+      height={size}
+  );
+}
+
+```
+
+App.js: 
+
+```
+import Avatar from './Avatar.js';
+
+function Card({ children }) {
+  return (
+    <div className="card">
+      {children}
+    </div>
+  );
+}
+
+export default function Profile() {
+  return (
+    <Card>
+      <Avatar
+        size={100}
+        person={{ 
+          name: 'Katsuko Saruhashi',
+          imageId: 'YfeOqp2'
+        }}
+      />
+    </Card>
+  );
+}
+
+```
+
+
+## Cómo cambian las propiedades con el tiempo
+
+El componente Reloj (abajo) recibe dos propiedades de su componente principal: color y hora. 
+
+(El código del componente principal se omite porque usa el estado, que no analizaremos por ahora).
+
+Intenta cambiar el color en el cuadro de selección (abajo).
+
+```
+export default function Clock({ color, time }) {
+  return (
+    <h1 style={{ color: color }}>
+      {time}
+    </h1>
+  );
+}
+
+```
+
+(Cuando lo llamemos: <Clock color={yellow} time={date(24hs)} />
+
+Renderizará un h1 de color yellow y el valor de time)
+
+
+Este ejemplo ilustra que un componente puede recibir diferentes propiedades a lo largo del tiempo. 
+
+¡Las propiedades no siempre son estáticas! 
+
+En este caso, la propiedad de tiempo cambia cada segundo y la propiedad de color cambia al seleccionar otro color. 
+
+Las propiedades reflejan los datos de un componente en cualquier momento, no solo al principio.
+
+
+# Lógica renderización
+
+En el componente que tiene las props
+
+El componente que las usa, les da valor y después de eso sucede a o b. 
+
+```
+function Avatar({ person, size }) {
+  return (
+    <img
+      className="avatar"
+      src={getImageUrl(person, 'b')}
+      alt={person.name}
+      width={size >= 90 ? b : s}
+      height={size >= 90 ? b : s}
+    />
+  );
+}
+
+```
+
+```
+export default function Profile() {
+  return (
+    <Avatar
+      size={40}
+      person={{ 
+        name: 'Gregorio Y. Zara', 
+        imageId: '7vQD0fP'
+      }}
+    />
+  );
+}
+```
