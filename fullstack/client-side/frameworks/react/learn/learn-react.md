@@ -497,7 +497,6 @@ export default function Profile() {
 
 ## Construir componente 
 
-
 ### 1. Exportar el componente 
 
 El prefijo predeterminado de exportación es una sintaxis estándar de JavaScript (no específica de React). 
@@ -698,7 +697,6 @@ Componentes (mayus) y etiquetas HTML (minus). Los componentes se escriben o defi
 
 ### Componente propio, siguiendo un componente puro
 
-
 ```
 function Cup({ guest }) {
   return <h2>Tea cup for guest #{guest}</h2>;
@@ -728,7 +726,7 @@ export default function HolaMundo() {
   return (
     <>
       <h1>Hola Mundo!</h1>
-      <Nombre nombre={"matias"}  />
+      <Nombre nombre="matias"  />
     </>
   );
 } 
@@ -929,7 +927,6 @@ Contenedor es un div que tiene elementos (h2, p) que no sabe qué elementos tend
 Contenedor renderiza todo lo que se encuentre entre sus etiquetas gracias a {children}.
 
 App pasa un h2 y un p como contenido del contenedor.
-
 
 
 
@@ -1568,7 +1565,7 @@ Así se ven cerradas las imágenes y los elementos de lista de Hedy Lamarr:
 ```
 
 
-3. 3. ¡CamelCase en casi todo!
+3. ¡CamelCase en casi todo!
 
 ### JSX se convierte en JavaScript y los atributos escritos en JSX se convierten en claves de objetos JavaScript. 
 
@@ -1733,7 +1730,7 @@ Aquí, "https://i.imgur.com/7vQD0fPs.jpg" y "Gregorio Y. Zara" se pasan como cad
 
 Pero ¿qué pasa si quieres especificar dinámicamente el texto de origen (src) o alternativo (alt)? 
 
-Puedes usar un valor de JavaScript reemplazando "and" por { y }:
+Puedes usar un valor de JavaScript con { y }:
 
 ```
 export default function Avatar() {
@@ -1875,9 +1872,9 @@ Puedes ver claramente el objeto JavaScript entre llaves al escribirlo así:
 
 ```
 
-La próxima vez que veas {{ and }} en JSX, recuerda que no es más que un objeto dentro de las llaves de JSX.
-Problema
+La próxima vez que veas {{ }} en JSX, recuerda que no es más que un objeto dentro de las llaves de JSX.
 
+Problema:
 
 Las propiedades de estilo en línea se escriben en mayúsculas y minúsculas. 
 
@@ -2209,7 +2206,6 @@ Sin embargo, hay un error en la forma en que la etiqueta <img> especifica su ori
 ¿Puedes solucionarlo?
 
 ```
-
 const baseUrl = 'https://i.imgur.com/';
 const person = {
   name: 'Gregorio Y. Zara',
@@ -3514,6 +3510,2504 @@ export default function Profile() {
 }
 
 ```
+
+
+
+# Renderizado Condicional
+
+Tus componentes a menudo necesitarán mostrar diferentes elementos según las condiciones. 
+
+En React, puedes renderizar JSX condicionalmente usando sintaxis JavaScript como sentencias if, && y operadores ?.
+
+Aprenderás:
+
+Cómo devolver diferentes JSX según una condición.
+Cómo incluir o excluir condicionalmente un fragmento de JSX.
+Atajos comunes de sintaxis condicional que encontrarás en las bases de código de React.
+
+
+## Retorno condicional de JSX
+
+Supongamos que tiene un componente PackingList que representa varios elementos, que pueden marcarse como empaquetados o no:
+
+App.js
+
+```
+function Item({ name, isPacked }) {
+  return <li className="item">{name}</li>;
+}
+
+export default function PackingList() {
+  return (
+    <section>
+      <h1>Sally Ride's Packing List</h1>
+      <ul>
+        <Item 
+          isPacked={true} 
+          name="Space suit" 
+        />
+        <Item 
+          isPacked={true} 
+          name="Helmet with a golden leaf" 
+        />
+        <Item 
+          isPacked={false} 
+          name="Photo of Tam" 
+        />
+      </ul>
+    </section>
+  );
+}
+
+```
+
+Cuando llaman a Item retorna un elemento de lista. 
+
+Esperá que le pasen valores para name que estará en li e isPacked. 
+
+
+Observe que algunos componentes de elemento tienen la propiedad "isPacked" establecida en "true" en lugar de "false". 
+
+Se desea agregar una marca de verificación (✅) a los elementos empaquetados si "isPacked" es "true".
+
+
+Puede escribir esto como una sentencia if/else de la siguiente manera:
+
+```
+if (isPacked) {
+  return <li className="item">{name} ✅</li>;
+}
+return <li className="item">{name}</li>;
+
+```
+
+(Si isPacked es verdaderó retorna li...
+No hay un else, pero si no es verdaderó pasará el if y retornará solo el nombre.)
+
+
+### Si la propiedad isPacked es verdadera, este código devuelve un árbol JSX diferente. 
+
+Con este cambio, algunos elementos tienen una marca de verificación al final:
+
+App.js 
+
+```
+function Item({ name, isPacked }) {
+  if (isPacked) {
+    return <li className="item">{name} ✅</li>;
+  }
+  return <li className="item">{name}</li>;
+}
+
+export default function PackingList() {
+  return (
+    <section>
+      <h1>Sally Ride's Packing List</h1>
+      <ul>
+        <Item 
+          isPacked={true} 
+          name="Space suit" 
+        />
+        <Item 
+          isPacked={true} 
+          name="Helmet with a golden leaf" 
+        />
+        <Item 
+          isPacked={false} 
+          name="Photo of Tam" 
+        />
+      </ul>
+    </section>
+  );
+}
+
+```
+
+Intenta editar lo que se devuelve en ambos casos y observa cómo cambia el resultado.
+
+
+Observa cómo creas lógica de ramificación con las sentencias if y return de JavaScript. 
+
+En React, el flujo de control (como las condiciones) lo gestiona JavaScript.
+
+
+## Retorno condicional de nada con null (no hagas nada)
+
+En algunas situaciones, no querrás renderizar nada. 
+
+Por ejemplo, supongamos que no quieres mostrar elementos empaquetados. 
+
+Un componente debe devolver algo. 
+
+En este caso, puedes devolver null:
+
+```
+if (isPacked) {
+  return null;
+}
+return <li className="item">{name}</li>;
+
+```
+
+(Si está empaquetado (true), no hagas o retornes nada. 
+
+En los demás casos retornará li con un valor de name)
+
+
+Si isPacked es verdadero, el componente no devolverá nada (null). 
+
+De lo contrario, devolverá JSX para renderizar.
+
+```
+function Item({ name, isPacked }) {
+  if (isPacked) {
+    return null;
+  }
+  return <li className="item">{name}</li>;
+}
+
+export default function PackingList() {
+  return (
+    <section>
+      <h1>Sally Ride's Packing List</h1>
+      <ul>
+        <Item 
+          isPacked={true} 
+          name="Space suit" 
+        />
+        <Item 
+          isPacked={true} 
+          name="Helmet with a golden leaf" 
+        />
+        <Item 
+          isPacked={false} 
+          name="Photo of Tam" 
+        />
+      </ul>
+    </section>
+  );
+}
+
+```
+
+En la práctica, no es común que un componente devuelva un valor nulo, ya que podría sorprender al desarrollador que intenta renderizarlo. 
+
+Más a menudo, se incluye o excluye condicionalmente el componente en el JSX del componente principal. 
+
+
+## Inclusión condicional de JSX
+
+En el ejemplo anterior, controlaste qué árbol JSX (si lo hubiera) devolvería el componente. 
+
+Quizás ya hayas notado cierta duplicación en la salida del renderizado:
+
+```
+<li className="item">{name} ✅</li>
+
+```
+
+Similar a: 
+
+```
+<li className="item">{name}</li>
+
+```
+
+### Ambas ramas condicionales devuelven <li className="item">...</li>:
+
+```
+if (isPacked) {
+  return <li className="item">{name} ✅</li>;
+}
+return <li className="item">{name}</li>;
+
+```
+
+Si bien esta duplicación no es perjudicial, podría dificultar el mantenimiento de tu código. 
+
+¿Qué sucede si quieres cambiar el nombre de la clase? 
+
+¡Tendrías que hacerlo en dos partes del código! 
+
+En tal caso, podrías incluir condicionalmente algo de JSX para que tu código sea más práctico.
+
+
+## Operador condicional (ternario) (? :)
+
+JavaScript tiene una sintaxis compacta para escribir una expresión condicional: el operador condicional u «operador ternario».
+
+En lugar de esto:
+
+```
+if (isPacked) {
+  return <li className="item">{name} ✅</li>;
+}
+return <li className="item">{name}</li>;
+
+```
+
+Podemos escribir esto: 
+
+```
+return (
+  <li className="item">
+    {isPacked ? name + ' ✅' : name}
+  </li>
+);
+
+```
+
+Puedes leerlo como “si isPacked es verdadero, entonces (?) renderizar name + ' ✅', de lo contrario (:) renderizar name”.
+
+
+
+## Ternario en JSX en profundidad
+
+¿Son estos dos ejemplos totalmente equivalentes?
+
+Si tienes experiencia en programación orientada a objetos, podrías asumir que los dos ejemplos anteriores son sutilmente diferentes, ya que uno de ellos puede crear dos "instancias" distintas de <li>. 
+
+Sin embargo, los elementos JSX no son "instancias" porque no contienen ningún estado interno ni son nodos DOM reales. 
+
+Son descripciones ligeras, como planos. 
+
+Por lo tanto, estos dos ejemplos son, de hecho, completamente equivalentes. 
+
+El apartado "Preservar y restablecer el estado" explica en detalle cómo funciona esto.
+
+
+Ahora, supongamos que desea encapsular el texto del elemento completado en otra etiqueta HTML, como <del> para eliminarlo. 
+
+### Puede agregar más saltos de línea y paréntesis para facilitar la anidación de más JSX en cada caso:
+
+```
+function Item({ name, isPacked }) {
+  return (
+    <li className="item">
+      {isPacked ? (
+        <del>
+          {name + ' ✅'}
+        </del>
+      ) : (
+        name
+      )}
+    </li>
+  );
+}
+
+export default function PackingList() {
+  return (
+    <section>
+      <h1>Sally Ride's Packing List</h1>
+      <ul>
+        <Item 
+          isPacked={true} 
+          name="Space suit" 
+        />
+        <Item 
+          isPacked={true} 
+          name="Helmet with a golden leaf" 
+        />
+        <Item 
+          isPacked={false} 
+          name="Photo of Tam" 
+        />
+      </ul>
+    </section>
+  );
+}
+
+```
+
+Este estilo funciona bien para condiciones simples, pero úselo con moderación. 
+
+### Si sus componentes se complican con demasiado marcado condicional anidado, considere extraer componentes secundarios para optimizarlo. 
+
+En React, el marcado forma parte de su código, por lo que puede usar herramientas como variables y funciones para optimizar expresiones complejas.
+
+
+## Operador lógico AND (&&)
+
+Otro atajo común que encontrarás es el operador lógico AND (&&) de JavaScript. 
+
+Dentro de los componentes de React, suele aparecer cuando se desea renderizar JSX cuando la condición es verdadera, o no renderizar nada en caso contrario. 
+
+Con &&, se puede renderizar condicionalmente la marca de verificación solo si isPacked es verdadero:
+
+```
+return (
+  <li className="item">
+    {name} {isPacked && '✅'}
+  </li>
+);
+
+```
+
+### Esto se puede interpretar como: «Si está empaquetado, entonces (&&) se representa la marca de verificación; de lo contrario, no se representa nada».
+
+```
+function Item({ name, isPacked }) {
+  return (
+    <li className="item">
+      {name} {isPacked && '✅'}
+    </li>
+  );
+}
+
+export default function PackingList() {
+  return (
+    <section>
+      <h1>Sally Ride's Packing List</h1>
+      <ul>
+        <Item 
+          isPacked={true} 
+          name="Space suit" 
+        />
+        <Item 
+          isPacked={true} 
+          name="Helmet with a golden leaf" 
+        />
+        <Item 
+          isPacked={false} 
+          name="Photo of Tam" 
+        />
+      </ul>
+    </section>
+  );
+}
+
+```
+ 
+Una expresión && de JavaScript devuelve el valor de su lado derecho (en nuestro caso, la marca de verificación) si el lado izquierdo (nuestra condición) es verdadero. 
+
+### Pero si la condición es falsa, toda la expresión se convierte en falsa. 
+
+React considera falso como un "vacío" en el árbol JSX, al igual que nulo o indefinido, y no renderiza nada en su lugar.
+
+
+Error:
+
+No coloque números en el lado izquierdo de &&.
+
+Para probar la condición, JavaScript convierte el lado izquierdo en un booleano automáticamente. 
+
+Sin embargo, si el lado izquierdo es 0, toda la expresión obtiene ese valor (0) y React renderizará 0 en lugar de nada.
+
+
+### Por ejemplo, un error común es escribir código como messageCount 
+
+```
+&& <p>New messages</p>. 
+
+```
+
+### Es fácil asumir que no renderiza nada cuando messageCount es 0, ¡pero en realidad renderiza el propio 0!
+
+
+Para solucionarlo, convierta el lado izquierdo en un booleano: 
+
+```
+messageCount > 0 && <p>New messages</p>.
+
+```
+
+
+## Asignación condicional de JSX a una variable
+
+Si los atajos dificultan la escritura de código simple, intenta usar una sentencia if y una variable. 
+
+Puedes reasignar las variables definidas con let. 
+
+### Empieza por proporcionar el contenido predeterminado que quieres mostrar: el nombre:
+
+```
+let itemContent = name;
+
+```
+
+Utilice una declaración if para reasignar una expresión JSX a itemContent si isPacked es verdadero:
+
+```
+if (isPacked) {
+  itemContent = name + " ✅";
+}
+
+```
+
+Las llaves abren la ventana de JavaScript. 
+
+Incruste la variable entre llaves en el árbol JSX devuelto, anidando la expresión previamente calculada dentro de JSX:
+
+```
+<li className="item">
+  {itemContent}
+</li>
+
+```
+
+Este estilo es el más detallado, pero también el más flexible. 
+
+```
+function Item({ name, isPacked }) {
+  let itemContent = name;
+  if (isPacked) {
+    itemContent = name + " ✅";
+  }
+  return (
+    <li className="item">
+      {itemContent}
+    </li>
+  );
+}
+
+export default function PackingList() {
+  return (
+    <section>
+      <h1>Sally Ride's Packing List</h1>
+      <ul>
+        <Item 
+          isPacked={true} 
+          name="Space suit" 
+        />
+        <Item 
+          isPacked={true} 
+          name="Helmet with a golden leaf" 
+        />
+        <Item 
+          isPacked={false} 
+          name="Photo of Tam" 
+        />
+      </ul>
+    </section>
+  );
+}
+
+```
+
+Al igual que antes, esto funciona no solo para texto, sino también para JSX arbitrario:
+
+```
+function Item({ name, isPacked }) {
+  let itemContent = name;
+  if (isPacked) {
+    itemContent = (
+      <del>
+        {name + " ✅"}
+      </del>
+    );
+  }
+  return (
+    <li className="item">
+      {itemContent}
+    </li>
+  );
+}
+
+export default function PackingList() {
+  return (
+    <section>
+      <h1>Sally Ride's Packing List</h1>
+      <ul>
+        <Item 
+          isPacked={true} 
+          name="Space suit" 
+        />
+        <Item 
+          isPacked={true} 
+          name="Helmet with a golden leaf" 
+        />
+        <Item 
+          isPacked={false} 
+          name="Photo of Tam" 
+        />
+      </ul>
+    </section>
+  );
+}
+
+```
+
+Si no estás familiarizado con JavaScript, esta variedad de estilos puede resultar abrumadora al principio. 
+
+Sin embargo, aprenderlos te ayudará a leer y escribir cualquier código JavaScript, ¡no solo componentes de React! 
+
+Elige el que prefieras para empezar y consulta esta referencia si olvidas cómo funcionan los demás.
+
+
+## Rs renderizado condicional 
+
+Resumen
+
+En React, la lógica de ramificación se controla con JavaScript.
+
+Puedes devolver una expresión JSX condicionalmente con una sentencia if.
+
+Puedes guardar condicionalmente un JSX en una variable y luego incluirlo dentro de otro JSX usando llaves.
+
+En JSX, {cond ? <A /> : <B />} significa “si cond, renderiza <A />, de lo contrario, <B />”.
+
+En JSX, {cond && <A />} significa “si cond, renderiza <A />, de lo contrario, nada”.
+
+Los atajos son comunes, pero no es necesario usarlos si prefieres un if simple.
+
+
+## Ejercicios
+
+1. Mostrar un icono para elementos incompletos con ?:
+
+Usar el operador condicional (cond ? a : b) para mostrar un ❌ si isPacked no es verdadero.
+
+```
+function Item({ name, isPacked }) {
+  return (
+    <li className="item">
+      {name} {isPacked && '✅'}
+    </li>
+  );
+}
+
+export default function PackingList() {
+  return (
+    <section>
+      <h1>Sally Ride's Packing List</h1>
+      <ul>
+        <Item 
+          isPacked={true} 
+          name="Space suit" 
+        />
+        <Item 
+          isPacked={true} 
+          name="Helmet with a golden leaf" 
+        />
+        <Item 
+          isPacked={false} 
+          name="Photo of Tam" 
+        />
+      </ul>
+    </section>
+  );
+}
+
+```
+
+Solución: 
+
+```
+function Item({ name, isPacked }) {
+  return (
+    <li className="item">
+      {name} {isPacked ? '✅' : '❌'}
+    </li>
+  );
+}
+
+```
+
+
+2. Muestra la importancia del elemento con &&
+
+En este ejemplo, cada elemento recibe una propiedad de importancia numérica. 
+
+Usa el operador && para representar "(Importance: X)" en italics, pero solo para elementos con importancia distinta de cero. 
+
+Tu lista de elementos debería quedar así:
+
+Space suit (Importance: 9)
+Helmet with a golden leaf
+Photo of Tam (Importance: 6)
+
+¡No olvides dejar un espacio entre las dos etiquetas! 
+
+```
+function Item({ name, importance }) {
+  return (
+    <li className="item">
+      {name}
+    </li>
+  );
+}
+
+export default function PackingList() {
+  return (
+    <section>
+      <h1>Sally Ride's Packing List</h1>
+      <ul>
+        <Item 
+          importance={9} 
+          name="Space suit" 
+        />
+        <Item 
+          importance={0} 
+          name="Helmet with a golden leaf" 
+        />
+        <Item 
+          importance={6} 
+          name="Photo of Tam" 
+        />
+      </ul>
+    </section>
+  );
+}
+
+```
+
+Solución
+
+```
+function Item({ name, importance }) {
+  return (
+    <li className="item">
+      {name} {importance != 0  && (<i>importance = {importance}</i>)}
+    </li>
+  );
+}
+
+```
+
+
+Solución: 
+
+Debería funcionar: 
+
+```
+function Item({ name, importance }) {
+  return (
+    <li className="item">
+      {name}
+      {importance > 0 && ' '}
+      {importance > 0 &&
+        <i>(Importance: {importance})</i>
+      }
+    </li>
+  );
+}
+
+export default function PackingList() {
+  return (
+    <section>
+      <h1>Sally Ride's Packing List</h1>
+      <ul>
+        <Item 
+          importance={9} 
+          name="Space suit" 
+        />
+        <Item 
+          importance={0} 
+          name="Helmet with a golden leaf" 
+        />
+        <Item 
+          importance={6} 
+          name="Photo of Tam" 
+        />
+      </ul>
+    </section>
+  );
+}
+
+```
+
+Tenga en cuenta que debe escribir "importancia > 0 && ..." en lugar de "importancia && ..." para que, si la importancia es 0, no se muestre "0" como resultado.
+
+
+En esta solución, se utilizan dos condiciones independientes para insertar un espacio entre el nombre y la etiqueta de importancia. 
+
+Como alternativa, puede usar un fragmento con un espacio inicial: "importancia > 0 && <> <i>...</i></>" o añadir un espacio inmediatamente dentro de "<i>": "importancia > 0 && <i> ...</i>".
+
+
+3. Refactorizar una serie de condiciones ?: a variables if y ?:
+
+Este componente Drink utiliza una serie de condiciones ?: para mostrar información diferente según si la propiedad name es "té" o "café".
+
+El problema es que la información sobre cada bebida se distribuye en varias condiciones. 
+
+Refactorice este código para usar una sola sentencia if en lugar de tres condiciones ?:.
+
+```
+function Drink({ name }) {
+  return (
+    <section>
+      <h1>{name}</h1>
+      <dl>
+        <dt>Part of plant</dt>
+        <dd>{name === 'tea' ? 'leaf' : 'bean'}</dd>
+        <dt>Caffeine content</dt>
+        <dd>{name === 'tea' ? '15–70 mg/cup' : '80–185 mg/cup'}</dd>
+        <dt>Age</dt>
+        <dd>{name === 'tea' ? '4,000+ years' : '1,000+ years'}</dd>
+      </dl>
+    </section>
+  );
+}
+
+export default function DrinkList() {
+  return (
+    <div>
+      <Drink name="tea" />
+      <Drink name="coffee" />
+    </div>
+  );
+}
+
+```
+
+Una vez que hayas refactorizado el código para usarlo, ¿tienes más ideas sobre cómo simplificarlo?
+
+
+Solución: 
+
+Hay muchas maneras de hacerlo, pero aquí hay un punto de partida:
+
+```
+function Drink({ name }) {
+  let part, caffeine, age;
+  if (name === 'tea') {
+    part = 'leaf';
+    caffeine = '15–70 mg/cup';
+    age = '4,000+ years';
+  } else if (name === 'coffee') {
+    part = 'bean';
+    caffeine = '80–185 mg/cup';
+    age = '1,000+ years';
+  }
+  return (
+    <section>
+      <h1>{name}</h1>
+      <dl>
+        <dt>Part of plant</dt>
+        <dd>{part}</dd>
+        <dt>Caffeine content</dt>
+        <dd>{caffeine}</dd>
+        <dt>Age</dt>
+        <dd>{age}</dd>
+      </dl>
+    </section>
+  );
+}
+
+export default function DrinkList() {
+  return (
+    <div>
+      <Drink name="tea" />
+      <Drink name="coffee" />
+    </div>
+  );
+}
+
+```
+
+  Definimos let part, caffeine, age;
+  
+  Si name es tea o coffe: las variables toman su valor correspondiente
+  
+  Estas variables se renderizarán en las listas. 
+
+
+
+# Renderizar listas 
+
+A menudo querrás mostrar varios componentes similares de una colección de datos. 
+
+Puedes usar los métodos de matriz de JavaScript para manipular una matriz de datos. 
+
+En esta página, usarás filter() y map() con React para filtrar y transformar tu matriz de datos en una matriz de componentes.
+
+Aprenderás:
+
+Cómo renderizar componentes de una matriz usando map() de JavaScript
+Cómo renderizar solo componentes específicos usando filter() de JavaScript
+Cuándo y por qué usar claves de React
+
+
+## Representación de datos desde arrays
+
+Supongamos que tiene una lista de contenido.
+
+```
+<ul>
+  <li>Creola Katherine Johnson: matemática</li>
+  <li>Mario José Molina-Pasquel Henríquez: químico</li>
+  <li>Mohammad Abdus Salam: físico</li>
+  <li>Percy Lavon Julian: químico</li>
+  <li>Subrahmanyan Chandrasekhar: astrofísico</li>
+</ul>
+
+```
+
+### La única diferencia entre esos elementos de lista es su contenido, sus datos. 
+
+A menudo, necesitará mostrar varias instancias del mismo componente con diferentes datos al crear interfaces: desde listas de comentarios hasta galerías de imágenes de perfil. 
+
+### En estos casos, puede almacenar esos datos en objetos y arrays de JavaScript y usar métodos como map() y filter() para representar listas de componentes a partir de ellos.
+
+
+### Generar una lista de elementos a partir de una matriz:
+
+1. Mueve los datos a una matriz:
+
+```
+const people = [
+  'Creola Katherine Johnson: mathematician',
+  'Mario José Molina-Pasquel Henríquez: chemist',
+  'Mohammad Abdus Salam: physicist',
+  'Percy Lavon Julian: chemist',
+  'Subrahmanyan Chandrasekhar: astrophysicist'
+];
+
+```
+
+2. Asigne los miembros de la clase personas a una nueva matriz de nodos JSX, listItems:
+
+```
+const listItems = people.map(person => <li>{person}</li>);
+
+```
+
+3. Devuelve los elementos de lista de tu componente envueltos en un <ul>:
+
+```
+return <ul>{listItems}</ul>;
+
+```
+
+
+```
+const people = [
+  'Creola Katherine Johnson: mathematician',
+  'Mario José Molina-Pasquel Henríquez: chemist',
+  'Mohammad Abdus Salam: physicist',
+  'Percy Lavon Julian: chemist',
+  'Subrahmanyan Chandrasekhar: astrophysicist'
+];
+
+export default function List() {
+  const listItems = people.map(person =>
+    <li>{person}</li>
+  );
+  return <ul>{listItems}</ul>;
+}
+
+```
+
+### Observe que el sandbox anterior muestra un error de consola:
+
+```
+Advertencia: Cada elemento secundario de una lista debe tener una propiedad "key" única.
+
+```
+
+Aprenderá a corregir este error más adelante en esta página. 
+
+Antes de continuar, añadamos estructura a sus datos.
+
+
+## Filtrado de matrices de elementos
+
+Estos datos se pueden estructurar aún más.
+
+```
+const people = [{
+  id: 0,
+  name: 'Creola Katherine Johnson',
+  profession: 'mathematician',
+}, {
+  id: 1,
+  name: 'Mario José Molina-Pasquel Henríquez',
+  profession: 'chemist',
+}, {
+  id: 2,
+  name: 'Mohammad Abdus Salam',
+  profession: 'physicist',
+}, {
+  id: 3,
+  name: 'Percy Lavon Julian',
+  profession: 'chemist',  
+}, {
+  id: 4,
+  name: 'Subrahmanyan Chandrasekhar',
+  profession: 'astrophysicist',
+}];
+
+```
+
+### Supongamos que busca una forma de mostrar solo las personas cuya profesión es 'químico'. 
+
+### Puede usar el método filter() de JavaScript para devolver solo esas personas. 
+
+### Este método toma un array de elementos, los pasa por una "prueba" (una función que devuelve verdadero o falso) y devuelve un nuevo array con solo los elementos que pasaron la prueba (devolvieron verdadero).
+
+
+Solo necesita los elementos cuya profesión es 'químico'. 
+
+La función "prueba" para esto se ve así: (persona) => persona.profesión === 'químico'. 
+
+Aquí se explica cómo configurarlo:
+
+
+1. Crea una nueva matriz de solo personas "químico", químicos, llamando a filter() en las personas filtrando por persona.profesión === 'químico':
+
+```
+const chemists = people.filter(person =>
+  person.profession === 'chemist'
+);
+
+```
+
+2. Ahora el mapa sobre los químicos:
+
+```
+const listItems = chemists.map(person =>
+  <li>
+     <img
+       src={getImageUrl(person)}
+       alt={person.name}
+     />
+     <p>
+       <b>{person.name}:</b>
+       {' ' + person.profession + ' '}
+       known for {person.accomplishment}
+     </p>
+  </li>
+);
+
+```
+
+3. Por último, devuelve los listItems de tu componente:
+
+```
+return <ul>{listItems}</ul>;
+
+``` 
+
+utils.js:
+
+```
+export function getImageUrl(person) {
+  return (
+    'https://i.imgur.com/' +
+    person.imageId +
+    's.jpg'
+  );
+}
+
+```
+
+
+data.js:
+
+```
+export const people = [{
+  id: 0,
+  name: 'Creola Katherine Johnson',
+  profession: 'mathematician',
+  accomplishment: 'spaceflight calculations',
+  imageId: 'MK3eW3A'
+}, {
+  id: 1,
+  name: 'Mario José Molina-Pasquel Henríquez',
+  profession: 'chemist',
+  accomplishment: 'discovery of Arctic ozone hole',
+  imageId: 'mynHUSa'
+}, {
+  id: 2,
+  name: 'Mohammad Abdus Salam',
+  profession: 'physicist',
+  accomplishment: 'electromagnetism theory',
+  imageId: 'bE7W1ji'
+}, {
+  id: 3,
+  name: 'Percy Lavon Julian',
+  profession: 'chemist',
+  accomplishment: 'pioneering cortisone drugs, steroids and birth control pills',
+  imageId: 'IOjWm71'
+}, {
+  id: 4,
+  name: 'Subrahmanyan Chandrasekhar',
+  profession: 'astrophysicist',
+  accomplishment: 'white dwarf star mass calculations',
+  imageId: 'lrWQx8l'
+}];
+
+```
+
+
+App.js
+
+```
+import { people } from './data.js';
+import { getImageUrl } from './utils.js';
+
+export default function List() {
+  const chemists = people.filter(person =>
+    person.profession === 'chemist'
+  );
+  const listItems = chemists.map(person =>
+    <li>
+      <img
+        src={getImageUrl(person)}
+        alt={person.name}
+      />
+      <p>
+        <b>{person.name}:</b>
+        {' ' + person.profession + ' '}
+        known for {person.accomplishment}
+      </p>
+    </li>
+  );
+  return <ul>{listItems}</ul>;
+}
+
+```
+
+### Advertencia en Consola: funciona pero
+
+```
+Cada elemento secundario de una lista debe tener una propiedad "key" única.
+
+Consulta el método de renderizado de `List`. Consulta https://react.dev/link/warning-keys para más información.
+
+```
+
+### Error
+
+Error
+
+#### Las funciones flecha devuelven implícitamente la expresión justo después de =>, por lo que no se necesitaba una sentencia return:
+
+```
+const listItems = chemists.map(person =>
+<li>...</li> // ¡Retorno implícito!
+);
+
+```
+
+#### Sin embargo, debe escribir return explícitamente si su => va seguido de una llave {.
+
+```
+const listItems = chemists.map(person => { // Llave
+return <li>...</li>;
+});
+
+```
+
+Se dice que las funciones flecha que contienen => { tienen un "cuerpo de bloque". 
+
+Permiten escribir más de una línea de código, pero debe escribir una sentencia return. 
+
+Si la olvida, no se devuelve nada.
+
+
+### Tenemos dos funciones flechas con una sola sentencia pero con varios elementos. 
+
+
+## Mantener los elementos de la lista ordenados con clave
+
+### Observe que todos los entornos de pruebas anteriores muestran un error en la consola:
+
+```
+Warning: Each child in a list should have a unique “key” prop.
+
+```
+
+Debe asignar una clave a cada elemento de la matriz: una cadena o un número que lo identifique de forma única entre los demás elementos de la matriz:
+
+```
+<li key={person.id}>...</li>
+
+```
+
+Nota:
+
+Los elementos JSX directamente dentro de una llamada map() siempre necesitan claves.
+
+
+Las claves indican a React a qué elemento del array corresponde cada componente, para que pueda compararlos posteriormente. 
+
+Esto es importante si los elementos del array pueden moverse (por ejemplo, debido a la ordenación), insertarse o eliminarse. 
+
+Una clave bien elegida ayuda a React a inferir qué ha sucedido exactamente y a realizar las actualizaciones correctas en el árbol DOM.
+
+
+En lugar de generar claves sobre la marcha, debería incluirlas en sus datos:
+
+data.js
+
+```
+export const people = [{
+  id: 0, // Used in JSX as a key
+  name: 'Creola Katherine Johnson',
+  profession: 'mathematician',
+  accomplishment: 'spaceflight calculations',
+  imageId: 'MK3eW3A'
+}, {
+  id: 1, // Used in JSX as a key
+  name: 'Mario José Molina-Pasquel Henríquez',
+  profession: 'chemist',
+  accomplishment: 'discovery of Arctic ozone hole',
+  imageId: 'mynHUSa'
+}, {
+  id: 2, // Used in JSX as a key
+  name: 'Mohammad Abdus Salam',
+  profession: 'physicist',
+  accomplishment: 'electromagnetism theory',
+  imageId: 'bE7W1ji'
+}, {
+  id: 3, // Used in JSX as a key
+  name: 'Percy Lavon Julian',
+  profession: 'chemist',
+  accomplishment: 'pioneering cortisone drugs, steroids and birth control pills',
+  imageId: 'IOjWm71'
+}, {
+  id: 4, // Used in JSX as a key
+  name: 'Subrahmanyan Chandrasekhar',
+  profession: 'astrophysicist',
+  accomplishment: 'white dwarf star mass calculations',
+  imageId: 'lrWQx8l'
+}];
+
+```
+
+App.js
+
+```
+import { people } from './data.js';
+import { getImageUrl } from './utils.js';
+
+export default function List() {
+  const listItems = people.map(person =>
+    <li key={person.id}>
+      <img
+        src={getImageUrl(person)}
+        alt={person.name}
+      />
+      <p>
+        <b>{person.name}</b>
+          {' ' + person.profession + ' '}
+          known for {person.accomplishment}
+      </p>
+    </li>
+  );
+  return <ul>{listItems}</ul>;
+}
+
+```
+
+
+## En profundidad: Visualización de varios nodos DOM para cada elemento de la lista
+
+¿Qué se hace cuando cada elemento necesita representar no uno, sino varios nodos del DOM?
+
+
+La sintaxis corta de fragmentos <>...</> no permite pasar una clave, por lo que se deben agrupar en un solo <div> o usar la sintaxis de fragmentos <Fragment>, un poco más larga y explícita:
+
+```
+import { Fragment } from 'react';
+
+// ...
+
+const listItems = people.map(person =>
+  <Fragment key={person.id}>
+    <h1>{person.name}</h1>
+    <p>{person.bio}</p>
+  </Fragment>
+);
+
+```
+
+Los fragmentos desaparecen del DOM, por lo que esto producirá una lista plana de <h1>, <p>, <h1>, <p>, etc.
+
+
+## Dónde obtener tu clave
+
+Diferentes fuentes de datos proporcionan diferentes fuentes de claves:
+
+1. Datos de una base de datos: Si tus datos provienen de una base de datos, puedes usar las claves/ID de la base de datos, que son únicas por naturaleza.
+
+2. Datos generados localmente: Si tus datos se generan y almacenan localmente (por ejemplo, notas en una aplicación para tomar notas), usa un contador incremental, crypto.randomUUID() o un paquete como uuid al crear elementos.
+
+
+## Reglas de las claves
+
+1. Las claves deben ser únicas entre los nodos hermanos. Sin embargo, se pueden usar las mismas claves para nodos JSX en diferentes matrices.
+
+2. Las claves no deben cambiar, ya que esto anularía su propósito. No las genere durante el renderizado.
+
+
+## ¿Por qué React necesita claves?
+
+Imagina que los archivos de tu escritorio no tuvieran nombre. 
+
+En su lugar, te referirías a ellos por su orden: el primer archivo, el segundo archivo, y así sucesivamente. 
+
+Podrías acostumbrarte, pero al eliminar un archivo, se volvería confuso. 
+
+El segundo archivo se convertiría en el primero, el tercero en el segundo, y así sucesivamente.
+
+
+### Los nombres de archivo en una carpeta y las claves JSX en un array tienen una función similar. 
+
+Nos permiten identificar de forma única un elemento entre sus hermanos. 
+
+Una clave bien elegida proporciona más información que la posición dentro del array. 
+
+### Incluso si la posición cambia debido a la reordenación, la clave permite a React identificar el elemento durante su ciclo de vida.
+
+
+## Error
+
+### Podrías tener la tentación de usar el índice de un elemento en el array como clave. 
+
+### De hecho, eso es lo que React usará si no especificas ninguna clave. 
+
+Sin embargo, el orden en que renderizas los elementos cambiará con el tiempo si se inserta, se elimina o se reordena el array. 
+
+Usar el índice como clave suele provocar errores sutiles y confusos.
+
+
+De igual forma, no generes claves sobre la marcha, por ejemplo, con key={Math.random()}. 
+
+Esto provocará que las claves nunca coincidan entre renderizaciones, lo que provocará que todos tus componentes y el DOM se vuelvan a crear cada vez. 
+
+Esto no solo es lento, sino que también perderá cualquier entrada del usuario dentro de los elementos de la lista. 
+
+En su lugar, usa un ID estable basado en los datos.
+
+
+### Ten en cuenta que tus componentes no recibirán key como propiedad. 
+
+React solo la usa como una pista. 
+
+### Si tu componente necesita un ID, debes pasarlo como una propiedad independiente: <Profile key={id} userId={id} />.
+
+
+## Rs renderizado de listas
+
+Aprendiste:
+
+Cómo mover datos de componentes a estructuras de datos como arrays y objetos.
+Cómo generar conjuntos de componentes similares con map() de JavaScript.
+Cómo crear arrays de elementos filtrados con filter() de JavaScript.
+Por qué y cómo establecer una clave en cada componente de una colección para que React pueda rastrearlos incluso si su posición o datos cambian.
+
+
+## Ejercicios
+
+1. Dividir una lista en dos
+
+Este ejemplo muestra una lista de todas las personas.
+
+
+Modifíquela para mostrar dos listas separadas, una tras otra: Químicos y Todos los demás. 
+
+Como antes, puede determinar si una persona es químico comprobando si person.profession === 'chemist'.
+
+ 
+data.js
+
+```
+export const people = [{
+  id: 0,
+  name: 'Creola Katherine Johnson',
+  profession: 'mathematician',
+  accomplishment: 'spaceflight calculations',
+  imageId: 'MK3eW3A'
+}, {
+  id: 1,
+  name: 'Mario José Molina-Pasquel Henríquez',
+  profession: 'chemist',
+  accomplishment: 'discovery of Arctic ozone hole',
+  imageId: 'mynHUSa'
+}, {
+  id: 2,
+  name: 'Mohammad Abdus Salam',
+  profession: 'physicist',
+  accomplishment: 'electromagnetism theory',
+  imageId: 'bE7W1ji'
+}, {
+  id: 3,
+  name: 'Percy Lavon Julian',
+  profession: 'chemist',
+  accomplishment: 'pioneering cortisone drugs, steroids and birth control pills',
+  imageId: 'IOjWm71'
+}, {
+  id: 4,
+  name: 'Subrahmanyan Chandrasekhar',
+  profession: 'astrophysicist',
+  accomplishment: 'white dwarf star mass calculations',
+  imageId: 'lrWQx8l'
+}];
+
+```
+
+App.js
+
+```
+import { people } from './data.js';
+import { getImageUrl } from './utils.js';
+
+export default function List() {
+  const listItems = people.map(person =>
+    <li key={person.id}>
+      <img
+        src={getImageUrl(person)}
+        alt={person.name}
+      />
+      <p>
+        <b>{person.name}:</b>
+        {' ' + person.profession + ' '}
+        known for {person.accomplishment}
+      </p>
+    </li>
+  );
+  return (
+    <article>
+      <h1>Scientists</h1>
+      <ul>{listItems}</ul>
+    </article>
+  );
+}
+
+```
+
+
+Solución:
+
+Químicos: 
+
+## Lista de químicos
+
+### 1. Creamos un array de químicos pasando filter a los datos de personas (people)
+
+### Al param local person le asignamos/guardamos la propiedad profession de people.
+
+### Usamos profession. 
+
+```
+const chemists = people.filter(person =>
+  person.profession === 'chemist'
+);
+
+```
+
+## 2. Mostrar lista de químicos
+
+chemist.id ?
+
+```
+const chemistList = chemists.map(person =>
+  <li key={person.id}>
+     <img
+       src={getImageUrl(person)}
+       alt={person.name}
+     />
+     <p>
+       <b>{person.name}:</b>
+       {' ' + person.profession + ' '}
+       known for {person.accomplishment}
+     </p>
+  </li>
+);
+
+```
+
+### 3. Retornar la lista de químicos:
+
+```
+return(
+  <article>
+    <h1>Scientists</h1>
+    <ul>{chemistList}</ul>
+  </article>
+  
+);
+
+```
+
+
+## lista de lo demás: 
+ 
+```
+const everyoneElse = people.filter(person =>
+  person.profession !== 'chemist'
+);
+
+```
+
+```
+const everyone = everyoneElse.map(person =>
+  <li key={person.id}>
+     <img
+       src={getImageUrl(person)}
+       alt={person.name}
+     />
+     <p>
+       <b>{person.name}:</b>
+       {' ' + person.profession + ' '}
+       known for {person.accomplishment}
+     </p>
+  </li>
+);
+
+```
+
+```
+return(
+  <article>
+    <h1>Scientists</h1>
+    <ul>{everyone}</ul>
+  </article>
+  
+);
+
+```
+
+
+Solución
+
+Podrías usar filter() dos veces, creando dos matrices separadas y luego mapearlas sobre ambas:
+
+```
+import { people } from './data.js';
+import { getImageUrl } from './utils.js';
+
+export default function List() {
+  const chemists = people.filter(person =>
+    person.profession === 'chemist'
+  );
+  const everyoneElse = people.filter(person =>
+    person.profession !== 'chemist'
+  );
+  return (
+    <article>
+      <h1>Scientists</h1>
+      <h2>Chemists</h2>
+      <ul>
+        {chemists.map(person =>
+          <li key={person.id}>
+            <img
+              src={getImageUrl(person)}
+              alt={person.name}
+            />
+            <p>
+              <b>{person.name}:</b>
+              {' ' + person.profession + ' '}
+              known for {person.accomplishment}
+            </p>
+          </li>
+        )}
+      </ul>
+      <h2>Everyone Else</h2>
+      <ul>
+        {everyoneElse.map(person =>
+          <li key={person.id}>
+            <img
+              src={getImageUrl(person)}
+              alt={person.name}
+            />
+            <p>
+              <b>{person.name}:</b>
+              {' ' + person.profession + ' '}
+              known for {person.accomplishment}
+            </p>
+          </li>
+        )}
+      </ul>
+    </article>
+  );
+}
+
+```
+
+
+
+### Fragment en item func o component o en App
+
+```
+import { Fragment } from 'react';
+
+// ...
+
+const listItems = people.map(person =>
+  <Fragment key={person.id}>
+    <h1>{person.name}</h1>
+    <p>{person.bio}</p>
+  </Fragment>
+);
+
+```
+
+Teníamos:
+
+```
+import { people } from './data.js';
+import { getImageUrl } from './utils.js';
+
+export default function List() {
+  const listItems = people.map(person =>
+    <li key={person.id}>
+      <img
+        src={getImageUrl(person)}
+        alt={person.name}
+      />
+      <p>
+        <b>{person.name}</b>
+          {' ' + person.profession + ' '}
+          known for {person.accomplishment}
+      </p>
+    </li>
+  );
+  return <ul>{listItems}</ul>;
+}
+
+```
+
+
+2. Listas anidadas en un componente
+
+¡Crea una lista de recetas a partir de este array! 
+
+Para cada receta del array, muestra su nombre como <h2> y enumera sus ingredientes como <ul>.
+
+data.js
+
+```
+export const recipes = [{
+  id: 'greek-salad',
+  name: 'Greek Salad',
+  ingredients: ['tomatoes', 'cucumber', 'onion', 'olives', 'feta']
+}, {
+  id: 'hawaiian-pizza',
+  name: 'Hawaiian Pizza',
+  ingredients: ['pizza crust', 'pizza sauce', 'mozzarella', 'ham', 'pineapple']
+}, {
+  id: 'hummus',
+  name: 'Hummus',
+  ingredients: ['chickpeas', 'olive oil', 'garlic cloves', 'lemon', 'tahini']
+}];
+
+```
+
+Apps.js
+
+```
+import { recipes } from './data.js';
+
+export default function RecipeList() {
+  return (
+    <div>
+      <h1>Recipes</h1>
+    </div>
+  );
+}
+
+```
+
+
+Solución: 
+
+## recetas
+
+### 1. Creamos un array de químicos pasando filter a los datos de personas (people)
+
+### Al param local person le asignamos/guardamos la propiedad profession de people.
+
+### Usamos profession. 
+
+```
+const recipe = recipes.filter(recipe =>
+  recipe.id; 
+);
+
+```
+
+## 2. Mostrar lista de recetas
+
+```
+const recipeList = recipe.map(recipe =>
+  <div>
+    <h1>Recipes</h1>
+    <ul>
+      <h1>{recipe.id}</h1>
+      
+      {recipeList}
+    </ul>
+  </div>
+);
+
+```
+
+### 3. recetas:
+
+```
+return(
+  <article>
+    <h1>Recipes</h1>
+    <ul>{recipeList}</ul>
+  </article>
+  
+);
+
+```
+
+
+Solución: 
+
+Esto requerirá anidar dos llamadas de mapa diferentes.
+
+```
+import { recipes } from './data.js';
+
+export default function RecipeList() {
+  return (
+    <div>
+      <h1>Recipes</h1>
+      {recipes.map(recipe =>
+        <div key={recipe.id}>
+          <h2>{recipe.name}</h2>
+          <ul>
+            {recipe.ingredients.map(ingredient =>
+              <li key={ingredient}>
+                {ingredient}
+              </li>
+            )}
+          </ul>
+        </div>
+      )}
+    </div>
+  );
+}
+
+```
+
+
+3. Extracción de un componente de lista
+
+Este componente RecipeList contiene dos llamadas de mapa anidadas. 
+
+Para simplificarlo, extraiga un componente Recipe que acepte las propiedades id, name e Ingredients. 
+
+¿Dónde se coloca la clave externa y por qué?
+
+```
+import { recipes } from './data.js';
+
+export default function RecipeList() {
+  return (
+    <div>
+      <h1>Recipes</h1>
+      {recipes.map(recipe =>
+        <div key={recipe.id}>
+          <h2>{recipe.name}</h2>
+          <ul>
+            {recipe.ingredients.map(ingredient =>
+              <li key={ingredient}>
+                {ingredient}
+              </li>
+            )}
+          </ul>
+        </div>
+      )}
+    </div>
+  );
+}
+
+```
+
+Solución:
+
+Puedes copiar y pegar el JSX del mapa externo en un nuevo componente Receta y devolverlo. 
+
+Luego, puedes cambiar ```receit.name``` por ```name```, ```receit.id``` por ```id```, etc., y pasarlos como propiedades a la Receta:
+
+```
+import { recipes } from './data.js';
+
+function Recipe({ id, name, ingredients }) {
+  return (
+    <div>
+      <h2>{name}</h2>
+      <ul>
+        {ingredients.map(ingredient =>
+          <li key={ingredient}>
+            {ingredient}
+          </li>
+        )}
+      </ul>
+    </div>
+  );
+}
+
+export default function RecipeList() {
+  return (
+    <div>
+      <h1>Recipes</h1>
+      {recipes.map(recipe =>
+        <Recipe {...recipe} key={recipe.id} />
+      )}
+    </div>
+  );
+}
+
+```
+
+### Aquí, <Recipe {...recipe} key={recipe.id} /> es un atajo de sintaxis que indica "pasar todas las propiedades del objeto receta como props al componente Receta". 
+
+También se puede escribir cada prop explícitamente: <Recipe id={recipe.id} name={recipe.name} Ingredients={recipe.ingredients} key={recipe.id} />.
+
+
+Ten en cuenta que la clave se especifica en el propio <Recipe>, no en el <div> raíz devuelto por Receta. 
+
+Esto se debe a que esta clave se necesita directamente dentro del contexto del array circundante. 
+
+Anteriormente, se tenía un array de <div>, por lo que cada uno necesitaba una clave, pero ahora se tiene un array de <Recipe>. 
+
+En otras palabras, al extraer un componente, no olvides dejar la clave fuera del JSX que copias y pegas.
+
+
+4. Lista con separador
+
+Este ejemplo reproduce un famoso haiku de Tachibana Hokushi, con cada línea encerrada en una etiqueta <p>. 
+
+Su tarea consiste en insertar un separador <hr /> entre cada párrafo. 
+
+La estructura resultante debería verse así:
+
+```
+<article>
+  <p>I write, erase, rewrite</p>
+  <hr />
+  <p>Erase again, and then</p>
+  <hr />
+  <p>A poppy blooms.</p>
+</article>
+
+```
+
+Un haiku solo contiene tres líneas, pero tu solución debería funcionar con cualquier número de líneas. 
+
+Ten en cuenta que los elementos <hr /> solo aparecen entre los elementos <p>, no al principio ni al final.
+
+
+Apps.js
+
+```
+const poem = {
+  lines: [
+    'I write, erase, rewrite',
+    'Erase again, and then',
+    'A poppy blooms.'
+  ]
+};
+
+export default function Poem() {
+  return (
+    <article>
+      {poem.lines.map((line, index) =>
+        <p key={index}>
+          {line}
+        </p>
+      )}
+    </article>
+  );
+}
+
+```
+
+Este es un caso raro en el que el índice como clave es aceptable porque las líneas de un poema nunca se reordenarán).
+
+Necesitarás convertir el mapa en un bucle manual o utilizar un Fragmento.
+
+
+Puede escribir un bucle manual, insertando <hr /> y <p>...</p> en la matriz de salida a medida que avanza.
+
+```
+const poem = {
+  lines: [
+    'I write, erase, rewrite',
+    'Erase again, and then',
+    'A poppy blooms.'
+  ]
+};
+
+export default function Poem() {
+  let output = [];
+
+  // Fill the output array
+  poem.lines.forEach((line, i) => {
+    output.push(
+      <hr key={i + '-separator'} />
+    );
+    output.push(
+      <p key={i + '-text'}>
+        {line}
+      </p>
+    );
+  });
+  // Remove the first <hr />
+  output.shift();
+
+  return (
+    <article>
+      {output}
+    </article>
+  );
+}
+
+```
+
+
+# Componentes puros 
+
+Algunas funciones de JavaScript son puras. 
+
+Las funciones puras solo realizan un cálculo y nada más. 
+
+Al escribir tus componentes estrictamente como funciones puras, puedes evitar toda una serie de errores desconcertantes y comportamientos impredecibles a medida que tu base de código crece. 
+
+Sin embargo, para obtener estos beneficios, debes seguir algunas reglas.
+
+
+Aprenderás:
+
+Qué es la pureza y cómo te ayuda a evitar errores
+
+Cómo mantener los componentes puros manteniendo los cambios fuera de la fase de renderizado
+
+Cómo usar el Modo Estricto para detectar errores en tus componentes
+
+
+## Pureza: Componentes como fórmulas
+
+En informática (y especialmente en el mundo de la programación funcional), una función pura es una función con las siguientes características:
+
+1. Se ocupa de sus propios asuntos. 
+
+### No modifica ningún objeto ni variable existente antes de ser llamada.
+
+2. Mismas entradas, misma salida. 
+
+### Dadas las mismas entradas, una función pura siempre debería devolver el mismo resultado.
+
+ 
+Quizás ya conozcas un ejemplo de funciones puras: las fórmulas matemáticas.
+
+Considera esta fórmula matemática: y = 2x.
+
+Si x = 2, entonces y = 4. Siempre.
+
+Si x = 3, entonces y = 6. Siempre.
+
+Si x = 3, y no será a veces 9, -1 o 2,5, dependiendo de la hora del día o del estado del mercado de valores.
+
+Si y = 2x y x = 3, y siempre será 6.
+
+### Si convirtiéramos esto en una función de JavaScript, se vería así:
+
+y = 2x
+
+```
+function double(number) {
+  return 2 * number;
+}
+
+```
+y = 2x
+double(number) = 2 * number
+
+
+En el ejemplo anterior, double es una función pura. 
+
+Si se le pasa 3, devolverá 6. Siempre.
+
+
+React está diseñado en torno a este concepto. 
+
+### React asume que cada componente que escribes es una función pura. 
+
+Esto significa que los componentes de React que escribes siempre deben devolver el mismo JSX con las mismas entradas:
+
+App.js
+
+```
+function Recipe({ drinkers }) {
+  return (
+    <ol>    
+      <li>Boil {drinkers} cups of water.</li>
+      <li>Add {drinkers} spoons of tea and {0.5 * drinkers} spoons of spice.</li>
+      <li>Add {0.5 * drinkers} cups of milk to boil and sugar to taste.</li>
+    </ol>
+  );
+}
+
+export default function App() {
+  return (
+    <section>
+      <h1>Spiced Chai Recipe</h1>
+      <h2>For two</h2>
+      <Recipe drinkers={2} />
+      <h2>For a gathering</h2>
+      <Recipe drinkers={4} />
+    </section>
+  );
+}
+
+```
+
+### Al pasar drinkers={2} a la Receta, devolverá un JSX con 2 tazas de agua. Siempre.
+
+### Si pasa drinkers={4}, devolverá un JSX con 4 tazas de agua. Siempre.
+
+Igual que una fórmula matemática.
+
+
+Puedes pensar en tus componentes como recetas: si las sigues y no añades nuevos ingredientes durante el proceso de cocción, obtendrás el mismo plato siempre. 
+
+Ese "plato" es el JSX que el componente sirve a React para renderizar.
+
+
+## Efectos secundarios: consecuencias (no) deseadas
+
+El proceso de renderizado de React debe ser siempre puro. 
+
+### Los componentes solo deben devolver su JSX y no modificar ningún objeto o variable existente antes del renderizado, ya que esto los volvería impuros.
+
+### Aquí hay un componente que infringe esta regla.
+
+```
+let guest = 0;
+
+function Cup() {
+  // Bad: changing a preexisting variable!
+  guest = guest + 1;
+  return <h2>Tea cup for guest #{guest}</h2>;
+}
+
+export default function TeaSet() {
+  return (
+    <>
+      <Cup />
+      <Cup />
+      <Cup />
+    </>
+  );
+}
+
+```
+
+### Este componente lee y escribe una variable de invitado declarada externamente. 
+
+### Esto significa que llamarlo varias veces producirá un JSX diferente. 
+
+### Actualiza la variable global en cada llamada. 
+
+Además, si otros componentes leen "invitado", también producirán un JSX diferente, dependiendo de cuándo se renderizaron. 
+
+Esto no es predecible.
+
+
+### Volviendo a nuestra fórmula y = 2x, incluso si x = 2, no podemos confiar en que y = 4. 
+
+### Nuestras pruebas podrían fallar, nuestros usuarios quedarían desconcertados, aviones caerían del cielo; puedes ver cómo esto generaría errores confusos.
+
+
+### Puedes arreglar este componente pasando guest como propiedad en su lugar:
+
+```
+function Cup({ guest }) {
+  return <h2>Tea cup for guest #{guest}</h2>;
+}
+
+export default function TeaSet() {
+  return (
+    <>
+      <Cup guest={1} />
+      <Cup guest={2} />
+      <Cup guest={3} />
+    </>
+  );
+}
+
+```
+
+### Ahora tu componente es puro, ya que el JSX que devuelve solo depende de la propiedad {guest}.
+
+
+### En general, no deberías esperar que tus componentes se rendericen en un orden específico. 
+
+No importa si llamas a y = 2x antes o después de y = 5x: ambas fórmulas se resolverán independientemente. 
+
+### De igual manera, cada componente debe pensar por sí mismo y no intentar coordinarse ni depender de otros durante el renderizado. 
+
+El renderizado es como un examen escolar: ¡cada componente debe calcular el JSX por sí mismo!
+
+
+## En profundidad: Detectando cálculos impuros con el Modo Estricto
+
+### Aunque quizás aún no los hayas usado todos, en React hay tres tipos de entradas que puedes leer durante la renderización: propiedades, estado y contexto. 
+
+Siempre debes tratar estas entradas como de solo lectura.
+
+
+Para cambiar algo en respuesta a la entrada del usuario, debes establecer el estado en lugar de escribir en una variable. 
+
+Nunca debes modificar variables u objetos preexistentes mientras tu componente se renderiza.
+
+
+### React ofrece un "Modo Estricto" en el que llama a la función de cada componente dos veces durante el desarrollo. 
+
+### Al llamar a las funciones del componente dos veces, el Modo Estricto ayuda a detectar componentes que infringen estas reglas.
+
+
+### Observa cómo el ejemplo original mostraba "Invitado n.° 2", "Invitado n.° 4" y "Invitado n.° 6" en lugar de "Invitado n.° 1", "Invitado n.° 2" y "Invitado n.° 3". 
+
+### La función original era impura, por lo que al llamarla dos veces se interrumpía. 
+
+### Sin embargo, la versión pura corregida funciona incluso si la función se llama dos veces cada vez. 
+
+### Las funciones puras solo calculan, por lo que llamarlas dos veces no cambiará nada; al igual que llamar a double(2) dos veces no cambia el valor devuelto, y resolver y = 2x dos veces no cambia el valor de y.
+
+Mismas entradas, mismas salidas. Siempre.
+
+
+El modo estricto no tiene efecto en producción, por lo que no ralentizará la aplicación para los usuarios. 
+
+Para activar el modo estricto, puedes encapsular tu componente raíz en <React.StrictMode>. 
+
+Algunos frameworks lo hacen por defecto.
+
+
+## Mutación local: El pequeño secreto de tu componente
+
+En el ejemplo anterior, el problema residía en que el componente modificaba una variable preexistente durante el renderizado. 
+
+Esto se suele llamar "mutación" para que suene un poco más intimidante. 
+
+### Las funciones puras no mutan variables fuera de su ámbito ni objetos creados antes de la llamada; ¡eso las convierte en impuras!
+
+
+### Sin embargo, es perfectamente posible modificar variables y objetos recién creados durante el renderizado. 
+
+En este ejemplo, se crea un array ```[]```, se le asigna una variable cups y luego se le insertan una docena de cups:
+
+```
+function Cup({ guest }) {
+  return <h2>Tea cup for guest #{guest}</h2>;
+}
+
+export default function TeaGathering() {
+  let cups = [];
+  for (let i = 1; i <= 12; i++) {
+    cups.push(<Cup key={i} guest={i} />);
+  }
+  return cups;
+}
+
+``` 
+
+### (definimos cup, toma guest, retorna h2 + el valor de guest)
+
+### (definimos TeaGathering, una variable local que es un array, creamos un bucle para manipular el array local, en cada iteración va a usar .push() que le pasa por parámetro el componente hijo con el valor de su prop guest y un atributo key) al final retorna la variable local actualizada.
+
+
+## Dónde se pueden generar efectos secundarios
+
+Si bien la programación funcional se basa en gran medida en la pureza, en algún momento, algo tiene que cambiar. 
+
+¡Ese es precisamente el propósito de la programación! 
+
+### Estos cambios (actualizar la pantalla, iniciar una animación, cambiar los datos) se denominan efectos secundarios. 
+
+### Son cosas que ocurren "inmediatamente", no durante el renderizado.
+
+
+### En React, los efectos secundarios suelen pertenecer a los controladores de eventos. 
+
+Los controladores de eventos son funciones que React ejecuta al realizar alguna acción, por ejemplo, al hacer clic en un botón. 
+
+### Aunque los controladores de eventos se definen dentro del componente, ¡no se ejecutan durante el renderizado! 
+
+Por lo tanto, no es necesario que sean puros.
+
+
+### Si has agotado todas las demás opciones y no encuentras el controlador de eventos adecuado para tu efecto secundario, puedes adjuntarlo al JSX devuelto con una llamada a useEffect en el componente. 
+
+Esto le indica a React que lo ejecute más tarde, después del renderizado, cuando los efectos secundarios estén permitidos. 
+
+### Sin embargo, este enfoque debería ser tu último recurso.
+
+
+### Siempre que sea posible, intenta expresar tu lógica únicamente con el renderizado. 
+
+¡Te sorprenderá lo lejos que esto te puede llevar!
+
+
+## En profundidad: ¿Por qué React se preocupa por la pureza?
+
+Escribir funciones puras requiere práctica y disciplina. 
+
+Pero también abre oportunidades maravillosas:
+
+1. Tus componentes podrían ejecutarse en un entorno diferente, por ejemplo, ¡en el servidor! 
+
+Dado que devuelven el mismo resultado para las mismas entradas, un componente puede atender muchas solicitudes de usuario.
+
+
+2. Puedes mejorar el rendimiento omitiendo la renderización de componentes cuyas entradas no han cambiado. 
+
+Esto es seguro porque las funciones puras siempre devuelven los mismos resultados, por lo que es seguro almacenarlas en caché.
+
+
+3. Si algún dato cambia durante la renderización de un árbol de componentes profundo, React puede reiniciar la renderización sin perder tiempo en finalizar el renderizado obsoleto. 
+
+La pureza permite detener el cálculo en cualquier momento.
+
+Cada nueva funcionalidad de React que desarrollamos aprovecha la pureza. 
+
+Desde la obtención de datos hasta las animaciones y el rendimiento, mantener los componentes puros libera el poder del paradigma de React.
+
+
+## Rs componentes puros
+
+Un componente debe ser puro, es decir:
+
+	1. Se ocupa de sus propios asuntos. No debe modificar ningún objeto ni variable existente antes del renderizado.
+
+	2. Mismas entradas, misma salida. Con las mismas entradas, un componente siempre debe devolver el mismo JSX.
+
+### El renderizado puede ocurrir en cualquier momento, por lo que los componentes no deben depender de la secuencia de renderizado de los demás.
+
+### No debe mutar ninguna de las entradas que sus componentes utilizan para el renderizado. Esto incluye propiedades, estado y contexto. Para actualizar la pantalla, "establezca" el estado en lugar de mutar objetos preexistentes.
+
+### Procure expresar la lógica de su componente en el JSX que devuelve. Cuando necesite "cambiar cosas", generalmente querrá hacerlo en un controlador de eventos. Como último recurso, puede usar useEffect.
+
+Escribir funciones puras requiere algo de práctica, pero libera el poder del paradigma de React.
+
+
+## Ejercicios
+
+1. Reparar un reloj roto
+
+Este componente intenta configurar la clase CSS de <h1> como "noche" entre la medianoche y las seis de la mañana, y como "día" en el resto de los horarios. 
+
+Sin embargo, no funciona. 
+
+¿Puedes arreglar este componente?
+
+
+Puedes comprobar si tu solución funciona cambiando temporalmente la zona horaria del ordenador. 
+
+Cuando la hora actual esté entre la medianoche y las seis de la mañana, el reloj debería tener los colores invertidos.
+
+
+La renderización es un cálculo; no debería intentar "hacer" cosas. 
+
+¿Podrías expresar la misma idea de otra manera?
+
+
+Clock.js:
+
+```
+export default function Clock({ time }) {
+  let hours = time.getHours();
+  if (hours >= 0 && hours <= 6) {
+    document.getElementById('time').className = 'night';
+  } else {
+    document.getElementById('time').className = 'day';
+  }
+  return (
+    <h1 id="time">
+      {time.toLocaleTimeString()}
+    </h1>
+  );
+}
+
+```
+
+
+Solución:
+
+### Puedes arreglar este componente calculando el className e incluyéndolo en la salida de renderizado:
+
+```
+export default function Clock({ time }) {
+  let hours = time.getHours();
+  let className;
+  if (hours >= 0 && hours <= 6) {
+    className = 'night';
+  } else {
+    className = 'day';
+  }
+  return (
+    <h1 className={className}>
+      {time.toLocaleTimeString()}
+    </h1>
+  );
+}
+
+```
+
+En este ejemplo, el efecto secundario (modificar el DOM) no fue necesario. Solo se necesitaba devolver JSX.
+
+
+2. Corregir un perfil defectuoso
+
+Dos componentes de perfil se muestran uno al lado del otro con datos diferentes. 
+
+Pulsa "Contraer" en el primer perfil y luego "Expandir". 
+
+Observarás que ambos perfiles ahora muestran a la misma persona. 
+
+Esto es un error.
+
+Encuentra la causa del error y corrígela.
+
+
+Profile.js
+
+```
+import Panel from './Panel.js';
+import { getImageUrl } from './utils.js';
+
+let currentPerson;
+
+export default function Profile({ person }) {
+  currentPerson = person;
+  return (
+    <Panel>
+      <Header />
+      <Avatar />
+    </Panel>
+  )
+}
+
+function Header() {
+  return <h1>{currentPerson.name}</h1>;
+}
+
+function Avatar() {
+  return (
+    <img
+      className="avatar"
+      src={getImageUrl(currentPerson)}
+      alt={currentPerson.name}
+      width={50}
+      height={50}
+    />
+  );
+}
+
+```
+
+ 
+App.js
+
+```
+import Profile from './Profile.js';
+
+export default function App() {
+  return (
+    <>
+      <Profile person={{
+        imageId: 'lrWQx8l',
+        name: 'Subrahmanyan Chandrasekhar',
+      }} />
+      <Profile person={{
+        imageId: 'MK3eW3A',
+        name: 'Creola Katherine Johnson',
+      }} />
+    </>
+  )
+}
+
+```
+
+Solución: 
+
+El código con errores está en Profile.js. 
+
+¡Asegúrate de leerlo de principio a fin!
+
+
+El problema radica en que el componente Perfil escribe en una variable preexistente llamada currentPerson, y los componentes Encabezado y Avatar leen de ella. 
+
+Esto hace que los tres sean impuros y difíciles de predecir.
+
+Para corregir el error, elimine la variable currentPerson. 
+
+En su lugar, pase toda la información de Perfil a Encabezado y Avatar mediante propiedades. 
+
+Deberá agregar una propiedad "persona" a ambos componentes y pasarla a todos los niveles.
+
+
+Profile.js
+
+```
+import Panel from './Panel.js';
+import { getImageUrl } from './utils.js';
+
+export default function Profile({ person }) {
+  return (
+    <Panel>
+      <Header person={person} />
+      <Avatar person={person} />
+    </Panel>
+  )
+}
+
+function Header({ person }) {
+  return <h1>{person.name}</h1>;
+}
+
+function Avatar({ person }) {
+  return (
+    <img
+      className="avatar"
+      src={getImageUrl(person)}
+      alt={person.name}
+      width={50}
+      height={50}
+    />
+  );
+}
+
+```
+
+App.js
+
+```
+import Profile from './Profile.js';
+
+export default function App() {
+  return (
+    <>
+      <Profile person={{
+        imageId: 'lrWQx8l',
+        name: 'Subrahmanyan Chandrasekhar',
+      }} />
+      <Profile person={{
+        imageId: 'MK3eW3A',
+        name: 'Creola Katherine Johnson',
+      }} />
+    </>
+  );
+}
+
+```
+
+### Recuerda que React no garantiza que las funciones de los componentes se ejecuten en un orden específico, por lo que no es posible comunicarse entre ellas mediante variables. 
+
+### Toda comunicación debe realizarse mediante propiedades.
+
+
+3. Soluciona una bandeja de historias defectuosa
+
+El director ejecutivo de tu empresa te pide que añadas "historias" a tu aplicación de reloj online, y no puedes negarte. 
+
+Creaste un componente StoryTray que acepta una lista de historias, seguida de un marcador de posición "Crear historia".
+
+
+Implementaste el marcador de posición "Crear historia" insertando una historia falsa más al final de la matriz de historias que recibes como apoyo. 
+
+Pero, por alguna razón, "Crear historia" aparece más de una vez. 
+
+Soluciona el problema.
+
+
+StoryTray.js
+
+```
+export default function StoryTray({ stories }) {
+  stories.push({
+    id: 'create',
+    label: 'Create Story'
+  });
+
+  return (
+    <ul>
+      {stories.map(story => (
+        <li key={story.id}>
+          {story.label}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+```
+
+
+Solución: 
+
+### Observe cómo, cada vez que se actualiza el reloj, se añade "Crear historia" dos veces. 
+
+### Esto indica que hay una mutación durante el renderizado: el modo estricto llama a los componentes dos veces para que estos problemas sean más evidentes.
+
+
+La función StoryTray no es pura. 
+
+### Al llamar a "push" en el array de historias recibido (¡una propiedad!), está mutando un objeto que se creó antes de que StoryTray comenzara a renderizar. 
+
+Esto genera errores y dificulta su predicción.
+
+
+La solución más sencilla es no modificar el array y renderizar "Crear historia" por separado.
+
+StoryTray.js
+
+```
+export default function StoryTray({ stories }) {
+  return (
+    <ul>
+      {stories.map(story => (
+        <li key={story.id}>
+          {story.label}
+        </li>
+      ))}
+      <li>Create Story</li>
+    </ul>
+  );
+}
+
+```
+
+Como alternativa, puede crear una nueva matriz (copiando la existente) antes de insertar un elemento en ella:
+
+```
+export default function StoryTray({ stories }) {
+  // Copy the array!
+  let storiesToDisplay = stories.slice();
+
+  // Does not affect the original array:
+  storiesToDisplay.push({
+    id: 'create',
+    label: 'Create Story'
+  });
+
+  return (
+    <ul>
+      {storiesToDisplay.map(story => (
+        <li key={story.id}>
+          {story.label}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+```
+
+### Esto mantiene la mutación local y la función de renderizado pura. 
+
+Sin embargo, debe tener cuidado: por ejemplo, si intenta modificar alguno de los elementos existentes del array, también deberá clonarlos.
+
+
+### Es útil recordar qué operaciones en los arrays los mutan y cuáles no. 
+
+Por ejemplo, insertar, extraer, invertir y ordenar mutarán el array original, pero cortar, filtrar y mapear crearán uno nuevo.
+
+
+
+# UI como Árbol
+
 
 
 

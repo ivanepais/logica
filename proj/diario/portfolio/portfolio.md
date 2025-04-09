@@ -9138,4 +9138,1999 @@ export default function Profile() {
     />
   );
 }
+
 ```
+
+### Componente hijo con props -> plantilla, Componente padre -> escribe la plantilla
+
+
+## La lógica se ubicará antes del return del subcomponente que espera valores de props.
+
+```
+import { getImageUrl } from './utils.js';
+
+const ratio = window.devicePixelRatio;
+
+function Avatar({ person, size }) {
+  let thumbnailSize = 's';
+  if (size * ratio > 90) {
+    thumbnailSize = 'b';
+  }
+  return (
+    <img
+      className="avatar"
+      src={getImageUrl(person, thumbnailSize)}
+      alt={person.name}
+      width={size}
+      height={size}
+    />
+  );
+}
+
+export default function Profile() {
+  return (
+    <>
+      <Avatar
+        size={40}
+        person={{ 
+          name: 'Gregorio Y. Zara', 
+          imageId: '7vQD0fP'
+        }}
+      />
+      <Avatar
+        size={70}
+        person={{ 
+          name: 'Gregorio Y. Zara', 
+          imageId: '7vQD0fP'
+        }}
+      />
+      <Avatar
+        size={120}
+        person={{ 
+          name: 'Gregorio Y. Zara', 
+          imageId: '7vQD0fP'
+        }}
+      />
+    </>
+  );
+}
+
+```
+
+El componente avatar esperá un objeto y size. 
+
+Define una variable thumbnailSize como cadena. 
+
+### Antes de devolver algo, chequea el valor size*ratio>90 que si es verdadero cambia el valor de thumbnailSize
+
+### Antes de devolver algo aplicamos la lógica de renderizado según los valores de las props. 
+
+
+## Operador condicional (ternario) (? :)
+
+JavaScript tiene una sintaxis compacta para escribir una expresión condicional: el operador condicional u «operador ternario».
+
+En lugar de esto:
+
+```
+if (isPacked) {
+  return <li className="item">{name} ✅</li>;
+}
+return <li className="item">{name}</li>;
+
+```
+
+Podemos escribir esto: 
+
+```
+return (
+  <li className="item">
+    {isPacked ? name + ' ✅' : name}
+  </li>
+);
+
+```
+
+Puedes leerlo como “si isPacked es verdadero, entonces (?) renderizar name + ' ✅', de lo contrario (:) renderizar name”.
+
+
+
+## Ternario en JSX en profundidad
+
+¿Son estos dos ejemplos totalmente equivalentes?
+
+Si tienes experiencia en programación orientada a objetos, podrías asumir que los dos ejemplos anteriores son sutilmente diferentes, ya que uno de ellos puede crear dos "instancias" distintas de <li>. 
+
+Sin embargo, los elementos JSX no son "instancias" porque no contienen ningún estado interno ni son nodos DOM reales. 
+
+Son descripciones ligeras, como planos. 
+
+Por lo tanto, estos dos ejemplos son, de hecho, completamente equivalentes. 
+
+El apartado "Preservar y restablecer el estado" explica en detalle cómo funciona esto.
+
+
+Ahora, supongamos que desea encapsular el texto del elemento completado en otra etiqueta HTML, como <del> para eliminarlo. 
+
+### Puede agregar más saltos de línea y paréntesis para facilitar la anidación de más JSX en cada caso:
+
+```
+function Item({ name, isPacked }) {
+  return (
+    <li className="item">
+      {isPacked ? (
+        <del>
+          {name + ' ✅'}
+        </del>
+      ) : (
+        name
+      )}
+    </li>
+  );
+}
+
+export default function PackingList() {
+  return (
+    <section>
+      <h1>Sally Ride's Packing List</h1>
+      <ul>
+        <Item 
+          isPacked={true} 
+          name="Space suit" 
+        />
+        <Item 
+          isPacked={true} 
+          name="Helmet with a golden leaf" 
+        />
+        <Item 
+          isPacked={false} 
+          name="Photo of Tam" 
+        />
+      </ul>
+    </section>
+  );
+}
+
+```
+
+Este estilo funciona bien para condiciones simples, pero úselo con moderación. 
+
+### Si sus componentes se complican con demasiado marcado condicional anidado, considere extraer componentes secundarios para optimizarlo. 
+
+En React, el marcado forma parte de su código, por lo que puede usar herramientas como variables y funciones para optimizar expresiones complejas.
+
+
+
+# Lógica componente hijo y componente padre
+
+Hijo: props y return. 
+
+Padre: valor para props hijo y en return va los componentes hijos. 
+
+Como se escriben con funciones usamos el ambiente local. 
+
+1. Antes del return para aplicar lógica
+
+2. En el return del componente hijo vamos devolviendo
+las props y los elementos con lógica condicional. 
+De acuerdo a los valores que le pasará después el 
+componente padre. 
+
+
+## Ej lógica
+
+
+
+
+
+
+
+# RS React Docs
+
+## Componente
+
+HTML: 
+
+```
+<article>
+  <h1>My First Component</h1>
+  <ol>
+    <li>Components: UI Building Blocks</li>
+    <li>Defining a Component</li>
+    <li>Using a Component</li>
+  </ol>
+</article>
+
+```
+
+React:  
+
+```
+<PageLayout>
+  <NavigationHeader>
+    <SearchBar />
+    <Link to="/docs">Docs</Link>
+  </NavigationHeader>
+  <Sidebar />
+  <PageContent>
+    <TableOfContents />
+    <DocumentationText />
+  </PageContent>
+</PageLayout>
+
+```
+
+```
+export default function Profile() {
+  return (
+    <img
+      src="https://i.imgur.com/MK3eW3Am.jpg"
+      alt="Katherine Johnson"
+    />
+  )
+}
+
+```
+
+```
+return <img src="https://i.imgur.com/MK3eW3As.jpg" alt="Katherine Johnson" />;
+
+```
+
+```
+return (
+  <div>
+    <img src="https://i.imgur.com/MK3eW3As.jpg" alt="Katherine Johnson" />
+  </div>
+);
+
+```
+
+### Componente App.js:
+
+```
+function Profile() {
+  return (
+    <img
+      src="https://i.imgur.com/MK3eW3As.jpg"
+      alt="Katherine Johnson"
+    />
+  );
+}
+
+export default function Gallery() {
+  return (
+    <section>
+      <h1>Amazing scientists</h1>
+      <Profile />
+      <Profile />
+      <Profile />
+    </section>
+  );
+}
+
+```
+
+### Lo que renderiza el navegador 
+
+```
+<section>
+  <h1>Amazing scientists</h1>
+  <img src="https://i.imgur.com/MK3eW3As.jpg" alt="Katherine Johnson" />
+  <img src="https://i.imgur.com/MK3eW3As.jpg" alt="Katherine Johnson" />
+  <img src="https://i.imgur.com/MK3eW3As.jpg" alt="Katherine Johnson" />
+</section>
+
+``` 
+
+
+### Ejercicios Componente
+
+```
+function Nombre({ nombre }) {
+  return (
+    <p>{nombre}</p>
+  );
+}
+
+export default function HolaMundo() {
+  return (
+    <>
+      <h1>Hola Mundo!</h1>
+      <Nombre nombre='Matias' />
+    </>
+  );
+} 
+
+```
+
+
+## Importación y exportación
+
+App.js 
+
+```
+import Gallery from './Gallery.js';
+
+export default function App() {
+  return (
+    <Gallery />
+  );
+}
+
+```
+
+Gallery.js
+
+```
+function Profile() {
+  return (
+    <img
+      src="https://i.imgur.com/QIrZWGIs.jpg"
+      alt="Alan L. Hart"
+    />
+  );
+}
+
+export default function Gallery() {
+  return (
+    <section>
+      <h1>Amazing scientists</h1>
+      <Profile />
+      <Profile />
+      <Profile />
+    </section>
+  );
+}
+
+```
+
+### La forma en que exportas tu componente determina cómo debes importarlo. 
+
+Recibirás un error si intentas importar una exportación predeterminada de la misma manera que una con nombre. 
+
+Esta tabla puede ayudarte a realizar un seguimiento:
+
+1. Default: 
+
+export default function Button() {}
+
+import Button from './Button.js'
+
+2. Named 
+
+export function Button() {}
+
+import { Button } from './Button.js';
+
+
+Al escribir una importación predeterminada, puedes poner cualquier nombre después de la importación. 
+
+Por ejemplo, podrías escribir "import Banana from './Button.js'" y seguirías obteniendo la misma exportación predeterminada. 
+
+En cambio, con las importaciones con nombre, el nombre debe coincidir en ambos lados. 
+
+¡Por eso se llaman importaciones con nombre!
+
+
+### Se suelen usar exportaciones predeterminadas si el archivo exporta solo un componente y exportaciones con nombre si exporta varios componentes y valores. 
+
+Independientemente del estilo de codificación que prefieras, asigna siempre nombres significativos a las funciones de tus componentes y a los archivos que las contienen. 
+
+No se recomiendan los componentes sin nombre, como export default () => {}, porque dificultan la depuración.
+
+
+# Escritura de marcado con JSX
+
+HTML: 
+
+```
+<div>
+  <p></p>
+  <form>
+  </form>
+</div>
+
+```
+
+JS: 
+
+```
+isLoggedIn() {...}
+onClick() {...}
+onSubmit() {...}
+
+```
+
+React: 
+
+```
+Sidebar() {
+  if (isLoggedIn()) {
+	<p>Welcome</p>
+  }else{
+	<Form />  
+  }	
+}
+
+```
+
+Para que el navegador pueda renderizar Sidebar, el usuario debe estar logeado. 
+
+Eso lo logramos con lógica condicional. 
+
+Si no esta logeado devolvemos el componente Form.
+
+Form.js component: 
+
+```
+Form() {
+  onClick() {...}
+  onSubmit() {...}
+  <form onSubmit>
+    <input onClick />
+    <input onClick />
+  </form>
+}
+
+```
+
+
+## Reglas de JSX 
+
+1. Devolver un único elemento raíz
+
+Para devolver varios elementos de un componente, enciéndalos con una sola etiqueta principal.
+
+Por ejemplo, puede usar un <div>:
+
+```
+<div>
+  <h1>Hedy Lamarr's Todos</h1>
+  <img 
+    src="https://i.imgur.com/yXOvdOSs.jpg" 
+    alt="Hedy Lamarr" 
+    class="photo"
+  >
+  <ul>
+    ...
+  </ul>
+</div>
+
+```
+
+Si no desea agregar un <div> adicional a su marcado, puede escribir <> y </> en su lugar:
+
+```
+<>
+  <h1>Hedy Lamarr's Todos</h1>
+  <img 
+    src="https://i.imgur.com/yXOvdOSs.jpg" 
+    alt="Hedy Lamarr" 
+    class="photo"
+  >
+  <ul>
+    ...
+  </ul>
+</>
+
+```
+
+Esta etiqueta vacía se llama Fragmento. 
+
+Los Fragmentos permiten agrupar elementos sin dejar rastro en el árbol HTML del navegador.
+
+
+2. Cerrar todas las etiquetas
+
+JSX requiere que las etiquetas se cierren explícitamente: las etiquetas autocerrables como <img> deben convertirse en <img />, y las etiquetas envolventes como <li>oranges deben escribirse como <li>oranges</li>.
+
+Así se ven cerradas las imágenes y los elementos de lista de Hedy Lamarr:
+
+```
+<>
+  <img 
+    src="https://i.imgur.com/yXOvdOSs.jpg" 
+    alt="Hedy Lamarr" 
+    class="photo"
+   />
+  <ul>
+    <li>Invent new traffic lights</li>
+    <li>Rehearse a movie scene</li>
+    <li>Improve the spectrum technology</li>
+  </ul>
+</>
+
+```
+
+
+3. ¡CamelCase en casi todo!
+
+JSX se convierte en JavaScript y los atributos escritos en JSX se convierten en claves de objetos JavaScript. 
+
+En tus propios componentes, a menudo querrás leer esos atributos en variables. 
+
+Sin embargo, JavaScript tiene limitaciones en los nombres de las variables. 
+
+Por ejemplo, sus nombres no pueden contener guiones ni ser palabras reservadas, como class.
+
+
+
+## JavaScript en JSX con llaves
+
+
+### Pasar cadenas entre comillas
+
+Para pasar un atributo de cadena a JSX, se coloca entre comillas simples o dobles:
+
+App.js
+
+```
+export default function Avatar() {
+  return (
+    <img
+      className="avatar"
+      src="https://i.imgur.com/7vQD0fPs.jpg"
+      alt="Gregorio Y. Zara"
+    />
+  );
+}
+
+```
+
+
+Usando llaves:
+
+```
+export default function Avatar() {
+  const avatar = 'https://i.imgur.com/7vQD0fPs.jpg';
+  const description = 'Gregorio Y. Zara';
+  return (
+    <img
+      className="avatar"
+      src={avatar}
+      alt={description}
+    />
+  );
+}
+
+```
+
+
+Ventana a JS: 
+
+Cualquier expresión de JavaScript funcionará entre llaves, incluidas las llamadas a funciones como formatDate():
+
+```
+const today = new Date();
+
+function formatDate(date) {
+  return new Intl.DateTimeFormat(
+    'en-US',
+    { weekday: 'long' }
+  ).format(date);
+}
+
+export default function TodoList() {
+  return (
+    <h1>To Do List for {formatDate(today)}</h1>
+  );
+}
+
+```
+
+En el return pasamos una función que toma un parámetro.
+
+
+### Dónde usar llaves
+
+Solo se pueden usar llaves de dos maneras en JSX:
+
+1. Como texto directamente dentro de una etiqueta JSX: 
+
+<h1>Lista de tareas de {name}</h1> funciona, pero <{tag}>Lista de tareas de Gregorio Y. Zara</{tag}> no.
+
+2. Como atributos inmediatamente después del signo =: 
+
+src={avatar} leerá la variable avatar, pero src="{avatar}" pasará la cadena "{avatar}".
+
+
+### Doble llaves
+
+Objeto en Js: 
+
+```
+{ name: "Hedy Lamarr", inventos: 5 }
+
+```
+
+Objeto en React 
+
+```
+person={{ name: "Hedy Lamarr", inventos: 5 }}
+
+```
+
+JS-CSS-HTML en linea:
+
+```
+export default function TodoList() {
+  return (
+    <ul style={{
+      backgroundColor: 'black',
+      color: 'pink'
+    }}>
+      <li>Improve the videophone</li>
+      <li>Prepare aeronautics lectures</li>
+      <li>Work on the alcohol-fuelled engine</li>
+    </ul>
+  );
+}
+
+```
+
+Puedes ver claramente el objeto JavaScript entre llaves al escribirlo así:
+
+```
+<ul style={
+  {
+    backgroundColor: 'black',
+    color: 'pink'
+  }
+}>
+
+```
+
+CSS:
+
+HTML: 
+
+```
+<ul style="background-color: black">
+
+```
+
+Se escribiría en un componente:
+
+```
+<ul style={{ backgroundColor: 'black' }}> 
+
+```
+
+
+### Objetos en llaves
+
+#### Puedes mover varias expresiones a un solo objeto y referenciarlas en tu JSX entre llaves:
+
+```
+const person = {
+  name: 'Gregorio Y. Zara',
+  theme: {
+    backgroundColor: 'black',
+    color: 'pink'
+  }
+};
+
+export default function TodoList() {
+  return (
+    <div style={person.theme}>
+      <h1>{person.name}'s Todos</h1>
+      <img
+        className="avatar"
+        src="https://i.imgur.com/7vQD0fPs.jpg"
+        alt="Gregorio Y. Zara"
+      />
+      <ul>
+        <li>Improve the videophone</li>
+        <li>Prepare aeronautics lectures</li>
+        <li>Work on the alcohol-fuelled engine</li>
+      </ul>
+    </div>
+  );
+}
+
+```
+
+Este Componente retorna varios elementos con valores JS.
+
+
+#### Habíamos creado en un objeto (tema) dentro de otro objeto (persona)
+
+```
+const person = {
+  name: 'Gregorio Y. Zara',
+  theme: {
+    backgroundColor: 'black',
+    color: 'pink'
+  }
+};
+
+```
+
+
+En este ejemplo, el objeto JavaScript de persona contiene una cadena de nombre y un objeto de tema:
+
+```
+<div style={person.theme}>
+  <h1>{person.name}'s Todos</h1>
+
+```
+
+#### Accede a un objeto dentro de otro
+
+person.theme tiene dos propiedades: backgroundColor y color 
+
+
+#### Ejercicios JSX
+
+1. 
+
+```
+const person = {
+  name: 'Gregorio Y. Zara',
+  theme: {
+    backgroundColor: 'black',
+    color: 'pink'
+  }
+};
+
+export default function TodoList() {
+  return (
+    <div style={person.theme}>
+      <h1>{person.name}'s Todos</h1>
+      <img
+        className="avatar"
+        src="https://i.imgur.com/7vQD0fPs.jpg"
+        alt="Gregorio Y. Zara"
+      />
+      <ul>
+        <li>Improve the videophone</li>
+        <li>Prepare aeronautics lectures</li>
+        <li>Work on the alcohol-fuelled engine</li>
+      </ul>
+    </div>
+  );
+}
+
+```
+
+Tenemos un objeto person con mucha información. 
+
+Lo usamos en el componente para completar el HTML. 
+
+
+2. 
+
+```
+const person = {
+  name: 'Gregorio Y. Zara',
+  imageUrl: "https://i.imgur.com/7vQD0fPs.jpg",
+  theme: {
+    backgroundColor: 'black',
+    color: 'pink'
+  }
+};
+
+export default function TodoList() {
+  return (
+    <div style={person.theme}>
+      <h1>{person.name}'s Todos</h1>
+      <img
+        className="avatar"
+        src={person.imageUrl}
+        alt="Gregorio Y. Zara"
+      />
+      <ul>
+        <li>Improve the videophone</li>
+        <li>Prepare aeronautics lectures</li>
+        <li>Work on the alcohol-fuelled engine</li>
+      </ul>
+    </div>
+  );
+}
+
+```
+
+Le aplicamos al div todo el objeto {person.theme}.
+
+Al objeto le agregamos una nueva propiedad: imageUrl: "https://i.imgur.com/7vQD0fPs.jpg"
+
+
+3. 
+
+```
+const baseUrl = 'https://i.imgur.com/';
+const person = {
+  name: 'Gregorio Y. Zara',
+  imageId: '7vQD0fP',
+  imageSize: 's',
+  theme: {
+    backgroundColor: 'black',
+    color: 'pink'
+  }
+};
+
+export default function TodoList() {
+  return (
+    <div style={person.theme}>
+      <h1>{person.name}'s Todos</h1>
+      <img
+        className="avatar"
+        src={baseUrl + person.imageId + person.imageSize + '.jpg'}
+        alt={person.name}
+      />
+      <ul>
+        <li>Improve the videophone</li>
+        <li>Prepare aeronautics lectures</li>
+        <li>Work on the alcohol-fuelled engine</li>
+      </ul>
+    </div>
+  );
+}
+
+```
+
+Descomponemos la url para el perfil en varias propiedaes. 
+
+Una global como baseUrl = 'https://i.imgur.com/'
+
+Y después imageId y imageSize para cada persona. 
+
+Formamos la url encadenando el valor de las propiedades. 
+
+Dado que son string lo hacemos con el operador +. 
+
+La variable global más el objeto y las propiedades.
+
+src={baseUrl + person.imageId + person.imageSize + '.jpg'}
+
+
+
+Tambien: 
+
+utils.js
+
+```
+export function getImageUrl(person) {
+  return (
+    'https://i.imgur.com/' +
+    person.imageId +
+    person.imageSize +
+    '.jpg'
+  );
+}
+
+```
+
+App.js:
+
+```
+import { getImageUrl } from './utils.js'
+
+const person = {
+  name: 'Gregorio Y. Zara',
+  imageId: '7vQD0fP',
+  imageSize: 's',
+  theme: {
+    backgroundColor: 'black',
+    color: 'pink'
+  }
+};
+
+export default function TodoList() {
+  return (
+    <div style={person.theme}>
+      <h1>{person.name}'s Todos</h1>
+      <img
+        className="avatar"
+        src={getImageUrl(person)}
+        alt={person.name}
+      />
+      <ul>
+        <li>Improve the videophone</li>
+        <li>Prepare aeronautics lectures</li>
+        <li>Work on the alcohol-fuelled engine</li>
+      </ul>
+    </div>
+  );
+}
+
+```
+
+### Componente que solo retorna JS
+
+Definimos una funcion getImageUrl(person)
+
+Toma un objeto y analiza o lee sus propiedades 
+
+Y las concatena. 
+
+```
+  return (
+    'https://i.imgur.com/' +
+    person.imageId +
+    person.imageSize +
+    '.jpg'
+  );
+  
+```
+
+
+## Props: 
+
+Comunicación entre componentes: 
+
+Cada componente padre puede pasar información a sus componentes hijos mediante props. 
+
+
+### Props conocidas: Atributos + {}
+
+#### Las propiedades son la información que se pasa a una etiqueta JSX. 
+
+```
+function Avatar() {
+  return (
+    <img
+      className="avatar"
+      src="https://i.imgur.com/1bX5QH6.jpg"
+      alt="Lin Lanying"
+      width={100}
+      height={100}
+    />
+  );
+}
+
+export default function Profile() {
+  return (
+    <Avatar />
+  );
+}
+
+```
+
+
+### Props personalizadas: props + jsx
+
+
+```
+export default function Profile() {
+  return (
+    <Avatar />
+  );
+}
+
+```
+
+Definimos un componente padre que renderiza otro. 
+
+
+```
+export default function Profile() {
+  return (
+    <Avatar
+      person={{ name: 'Lin Lanying', imageId: '1bX5QH6' }}
+      size={100}
+    />
+  );
+}
+
+```
+
+Le pasamos js a las props del componente hijo. 
+
+```
+function Avatar({ person, size }) {
+  // person and size are available here
+}
+
+```
+
+Defimos las props del componente hijo. 
+
+
+### Props y componentes lógicos
+
+
+Utils.js:
+
+```
+export function getImageUrl(person, size = 's') {
+  return (
+    'https://i.imgur.com/' +
+    person.imageId +
+    size +
+    '.jpg'
+  );
+}
+
+```
+
+La función/componetne toma un objeto, un valor en caracter predeterminado cuando no se le asigna uno
+
+Manipula con js los parámetros dentro del return. 
+
+
+App.js:
+
+### Componente con props más complejo: Atributos, props y js
+
+Toma dos props y lee sus propiedaes para pasarselas a atributos conocidos. 
+
+#### Cuando renderizen o llamen a Avatar y le den valor a los props: 
+
+Los valores de las props se aplicarán en los atributos.
+
+```
+import { getImageUrl } from './utils.js';
+
+function Avatar({ person, size }) {
+  return (
+    <img
+      className="avatar"
+      src={getImageUrl(person)}
+      alt={person.name}
+      width={size}
+      height={size}
+    />
+  );
+}
+
+export default function Profile() {
+  return (
+    <div>
+      <Avatar
+        size={100}
+        person={{ 
+          name: 'Katsuko Saruhashi', 
+          imageId: 'YfeOqp2'
+        }}
+      />
+      <Avatar
+        size={80}
+        person={{
+          name: 'Aklilu Lemma', 
+          imageId: 'OKS67lh'
+        }}
+      />
+      <Avatar
+        size={50}
+        person={{ 
+          name: 'Lin Lanying',
+          imageId: '1bX5QH6'
+        }}
+      />
+    </div>
+  );
+}
+
+```
+
+Al llamar a Avatar desde Profile y darle valor a las props: 
+
+Retornará los elementos HTML que tenía con los valores asignados aquí. 
+
+
+#### Valor predeterminado para una prop
+
+Cuando no se especifica ningún valor, puede hacerlo mediante la desestructuración colocando "=" y el valor predeterminado justo después del parámetro:
+
+```
+function Avatar({ person, size = 100 }) {
+  // ...
+}
+
+```
+
+Ahora, si <Avatar person={...} /> se renderiza sin la propiedad size, el tamaño se establecerá en 100.
+
+
+El valor predeterminado solo se usa si falta la propiedad size o si se pasa size={undefined}. 
+
+Sin embargo, si se pasa size={null} o size={0}, el valor predeterminado no se usará.
+
+
+### Propagación de props
+
+A veces, el paso de props se vuelve muy repetitivo:
+
+```
+function Profile({ person, size, isSepia, thickBorder }) {
+  return (
+    <div className="card">
+      <Avatar
+        person={person}
+        size={size}
+        isSepia={isSepia}
+        thickBorder={thickBorder}
+      />
+    </div>
+  );
+}
+
+```
+
+El código repetitivo no tiene nada de malo; puede ser más legible. 
+
+Pero a veces se valora la concisión. 
+
+#### Algunos componentes reenvían todas sus propiedades a sus componentes secundarios, como este perfil con Avatar. 
+
+Dado que no usan ninguna de sus propiedades directamente, puede ser conveniente usar una sintaxis de propagación más concisa:
+
+```
+function Profile(props) {
+  return (
+    <div className="card">
+      <Avatar {...props} />
+    </div>
+  );
+}
+
+```
+
+Esto reenvía todas las propiedades del perfil al avatar sin listar sus nombres.
+
+
+Use la sintaxis de propagación con moderación. 
+
+Si la usa en todos los demás componentes, algo falla. 
+
+A menudo, indica que debe dividir sus componentes y pasar los componentes secundarios como JSX. 
+
+
+### JSX como Children
+
+```
+<Text />
+<Avatar />
+
+<Card>    //{children} es un espacio para js
+  <Text />
+  <Avatar />
+<Card/>
+
+```
+
+Ej:
+
+Avatar.js: 
+
+```
+import { getImageUrl } from './utils.js';
+
+export default function Avatar({ person, size }) {
+  return (
+    <img
+      className="avatar"
+      src={getImageUrl(person)}
+      alt={person.name}
+      width={size}
+      height={size}
+  );
+}
+
+```
+
+#### El componente Card retornará un div para contener jsx (html+js)
+
+#### Será como un contenedor raíz como <div></div> o <></>.
+
+#### Con el objetivo de hacerlo expresivo, semántico. 
+
+App.js: 
+
+```
+import Avatar from './Avatar.js';
+
+function Card({ children }) {
+  return (
+    <div className="card">
+      {children}
+    </div>
+  );
+}
+
+export default function Profile() {
+  return (
+    <Card>
+      <Avatar
+        size={100}
+        person={{ 
+          name: 'Katsuko Saruhashi',
+          imageId: 'YfeOqp2'
+        }}
+      />
+    </Card>
+  );
+}
+
+```
+
+
+### Cambios en props: Componentes más complejos, cambio en los valores en las props. 
+
+Cómo cambian las propiedades con el tiempo
+
+El componente Reloj (abajo) recibe dos propiedades de su componente principal: color y hora. 
+
+(El código del componente principal se omite porque usa el estado, que no analizaremos por ahora).
+
+Intenta cambiar el color en el cuadro de selección (abajo).
+
+```
+export default function Clock({ color, time }) {
+  return (
+    <h1 style={{ color: color }}>
+      {time}
+    </h1>
+  );
+}
+
+``` 
+
+Al pasarle un valor de color (prop) cuando renderizamos clock: 
+
+Se asignará a style a la propiedad color (css) a un h1. 
+
+El contenido de H1 será el valor del prop time.
+
+
+Este ejemplo ilustra que un componente puede recibir diferentes propiedades a lo largo del tiempo. 
+
+¡Las propiedades no siempre son estáticas! 
+
+En este caso, la propiedad de tiempo cambia cada segundo y la propiedad de color cambia al seleccionar otro color. 
+
+Las propiedades reflejan los datos de un componente en cualquier momento, no solo al principio.
+
+
+Sin embargo, las propiedades son inmutables (no puede cambiar). 
+
+#### Cuando un componente necesita cambiar sus propiedades (por ejemplo, en respuesta a una interacción del usuario o a nuevos datos), deberá "pedirle" a su componente padre que le pase propiedades diferentes: ¡un nuevo objeto! 
+
+Sus propiedades antiguas se descartarán y, finalmente, el motor de JavaScript recuperará la memoria ocupada por ellas.
+
+
+No intente "cambiar propiedades". 
+
+#### Cuando necesite responder a la entrada del usuario (como cambiar el color seleccionado), deberá "establecer el estado", lo cual puede aprender en Estado: La memoria de un componente.
+
+
+### Ejercicios props
+
+1. 
+
+utils.js:
+
+```
+export function getImageUrl(imageId, size = 's') {
+  return (
+    'https://i.imgur.com/' +
+    imageId +
+    size +
+    '.jpg'
+  );
+}
+
+```
+
+App.js
+
+Profile tiene un conjunto de props.
+
+Al llamarlo le darán un valor.
+
+Lo renderizarán en algún lugar del HTML.
+
+### Los valores de las props se leen en los elementos HTML que devuelven.
+
+Profile usa un método para incluir/unir un caracter {awards.join(', ')}
+
+```
+import { getImageUrl } from './utils.js';
+
+function Profile({
+  imageId,
+  name,
+  profession,
+  awards,
+  discovery,
+  imageSize = 70
+}) {
+  return (
+    <section className="profile">
+      <h2>{name}</h2>
+      <img
+        className="avatar"
+        src={getImageUrl(imageId)}
+        alt={name}
+        width={imageSize}
+        height={imageSize}
+      />
+      <ul>
+        <li><b>Profession:</b> {profession}</li>
+        <li>
+          <b>Awards: {awards.length} </b>
+          ({awards.join(', ')})
+        </li>
+        <li>
+          <b>Discovered: </b>
+          {discovery}
+        </li>
+      </ul>
+    </section>
+  );
+}
+
+export default function Gallery() {
+  return (
+    <div>
+      <h1>Notable Scientists</h1>
+      <Profile
+        imageId="szV5sdG"
+        name="Maria Skłodowska-Curie"
+        profession="physicist and chemist"
+        discovery="polonium (chemical element)"
+        awards={[
+          'Nobel Prize in Physics',
+          'Nobel Prize in Chemistry',
+          'Davy Medal',
+          'Matteucci Medal'
+        ]}
+      />
+      <Profile
+        imageId='YfeOqp2'
+        name='Katsuko Saruhashi'
+        profession='geochemist'
+        discovery="a method for measuring carbon dioxide in seawater"
+        awards={[
+          'Miyake Prize for geochemistry',
+          'Tanaka Prize'
+        ]}
+      />
+    </div>
+  );
+}
+
+```
+
+Usa un array para un conjunto de strings/cadenas y un método para unirlos. 
+
+
+Ten en cuenta que no necesitas una propiedad ```awardCount``` independiente si ```awards``` es un array. 
+
+Entonces puedes usar ```awards.length``` para contar el número de premios. Recuerda que las propiedades pueden tomar cualquier valor, ¡incluso los arrays!
+
+
+Otra solución, más similar a los ejemplos anteriores de esta página, es agrupar toda la información sobre una persona en un solo objeto y pasar ese objeto como una propiedad:
+
+utils.js
+
+```
+export function getImageUrl(person, size = 's') {
+  return (
+    'https://i.imgur.com/' +
+    person.imageId +
+    size +
+    '.jpg'
+  );
+}
+
+```
+
+App.js
+
+```
+import { getImageUrl } from './utils.js';
+
+function Profile({ person, imageSize = 70 }) {
+  const imageSrc = getImageUrl(person)
+
+  return (
+    <section className="profile">
+      <h2>{person.name}</h2>
+      <img
+        className="avatar"
+        src={imageSrc}
+        alt={person.name}
+        width={imageSize}
+        height={imageSize}
+      />
+      <ul>
+        <li>
+          <b>Profession:</b> {person.profession}
+        </li>
+        <li>
+          <b>Awards: {person.awards.length} </b>
+          ({person.awards.join(', ')})
+        </li>
+        <li>
+          <b>Discovered: </b>
+          {person.discovery}
+        </li>
+      </ul>
+    </section>
+  )
+}
+
+export default function Gallery() {
+  return (
+    <div>
+      <h1>Notable Scientists</h1>
+      <Profile person={{
+        imageId: 'szV5sdG',
+        name: 'Maria Skłodowska-Curie',
+        profession: 'physicist and chemist',
+        discovery: 'polonium (chemical element)',
+        awards: [
+          'Nobel Prize in Physics',
+          'Nobel Prize in Chemistry',
+          'Davy Medal',
+          'Matteucci Medal'
+        ],
+      }} />
+      <Profile person={{
+        imageId: 'YfeOqp2',
+        name: 'Katsuko Saruhashi',
+        profession: 'geochemist',
+        discovery: 'a method for measuring carbon dioxide in seawater',
+        awards: [
+          'Miyake Prize for geochemistry',
+          'Tanaka Prize'
+        ],
+      }} />
+    </div>
+  );
+}
+
+```
+
+
+2. 
+
+Solución: 
+
+utils.js
+
+```
+export function getImageUrl(person, size) {
+  return (
+    'https://i.imgur.com/' +
+    person.imageId +
+    size +
+    '.jpg'
+  );
+}
+
+```
+
+App.js 
+
+```
+import { getImageUrl } from './utils.js';
+
+function Avatar({ person, size }) {
+  let thumbnailSize = 's';
+  if (size > 90) {
+    thumbnailSize = 'b';
+  }
+  return (
+    <img
+      className="avatar"
+      src={getImageUrl(person, thumbnailSize)}
+      alt={person.name}
+      width={size}
+      height={size}
+    />
+  );
+}
+
+export default function Profile() {
+  return (
+    <>
+      <Avatar
+        size={40}
+        person={{ 
+          name: 'Gregorio Y. Zara', 
+          imageId: '7vQD0fP'
+        }}
+      />
+      <Avatar
+        size={120}
+        person={{ 
+          name: 'Gregorio Y. Zara', 
+          imageId: '7vQD0fP'
+        }}
+      />
+    </>
+  );
+}
+
+```
+
+También puedes mostrar una imagen más nítida para pantallas de alto DPI teniendo en cuenta window.devicePixelRatio:
+
+```
+import { getImageUrl } from './utils.js';
+
+const ratio = window.devicePixelRatio;
+
+function Avatar({ person, size }) {
+  let thumbnailSize = 's';
+  if (size * ratio > 90) {
+    thumbnailSize = 'b';
+  }
+  return (
+    <img
+      className="avatar"
+      src={getImageUrl(person, thumbnailSize)}
+      alt={person.name}
+      width={size}
+      height={size}
+    />
+  );
+}
+
+export default function Profile() {
+  return (
+    <>
+      <Avatar
+        size={40}
+        person={{ 
+          name: 'Gregorio Y. Zara', 
+          imageId: '7vQD0fP'
+        }}
+      />
+      <Avatar
+        size={70}
+        person={{ 
+          name: 'Gregorio Y. Zara', 
+          imageId: '7vQD0fP'
+        }}
+      />
+      <Avatar
+        size={120}
+        person={{ 
+          name: 'Gregorio Y. Zara', 
+          imageId: '7vQD0fP'
+        }}
+      />
+    </>
+  );
+}
+
+```
+
+
+3. 
+
+App.js
+
+```
+function Card({ children }) {
+  return (
+    <div className="card">
+      <div className="card-content">
+        {children}
+      </div>
+    </div>
+  );
+}
+
+export default function Profile() {
+  return (
+    <div>
+      <Card>
+        <h1>Photo</h1>
+        <img
+          className="avatar"
+          src="https://i.imgur.com/OKS67lhm.jpg"
+          alt="Aklilu Lemma"
+          width={100}
+          height={100}
+        />
+      </Card>
+      <Card>
+        <h1>About</h1>
+        <p>Aklilu Lemma was a distinguished Ethiopian scientist who discovered a natural treatment to schistosomiasis.</p>
+      </Card>
+    </div>
+  );
+}
+
+```
+
+
+## Renderizado condicional
+
+### Retorno condicional de JSX
+
+### Si la propiedad isPacked es verdadera, este código devuelve un árbol JSX diferente. 
+
+Con este cambio, algunos elementos tienen una marca de verificación al final:
+
+App.js 
+
+```
+function Item({ name, isPacked }) {
+  if (isPacked) {
+    return <li className="item">{name} ✅</li>;
+  }
+  return <li className="item">{name}</li>;
+}
+
+export default function PackingList() {
+  return (
+    <section>
+      <h1>Sally Ride's Packing List</h1>
+      <ul>
+        <Item 
+          isPacked={true} 
+          name="Space suit" 
+        />
+        <Item 
+          isPacked={true} 
+          name="Helmet with a golden leaf" 
+        />
+        <Item 
+          isPacked={false} 
+          name="Photo of Tam" 
+        />
+      </ul>
+    </section>
+  );
+}
+
+```
+
+Observa cómo creas lógica de ramificación con las sentencias if y return de JavaScript. 
+
+En React, el flujo de control (como las condiciones) lo gestiona JavaScript.
+
+
+ 
+
+
+
+
+# Actualizar Bio: Objetivo
+
+Mi objetivo es llegar hasta las entrañas de las tecnólogias para dar soluciones de alta calidad a la industria. 
+
+
+
+# Propagación en React 
+
+No definimos props en avatar, si que se las pasarmos
+
+Dado las formas de usar props
+
+0. props: 
+
+Avatar({ person, size, title })
+Profile : Avatar person={{}} size={50} title="Primero"
+ 
+Pero se puede complejizar cuando creamos el componente hijo
+Cuando queramos leer el valor de las props: 
+
+Ej: 
+
+1. 
+
+```
+Avatar ({ person, size, title })
+return:
+
+src={person.url}
+
+height={size}
+
+size={50}
+
+size={size}
+
+```
+
+2. 
+
+```
+<Avatar person={{a}} size={b} title="c" />
+
+```
+
+## No mesclar atributos (cuando definimos hijo) con valores dados a props (cuando llamamos a hijo)
+
+1. Props conocidas: Atributos + {}
+
+```
+function Avatar() {
+  return (
+    <img
+      className="avatar"
+      src="https://i.imgur.com/1bX5QH6.jpg"
+      alt="Lin Lanying"
+      width={100}
+      height={100}
+    />
+  );
+}
+
+export default function Profile() {
+  return (
+    <Avatar />
+  );
+}
+
+```
+
+2. Props personalizadas: props + jsx
+
+```
+export default function Profile() {
+  return (
+    <Avatar
+      person={{ name: 'Lin Lanying', imageId: '1bX5QH6' }}
+      size={100}
+    />
+  );
+}
+
+```
+
+```
+function Avatar({ person, size }) {
+  // person and size are available here
+}
+
+```
+
+
+3. Componente con props más complejo: Atributos, props y js 
+
+```
+import { getImageUrl } from './utils.js';
+
+function Avatar({ person, size }) {
+  return (
+    <img
+      className="avatar"
+      src={getImageUrl(person)}
+      alt={person.name}
+      width={size}
+      height={size}
+    />
+  );
+}
+
+export default function Profile() {
+  return (
+    <div>
+      <Avatar
+        size={100}
+        person={{ 
+          name: 'Katsuko Saruhashi', 
+          imageId: 'YfeOqp2'
+        }}
+      />
+      <Avatar
+        size={80}
+        person={{
+          name: 'Aklilu Lemma', 
+          imageId: 'OKS67lh'
+        }}
+      />
+      <Avatar
+        size={50}
+        person={{ 
+          name: 'Lin Lanying',
+          imageId: '1bX5QH6'
+        }}
+      />
+    </div>
+  );
+}
+
+```
+
+
+
+4. Props: Cambio de valores a lo largo del tiempo 
+
+```
+export default function Clock({ color, time }) {
+  return (
+    <h1 style={{ color: color }}>
+      {time}
+    </h1>
+  );
+}
+
+``` 
+
+
+Propagación:
+
+```
+function Profile({ person, size, isSepia, thickBorder }) {
+  return (
+    <div className="card">
+      <Avatar
+        person={person}
+        size={size}
+        isSepia={isSepia}
+        thickBorder={thickBorder}
+      />
+    </div>
+  );
+}
+
+```
+
+```
+function Profile(props) {
+  return (
+    <div className="card">
+      <Avatar {...props} />
+    </div>
+  );
+}
+
+```
+
+
+# RS React Props
+
+1. Define un elemento hijo con props para que le pasen info/datos.
+
+2. En su return lee o va a mostrar en los elementos html, los valores que le pasará un componente padre 
+
+3. Un componente superior lo llama y le pasa valores. 
+
+```
+import { getImageUrl } from './utils.js';
+
+function Profile({
+  imageId,
+  name,
+  profession,
+  awards,
+  discovery,
+  imageSize = 70
+}) {
+  return (
+    <section className="profile">
+      <h2>{name}</h2>
+      <img
+        className="avatar"
+        src={getImageUrl(imageId)}
+        alt={name}
+        width={imageSize}
+        height={imageSize}
+      />
+      <ul>
+        <li><b>Profession:</b> {profession}</li>
+        <li>
+          <b>Awards: {awards.length} </b>
+          ({awards.join(', ')})
+        </li>
+        <li>
+          <b>Discovered: </b>
+          {discovery}
+        </li>
+      </ul>
+    </section>
+  );
+}
+
+export default function Gallery() {
+  return (
+    <div>
+      <h1>Notable Scientists</h1>
+      <Profile
+        imageId="szV5sdG"
+        name="Maria Skłodowska-Curie"
+        profession="physicist and chemist"
+        discovery="polonium (chemical element)"
+        awards={[
+          'Nobel Prize in Physics',
+          'Nobel Prize in Chemistry',
+          'Davy Medal',
+          'Matteucci Medal'
+        ]}
+      />
+      <Profile
+        imageId='YfeOqp2'
+        name='Katsuko Saruhashi'
+        profession='geochemist'
+        discovery="a method for measuring carbon dioxide in seawater"
+        awards={[
+          'Miyake Prize for geochemistry',
+          'Tanaka Prize'
+        ]}
+      />
+    </div>
+  );
+}
+
+```
+
+
+Otra forma: 
+
+App.js
+
+```
+import { getImageUrl } from './utils.js';
+
+function Profile({ person, imageSize = 70 }) {
+  const imageSrc = getImageUrl(person)
+
+  return (
+    <section className="profile">
+      <h2>{person.name}</h2>
+      <img
+        className="avatar"
+        src={imageSrc}
+        alt={person.name}
+        width={imageSize}
+        height={imageSize}
+      />
+      <ul>
+        <li>
+          <b>Profession:</b> {person.profession}
+        </li>
+        <li>
+          <b>Awards: {person.awards.length} </b>
+          ({person.awards.join(', ')})
+        </li>
+        <li>
+          <b>Discovered: </b>
+          {person.discovery}
+        </li>
+      </ul>
+    </section>
+  )
+}
+
+export default function Gallery() {
+  return (
+    <div>
+      <h1>Notable Scientists</h1>
+      <Profile person={{
+        imageId: 'szV5sdG',
+        name: 'Maria Skłodowska-Curie',
+        profession: 'physicist and chemist',
+        discovery: 'polonium (chemical element)',
+        awards: [
+          'Nobel Prize in Physics',
+          'Nobel Prize in Chemistry',
+          'Davy Medal',
+          'Matteucci Medal'
+        ],
+      }} />
+      <Profile person={{
+        imageId: 'YfeOqp2',
+        name: 'Katsuko Saruhashi',
+        profession: 'geochemist',
+        discovery: 'a method for measuring carbon dioxide in seawater',
+        awards: [
+          'Miyake Prize for geochemistry',
+          'Tanaka Prize'
+        ],
+      }} />
+    </div>
+  );
+}
+
+```
+
+
+## Props y renderizado condicional
+
+### Primero va a leer las variables, valores y según las condiciones va a retornar un elemento HTML u otro. 
+
+
+
+
+
+
