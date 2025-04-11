@@ -5603,9 +5603,12 @@ export default function TeaGathering() {
 
 ``` 
 
-### (definimos cup, toma guest, retorna h2 + el valor de guest)
+#### (definimos cup, toma guest, retorna h2 + el valor de guest)
 
-### (definimos TeaGathering, una variable local que es un array, creamos un bucle para manipular el array local, en cada iteración va a usar .push() que le pasa por parámetro el componente hijo con el valor de su prop guest y un atributo key) al final retorna la variable local actualizada.
+#### (definimos TeaGathering, una variable local que es un array, creamos un bucle para manipular el array local, en cada iteración va a usar .push() que le pasa por parámetro el componente hijo con el valor de su prop guest y un atributo key) al final retorna la variable local actualizada.
+
+
+### Cuando usamos recursos de otros archivos lo traemos al ámbito local.
 
 
 ## Dónde se pueden generar efectos secundarios
@@ -6009,7 +6012,435 @@ Por ejemplo, insertar, extraer, invertir y ordenar mutarán el array original, p
 # UI como Árbol
 
 
+Tu aplicación React está tomando forma con muchos componentes anidados. 
+
+¿Cómo gestiona React la estructura de componentes de tu aplicación?
 
 
+React, y muchas otras bibliotecas de interfaz de usuario, modelan la interfaz de usuario como un árbol. 
+
+Pensar en tu aplicación como un árbol es útil para comprender la relación entre los componentes. 
+
+### Esta comprensión te ayudará a depurar conceptos futuros como el rendimiento y la gestión de estados.
+
+
+Aprenderás:
+
+Cómo React "ve" las estructuras de los componentes
+
+Qué es un árbol de renderizado y para qué sirve
+
+Qué es un árbol de dependencias de módulos y para qué sirve
+
+
+## Tu interfaz de usuario como un árbol
+
+Los árboles son un modelo de relación entre elementos, y la interfaz de usuario suele representarse mediante estructuras de árbol. 
+
+Por ejemplo, los navegadores utilizan estructuras de árbol para modelar HTML (DOM) y CSS (CSSOM). 
+
+Las plataformas móviles también utilizan árboles para representar la jerarquía de vistas.
+
+```
+Component A  React     A     React Dom       Page
+Component B   ->     B   C      ->      tree of components
+Component C
+
+```
+
+React crea un árbol de interfaz de usuario a partir de tus componentes. 
+
+En este ejemplo, el árbol de interfaz de usuario se utiliza para renderizar el DOM.
+
+
+Al igual que los navegadores y las plataformas móviles, React también utiliza estructuras de árbol para gestionar y modelar la relación entre los componentes de una aplicación React. 
+
+Estos árboles son herramientas útiles para comprender cómo fluyen los datos a través de una aplicación React y cómo optimizar el renderizado y el tamaño de la aplicación.
+
+
+## El Árbol de Renderizado
+
+Una característica importante de los componentes es su capacidad para crear componentes a partir de otros componentes. 
+
+Al anidar componentes, se crea el concepto de componentes padre e hijo, donde cada componente padre puede ser hijo de otro componente.
+
+
+Al renderizar una aplicación React, podemos modelar esta relación en un árbol, conocido como árbol de renderizado.
+
+
+Aquí se muestra una aplicación React que renderiza citas inspiradoras.
+
+
+quotes.js
+
+```
+export default [
+  "Don’t let yesterday take up too much of today.” — Will Rogers",
+  "Ambition is putting a ladder against the sky.",
+  "A joy that's shared is a joy made double.",
+  ];
+
+```
+
+Copyright.js
+
+```
+export default function Copyright({year}) {
+  return <p className='small'>©️ {year}</p>;
+}
+
+```
+
+Mostrará un p con el valor de un año. 
+InspirationGenerator.js
+
+```
+import * as React from 'react';
+import quotes from './quotes';
+import FancyText from './FancyText';
+
+export default function InspirationGenerator({children}) {
+  const [index, setIndex] = React.useState(0);
+  const quote = quotes[index];
+  const next = () => setIndex((index + 1) % quotes.length);
+
+  return (
+    <>
+      <p>Your inspirational quote is:</p>
+      <FancyText text={quote} />
+      <button onClick={next}>Inspire me again</button>
+      {children}
+    </>
+  );
+}
+
+```
+
+Aplicará la siguente lógica:
+
+Toma children que hará de contenedor. 
+
+Usa un estado con una variable de estado como index 
+
+Y un función de estado como setIndex con un valor inical de 0 para index.
+
+Crea una variable quote que contiene quotes y tiene como indice al valor de la variable de estado. 
+
+Crea next como función que usa a setIndex.
+
+El calculo/valor para setIndex es (index + 1) % quotes.length
+
+
+En el return renderizará los elementos: 
+
+p, el componente FancyText, un botón con la función next
+
+Y el contenedor children.
+
+
+
+FancyText.js
+
+```
+export default function FancyText({title, text}) {
+  return title
+    ? <h1 className='fancy title'>{text}</h1>
+    : <h3 className='fancy cursive'>{text}</h3>
+}
+
+```
+
+Toma como props a title y text
+
+De acuerdo a su valor de verdad retorna h1 o h3 en caso de que sea falso. 
+
+
+App.js
+
+```
+import FancyText from './FancyText';
+import InspirationGenerator from './InspirationGenerator';
+import Copyright from './Copyright';
+
+export default function App() {
+  return (
+    <>
+      <FancyText title text="Get Inspired App" />
+      <InspirationGenerator>
+        <Copyright year={2004} />
+      </InspirationGenerator>
+    </>
+  );
+}
+
+
+```
+
+App retorna dos componentes. Uno dentro de un contenedor
+
+
+```
+                      App
+                       |
+               renders   renders
+                  |         |
+ InspirationGenerator    FancyText
+          |
+  renders   renders
+       /     \          
+ FancyText  Copyright
+ 
+```
+
+React crea un árbol de renderizado, un árbol de interfaz de usuario, compuesto por los componentes renderizados.
+
+
+A partir de la aplicación de ejemplo, podemos construir el árbol de renderizado anterior.
+
+
+El árbol se compone de nodos, cada uno de los cuales representa un componente. 
+
+App, FancyText y Copyright, por nombrar algunos, son nodos de nuestro árbol.
+
+
+El nodo raíz de un árbol de renderizado de React es el componente raíz de la aplicación. 
+
+En este caso, el componente raíz es App y es el primer componente que React renderiza. 
+
+Cada flecha del árbol apunta de un componente principal a un componente secundario.
+
+
+## En profundidad: ¿Dónde están las etiquetas HTML en el árbol de renderizado?
+
+Observarás que en el árbol de renderizado anterior no se mencionan las etiquetas HTML que renderiza cada componente. 
+
+Esto se debe a que el árbol de renderizado solo se compone de componentes de React.
+
+
+React, como framework de interfaz de usuario (UI), es independiente de la plataforma. 
+
+En react.dev, mostramos ejemplos que se renderizan en la web, que utiliza marcado HTML como primitivas de interfaz de usuario. 
+
+Sin embargo, una aplicación de React podría renderizarse con la misma probabilidad en una plataforma móvil o de escritorio, que puede utilizar diferentes primitivas de interfaz de usuario, como UIView o FrameworkElement.
+
+
+Estas primitivas de interfaz de usuario de la plataforma no forman parte de React. 
+
+Los árboles de renderizado de React pueden proporcionar información a nuestra aplicación de React, independientemente de la plataforma en la que se renderice.
+
+
+inspirations.js
+
+```
+export default [
+  {type: 'quote', value: "Don’t let yesterday take up too much of today.” — Will Rogers"},
+  {type: 'color', value: "#B73636"},
+  {type: 'quote', value: "Ambition is putting a ladder against the sky."},
+  {type: 'color', value: "#256266"},
+  {type: 'quote', value: "A joy that's shared is a joy made double."},
+  {type: 'color', value: "#F9F2B4"},
+];
+
+```
+
+Define un array de objetos: 
+
+Tiene como clave type tanto para color como para quote 
+
+Y value para la frase y código de color.
+
+
+InspirationGenerator 
+
+```
+import * as React from 'react';
+import inspirations from './inspirations';
+import FancyText from './FancyText';
+import Color from './Color';
+
+export default function InspirationGenerator({children}) {
+  const [index, setIndex] = React.useState(0);
+  const inspiration = inspirations[index];
+  const next = () => setIndex((index + 1) % inspirations.length);
+
+  return (
+    <>
+      <p>Your inspirational {inspiration.type} is:</p>
+      {inspiration.type === 'quote'
+      ? <FancyText text={inspiration.value} />
+      : <Color value={inspiration.value} />}
+
+      <button onClick={next}>Inspire me again</button>
+      {children}
+    </>
+  );
+}
+
+```
+
+Ahora agrega lógica de renderización al return 
+
+Si la propiedad ispiration.type === 'quote'
+
+renderiza el componente FancyTexto con un valor de la prop text que lee inspiration.value
+
+Si no renderiza el componente Color con la prop value en inspiration.value
+
+Pasará un botón con un evento para activar la función next (quote)
+
+Por último renderizará el contenedor children 
+
+
+Color.js
+
+```
+export default function Color({value}) {
+  return <div className="colorbox" style={{backgroundColor: value}} />
+}
+
+```
+
+Color toma value 
+
+Lo pasará como estilo de color de fondo al div que retorna. 
+
+
+App.js
+
+```
+import FancyText from './FancyText';
+import InspirationGenerator from './InspirationGenerator';
+import Copyright from './Copyright';
+
+export default function App() {
+  return (
+    <>
+      <FancyText title text="Get Inspired App" />
+      <InspirationGenerator>
+        <Copyright year={2004} />
+      </InspirationGenerator>
+    </>
+  );
+}
+
+```
+
+InspirationGenerator es un contenedor para otros elementos
+
+
+```
+                      App
+                       |
+               renders   renders
+                  |         |
+ InspirationGenerator    FancyText
+           |         \
+  renders?   renders? renders
+       /     \         \ 
+ FancyText  Color     Copyright
+ 
+```
+
+Con el renderizado condicional, en diferentes renderizados, el árbol de renderizado puede renderizar diferentes componentes.
+
+
+En este ejemplo, dependiendo del tipo de inspiration.type, podemos renderizar <FancyText> o <Color>. 
+
+El árbol de renderizado puede ser diferente en cada pasada de renderizado.
+
+
+Aunque los árboles de renderizado pueden variar entre pasadas, estos suelen ser útiles para identificar los componentes de nivel superior y los componentes hoja en una aplicación React. 
+
+### Los componentes de nivel superior son los más cercanos al componente raíz, afectan el rendimiento de renderizado de todos los componentes subyacentes y suelen ser los más complejos. 
+
+### Los componentes hoja se encuentran cerca de la base del árbol, no tienen componentes secundarios y suelen rerenderizarse con frecuencia.
+
+
+### Identificar estas categorías de componentes es útil para comprender el flujo de datos y el rendimiento de la aplicación.
+
+
+## El árbol de dependencias de módulos
+
+Otra relación en una aplicación React que se puede modelar con un árbol son las dependencias de módulos. 
+
+Al dividir los componentes y la lógica en archivos separados, creamos módulos JS donde podemos exportar componentes, funciones o constantes.
+
+
+Cada nodo de un árbol de dependencias de módulos es un módulo y cada rama representa una declaración de importación en ese módulo.
+
+
+Si tomamos la aplicación Inspirations anterior, podemos construir un árbol de dependencias de módulos, o árbol de dependencias para abreviar.
+
+
+```
+                      App
+                       |
+               imports   imports
+                  |         |
+ InspirationGenerator    FancyText
+          |         \
+  imports   imports  imports
+       /     \         \ 
+ FancyText  Color     Copyright
+ 
+```
+
+Árbol de dependencias de módulos para la aplicación Inspirations.
+
+
+### El nodo raíz del árbol es el módulo raíz, también conocido como archivo de punto de entrada. 
+
+Suele ser el módulo que contiene el componente raíz.
+
+
+En comparación con el árbol de renderizado de la misma aplicación, existen estructuras similares, pero con algunas diferencias notables:
+
+1. Los nodos que conforman el árbol representan módulos, no componentes.
+
+2. Los módulos sin componentes, como inspirations.js, también se representan en este árbol. 
+
+El árbol de renderizado solo encapsula componentes.
+
+3. Copyright.js aparece dentro de App.js, pero en el árbol de renderizado, Copyright, el componente, aparece como un componente secundario de InspirationGenerator. 
+
+Esto se debe a que InspirationGenerator acepta JSX como props secundarios, por lo que renderiza Copyright como un componente secundario, pero no importa el módulo.
+
+
+### Los árboles de dependencias son útiles para determinar qué módulos son necesarios para ejecutar la aplicación React. 
+
+Al crear una aplicación React para producción, suele haber un paso de compilación que incluye todo el JavaScript necesario para enviarlo al cliente. 
+
+La herramienta responsable de esto se llama empaquetador, y los empaquetadores utilizan el árbol de dependencias para determinar qué módulos deben incluirse.
+
+
+A medida que tu aplicación crece, el tamaño del paquete suele crecer también. 
+
+Los paquetes de gran tamaño son costosos de descargar y ejecutar para el cliente. 
+
+Además, pueden retrasar el diseño de la interfaz de usuario. 
+
+Conocer el árbol de dependencias de tu aplicación puede ayudar a depurar estos problemas.
+
+
+## Rs árbol de la ui
+
+1. árbol renderizado -> nodos: Componentes
+
+2. árbol dependencias -> nodos: Módulos
+
+
+Los árboles son una forma común de representar la relación entre entidades. Se utilizan a menudo para modelar la interfaz de usuario (UI).
+
+Los árboles de renderizado representan la relación anidada entre los componentes de React en un único renderizado.
+
+Con el renderizado condicional, el árbol de renderizado puede cambiar en diferentes renderizados. Con diferentes valores de propiedad, los componentes pueden renderizar diferentes componentes secundarios.
+
+Los árboles de renderizado ayudan a identificar los componentes de nivel superior y los componentes hoja. Los componentes de nivel superior afectan el rendimiento de renderizado de todos los componentes subyacentes, y los componentes hoja suelen renderizarse con frecuencia. Identificarlos es útil para comprender y depurar el rendimiento del renderizado.
+
+Los árboles de dependencia representan las dependencias de los módulos en una aplicación React.
+
+Las herramientas de compilación utilizan los árboles de dependencia para agrupar el código necesario para el lanzamiento de una aplicación.
+
+Los árboles de dependencia son útiles para depurar paquetes de gran tamaño que ralentizan el tiempo de renderizado y ofrecen oportunidades para optimizar el código incluido.
 
 

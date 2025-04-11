@@ -11233,6 +11233,953 @@ Estas variables se renderizarán en las listas.
 
 ## Renderizar listas en React
 
+### Arrays
+
+```
+const people = [
+  'Creola Katherine Johnson: mathematician',
+  'Mario José Molina-Pasquel Henríquez: chemist',
+  'Mohammad Abdus Salam: physicist',
+  'Percy Lavon Julian: chemist',
+  'Subrahmanyan Chandrasekhar: astrophysicist'
+];
+
+```
+
+```
+const listItems = people.map(person => <li>{person}</li>);
+
+```
+
+```
+return <ul>{listItems}</ul>;
+
+```
+
+Cada iteración/map/match devolverá un elemento li
+
+#### Cuando los tenga todos, los podrá mostrar en listItems
+
+```
+const people = [
+  'Creola Katherine Johnson: mathematician',
+  'Mario José Molina-Pasquel Henríquez: chemist',
+  'Mohammad Abdus Salam: physicist',
+  'Percy Lavon Julian: chemist',
+  'Subrahmanyan Chandrasekhar: astrophysicist'
+];
+
+export default function List() {
+  const listItems = people.map(person =>
+    <li>{person}</li>
+  );
+  return <ul>{listItems}</ul>;
+}
+
+```
+
+#### Observe que el sandbox anterior muestra un error de consola:
+
+```
+Advertencia: Cada elemento secundario de una lista debe tener una propiedad "key" única.
+
+```
+
+
+### Filtrado de matrices de elementos
+
+Estos datos se pueden estructurar aún más.
+
+```
+const people = [{
+  id: 0,
+  name: 'Creola Katherine Johnson',
+  profession: 'mathematician',
+}, {
+  id: 1,
+  name: 'Mario José Molina-Pasquel Henríquez',
+  profession: 'chemist',
+}, {
+  id: 2,
+  name: 'Mohammad Abdus Salam',
+  profession: 'physicist',
+}, {
+  id: 3,
+  name: 'Percy Lavon Julian',
+  profession: 'chemist',  
+}, {
+  id: 4,
+  name: 'Subrahmanyan Chandrasekhar',
+  profession: 'astrophysicist',
+}];
+
+```
+
+```
+const chemists = people.filter(person =>
+  person.profession === 'chemist'
+);
+
+```
+
+```
+const listItems = chemists.map(person =>
+  <li>
+     <img
+       src={getImageUrl(person)}
+       alt={person.name}
+     />
+     <p>
+       <b>{person.name}:</b>
+       {' ' + person.profession + ' '}
+       known for {person.accomplishment}
+     </p>
+  </li>
+);
+
+```
+
+#### Por cada elemento mapeado devolverá un li con img, p y b que leen/toman el valor de los datos/propiedades del objeto. 
+
+```
+return <ul>{listItems}</ul>;
+
+``` 
+
+
+utils.js:
+
+```
+export function getImageUrl(person) {
+  return (
+    'https://i.imgur.com/' +
+    person.imageId +
+    's.jpg'
+  );
+}
+
+```
+
+
+data.js:
+
+```
+export const people = [{
+  id: 0,
+  name: 'Creola Katherine Johnson',
+  profession: 'mathematician',
+  accomplishment: 'spaceflight calculations',
+  imageId: 'MK3eW3A'
+}, {
+  id: 1,
+  name: 'Mario José Molina-Pasquel Henríquez',
+  profession: 'chemist',
+  accomplishment: 'discovery of Arctic ozone hole',
+  imageId: 'mynHUSa'
+}, {
+  id: 2,
+  name: 'Mohammad Abdus Salam',
+  profession: 'physicist',
+  accomplishment: 'electromagnetism theory',
+  imageId: 'bE7W1ji'
+}, {
+  id: 3,
+  name: 'Percy Lavon Julian',
+  profession: 'chemist',
+  accomplishment: 'pioneering cortisone drugs, steroids and birth control pills',
+  imageId: 'IOjWm71'
+}, {
+  id: 4,
+  name: 'Subrahmanyan Chandrasekhar',
+  profession: 'astrophysicist',
+  accomplishment: 'white dwarf star mass calculations',
+  imageId: 'lrWQx8l'
+}];
+
+```
+
+
+App.js
+
+```
+import { people } from './data.js';
+import { getImageUrl } from './utils.js';
+
+export default function List() {
+  const chemists = people.filter(person =>
+    person.profession === 'chemist'
+  );
+  const listItems = chemists.map(person =>
+    <li>
+      <img
+        src={getImageUrl(person)}
+        alt={person.name}
+      />
+      <p>
+        <b>{person.name}:</b>
+        {' ' + person.profession + ' '}
+        known for {person.accomplishment}
+      </p>
+    </li>
+  );
+  return <ul>{listItems}</ul>;
+}
+
+```
+
+#### Advertencia en consola
+
+```
+Cada elemento secundario de una lista debe tener una propiedad "key" única.
+
+Consulta el método de renderizado de `List`. Consulta https://react.dev/link/warning-keys para más información.
+
+```
+
+
+#### Error 
+
+#### Las funciones flecha devuelven implícitamente la expresión justo después de =>, por lo que no se necesitaba una sentencia return:
+
+```
+const listItems = chemists.map(person =>
+<li>...</li> // ¡Retorno implícito!
+);
+
+```
+
+#### Sin embargo, debe escribir return explícitamente si su => va seguido de una llave {.
+
+```
+const listItems = chemists.map(person => { // Llave
+return <li>...</li>;
+});
+
+```
+
+Se dice que las funciones flecha que contienen => { tienen un "cuerpo de bloque". 
+
+Permiten escribir más de una línea de código, pero debe escribir una sentencia return. 
+
+Si la olvida, no se devuelve nada.
+
+
+#### Tenemos dos funciones flechas con una sola sentencia pero con varios elementos. 
+
+
+## Mantener los elementos de la lista ordenados con clave
+
+### Observe que todos los entornos de pruebas anteriores muestran un error en la consola:
+
+```
+Warning: Each child in a list should have a unique “key” prop.
+
+```
+
+Debe asignar una clave a cada elemento de la matriz: una cadena o un número que lo identifique de forma única entre los demás elementos de la matriz:
+
+```
+<li key={person.id}>...</li>
+
+```
+
+Nota:
+
+Los elementos JSX directamente dentro de una llamada map() siempre necesitan claves.
+
+
+Las claves indican a React a qué elemento del array corresponde cada componente, para que pueda compararlos posteriormente. 
+
+Esto es importante si los elementos del array pueden moverse (por ejemplo, debido a la ordenación), insertarse o eliminarse. 
+
+Una clave bien elegida ayuda a React a inferir qué ha sucedido exactamente y a realizar las actualizaciones correctas en el árbol DOM.
+
+
+En lugar de generar claves sobre la marcha, debería incluirlas en sus datos:
+
+data.js
+
+```
+export const people = [{
+  id: 0, // Used in JSX as a key
+  name: 'Creola Katherine Johnson',
+  profession: 'mathematician',
+  accomplishment: 'spaceflight calculations',
+  imageId: 'MK3eW3A'
+}, {
+  id: 1, // Used in JSX as a key
+  name: 'Mario José Molina-Pasquel Henríquez',
+  profession: 'chemist',
+  accomplishment: 'discovery of Arctic ozone hole',
+  imageId: 'mynHUSa'
+}, {
+  id: 2, // Used in JSX as a key
+  name: 'Mohammad Abdus Salam',
+  profession: 'physicist',
+  accomplishment: 'electromagnetism theory',
+  imageId: 'bE7W1ji'
+}, {
+  id: 3, // Used in JSX as a key
+  name: 'Percy Lavon Julian',
+  profession: 'chemist',
+  accomplishment: 'pioneering cortisone drugs, steroids and birth control pills',
+  imageId: 'IOjWm71'
+}, {
+  id: 4, // Used in JSX as a key
+  name: 'Subrahmanyan Chandrasekhar',
+  profession: 'astrophysicist',
+  accomplishment: 'white dwarf star mass calculations',
+  imageId: 'lrWQx8l'
+}];
+
+```
+
+App.js
+
+```
+import { people } from './data.js';
+import { getImageUrl } from './utils.js';
+
+export default function List() {
+  const listItems = people.map(person =>
+    <li key={person.id}>
+      <img
+        src={getImageUrl(person)}
+        alt={person.name}
+      />
+      <p>
+        <b>{person.name}</b>
+          {' ' + person.profession + ' '}
+          known for {person.accomplishment}
+      </p>
+    </li>
+  );
+  return <ul>{listItems}</ul>;
+}
+
+```
+
+
+#### las variables y funciones nos ayudan a mantener limpio el código. En este caso el return es solo la variable listItems
+
+#### <li key={person.id}> en la función leerá la key de la db/datos locales.
+
+
+### Dónde obtener tu clave
+
+Diferentes fuentes de datos proporcionan diferentes fuentes de claves:
+
+1. Datos de una base de datos: Si tus datos provienen de una base de datos, puedes usar las claves/ID de la base de datos, que son únicas por naturaleza.
+
+2. Datos generados localmente: Si tus datos se generan y almacenan localmente (por ejemplo, notas en una aplicación para tomar notas), usa un contador incremental, crypto.randomUUID() o un paquete como uuid al crear elementos.
+
+
+### Reglas de las claves
+
+1. Las claves deben ser únicas entre los nodos hermanos. Sin embargo, se pueden usar las mismas claves para nodos JSX en diferentes matrices.
+
+2. Las claves no deben cambiar, ya que esto anularía su propósito. No las genere durante el renderizado.
+
+
+### ¿Por qué React necesita claves?
+
+Imagina que los archivos de tu escritorio no tuvieran nombre. 
+
+En su lugar, te referirías a ellos por su orden: el primer archivo, el segundo archivo, y así sucesivamente. 
+
+Podrías acostumbrarte, pero al eliminar un archivo, se volvería confuso. 
+
+El segundo archivo se convertiría en el primero, el tercero en el segundo, y así sucesivamente.
+
+
+#### Los nombres de archivo en una carpeta y las claves JSX en un array tienen una función similar. 
+
+Nos permiten identificar de forma única un elemento entre sus hermanos. 
+
+Una clave bien elegida proporciona más información que la posición dentro del array. 
+
+#### Incluso si la posición cambia debido a la reordenación, la clave permite a React identificar el elemento durante su ciclo de vida.
+
+
+#### Error
+
+#### Podrías tener la tentación de usar el índice de un elemento en el array como clave. 
+
+#### De hecho, eso es lo que React usará si no especificas ninguna clave. 
+
+Sin embargo, el orden en que renderizas los elementos cambiará con el tiempo si se inserta, se elimina o se reordena el array. 
+
+Usar el índice como clave suele provocar errores sutiles y confusos.
+
+
+De igual forma, no generes claves sobre la marcha, por ejemplo, con key={Math.random()}. 
+
+Esto provocará que las claves nunca coincidan entre renderizaciones, lo que provocará que todos tus componentes y el DOM se vuelvan a crear cada vez. 
+
+Esto no solo es lento, sino que también perderá cualquier entrada del usuario dentro de los elementos de la lista. 
+
+En su lugar, usa un ID estable basado en los datos.
+
+
+#### Ten en cuenta que tus componentes no recibirán key como propiedad. 
+
+React solo la usa como una pista. 
+
+#### Si tu componente necesita un ID, debes pasarlo como una propiedad independiente: <Profile key={id} userId={id} />.
+
+### En profundidad: Visualización de varios nodos DOM para cada elemento de la lista
+
+¿Qué se hace cuando cada elemento necesita representar no uno, sino varios nodos del DOM?
+
+
+La sintaxis corta de fragmentos <>...</> no permite pasar una clave, por lo que se deben agrupar en un solo <div> o usar la sintaxis de fragmentos <Fragment>, un poco más larga y explícita:
+
+```
+import { Fragment } from 'react';
+
+// ...
+
+const listItems = people.map(person =>
+  <Fragment key={person.id}>
+    <h1>{person.name}</h1>
+    <p>{person.bio}</p>
+  </Fragment>
+);
+
+```
+
+Los fragmentos desaparecen del DOM, por lo que esto producirá una lista plana de <h1>, <p>, <h1>, <p>, etc.
+
+
+### Ejercicios renderizar listas 
+
+1. 
+
+Datos: 
+
+data.js
+
+```
+export const people = [{
+  id: 0,
+  name: 'Creola Katherine Johnson',
+  profession: 'mathematician',
+  accomplishment: 'spaceflight calculations',
+  imageId: 'MK3eW3A'
+}, {
+  id: 1,
+  name: 'Mario José Molina-Pasquel Henríquez',
+  profession: 'chemist',
+  accomplishment: 'discovery of Arctic ozone hole',
+  imageId: 'mynHUSa'
+}, {
+  id: 2,
+  name: 'Mohammad Abdus Salam',
+  profession: 'physicist',
+  accomplishment: 'electromagnetism theory',
+  imageId: 'bE7W1ji'
+}, {
+  id: 3,
+  name: 'Percy Lavon Julian',
+  profession: 'chemist',
+  accomplishment: 'pioneering cortisone drugs, steroids and birth control pills',
+  imageId: 'IOjWm71'
+}, {
+  id: 4,
+  name: 'Subrahmanyan Chandrasekhar',
+  profession: 'astrophysicist',
+  accomplishment: 'white dwarf star mass calculations',
+  imageId: 'lrWQx8l'
+}];
+
+```
+
+#### El objeto se compone de todo un array con objetos, cada uno con su clave-valor.
+
+
+Solución
+
+Podrías usar filter() dos veces, creando dos matrices separadas y luego mapearlas sobre ambas:
+
+```
+import { people } from './data.js';
+import { getImageUrl } from './utils.js';
+
+export default function List() {
+  const chemists = people.filter(person =>
+    person.profession === 'chemist'
+  );
+  const everyoneElse = people.filter(person =>
+    person.profession !== 'chemist'
+  );
+  return (
+    <article>
+      <h1>Scientists</h1>
+      <h2>Chemists</h2>
+      <ul>
+        {chemists.map(person =>
+          <li key={person.id}>
+            <img
+              src={getImageUrl(person)}
+              alt={person.name}
+            />
+            <p>
+              <b>{person.name}:</b>
+              {' ' + person.profession + ' '}
+              known for {person.accomplishment}
+            </p>
+          </li>
+        )}
+      </ul>
+      <h2>Everyone Else</h2>
+      <ul>
+        {everyoneElse.map(person =>
+          <li key={person.id}>
+            <img
+              src={getImageUrl(person)}
+              alt={person.name}
+            />
+            <p>
+              <b>{person.name}:</b>
+              {' ' + person.profession + ' '}
+              known for {person.accomplishment}
+            </p>
+          </li>
+        )}
+      </ul>
+    </article>
+  );
+}
+
+```
+
+De acuerdo a los datos los filtra por dos tipos. 
+
+En variables chemists y everyoneElse
+
+#### Primero los filtra (antes de return y los guarda en variable)
+
+#### Después los mapea en return para devolver cada dato correspondiente. 
+
+
+2. 
+
+data.js
+
+```
+export const recipes = [{
+  id: 'greek-salad',
+  name: 'Greek Salad',
+  ingredients: ['tomatoes', 'cucumber', 'onion', 'olives', 'feta']
+}, {
+  id: 'hawaiian-pizza',
+  name: 'Hawaiian Pizza',
+  ingredients: ['pizza crust', 'pizza sauce', 'mozzarella', 'ham', 'pineapple']
+}, {
+  id: 'hummus',
+  name: 'Hummus',
+  ingredients: ['chickpeas', 'olive oil', 'garlic cloves', 'lemon', 'tahini']
+}];
+
+```
+
+#### El objeto se compone de todo un array con objetos, cada uno con su clave-valor.
+
+#### El valor de una clave es un array de strigs. 
+
+
+Solución: 
+
+Esto requerirá anidar dos llamadas de mapa diferentes.
+
+```
+import { recipes } from './data.js';
+
+export default function RecipeList() {
+  return (
+    <div>
+      <h1>Recipes</h1>
+      {recipes.map(recipe =>
+        <div key={recipe.id}>
+          <h2>{recipe.name}</h2>
+          <ul>
+            {recipe.ingredients.map(ingredient =>
+              <li key={ingredient}>
+                {ingredient}
+              </li>
+            )}
+          </ul>
+        </div>
+      )}
+    </div>
+  );
+}
+
+```
+
+#### Mapea el objeto de datos dos veces para mostrar las propiedades el array en el return. 
+
+#### Usa dos claves distintas para rastrear las posiciones y mantener el orden de renderizado en cada elemento li: key={recipe.id} y key={ingredient}
+
+
+3. 
+
+Solución:
+
+Puedes copiar y pegar el JSX del mapa externo en un nuevo componente Receta y devolverlo. 
+
+Luego, puedes cambiar ```receit.name``` por ```name```, ```receit.id``` por ```id```, etc., y pasarlos como propiedades a la Receta:
+
+
+#### Creamos un nuevo componente Recipe con props, mapea sus propiedades para mostrarlas en el return
+
+```
+import { recipes } from './data.js';
+
+function Recipe({ id, name, ingredients }) {
+  return (
+    <div>
+      <h2>{name}</h2>
+      <ul>
+        {ingredients.map(ingredient =>
+          <li key={ingredient}>
+            {ingredient}
+          </li>
+        )}
+      </ul>
+    </div>
+  );
+}
+
+export default function RecipeList() {
+  return (
+    <div>
+      <h1>Recipes</h1>
+      {recipes.map(recipe =>
+        <Recipe {...recipe} key={recipe.id} />
+      )}
+    </div>
+  );
+}
+
+```
+
+#### El componente RecipeList retorna en su h1 las propiedades del componente Recipe (las recibe con ... y las ordena con una key) 
+
+### Aquí, <Recipe {...recipe} key={recipe.id} /> es un atajo de sintaxis que indica "pasar todas las propiedades del objeto receta como props al componente Receta". 
+
+También se puede escribir cada prop explícitamente: <Recipe id={recipe.id} name={recipe.name} Ingredients={recipe.ingredients} key={recipe.id} />.
+
+
+Ten en cuenta que la clave se especifica en el propio <Recipe>, no en el <div> raíz devuelto por Receta. 
+
+Esto se debe a que esta clave se necesita directamente dentro del contexto del array circundante. 
+
+Anteriormente, se tenía un array de <div>, por lo que cada uno necesitaba una clave, pero ahora se tiene un array de <Recipe>. 
+
+En otras palabras, al extraer un componente, no olvides dejar la clave fuera del JSX que copias y pegas.
+
+
+4. 
+
+Puede escribir un bucle manual, insertando <hr /> y <p>...</p> en la matriz de salida a medida que avanza.
+
+#### Creamos una constante global poem que es un objeto que tiene una propiedad con un array como valor. 
+
+#### La funcion Poem define un array vacío output
+
+#### Después accede al objeto poem (poem.lines.forEach((line, i) => {})
+
+#### ForEach toma una función
+
+#### Leerá la propiedad que tiene un array por cada elemento le asigna una variable local y un indice
+
+#### Incluirá la variable y el indice en el array vacio en cada iteración/elemento. 
+
+#### Incluye en un elemento hr con el indice y un string como key
+
+#### Mostrará la variable line
+
+#### Al final elimina cada hr y en el return muestra el array como un poema. 
+
+```
+const poem = {
+  lines: [
+    'I write, erase, rewrite',
+    'Erase again, and then',
+    'A poppy blooms.'
+  ]
+};
+
+export default function Poem() {
+  let output = [];
+
+  // Fill the output array
+  poem.lines.forEach((line, i) => {
+    output.push(
+      <hr key={i + '-separator'} />
+    );
+    output.push(
+      <p key={i + '-text'}>
+        {line}
+      </p>
+    );
+  });
+  // Remove the first <hr />
+  output.shift();
+
+  return (
+    <article>
+      {output}
+    </article>
+  );
+}
+
+```
+
+
+
+## Componentes puros 
+
+Las funciones puras solo realizan un cálculo y nada más. 
+
+1. Se ocupa de sus propios asuntos. 
+
+### No modifica ningún objeto ni variable existente antes de ser llamada.
+
+### Solo actuán en el ámbito local, solo tratan los objetos, no los cambian
+
+
+2. Mismas entradas, misma salida. 
+
+### Dadas las mismas entradas, una función pura siempre debería devolver el mismo resultado.
+
+```
+function double(number) {
+  return 2 * number;
+}
+
+```
+
+### React asume que cada componente que escribes es una función pura. 
+
+#### Esto significa que los componentes de React que escribes siempre deben devolver el mismo JSX con las mismas entradas:
+
+
+App.js
+
+```
+function Recipe({ drinkers }) {
+  return (
+    <ol>    
+      <li>Boil {drinkers} cups of water.</li>
+      <li>Add {drinkers} spoons of tea and {0.5 * drinkers} spoons of spice.</li>
+      <li>Add {0.5 * drinkers} cups of milk to boil and sugar to taste.</li>
+    </ol>
+  );
+}
+
+export default function App() {
+  return (
+    <section>
+      <h1>Spiced Chai Recipe</h1>
+      <h2>For two</h2>
+      <Recipe drinkers={2} />
+      <h2>For a gathering</h2>
+      <Recipe drinkers={4} />
+    </section>
+  );
+}
+
+```
+
+#### Al pasar drinkers={2} a la Receta, devolverá un JSX con 2 tazas de agua. Siempre.
+
+#### Si pasa drinkers={4}, devolverá un JSX con 4 tazas de agua. Siempre.
+
+Igual que una fórmula matemática.
+
+
+### Efectos secundarios: consecuencias (no) deseadas
+
+El proceso de renderizado de React debe ser siempre puro. 
+
+#### Los componentes solo deben devolver su JSX y no modificar ningún objeto o variable existente antes del renderizado, ya que esto los volvería impuros.
+
+```
+let guest = 0;
+
+function Cup() {
+  // Bad: changing a preexisting variable!
+  guest = guest + 1;
+  return <h2>Tea cup for guest #{guest}</h2>;
+}
+
+export default function TeaSet() {
+  return (
+    <>
+      <Cup />
+      <Cup />
+      <Cup />
+    </>
+  );
+}
+
+```
+
+#### Este componente lee y escribe una variable de invitado declarada externamente. 
+
+#### Esto significa que llamarlo varias veces producirá un JSX diferente. 
+
+#### Actualiza la variable global en cada llamada. 
+
+Además, si otros componentes leen "invitado", también producirán un JSX diferente, dependiendo de cuándo se renderizaron. 
+
+Esto no es predecible.
+
+
+### Puedes arreglar este componente pasando guest como propiedad en su lugar:
+
+```
+function Cup({ guest }) {
+  return <h2>Tea cup for guest #{guest}</h2>;
+}
+
+export default function TeaSet() {
+  return (
+    <>
+      <Cup guest={1} />
+      <Cup guest={2} />
+      <Cup guest={3} />
+    </>
+  );
+}
+
+```
+
+#### Ahora tu componente es puro, ya que el JSX que devuelve solo depende de la propiedad {guest}.
+
+
+### En general, no deberías esperar que tus componentes se rendericen en un orden específico. 
+
+No importa si llamas a y = 2x antes o después de y = 5x: ambas fórmulas se resolverán independientemente. 
+
+### De igual manera, cada componente debe pensar por sí mismo y no intentar coordinarse ni depender de otros durante el renderizado. 
+
+El renderizado es como un examen escolar: ¡cada componente debe calcular el JSX por sí mismo!
+
+
+### React ofrece un "Modo Estricto" en el que llama a la función de cada componente dos veces durante el desarrollo. 
+
+### Al llamar a las funciones del componente dos veces, el Modo Estricto ayuda a detectar componentes que infringen estas reglas.
+
+
+#### Observa cómo el ejemplo original mostraba "Invitado n.° 2", "Invitado n.° 4" y "Invitado n.° 6" en lugar de "Invitado n.° 1", "Invitado n.° 2" y "Invitado n.° 3". 
+
+#### La función original era impura, por lo que al llamarla dos veces se interrumpía. 
+
+#### Sin embargo, la versión pura corregida funciona incluso si la función se llama dos veces cada vez. 
+
+#### Las funciones puras solo calculan, por lo que llamarlas dos veces no cambiará nada; al igual que llamar a double(2) dos veces no cambia el valor devuelto, y resolver y = 2x dos veces no cambia el valor de y.
+
+Mismas entradas, mismas salidas. Siempre.
+
+
+El modo estricto no tiene efecto en producción, por lo que no ralentizará la aplicación para los usuarios. 
+
+Para activar el modo estricto, puedes encapsular tu componente raíz en <React.StrictMode>. 
+
+Algunos frameworks lo hacen por defecto.
+
+
+### Mutación local: El pequeño secreto de tu componente
+
+En el ejemplo anterior, el problema residía en que el componente modificaba una variable preexistente durante el renderizado. 
+
+Esto se suele llamar "mutación" para que suene un poco más intimidante. 
+
+#### Las funciones puras no mutan variables fuera de su ámbito ni objetos creados antes de la llamada; ¡eso las convierte en impuras!
+
+
+#### Sin embargo, es perfectamente posible modificar variables y objetos recién creados durante el renderizado. 
+
+En este ejemplo, se crea un array ```[]```, se le asigna una variable cups y luego se le insertan una docena de cups:
+
+```
+function Cup({ guest }) {
+  return <h2>Tea cup for guest #{guest}</h2>;
+}
+
+export default function TeaGathering() {
+  let cups = [];
+  for (let i = 1; i <= 12; i++) {
+    cups.push(<Cup key={i} guest={i} />);
+  }
+  return cups;
+}
+
+``` 
+
+#### (definimos cup, toma guest, retorna h2 + el valor de guest)
+
+#### (definimos TeaGathering, una variable local que es un array, creamos un bucle para manipular el array local, en cada iteración va a usar .push() que le pasa por parámetro el componente hijo con el valor de su prop guest y un atributo key) al final retorna la variable local actualizada.
+
+
+### Cuando usamos recursos de otros archivos lo traemos al ámbito local.
+
+
+### Dónde se pueden generar efectos secundarios
+
+Si bien la programación funcional se basa en gran medida en la pureza, en algún momento, algo tiene que cambiar. 
+
+¡Ese es precisamente el propósito de la programación! 
+
+#### Estos cambios (actualizar la pantalla, iniciar una animación, cambiar los datos) se denominan efectos secundarios. 
+
+#### Son cosas que ocurren "inmediatamente", no durante el renderizado.
+
+
+#### En React, los efectos secundarios suelen pertenecer a los controladores de eventos. 
+
+Los controladores de eventos son funciones que React ejecuta al realizar alguna acción, por ejemplo, al hacer clic en un botón. 
+
+#### Aunque los controladores de eventos se definen dentro del componente, ¡no se ejecutan durante el renderizado! 
+
+Por lo tanto, no es necesario que sean puros.
+
+
+### No ejecutamos estas funciones, las ejecuta el usuario. 
+
+
+#### Si has agotado todas las demás opciones y no encuentras el controlador de eventos adecuado para tu efecto secundario, puedes adjuntarlo al JSX devuelto con una llamada a useEffect en el componente. 
+
+Esto le indica a React que lo ejecute más tarde, después del renderizado, cuando los efectos secundarios estén permitidos. 
+
+#### Sin embargo, este enfoque debería ser tu último recurso.
+
+
+### Siempre que sea posible, intenta expresar tu lógica únicamente con el renderizado. 
+
+
+### Ventajas componentes puros
+
+1. Tus componentes podrían ejecutarse en un entorno diferente, por ejemplo, ¡en el servidor! 
+
+Dado que devuelven el mismo resultado para las mismas entradas, un componente puede atender muchas solicitudes de usuario.
+
+
+2. Puedes mejorar el rendimiento omitiendo la renderización de componentes cuyas entradas no han cambiado. 
+
+Esto es seguro porque las funciones puras siempre devuelven los mismos resultados, por lo que es seguro almacenarlas en caché.
+
+
+3. Si algún dato cambia durante la renderización de un árbol de componentes profundo, React puede reiniciar la renderización sin perder tiempo en finalizar el renderizado obsoleto. 
+
+La pureza permite detener el cálculo en cualquier momento.
+
+Cada nueva funcionalidad de React que desarrollamos aprovecha la pureza. 
+
+Desde la obtención de datos hasta las animaciones y el rendimiento, mantener los componentes puros libera el poder del paradigma de React.
 
 
 
@@ -11934,3 +12881,524 @@ Incruste la variable entre llaves en el árbol JSX devuelto, anidando la expresi
 Podemos usar if else fuera del return
 
 Ternario dentro del return para devolver props, contenido js de acuerdo al condicional, componentes, js; usando parentesis y llaves.
+
+
+# Renderizado de listas 
+
+## Uso de map
+
+## Uso de filter 
+
+## Uso de atributo key
+
+## Fragment o div para usar key
+
+
+### Ejemplos
+
+1. 
+
+Datos: 
+
+data.js
+
+```
+export const people = [{
+  id: 0,
+  name: 'Creola Katherine Johnson',
+  profession: 'mathematician',
+  accomplishment: 'spaceflight calculations',
+  imageId: 'MK3eW3A'
+}, {
+  id: 1,
+  name: 'Mario José Molina-Pasquel Henríquez',
+  profession: 'chemist',
+  accomplishment: 'discovery of Arctic ozone hole',
+  imageId: 'mynHUSa'
+}, {
+  id: 2,
+  name: 'Mohammad Abdus Salam',
+  profession: 'physicist',
+  accomplishment: 'electromagnetism theory',
+  imageId: 'bE7W1ji'
+}, {
+  id: 3,
+  name: 'Percy Lavon Julian',
+  profession: 'chemist',
+  accomplishment: 'pioneering cortisone drugs, steroids and birth control pills',
+  imageId: 'IOjWm71'
+}, {
+  id: 4,
+  name: 'Subrahmanyan Chandrasekhar',
+  profession: 'astrophysicist',
+  accomplishment: 'white dwarf star mass calculations',
+  imageId: 'lrWQx8l'
+}];
+
+```
+
+#### El objeto se compone de todo un array con objetos, cada uno con su clave-valor.
+
+
+
+Solución
+
+Podrías usar filter() dos veces, creando dos matrices separadas y luego mapearlas sobre ambas:
+
+```
+import { people } from './data.js';
+import { getImageUrl } from './utils.js';
+
+export default function List() {
+  const chemists = people.filter(person =>
+    person.profession === 'chemist'
+  );
+  const everyoneElse = people.filter(person =>
+    person.profession !== 'chemist'
+  );
+  return (
+    <article>
+      <h1>Scientists</h1>
+      <h2>Chemists</h2>
+      <ul>
+        {chemists.map(person =>
+          <li key={person.id}>
+            <img
+              src={getImageUrl(person)}
+              alt={person.name}
+            />
+            <p>
+              <b>{person.name}:</b>
+              {' ' + person.profession + ' '}
+              known for {person.accomplishment}
+            </p>
+          </li>
+        )}
+      </ul>
+      <h2>Everyone Else</h2>
+      <ul>
+        {everyoneElse.map(person =>
+          <li key={person.id}>
+            <img
+              src={getImageUrl(person)}
+              alt={person.name}
+            />
+            <p>
+              <b>{person.name}:</b>
+              {' ' + person.profession + ' '}
+              known for {person.accomplishment}
+            </p>
+          </li>
+        )}
+      </ul>
+    </article>
+  );
+}
+
+```
+
+De acuerdo a los datos los filtra por dos tipos. 
+
+En variables chemists y everyoneElse
+
+#### Primero los filtra (antes de return y los guarda en variable)
+
+#### Después los mapea en return para devolver cada dato correspondiente. 
+
+
+2. 
+
+data.js
+
+```
+export const recipes = [{
+  id: 'greek-salad',
+  name: 'Greek Salad',
+  ingredients: ['tomatoes', 'cucumber', 'onion', 'olives', 'feta']
+}, {
+  id: 'hawaiian-pizza',
+  name: 'Hawaiian Pizza',
+  ingredients: ['pizza crust', 'pizza sauce', 'mozzarella', 'ham', 'pineapple']
+}, {
+  id: 'hummus',
+  name: 'Hummus',
+  ingredients: ['chickpeas', 'olive oil', 'garlic cloves', 'lemon', 'tahini']
+}];
+
+```
+
+#### El objeto se compone de todo un array con objetos, cada uno con su clave-valor.
+
+#### El valor de una clave es un array de strigs. 
+
+
+Solución: 
+
+Esto requerirá anidar dos llamadas de mapa diferentes.
+
+```
+import { recipes } from './data.js';
+
+export default function RecipeList() {
+  return (
+    <div>
+      <h1>Recipes</h1>
+      {recipes.map(recipe =>
+        <div key={recipe.id}>
+          <h2>{recipe.name}</h2>
+          <ul>
+            {recipe.ingredients.map(ingredient =>
+              <li key={ingredient}>
+                {ingredient}
+              </li>
+            )}
+          </ul>
+        </div>
+      )}
+    </div>
+  );
+}
+
+```
+
+#### Mapea el objeto de datos dos veces para mostrar las propiedades el array en el return. 
+
+#### Usa dos claves distintas para rastrear las posiciones y mantener el orden de renderizado en cada elemento li: key={recipe.id} y key={ingredient}
+
+
+3. 
+
+Solución:
+
+Puedes copiar y pegar el JSX del mapa externo en un nuevo componente Receta y devolverlo. 
+
+Luego, puedes cambiar ```receit.name``` por ```name```, ```receit.id``` por ```id```, etc., y pasarlos como propiedades a la Receta:
+
+
+#### Creamos un nuevo componente Recipe con props, mapea sus propiedades para mostrarlas en el return
+
+```
+import { recipes } from './data.js';
+
+function Recipe({ id, name, ingredients }) {
+  return (
+    <div>
+      <h2>{name}</h2>
+      <ul>
+        {ingredients.map(ingredient =>
+          <li key={ingredient}>
+            {ingredient}
+          </li>
+        )}
+      </ul>
+    </div>
+  );
+}
+
+export default function RecipeList() {
+  return (
+    <div>
+      <h1>Recipes</h1>
+      {recipes.map(recipe =>
+        <Recipe {...recipe} key={recipe.id} />
+      )}
+    </div>
+  );
+}
+
+```
+
+#### El componente RecipeList retorna en su h1 las propiedades del componente Recipe (las recibe con ... y las ordena con una key) 
+
+### Aquí, <Recipe {...recipe} key={recipe.id} /> es un atajo de sintaxis que indica "pasar todas las propiedades del objeto receta como props al componente Receta". 
+
+También se puede escribir cada prop explícitamente: <Recipe id={recipe.id} name={recipe.name} Ingredients={recipe.ingredients} key={recipe.id} />.
+
+
+Ten en cuenta que la clave se especifica en el propio <Recipe>, no en el <div> raíz devuelto por Receta. 
+
+Esto se debe a que esta clave se necesita directamente dentro del contexto del array circundante. 
+
+Anteriormente, se tenía un array de <div>, por lo que cada uno necesitaba una clave, pero ahora se tiene un array de <Recipe>. 
+
+En otras palabras, al extraer un componente, no olvides dejar la clave fuera del JSX que copias y pegas.
+
+
+4. 
+
+Puede escribir un bucle manual, insertando <hr /> y <p>...</p> en la matriz de salida a medida que avanza.
+
+#### Creamos una constante global poem que es un objeto que tiene una propiedad con un array como valor. 
+
+#### La funcion Poem define un array vacío output
+
+#### Después accede al objeto poem (poem.lines.forEach((line, i) => {})
+
+#### ForEach toma una función
+
+#### Leerá la propiedad que tiene un array por cada elemento le asigna una variable local y un indice
+
+#### Incluirá la variable y el indice en el array vacio en cada iteración/elemento. 
+
+#### Incluye en un elemento hr con el indice y un string como key
+
+#### Mostrará la variable line
+
+#### Al final elimina cada hr y en el return muestra el array como un poema. 
+
+```
+const poem = {
+  lines: [
+    'I write, erase, rewrite',
+    'Erase again, and then',
+    'A poppy blooms.'
+  ]
+};
+
+export default function Poem() {
+  let output = [];
+
+  // Fill the output array
+  poem.lines.forEach((line, i) => {
+    output.push(
+      <hr key={i + '-separator'} />
+    );
+    output.push(
+      <p key={i + '-text'}>
+        {line}
+      </p>
+    );
+  });
+  // Remove the first <hr />
+  output.shift();
+
+  return (
+    <article>
+      {output}
+    </article>
+  );
+}
+
+```
+
+
+# Componentes puros 
+
+```
+function Cup({ guest }) {
+  return <h2>Tea cup for guest #{guest}</h2>;
+}
+
+export default function TeaGathering() {
+  let cups = [];
+  for (let i = 1; i <= 12; i++) {
+    cups.push(<Cup key={i} guest={i} />);
+  }
+  return cups;
+}
+
+``` 
+
+#### (definimos cup, toma guest, retorna h2 + el valor de guest)
+
+#### (definimos TeaGathering, una variable local que es un array, creamos un bucle para manipular el array local, en cada iteración va a usar .push() que le pasa por parámetro el componente hijo con el valor de su prop guest y un atributo key) al final retorna la variable local actualizada.
+
+
+1. 
+
+Puedes arreglar este componente calculando el className e incluyéndolo en la salida de renderizado:
+
+
+Define hours usando el objeto time y su método getHours()
+
+Define className
+
+Con un if, dado el valor de hours, va a definir el valor de className
+
+En return le pasamos el valor de la variable local className al atributo React className
+
+Retornará un h1 con el objeto time.toLocaleTimeString()
+
+
+```
+export default function Clock({ time }) {
+  let hours = time.getHours();
+  let className;
+  if (hours >= 0 && hours <= 6) {
+    className = 'night';
+  } else {
+    className = 'day';
+  }
+  return (
+    <h1 className={className}>
+      {time.toLocaleTimeString()}
+    </h1>
+  );
+}
+
+```
+
+En este ejemplo, el efecto secundario (modificar el DOM) no fue necesario. Solo se necesitaba devolver JSX.
+
+
+2. 
+
+El problema radica en que el componente Perfil escribe en una variable preexistente llamada currentPerson, y los componentes Encabezado y Avatar leen de ella. 
+
+Esto hace que los tres sean impuros y difíciles de predecir.
+
+Para corregir el error, elimine la variable currentPerson. 
+
+En su lugar, pase toda la información de Perfil a Encabezado y Avatar mediante propiedades. 
+
+Deberá agregar una propiedad "persona" a ambos componentes y pasarla a todos los niveles.
+
+
+Profile.js
+
+
+Profile toma un objeto person para que le asigne propiedades y valores cuando lo invoquen 
+
+Profile usa Panel y dentro llama a header y le pasa el objeto person
+
+```
+import Panel from './Panel.js';
+import { getImageUrl } from './utils.js';
+
+export default function Profile({ person }) {
+  return (
+    <Panel>
+      <Header person={person} />
+      <Avatar person={person} />
+    </Panel>
+  )
+}
+
+function Header({ person }) {
+  return <h1>{person.name}</h1>;
+}
+
+function Avatar({ person }) {
+  return (
+    <img
+      className="avatar"
+      src={getImageUrl(person)}
+      alt={person.name}
+      width={50}
+      height={50}
+    />
+  );
+}
+
+```
+
+Header toma el objeto person para retornar su propiedad y valor person.name
+
+Avatar toma person para mostrar, la url y el nombre para el elemento img que renderiza
+
+ 
+App.js
+
+```
+import Profile from './Profile.js';
+
+export default function App() {
+  return (
+    <>
+      <Profile person={{
+        imageId: 'lrWQx8l',
+        name: 'Subrahmanyan Chandrasekhar',
+      }} />
+      <Profile person={{
+        imageId: 'MK3eW3A',
+        name: 'Creola Katherine Johnson',
+      }} />
+    </>
+  );
+}
+
+```
+
+App renderiza Profile con valores para el objeto person; Profile contiene Header y Avatar, todos toman como objeto person. 
+
+
+### Recuerda que React no garantiza que las funciones de los componentes se ejecuten en un orden específico, por lo que no es posible comunicarse entre ellas mediante variables. 
+
+### Toda comunicación debe realizarse mediante propiedades.
+
+
+3. 
+
+La solución más sencilla es no modificar el array y renderizar "Crear historia" por separado.
+
+
+StoryTray.js
+
+StoryTray toma stories, los mapea y por cada una le asignará una key y mostrará una etiqueta  
+
+```
+export default function StoryTray({ stories }) {
+  return (
+    <ul>
+      {stories.map(story => (
+        <li key={story.id}>
+          {story.label}
+        </li>
+      ))}
+      <li>Create Story</li>
+    </ul>
+  );
+}
+
+```
+
+Como alternativa, puede crear una nueva matriz (copiando la existente) antes de insertar un elemento en ella:
+
+StoryTray toma stories
+
+guarda en una variable storiesToDisplay stories.slice
+
+el método push recibe un objeto js con id y lable
+
+En return mapea storiesToDisplay, por cada storie devuelve li con una key usando las propiedades del objeto. 
+
+Dentro de li mostrará el valor de {story.label}
+
+```
+export default function StoryTray({ stories }) {
+  // Copy the array!
+  let storiesToDisplay = stories.slice();
+
+  // Does not affect the original array:
+  storiesToDisplay.push({
+    id: 'create',
+    label: 'Create Story'
+  });
+
+  return (
+    <ul>
+      {storiesToDisplay.map(story => (
+        <li key={story.id}>
+          {story.label}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+```
+
+### Esto mantiene la mutación local y la función de renderizado pura. 
+
+Sin embargo, debe tener cuidado: por ejemplo, si intenta modificar alguno de los elementos existentes del array, también deberá clonarlos.
+
+
+### Es útil recordar qué operaciones en los arrays los mutan y cuáles no. 
+
+Por ejemplo, insertar, extraer, invertir y ordenar mutarán el array original, pero cortar, filtrar y mapear crearán uno nuevo.
+
+
+
+#
+
+
