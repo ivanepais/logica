@@ -6444,3 +6444,4371 @@ Las herramientas de compilación utilizan los árboles de dependencia para agrup
 Los árboles de dependencia son útiles para depurar paquetes de gran tamaño que ralentizan el tiempo de renderizado y ofrecen oportunidades para optimizar el código incluido.
 
 
+
+# Interactividad en React
+
+Algunos elementos en la pantalla se actualizan según la entrada del usuario. 
+
+Por ejemplo, al hacer clic en una galería de imágenes, se cambia la imagen activa. 
+
+### En React, los datos que cambian con el tiempo se denominan estado. 
+
+Puedes añadir estado a cualquier componente y actualizarlo según sea necesario. 
+
+### Se pueden escribir componentes que gestionan interacciones, actualizan su estado y muestran diferentes resultados a lo largo del tiempo.
+
+
+1. Gestionar eventos iniciados por el usuario
+
+2. Hacer que los componentes "recuerden" información con el estado
+
+3. React actualiza la interfaz de usuario en dos fases
+
+4. Por qué el estado no se actualiza inmediatamente después de modificarlo
+
+5. Cola con múltiples actualizaciones de estado
+
+6. Actualizar un objeto en estado
+
+7. Actualizar un array en estado
+
+
+## Respondiendo a eventos
+
+React te permite añadir controladores de eventos a tu JSX. 
+
+Los controladores de eventos son funciones propias que se activan en respuesta a interacciones del usuario, como hacer clic, pasar el cursor por encima, enfocar las entradas del formulario, etc.
+
+
+Los componentes integrados como <button> solo admiten eventos integrados del navegador como onClick. 
+
+Sin embargo, también puedes crear tus propios componentes y asignar a sus propiedades de controlador de eventos los nombres específicos de la aplicación que desees.
+
+
+App.js
+
+```
+export default function App() {
+  return (
+    <Toolbar
+      onPlayMovie={() => alert('Playing!')}
+      onUploadImage={() => alert('Uploading!')}
+    />
+  );
+}
+
+function Toolbar({ onPlayMovie, onUploadImage }) {
+  return (
+    <div>
+      <Button onClick={onPlayMovie}>
+        Play Movie
+      </Button>
+      <Button onClick={onUploadImage}>
+        Upload Image
+      </Button>
+    </div>
+  );
+}
+
+function Button({ onClick, children }) {
+  return (
+    <button onClick={onClick}>
+      {children}
+    </button>
+  );
+}
+
+```
+
+Toolbar y Button que admiten props desde otro componente, los usan en su propio return. 
+
+
+## Estado: la memoria de un componente
+
+### Los componentes a menudo necesitan cambiar lo que aparece en pantalla como resultado de una interacción. 
+
+Al escribir en el formulario, se actualiza el campo de entrada; al hacer clic en "Siguiente" en un carrusel de imágenes, se cambia la imagen que se muestra; al hacer clic en "Comprar", se añade un producto al carrito de compras. 
+
+### Los componentes necesitan recordar cosas: el valor de entrada actual, la imagen actual, el carrito de compras. 
+
+### En React, este tipo de memoria específica del componente se denomina estado.
+
+
+Puedes añadir estado a un componente con un Hook useState. 
+
+### Los Hooks son funciones especiales que permiten a tus componentes usar las características de React (el estado es una de ellas). 
+
+El Hook useState permite declarar una variable de estado. 
+
+Toma el estado inicial y devuelve un par de valores: el estado actual y una función que establece el estado para actualizarlo.
+
+```
+const [index, setIndex] = useState(0);
+const [showMore, setShowMore] = useState(false);
+
+```
+
+Así es como una galería de imágenes usa y actualiza el estado al hacer clic:
+
+data.js
+
+```
+export const sculptureList = [{
+  name: 'Homenaje a la Neurocirugía',
+  artist: 'Marta Colvin Andrade',
+  description: 'Although Colvin is predominantly known for abstract themes that allude to pre-Hispanic symbols, this gigantic sculpture, an homage to neurosurgery, is one of her most recognizable public art pieces.',
+  url: 'https://i.imgur.com/Mx7dA2Y.jpg',
+  alt: 'A bronze statue of two crossed hands delicately holding a human brain in their fingertips.'
+}, {
+  name: 'Floralis Genérica',
+  artist: 'Eduardo Catalano',
+  description: 'This enormous (75 ft. or 23m) silver flower is located in Buenos Aires. It is designed to move, closing its petals in the evening or when strong winds blow and opening them in the morning.',
+  url: 'https://i.imgur.com/ZF6s192m.jpg',
+  alt: 'A gigantic metallic flower sculpture with reflective mirror-like petals and strong stamens.'
+}, {
+  name: 'Eternal Presence',
+  artist: 'John Woodrow Wilson',
+  description: 'Wilson was known for his preoccupation with equality, social justice, as well as the essential and spiritual qualities of humankind. This massive (7ft. or 2,13m) bronze represents what he described as "a symbolic Black presence infused with a sense of universal humanity."',
+  url: 'https://i.imgur.com/aTtVpES.jpg',
+  alt: 'The sculpture depicting a human head seems ever-present and solemn. It radiates calm and serenity.'
+}, {
+  name: 'Moai',
+  artist: 'Unknown Artist',
+  description: 'Located on the Easter Island, there are 1,000 moai, or extant monumental statues, created by the early Rapa Nui people, which some believe represented deified ancestors.',
+  url: 'https://i.imgur.com/RCwLEoQm.jpg',
+  alt: 'Three monumental stone busts with the heads that are disproportionately large with somber faces.'
+}, {
+  name: 'Blue Nana',
+  artist: 'Niki de Saint Phalle',
+  description: 'The Nanas are triumphant creatures, symbols of femininity and maternity. Initially, Saint Phalle used fabric and found objects for the Nanas, and later on introduced polyester to achieve a more vibrant effect.',
+  url: 'https://i.imgur.com/Sd1AgUOm.jpg',
+  alt: 'A large mosaic sculpture of a whimsical dancing female figure in a colorful costume emanating joy.'
+}, {
+  name: 'Ultimate Form',
+  artist: 'Barbara Hepworth',
+  description: 'This abstract bronze sculpture is a part of The Family of Man series located at Yorkshire Sculpture Park. Hepworth chose not to create literal representations of the world but developed abstract forms inspired by people and landscapes.',
+  url: 'https://i.imgur.com/2heNQDcm.jpg',
+  alt: 'A tall sculpture made of three elements stacked on each other reminding of a human figure.'
+}, {
+  name: 'Cavaliere',
+  artist: 'Lamidi Olonade Fakeye',
+  description: "Descended from four generations of woodcarvers, Fakeye's work blended traditional and contemporary Yoruba themes.",
+  url: 'https://i.imgur.com/wIdGuZwm.png',
+  alt: 'An intricate wood sculpture of a warrior with a focused face on a horse adorned with patterns.'
+}, {
+  name: 'Big Bellies',
+  artist: 'Alina Szapocznikow',
+  description: "Szapocznikow is known for her sculptures of the fragmented body as a metaphor for the fragility and impermanence of youth and beauty. This sculpture depicts two very realistic large bellies stacked on top of each other, each around five feet (1,5m) tall.",
+  url: 'https://i.imgur.com/AlHTAdDm.jpg',
+  alt: 'The sculpture reminds a cascade of folds, quite different from bellies in classical sculptures.'
+}, {
+  name: 'Terracotta Army',
+  artist: 'Unknown Artist',
+  description: 'The Terracotta Army is a collection of terracotta sculptures depicting the armies of Qin Shi Huang, the first Emperor of China. The army consisted of more than 8,000 soldiers, 130 chariots with 520 horses, and 150 cavalry horses.',
+  url: 'https://i.imgur.com/HMFmH6m.jpg',
+  alt: '12 terracotta sculptures of solemn warriors, each with a unique facial expression and armor.'
+}, {
+  name: 'Lunar Landscape',
+  artist: 'Louise Nevelson',
+  description: 'Nevelson was known for scavenging objects from New York City debris, which she would later assemble into monumental constructions. In this one, she used disparate parts like a bedpost, juggling pin, and seat fragment, nailing and gluing them into boxes that reflect the influence of Cubism’s geometric abstraction of space and form.',
+  url: 'https://i.imgur.com/rN7hY6om.jpg',
+  alt: 'A black matte sculpture where the individual elements are initially indistinguishable.'
+}, {
+  name: 'Aureole',
+  artist: 'Ranjani Shettar',
+  description: 'Shettar merges the traditional and the modern, the natural and the industrial. Her art focuses on the relationship between man and nature. Her work was described as compelling both abstractly and figuratively, gravity defying, and a "fine synthesis of unlikely materials."',
+  url: 'https://i.imgur.com/okTpbHhm.jpg',
+  alt: 'A pale wire-like sculpture mounted on concrete wall and descending on the floor. It appears light.'
+}, {
+  name: 'Hippos',
+  artist: 'Taipei Zoo',
+  description: 'The Taipei Zoo commissioned a Hippo Square featuring submerged hippos at play.',
+  url: 'https://i.imgur.com/6o5Vuyu.jpg',
+  alt: 'A group of bronze hippo sculptures emerging from the sett sidewalk as if they were swimming.'
+}];
+
+```
+
+App.js
+
+Usa scuptureList de data 
+
+### El componente Gallery tiene dos variable de estado con valor inicial en 0 y false.
+
+Define la constante hasNext que calculá que la variable de estado index sea menor a la longitud/cantidad de sculptureList -1.
+
+### Define una función controladora que tiene una lógica de renderización/actualización 
+
+Si hasNext es verdadero actualiza setIndex en index + 1 
+
+Si es falso, vuelve a 0. 
+
+Define otra funcion para invertir de valor de setShowMore
+
+sculpture será el indice de acceso a los datos. 
+
+Retornará un botón con la función handleNextClick
+
+Titulos h2 y h3 que leen los valores del indice de acceso sculpture. 
+
+### El botón con la función handleMoreClick tiene una lógica de renderización de cadena Hide y Show  
+
+Antes de terminar aplica una lógica de renderización para verificar el valor de la variable de estado showMore
+
+Al final renderiza img
+
+```
+import { useState } from 'react';
+import { sculptureList } from './data.js';
+
+export default function Gallery() {
+  const [index, setIndex] = useState(0);
+  const [showMore, setShowMore] = useState(false);
+  const hasNext = index < sculptureList.length - 1;
+
+  function handleNextClick() {
+    if (hasNext) {
+      setIndex(index + 1);
+    } else {
+      setIndex(0);
+    }
+  }
+
+  function handleMoreClick() {
+    setShowMore(!showMore);
+  }
+
+  let sculpture = sculptureList[index];
+  return (
+    <>
+      <button onClick={handleNextClick}>
+        Next
+      </button>
+      <h2>
+        <i>{sculpture.name} </i>
+        by {sculpture.artist}
+      </h2>
+      <h3>
+        ({index + 1} of {sculptureList.length})
+      </h3>
+      <button onClick={handleMoreClick}>
+        {showMore ? 'Hide' : 'Show'} details
+      </button>
+      {showMore && <p>{sculpture.description}</p>}
+      <img
+        src={sculpture.url}
+        alt={sculpture.alt}
+      />
+    </>
+  );
+}
+
+```
+
+
+## Renderizar y confirmar
+
+### Antes de que tus componentes se muestren en pantalla, React debe renderizarlos. 
+
+Comprender los pasos de este proceso te ayudará a comprender cómo se ejecuta tu código y a explicar su comportamiento.
+
+
+Imagina que tus componentes son cocineros en la cocina, preparando deliciosos platos con ingredientes. 
+
+En este escenario, React es el camarero que recibe las peticiones de los clientes y les trae sus pedidos. 
+
+Este proceso de solicitud y entrega de la interfaz de usuario consta de tres pasos:
+
+
+1. Activar un renderizado (entregar el pedido del comensal a la cocina)
+
+2. Renderizar el componente (preparar el pedido en la cocina)
+
+3. Confirmar con el DOM (colocar el pedido en la mesa)
+
+
+## Estado como una instantánea
+
+### A diferencia de las variables regulares de JavaScript, el estado de React se comporta más como una instantánea. 
+
+Al configurarlo, no se modifica la variable de estado existente, sino que se activa un nuevo renderizado. 
+
+
+```
+console.log(count);  // 0
+setCount(count + 1); // Request a re-render with 1
+console.log(count);  // Still 0!
+
+```
+
+Este comportamiento te ayuda a evitar errores sutiles. 
+
+Aquí tienes una pequeña aplicación de chat. 
+
+Intenta adivinar qué ocurre si pulsas "Enviar" primero y luego cambias el destinatario a Bob. 
+
+¿Qué nombre aparecerá en la alerta cinco segundos después?
+
+
+```
+import { useState } from 'react';
+
+export default function Form() {
+  const [to, setTo] = useState('Alice');
+  const [message, setMessage] = useState('Hello');
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    setTimeout(() => {
+      alert(`You said ${message} to ${to}`);
+    }, 5000);
+  }
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <label>
+        To:{' '}
+        <select
+          value={to}
+          onChange={e => setTo(e.target.value)}>
+          <option value="Alice">Alice</option>
+          <option value="Bob">Bob</option>
+        </select>
+      </label>
+      <textarea
+        placeholder="Message"
+        value={message}
+        onChange={e => setMessage(e.target.value)}
+      />
+      <button type="submit">Send</button>
+    </form>
+  );
+}
+
+```
+
+Form define to y message en "Alice" y "Hello".
+
+La función handleSubmit previene el comportamiento por default 
+
+Usa La función setTimeout y le pasa una función flecha (como callback para el primer parámetro) que 
+
+La acción del callback será alertar a los usuarios con los valor de message y to. 
+
+El segundo parámetro de setTimeout será 500
+
+Retornará un form con la función handleSubmit
+
+
+## Poniendo en cola una serie de actualizaciones de estado.
+
+Este componente presenta errores: al hacer clic en "+3", la puntuación solo aumenta una vez.
+
+App.js
+
+```
+import { useState } from 'react';
+
+export default function Counter() {
+  const [score, setScore] = useState(0);
+
+  function increment() {
+    setScore(score + 1);
+  }
+
+  return (
+    <>
+      <button onClick={() => increment()}>+1</button>
+      <button onClick={() => {
+        increment();
+        increment();
+        increment();
+      }}>+3</button>
+      <h1>Score: {score}</h1>
+    </>
+  )
+}
+
+```
+
+Define score como estado 
+
+Con una función quiere aumentar su valor
+
+En el return quiere representar un botón +1 con la función de incremento 
+
+Otro botón con tres llamadas/ejecuciones a incremento
+
+Y un h1 para representar score
+
+
+El estado como instantánea explica por qué ocurre esto. 
+
+### Al configurar el estado, se solicita una nueva renderización, pero no se modifica en el código que ya se está ejecutando. 
+
+Por lo tanto, la puntuación sigue siendo 0 justo después de llamar a setScore(score + 1).
+
+```
+console.log(score);  // 0
+setScore(score + 1); // setScore(0 + 1);
+console.log(score);  // 0
+setScore(score + 1); // setScore(0 + 1);
+console.log(score);  // 0
+setScore(score + 1); // setScore(0 + 1);
+console.log(score);  // 0
+
+```
+
+Puedes solucionar esto pasando una función de actualización al configurar el estado. 
+
+Observa cómo al reemplazar setScore(score + 1) por setScore(s => s + 1) se soluciona el botón "+3". 
+
+Esto te permite poner en cola varias actualizaciones de estado.
+
+
+```
+import { useState } from 'react';
+
+export default function Counter() {
+  const [score, setScore] = useState(0);
+
+  function increment() {
+    setScore(s => s + 1);
+  }
+
+  return (
+    <>
+      <button onClick={() => increment()}>+1</button>
+      <button onClick={() => {
+        increment();
+        increment();
+        increment();
+      }}>+3</button>
+      <h1>Score: {score}</h1>
+    </>
+  )
+}
+
+```
+
+Usa una función flecha con un parámetro local para asignar el cambio. 
+
+
+## Actualización de objetos en estado
+
+El estado puede contener cualquier tipo de valor de JavaScript, incluyendo objetos. 
+
+Sin embargo, no se deben modificar directamente los objetos ni los arrays que se mantienen en el estado de React. 
+
+En su lugar, para actualizar un objeto y un array, se debe crear uno nuevo (o hacer una copia de uno existente) y luego actualizar el estado para usar esa copia.
+
+
+Normalmente, se usa la sintaxis ... spread para copiar los objetos y arrays que se desean modificar. 
+
+Por ejemplo, la actualización de un objeto anidado podría verse así:
+
+```
+import { useState } from 'react';
+
+export default function Form() {
+  const [person, setPerson] = useState({
+    name: 'Niki de Saint Phalle',
+    artwork: {
+      title: 'Blue Nana',
+      city: 'Hamburg',
+      image: 'https://i.imgur.com/Sd1AgUOm.jpg',
+    }
+  });
+
+  function handleNameChange(e) {
+    setPerson({
+      ...person,
+      name: e.target.value
+    });
+  }
+
+  function handleTitleChange(e) {
+    setPerson({
+      ...person,
+      artwork: {
+        ...person.artwork,
+        title: e.target.value
+      }
+    });
+  }
+
+  function handleCityChange(e) {
+    setPerson({
+      ...person,
+      artwork: {
+        ...person.artwork,
+        city: e.target.value
+      }
+    });
+  }
+
+  function handleImageChange(e) {
+    setPerson({
+      ...person,
+      artwork: {
+        ...person.artwork,
+        image: e.target.value
+      }
+    });
+  }
+
+  return (
+    <>
+      <label>
+        Name:
+        <input
+          value={person.name}
+          onChange={handleNameChange}
+        />
+      </label>
+      <label>
+        Title:
+        <input
+          value={person.artwork.title}
+          onChange={handleTitleChange}
+        />
+      </label>
+      <label>
+        City:
+        <input
+          value={person.artwork.city}
+          onChange={handleCityChange}
+        />
+      </label>
+      <label>
+        Image:
+        <input
+          value={person.artwork.image}
+          onChange={handleImageChange}
+        />
+      </label>
+      <p>
+        <i>{person.artwork.title}</i>
+        {' by '}
+        {person.name}
+        <br />
+        (located in {person.artwork.city})
+      </p>
+      <img
+        src={person.artwork.image}
+        alt={person.artwork.title}
+      />
+    </>
+  );
+}
+
+```
+
+### La variable de estado person tiene como valor un objeto que tiene otro objeto dentro. 
+
+En la función para manejar eventos, copia el objeto que quiere acceder con ... 
+
+Lo hacer para el objeto ...person y para ...person.artwork
+
+
+Si copiar objetos en el código se vuelve tedioso, puedes usar una biblioteca como Immer para reducir el código repetitivo:
+
+package.json
+
+```
+{
+  "dependencies": {
+    "immer": "1.7.3",
+    "react": "latest",
+    "react-dom": "latest",
+    "react-scripts": "latest",
+    "use-immer": "0.5.1"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  },
+  "devDependencies": {}
+}
+
+```
+
+App.js
+
+```
+import { useImmer } from 'use-immer';
+
+export default function Form() {
+  const [person, updatePerson] = useImmer({
+    name: 'Niki de Saint Phalle',
+    artwork: {
+      title: 'Blue Nana',
+      city: 'Hamburg',
+      image: 'https://i.imgur.com/Sd1AgUOm.jpg',
+    }
+  });
+
+  function handleNameChange(e) {
+    updatePerson(draft => {
+      draft.name = e.target.value;
+    });
+  }
+
+  function handleTitleChange(e) {
+    updatePerson(draft => {
+      draft.artwork.title = e.target.value;
+    });
+  }
+
+  function handleCityChange(e) {
+    updatePerson(draft => {
+      draft.artwork.city = e.target.value;
+    });
+  }
+
+  function handleImageChange(e) {
+    updatePerson(draft => {
+      draft.artwork.image = e.target.value;
+    });
+  }
+
+  return (
+    <>
+      <label>
+        Name:
+        <input
+          value={person.name}
+          onChange={handleNameChange}
+        />
+      </label>
+      <label>
+        Title:
+        <input
+          value={person.artwork.title}
+          onChange={handleTitleChange}
+        />
+      </label>
+      <label>
+        City:
+        <input
+          value={person.artwork.city}
+          onChange={handleCityChange}
+        />
+      </label>
+      <label>
+        Image:
+        <input
+          value={person.artwork.image}
+          onChange={handleImageChange}
+        />
+      </label>
+      <p>
+        <i>{person.artwork.title}</i>
+        {' by '}
+        {person.name}
+        <br />
+        (located in {person.artwork.city})
+      </p>
+      <img
+        src={person.artwork.image}
+        alt={person.artwork.title}
+      />
+    </>
+  );
+}
+
+```
+
+
+## Actualización de arrays en estado
+
+Los arrays son otro tipo de objetos mutables de JavaScript que se pueden almacenar en estado y deben tratarse como de solo lectura. 
+
+Al igual que con los objetos, para actualizar un array almacenado en estado, es necesario crear uno nuevo (o hacer una copia de uno existente) y luego configurar el estado para que use el nuevo array:
+
+```
+import { useState } from 'react';
+
+const initialList = [
+  { id: 0, title: 'Big Bellies', seen: false },
+  { id: 1, title: 'Lunar Landscape', seen: false },
+  { id: 2, title: 'Terracotta Army', seen: true },
+];
+
+export default function BucketList() {
+  const [list, setList] = useState(
+    initialList
+  );
+
+  function handleToggle(artworkId, nextSeen) {
+    setList(list.map(artwork => {
+      if (artwork.id === artworkId) {
+        return { ...artwork, seen: nextSeen };
+      } else {
+        return artwork;
+      }
+    }));
+  }
+
+  return (
+    <>
+      <h1>Art Bucket List</h1>
+      <h2>My list of art to see:</h2>
+      <ItemList
+        artworks={list}
+        onToggle={handleToggle} />
+    </>
+  );
+}
+
+function ItemList({ artworks, onToggle }) {
+  return (
+    <ul>
+      {artworks.map(artwork => (
+        <li key={artwork.id}>
+          <label>
+            <input
+              type="checkbox"
+              checked={artwork.seen}
+              onChange={e => {
+                onToggle(
+                  artwork.id,
+                  e.target.checked
+                );
+              }}
+            />
+            {artwork.title}
+          </label>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+```
+
+
+Podemos usar Immer para reducir código repetitivo. 
+
+App.js
+
+```
+import { useState } from 'react';
+import { useImmer } from 'use-immer';
+
+const initialList = [
+  { id: 0, title: 'Big Bellies', seen: false },
+  { id: 1, title: 'Lunar Landscape', seen: false },
+  { id: 2, title: 'Terracotta Army', seen: true },
+];
+
+export default function BucketList() {
+  const [list, updateList] = useImmer(initialList);
+
+  function handleToggle(artworkId, nextSeen) {
+    updateList(draft => {
+      const artwork = draft.find(a =>
+        a.id === artworkId
+      );
+      artwork.seen = nextSeen;
+    });
+  }
+
+  return (
+    <>
+      <h1>Art Bucket List</h1>
+      <h2>My list of art to see:</h2>
+      <ItemList
+        artworks={list}
+        onToggle={handleToggle} />
+    </>
+  );
+}
+
+function ItemList({ artworks, onToggle }) {
+  return (
+    <ul>
+      {artworks.map(artwork => (
+        <li key={artwork.id}>
+          <label>
+            <input
+              type="checkbox"
+              checked={artwork.seen}
+              onChange={e => {
+                onToggle(
+                  artwork.id,
+                  e.target.checked
+                );
+              }}
+            />
+            {artwork.title}
+          </label>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+```
+
+
+# Respondiendo a Eventos
+
+React te permite agregar controladores de eventos a tu JSX. 
+
+Los controladores de eventos son funciones propias que se activan en respuesta a interacciones como hacer clic, pasar el cursor, enfocar las entradas del formulario, etc.
+
+
+Aprenderás:
+
+Diferentes maneras de escribir un controlador de eventos
+
+Cómo pasar la lógica de manejo de eventos desde un componente padre
+
+Cómo se propagan los eventos y cómo detenerlos
+
+
+## Añadir controladores de eventos
+
+Para añadir un controlador de eventos, primero se define una función y luego se pasa como propiedad a la etiqueta JSX correspondiente. 
+
+Por ejemplo, aquí se muestra un botón que aún no realiza ninguna acción:
+
+App.js
+
+```
+export default function Button() {
+  return (
+    <button>
+      I don't do anything
+    </button>
+  );
+}
+
+```
+
+Puedes hacer que muestre un mensaje cuando un usuario haga clic siguiendo estos tres pasos:
+
+1. Declara una función llamada handleClick dentro de tu componente Button.
+
+2. Implementa la lógica dentro de esa función (usa alert para mostrar el mensaje).
+
+3. Agrega onClick={handleClick} al JSX de <button>.
+
+
+```
+export default function Button() {
+  function handleClick() {
+    alert('You clicked me!');
+  }
+
+  return (
+    <button onClick={handleClick}>
+      Click me
+    </button>
+  );
+}
+
+```
+
+Definiste la función handleClick y la pasaste como propiedad a <button>. 
+
+handleClick es un controlador de eventos. 
+
+Las funciones de los controladores de eventos:
+
+
+1. Suelen definirse dentro de los componentes.
+2. Tienen nombres que empiezan por "handle", seguido del nombre del evento.
+
+
+Por convención, es común nombrar los controladores de eventos como "handle" seguido del nombre del evento. 
+
+A menudo verás "onClick={handleClick}", "onMouseEnter={handleMouseEnter}", etc.
+
+
+Como alternativa, puedes definir un controlador de eventos en línea en el JSX:
+
+```
+<button onClick={function handleClick() {
+  alert('You clicked me!');
+}}>
+
+```
+
+Para ser conciso, una arrow function 
+
+```
+<button onClick={() => {
+  alert('You clicked me!');
+}}>
+
+```
+
+
+### Error
+
+Las funciones pasadas a los controladores de eventos deben pasarse, no llamarse. 
+
+Por ejemplo:
+
+1. passing a function (correct)
+
+```
+<button onClick={handleClick}>
+
+```
+
+2. calling a function (incorrect)
+
+```
+button onClick={handleClick()}>
+
+```
+
+La diferencia es sutil.
+
+En el primer ejemplo, la función handleClick se pasa como un controlador de eventos onClick. 
+
+Esto le indica a React que la recuerde y solo la llame cuando el usuario haga clic en el botón.
+
+
+En el segundo ejemplo, el () al final de handleClick() ejecuta la función inmediatamente durante la renderización, sin necesidad de clics. 
+
+Esto se debe a que el JavaScript dentro de JSX { y } se ejecuta inmediatamente.
+
+
+Cuando escribes código en línea, el mismo problema se presenta de una manera diferente:
+
+1. passing a function (correct)
+
+```
+<button onClick={() => alert('...')}>
+
+```
+
+2. calling a function (incorrect)
+
+```
+<button onClick={alert('...')}>
+
+```
+
+Pasar código en línea como este no se activará al hacer clic, se activa cada vez que se renderiza el componente:
+
+```
+// This alert fires when the component renders, not when clicked!
+<button onClick={alert('You clicked me!')}>
+
+```
+
+Si desea definir su controlador de eventos en línea, inclúyalo en una función anónima como esta:
+
+```
+<button onClick={() => alert('You clicked me!')}>
+
+```
+
+En lugar de ejecutar el código interno con cada renderizado, esto crea una función que se llamará posteriormente.
+
+En ambos casos, se pasa una función:
+
+1. <button onClick={handleClick}> pasa la función handleClick.
+
+2. <button onClick={() => alert('...')}> pasa la función () => alert('...').
+
+
+## Lectura de props en manejadores de eventos
+
+Dado que los manejadores de eventos se declaran dentro de un componente, tienen acceso a los props del componente. 
+
+Aquí se muestra un botón que, al hacer clic, muestra una alerta con su prop de mensaje:
+
+App.js
+
+Se define AlertButton, tendrá props message y children para que todo este componente sea un contenedor para otros elementos. 
+
+Retorna un botón con un controlador de eventos que se activa al hacer click. 
+
+Su acción es leer el valor de la prop message en un alert. 
+
+Abajo del botón se podrá renderizar elementos. 
+
+{children} renderizará Play Movie y Upload Image
+
+ 
+
+```
+function AlertButton({ message, children }) {
+  return (
+    <button onClick={() => alert(message)}>
+      {children}
+    </button>
+  );
+}
+
+export default function Toolbar() {
+  return (
+    <div>
+      <AlertButton message="Playing!">
+        Play Movie
+      </AlertButton>
+      <AlertButton message="Uploading!">
+        Upload Image
+      </AlertButton>
+    </div>
+  );
+}
+
+```
+
+### Las props permiten que estos dos botones muestren mensajes diferentes. Intenta cambiar los mensajes que se les envían.
+
+
+## Pasando controladores de eventos como props
+
+A menudo, querrá que el componente padre especifique el controlador de eventos de un componente hijo. 
+
+
+### Considere los botones: dependiendo de dónde use un componente Button, podría querer ejecutar una función diferente; por ejemplo, una reproduce una película y otra sube una imagen.
+
+Para ello, pase un prop que el componente recibe de su padre como controlador de eventos, de la siguiente manera:
+
+#### Button será un botón contenedor <Componente> <Componente/>
+
+Para que al llamarlo puedan pasarle elementos, jsx, contenido, etc. 
+
+```
+function Button({ onClick, children }) {
+  return (
+    <button onClick={onClick}>
+      {children}
+    </button>
+  );
+}
+
+function PlayButton({ movieName }) {
+  function handlePlayClick() {
+    alert(`Playing ${movieName}!`);
+  }
+
+  return (
+    <Button onClick={handlePlayClick}>
+      Play "{movieName}"
+    </Button>
+  );
+}
+
+function UploadButton() {
+  return (
+    <Button onClick={() => alert('Uploading!')}>
+      Upload Image
+    </Button>
+  );
+}
+
+export default function Toolbar() {
+  return (
+    <div>
+      <PlayButton movieName="Kiki's Delivery Service" />
+      <UploadButton />
+    </div>
+  );
+}
+
+```
+
+Button no tiene funciones 
+
+Tiene props a onClick y children
+
+Retorna un botón que tiene como onClick la prop onClick. 
+
+
+Las funciones estarán separadas en componentes. 
+
+PlayButton toma movieName, tiene una función handlePlayClick que lee esta prop en un alert. 
+
+Retornará un botón con su función definida y leerá movieName
+
+### PlayButton retorna el componente Button como un contenedor y además le da valor a su prop que será una función. 
+
+
+### UploadButton también llama al componente Button como un contenedor para pasarle el valor de onClick en linea como una función ya que no tiene una propia definida.   
+
+No tiene funcion 
+
+Retorna un alert con un string. 
+
+
+### ToolBar tiene su propio div, que contiene a los componentes y sus children
+
+ToolBar llama al componente PlayButton para pasarle el valor de movieName
+
+Y llama al componente UploadButton
+
+
+Aquí, el componente Toolbar renderiza un PlayButton y un UploadButton:
+
+1. PlayButton pasa handlePlayClick como la propiedad onClick al Button.
+2. UploadButton pasa () => alert('Uploading!') como la propiedad onClick al Button.
+
+
+Finalmente, el componente Button acepta una propiedad llamada onClick. 
+
+Pasa dicha propiedad directamente al navegador integrado <button> con onClick={onClick}. 
+
+Esto indica a React que llame a la función pasada al hacer clic.
+
+#### Si se utiliza un sistema de diseño, es común que componentes como los botones contengan estilo, pero no especifiquen comportamiento. 
+
+#### En cambio, componentes como PlayButton y UploadButton pasarán controladores de eventos.
+
+
+## Nombrar las propiedades del controlador de eventos
+
+Los componentes integrados como <button> y <div> solo admiten nombres de eventos del navegador como onClick. 
+
+Sin embargo, al crear tus propios componentes, puedes nombrar las propiedades del controlador de eventos como prefieras.
+
+
+Por convención, las propiedades del controlador de eventos deben empezar por on, seguido de una letra mayúscula.
+
+
+Por ejemplo, la propiedad onClick del componente Button podría haberse llamado onSmash:
+
+App.js
+
+### En Button, el valor de onSmash será una función flecha definida en la llamada a Button. 
+
+```
+function Button({ onSmash, children }) {
+  return (
+    <button onClick={onSmash}>
+      {children}
+    </button>
+  );
+}
+
+export default function App() {
+  return (
+    <div>
+      <Button onSmash={() => alert('Playing!')}>
+        Play Movie
+      </Button>
+      <Button onSmash={() => alert('Uploading!')}>
+        Upload Image
+      </Button>
+    </div>
+  );
+}
+
+```
+
+En este ejemplo, <button onClick={onSmash}> muestra que el navegador <button> (en minúsculas) aún necesita una propiedad llamada onClick, pero el nombre de la propiedad que recibirá tu componente Button personalizado depende de ti.
+
+
+### Si tu componente admite múltiples interacciones, puedes asignar nombres a las propiedades de los controladores de eventos para conceptos específicos de la aplicación. 
+
+Por ejemplo, este componente Toolbar recibe los controladores de eventos onPlayMovie y onUploadImage:
+
+
+App.js
+
+### Button admite la prop onClick en el evento onClick. 
+
+### Es llamado por dos componentes superiores: primero por Toolbar y después por App.
+
+### Toolbar le pasa como valor de la prop de Button su propio valor de prop. 
+
+### App llama a Toolbar para pasarle en la prop de Toolbar una función flecha. 
+
+```
+export default function App() {
+  return (
+    <Toolbar
+      onPlayMovie={() => alert('Playing!')}
+      onUploadImage={() => alert('Uploading!')}
+    />
+  );
+}
+
+function Toolbar({ onPlayMovie, onUploadImage }) {
+  return (
+    <div>
+      <Button onClick={onPlayMovie}>
+        Play Movie
+      </Button>
+      <Button onClick={onUploadImage}>
+        Upload Image
+      </Button>
+    </div>
+  );
+}
+
+function Button({ onClick, children }) {
+  return (
+    <button onClick={onClick}>
+      {children}
+    </button>
+  );
+}
+
+```
+
+Observe cómo el componente App no ​​necesita saber qué hará Toolbar con onPlayMovie o onUploadImage. 
+
+Este es un detalle de implementación de Toolbar. 
+
+En este caso, Toolbar los pasa como controladores onClick a sus Botones, pero posteriormente también podría activarlos con un atajo de teclado. 
+
+Nombrar las propiedades con el nombre de interacciones específicas de la aplicación, como onPlayMovie, le brinda la flexibilidad de cambiar su uso posterior.
+
+
+Nota
+
+Asegúrate de usar las etiquetas HTML adecuadas para tus controladores de eventos. 
+
+Por ejemplo, para controlar los clics, usa <button onClick={handleClick}> en lugar de <div onClick={handleClick}>. 
+
+Usar un <button> de un navegador real habilita comportamientos integrados del navegador, como la navegación con el teclado. 
+
+Si no te gusta el estilo predeterminado del navegador para un botón y quieres que se parezca más a un enlace o a un elemento de la interfaz de usuario diferente, puedes lograrlo con CSS. 
+
+Obtén más información sobre cómo escribir marcado accesible.
+
+
+## Propagación de eventos
+
+Los controladores de eventos también capturarán eventos de cualquier componente secundario que pueda tener. 
+
+### Decimos que un evento se propaga a través del árbol: comienza donde ocurrió el evento y luego asciende.
+
+
+Este <div> contiene dos botones. 
+
+Tanto el <div> como cada botón tienen sus propios controladores onClick. 
+
+¿Qué controladores crees que se activarán al hacer clic en un botón? 
+
+
+App.js
+
+```
+export default function Toolbar() {
+  return (
+    <div className="Toolbar" onClick={() => {
+      alert('You clicked on the toolbar!');
+    }}>
+      <button onClick={() => alert('Playing!')}>
+        Play Movie
+      </button>
+      <button onClick={() => alert('Uploading!')}>
+        Upload Image
+      </button>
+    </div>
+  );
+}
+
+```
+
+### Si hace clic en cualquiera de los botones, su onClick se ejecutará primero, seguido del onClick del <div> padre. 
+
+Por lo tanto, aparecerán dos mensajes. 
+
+### Si hace clic en la barra de herramientas, solo se ejecutará el onClick del <div> padre.
+
+
+Problema
+
+### Todos los eventos se propagan en React excepto onScroll, que solo funciona en la etiqueta JSX a la que se adjunta.
+
+
+## Detener la propagación
+
+### Los controladores de eventos reciben un objeto de evento como único argumento. 
+
+Por convención, se suele llamar e, que significa "evento". 
+
+### Puede usar este objeto para leer información sobre el evento.
+
+
+Ese objeto de evento también permite detener la propagación. 
+
+### Si desea evitar que un evento llegue a los componentes padre, debe llamar a e.stopPropagation() como lo hace este componente Button:
+
+App.js
+
+Button toma onClick y children (para que sea contenedor de más jsx)
+
+Retorna un botón con un evento de click que usa el parametro/objeto e para llamar a la función stopPropagation()
+
+Después ejecuta a onClick()
+
+```
+function Button({ onClick, children }) {
+  return (
+    <button onClick={e => {
+      e.stopPropagation();
+      onClick();
+    }}>
+      {children}
+    </button>
+  );
+}
+
+export default function Toolbar() {
+  return (
+    <div className="Toolbar" onClick={() => {
+      alert('You clicked on the toolbar!');
+    }}>
+      <Button onClick={() => alert('Playing!')}>
+        Play Movie
+      </Button>
+      <Button onClick={() => alert('Uploading!')}>
+        Upload Image
+      </Button>
+    </div>
+  );
+}
+
+```
+
+Al hacer clic en un botón:
+
+1. React llama al controlador onClick pasado a <button>.
+
+2. Este controlador, definido en Button, realiza lo siguiente:
+  
+  Llama a e.stopPropagation(), lo que impide que el evento se propague más.
+  
+### Llama a la función onClick, que es una propiedad pasada desde el componente Toolbar.
+
+3. Esta función, definida en el componente Toolbar, muestra la alerta del botón.
+
+4. Dado que se detuvo la propagación, el controlador onClick del elemento padre <div> no se ejecuta.
+
+
+Gracias a e.stopPropagation(), al hacer clic en los botones ahora solo se muestra una alerta (del botón) en lugar de dos (del botón y de la barra de herramientas principal, el div). 
+
+Hacer clic en un botón no es lo mismo que hacer clic en la barra de herramientas circundante, por lo que detener la propagación tiene sentido en esta interfaz.
+
+
+## En profundidad: Eventos de la fase de captura
+
+### En casos excepcionales, podría ser necesario capturar todos los eventos de los elementos secundarios, incluso si detuvieron la propagación. 
+
+Por ejemplo, quizás desee registrar cada clic en Analytics, independientemente de la lógica de propagación. 
+
+Puede hacerlo añadiendo "Captura" al final del nombre del evento:
+
+```
+<div onClickCapture={() => { /* this runs first */ }}>
+<button onClick={e => e.stopPropagation()} />
+<button onClick={e => e.stopPropagation()} />
+</div>
+
+```
+Cada evento se propaga en tres fases:
+
+1. Se propaga hacia abajo, llamando a todos los controladores onClickCapture.
+
+2. Ejecuta el controlador onClick del elemento en el que se hizo clic.
+
+3. Se propaga hacia arriba, llamando a todos los controladores onClick.
+
+Los eventos de captura son útiles para código como enrutadores o Analytics, pero probablemente no los use en el código de la aplicación. 
+
+
+## Pasando controladores como alternativa a la propagación
+
+Observe cómo este controlador de clic ejecuta una línea de código y luego llama a la propiedad "onClick" pasada por el padre: 
+
+```
+function Button({ onClick, children }) {
+  return (
+    <button onClick={e => {
+      e.stopPropagation();
+      onClick();
+    }}>
+      {children}
+    </button>
+  );
+}
+
+```
+
+También podrías agregar más código a este controlador antes de llamar al controlador principal del evento onClick. 
+
+Este patrón ofrece una alternativa a la propagación. 
+
+Permite que el componente secundario gestione el evento, a la vez que permite que el componente principal especifique un comportamiento adicional. 
+
+A diferencia de la propagación, no es automático. 
+
+Sin embargo, la ventaja de este patrón es que permite seguir claramente toda la cadena de código que se ejecuta como resultado de un evento.
+
+
+Si dependes de la propagación y te resulta difícil rastrear qué controladores se ejecutan y por qué, prueba este enfoque.
+
+
+## Prevenir el comportamiento predeterminado
+
+Algunos eventos del navegador tienen un comportamiento predeterminado asociado. 
+
+Por ejemplo, un evento de envío <form>, que se produce al hacer clic en un botón dentro de él, recargará toda la página de forma predeterminada:
+
+```
+export default function Signup() {
+  return (
+    <form onSubmit={() => alert('Submitting!')}>
+      <input />
+      <button>Send</button>
+    </form>
+  );
+}
+
+```
+
+Puede llamar a e.preventDefault() en el objeto de evento para evitar que esto suceda:
+
+```
+export default function Signup() {
+  return (
+    <form onSubmit={e => {
+      e.preventDefault();
+      alert('Submitting!');
+    }}>
+      <input />
+      <button>Send</button>
+    </form>
+  );
+}
+
+```
+
+No confunda e.stopPropagation() y e.preventDefault(). Ambos son útiles, pero no están relacionados:
+
+1. e.stopPropagation() impide que se activen los controladores de eventos asociados a las etiquetas anteriores.
+
+2. e.preventDefault() impide el comportamiento predeterminado del navegador para los pocos eventos que lo tienen.
+
+
+## ¿Pueden los controladores de eventos tener efectos secundarios?
+
+¡Por supuesto! Los controladores de eventos son el mejor lugar para los efectos secundarios.
+
+
+A diferencia de las funciones de renderizado, los controladores de eventos no necesitan ser puros, por lo que son ideales para modificar algo; por ejemplo, cambiar el valor de una entrada al escribir, o cambiar una lista al pulsar un botón. 
+
+Sin embargo, para cambiar información, primero necesitas una forma de almacenarla. 
+
+En React, esto se hace usando el estado, la memoria de un componente. 
+
+
+## Rs eventos
+
+Puedes gestionar eventos pasando una función como propiedad a un elemento como <button>.
+
+Los controladores de eventos deben pasarse, no llamarse. onClick={handleClick}, no onClick={handleClick()}.
+
+Puedes definir una función de controlador de eventos por separado o en línea.
+
+Los controladores de eventos se definen dentro de un componente para que puedan acceder a las propiedades.
+
+Puedes declarar un controlador de eventos en un componente principal y pasarlo como propiedad a un componente secundario.
+
+Puedes definir tus propias propiedades de controlador de eventos con nombres específicos de la aplicación.
+
+Los eventos se propagan hacia arriba. Llama a e.stopPropagation() en el primer argumento para evitarlo.
+
+Los eventos pueden tener un comportamiento predeterminado no deseado en el navegador. Llama a e.preventDefault() para evitarlo.
+
+Llamar explícitamente a una propiedad de controlador de eventos desde un controlador secundario es una buena alternativa a la propagación.
+
+
+## Ejercicios 
+
+1. Corregir un controlador de eventos
+
+Al hacer clic en este botón, se supone que el fondo de la página cambia de blanco a negro. 
+
+Sin embargo, no ocurre nada al hacer clic. 
+
+Corrige el problema. 
+
+(No te preocupes por la lógica de handleClick; esa parte funciona correctamente).
+
+App.js
+
+```
+export default function LightSwitch() {
+  function handleClick() {
+    let bodyStyle = document.body.style;
+    if (bodyStyle.backgroundColor === 'black') {
+      bodyStyle.backgroundColor = 'white';
+    } else {
+      bodyStyle.backgroundColor = 'black';
+    }
+  }
+
+  return (
+    <button onClick={handleClick()}>
+      Toggle the lights
+    </button>
+  );
+}
+
+```
+
+Solución
+
+El problema es que <button onClick={handleClick()}> llama a la función handleClick durante la renderización, en lugar de pasarla. 
+
+Eliminar la llamada () para que sea <button onClick={handleClick}> soluciona el problema:
+
+```
+export default function LightSwitch() {
+  function handleClick() {
+    let bodyStyle = document.body.style;
+    if (bodyStyle.backgroundColor === 'black') {
+      bodyStyle.backgroundColor = 'white';
+    } else {
+      bodyStyle.backgroundColor = 'black';
+    }
+  }
+
+  return (
+    <button onClick={handleClick}>
+      Toggle the lights
+    </button>
+  );
+}
+
+```
+
+
+2. Conectar los eventos
+
+Este componente ColorSwitch renderiza un botón. 
+
+Su función es cambiar el color de la página. 
+
+Conéctalo a la propiedad del controlador de eventos onChangeColor que recibe del componente principal para que al hacer clic en el botón se cambie el color.
+
+
+Después de hacer esto, observa que al hacer clic en el botón también se incrementa el contador de clics de la página. 
+
+Tu compañero que creó el componente principal insiste en que onChangeColor no incrementa ningún contador. 
+
+¿Qué más podría estar sucediendo? 
+
+Arréglalo para que al hacer clic en el botón solo se cambie el color y no se incremente el contador. 
+
+ColorSwitch.js
+
+```
+export default function ColorSwitch({
+  onChangeColor
+}) {
+  return (
+    <button>
+      Change color
+    </button>
+  );
+}
+
+```
+
+Solución
+
+Primero, necesitas agregar el controlador de eventos, como <button onClick={onChangeColor}>.
+
+
+Sin embargo, esto introduce el problema del contador incremental. 
+
+Si onChangeColor no lo hace, como insiste tu compañero, el problema radica en que este evento se propaga hacia arriba, y algún controlador superior lo hace. 
+
+Para solucionar este problema, necesitas detener la propagación. 
+
+Pero no olvides que aún debes llamar a onChangeColor.
+
+```
+export default function ColorSwitch({
+  onChangeColor
+}) {
+  return (
+    <button onClick={e => {
+      e.stopPropagation();
+      onChangeColor();
+    }}>
+      Change color
+    </button>
+  );
+}
+
+```
+
+
+
+# Estado: La memoria de un componente
+
+Los componentes suelen necesitar cambiar lo que aparece en pantalla como resultado de una interacción. 
+
+Al escribir en el formulario, se actualiza el campo de entrada; al hacer clic en "Siguiente" en un carrusel de imágenes, se cambia la imagen que se muestra; al hacer clic en "Comprar", se añade un producto al carrito. 
+
+### Los componentes necesitan recordar cosas: el valor de entrada actual, la imagen actual, el carrito de compras. 
+
+En React, este tipo de memoria específica del componente se denomina estado.
+
+Aprenderás:
+
+Cómo agregar una variable de estado con el hook useState
+Qué par de valores devuelve el gancho useState
+Cómo agregar más de una variable de estado
+Por qué el estado se denomina local
+
+
+## Cuando una variable regular no es suficiente
+
+Aquí tienes un componente que renderiza la imagen de una escultura. 
+
+Al hacer clic en el botón "Siguiente", debería aparecer la siguiente escultura cambiando el índice a 1, luego a 2, y así sucesivamente. 
+
+Sin embargo, esto no funcionará (¡puedes probarlo!).
+
+
+data.js:
+
+```
+export const sculptureList = [{
+  name: 'Homenaje a la Neurocirugía',
+  artist: 'Marta Colvin Andrade',
+  description: 'Although Colvin is predominantly known for abstract themes that allude to pre-Hispanic symbols, this gigantic sculpture, an homage to neurosurgery, is one of her most recognizable public art pieces.',
+  url: 'https://i.imgur.com/Mx7dA2Y.jpg',
+  alt: 'A bronze statue of two crossed hands delicately holding a human brain in their fingertips.'  
+}, {
+  name: 'Floralis Genérica',
+  artist: 'Eduardo Catalano',
+  description: 'This enormous (75 ft. or 23m) silver flower is located in Buenos Aires. It is designed to move, closing its petals in the evening or when strong winds blow and opening them in the morning.',
+  url: 'https://i.imgur.com/ZF6s192m.jpg',
+  alt: 'A gigantic metallic flower sculpture with reflective mirror-like petals and strong stamens.'
+}, {
+  name: 'Eternal Presence',
+  artist: 'John Woodrow Wilson',
+  description: 'Wilson was known for his preoccupation with equality, social justice, as well as the essential and spiritual qualities of humankind. This massive (7ft. or 2,13m) bronze represents what he described as "a symbolic Black presence infused with a sense of universal humanity."',
+  url: 'https://i.imgur.com/aTtVpES.jpg',
+  alt: 'The sculpture depicting a human head seems ever-present and solemn. It radiates calm and serenity.'
+}, {
+  name: 'Moai',
+  artist: 'Unknown Artist',
+  description: 'Located on the Easter Island, there are 1,000 moai, or extant monumental statues, created by the early Rapa Nui people, which some believe represented deified ancestors.',
+  url: 'https://i.imgur.com/RCwLEoQm.jpg',
+  alt: 'Three monumental stone busts with the heads that are disproportionately large with somber faces.'
+}, {
+  name: 'Blue Nana',
+  artist: 'Niki de Saint Phalle',
+  description: 'The Nanas are triumphant creatures, symbols of femininity and maternity. Initially, Saint Phalle used fabric and found objects for the Nanas, and later on introduced polyester to achieve a more vibrant effect.',
+  url: 'https://i.imgur.com/Sd1AgUOm.jpg',
+  alt: 'A large mosaic sculpture of a whimsical dancing female figure in a colorful costume emanating joy.'
+}, {
+  name: 'Ultimate Form',
+  artist: 'Barbara Hepworth',
+  description: 'This abstract bronze sculpture is a part of The Family of Man series located at Yorkshire Sculpture Park. Hepworth chose not to create literal representations of the world but developed abstract forms inspired by people and landscapes.',
+  url: 'https://i.imgur.com/2heNQDcm.jpg',
+  alt: 'A tall sculpture made of three elements stacked on each other reminding of a human figure.'
+}, {
+  name: 'Cavaliere',
+  artist: 'Lamidi Olonade Fakeye',
+  description: "Descended from four generations of woodcarvers, Fakeye's work blended traditional and contemporary Yoruba themes.",
+  url: 'https://i.imgur.com/wIdGuZwm.png',
+  alt: 'An intricate wood sculpture of a warrior with a focused face on a horse adorned with patterns.'
+}, {
+  name: 'Big Bellies',
+  artist: 'Alina Szapocznikow',
+  description: "Szapocznikow is known for her sculptures of the fragmented body as a metaphor for the fragility and impermanence of youth and beauty. This sculpture depicts two very realistic large bellies stacked on top of each other, each around five feet (1,5m) tall.",
+  url: 'https://i.imgur.com/AlHTAdDm.jpg',
+  alt: 'The sculpture reminds a cascade of folds, quite different from bellies in classical sculptures.'
+}, {
+  name: 'Terracotta Army',
+  artist: 'Unknown Artist',
+  description: 'The Terracotta Army is a collection of terracotta sculptures depicting the armies of Qin Shi Huang, the first Emperor of China. The army consisted of more than 8,000 soldiers, 130 chariots with 520 horses, and 150 cavalry horses.',
+  url: 'https://i.imgur.com/HMFmH6m.jpg',
+  alt: '12 terracotta sculptures of solemn warriors, each with a unique facial expression and armor.'
+}, {
+  name: 'Lunar Landscape',
+  artist: 'Louise Nevelson',
+  description: 'Nevelson was known for scavenging objects from New York City debris, which she would later assemble into monumental constructions. In this one, she used disparate parts like a bedpost, juggling pin, and seat fragment, nailing and gluing them into boxes that reflect the influence of Cubism’s geometric abstraction of space and form.',
+  url: 'https://i.imgur.com/rN7hY6om.jpg',
+  alt: 'A black matte sculpture where the individual elements are initially indistinguishable.'
+}, {
+  name: 'Aureole',
+  artist: 'Ranjani Shettar',
+  description: 'Shettar merges the traditional and the modern, the natural and the industrial. Her art focuses on the relationship between man and nature. Her work was described as compelling both abstractly and figuratively, gravity defying, and a "fine synthesis of unlikely materials."',
+  url: 'https://i.imgur.com/okTpbHhm.jpg',
+  alt: 'A pale wire-like sculpture mounted on concrete wall and descending on the floor. It appears light.'
+}, {
+  name: 'Hippos',
+  artist: 'Taipei Zoo',
+  description: 'The Taipei Zoo commissioned a Hippo Square featuring submerged hippos at play.',
+  url: 'https://i.imgur.com/6o5Vuyu.jpg',
+  alt: 'A group of bronze hippo sculptures emerging from the sett sidewalk as if they were swimming.'
+}];
+
+```
+
+
+App.js
+
+```
+import { sculptureList } from './data.js';
+
+export default function Gallery() {
+  let index = 0;
+
+  function handleClick() {
+    index = index + 1;
+  }
+
+  let sculpture = sculptureList[index];
+  return (
+    <>
+      <button onClick={handleClick}>
+        Next
+      </button>
+      <h2>
+        <i>{sculpture.name} </i> 
+        by {sculpture.artist}
+      </h2>
+      <h3>  
+        ({index + 1} of {sculptureList.length})
+      </h3>
+      <img 
+        src={sculpture.url} 
+        alt={sculpture.alt}
+      />
+      <p>
+        {sculpture.description}
+      </p>
+    </>
+  );
+}
+
+```
+
+El controlador de eventos handleClick actualiza una variable local, index. 
+
+Sin embargo, dos factores impiden que ese cambio sea visible:
+
+1. Las variables locales no persisten entre renderizaciones. Cuando React renderiza este componente por segunda vez, lo hace desde cero; no considera los cambios en las variables locales.
+
+2. Los cambios en las variables locales no activan las renderizaciones. React no se da cuenta de que necesita renderizar el componente de nuevo con los nuevos datos.
+
+
+Para actualizar un componente con datos nuevos, se requieren dos pasos:
+
+1. Conservar los datos entre renderizaciones.
+
+2. Activar React para que renderice el componente con los datos nuevos (re-renderizado).
+
+
+El gancho useState proporciona estas dos funciones:
+
+1. Una variable de estado para conservar los datos entre renderizaciones.
+
+2. Una función de establecimiento de estado para actualizar la variable y activar React para que renderice el componente de nuevo.
+
+
+## Añadir una variable de estado
+
+Para añadir una variable de estado, importe useState desde React al principio del archivo:
+
+```
+import { useState } from 'react';
+
+```
+Luego, reemplace esta línea:
+
+```
+let index = 0;
+
+```
+
+con
+
+```
+const [index, setIndex] = useState(0);
+
+```
+
+### index es una variable de estado y setIndex es la función setter.
+
+La sintaxis ```[ ]``` se denomina desestructuración de arrays y permite leer valores de un array. 
+
+El array devuelto por useState siempre tiene exactamente dos elementos.
+
+Así es como funcionan juntos en handleClick:
+
+```
+function handleClick() {
+setIndex(index + 1);
+}
+
+```
+
+Ahora, al hacer clic en el botón "Siguiente", se cambia la escultura actual:
+
+
+App.js
+
+```
+import { useState } from 'react';
+import { sculptureList } from './data.js';
+
+export default function Gallery() {
+  const [index, setIndex] = useState(0);
+
+  function handleClick() {
+    setIndex(index + 1);
+  }
+
+  let sculpture = sculptureList[index];
+  return (
+    <>
+      <button onClick={handleClick}>
+        Next
+      </button>
+      <h2>
+        <i>{sculpture.name} </i> 
+        by {sculpture.artist}
+      </h2>
+      <h3>  
+        ({index + 1} of {sculptureList.length})
+      </h3>
+      <img 
+        src={sculpture.url} 
+        alt={sculpture.alt}
+      />
+      <p>
+        {sculpture.description}
+      </p>
+    </>
+  );
+}
+
+```
+
+### Código de state
+
+Renderizará el primer elemento que concuerde con index=0
+
+Carga el botón y los demás elementos que leen el objeto copiado sculptureList
+
+({index + 1} of {sculptureList.length}) lee dos valorore
+
+
+## Hook 
+
+En React, useState, así como cualquier otra función que empiece por "use", se denomina Hook.
+
+
+### Los Hooks son funciones especiales que solo están disponibles mientras React se renderiza. 
+
+Permiten conectar con diferentes funciones de React.
+
+
+State es solo una de esas funciones, pero conocerás los demás Hooks más adelante.
+
+
+Dificultad
+
+### Los Hooks (funciones que empiezan por "use") solo se pueden llamar en el nivel superior de los componentes o en sus propios Hooks. 
+
+No se pueden llamar dentro de condiciones, bucles u otras funciones anidadas. 
+
+Los Hooks son funciones, pero conviene considerarlos como declaraciones incondicionales sobre las necesidades del componente. 
+
+Se "utilizan" las características de React en la parte superior del componente, de forma similar a como se "importan" los módulos en la parte superior del archivo.
+
+
+## Anatomía de useState
+
+### Al llamar a useState, le estás indicando a React que quieres que este componente recuerde algo:
+
+```
+const [index, setIndex] = useState(0);
+
+```
+
+### En este caso, quieres que React recuerde index.
+
+
+Nota
+
+La convención es nombrar este par como ```const [something, setSomething]```. 
+
+Puedes nombrarlo como quieras, pero las convenciones facilitan la comprensión en diferentes proyectos.
+
+
+### El único argumento de useState es el valor inicial de tu variable de estado.
+
+En este ejemplo, el valor inicial del índice se establece en 0 con useState(0).
+
+
+Cada vez que tu componente se renderiza, useState genera una matriz con dos valores:
+
+1. La variable de estado (index) con el valor almacenado.
+
+2. La función establecedora de estado (setIndex), que puede actualizar la variable de estado y hacer que React renderice el componente de nuevo.
+
+Así es como funciona:
+
+```
+const [index, setIndex] = useState(0);
+
+```
+
+1. Tu componente se renderiza por primera vez. 
+
+Como pasaste 0 a useState como valor inicial para index, devolverá ```[0, setIndex]```. 
+
+React recuerda que 0 es el último valor de estado.
+
+
+2. Actualizas el estado. 
+
+Cuando un usuario hace clic en el botón, se llama a setIndex(index + 1). 
+
+index es 0, por lo que es setIndex(1). 
+
+Esto le indica a React que recuerde que index ahora es 1 y activa otro renderizado.
+
+
+3. Segundo renderizado de tu componente. 
+
+React sigue viendo useState(0), pero como recuerda que estableciste index en 1, devuelve ```[1, setIndex]```.
+
+
+4. ¡Y así sucesivamente!
+
+
+## Asignar múltiples variables de estado a un componente
+
+Puede tener tantas variables de estado de todos los tipos que desee en un componente. 
+
+Este componente tiene dos variables de estado: un índice numérico y un booleano ```showMore```, que se activa al hacer clic en "Mostrar detalles":
+
+
+App.js 
+
+```
+import { useState } from 'react';
+import { sculptureList } from './data.js';
+
+export default function Gallery() {
+  const [index, setIndex] = useState(0);
+  const [showMore, setShowMore] = useState(false);
+
+  function handleNextClick() {
+    setIndex(index + 1);
+  }
+
+  function handleMoreClick() {
+    setShowMore(!showMore);
+  }
+
+  let sculpture = sculptureList[index];
+  return (
+    <>
+      <button onClick={handleNextClick}>
+        Next
+      </button>
+      <h2>
+        <i>{sculpture.name} </i> 
+        by {sculpture.artist}
+      </h2>
+      <h3>  
+        ({index + 1} of {sculptureList.length})
+      </h3>
+      <button onClick={handleMoreClick}>
+        {showMore ? 'Hide' : 'Show'} details
+      </button>
+      {showMore && <p>{sculpture.description}</p>}
+      <img 
+        src={sculpture.url} 
+        alt={sculpture.alt}
+      />
+    </>
+  );
+}
+
+```
+
+### Es recomendable tener varias variables de estado si sus estados no están relacionados, como index y showMore en este ejemplo. 
+
+### Sin embargo, si suele modificar dos variables de estado a la vez, podría ser más fácil combinarlas en una sola. 
+
+### Por ejemplo, si tiene un formulario con muchos campos, es más conveniente tener una sola variable de estado que contenga un objeto que una variable de estado por campo.
+
+Consulte "Elegir la estructura de estado" para obtener más consejos.
+
+
+## En profundidad: ¿Cómo sabe React qué estado devolver?
+
+Quizás hayas notado que la llamada a useState no recibe información sobre la variable de estado a la que se refiere. 
+
+No se pasa ningún "identificador" a useState, así que ¿cómo sabe cuál de las variables de estado devolver? 
+
+¿Depende de algún truco, como analizar las funciones? La respuesta es no.
+
+
+En cambio, para permitir su sintaxis concisa, los Hooks se basan en un orden de llamada estable en cada renderizado del mismo componente. 
+
+Esto funciona bien en la práctica porque si sigues la regla anterior ("solo llama a los Hooks en el nivel superior"), siempre se llamarán en el mismo orden. 
+
+Además, un plugin de linter detecta la mayoría de los errores.
+
+
+Internamente, React almacena un array de pares de estados para cada componente. 
+
+También mantiene el índice del par actual, que se establece en 0 antes del renderizado. 
+
+Cada vez que llamas a useState, React te proporciona el siguiente par de estados e incrementa el índice. 
+
+Puedes leer más sobre este mecanismo en React Hooks: No es magia, solo arrays.
+
+
+Este ejemplo no usa React pero te da una idea de cómo funciona useState internamente
+
+index.js 
+
+```
+let componentHooks = [];
+let currentHookIndex = 0;
+
+// How useState works inside React (simplified).
+function useState(initialState) {
+  let pair = componentHooks[currentHookIndex];
+  if (pair) {
+    // This is not the first render,
+    // so the state pair already exists.
+    // Return it and prepare for next Hook call.
+    currentHookIndex++;
+    return pair;
+  }
+
+  // This is the first time we're rendering,
+  // so create a state pair and store it.
+  pair = [initialState, setState];
+
+  function setState(nextState) {
+    // When the user requests a state change,
+    // put the new value into the pair.
+    pair[0] = nextState;
+    updateDOM();
+  }
+
+  // Store the pair for future renders
+  // and prepare for the next Hook call.
+  componentHooks[currentHookIndex] = pair;
+  currentHookIndex++;
+  return pair;
+}
+
+function Gallery() {
+  // Each useState() call will get the next pair.
+  const [index, setIndex] = useState(0);
+  const [showMore, setShowMore] = useState(false);
+
+  function handleNextClick() {
+    setIndex(index + 1);
+  }
+
+  function handleMoreClick() {
+    setShowMore(!showMore);
+  }
+
+  let sculpture = sculptureList[index];
+  // This example doesn't use React, so
+  // return an output object instead of JSX.
+  return {
+    onNextClick: handleNextClick,
+    onMoreClick: handleMoreClick,
+    header: `${sculpture.name} by ${sculpture.artist}`,
+    counter: `${index + 1} of ${sculptureList.length}`,
+    more: `${showMore ? 'Hide' : 'Show'} details`,
+    description: showMore ? sculpture.description : null,
+    imageSrc: sculpture.url,
+    imageAlt: sculpture.alt
+  };
+}
+
+function updateDOM() {
+  // Reset the current Hook index
+  // before rendering the component.
+  currentHookIndex = 0;
+  let output = Gallery();
+
+  // Update the DOM to match the output.
+  // This is the part React does for you.
+  nextButton.onclick = output.onNextClick;
+  header.textContent = output.header;
+  moreButton.onclick = output.onMoreClick;
+  moreButton.textContent = output.more;
+  image.src = output.imageSrc;
+  image.alt = output.imageAlt;
+  if (output.description !== null) {
+    description.textContent = output.description;
+    description.style.display = '';
+  } else {
+    description.style.display = 'none';
+  }
+}
+
+let nextButton = document.getElementById('nextButton');
+let header = document.getElementById('header');
+let moreButton = document.getElementById('moreButton');
+let description = document.getElementById('description');
+let image = document.getElementById('image');
+let sculptureList = [{
+  name: 'Homenaje a la Neurocirugía',
+  artist: 'Marta Colvin Andrade',
+  description: 'Although Colvin is predominantly known for abstract themes that allude to pre-Hispanic symbols, this gigantic sculpture, an homage to neurosurgery, is one of her most recognizable public art pieces.',
+  url: 'https://i.imgur.com/Mx7dA2Y.jpg',
+  alt: 'A bronze statue of two crossed hands delicately holding a human brain in their fingertips.'  
+}, {
+  name: 'Floralis Genérica',
+  artist: 'Eduardo Catalano',
+  description: 'This enormous (75 ft. or 23m) silver flower is located in Buenos Aires. It is designed to move, closing its petals in the evening or when strong winds blow and opening them in the morning.',
+  url: 'https://i.imgur.com/ZF6s192m.jpg',
+  alt: 'A gigantic metallic flower sculpture with reflective mirror-like petals and strong stamens.'
+}, {
+  name: 'Eternal Presence',
+  artist: 'John Woodrow Wilson',
+  description: 'Wilson was known for his preoccupation with equality, social justice, as well as the essential and spiritual qualities of humankind. This massive (7ft. or 2,13m) bronze represents what he described as "a symbolic Black presence infused with a sense of universal humanity."',
+  url: 'https://i.imgur.com/aTtVpES.jpg',
+  alt: 'The sculpture depicting a human head seems ever-present and solemn. It radiates calm and serenity.'
+}, {
+  name: 'Moai',
+  artist: 'Unknown Artist',
+  description: 'Located on the Easter Island, there are 1,000 moai, or extant monumental statues, created by the early Rapa Nui people, which some believe represented deified ancestors.',
+  url: 'https://i.imgur.com/RCwLEoQm.jpg',
+  alt: 'Three monumental stone busts with the heads that are disproportionately large with somber faces.'
+}, {
+  name: 'Blue Nana',
+  artist: 'Niki de Saint Phalle',
+  description: 'The Nanas are triumphant creatures, symbols of femininity and maternity. Initially, Saint Phalle used fabric and found objects for the Nanas, and later on introduced polyester to achieve a more vibrant effect.',
+  url: 'https://i.imgur.com/Sd1AgUOm.jpg',
+  alt: 'A large mosaic sculpture of a whimsical dancing female figure in a colorful costume emanating joy.'
+}, {
+  name: 'Ultimate Form',
+  artist: 'Barbara Hepworth',
+  description: 'This abstract bronze sculpture is a part of The Family of Man series located at Yorkshire Sculpture Park. Hepworth chose not to create literal representations of the world but developed abstract forms inspired by people and landscapes.',
+  url: 'https://i.imgur.com/2heNQDcm.jpg',
+  alt: 'A tall sculpture made of three elements stacked on each other reminding of a human figure.'
+}, {
+  name: 'Cavaliere',
+  artist: 'Lamidi Olonade Fakeye',
+  description: "Descended from four generations of woodcarvers, Fakeye's work blended traditional and contemporary Yoruba themes.",
+  url: 'https://i.imgur.com/wIdGuZwm.png',
+  alt: 'An intricate wood sculpture of a warrior with a focused face on a horse adorned with patterns.'
+}, {
+  name: 'Big Bellies',
+  artist: 'Alina Szapocznikow',
+  description: "Szapocznikow is known for her sculptures of the fragmented body as a metaphor for the fragility and impermanence of youth and beauty. This sculpture depicts two very realistic large bellies stacked on top of each other, each around five feet (1,5m) tall.",
+  url: 'https://i.imgur.com/AlHTAdDm.jpg',
+  alt: 'The sculpture reminds a cascade of folds, quite different from bellies in classical sculptures.'
+}, {
+  name: 'Terracotta Army',
+  artist: 'Unknown Artist',
+  description: 'The Terracotta Army is a collection of terracotta sculptures depicting the armies of Qin Shi Huang, the first Emperor of China. The army consisted of more than 8,000 soldiers, 130 chariots with 520 horses, and 150 cavalry horses.',
+  url: 'https://i.imgur.com/HMFmH6m.jpg',
+  alt: '12 terracotta sculptures of solemn warriors, each with a unique facial expression and armor.'
+}, {
+  name: 'Lunar Landscape',
+  artist: 'Louise Nevelson',
+  description: 'Nevelson was known for scavenging objects from New York City debris, which she would later assemble into monumental constructions. In this one, she used disparate parts like a bedpost, juggling pin, and seat fragment, nailing and gluing them into boxes that reflect the influence of Cubism’s geometric abstraction of space and form.',
+  url: 'https://i.imgur.com/rN7hY6om.jpg',
+  alt: 'A black matte sculpture where the individual elements are initially indistinguishable.'
+}, {
+  name: 'Aureole',
+  artist: 'Ranjani Shettar',
+  description: 'Shettar merges the traditional and the modern, the natural and the industrial. Her art focuses on the relationship between man and nature. Her work was described as compelling both abstractly and figuratively, gravity defying, and a "fine synthesis of unlikely materials."',
+  url: 'https://i.imgur.com/okTpbHhm.jpg',
+  alt: 'A pale wire-like sculpture mounted on concrete wall and descending on the floor. It appears light.'
+}, {
+  name: 'Hippos',
+  artist: 'Taipei Zoo',
+  description: 'The Taipei Zoo commissioned a Hippo Square featuring submerged hippos at play.',
+  url: 'https://i.imgur.com/6o5Vuyu.jpg',
+  alt: 'A group of bronze hippo sculptures emerging from the sett sidewalk as if they were swimming.'
+}];
+
+// Make UI match the initial state.
+updateDOM();
+
+```
+
+
+html
+
+```
+<button id="nextButton">
+  Next
+</button>
+<h3 id="header"></h3>
+<button id="moreButton"></button>
+<p id="description"></p>
+<img id="image">
+
+<style>
+* { box-sizing: border-box; }
+body { font-family: sans-serif; margin: 20px; padding: 0; }
+button { display: block; margin-bottom: 10px; }
+</style>
+
+```
+
+No es necesario que lo comprendas para usar React, pero puede que te resulte un modelo mental útil.
+
+
+## El estado es aislado y privado.
+
+### El estado es local para una instancia del componente en pantalla. 
+
+### En otras palabras, si renderizas el mismo componente dos veces, cada copia tendrá un estado completamente aislado. 
+
+### Cambiar uno no afectará al otro.
+
+
+En este ejemplo, el componente Galería anterior se renderiza dos veces sin cambios en su lógica. 
+
+Intenta hacer clic en los botones dentro de cada galería. 
+
+Observa que su estado es independiente.
+
+Gallery.js
+
+```
+import { useState } from 'react';
+import { sculptureList } from './data.js';
+
+export default function Gallery() {
+  const [index, setIndex] = useState(0);
+  const [showMore, setShowMore] = useState(false);
+
+  function handleNextClick() {
+    setIndex(index + 1);
+  }
+
+  function handleMoreClick() {
+    setShowMore(!showMore);
+  }
+
+  let sculpture = sculptureList[index];
+  return (
+    <section>
+      <button onClick={handleNextClick}>
+        Next
+      </button>
+      <h2>
+        <i>{sculpture.name} </i> 
+        by {sculpture.artist}
+      </h2>
+      <h3>  
+        ({index + 1} of {sculptureList.length})
+      </h3>
+      <button onClick={handleMoreClick}>
+        {showMore ? 'Hide' : 'Show'} details
+      </button>
+      {showMore && <p>{sculpture.description}</p>}
+      <img 
+        src={sculpture.url} 
+        alt={sculpture.alt}
+      />
+    </section>
+  );
+}
+
+```
+
+
+App.js
+
+```
+import Gallery from './Gallery.js';
+
+export default function Page() {
+  return (
+    <div className="Page">
+      <Gallery />
+      <Gallery />
+    </div>
+  );
+}
+
+```
+
+Esto es lo que diferencia el estado de las variables regulares que podrías declarar al principio de tu módulo. 
+
+El estado no está vinculado a una llamada de función específica ni a una ubicación en el código, sino que es local en la pantalla. 
+
+Renderizaste dos componentes <Gallery />, por lo que su estado se almacena por separado.
+
+
+Observa también que el componente Page no sabe nada sobre el estado de Gallery, ni siquiera si lo tiene. 
+
+A diferencia de las propiedades, el estado es completamente privado para el componente que lo declara. 
+
+El componente padre no puede modificarlo. 
+
+Esto te permite añadir o eliminar el estado de cualquier componente sin afectar al resto.
+
+
+### ¿Qué sucedería si quisieras que ambas galerías mantuvieran sus estados sincronizados? 
+
+### La forma correcta de hacerlo en React es eliminar el estado de los componentes secundarios y añadirlo a su componente principal compartido más cercano. 
+
+Las siguientes páginas se centrarán en organizar el estado de un solo componente, pero volveremos a este tema en "Compartir el estado entre componentes".
+
+
+## Rs estado 
+
+### Usa una variable de estado cuando un componente necesite recordar información entre renderizaciones.
+
+Las variables de estado se declaran llamando al hook useState.
+
+Los hooks son funciones especiales que empiezan por "use". Permiten conectarse a funciones de React como el estado.
+
+Los hooks pueden recordar las importaciones: deben llamarse incondicionalmente. Llamar a los hook, incluyendo useState, solo es válido en el nivel superior de un componente u otro hook.
+
+El hook useState devuelve un par de valores: el estado actual y la función para actualizarlo.
+
+Puedes tener más de una variable de estado. Internamente, React las compara por orden.
+
+El estado es privado para el componente. Si lo renderizas en dos lugares, cada copia obtiene su propio estado.
+
+
+## Ejercicios 
+
+1. Completa la galería
+
+Al pulsar "Siguiente" en la última escultura, el código se bloquea. 
+
+Corrige la lógica para evitar el bloqueo. 
+
+Puedes hacerlo añadiendo lógica adicional al controlador de eventos o desactivando el botón cuando la acción no sea posible.
+
+
+Después de corregir el bloqueo, añade un botón "Anterior" que muestre la escultura anterior. 
+
+No debería bloquearse en la primera escultura.
+
+
+App.js
+
+```
+import { useState } from 'react';
+import { sculptureList } from './data.js';
+
+export default function Gallery() {
+  const [index, setIndex] = useState(0);
+  const [showMore, setShowMore] = useState(false);
+
+  function handleNextClick() {
+    setIndex(index + 1);
+  }
+
+  function handleMoreClick() {
+    setShowMore(!showMore);
+  }
+
+  let sculpture = sculptureList[index];
+  return (
+    <>
+      <button onClick={handleNextClick}>
+        Next
+      </button>
+      <h2>
+        <i>{sculpture.name} </i> 
+        by {sculpture.artist}
+      </h2>
+      <h3>  
+        ({index + 1} of {sculptureList.length})
+      </h3>
+      <button onClick={handleMoreClick}>
+        {showMore ? 'Hide' : 'Show'} details
+      </button>
+      {showMore && <p>{sculpture.description}</p>}
+      <img 
+        src={sculpture.url} 
+        alt={sculpture.alt}
+      />
+    </>
+  );
+}
+
+```
+
+Solución
+
+Esto añade una condición de protección dentro de ambos controladores de eventos y desactiva los botones cuando es necesario:
+
+```
+import { useState } from 'react';
+import { sculptureList } from './data.js';
+
+export default function Gallery() {
+  const [index, setIndex] = useState(0);
+  const [showMore, setShowMore] = useState(false);
+
+  let hasPrev = index > 0;
+  let hasNext = index < sculptureList.length - 1;
+
+  function handlePrevClick() {
+    if (hasPrev) {
+      setIndex(index - 1);
+    }
+  }
+
+  function handleNextClick() {
+    if (hasNext) {
+      setIndex(index + 1);
+    }
+  }
+
+  function handleMoreClick() {
+    setShowMore(!showMore);
+  }
+
+  let sculpture = sculptureList[index];
+  return (
+    <>
+      <button
+        onClick={handlePrevClick}
+        disabled={!hasPrev}
+      >
+        Previous
+      </button>
+      <button
+        onClick={handleNextClick}
+        disabled={!hasNext}
+      >
+        Next
+      </button>
+      <h2>
+        <i>{sculpture.name} </i> 
+        by {sculpture.artist}
+      </h2>
+      <h3>  
+        ({index + 1} of {sculptureList.length})
+      </h3>
+      <button onClick={handleMoreClick}>
+        {showMore ? 'Hide' : 'Show'} details
+      </button>
+      {showMore && <p>{sculpture.description}</p>}
+      <img 
+        src={sculpture.url} 
+        alt={sculpture.alt}
+      />
+    </>
+  );
+}
+
+```
+
+Observe cómo se usan hasPrev y hasNext tanto para el JSX devuelto como dentro de los controladores de eventos. 
+
+Este práctico patrón funciona porque las funciones de los controladores de eventos cierran cualquier variable declarada durante la renderización.
+
+
+2. Corregir entradas de formulario bloqueadas
+
+Al escribir en los campos de entrada, no aparece nada. 
+
+Es como si los valores de entrada estuvieran bloqueados con cadenas vacías. 
+
+El valor del primer <input> está configurado para coincidir siempre con la variable firstName, y el valor del segundo <input> está configurado para coincidir siempre con la variable lastName. 
+
+Esto es correcto. 
+
+Ambas entradas tienen controladores de eventos onChange, que intentan actualizar las variables según la última entrada del usuario (e.target.value). 
+
+Sin embargo, las variables no parecen recordar sus valores entre renderizaciones. 
+
+Para solucionar esto, utilice variables de estado.
+
+```
+export default function Form() {
+  let firstName = '';
+  let lastName = '';
+
+  function handleFirstNameChange(e) {
+    firstName = e.target.value;
+  }
+
+  function handleLastNameChange(e) {
+    lastName = e.target.value;
+  }
+
+  function handleReset() {
+    firstName = '';
+    lastName = '';
+  }
+
+  return (
+    <form onSubmit={e => e.preventDefault()}>
+      <input
+        placeholder="First name"
+        value={firstName}
+        onChange={handleFirstNameChange}
+      />
+      <input
+        placeholder="Last name"
+        value={lastName}
+        onChange={handleLastNameChange}
+      />
+      <h1>Hi, {firstName} {lastName}</h1>
+      <button onClick={handleReset}>Reset</button>
+    </form>
+  );
+}
+
+``` 
+
+Solución
+
+Primero, importa useState desde React. 
+
+Luego, reemplaza firstName y lastName con las variables de estado declaradas al llamar a useState. 
+
+Finalmente, reemplaza cada asignación firstName = ... con setFirstName(...) y haz lo mismo con lastName. 
+
+No olvides actualizar handleReset para que el botón de reinicio funcione.
+
+```
+import { useState } from 'react';
+
+export default function Form() {
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+
+  function handleFirstNameChange(e) {
+    setFirstName(e.target.value);
+  }
+
+  function handleLastNameChange(e) {
+    setLastName(e.target.value);
+  }
+
+  function handleReset() {
+    setFirstName('');
+    setLastName('');
+  }
+
+  return (
+    <form onSubmit={e => e.preventDefault()}>
+      <input
+        placeholder="First name"
+        value={firstName}
+        onChange={handleFirstNameChange}
+      />
+      <input
+        placeholder="Last name"
+        value={lastName}
+        onChange={handleLastNameChange}
+      />
+      <h1>Hi, {firstName} {lastName}</h1>
+      <button onClick={handleReset}>Reset</button>
+    </form>
+  );
+}
+
+```
+
+
+3. Solucionar un fallo
+
+Aquí tienes un pequeño formulario que debería permitir al usuario dejar comentarios. 
+
+Al enviarlos, debería mostrar un mensaje de agradecimiento. 
+
+Sin embargo, falla con el mensaje de error "Se han renderizado menos hooks de lo esperado". 
+
+¿Puedes identificar el error y solucionarlo?
+
+```
+import { useState } from 'react';
+
+export default function FeedbackForm() {
+  const [isSent, setIsSent] = useState(false);
+  if (isSent) {
+    return <h1>Thank you!</h1>;
+  } else {
+    // eslint-disable-next-line
+    const [message, setMessage] = useState('');
+    return (
+      <form onSubmit={e => {
+        e.preventDefault();
+        alert(`Sending: "${message}"`);
+        setIsSent(true);
+      }}>
+        <textarea
+          placeholder="Message"
+          value={message}
+          onChange={e => setMessage(e.target.value)}
+        />
+        <br />
+        <button type="submit">Send</button>
+      </form>
+    );
+  }
+}
+
+```
+
+Pista:
+
+¿Existen límites sobre dónde se pueden llamar los Hooks? 
+
+¿Este componente infringe alguna regla? 
+
+Comprueba si hay comentarios que deshabiliten las comprobaciones del linter; aquí es donde suelen esconderse los errores.
+
+
+Solución:
+
+Los hook solo se pueden llamar en el nivel superior de la función del componente. 
+
+En este caso, la primera definición de isSent sigue esta regla, pero la definición del mensaje está anidada en una condición.
+
+
+Para solucionar el problema, sáquela de la condición:
+
+```
+import { useState } from 'react';
+
+export default function FeedbackForm() {
+  const [isSent, setIsSent] = useState(false);
+  const [message, setMessage] = useState('');
+
+  if (isSent) {
+    return <h1>Thank you!</h1>;
+  } else {
+    return (
+      <form onSubmit={e => {
+        e.preventDefault();
+        alert(`Sending: "${message}"`);
+        setIsSent(true);
+      }}>
+        <textarea
+          placeholder="Message"
+          value={message}
+          onChange={e => setMessage(e.target.value)}
+        />
+        <br />
+        <button type="submit">Send</button>
+      </form>
+    );
+  }
+}
+
+```
+
+Intenta mover la segunda llamada a useState después de la condición if y observa cómo esto la vuelve a romper.
+
+
+Si tu linter está configurado para React, deberías ver un error de linting al cometer un error como este. 
+
+Si no ves ningún error al probar el código defectuoso localmente, debes configurar el linting para tu proyecto.
+
+
+4. Eliminar estado innecesario
+
+Al hacer clic en el botón, este ejemplo debería solicitar el nombre del usuario y mostrar una alerta de bienvenida. 
+
+Intentaste usar el estado para conservar el nombre, pero por alguna razón, la primera vez muestra "¡Hola, !" y luego "¡Hola, [nombre]!" con la entrada anterior.
+
+
+Para corregir este código, elimina la variable de estado innecesaria. 
+
+(Más adelante explicaremos por qué no funcionó).
+
+
+¿Puedes explicar por qué esta variable de estado era innecesaria? 
+
+
+Solución:
+
+A continuación se presenta una versión corregida que utiliza una variable de nombre regular declarada en la función que la requiere:
+
+```
+export default function FeedbackForm() {
+  function handleClick() {
+    const name = prompt('What is your name?');
+    alert(`Hello, ${name}!`);
+  }
+
+  return (
+    <button onClick={handleClick}>
+      Greet
+    </button>
+  );
+}
+
+```
+
+
+
+# Renderizado y confirmación
+
+Antes de que tus componentes se muestren en pantalla, React debe renderizarlos. 
+
+Comprender los pasos de este proceso te ayudará a comprender cómo se ejecuta tu código y a explicar su comportamiento.
+
+
+Aprenderás:
+
+Qué significa renderizar en React
+
+Cuándo y por qué React renderiza un componente
+
+Los pasos para mostrar un componente en pantalla
+
+Por qué el renderizado no siempre produce una actualización del DOM
+
+
+Imagina que tus componentes son cocineros en la cocina, preparando deliciosos platos con ingredientes. En este escenario, React es el camarero que recibe las peticiones de los clientes y les trae sus pedidos. Este proceso de solicitud y entrega de la interfaz de usuario consta de tres pasos:
+
+1. Activar un renderizado (entregar el pedido del cliente a la cocina)
+
+2. Renderizar el componente (preparar el pedido en la cocina)
+
+3. Confirmar con el DOM (colocar el pedido en la mesa)
+
+Trigger
+
+```
+Component kitchen <- React order 
+  Button Card         a Card 
+
+```
+
+Render
+
+```
+Card -> Client 
+    Card 
+
+```
+
+Commit 
+
+```
+React -> Client 
+     Card 
+
+```
+
+
+## Paso 1: Activar un renderizado
+
+Hay dos razones para que un componente se renderice:
+
+1. Es el renderizado inicial del componente.
+
+2. El estado del componente (o de uno de sus antecesores) se ha actualizado.
+
+
+### Renderizado inicial
+
+#### Al iniciar la aplicación, es necesario activar el renderizado inicial. 
+
+Los frameworks y los entornos de pruebas a veces ocultan este código, pero se realiza llamando a createRoot con el nodo DOM de destino y luego llamando a su método de renderizado con el componente:
+
+
+Image.js
+
+```
+export default function Image() {
+  return (
+    <img
+      src="https://i.imgur.com/ZF6s192.jpg"
+      alt="'Floralis Genérica' by Eduardo Catalano: a gigantic metallic flower sculpture with reflective petals"
+    />
+  );
+}
+
+```
+
+index.js
+
+```
+import Image from './Image.js';
+import { createRoot } from 'react-dom/client';
+
+const root = createRoot(document.getElementById('root'))
+root.render(<Image />);
+
+```
+
+¡Prueba comentar la llamada root.render() y verás cómo el componente desaparece!
+
+
+### Se vuelve a renderizar al actualizar el estado.
+
+Una vez renderizado el componente, puedes activar renderizaciones posteriores actualizando su estado con la función "set". 
+
+#### Actualizar el estado del componente pone automáticamente en cola una renderización. 
+
+(Imagínate a un cliente de un restaurante pidiendo té, postre y otras cosas después de su primer pedido, según su nivel de hambre o sed).
+
+
+State update
+
+```
+React <- Client
+  new Card/component
+
+```
+
+...triggers...
+
+```
+Components <- React
+  Card     new Card
+
+```
+
+
+...render!
+
+```
+Components  React 
+
+ Card   ->  Card
+
+```
+
+
+## Paso 2: React renderiza tus componentes
+
+Tras activar un renderizado, React llama a tus componentes para determinar qué mostrar en pantalla. 
+
+"Renderizar" significa que React llama a tus componentes.
+
+
+1. En el renderizado inicial, React llamará al componente raíz.
+
+2. Para los renderizados posteriores, React llamará al componente de función cuya actualización de estado activó el renderizado.
+
+
+Este proceso es recursivo: si el componente actualizado devuelve otro componente, React lo renderizará a continuación; si ese componente también devuelve algo, lo renderizará a continuación, y así sucesivamente. 
+
+El proceso continuará hasta que no haya más componentes anidados y React sepa exactamente qué debe mostrarse en pantalla.
+
+
+En el siguiente ejemplo, React llamará a Gallery() e Image() varias veces:
+
+Gallery.js
+
+```
+export default function Gallery() {
+  return (
+    <section>
+      <h1>Inspiring Sculptures</h1>
+      <Image />
+      <Image />
+      <Image />
+    </section>
+  );
+}
+
+function Image() {
+  return (
+    <img
+      src="https://i.imgur.com/ZF6s192.jpg"
+      alt="'Floralis Genérica' by Eduardo Catalano: a gigantic metallic flower sculpture with reflective petals"
+    />
+  );
+}
+
+```
+
+index.js
+
+```
+import Gallery from './Gallery.js';
+import { createRoot } from 'react-dom/client';
+
+const root = createRoot(document.getElementById('root'))
+root.render(<Gallery />);
+
+```
+
+1. Durante el renderizado inicial, React creará los nodos DOM para las etiquetas <section>, <h1> y tres <img>.
+
+2. Durante un re-renderizado, React calculará cuáles de sus propiedades, si las hay, han cambiado desde el renderizado anterior. No hará nada con esa información hasta el siguiente paso, la fase de confirmación.
+
+
+Problema
+
+El renderizado siempre debe ser un cálculo puro:
+
+1. Mismas entradas, misma salida. 
+
+Con las mismas entradas, un componente siempre debe devolver el mismo JSX. 
+
+(¡Cuando alguien pide una ensalada con tomates, no debería recibir una ensalada con cebollas!).
+
+
+2. Se ocupa de sus propios asuntos. 
+
+No debe cambiar ningún objeto ni variable existente antes del renderizado. 
+
+(Un pedido no debe cambiar el pedido de nadie más).
+
+De lo contrario, puede encontrar errores confusos y un comportamiento impredecible a medida que su código base aumenta en complejidad. 
+
+Al desarrollar en "Modo estricto", React llama a la función de cada componente dos veces, lo que puede ayudar a detectar errores causados ​​por funciones impuras.
+
+
+## En profundidad: Optimización del rendimiento
+
+### El comportamiento predeterminado de renderizar todos los componentes anidados dentro del componente actualizado no es óptimo para el rendimiento si este se encuentra en una posición muy alta en el árbol. 
+
+Si experimenta un problema de rendimiento, existen varias soluciones opcionales que se describen en la sección "Rendimiento". 
+
+¡No optimice prematuramente!
+
+
+## Paso 3: React confirma los cambios en el DOM
+
+### Tras renderizar (llamar) los componentes, React modificará el DOM.
+
+1. Para el renderizado inicial, React usará la API del DOM appendChild() para mostrar en pantalla todos los nodos del DOM creados.
+
+2. Para los re-renderizados, React aplicará las operaciones mínimas necesarias (calculadas durante el renderizado) para que el DOM coincida con la última salida del renderizado.
+
+
+React solo modifica los nodos del DOM si hay una diferencia entre los renderizados. 
+
+Por ejemplo, aquí hay un componente que se re-renderiza con diferentes propiedades pasadas desde su componente padre cada segundo. 
+
+Observa cómo puedes añadir texto en el <input>, actualizando su valor, pero el texto no desaparece cuando el componente se re-renderiza:
+
+Clock.js
+
+```
+export default function Clock({ time }) {
+  return (
+    <>
+      <h1>{time}</h1>
+      <input />
+    </>
+  );
+}
+
+```
+
+Esto funciona porque, durante este último paso, React solo actualiza el contenido de <h1> con la nueva hora. 
+
+Observa que <input> aparece en el JSX en el mismo lugar que la última vez, por lo que React no modifica ni el valor de <input>.
+
+
+## Epílogo: Pintado del navegador
+
+Una vez finalizado el renderizado y actualizado el DOM por React, el navegador volverá a pintar la pantalla. 
+
+Aunque este proceso se conoce como "renderizado del navegador", lo llamaremos "pintado" para evitar confusiones en la documentación.
+
+```
+Component client  Browser
+  Card              Card
+
+```
+
+
+## Rs Renderizado
+
+Resumen
+
+Cualquier actualización de pantalla en una aplicación React se realiza en tres pasos:
+
+Activación (Trigger)
+Renderizado (Render)
+Confirmación/cambio (Commit)
+
+Puedes usar el modo estricto para detectar errores en tus componentes.
+
+React no modifica el DOM si el resultado del renderizado es el mismo que la última vez.
+
+
+# Estado como una instantánea
+
+Las variables de estado pueden parecer variables JavaScript normales, en las que se puede leer y escribir. 
+
+### Sin embargo, el estado se comporta más como una instantánea. 
+
+### Configurarlo no cambia la variable de estado existente, sino que activa un nuevo renderizado.
+
+
+Aprenderás:
+
+Cómo configurar el estado activa los nuevos renderizados
+
+Cuándo y cómo se actualiza el estado
+
+Por qué el estado no se actualiza inmediatamente después de configurarlo
+
+Cómo los controladores de eventos acceden a una "instantánea" del estado 
+
+
+## Configurar el estado activa el renderizado.
+
+### Podrías pensar que tu interfaz de usuario cambia directamente en respuesta a un evento del usuario, como un clic. 
+
+### En React, funciona de forma ligeramente diferente a este modelo mental. 
+
+En la página anterior, viste que configurar el estado solicita un nuevo renderizado a React. 
+
+Esto significa que, para que una interfaz reaccione al evento, es necesario actualizar el estado.
+
+
+En este ejemplo, al pulsar "Enviar", setIsSent(true) indica a React que vuelva a renderizar la interfaz de usuario:
+
+App.js 
+
+```
+import { useState } from 'react';
+
+export default function Form() {
+  const [isSent, setIsSent] = useState(false);
+  const [message, setMessage] = useState('Hi!');
+  if (isSent) {
+    return <h1>Your message is on its way!</h1>
+  }
+  return (
+    <form onSubmit={(e) => {
+      e.preventDefault();
+      setIsSent(true);
+      sendMessage(message);
+    }}>
+      <textarea
+        placeholder="Message"
+        value={message}
+        onChange={e => setMessage(e.target.value)}
+      />
+      <button type="submit">Send</button>
+    </form>
+  );
+}
+
+function sendMessage(message) {
+  // ...
+}
+
+```
+
+Esto es lo que sucede al hacer clic en el botón:
+
+1. Se ejecuta el controlador de eventos onSubmit.
+
+2. setIsSent(true) establece isSent en true y pone en cola un nuevo renderizado.
+
+3. React vuelve a renderizar el componente según el nuevo valor de isSent.
+
+
+Analicemos con más detalle la relación entre el estado y el renderizado.
+
+
+## Renderizar toma una instantánea en el tiempo
+
+### "Renderizar" significa que React llama a tu componente, que es una función. 
+
+### El JSX que devuelves de esa función es como una instantánea de la interfaz de usuario en el tiempo. 
+
+### Sus propiedades, controladores de eventos y variables locales se calcularon utilizando su estado en el momento del renderizado.
+
+
+A diferencia de una fotografía o un fotograma de una película, la instantánea de la interfaz de usuario que devuelves es interactiva. 
+
+Incluye lógica, como controladores de eventos, que especifican qué sucede en respuesta a las entradas. 
+
+React actualiza la pantalla para que coincida con esta instantánea y conecta los controladores de eventos. 
+
+Como resultado, al pulsar un botón se activará el controlador de clic desde tu JSX.
+
+
+Cuando React vuelve a renderizar un componente:
+
+1. React vuelve a llamar a tu función.
+
+2. Tu función devuelve una nueva instantánea JSX.
+
+3. React actualiza la pantalla para que coincida con la instantánea que devolvió tu función.
+
+
+Ejecución de funciones
+
+```
+React 
+
+  Form()
+  
+```
+
+Cálculo de instantanea 
+
+```
+Sent!
+  <jsx>
+
+```
+
+Actualización del árbol del DOM
+
+```
+React           React DOM
+  Snapshot        <>
+     <>         <>  <>
+              <> <>  
+```
+
+### Como memoria de un componente, el estado no es como una variable normal que desaparece tras el retorno de la función. 
+
+### El estado reside en React, como si estuviera en un estante, fuera de la función. 
+
+### Cuando React llama a tu componente, te proporciona una instantánea del estado de ese renderizado. 
+
+### Tu componente devuelve una instantánea de la interfaz de usuario con un nuevo conjunto de propiedades y controladores de eventos en su JSX, todo calculado con los valores de estado de ese renderizado.
+
+
+1. Indicas a React que actualice el estado.
+
+2. React actualiza el valor del estado.
+
+3. React pasa una instantánea del valor del estado al componente.
+
+
+Aquí tienes un pequeño experimento para mostrarte cómo funciona. 
+
+### En este ejemplo, podrías esperar que al hacer clic en el botón "+3" el contador se triplique, ya que llama a setNumber(number + 1) tres veces.
+
+Mira lo que ocurre al hacer clic en el botón "+3":
+
+App.js
+
+```
+import { useState } from 'react';
+
+export default function Counter() {
+  const [number, setNumber] = useState(0);
+
+  return (
+    <>
+      <h1>{number}</h1>
+      <button onClick={() => {
+        setNumber(number + 1);
+        setNumber(number + 1);
+        setNumber(number + 1);
+      }}>+3</button>
+    </>
+  )
+}
+
+```
+
+### El botón +3 modifica de una vez la variable de estado number. 
+
+¡Ten en cuenta que el número solo se incrementa una vez por clic!
+
+
+### Establecer el estado solo lo cambia para el siguiente renderizado. 
+
+### Durante el primer renderizado, el número era 0. 
+
+Por eso, en el controlador onClick de ese renderizado, el valor de número sigue siendo 0 incluso después de llamar a setNumber(number + 1):
+
+```const [number, setNumber] = useState(0);```
+
+
+Esto es lo que el controlador de clic de este botón le indica a React que haga:
+
+1. setNumber(number + 1): number es 0, por lo que setNumber(0 + 1).
+React se prepara para cambiar number a 1 en el siguiente renderizado.
+
+2. setNumber(number + 1): number es 0, por lo que setNumber(0 + 1).
+React se prepara para cambiar number a 1 en el siguiente renderizado.
+
+3. setNumber(number + 1): number es 0, por lo que setNumber(0 + 1).
+React se prepara para cambiar number a 1 en el siguiente renderizado.
+
+### Aunque se haya llamado a setNumber(number + 1) tres veces, en el controlador de eventos de este renderizado number siempre es 0, por lo que se ha establecido el estado en 1 tres veces. 
+
+### Por eso, una vez finalizado el controlador de eventos, React vuelve a renderizar el componente con number igual a 1 en lugar de 3.
+
+
+#### Representación inicial como constante o recta valor inicial y valor final en extremos; repetición y actualización de estos valores
+
+También puedes visualizar esto sustituyendo mentalmente las variables de estado por sus valores en el código. 
+
+Dado que la variable de estado numérica es 0 para esta representación, su controlador de eventos se ve así:
+
+```
+<button onClick={() => {
+  setNumber(0 + 1);
+  setNumber(0 + 1);
+  setNumber(0 + 1);
+}}>+3</button>
+
+```
+
+#### Para el siguiente render, el número es 1, por lo que el controlador de clic de ese render se ve así:
+
+```
+<button onClick={() => {
+  setNumber(1 + 1);
+  setNumber(1 + 1);
+  setNumber(1 + 1);
+}}>+3</button>
+
+```
+
+Es por esto que al hacer clic en el botón nuevamente el contador se establecerá en 2, luego en 3 en el siguiente clic, y así sucesivamente.
+
+
+## Estado a lo largo del tiempo
+
+Intenta adivinar qué alertará al hacer clic en este botón:
+
+```
+import { useState } from 'react';
+
+export default function Counter() {
+  const [number, setNumber] = useState(0);
+
+  return (
+    <>
+      <h1>{number}</h1>
+      <button onClick={() => {
+        setNumber(number + 5);
+        alert(number);
+      }}>+5</button>
+    </>
+  )
+}
+
+```
+
+```
+h1 -> 0
+
+btn -> 0+5 = 5 (valor final)
+
+alert -> 0 (valor inicial constantes)
+
+repetición:
+
+h1 -> 5
+
+btn -> 5+5 = 10 
+
+alert -> 0
+
+h1 -> 10 
+
+```
+
+Si usas el método de sustitución anterior, puedes suponer que la alerta muestra "0":
+
+setNumber(0 + 5);
+alert(0);
+
+#### En el código alert funciona antes que actualice la vista/variable estado
+
+
+#### ¿Pero qué sucede si le asignas un temporizador a la alerta para que solo se active después de que el componente se vuelva a renderizar? 
+
+¿Mostraría "0" o "5"? ¡Adivina!
+
+
+App.js 
+
+```
+import { useState } from 'react';
+
+export default function Counter() {
+  const [number, setNumber] = useState(0);
+
+  return (
+    <>
+      <h1>{number}</h1>
+      <button onClick={() => {
+        setNumber(number + 5);
+        setTimeout(() => {
+          alert(number);
+        }, 3000);
+      }}>+5</button>
+    </>
+  )
+}
+
+```
+
+
+#### Si usa el método de sustitución, podrá ver la instantánea del estado transferido a la alerta.
+
+setNumber(0 + 5);
+setTimeout(() => {
+  alert(0);
+}, 3000);
+
+
+#### El estado almacenado en React puede haber cambiado para cuando se ejecuta la alerta, pero se programó utilizando una instantánea del estado en el momento en que el usuario interactuó con ella.
+
+#### El valor de una variable de estado nunca cambia durante un renderizado, incluso si el código de su controlador de eventos es asíncrono. 
+
+#### Dentro del onClick de ese renderizado, el valor de number sigue siendo 0 incluso después de llamar a setNumber(number + 5). 
+
+#### Su valor se fijó cuando React tomó la instantánea de la interfaz de usuario al llamar a tu componente.
+
+Aquí tienes un ejemplo de cómo esto reduce la probabilidad de errores de sincronización en tus controladores de eventos. 
+
+A continuación, se muestra un formulario que envía un mensaje con un retraso de cinco segundos. 
+
+Imagina este escenario:
+
+1. Presionas el botón "Enviar", enviando "Hola" a Alice.
+
+2. Antes de que finalice el retraso de cinco segundos, cambias el valor del campo "Para" a "Bob".
+
+
+¿Qué esperas que muestre la alerta? ¿Mostraría "Saludaste a Alice"? ¿O mostraría "Saludaste a Bob"? Adivina con base en lo que sabes y luego inténtalo:
+
+#### Renderizado inicial -> valor inicial variable estado -> instantanea 
+
+#### Saludaste a Alice, el valor de la instantanea es el renderizado inicial/anterior al de la interfaz o re-renderizado
+
+App.js
+
+```
+import { useState } from 'react';
+
+export default function Form() {
+  const [to, setTo] = useState('Alice');
+  const [message, setMessage] = useState('Hello');
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    setTimeout(() => {
+      alert(`You said ${message} to ${to}`);
+    }, 5000);
+  }
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <label>
+        To:{' '}
+        <select
+          value={to}
+          onChange={e => setTo(e.target.value)}>
+          <option value="Alice">Alice</option>
+          <option value="Bob">Bob</option>
+        </select>
+      </label>
+      <textarea
+        placeholder="Message"
+        value={message}
+        onChange={e => setMessage(e.target.value)}
+      />
+      <button type="submit">Send</button>
+    </form>
+  );
+}
+
+```
+
+React mantiene los valores de estado fijos dentro de los controladores de eventos de un renderizado. 
+
+No tienes que preocuparte por si el estado ha cambiado mientras el código se ejecuta.
+
+
+Pero ¿qué ocurre si quieres leer el estado más reciente antes de un rerenderizado? 
+
+Te conviene usar una función de actualización de estado, que se explica en la página siguiente.
+
+
+## Rs re-renderizado
+
+Establecer el estado solicita un nuevo renderizado.
+
+React almacena el estado fuera del componente, como si estuviera en un estante.
+
+Al llamar a useState, React proporciona una instantánea del estado de ese renderizado.
+
+Las variables y los controladores de eventos no sobreviven a los re-renderizados. Cada renderizado tiene sus propios controladores de eventos.
+
+Cada renderizado (y sus funciones) siempre verá la instantánea del estado que React le asignó.
+
+Puedes sustituir el estado en los controladores de eventos, de forma similar a como piensas en el JSX renderizado.
+
+Los controladores de eventos creados anteriormente conservan los valores de estado del renderizado en el que se crearon.
+
+
+## Ejercicios
+
+1. Implementar un semáforo
+
+Aquí se muestra un componente de semáforo de cruce de peatones que se activa al presionar el botón:
+
+
+Añade una alerta al controlador de clics. 
+
+Cuando la luz esté verde y diga "Camina", al hacer clic en el botón debería aparecer "Próxima parada". 
+
+Cuando la luz esté roja y diga "Detener", al hacer clic en el botón debería aparecer "Próxima parada".
+
+
+¿Importa si se activa la alerta antes o después de la llamada a setWalk?
+
+```
+import { useState } from 'react';
+
+export default function TrafficLight() {
+  const [walk, setWalk] = useState(true);
+
+  function handleClick() {
+    setWalk(!walk);
+  }
+
+  return (
+    <>
+      <button onClick={handleClick}>
+        Change to {walk ? 'Stop' : 'Walk'}
+      </button>
+      <h1 style={{
+        color: walk ? 'darkgreen' : 'darkred'
+      }}>
+        {walk ? 'Walk' : 'Stop'}
+      </h1>
+    </>
+  );
+}
+
+```
+
+
+Solución: 
+
+```
+import { useState } from 'react';
+
+export default function TrafficLight() {
+  const [walk, setWalk] = useState(true);
+
+  function handleClick() {
+    setWalk(!walk);
+    alert(walk ? 'Stop is next' : 'Walk is next');
+  }
+
+  return (
+    <>
+      <button onClick={handleClick}>
+        Change to {walk ? 'Stop' : 'Walk'}
+      </button>
+      <h1 style={{
+        color: walk ? 'darkgreen' : 'darkred'
+      }}>
+        {walk ? 'Walk' : 'Stop'}
+      </h1>
+    </>
+  );
+}
+
+```
+
+No importa si se coloca antes o después de la llamada a setWalk. 
+
+El valor de walk en ese render es fijo. 
+
+Llamar a setWalk solo lo cambiará para el siguiente render, pero no afectará al controlador de eventos del render anterior.
+
+
+Esta línea puede parecer contraintuitiva al principio:
+
+```
+alert(walk ? 'Stop is next' : 'Walk is next');
+
+```
+
+Pero tiene sentido si se lee como: "Si el semáforo muestra 'Walk now', el mensaje debería decir 'Stop is next'". 
+
+La variable walk dentro del controlador de eventos coincide con el valor de walk en ese render y no cambia.
+
+
+Puede verificar que esto sea correcto aplicando el método de sustitución. 
+
+Cuando walk es verdadero, se obtiene:
+
+```
+<button onClick={() => {
+  setWalk(false);
+  alert('Stop is next');
+}}>
+  Change to Stop
+</button>
+<h1 style={{color: 'darkgreen'}}>
+  Walk
+</h1>
+
+```
+
+Entonces, al hacer clic en “Cambiar a parada”, se pone en cola una renderización con la caminata establecida en falso y se alerta “La parada es la siguiente”.
+
+
+
+# Puesta en cola de una serie de actualizaciones de estado
+
+### Configurar una variable de estado pondrá en cola otro renderizado. 
+
+### Sin embargo, a veces es necesario realizar varias operaciones con el valor antes de poner en cola el siguiente renderizado. 
+
+### Para ello, es útil comprender cómo React procesa las actualizaciones de estado por lotes.
+
+
+Aprenderás:
+
+Qué es el procesamiento por lotes y cómo React lo utiliza para procesar múltiples actualizaciones de estado.
+
+Cómo aplicar varias actualizaciones consecutivas a la misma variable de estado.
+
+
+## Actualizaciones de estado de lotes en React
+
+Es de esperar que al hacer clic en el botón "+3" el contador se incremente tres veces, ya que llama a setNumber(number + 1) tres veces:
+
+Apps.js
+
+```
+import { useState } from 'react';
+
+export default function Counter() {
+  const [number, setNumber] = useState(0);
+
+  return (
+    <>
+      <h1>{number}</h1>
+      <button onClick={() => {
+        setNumber(number + 1);
+        setNumber(number + 1);
+        setNumber(number + 1);
+      }}>+3</button>
+    </>
+  )
+}
+
+```
+ 
+En realidad: 
+
+inicial final 
+number +  1
+
+0         1
+0         1
+0         1
+
+
+### Sin embargo, como puede recordar de la sección anterior, los valores de estado de cada render son fijos, por lo que el valor del número dentro del controlador de eventos del primer render siempre es 0, sin importar cuántas veces llame a setNumber(1):
+
+```
+setNumber(0 + 1);
+setNumber(0 + 1);
+setNumber(0 + 1);
+
+```
+
+Pero hay otro factor en juego. 
+
+### React espera a que se ejecute todo el código de los controladores de eventos antes de procesar las actualizaciones de estado. 
+
+Por eso, la nueva representación solo ocurre después de todas estas llamadas a setNumber().
+
+
+Esto podría recordarte a un camarero tomando nota en un restaurante. 
+
+¡Un camarero no corre a la cocina al oír tu primer plato! En cambio, te permite terminar tu pedido, modificarlo e incluso tomar nota de los pedidos de otras personas en la mesa.
+
+```
+client:
+setColor('orange')
+setColor('pink')
+setColor('blue')
+
+react: 
+setColor('blue')
+
+```
+
+### Esto permite actualizar múltiples variables de estado, incluso desde varios componentes, sin generar demasiados re-renderizados. 
+
+### Sin embargo, esto también significa que la interfaz de usuario no se actualizará hasta que se complete el controlador de eventos y cualquier código que contenga. 
+
+### Este comportamiento, también conocido como procesamiento por lotes, acelera considerablemente el funcionamiento de la aplicación React. 
+
+Además, evita los confusos renderizados "a medio terminar" en los que solo se han actualizado algunas variables.
+
+
+### React no procesa por lotes múltiples eventos intencionales como clics; cada clic se procesa por separado. 
+
+Tenga la seguridad de que React solo procesa por lotes cuando es generalmente seguro hacerlo. 
+
+Esto garantiza que, por ejemplo, si el primer clic en un botón deshabilita un formulario, el segundo no lo vuelva a enviar.
+
+
+## Actualizar el mismo estado varias veces antes del siguiente renderizado
+
+Es un caso poco común, pero si desea actualizar la misma variable de estado varias veces antes del siguiente renderizado, en lugar de pasar el siguiente valor de estado como setNumber(number + 1), puede pasar una función que calcule el siguiente estado basándose en el anterior en la cola, como setNumber(n => n + 1). Es una forma de indicarle a React que "haga algo con el valor del estado" en lugar de simplemente reemplazarlo.
+
+
+Intente incrementar el contador ahora.
+
+App.js
+
+```
+import { useState } from 'react';
+
+export default function Counter() {
+  const [number, setNumber] = useState(0);
+
+  return (
+    <>
+      <h1>{number}</h1>
+      <button onClick={() => {
+        setNumber(n => n + 1);
+        setNumber(n => n + 1);
+        setNumber(n => n + 1);
+      }}>+3</button>
+    </>
+  )
+}
+
+```
+
+Aquí, n => n + 1 se denomina función de actualización. 
+
+Al pasarla a un establecedor de estados:
+
+1. React pone esta función en cola para que se procese después de que se haya ejecutado todo el resto del código en el controlador de eventos.
+
+2. Durante el siguiente renderizado, React revisa la cola y proporciona el estado actualizado final.
+
+```
+setNumber(n => n + 1);
+setNumber(n => n + 1);
+setNumber(n => n + 1);
+
+```
+
+Así funciona React con estas líneas de código al ejecutar el controlador de eventos:
+
+1. setNumber(n => n + 1): n => n + 1 es una función. 
+
+React la añade a una cola.
+
+2. setNumber(n => n + 1): n => n + 1 es una función. 
+
+React la añade a una cola.
+
+3. setNumber(n => n + 1): n => n + 1 es una función. 
+
+React la añade a una cola.
+
+
+Al llamar a useState durante el siguiente renderizado, React revisa la cola. 
+
+El estado numérico anterior era 0, por lo que React lo pasa a la primera función de actualización como argumento n. 
+
+### Luego, React toma el valor de retorno de la función de actualización anterior y lo pasa a la siguiente función de actualización como n, y así sucesivamente:
+
+
+queued update 	n 	returns 
+
+n => n + 1 		0 	0 + 1 = 1
+
+n => n + 1 		1 	1 + 1 = 1
+
+n => n + 1 		2 	2 + 1 = 1
+
+
+#### (La función guardará el return implicito de la función flecha)
+
+#### (a su vez, setNumber -acepta un param- le da valor a la variable de estado number)
+
+#### (Redefinis la lógica)
+
+
+React almacena 3 como resultado final y lo devuelve desde useState.
+
+Por eso, al hacer clic en "+3" en el ejemplo anterior, el valor se incrementa correctamente en 3.
+
+
+## ¿Qué ocurre si actualizas el estado después de reemplazarlo?
+
+¿Qué ocurre con este controlador de eventos? 
+
+¿Cuál crees que será el número en el siguiente renderizado?
+
+```
+<button onClick={() => {
+  setNumber(number + 5);
+  setNumber(n => n + 1);
+}}>
+
+```
+
+
+#### Definición y manipulación de estado en un controlador 
+
+Ej:
+
+inicial final 
+number +  1
+
+```
+0         1
+0         1
+0         1
+
+```
+
+```
+setNumber(0 + 1);
+setNumber(0 + 1);
+setNumber(0 + 1);
+
+```
+
+
+queued update 	n 	returns 
+
+setNumber(param)
+setNumber(0)
+setNumber(n => n + 1 ):
+
+```
+n => n + 1 	 	0 	0 + 1 = 1
+
+```
+
+Para el controlador:
+
+```
+<button onClick={() => {
+  setNumber(number + 5);
+  setNumber(n => n + 1);
+}}>
+
+```
+
+useState(0); 
+setNumber(0 + 5);
+setNumber(5 => 5 + 1);
+
+
+#### Valor total de la manipulación es 6. Si volvemos a activar el evento queda 6 en 6. 
+
+Esto es lo que este controlador de eventos le indica a React:
+
+1. setNumber(number + 5): number es 0, por lo que setNumber(0 + 5). React añade "replace with 5" a su cola.
+
+2. setNumber(n => n + 1): n => n + 1 es una función de actualización. React añade esta función a su cola.
+
+
+Durante el siguiente renderizado, React revisa la cola de estado:
+
+queued update  		n 	 	 	returns
+									
+”replace with 5” 	0 (unused) 		5
+
+n => n + 1 							5 + 1 = 6
+
+
+#### Reemplaza el valor (number + 5, es solo una suma) y agrega una función (n => n + 1, arrow y fn return con valor) a la cola
+
+React almacena 6 como resultado final y lo devuelve desde useState.
+
+
+Nota
+
+#### Quizás hayas notado que setState(5) funciona como setState(n => 5), pero n no se utiliza.
+
+number = 5 (?) 
+
+y n => n + 5 (X)
+
+dado que anteriormente: 
+
+queued update 	n 	 	 returns
+n => n + 1 	 	5		5 + 1 = 6
+
+
+```
+  return (
+    <>
+      <h1>{number}</h1>
+      <button onClick={() => {
+        setNumber(5);
+        setNumber(n => n + 1);
+      }}>Increase the number</button>
+    </>
+  )
+
+```
+
+retorna solo 6. 
+
+
+#### Y setNumber(5); setNumber(number => number + 1);
+
+```
+  return (
+    <>
+      <h1>{number}</h1>
+      <button onClick={() => {
+        setNumber(5);
+        setNumber(number => number + 1);
+      }}>Increase the number</button>
+    </>
+  )
+  
+ ```
+
+
+## ¿Qué ocurre si reemplazas el estado después de actualizarlo?
+
+Probemos con otro ejemplo. 
+
+¿Cuál crees que será el número en el siguiente renderizado?
+
+```
+<button onClick={() => {
+  setNumber(number + 5);
+  setNumber(n => n + 1);
+  setNumber(42);
+}}>
+
+``` 
+
+#### Expresión, función y cola en setNumber 
+
+#### Expresión 
+
+useState(0)
+
+```
+setNumber(number + 1);
+setNumber(number + 1);
+setNumber(number + 1);
+
+```
+
+Resultado 
+
+```
+setNumber(0 + 1);
+setNumber(0 + 1);
+setNumber(0 + 1);
+
+```
+
+
+#### función 
+
+useState(0)
+
+```
+setNumber(n => n + 1);
+setNumber(n => n + 1);
+setNumber(n => n + 1);
+
+```
+
+
+#### cola 
+
+queued update 	n 	returns 
+
+n => n + 1 		0 	0 + 1 = 1
+
+n => n + 1 		1 	1 + 1 = 1
+
+n => n + 1 		2 	2 + 1 = 1
+
+
+Para: 
+
+```const [number, setNumber] = useState(0);```
+
+```
+<button onClick={() => {
+  setNumber(number + 5);
+  setNumber(n => n + 1);
+  setNumber(42);
+}}>
+
+``` 
+
+setNumber(0 + 5); //5 
+setNumber(n => 5 + 1); //6
+setNumber(42); // 6 + 42
+
+
+```
+<button onClick={() => {
+  setNumber(number + 5);
+  setNumber(n => n + 1);
+}}>
+
+```
+
+setNumber(0 + 5); //5 
+setNumber(n => 5 + 1); //6
+
+
+#### setNumber puede aceptar un variable estado o no
+
+setNumber(number)
+setNumber(0)
+setNumber(42)
+setNumber(number+1) // variable estado y number (expresion)
+setNumber(n => n + 1)
+
+
+#### Expresión de reemplazo 
+
+Así funciona React con estas líneas de código al ejecutar este controlador de eventos:
+
+1. setNumber(number + 5): number es 0, por lo que setNumber(0 + 5). React añade "replace with 5" a su cola.
+
+2. setNumber(n => n + 1): n => n + 1 es una función de actualización. React añade esta función a su cola.
+
+3. setNumber(42): React añade "replace with 42" a su cola.
+
+
+Durante el siguiente renderizado, React revisa la cola de estado:
+
+queued update		n			returns
+
+”replace with 5”	0 (unused)	5
+
+n => n + 1			5			5 + 1 = 6
+
+”replace with 42”	6 (unused)	42
+
+
+Luego, React almacena 42 como resultado final y lo devuelve desde useState.
+
+En resumen, así es como se puede entender lo que se pasa al establecedor de estado setNumber:
+
+1. Una función de actualización (p. ej., n => n + 1) se añade a la cola.
+
+2. Cualquier otro valor (p. ej., el número 5) añade "reemplazar con 5" a la cola, ignorando lo que ya está en cola.
+
+Una vez completado el controlador de eventos, React activará un nuevo renderizado. 
+
+Durante este proceso, React procesará la cola. 
+
+### Las funciones de actualización se ejecutan durante el renderizado, por lo que deben ser puras y solo devolver el resultado (usar props). 
+
+### No intentes establecer el estado desde dentro ni ejecutar otros efectos secundarios.
+
+En modo estricto, React ejecutará cada función de actualización dos veces (pero descartará el segundo resultado) para ayudarte a encontrar errores.
+
+
+## Convenciones de nomenclatura
+
+### Es común nombrar el argumento de la función de actualización con las primeras letras de la variable de estado correspondiente:
+
+```
+setEnabled(e => !e);
+setLastName(ln => ln.reverse());
+setFriendCount(fc => fc * 2);
+
+```
+
+### Si prefiere un código más detallado, otra convención común es repetir el nombre completo de la variable de estado, como setEnabled(enabled => !enabled), o usar un prefijo como setEnabled(prevEnabled => !prevEnabled).
+
+
+## Rs actualización de estado 
+
+Establecer el estado no cambia la variable en el renderizado existente, sino que solicita un nuevo renderizado.
+
+React procesa las actualizaciones de estado una vez que los controladores de eventos terminan de ejecutarse. Esto se denomina procesamiento por lotes.
+
+Para actualizar un estado varias veces en un mismo evento, puedes usar la función de actualización setNumber(n => n + 1).
+
+
+## Ejercicios 
+
+1. Corregir un contador de solicitudes
+
+Estás trabajando en una aplicación de mercado de arte que permite al usuario realizar varios pedidos de una obra de arte a la vez.
+
+Cada vez que el usuario pulsa el botón "Comprar", el contador de "Pendientes" debería aumentar en uno. 
+ 
+Después de tres segundos, el contador de "Pendientes" debería disminuir y el de "Completados" debería aumentar.
+
+
+Sin embargo, el contador de "Pendientes" no funciona correctamente. 
+
+Al pulsar "Comprar", disminuye a -1 (¡lo cual no debería ser posible!). 
+
+Y si pulsas dos veces el botón rápido, ambos contadores parecen comportarse de forma impredecible.
+
+
+¿Por qué ocurre esto? Corrige ambos contadores.
+
+App.js 
+
+```
+import { useState } from 'react';
+
+export default function RequestTracker() {
+  const [pending, setPending] = useState(0);
+  const [completed, setCompleted] = useState(0);
+
+  async function handleClick() {
+    setPending(pending + 1);
+    await delay(3000);
+    setPending(pending - 1);
+    setCompleted(completed + 1);
+  }
+
+  return (
+    <>
+      <h3>
+        Pending: {pending}
+      </h3>
+      <h3>
+        Completed: {completed}
+      </h3>
+      <button onClick={handleClick}>
+        Buy     
+      </button>
+    </>
+  );
+}
+
+function delay(ms) {
+  return new Promise(resolve => {
+    setTimeout(resolve, ms);
+  });
+}
+
+```
+
+
+Solución: 
+
+Dentro del controlador de eventos handleClick, los valores de pendiente y completado corresponden a los que tenían al momento del clic. 
+
+En el primer renderizado, pendiente era 0, por lo que setPending(pending - 1) se convierte en setPending(-1), lo cual es incorrecto.
+
+### Dado que se desea incrementar o decrementar los contadores, en lugar de establecerlos en un valor concreto determinado durante el clic, se pueden pasar las funciones de actualización:
+
+App.js
+
+```
+import { useState } from 'react';
+
+export default function RequestTracker() {
+  const [pending, setPending] = useState(0);
+  const [completed, setCompleted] = useState(0);
+
+  async function handleClick() {
+    setPending(p => p + 1);
+    await delay(3000);
+    setPending(p => p - 1);
+    setCompleted(c => c + 1);
+  }
+
+  return (
+    <>
+      <h3>
+        Pending: {pending}
+      </h3>
+      <h3>
+        Completed: {completed}
+      </h3>
+      <button onClick={handleClick}>
+        Buy     
+      </button>
+    </>
+  );
+}
+
+function delay(ms) {
+  return new Promise(resolve => {
+    setTimeout(resolve, ms);
+  });
+}
+
+```
+
+
+2. Implementa la cola de estados tú mismo
+
+En este desafío, reimplementarás una pequeña parte de React desde cero. 
+
+No es tan difícil como parece.
+
+
+Explora la vista previa del entorno de pruebas.
+
+Observa que muestra cuatro casos de prueba. 
+
+Corresponden a los ejemplos que viste anteriormente en esta página. 
+
+Tu tarea es implementar la función getFinalState para que devuelva el resultado correcto en cada uno de esos casos.
+
+Si la implementas correctamente, las cuatro pruebas deberían ser exitosas.
+
+
+Recibirás dos argumentos: baseState es el estado inicial (por ejemplo, 0) y la cola es un array que contiene una combinación de números (por ejemplo, 5) y funciones de actualización (por ejemplo, n => n + 1) en el orden en que se agregaron.
+
+Tu tarea es devolver el estado final, tal como se muestra en las tablas de esta página.
+
+
+processQueue.js
+
+```
+export function getFinalState(baseState, queue) {
+  let finalState = baseState;
+
+  // TODO: do something with the queue...
+
+  return finalState;
+}
+
+```
+
+
+App.js
+
+```
+import { getFinalState } from './processQueue.js';
+
+function increment(n) {
+  return n + 1;
+}
+increment.toString = () => 'n => n+1';
+
+export default function App() {
+  return (
+    <>
+      <TestCase
+        baseState={0}
+        queue={[1, 1, 1]}
+        expected={1}
+      />
+      <hr />
+      <TestCase
+        baseState={0}
+        queue={[
+          increment,
+          increment,
+          increment
+        ]}
+        expected={3}
+      />
+      <hr />
+      <TestCase
+        baseState={0}
+        queue={[
+          5,
+          increment,
+        ]}
+        expected={6}
+      />
+      <hr />
+      <TestCase
+        baseState={0}
+        queue={[
+          5,
+          increment,
+          42,
+        ]}
+        expected={42}
+      />
+    </>
+  );
+}
+
+function TestCase({
+  baseState,
+  queue,
+  expected
+}) {
+  const actual = getFinalState(baseState, queue);
+  return (
+    <>
+      <p>Base state: <b>{baseState}</b></p>
+      <p>Queue: <b>[{queue.join(', ')}]</b></p>
+      <p>Expected result: <b>{expected}</b></p>
+      <p style={{
+        color: actual === expected ?
+          'green' :
+          'red'
+      }}>
+        Your result: <b>{actual}</b>
+        {' '}
+        ({actual === expected ?
+          'correct' :
+          'wrong'
+        })
+      </p>
+    </>
+  );
+}
+
+```
+
+
+Pista: 
+
+Se puede empezar con: 
+
+```
+export function getFinalState(baseState, queue) {
+  let finalState = baseState;
+
+  for (let update of queue) {
+    if (typeof update === 'function') {
+      // TODO: apply the updater function
+    } else {
+      // TODO: replace the state
+    }
+  }
+
+  return finalState;
+}
+
+```
+
+Este es el algoritmo exacto descrito en esta página que React utiliza para calcular el estado final:
+
+processQueue.js
+
+```
+export function getFinalState(baseState, queue) {
+  let finalState = baseState;
+
+  for (let update of queue) {
+    if (typeof update === 'function') {
+      // Apply the updater function.
+      finalState = update(finalState);
+    } else {
+      // Replace the next state.
+      finalState = update;
+    }
+  }
+
+  return finalState;
+}
+
+```
+
+
+App.js 
+
+```
+import { getFinalState } from './processQueue.js';
+
+function increment(n) {
+  return n + 1;
+}
+increment.toString = () => 'n => n+1';
+
+export default function App() {
+  return (
+    <>
+      <TestCase
+        baseState={0}
+        queue={[1, 1, 1]}
+        expected={1}
+      />
+      <hr />
+      <TestCase
+        baseState={0}
+        queue={[
+          increment,
+          increment,
+          increment
+        ]}
+        expected={3}
+      />
+      <hr />
+      <TestCase
+        baseState={0}
+        queue={[
+          5,
+          increment,
+        ]}
+        expected={6}
+      />
+      <hr />
+      <TestCase
+        baseState={0}
+        queue={[
+          5,
+          increment,
+          42,
+        ]}
+        expected={42}
+      />
+    </>
+  );
+}
+
+function TestCase({
+  baseState,
+  queue,
+  expected
+}) {
+  const actual = getFinalState(baseState, queue);
+  return (
+    <>
+      <p>Base state: <b>{baseState}</b></p>
+      <p>Queue: <b>[{queue.join(', ')}]</b></p>
+      <p>Expected result: <b>{expected}</b></p>
+      <p style={{
+        color: actual === expected ?
+          'green' :
+          'red'
+      }}>
+        Your result: <b>{actual}</b>
+        {' '}
+        ({actual === expected ?
+          'correct' :
+          'wrong'
+        })
+      </p>
+    </>
+  );
+}
+
+```
+
+
+
+# Objetos en el estado 
+
+
+
+
+
+

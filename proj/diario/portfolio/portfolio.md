@@ -13399,6 +13399,2159 @@ Por ejemplo, insertar, extraer, invertir y ordenar mutarán el array original, p
 
 
 
-#
+# Interactividad React 
 
 
+## Rs: Listas, Eventos, Estado, Inversion de estado
+
+1. Renderizar listas 
+
+```
+const listItems = products.map(product =>
+  <li key={product.id}>
+    {product.title}
+  </li>
+);
+
+return (
+  <ul>{listItems}</ul>
+);
+
+```
+
+
+```
+const products = [
+  { title: 'Cabbage', isFruit: false, id: 1 },
+  { title: 'Garlic', isFruit: false, id: 2 },
+  { title: 'Apple', isFruit: true, id: 3 },
+];
+
+export default function ShoppingList() {
+  const listItems = products.map(product =>
+    <li
+      key={product.id}
+      style={{
+        color: product.isFruit ? 'magenta' : 'darkgreen'
+      }}
+    >
+      {product.title}
+    </li>
+  );
+
+  return (
+    <ul>{listItems}</ul>
+  );
+}
+
+```
+
+
+2. Eventos 
+
+```
+function MyButton() {
+  function handleClick() {
+    alert('You clicked me!');
+  }
+
+  return (
+    <button onClick={handleClick}>
+      Click me
+    </button>
+  );
+}
+
+```
+
+
+3. Estado 
+
+```
+function MyButton() {
+  const [count, setCount] = useState(0);
+
+  function handleClick() {
+    setCount(count + 1);
+  }
+
+  return (
+    <button onClick={handleClick}>
+      Clicked {count} times
+    </button>
+  );
+}
+
+```
+
+```
+import { useState } from 'react';
+
+export default function MyApp() {
+  return (
+    <div>
+      <h1>Counters that update separately</h1>
+      <MyButton />
+      <MyButton />
+    </div>
+  );
+}
+
+```
+
+
+4. Inversion de estado
+
+La variable de estado se define en un componente superior.
+
+Con una función en este componente usamos al función que se encarga de actualizar la variable de estado. 
+
+Renderizamos los dos botones que tiene dos props definidas. 
+
+El valor de esos props son la variable de estado y la función del componente superior.
+
+En el componente hijo elegimos los valores que va a leer/renderizar y esos son las props. 
+
+```
+import { useState } from 'react';
+
+export default function MyApp() {
+  const [count, setCount] = useState(0);
+
+  function handleClick() {
+    setCount(count + 1);
+  }
+
+  return (
+    <div>
+      <h1>Counters that update together</h1>
+      <MyButton count={count} onClick={handleClick} />
+      <MyButton count={count} onClick={handleClick} />
+    </div>
+  );
+}
+
+function MyButton({ count, onClick }) {
+  return (
+    <button onClick={onClick}>
+      Clicked {count} times
+    </button>
+  );
+}
+
+```
+
+
+# Re-renderizado y lógica 
+
+Usamos un return dentro de la lógica o guardamos la lógica en una variable y la leemos en return. 
+
+```
+import { useState } from 'react';
+
+export default function FeedbackForm() {
+  const [isSent, setIsSent] = useState(false);
+  const [message, setMessage] = useState('');
+
+  if (isSent) {
+    return <h1>Thank you!</h1>;
+  } else {
+    return (
+      <form onSubmit={e => {
+        e.preventDefault();
+        alert(`Sending: "${message}"`);
+        setIsSent(true);
+      }}>
+        <textarea
+          placeholder="Message"
+          value={message}
+          onChange={e => setMessage(e.target.value)}
+        />
+        <br />
+        <button type="submit">Send</button>
+      </form>
+    );
+  }
+}
+
+```
+
+
+
+# Rs Estado 
+
+Querrás que tu componente “recuerde” cierta información y la muestre. 
+
+```
+import { useState } from 'react';
+
+```
+
+Ahora puedes declarar una variable de estado dentro de tu componente:
+
+```
+function MyButton() {
+  const [count, setCount] = useState(0);
+  // ...
+
+```
+
+Obtendrás dos cosas de useState: el estado actual (count) y la función que te permite actualizarlo (setCount). 
+
+
+La primera vez que se muestra el botón, count será 0 porque pasaste 0 a useState(). 
+
+Cuando quieras cambiar el estado, llama a setCount() y pásale el nuevo valor. 
+
+Al hacer clic en este botón, se incrementará el contador:
+
+
+### Aquí nuestro componente recordará count y a esta variable le sumará +1 cada vez que la función se llama con el botón. 
+
+```
+function MyButton() {
+  const [count, setCount] = useState(0);
+
+  function handleClick() {
+    setCount(count + 1);
+  }
+
+  return (
+    <button onClick={handleClick}>
+      Clicked {count} times
+    </button>
+  );
+}
+
+```
+
+React volverá a llamar a la función de tu componente. 
+
+Esta vez, el conteo será 1. Luego será 2. Y así sucesivamente.
+
+Si renderizas el mismo componente varias veces, cada uno tendrá su propio estado. 
+
+Haz clic en cada botón por separado:
+
+```
+import { useState } from 'react';
+
+export default function MyApp() {
+  return (
+    <div>
+      <h1>Counters that update separately</h1>
+      <MyButton />
+      <MyButton />
+    </div>
+  );
+}
+
+function MyButton() {
+  const [count, setCount] = useState(0);
+
+  function handleClick() {
+    setCount(count + 1);
+  }
+
+  return (
+    <button onClick={handleClick}>
+      Clicked {count} times
+    </button>
+  );
+}
+
+```
+
+Observe cómo cada botón “recuerda” su propio estado de conteo y no afecta a los demás botones.
+
+
+## Compartir datos entre componentes
+
+En el ejemplo anterior, cada MyButton tenía su propio recuento independiente y, cuando se hacía clic en cada botón, solo cambiaba el recuento del botón en el que se hacía clic: 
+
+		MyApp
+		/   \
+MyButton	MyButton
+(count=0)	(count=0)
+
+Inicialmente, el estado de conteo de cada MyButton es 0
+
+		MyApp
+		/   \
+MyButton	MyButton
+(count=1)	(count=0)
+
+El primer MyButton actualiza su conteo a 1
+
+
+Sin embargo, a menudo necesitarás componentes que compartan datos y se actualicen siempre juntos.
+
+Para que ambos componentes MyButton muestren el mismo recuento y se actualicen juntos, necesitas mover el estado de los botones individuales "hacia arriba/upwards" al componente más cercano que los contenga a todos.
+
+En este ejemplo, es MyApp:
+
+		MyApp
+		count=0
+		/   \
+(count=0)	(count=0)
+	|			|
+MyButton	MyButton
+
+
+Inicialmente, el estado de conteo de MyApp es 0 y se transmite a ambos hijos.
+
+Al hacer clic, MyApp actualiza su estado de conteo a 1 y lo pasa a ambos hijos.
+
+		MyApp
+		count=1
+		/   \
+(count=1)	(count=1)
+	|			|
+MyButton	MyButton
+
+
+Ahora, cuando haga clic en cualquiera de los botones, el recuento en MyApp cambiará, lo que cambiará ambos recuentos en MyButton. 
+
+Aquí se muestra cómo puede expresar esto en código.
+
+Primero, mueva el estado de MyButton a MyApp:
+
+```
+export default function MyApp() {
+  const [count, setCount] = useState(0);
+
+  function handleClick() {
+    setCount(count + 1);
+  }
+
+  return (
+    <div>
+      <h1>Counters that update separately</h1>
+      <MyButton />
+      <MyButton />
+    </div>
+  );
+}
+
+function MyButton() {
+  // ... we're moving code from here ...
+}
+
+```
+
+Luego, pasa el estado desde MyApp a cada MyButton, junto con el controlador de clic compartido. 
+
+Puedes pasar información a MyButton usando las llaves JSX, tal como lo hiciste anteriormente con las etiquetas integradas como <img>:
+
+```
+export default function MyApp() {
+  const [count, setCount] = useState(0);
+
+  function handleClick() {
+    setCount(count + 1);
+  }
+
+  return (
+    <div>
+      <h1>Counters that update together</h1>
+      <MyButton count={count} onClick={handleClick} />
+      <MyButton count={count} onClick={handleClick} />
+    </div>
+  );
+}
+
+```
+
+### Un componente no puede manipular sus props, pero si puede manipular su estado. 
+
+useState(0) inicializa el estado con 0.
+
+contador almacena el valor actual del estado.
+
+setContador es la función que actualiza el estado.
+
+Cuando se hace clic en el botón, setContador incrementa el valor del estado.
+
+
+## Estado con Objetos
+
+El estado puede almacenar objetos en lugar de valores simples
+
+```
+const Usuario = () => {
+  const [usuario, setUsuario] = useState({ nombre: "Juan", edad: 25 });
+
+  const cambiarNombre = () => {
+    setUsuario({ ...usuario, nombre: "Carlos" }); // Se mantiene la edad
+  };
+
+  return (
+    <div>
+      <p>Nombre: {usuario.nombre}</p>
+      <p>Edad: {usuario.edad}</p>
+      <button onClick={cambiarNombre}>Cambiar Nombre</button>
+    </div>
+  );
+};
+
+```
+
+usuario es un objeto { nombre, edad }.
+
+### setUsuario({ ...usuario, nombre: "Carlos" }) usa spread operator (...usuario) para evitar perder la edad al actualizar el nombre
+
+
+## Estado con array
+
+Puedes manejar arreglos en el estado
+
+```
+const ListaTareas = () => {
+  const [tareas, setTareas] = useState(["Estudiar", "Comprar"]);
+
+  const agregarTarea = () => {
+    setTareas([...tareas, "Nueva Tarea"]); // Agregar al final
+  };
+
+  return (
+    <div>
+      <ul>
+        {tareas.map((tarea, index) => (
+          <li key={index}>{tarea}</li>
+        ))}
+      </ul>
+      <button onClick={agregarTarea}>Agregar Tarea</button>
+    </div>
+  );
+};
+
+```
+
+tareas almacena una lista de strings.
+
+```setTareas([...tareas, "Nueva Tarea"])``` crea un nuevo array con la tarea agregada.
+
+Se usa map para renderizar las tareas dinámicamente.
+
+
+## useEffect y estado 
+
+useEffect: maneja efectos secundarios (fetch, timers, eventos)
+
+```
+useEffect(() => {
+  console.log("El componente se montó o el contador cambió.");
+}, [contador]);
+
+```
+
+```
+import { useState, useEffect } from "react";
+
+const Contador = () => {
+  const [contador, setContador] = useState(0);
+
+  useEffect(() => {
+    console.log("El contador cambió:", contador);
+  }, [contador]); // Se ejecuta cuando cambia `contador`
+
+  return (
+    <div>
+      <p>Contador: {contador}</p>
+      <button onClick={() => setContador(contador + 1)}>Incrementar</button>
+    </div>
+  );
+};
+
+```
+
+useEffect se ejecuta después del render y puede hacer cosas como:
+
+Llamadas a APIs (fetch).
+Suscribirse/desuscribirse a eventos.
+Actualizar el DOM.
+
+
+## useContext y estado 
+
+useContext: compartir estado global sin prop drilling
+
+```
+const TemaContext = React.createContext();
+const valor = useContext(TemaContext);
+
+```
+
+```
+import { createContext, useContext } from "react";
+
+const TemaContext = createContext("claro");
+
+const Hijo = () => {
+  const tema = useContext(TemaContext);
+  return <p>El tema actual es: {tema}</p>;
+};
+
+const App = () => {
+  return (
+    <TemaContext.Provider value="oscuro">
+      <Hijo />
+    </TemaContext.Provider>
+  );
+};
+
+```
+
+useContext evita tener que pasar props manualmente por varios niveles.
+
+
+## Estados complejos 
+
+useReducer: alternativa a useState para estados complejos
+
+```
+const [state, dispatch] = useReducer(reducer, initialState);
+
+```
+
+```
+import { useReducer } from "react";
+
+const reducer = (state, action) => {
+  switch (action.type) {
+    case "incrementar":
+      return { contador: state.contador + 1 };
+    case "decrementar":
+      return { contador: state.contador - 1 };
+    default:
+      return state;
+  }
+};
+
+const Contador = () => {
+  const [state, dispatch] = useReducer(reducer, { contador: 0 });
+
+  return (
+    <div>
+      <p>Contador: {state.contador}</p>
+      <button onClick={() => dispatch({ type: "incrementar" })}>+</button>
+      <button onClick={() => dispatch({ type: "decrementar" })}>-</button>
+    </div>
+  );
+};
+
+```
+
+useReducer es útil para gestionar lógica más compleja que useState.
+
+
+## useRef 
+
+useRef: referencias a elementos del DOM
+
+```
+const inputRef = useRef(null);
+
+```
+
+```
+import { useRef } from "react";
+
+const EnfocarInput = () => {
+  const inputRef = useRef(null);
+
+  const enfocar = () => {
+    inputRef.current.focus();
+  };
+
+  return (
+    <div>
+      <input ref={inputRef} type="text" />
+      <button onClick={enfocar}>Enfocar</button>
+    </div>
+  );
+};
+
+```
+
+useRef se usa para:
+
+Acceder a elementos del DOM sin useState.
+Mantener valores sin provocar re-render
+
+
+## Utilidad de los hooks 
+
+useState: Manejar estado en componentes funcionales
+ 
+useEffect: Efectos secundarios (fetch, eventos, timers
+
+useContext: Compartir estado global sin props
+
+useReducer: Alternativa a useState para lógica compleja
+
+useRef: Referencias a elementos del DOM
+
+Custom Hooks: Reutilizar lógica en varios componentes
+
+
+Los hooks simplifican el código en React eliminando la necesidad de clases.
+
+Con ellos, los componentes funcionales pueden manejar estado, efectos y contexto.
+
+Hay hooks básicos (useState, useEffect) y avanzados (useReducer, useRef).
+
+Puedes crear custom hooks para organizar mejor tu código.
+
+
+
+# Rs Eventos 
+
+Funcionan de manera similar a los eventos en JavaScript, pero con algunas diferencias clave
+
+1. Se manejan mediante camelCase (ejemplo: onClick en lugar de onclick).
+
+2. Se pasan como funciones dentro de JSX (ejemplo: {handleClick} en lugar de "handleClick()").
+
+3. Se usa event.preventDefault() en lugar de return false para prevenir comportamientos por defecto.
+
+
+## Manejo de eventos 
+
+onClick 
+
+```
+const Boton = () => {
+  const handleClick = () => {
+    alert("¡Botón clickeado!");
+  };
+
+  return <button onClick={handleClick}>Haz clic</button>;
+};
+
+```
+
+Se define la función handleClick.
+
+Se asocia a la propiedad onClick del botón.
+
+Cuando el usuario hace clic, se ejecuta la función
+
+
+## Pasar Parámetros
+
+Pasar un valor a la función del evento, puedes hacerlo con una arrow function.
+
+```
+const Boton = () => {
+  const handleClick = (mensaje) => {
+    alert(mensaje);
+  };
+
+  return <button onClick={() => handleClick("Hola desde React!")}>Haz clic</button>;
+};
+
+```
+
+handleClick recibe "Hola desde React!" cuando el botón es presionado.
+
+
+## event 
+
+Se pasa un objeto de evento (event) automáticamente.
+
+event.target:
+
+```
+const Input = () => {
+  const handleChange = (event) => {
+    console.log("Valor:", event.target.value);
+  };
+
+  return <input type="text" onChange={handleChange} />;
+};
+
+```
+
+Cada vez que el usuario escribe, se imprime el valor en la consola.
+
+
+### Prevenir Comportamiento por Defecto (preventDefault)
+
+Ej: evitar que un form recargue la página 
+
+```
+const Formulario = () => {
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    alert("Formulario enviado");
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <button type="submit">Enviar</button>
+    </form>
+  );
+};
+
+```
+
+
+# Interactividad en React: estado y eventos 
+
+Los datos que cambian con el tiempo se denominan estado. 
+
+Puedes añadir estado a cualquier componente y actualizarlo según sea necesario. 
+
+App.js
+
+```
+export default function App() {
+  return (
+    <Toolbar
+      onPlayMovie={() => alert('Playing!')}
+      onUploadImage={() => alert('Uploading!')}
+    />
+  );
+}
+
+function Toolbar({ onPlayMovie, onUploadImage }) {
+  return (
+    <div>
+      <Button onClick={onPlayMovie}>
+        Play Movie
+      </Button>
+      <Button onClick={onUploadImage}>
+        Upload Image
+      </Button>
+    </div>
+  );
+}
+
+function Button({ onClick, children }) {
+  return (
+    <button onClick={onClick}>
+      {children}
+    </button>
+  );
+}
+
+```
+
+Toolbar y Button que admiten props desde otro componente, los usan en su propio return. 
+
+### Este ejemplo no tiene estado solo eventos: Button hace de contenedor y Toolbar usa props para los eventos. 
+
+
+Los componentes a menudo necesitan cambiar lo que aparece en pantalla como resultado de una interacción. 
+
+Los componentes necesitan recordar cosas: el valor de entrada actual, la imagen actual, el carrito de compras. 
+
+
+### useState devuelve tres valores: estado inicial, varible de estado y funcion de estado
+
+El Hook useState permite declarar una variable de estado. 
+
+Toma el estado inicial y devuelve un par de valores: el estado actual y una función que establece el estado para actualizarlo.
+
+```
+const [index, setIndex] = useState(0);
+const [showMore, setShowMore] = useState(false);
+
+```
+
+
+## Renderizar y confirmar
+
+### Antes de que tus componentes se muestren en pantalla, React debe renderizarlos. 
+
+Comprender los pasos de este proceso te ayudará a comprender cómo se ejecuta tu código y a explicar su comportamiento.
+
+
+1. Activar un renderizado (entregar el pedido del comensal a la cocina)
+
+2. Renderizar el componente (preparar el pedido en la cocina)
+
+3. Confirmar con el DOM (colocar el pedido en la mesa)
+
+
+## Estado como una instantánea
+
+A diferencia de las variables regulares de JavaScript, el estado de React se comporta más como una instantánea. 
+
+### Al configurarlo, no se modifica la variable de estado existente, sino que se activa un nuevo renderizado. 
+
+
+```
+console.log(count);  // 0
+setCount(count + 1); // Request a re-render with 1
+console.log(count);  // Still 0!
+
+```
+
+Este comportamiento te ayuda a evitar errores sutiles. 
+
+
+## Poniendo en cola una serie de actualizaciones de estado.
+
+Este componente presenta errores: al hacer clic en "+3", la puntuación solo aumenta una vez.
+
+App.js
+
+```
+import { useState } from 'react';
+
+export default function Counter() {
+  const [score, setScore] = useState(0);
+
+  function increment() {
+    setScore(score + 1);
+  }
+
+  return (
+    <>
+      <button onClick={() => increment()}>+1</button>
+      <button onClick={() => {
+        increment();
+        increment();
+        increment();
+      }}>+3</button>
+      <h1>Score: {score}</h1>
+    </>
+  )
+}
+
+```
+
+El estado como instantánea explica por qué ocurre esto. 
+
+### Al configurar el estado, se solicita una nueva renderización, pero no se modifica en el código que ya se está ejecutando. 
+
+Por lo tanto, la puntuación sigue siendo 0 justo después de llamar a setScore(score + 1).
+
+```
+console.log(score);  // 0
+setScore(score + 1); // setScore(0 + 1);
+console.log(score);  // 0
+setScore(score + 1); // setScore(0 + 1);
+console.log(score);  // 0
+setScore(score + 1); // setScore(0 + 1);
+console.log(score);  // 0
+
+```
+
+### Puedes solucionar esto pasando una función de actualización al configurar el estado. 
+
+Observa cómo al reemplazar setScore(score + 1) por setScore(s => s + 1) se soluciona el botón "+3". 
+
+Esto te permite poner en cola varias actualizaciones de estado.
+
+
+```
+import { useState } from 'react';
+
+export default function Counter() {
+  const [score, setScore] = useState(0);
+
+  function increment() {
+    setScore(s => s + 1);
+  }
+
+  return (
+    <>
+      <button onClick={() => increment()}>+1</button>
+      <button onClick={() => {
+        increment();
+        increment();
+        increment();
+      }}>+3</button>
+      <h1>Score: {score}</h1>
+    </>
+  )
+}
+
+```
+
+Usa una función flecha con un parámetro local para asignar el cambio. 
+
+
+
+## Actualización de objetos en estado
+
+El estado puede contener cualquier tipo de valor de JavaScript, incluyendo objetos. 
+
+Sin embargo, no se deben modificar directamente los objetos ni los arrays que se mantienen en el estado de React. 
+
+En su lugar, para actualizar un objeto y un array, se debe crear uno nuevo (o hacer una copia de uno existente) y luego actualizar el estado para usar esa copia.
+
+
+Normalmente, se usa la sintaxis ... spread para copiar los objetos y arrays que se desean modificar. 
+
+Por ejemplo, la actualización de un objeto anidado podría verse así:
+
+```
+import { useState } from 'react';
+
+export default function Form() {
+  const [person, setPerson] = useState({
+    name: 'Niki de Saint Phalle',
+    artwork: {
+      title: 'Blue Nana',
+      city: 'Hamburg',
+      image: 'https://i.imgur.com/Sd1AgUOm.jpg',
+    }
+  });
+
+  function handleNameChange(e) {
+    setPerson({
+      ...person,
+      name: e.target.value
+    });
+  }
+
+  function handleTitleChange(e) {
+    setPerson({
+      ...person,
+      artwork: {
+        ...person.artwork,
+        title: e.target.value
+      }
+    });
+  }
+
+  function handleCityChange(e) {
+    setPerson({
+      ...person,
+      artwork: {
+        ...person.artwork,
+        city: e.target.value
+      }
+    });
+  }
+
+  function handleImageChange(e) {
+    setPerson({
+      ...person,
+      artwork: {
+        ...person.artwork,
+        image: e.target.value
+      }
+    });
+  }
+
+  return (
+    <>
+      <label>
+        Name:
+        <input
+          value={person.name}
+          onChange={handleNameChange}
+        />
+      </label>
+      <label>
+        Title:
+        <input
+          value={person.artwork.title}
+          onChange={handleTitleChange}
+        />
+      </label>
+      <label>
+        City:
+        <input
+          value={person.artwork.city}
+          onChange={handleCityChange}
+        />
+      </label>
+      <label>
+        Image:
+        <input
+          value={person.artwork.image}
+          onChange={handleImageChange}
+        />
+      </label>
+      <p>
+        <i>{person.artwork.title}</i>
+        {' by '}
+        {person.name}
+        <br />
+        (located in {person.artwork.city})
+      </p>
+      <img
+        src={person.artwork.image}
+        alt={person.artwork.title}
+      />
+    </>
+  );
+}
+
+```
+
+### La variable de estado person tiene como valor un objeto que tiene otro objeto dentro. 
+
+En la función para manejar eventos, copia el objeto que quiere acceder con ... 
+
+Lo hacer para el objeto ...person y para ...person.artwork
+
+
+Si copiar objetos en el código se vuelve tedioso, puedes usar una biblioteca como Immer para reducir el código repetitivo:
+
+package.json
+
+```
+{
+  "dependencies": {
+    "immer": "1.7.3",
+    "react": "latest",
+    "react-dom": "latest",
+    "react-scripts": "latest",
+    "use-immer": "0.5.1"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  },
+  "devDependencies": {}
+}
+
+```
+
+App.js
+
+```
+import { useImmer } from 'use-immer';
+
+export default function Form() {
+  const [person, updatePerson] = useImmer({
+    name: 'Niki de Saint Phalle',
+    artwork: {
+      title: 'Blue Nana',
+      city: 'Hamburg',
+      image: 'https://i.imgur.com/Sd1AgUOm.jpg',
+    }
+  });
+
+  function handleNameChange(e) {
+    updatePerson(draft => {
+      draft.name = e.target.value;
+    });
+  }
+
+  function handleTitleChange(e) {
+    updatePerson(draft => {
+      draft.artwork.title = e.target.value;
+    });
+  }
+
+  function handleCityChange(e) {
+    updatePerson(draft => {
+      draft.artwork.city = e.target.value;
+    });
+  }
+
+  function handleImageChange(e) {
+    updatePerson(draft => {
+      draft.artwork.image = e.target.value;
+    });
+  }
+
+  return (
+    <>
+      <label>
+        Name:
+        <input
+          value={person.name}
+          onChange={handleNameChange}
+        />
+      </label>
+      <label>
+        Title:
+        <input
+          value={person.artwork.title}
+          onChange={handleTitleChange}
+        />
+      </label>
+      <label>
+        City:
+        <input
+          value={person.artwork.city}
+          onChange={handleCityChange}
+        />
+      </label>
+      <label>
+        Image:
+        <input
+          value={person.artwork.image}
+          onChange={handleImageChange}
+        />
+      </label>
+      <p>
+        <i>{person.artwork.title}</i>
+        {' by '}
+        {person.name}
+        <br />
+        (located in {person.artwork.city})
+      </p>
+      <img
+        src={person.artwork.image}
+        alt={person.artwork.title}
+      />
+    </>
+  );
+}
+
+```
+
+
+## Actualización de arrays en estado
+
+Los arrays son otro tipo de objetos mutables de JavaScript que se pueden almacenar en estado y deben tratarse como de solo lectura. 
+
+Al igual que con los objetos, para actualizar un array almacenado en estado, es necesario crear uno nuevo (o hacer una copia de uno existente) y luego configurar el estado para que use el nuevo array:
+
+```
+import { useState } from 'react';
+
+const initialList = [
+  { id: 0, title: 'Big Bellies', seen: false },
+  { id: 1, title: 'Lunar Landscape', seen: false },
+  { id: 2, title: 'Terracotta Army', seen: true },
+];
+
+export default function BucketList() {
+  const [list, setList] = useState(
+    initialList
+  );
+
+  function handleToggle(artworkId, nextSeen) {
+    setList(list.map(artwork => {
+      if (artwork.id === artworkId) {
+        return { ...artwork, seen: nextSeen };
+      } else {
+        return artwork;
+      }
+    }));
+  }
+
+  return (
+    <>
+      <h1>Art Bucket List</h1>
+      <h2>My list of art to see:</h2>
+      <ItemList
+        artworks={list}
+        onToggle={handleToggle} />
+    </>
+  );
+}
+
+function ItemList({ artworks, onToggle }) {
+  return (
+    <ul>
+      {artworks.map(artwork => (
+        <li key={artwork.id}>
+          <label>
+            <input
+              type="checkbox"
+              checked={artwork.seen}
+              onChange={e => {
+                onToggle(
+                  artwork.id,
+                  e.target.checked
+                );
+              }}
+            />
+            {artwork.title}
+          </label>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+```
+
+
+Podemos usar Immer para reducir código repetitivo. 
+
+App.js
+
+```
+import { useState } from 'react';
+import { useImmer } from 'use-immer';
+
+const initialList = [
+  { id: 0, title: 'Big Bellies', seen: false },
+  { id: 1, title: 'Lunar Landscape', seen: false },
+  { id: 2, title: 'Terracotta Army', seen: true },
+];
+
+export default function BucketList() {
+  const [list, updateList] = useImmer(initialList);
+
+  function handleToggle(artworkId, nextSeen) {
+    updateList(draft => {
+      const artwork = draft.find(a =>
+        a.id === artworkId
+      );
+      artwork.seen = nextSeen;
+    });
+  }
+
+  return (
+    <>
+      <h1>Art Bucket List</h1>
+      <h2>My list of art to see:</h2>
+      <ItemList
+        artworks={list}
+        onToggle={handleToggle} />
+    </>
+  );
+}
+
+function ItemList({ artworks, onToggle }) {
+  return (
+    <ul>
+      {artworks.map(artwork => (
+        <li key={artwork.id}>
+          <label>
+            <input
+              type="checkbox"
+              checked={artwork.seen}
+              onChange={e => {
+                onToggle(
+                  artwork.id,
+                  e.target.checked
+                );
+              }}
+            />
+            {artwork.title}
+          </label>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+```
+
+
+# Eventos, props y estado 
+
+Agregar controladores de eventos a tu JSX. 
+
+Los controladores de eventos son funciones propias que se activan en respuesta a interacciones como hacer clic, pasar el cursor, enfocar las entradas del formulario, etc.
+
+
+## Añadir controladores de eventos
+
+### Para añadir un controlador de eventos, primero se define una función y luego se pasa como propiedad a la etiqueta JSX correspondiente. 
+
+
+Puedes hacer que muestre un mensaje cuando un usuario haga clic siguiendo estos tres pasos:
+
+1. Declara una función llamada handleClick dentro de tu componente Button.
+
+2. Implementa la lógica dentro de esa función (usa alert para mostrar el mensaje).
+
+3. Agrega onClick={handleClick} al JSX de <button>.
+
+
+```
+export default function Button() {
+  function handleClick() {
+    alert('You clicked me!');
+  }
+
+  return (
+    <button onClick={handleClick}>
+      Click me
+    </button>
+  );
+}
+
+```
+
+Definiste la función handleClick y la pasaste como propiedad a <button>. 
+
+handleClick es un controlador de eventos. 
+
+Las funciones de los controladores de eventos:
+
+
+
+1. Suelen definirse dentro de los componentes.
+2. Tienen nombres que empiezan por "handle", seguido del nombre del evento.
+
+
+Por convención, es común nombrar los controladores de eventos como "handle" seguido del nombre del evento. 
+
+A menudo verás "onClick={handleClick}", "onMouseEnter={handleMouseEnter}", etc.
+
+
+Como alternativa, puedes definir un controlador de eventos en línea en el JSX:
+
+```
+<button onClick={function handleClick() {
+  alert('You clicked me!');
+}}>
+
+```
+
+Para ser conciso, una arrow function 
+
+```
+<button onClick={() => {
+  alert('You clicked me!');
+}}>
+
+```
+
+### Error
+
+Las funciones pasadas a los controladores de eventos deben pasarse, no llamarse. 
+
+Por ejemplo:
+
+1. passing a function (correct)
+
+```
+<button onClick={handleClick}>
+
+```
+
+2. calling a function (incorrect)
+
+```
+button onClick={handleClick()}>
+
+```
+
+La diferencia es sutil.
+
+En el primer ejemplo, la función handleClick se pasa como un controlador de eventos onClick. 
+
+Esto le indica a React que la recuerde y solo la llame cuando el usuario haga clic en el botón.
+
+
+En el segundo ejemplo, el () al final de handleClick() ejecuta la función inmediatamente durante la renderización, sin necesidad de clics. 
+
+Esto se debe a que el JavaScript dentro de JSX { y } se ejecuta inmediatamente.
+
+
+Cuando escribes código en línea, el mismo problema se presenta de una manera diferente:
+
+1. passing a function (correct)
+
+```
+<button onClick={() => alert('...')}>
+
+```
+
+2. calling a function (incorrect)
+
+```
+<button onClick={alert('...')}>
+
+```
+
+Pasar código en línea como este no se activará al hacer clic, se activa cada vez que se renderiza el componente:
+
+```
+// This alert fires when the component renders, not when clicked!
+<button onClick={alert('You clicked me!')}>
+
+```
+
+Si desea definir su controlador de eventos en línea, inclúyalo en una función anónima como esta:
+
+```
+<button onClick={() => alert('You clicked me!')}>
+
+```
+
+En lugar de ejecutar el código interno con cada renderizado, esto crea una función que se llamará posteriormente.
+
+En ambos casos, se pasa una función:
+
+1. <button onClick={handleClick}> pasa la función handleClick.
+
+2. <button onClick={() => alert('...')}> pasa la función () => alert('...').
+
+
+## Lectura de props en manejadores de eventos
+
+### Dado que los manejadores de eventos se declaran dentro de un componente, tienen acceso a los props del componente. 
+
+
+```
+function AlertButton({ message, children }) {
+  return (
+    <button onClick={() => alert(message)}>
+      {children}
+    </button>
+  );
+}
+
+export default function Toolbar() {
+  return (
+    <div>
+      <AlertButton message="Playing!">
+        Play Movie
+      </AlertButton>
+      <AlertButton message="Uploading!">
+        Upload Image
+      </AlertButton>
+    </div>
+  );
+}
+
+```
+
+Las props permiten que estos dos botones muestren mensajes diferentes. Intenta cambiar los mensajes que se les envían.
+
+
+## Pasando controladores de eventos como props
+
+### A menudo, querrá que el componente padre especifique el controlador de eventos de un componente hijo. 
+
+En el ejemplo anterior el componente hijo tenia el controlador. 
+
+### Considere los botones: dependiendo de dónde use un componente Button, podría querer ejecutar una función diferente; por ejemplo, una reproduce una película y otra sube una imagen.
+
+### Para ello, pase un prop que el componente recibe de su padre como controlador de eventos, de la siguiente manera:
+
+```
+function Button({ onClick, children }) {
+  return (
+    <button onClick={onClick}>
+      {children}
+    </button>
+  );
+}
+
+function PlayButton({ movieName }) {
+  function handlePlayClick() {
+    alert(`Playing ${movieName}!`);
+  }
+
+  return (
+    <Button onClick={handlePlayClick}>
+      Play "{movieName}"
+    </Button>
+  );
+}
+
+function UploadButton() {
+  return (
+    <Button onClick={() => alert('Uploading!')}>
+      Upload Image
+    </Button>
+  );
+}
+
+export default function Toolbar() {
+  return (
+    <div>
+      <PlayButton movieName="Kiki's Delivery Service" />
+      <UploadButton />
+    </div>
+  );
+}
+
+```
+
+### Button no tiene funciones 
+
+Tiene props a onClick y children
+
+Retorna un botón que tiene como onClick la prop onClick. 
+
+
+### Los componentes superiores llaman a Button y le pasan su función. 
+
+Las funciones estarán separadas en componentes. 
+
+PlayButton toma movieName, tiene una función handlePlayClick que lee esta prop en un alert. 
+
+Retornará un botón con su función definida y leerá movieName
+
+PlayButton retorna el componente Button como un contenedor y además le da valor a su prop que será una función. 
+
+
+UploadButton también llama al componente Button como un contenedor para pasarle el valor de onClick en linea como una función ya que no tiene una propia definida.   
+
+No tiene funcion 
+
+Retorna un alert con un string. 
+
+
+ToolBar tiene su propio div, que contiene a los componentes y sus children
+
+ToolBar llama al componente PlayButton para pasarle el valor de movieName
+
+Y llama al componente UploadButton
+
+
+Aquí, el componente Toolbar renderiza un PlayButton y un UploadButton:
+
+1. PlayButton pasa handlePlayClick como la propiedad onClick al Button.
+
+2. UploadButton pasa () => alert('Uploading!') como la propiedad onClick al Button.
+
+
+Finalmente, el componente Button acepta una propiedad llamada onClick. 
+
+Pasa dicha propiedad directamente al navegador integrado <button> con onClick={onClick}. 
+
+Esto indica a React que llame a la función pasada al hacer clic.
+
+#### Si se utiliza un sistema de diseño, es común que componentes como los botones contengan estilo, pero no especifiquen comportamiento. 
+
+#### En cambio, componentes como PlayButton y UploadButton pasarán controladores de eventos.
+
+
+## Nombrar las propiedades del controlador de eventos
+
+Por convención, las propiedades del controlador de eventos deben empezar por on, seguido de una letra mayúscula.
+
+
+Por ejemplo, la propiedad onClick del componente Button podría haberse llamado onSmash:
+
+App.js
+
+### En Button, el valor de onSmash será una función flecha definida en la llamada a Button. 
+
+```
+function Button({ onSmash, children }) {
+  return (
+    <button onClick={onSmash}>
+      {children}
+    </button>
+  );
+}
+
+export default function App() {
+  return (
+    <div>
+      <Button onSmash={() => alert('Playing!')}>
+        Play Movie
+      </Button>
+      <Button onSmash={() => alert('Uploading!')}>
+        Upload Image
+      </Button>
+    </div>
+  );
+}
+
+```
+
+En este ejemplo, <button onClick={onSmash}> muestra que el navegador <button> (en minúsculas) aún necesita una propiedad llamada onClick, pero el nombre de la propiedad que recibirá tu componente Button personalizado depende de ti.
+
+### El componente superior se pasa su función, en vez que el propio botón tenga una.
+
+
+### Si tu componente admite múltiples interacciones, puedes asignar nombres a las propiedades de los controladores de eventos para conceptos específicos de la aplicación. 
+
+Por ejemplo, este componente Toolbar recibe los controladores de eventos onPlayMovie y onUploadImage:
+
+```
+export default function App() {
+  return (
+    <Toolbar
+      onPlayMovie={() => alert('Playing!')}
+      onUploadImage={() => alert('Uploading!')}
+    />
+  );
+}
+
+function Toolbar({ onPlayMovie, onUploadImage }) {
+  return (
+    <div>
+      <Button onClick={onPlayMovie}>
+        Play Movie
+      </Button>
+      <Button onClick={onUploadImage}>
+        Upload Image
+      </Button>
+    </div>
+  );
+}
+
+function Button({ onClick, children }) {
+  return (
+    <button onClick={onClick}>
+      {children}
+    </button>
+  );
+}
+
+```
+
+
+Observe cómo el componente App no ​​necesita saber qué hará Toolbar con onPlayMovie o onUploadImage. 
+
+Este es un detalle de implementación de Toolbar. 
+
+En este caso, Toolbar los pasa como controladores onClick a sus Botones, pero posteriormente también podría activarlos con un atajo de teclado. 
+
+Nombrar las propiedades con el nombre de interacciones específicas de la aplicación, como onPlayMovie, le brinda la flexibilidad de cambiar su uso posterior.
+
+
+## Propagación de eventos
+
+Los controladores de eventos también capturarán eventos de cualquier componente secundario que pueda tener. 
+
+### Decimos que un evento se propaga a través del árbol: comienza donde ocurrió el evento y luego asciende.
+
+
+Este <div> contiene dos botones. 
+
+Tanto el <div> como cada botón tienen sus propios controladores onClick. 
+
+
+App.js
+
+```
+export default function Toolbar() {
+  return (
+    <div className="Toolbar" onClick={() => {
+      alert('You clicked on the toolbar!');
+    }}>
+      <button onClick={() => alert('Playing!')}>
+        Play Movie
+      </button>
+      <button onClick={() => alert('Uploading!')}>
+        Upload Image
+      </button>
+    </div>
+  );
+}
+
+```
+
+Si hace clic en cualquiera de los botones, su onClick se ejecutará primero, seguido del onClick del <div> padre. 
+
+Por lo tanto, aparecerán dos mensajes. 
+
+(el click de Toolbar y el de uno de los botones)
+
+Si hace clic en la barra de herramientas, solo se ejecutará el onClick del <div> padre.
+
+### Dado que se propaga del interior al exterior. 
+
+
+## Detener la propagación
+
+### Los controladores de eventos reciben un objeto de evento como único argumento. 
+
+### Puede usar este objeto para leer información sobre el evento.
+
+
+Ese objeto de evento también permite detener la propagación. 
+
+### Si desea evitar que un evento llegue a los componentes padre, debe llamar a e.stopPropagation() como lo hace este componente Button:
+
+
+App.js
+
+Button toma onClick y children (para que sea contenedor de más jsx)
+
+Retorna un botón con un evento de click que usa el parametro/objeto e para llamar a la función stopPropagation()
+
+Después ejecuta a onClick()
+
+```
+function Button({ onClick, children }) {
+  return (
+    <button onClick={e => {
+      e.stopPropagation();
+      onClick();
+    }}>
+      {children}
+    </button>
+  );
+}
+
+export default function Toolbar() {
+  return (
+    <div className="Toolbar" onClick={() => {
+      alert('You clicked on the toolbar!');
+    }}>
+      <Button onClick={() => alert('Playing!')}>
+        Play Movie
+      </Button>
+      <Button onClick={() => alert('Uploading!')}>
+        Upload Image
+      </Button>
+    </div>
+  );
+}
+
+```
+
+Al hacer clic en un botón:
+
+1. React llama al controlador onClick pasado a <button>.
+
+2. Este controlador, definido en Button, realiza lo siguiente:
+  
+  Llama a e.stopPropagation(), lo que impide que el evento se propague más.
+  
+### Llama a la función onClick, que es una propiedad pasada desde el componente Toolbar.
+
+3. Esta función, definida en el componente Toolbar, muestra la alerta del botón.
+
+4. Dado que se detuvo la propagación, el controlador onClick del elemento padre <div> no se ejecuta.
+
+
+## En profundidad: Eventos de la fase de captura
+
+### En casos excepcionales, podría ser necesario capturar todos los eventos de los elementos secundarios, incluso si detuvieron la propagación. 
+
+Por ejemplo, quizás desee registrar cada clic en Analytics, independientemente de la lógica de propagación. 
+
+Puede hacerlo añadiendo "Captura" al final del nombre del evento:
+
+```
+<div onClickCapture={() => { /* this runs first */ }}>
+<button onClick={e => e.stopPropagation()} />
+<button onClick={e => e.stopPropagation()} />
+</div>
+
+```
+Cada evento se propaga en tres fases:
+
+1. Se propaga hacia abajo, llamando a todos los controladores onClickCapture.
+
+2. Ejecuta el controlador onClick del elemento en el que se hizo clic.
+
+3. Se propaga hacia arriba, llamando a todos los controladores onClick.
+
+Los eventos de captura son útiles para código como enrutadores o Analytics, pero probablemente no los use en el código de la aplicación. 
+
+
+## Pasando controladores como alternativa a la propagación
+
+Observe cómo este controlador de clic ejecuta una línea de código y luego llama a la propiedad "onClick" pasada por el padre: 
+
+```
+function Button({ onClick, children }) {
+  return (
+    <button onClick={e => {
+      e.stopPropagation();
+      onClick();
+    }}>
+      {children}
+    </button>
+  );
+}
+
+```
+
+También podrías agregar más código a este controlador antes de llamar al controlador principal del evento onClick. 
+
+Este patrón ofrece una alternativa a la propagación. 
+
+Permite que el componente secundario gestione el evento, a la vez que permite que el componente principal especifique un comportamiento adicional. 
+
+A diferencia de la propagación, no es automático. 
+
+Sin embargo, la ventaja de este patrón es que permite seguir claramente toda la cadena de código que se ejecuta como resultado de un evento.
+
+
+Si dependes de la propagación y te resulta difícil rastrear qué controladores se ejecutan y por qué, prueba este enfoque.
+
+
+## Prevenir el comportamiento predeterminado
+
+Algunos eventos del navegador tienen un comportamiento predeterminado asociado. 
+
+Por ejemplo, un evento de envío <form>, que se produce al hacer clic en un botón dentro de él, recargará toda la página de forma predeterminada:
+
+```
+export default function Signup() {
+  return (
+    <form onSubmit={() => alert('Submitting!')}>
+      <input />
+      <button>Send</button>
+    </form>
+  );
+}
+
+```
+
+Puede llamar a e.preventDefault() en el objeto de evento para evitar que esto suceda:
+
+```
+export default function Signup() {
+  return (
+    <form onSubmit={e => {
+      e.preventDefault();
+      alert('Submitting!');
+    }}>
+      <input />
+      <button>Send</button>
+    </form>
+  );
+}
+
+```
+
+No confunda e.stopPropagation() y e.preventDefault(). Ambos son útiles, pero no están relacionados:
+
+1. e.stopPropagation() impide que se activen los controladores de eventos asociados a las etiquetas anteriores.
+
+2. e.preventDefault() impide el comportamiento predeterminado del navegador para los pocos eventos que lo tienen.
+
+
+## ¿Pueden los controladores de eventos tener efectos secundarios?
+
+### ¡Por supuesto! Los controladores de eventos son el mejor lugar para los efectos secundarios.
+
+
+### A diferencia de las funciones de renderizado, los controladores de eventos no necesitan ser puros, por lo que son ideales para modificar algo; por ejemplo, cambiar el valor de una entrada al escribir, o cambiar una lista al pulsar un botón. 
+
+### Sin embargo, para cambiar información, primero necesitas una forma de almacenarla. 
+
+### En React, esto se hace usando el estado, la memoria de un componente. 
+
+
+# Rs Eventos
+
+1. Eventos/funciones/controlador en componente/s hijo
+
+2. Eventos/funciones en componente/s padre, componente hijo acepta un evento/func/controlador
+
+3. Func/controlador en componente hijo que activa prop/func/controlador de componente padre
+
+  Tiene dos funciones, la suya y la que activa al final.
+
+4. stopPropagation y alternativa (la 3era formas)
+
+5. preventDefault
+
+6. Captura de eventos secundarios
+
+7. efectos secundarios
+
+
+# Eventos y Estado 
+
+## ¿Pueden los controladores de eventos tener efectos secundarios?
+
+### ¡Por supuesto! Los controladores de eventos son el mejor lugar para los efectos secundarios.
+
+
+### A diferencia de las funciones de renderizado, los controladores de eventos no necesitan ser puros, por lo que son ideales para modificar algo; por ejemplo, cambiar el valor de una entrada al escribir, o cambiar una lista al pulsar un botón. 
+
+### Sin embargo, para cambiar información, primero necesitas una forma de almacenarla. 
+
+### En React, esto se hace usando el estado, la memoria de un componente. 
+
+
+## Estado: La memoria de un componente
+
+### Los componentes suelen necesitar cambiar lo que aparece en pantalla como resultado de una interacción. 
+
+### Al escribir en el formulario, se actualiza el campo de entrada; al hacer clic en "Siguiente" en un carrusel de imágenes, se cambia la imagen que se muestra; al hacer clic en "Comprar", se añade un producto al carrito. 
+
+### Los componentes necesitan recordar cosas: el valor de entrada actual, la imagen actual, el carrito de compras. 
+
+En React, este tipo de memoria específica del componente se denomina estado.
+
+
+## Cuando una variable regular no es suficiente
+
+Aquí tienes un componente que renderiza la imagen de una escultura. 
+
+Al hacer clic en el botón "Siguiente", debería aparecer la siguiente escultura cambiando el índice a 1, luego a 2, y así sucesivamente. 
+
+Sin embargo, esto no funcionará.
+
+```
+import { sculptureList } from './data.js';
+
+export default function Gallery() {
+  let index = 0;
+
+  function handleClick() {
+    index = index + 1;
+  }
+
+  let sculpture = sculptureList[index];
+  return (
+    <>
+      <button onClick={handleClick}>
+        Next
+      </button>
+      <h2>
+        <i>{sculpture.name} </i> 
+        by {sculpture.artist}
+      </h2>
+      <h3>  
+        ({index + 1} of {sculptureList.length})
+      </h3>
+      <img 
+        src={sculpture.url} 
+        alt={sculpture.alt}
+      />
+      <p>
+        {sculpture.description}
+      </p>
+    </>
+  );
+}
+
+```
+
+El controlador de eventos handleClick actualiza una variable local, index. 
+
+Sin embargo, dos factores impiden que ese cambio sea visible:
+
+1. Las variables locales no persisten entre renderizaciones. Cuando React renderiza este componente por segunda vez, lo hace desde cero; no considera los cambios en las variables locales.
+
+2. Los cambios en las variables locales no activan las renderizaciones. React no se da cuenta de que necesita renderizar el componente de nuevo con los nuevos datos.
+
+
+Para actualizar un componente con datos nuevos, se requieren dos pasos:
+
+1. Conservar los datos entre renderizaciones.
+
+2. Activar React para que renderice el componente con los datos nuevos (re-renderizado).
+
+
+El hook useState proporciona estas dos funciones:
+
+1. Una variable de estado para conservar los datos entre renderizaciones.
+
+2. Una función de establecimiento de estado para actualizar la variable y activar React para que renderice el componente de nuevo.
+
+
+## Añadir una variable de estado
+
+Para añadir una variable de estado, importe useState desde React al principio del archivo:
+
+```
+import { useState } from 'react';
+
+```
+Luego, reemplace esta línea:
+
+```
+let index = 0;
+
+```
+
+con
+
+```
+const [index, setIndex] = useState(0);
+
+```
+
+### index es una variable de estado y setIndex es la función setter.
+
+La sintaxis ```[ ]``` se denomina desestructuración de arrays y permite leer valores de un array. 
+
+El array devuelto por useState siempre tiene exactamente dos elementos.
+
+Así es como funcionan juntos en handleClick:
+
+```
+function handleClick() {
+setIndex(index + 1);
+}
+
+```
+
+Ahora, al hacer clic en el botón "Siguiente", se cambia la escultura actual:
+
+
+App.js
+
+```
+import { useState } from 'react';
+import { sculptureList } from './data.js';
+
+export default function Gallery() {
+  const [index, setIndex] = useState(0);
+
+  function handleClick() {
+    setIndex(index + 1);
+  }
+
+  let sculpture = sculptureList[index];
+  return (
+    <>
+      <button onClick={handleClick}>
+        Next
+      </button>
+      <h2>
+        <i>{sculpture.name} </i> 
+        by {sculpture.artist}
+      </h2>
+      <h3>  
+        ({index + 1} of {sculptureList.length})
+      </h3>
+      <img 
+        src={sculpture.url} 
+        alt={sculpture.alt}
+      />
+      <p>
+        {sculpture.description}
+      </p>
+    </>
+  );
+}
+
+```
+
+
+## Hook 
+
+En React, useState, así como cualquier otra función que empiece por "use", se denomina Hook.
+
+
+### Los Hooks son funciones especiales que solo están disponibles mientras React se renderiza. 
+
+Permiten conectar con diferentes funciones de React.
+
+
+State es solo una de esas funciones, pero conocerás los demás Hooks más adelante.
+
+
+Dificultad
+
+### Los Hooks (funciones que empiezan por "use") solo se pueden llamar en el nivel superior de los componentes o en sus propios Hooks. 
+
+No se pueden llamar dentro de condiciones, bucles u otras funciones anidadas. 
+
+Los Hooks son funciones, pero conviene considerarlos como declaraciones incondicionales sobre las necesidades del componente. 
+
+Se "utilizan" las características de React en la parte superior del componente, de forma similar a como se "importan" los módulos en la parte superior del archivo.
+
+
+## Anatomía de useState
+
+### Al llamar a useState, le estás indicando a React que quieres que este componente recuerde algo:
+
+```
+const [index, setIndex] = useState(0);
+
+```
+
+### En este caso, quieres que React recuerde index.
+
+
+Nota
+
+La convención es nombrar este par como ```const [something, setSomething]```. 
+
+Puedes nombrarlo como quieras, pero las convenciones facilitan la comprensión en diferentes proyectos.
+
+
+### El único argumento de useState es el valor inicial de tu variable de estado.
+
+En este ejemplo, el valor inicial del índice se establece en 0 con useState(0).
+
+
+### Cada vez que tu componente se renderiza, useState genera una matriz con dos valores:
+
+1. La variable de estado (index) con el valor almacenado.
+
+2. La función establecedora de estado (setIndex), que puede actualizar la variable de estado y hacer que React renderice el componente de nuevo.
+
+Así es como funciona:
+
+```
+const [index, setIndex] = useState(0);
+
+```
+
+1. Tu componente se renderiza por primera vez. 
+
+Como pasaste 0 a useState como valor inicial para index, devolverá ```[0, setIndex]```. 
+
+React recuerda que 0 es el último valor de estado.
+
+
+2. Actualizas el estado. 
+
+Cuando un usuario hace clic en el botón, se llama a setIndex(index + 1). 
+
+index es 0, por lo que es setIndex(1). 
+
+Esto le indica a React que recuerde que index ahora es 1 y activa otro renderizado.
+
+
+3. Segundo renderizado de tu componente. 
+
+React sigue viendo useState(0), pero como recuerda que estableciste index en 1, devuelve ```[1, setIndex]```.
+
+
+4. ¡Y así sucesivamente!
+
+
+## Asignar múltiples variables de estado a un componente
+
+Puede tener tantas variables de estado de todos los tipos que desee en un componente. 
+
+Este componente tiene dos variables de estado: un índice numérico y un booleano ```showMore```, que se activa al hacer clic en "Mostrar detalles":
+
+
+App.js 
+
+```
+import { useState } from 'react';
+import { sculptureList } from './data.js';
+
+export default function Gallery() {
+  const [index, setIndex] = useState(0);
+  const [showMore, setShowMore] = useState(false);
+
+  function handleNextClick() {
+    setIndex(index + 1);
+  }
+
+  function handleMoreClick() {
+    setShowMore(!showMore);
+  }
+
+  let sculpture = sculptureList[index];
+  return (
+    <>
+      <button onClick={handleNextClick}>
+        Next
+      </button>
+      <h2>
+        <i>{sculpture.name} </i> 
+        by {sculpture.artist}
+      </h2>
+      <h3>  
+        ({index + 1} of {sculptureList.length})
+      </h3>
+      <button onClick={handleMoreClick}>
+        {showMore ? 'Hide' : 'Show'} details
+      </button>
+      {showMore && <p>{sculpture.description}</p>}
+      <img 
+        src={sculpture.url} 
+        alt={sculpture.alt}
+      />
+    </>
+  );
+}
+
+```
+
+### Es recomendable tener varias variables de estado si sus estados no están relacionados, como index y showMore en este ejemplo. 
+
+### Sin embargo, si suele modificar dos variables de estado a la vez, podría ser más fácil combinarlas en una sola. 
+
+### Por ejemplo, si tiene un formulario con muchos campos, es más conveniente tener una sola variable de estado que contenga un objeto que una variable de estado por campo.
+
+Consulte "Elegir la estructura de estado" para obtener más consejos.
+
+
+## En profundidad: ¿Cómo sabe React qué estado devolver?

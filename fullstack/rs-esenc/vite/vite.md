@@ -416,7 +416,7 @@ function MyButton() {
 
 Obtendrás dos cosas de useState: el estado actual (count) y la función que te permite actualizarlo (setCount). 
 
-Puedes darles cualquier nombre, pero la convención es escribir ([algo, setSomething]).
+Puedes darles cualquier nombre, pero la convención es escribir ```[something, setSomething]```.
 
 
 La primera vez que se muestra el botón, count será 0 porque pasaste 0 a useState(). 
