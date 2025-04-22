@@ -8753,9 +8753,9 @@ export default function Page() {
 
 Esto es lo que diferencia el estado de las variables regulares que podrías declarar al principio de tu módulo. 
 
-El estado no está vinculado a una llamada de función específica ni a una ubicación en el código, sino que es local en la pantalla. 
+### El estado no está vinculado a una llamada de función específica ni a una ubicación en el código, sino que es local en la pantalla. 
 
-Renderizaste dos componentes <Gallery />, por lo que su estado se almacena por separado.
+### Renderizaste dos componentes <Gallery />, por lo que su estado se almacena por separado.
 
 
 Observa también que el componente Page no sabe nada sobre el estado de Gallery, ni siquiera si lo tiene. 
@@ -9433,8 +9433,6 @@ Component client  Browser
 
 ## Rs Renderizado
 
-Resumen
-
 Cualquier actualización de pantalla en una aplicación React se realiza en tres pasos:
 
 Activación (Trigger)
@@ -10071,7 +10069,9 @@ Esto garantiza que, por ejemplo, si el primer clic en un botón deshabilita un f
 
 ## Actualizar el mismo estado varias veces antes del siguiente renderizado
 
-Es un caso poco común, pero si desea actualizar la misma variable de estado varias veces antes del siguiente renderizado, en lugar de pasar el siguiente valor de estado como setNumber(number + 1), puede pasar una función que calcule el siguiente estado basándose en el anterior en la cola, como setNumber(n => n + 1). Es una forma de indicarle a React que "haga algo con el valor del estado" en lugar de simplemente reemplazarlo.
+Es un caso poco común, pero si desea actualizar la misma variable de estado varias veces antes del siguiente renderizado, en lugar de pasar el siguiente valor de estado como setNumber(number + 1), puede pasar una función que calcule el siguiente estado basándose en el anterior en la cola, como setNumber(n => n + 1). 
+
+Es una forma de indicarle a React que "haga algo con el valor del estado" en lugar de simplemente reemplazarlo.
 
 
 Intente incrementar el contador ahora.
@@ -10392,9 +10392,13 @@ setNumber(n => n + 1)
 
 Así funciona React con estas líneas de código al ejecutar este controlador de eventos:
 
-1. setNumber(number + 5): number es 0, por lo que setNumber(0 + 5). React añade "replace with 5" a su cola.
+1. setNumber(number + 5): number es 0, por lo que setNumber(0 + 5). 
 
-2. setNumber(n => n + 1): n => n + 1 es una función de actualización. React añade esta función a su cola.
+React añade "replace with 5" a su cola.
+
+2. setNumber(n => n + 1): n => n + 1 es una función de actualización. 
+
+React añade esta función a su cola.
 
 3. setNumber(42): React añade "replace with 42" a su cola.
 

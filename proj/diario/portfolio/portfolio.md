@@ -15555,3 +15555,971 @@ Consulte "Elegir la estructura de estado" para obtener más consejos.
 
 
 ## En profundidad: ¿Cómo sabe React qué estado devolver?
+
+### Quizás hayas notado que la llamada a useState no recibe información sobre la variable de estado a la que se refiere. 
+
+### No se pasa ningún "identificador" a useState, así que ¿cómo sabe cuál de las variables de estado devolver? 
+
+¿Depende de algún truco, como analizar las funciones? La respuesta es no.
+
+
+### En cambio, para permitir su sintaxis concisa, los Hooks se basan en un orden de llamada estable en cada renderizado del mismo componente. 
+
+
+Internamente, React almacena un array de pares de estados para cada componente. 
+
+También mantiene el índice del par actual, que se establece en 0 antes del renderizado. 
+
+Cada vez que llamas a useState, React te proporciona el siguiente par de estados e incrementa el índice. 
+
+Puedes leer más sobre este mecanismo en React Hooks: No es magia, solo arrays.
+
+
+## El estado es aislado y privado.
+
+### El estado es local para una instancia del componente en pantalla. 
+
+### En otras palabras, si renderizas el mismo componente dos veces, cada copia tendrá un estado completamente aislado. 
+
+### Cambiar uno no afectará al otro.
+
+
+
+En este ejemplo, el componente Galería anterior se renderiza dos veces sin cambios en su lógica. 
+
+Intenta hacer clic en los botones dentro de cada galería. 
+
+Observa que su estado es independiente.
+
+Gallery.js
+
+```
+import { useState } from 'react';
+import { sculptureList } from './data.js';
+
+export default function Gallery() {
+  const [index, setIndex] = useState(0);
+  const [showMore, setShowMore] = useState(false);
+
+  function handleNextClick() {
+    setIndex(index + 1);
+  }
+
+  function handleMoreClick() {
+    setShowMore(!showMore);
+  }
+
+  let sculpture = sculptureList[index];
+  return (
+    <section>
+      <button onClick={handleNextClick}>
+        Next
+      </button>
+      <h2>
+        <i>{sculpture.name} </i> 
+        by {sculpture.artist}
+      </h2>
+      <h3>  
+        ({index + 1} of {sculptureList.length})
+      </h3>
+      <button onClick={handleMoreClick}>
+        {showMore ? 'Hide' : 'Show'} details
+      </button>
+      {showMore && <p>{sculpture.description}</p>}
+      <img 
+        src={sculpture.url} 
+        alt={sculpture.alt}
+      />
+    </section>
+  );
+}
+
+```
+
+
+App.js
+
+```
+import Gallery from './Gallery.js';
+
+export default function Page() {
+  return (
+    <div className="Page">
+      <Gallery />
+      <Gallery />
+    </div>
+  );
+}
+
+```
+
+Esto es lo que diferencia el estado de las variables regulares que podrías declarar al principio de tu módulo. 
+
+### El estado no está vinculado a una llamada de función específica ni a una ubicación en el código, sino que es local en la pantalla. 
+
+### Renderizaste dos componentes <Gallery />, por lo que su estado se almacena por separado.
+
+
+Observa también que el componente Page no sabe nada sobre el estado de Gallery, ni siquiera si lo tiene. 
+
+A diferencia de las propiedades, el estado es completamente privado para el componente que lo declara. 
+
+El componente padre no puede modificarlo. 
+
+### Esto te permite añadir o eliminar el estado de cualquier componente sin afectar al resto.
+
+
+### ¿Qué sucedería si quisieras que ambas galerías mantuvieran sus estados sincronizados? 
+
+### La forma correcta de hacerlo en React es eliminar el estado de los componentes secundarios y añadirlo a su componente principal compartido más cercano. 
+
+Las siguientes páginas se centrarán en organizar el estado de un solo componente, pero volveremos a este tema en "Compartir el estado entre componentes".
+
+
+### Usa una variable de estado cuando un componente necesite recordar información entre renderizaciones.
+
+### El hook useState devuelve un par de valores: el estado actual y la función para actualizarlo.
+
+Puedes tener más de una variable de estado. Internamente, React las compara por orden.
+
+El estado es privado para el componente. Si lo renderizas en dos lugares, cada copia obtiene su propio estado.
+
+
+# Renderizaciones y cambios 
+
+### Antes de que tus componentes se muestren en pantalla, React debe renderizarlos. 
+
+Comprender los pasos de este proceso te ayudará a comprender cómo se ejecuta tu código y a explicar su comportamiento.
+
+
+1. Activar un renderizado (entregar el pedido del cliente a la cocina)
+
+2. Renderizar el componente (preparar el pedido en la cocina)
+
+3. Confirmar con el DOM (colocar el pedido en la mesa)
+
+
+## Paso 1: Activar un renderizado
+
+Hay dos razones para que un componente se renderice:
+
+1. Es el renderizado inicial del componente.
+
+2. El estado del componente (o de uno de sus antecesores) se ha actualizado.
+
+
+### Renderizado inicial
+
+#### Al iniciar la aplicación, es necesario activar el renderizado inicial. 
+
+Los frameworks y los entornos de pruebas a veces ocultan este código, pero se realiza llamando a createRoot con el nodo DOM de destino y luego llamando a su método de renderizado con el componente:
+
+
+### Se vuelve a renderizar al actualizar el estado.
+
+Una vez renderizado el componente, puedes activar renderizaciones posteriores actualizando su estado con la función "set". 
+
+#### Actualizar el estado del componente pone automáticamente en cola una renderización. 
+
+
+## Paso 2: React renderiza tus componentes
+
+Tras activar un renderizado, React llama a tus componentes para determinar qué mostrar en pantalla. 
+
+"Renderizar" significa que React llama a tus componentes.
+
+
+1. En el renderizado inicial, React llamará al componente raíz.
+
+2. Para los renderizados posteriores, React llamará al componente de función cuya actualización de estado activó el renderizado.
+
+
+Este proceso es recursivo: si el componente actualizado devuelve otro componente, React lo renderizará a continuación; si ese componente también devuelve algo, lo renderizará a continuación, y así sucesivamente. 
+
+El proceso continuará hasta que no haya más componentes anidados y React sepa exactamente qué debe mostrarse en pantalla.
+
+
+
+1. Durante el renderizado inicial, React creará los nodos DOM para las etiquetas <section>, <h1> y tres <img>.
+
+2. Durante un re-renderizado, React calculará cuáles de sus propiedades, si las hay, han cambiado desde el renderizado anterior. No hará nada con esa información hasta el siguiente paso, la fase de confirmación.
+
+
+Problema
+
+El renderizado siempre debe ser un cálculo puro:
+
+1. Mismas entradas, misma salida. 
+
+Con las mismas entradas, un componente siempre debe devolver el mismo JSX. 
+
+(¡Cuando alguien pide una ensalada con tomates, no debería recibir una ensalada con cebollas!).
+
+
+2. Se ocupa de sus propios asuntos. 
+
+No debe cambiar ningún objeto ni variable existente antes del renderizado. 
+
+(Un pedido no debe cambiar el pedido de nadie más).
+
+De lo contrario, puede encontrar errores confusos y un comportamiento impredecible a medida que su código base aumenta en complejidad. 
+
+Al desarrollar en "Modo estricto", React llama a la función de cada componente dos veces, lo que puede ayudar a detectar errores causados ​​por funciones impuras.
+
+
+## En profundidad: Optimización del rendimiento
+
+### El comportamiento predeterminado de renderizar todos los componentes anidados dentro del componente actualizado no es óptimo para el rendimiento si este se encuentra en una posición muy alta en el árbol. 
+
+Si experimenta un problema de rendimiento, existen varias soluciones opcionales que se describen en la sección "Rendimiento". 
+
+¡No optimice prematuramente!
+
+
+## Paso 3: React confirma los cambios en el DOM
+
+### Tras renderizar (llamar) los componentes, React modificará el DOM.
+
+1. Para el renderizado inicial, React usará la API del DOM appendChild() para mostrar en pantalla todos los nodos del DOM creados.
+
+2. Para los re-renderizados, React aplicará las operaciones mínimas necesarias (calculadas durante el renderizado) para que el DOM coincida con la última salida del renderizado.
+
+
+React solo modifica los nodos del DOM si hay una diferencia entre los renderizados. 
+
+Por ejemplo, aquí hay un componente que se re-renderiza con diferentes propiedades pasadas desde su componente padre cada segundo. 
+
+Observa cómo puedes añadir texto en el <input>, actualizando su valor, pero el texto no desaparece cuando el componente se re-renderiza:
+
+Clock.js
+
+```
+export default function Clock({ time }) {
+  return (
+    <>
+      <h1>{time}</h1>
+      <input />
+    </>
+  );
+}
+
+```
+
+Esto funciona porque, durante este último paso, React solo actualiza el contenido de <h1> con la nueva hora. 
+
+Observa que <input> aparece en el JSX en el mismo lugar que la última vez, por lo que React no modifica ni el valor de <input>.
+
+
+## Epílogo: Pintado del navegador
+
+Una vez finalizado el renderizado y actualizado el DOM por React, el navegador volverá a pintar la pantalla. 
+
+Aunque este proceso se conoce como "renderizado del navegador", lo llamaremos "pintado" para evitar confusiones en la documentación.
+
+```
+Component client  Browser
+  Card              Card
+
+```
+
+
+Cualquier actualización de pantalla en una aplicación React se realiza en tres pasos:
+
+Activación (Trigger)
+Renderizado (Render)
+Confirmación/cambio (Commit)
+
+Puedes usar el modo estricto para detectar errores en tus componentes.
+
+React no modifica el DOM si el resultado del renderizado es el mismo que la última vez.
+
+
+# Estado como una instantánea
+
+Las variables de estado pueden parecer variables JavaScript normales, en las que se puede leer y escribir. 
+
+### Sin embargo, el estado se comporta más como una instantánea. 
+
+### Configurarlo no cambia la variable de estado existente, sino que activa un nuevo renderizado.
+
+
+## Configurar el estado activa el renderizado.
+
+### Podrías pensar que tu interfaz de usuario cambia directamente en respuesta a un evento del usuario, como un clic. 
+
+### En React, funciona de forma ligeramente diferente a este modelo mental. 
+
+En la página anterior, viste que configurar el estado solicita un nuevo renderizado a React. 
+
+Esto significa que, para que una interfaz reaccione al evento, es necesario actualizar el estado.
+
+(Un evento actualizaría el estado y re-renderiza el componente)
+
+
+En este ejemplo, al pulsar "Enviar", setIsSent(true) indica a React que vuelva a renderizar la interfaz de usuario:
+
+App.js 
+
+```
+import { useState } from 'react';
+
+export default function Form() {
+  const [isSent, setIsSent] = useState(false);
+  const [message, setMessage] = useState('Hi!');
+  if (isSent) {
+    return <h1>Your message is on its way!</h1>
+  }
+  return (
+    <form onSubmit={(e) => {
+      e.preventDefault();
+      setIsSent(true);
+      sendMessage(message);
+    }}>
+      <textarea
+        placeholder="Message"
+        value={message}
+        onChange={e => setMessage(e.target.value)}
+      />
+      <button type="submit">Send</button>
+    </form>
+  );
+}
+
+function sendMessage(message) {
+  // ...
+}
+
+```
+
+### Usa setIsSent(true); sin la variable estado setIsSent(isSent=true) porqué no necesita mostrar su valor
+
+### Pero React sigue viendo IsSent(false)
+
+
+Esto es lo que sucede al hacer clic en el botón:
+
+1. Se ejecuta el controlador de eventos onSubmit.
+
+2. setIsSent(true) establece isSent en true y pone en cola un nuevo renderizado.
+
+3. React vuelve a renderizar el componente según el nuevo valor de isSent.
+
+
+## Renderizar toma una instantánea en el tiempo
+
+### "Renderizar" significa que React llama a tu componente, que es una función. 
+
+### El JSX que devuelves de esa función es como una instantánea de la interfaz de usuario en el tiempo. 
+
+### Sus propiedades, controladores de eventos y variables locales se calcularon utilizando su estado en el momento del renderizado.
+
+
+### A diferencia de una fotografía o un fotograma de una película, la instantánea de la interfaz de usuario que devuelves es interactiva. 
+
+Incluye lógica, como controladores de eventos, que especifican qué sucede en respuesta a las entradas. 
+
+React actualiza la pantalla para que coincida con esta instantánea y conecta los controladores de eventos. 
+
+Como resultado, al pulsar un botón se activará el controlador de clic desde tu JSX.
+
+
+Cuando React vuelve a renderizar un componente:
+
+1. React vuelve a llamar a tu función.
+
+2. Tu función devuelve una nueva instantánea JSX.
+
+3. React actualiza la pantalla para que coincida con la instantánea que devolvió tu función.
+
+
+### la relación entre el estado y el renderizado:
+
+Ejecución de funciones
+
+```
+React 
+
+  Form()
+  
+```
+
+Cálculo de instantanea 
+
+```
+Sent!
+  <jsx>
+
+```
+
+Actualización del árbol del DOM
+
+```
+React           React DOM
+  Snapshot        <>
+     <>         <>  <>
+              <> <>  
+```
+
+### Como memoria de un componente, el estado no es como una variable normal que desaparece tras el retorno de la función. 
+
+### El estado reside en React, como si estuviera en un estante, fuera de la función. 
+
+### Cuando React llama a tu componente, te proporciona una instantánea del estado de ese renderizado. 
+
+### Tu componente devuelve una instantánea de la interfaz de usuario con un nuevo conjunto de propiedades y controladores de eventos en su JSX, todo calculado con los valores de estado de ese renderizado.
+
+
+1. Indicas a React que actualice el estado.
+
+2. React actualiza el valor del estado.
+
+3. React pasa una instantánea del valor del estado al componente.
+
+
+Aquí tienes un pequeño experimento para mostrarte cómo funciona. 
+
+### En este ejemplo, podrías esperar que al hacer clic en el botón "+3" el contador se triplique, ya que llama a setNumber(number + 1) tres veces.
+
+Mira lo que ocurre al hacer clic en el botón "+3":
+
+App.js
+
+```
+import { useState } from 'react';
+
+export default function Counter() {
+  const [number, setNumber] = useState(0);
+
+  return (
+    <>
+      <h1>{number}</h1>
+      <button onClick={() => {
+        setNumber(number + 1);
+        setNumber(number + 1);
+        setNumber(number + 1);
+      }}>+3</button>
+    </>
+  )
+}
+
+```
+
+### El botón +3 modifica de una vez la variable de estado number. 
+
+¡Ten en cuenta que el número solo se incrementa una vez por clic!
+
+
+### Establecer el estado solo lo cambia para el siguiente renderizado. 
+
+### Durante el primer renderizado, el número era 0. 
+
+Por eso, en el controlador onClick de ese renderizado, el valor de número sigue siendo 0 incluso después de llamar a setNumber(number + 1):
+
+```const [number, setNumber] = useState(0);```
+
+
+Esto es lo que el controlador de clic de este botón le indica a React que haga:
+
+1. setNumber(number + 1): number es 0, por lo que setNumber(0 + 1).
+React se prepara para cambiar number a 1 en el siguiente renderizado.
+
+2. setNumber(number + 1): number es 0, por lo que setNumber(0 + 1).
+React se prepara para cambiar number a 1 en el siguiente renderizado.
+
+3. setNumber(number + 1): number es 0, por lo que setNumber(0 + 1).
+React se prepara para cambiar number a 1 en el siguiente renderizado.
+
+### Aunque se haya llamado a setNumber(number + 1) tres veces, en el controlador de eventos de este renderizado number siempre es 0, por lo que se ha establecido el estado en 1 tres veces. 
+
+### Por eso, una vez finalizado el controlador de eventos, React vuelve a renderizar el componente con number igual a 1 en lugar de 3.
+
+
+### También puedes visualizar esto sustituyendo mentalmente las variables de estado por sus valores en el código. 
+
+Dado que la variable de estado numérica es 0 para esta representación, su controlador de eventos se ve así:
+
+```
+<button onClick={() => {
+  setNumber(0 + 1);
+  setNumber(0 + 1);
+  setNumber(0 + 1);
+}}>+3</button>
+
+```
+
+### Para el siguiente render, el número es 1, por lo que el controlador de clic de ese render se ve así:
+
+```
+<button onClick={() => {
+  setNumber(1 + 1);
+  setNumber(1 + 1);
+  setNumber(1 + 1);
+}}>+3</button>
+
+```
+
+Es por esto que al hacer clic en el botón nuevamente el contador se establecerá en 2, luego en 3 en el siguiente clic, y así sucesivamente.
+
+
+## Estado a lo largo del tiempo
+
+Intenta adivinar qué alertará al hacer clic en este botón:
+
+```
+import { useState } from 'react';
+
+export default function Counter() {
+  const [number, setNumber] = useState(0);
+
+  return (
+    <>
+      <h1>{number}</h1>
+      <button onClick={() => {
+        setNumber(number + 5);
+        alert(number);
+      }}>+5</button>
+    </>
+  )
+}
+
+```
+
+setNumber(0 + 5); // 5
+
+### alert(0); // alert será 0 porque hasta no finalizar el evento no hay nueva renderización. 
+
+#### En el código alert funciona antes que actualice la vista/variable estado
+
+
+#### ¿Pero qué sucede si le asignas un temporizador a la alerta para que solo se active después de que el componente se vuelva a renderizar? 
+
+¿Mostraría "0" o "5"? ¡Adivina!
+
+
+App.js 
+
+```
+import { useState } from 'react';
+
+export default function Counter() {
+  const [number, setNumber] = useState(0);
+
+  return (
+    <>
+      <h1>{number}</h1>
+      <button onClick={() => {
+        setNumber(number + 5);
+        setTimeout(() => {
+          alert(number);
+        }, 3000);
+      }}>+5</button>
+    </>
+  )
+}
+
+```
+
+
+#### Si usa el método de sustitución, podrá ver la instantánea del estado transferido a la alerta.
+
+setNumber(0 + 5);
+setTimeout(() => {
+  alert(0);
+}, 3000);
+
+
+#### El estado almacenado en React puede haber cambiado para cuando se ejecuta la alerta, pero se programó utilizando una instantánea del estado en el momento en que el usuario interactuó con ella.
+
+#### El valor de una variable de estado nunca cambia durante un renderizado, incluso si el código de su controlador de eventos es asíncrono. 
+
+#### Dentro del onClick de ese renderizado, el valor de number sigue siendo 0 incluso después de llamar a setNumber(number + 5). 
+
+#### Su valor se fijó cuando React tomó la instantánea de la interfaz de usuario al llamar a tu componente.
+
+
+Aquí tienes un ejemplo de cómo esto reduce la probabilidad de errores de sincronización en tus controladores de eventos. 
+
+A continuación, se muestra un formulario que envía un mensaje con un retraso de cinco segundos. 
+
+Imagina este escenario:
+
+1. Presionas el botón "Enviar", enviando "Hola" a Alice.
+
+2. Antes de que finalice el retraso de cinco segundos, cambias el valor del campo "Para" a "Bob".
+
+
+¿Qué esperas que muestre la alerta? ¿Mostraría "Saludaste a Alice"? ¿O mostraría "Saludaste a Bob"? Adivina con base en lo que sabes y luego inténtalo:
+
+#### Renderizado inicial -> valor inicial variable estado -> instantanea 
+
+#### Saludaste a Alice, el valor de la instantanea es el renderizado inicial/anterior al de la interfaz o re-renderizado
+
+App.js
+
+```
+import { useState } from 'react';
+
+export default function Form() {
+  const [to, setTo] = useState('Alice');
+  const [message, setMessage] = useState('Hello');
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    setTimeout(() => {
+      alert(`You said ${message} to ${to}`);
+    }, 5000);
+  }
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <label>
+        To:{' '}
+        <select
+          value={to}
+          onChange={e => setTo(e.target.value)}>
+          <option value="Alice">Alice</option>
+          <option value="Bob">Bob</option>
+        </select>
+      </label>
+      <textarea
+        placeholder="Message"
+        value={message}
+        onChange={e => setMessage(e.target.value)}
+      />
+      <button type="submit">Send</button>
+    </form>
+  );
+}
+
+```
+
+### React mantiene los valores de estado fijos dentro de los controladores de eventos de un renderizado. 
+
+#### No tienes que preocuparte por si el estado ha cambiado mientras el código se ejecuta.
+
+
+### Pero ¿qué ocurre si quieres leer el estado más reciente antes de un rerenderizado? 
+
+#### Te conviene usar una función de actualización de estado, que se explica en la página siguiente.
+
+
+Establecer el estado solicita un nuevo renderizado.
+
+React almacena el estado fuera del componente, como si estuviera en un estante.
+
+Al llamar a useState, React proporciona una instantánea del estado de ese renderizado.
+
+Las variables y los controladores de eventos no sobreviven a los re-renderizados. Cada renderizado tiene sus propios controladores de eventos.
+
+Cada renderizado (y sus funciones) siempre verá la instantánea del estado que React le asignó.
+
+Puedes sustituir el estado en los controladores de eventos, de forma similar a como piensas en el JSX renderizado.
+
+Los controladores de eventos creados anteriormente conservan los valores de estado del renderizado en el que se crearon.
+
+
+
+# El estado y su función de actualización
+
+## Puesta en cola de una serie de actualizaciones de estado
+
+### Configurar una variable de estado pondrá en cola otro renderizado. 
+
+### Sin embargo, a veces es necesario realizar varias operaciones con el valor antes de poner en cola el siguiente renderizado. 
+
+### Para ello, es útil comprender cómo React procesa las actualizaciones de estado por lotes.
+
+
+## Actualizaciones de estado de lotes en React
+
+Es de esperar que al hacer clic en el botón "+3" el contador se incremente tres veces, ya que llama a setNumber(number + 1) tres veces:
+
+Apps.js
+
+```
+import { useState } from 'react';
+
+export default function Counter() {
+  const [number, setNumber] = useState(0);
+
+  return (
+    <>
+      <h1>{number}</h1>
+      <button onClick={() => {
+        setNumber(number + 1);
+        setNumber(number + 1);
+        setNumber(number + 1);
+      }}>+3</button>
+    </>
+  )
+}
+
+```
+
+
+### Sin embargo, como puede recordar de la sección anterior, los valores de estado de cada render son fijos, por lo que el valor del número dentro del controlador de eventos del primer render siempre es 0, sin importar cuántas veces llame a setNumber(1):
+
+```
+setNumber(0 + 1);
+setNumber(0 + 1);
+setNumber(0 + 1);
+
+```
+
+Pero hay otro factor en juego. 
+
+### React espera a que se ejecute todo el código de los controladores de eventos antes de procesar las actualizaciones de estado. 
+
+#### Por eso, la nueva representación solo ocurre después de todas estas llamadas a setNumber().
+
+
+Esto podría recordarte a un camarero tomando nota en un restaurante. 
+
+¡Un camarero no corre a la cocina al oír tu primer plato! En cambio, te permite terminar tu pedido, modificarlo e incluso tomar nota de los pedidos de otras personas en la mesa.
+
+```
+client:
+setColor('orange')
+setColor('pink')
+setColor('blue')
+
+react: 
+setColor('blue')
+
+```
+
+### Esto permite actualizar múltiples variables de estado, incluso desde varios componentes, sin generar demasiados re-renderizados. 
+
+### Sin embargo, esto también significa que la interfaz de usuario no se actualizará hasta que se complete el controlador de eventos y cualquier código que contenga. 
+
+### Este comportamiento, también conocido como procesamiento por lotes, acelera considerablemente el funcionamiento de la aplicación React. 
+
+#### Además, evita los confusos renderizados "a medio terminar" en los que solo se han actualizado algunas variables.
+
+
+### React no procesa por lotes múltiples eventos intencionales como clics; cada clic se procesa por separado. 
+
+Tenga la seguridad de que React solo procesa por lotes cuando es generalmente seguro hacerlo. 
+
+Esto garantiza que, por ejemplo, si el primer clic en un botón deshabilita un formulario, el segundo no lo vuelva a enviar.
+
+
+## Actualizar el mismo estado varias veces antes del siguiente renderizado
+
+Es un caso poco común, pero si desea actualizar la misma variable de estado varias veces antes del siguiente renderizado, en lugar de pasar el siguiente valor de estado como setNumber(number + 1), puede pasar una función que calcule el siguiente estado basándose en el anterior en la cola, como setNumber(n => n + 1). 
+
+Es una forma de indicarle a React que "haga algo con el valor del estado" en lugar de simplemente reemplazarlo.
+
+
+Intente incrementar el contador ahora.
+
+App.js
+
+```
+import { useState } from 'react';
+
+export default function Counter() {
+  const [number, setNumber] = useState(0);
+
+  return (
+    <>
+      <h1>{number}</h1>
+      <button onClick={() => {
+        setNumber(n => n + 1);
+        setNumber(n => n + 1);
+        setNumber(n => n + 1);
+      }}>+3</button>
+    </>
+  )
+}
+
+```
+
+### (Ahora setNumber toma un función flecha con un parámetro n)
+
+### (n tomará la forma de 0 en el primer renderizado y 1 en el siguiente, así sucesivamente)
+
+
+Al pasarla a un establecedor de estados:
+
+#### 1. React pone esta función en cola para que se procese después de que se haya ejecutado todo el resto del código en el controlador de eventos.
+
+#### 2. Durante el siguiente renderizado, React revisa la cola y proporciona el estado actualizado final.
+
+```
+setNumber(n => n + 1);
+setNumber(n => n + 1);
+setNumber(n => n + 1);
+
+```
+
+Así funciona React con estas líneas de código al ejecutar el controlador de eventos:
+
+1. setNumber(n => n + 1): n => n + 1 es una función. 
+
+React la añade a una cola.
+
+2. setNumber(n => n + 1): n => n + 1 es una función. 
+
+React la añade a una cola.
+
+3. setNumber(n => n + 1): n => n + 1 es una función. 
+
+React la añade a una cola.
+
+
+Al llamar a useState durante el siguiente renderizado, React revisa la cola. 
+
+#### El estado numérico anterior era 0, por lo que React lo pasa a la primera función de actualización como argumento n. 
+
+### Luego, React toma el valor de retorno de la función de actualización anterior y lo pasa a la siguiente función de actualización como n, y así sucesivamente:
+
+
+queued update 	n 	returns 
+
+n => n + 1 		0 	0 + 1 = 1
+
+n => n + 1 		1 	1 + 1 = 1
+
+n => n + 1 		2 	2 + 1 = 1
+
+
+### React almacena 3 como resultado final y lo devuelve desde useState.
+
+Por eso, al hacer clic en "+3" en el ejemplo anterior, el valor se incrementa correctamente en 3.
+
+
+## ¿Qué ocurre si actualizas el estado después de reemplazarlo?
+
+¿Qué ocurre con este controlador de eventos? 
+
+¿Cuál crees que será el número en el siguiente renderizado?
+
+```
+<button onClick={() => {
+  setNumber(number + 5);
+  setNumber(n => n + 1);
+}}>
+
+```
+
+
+#### Valor total de la manipulación es 6. Si volvemos a activar el evento queda 6 en 6. 
+
+Esto es lo que este controlador de eventos le indica a React:
+
+1. setNumber(number + 5): number es 0, por lo que setNumber(0 + 5). 
+
+#### React añade "replace with 5" a su cola.
+
+2. setNumber(n => n + 1): n => n + 1 es una función de actualización. 
+
+#### React añade esta función a su cola.
+
+
+Durante el siguiente renderizado, React revisa la cola de estado:
+
+queued update  		n 	 	 	returns
+									
+”replace with 5” 	0 (unused) 		5
+
+n => n + 1 							5 + 1 = 6
+
+
+#### Reemplaza el valor (number + 5, es solo una suma) y agrega una función (n => n + 1, arrow y fn return con valor) a la cola
+
+React almacena 6 como resultado final y lo devuelve desde useState.
+
+ 
+Nota
+
+#### Quizás hayas notado que setState(5) funciona como setState(n => 5), pero n no se utiliza.
+
+
+## ¿Qué ocurre si reemplazas el estado después de actualizarlo?
+
+Probemos con otro ejemplo. 
+
+¿Cuál crees que será el número en el siguiente renderizado?
+
+```
+<button onClick={() => {
+  setNumber(number + 5);
+  setNumber(n => n + 1);
+  setNumber(42);
+}}>
+
+``` 
+
+Así funciona React con estas líneas de código al ejecutar este controlador de eventos:
+
+1. setNumber(number + 5): number es 0, por lo que setNumber(0 + 5). 
+
+React añade "replace with 5" a su cola.
+
+2. setNumber(n => n + 1): n => n + 1 es una función de actualización. 
+
+React añade esta función a su cola.
+
+3. setNumber(42): React añade "replace with 42" a su cola.
+
+
+### Durante el siguiente renderizado, React revisa la cola de estado:
+
+queued update		n			returns
+
+”replace with 5”	0 (unused)	5
+
+n => n + 1			5			5 + 1 = 6
+
+”replace with 42”	6 (unused)	42
+
+
+Luego, React almacena 42 como resultado final y lo devuelve desde useState.
+
+En resumen, así es como se puede entender lo que se pasa al establecedor de estado setNumber:
+
+1. Una función de actualización (p. ej., n => n + 1) se añade a la cola.
+
+2. Cualquier otro valor (p. ej., el número 5) añade "reemplazar con 5" a la cola, ignorando lo que ya está en cola.
+
+#### Una vez completado el controlador de eventos, React activará un nuevo renderizado. 
+
+#### Durante este proceso, React procesará la cola. 
+
+### Las funciones de actualización se ejecutan durante el renderizado (llamada), por lo que deben ser puras y solo devolver el resultado (usar props). 
+
+### No intentes establecer el estado desde dentro ni ejecutar otros efectos secundarios.
+
+En modo estricto, React ejecutará cada función de actualización dos veces (pero descartará el segundo resultado) para ayudarte a encontrar errores.
+
+
+## Convenciones de nomenclatura
+
+### Es común nombrar el argumento de la función de actualización con las primeras letras de la variable de estado correspondiente:
+
+```
+setEnabled(e => !e);
+setLastName(ln => ln.reverse());
+setFriendCount(fc => fc * 2);
+
+```
+
+### Si prefiere un código más detallado, otra convención común es repetir el nombre completo de la variable de estado, como setEnabled(enabled => !enabled), o usar un prefijo como setEnabled(prevEnabled => !prevEnabled).
+
+
+#### Establecer el estado no cambia la variable en el renderizado existente, sino que solicita un nuevo renderizado.
+
+#### React procesa las actualizaciones de estado una vez que los controladores de eventos terminan de ejecutarse. Esto se denomina procesamiento por lotes.
+
+#### Para actualizar un estado varias veces en un mismo evento, puedes usar la función de actualización setNumber(n => n + 1).
+
+
+
+
+
+
+
+
+
+
