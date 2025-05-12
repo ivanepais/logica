@@ -16516,10 +16516,313 @@ setFriendCount(fc => fc * 2);
 
 
 
+# Objeto evento (e) js y react 
+
+También puede usar las llaves ```[ ]``` dentro de la definición de su objeto para especificar una propiedad con un nombre dinámico. 
+
+Aquí tiene el mismo ejemplo, pero con un único controlador de eventos en lugar de tres:
+
+
+```
+import { useState } from 'react';
+
+export default function Form() {
+  const [person, setPerson] = useState({
+    firstName: 'Barbara',
+    lastName: 'Hepworth',
+    email: 'bhepworth@sculpture.com'
+  });
+
+  function handleChange(e) {
+    setPerson({
+      ...person,
+      [e.target.name]: e.target.value
+    });
+  }
+
+  return (
+    <>
+      <label>
+        First name:
+        <input
+          name="firstName"
+          value={person.firstName}
+          onChange={handleChange}
+        />
+      </label>
+      <label>
+        Last name:
+        <input
+          name="lastName"
+          value={person.lastName}
+          onChange={handleChange}
+        />
+      </label>
+      <label>
+        Email:
+        <input
+          name="email"
+          value={person.email}
+          onChange={handleChange}
+        />
+      </label>
+      <p>
+        {person.firstName}{' '}
+        {person.lastName}{' '}
+        ({person.email})
+      </p>
+    </>
+  );
+}
+
+```
+
+### Aquí, e.target.name hace referencia a la propiedad de nombre dada al elemento DOM <input>.
 
 
 
+## Objeto de evento (e) en js 
+ 
+Cuando registras un manejador (handler) para un evento (por ejemplo, un clic, un envío de formulario, una pulsación de tecla…), el navegador te pasa automáticamente un objeto que convencionalmente se llama e (o event). 
+
+Ese objeto contiene toda la información sobre lo que ocurrió y métodos para controlar el comportamiento predeterminado.
 
 
+### Propiedades principales: 
+
+1. e.type:
+
+El tipo de evento (por ejemplo, "click", "keydown", "submit").
+
+2. e.target:
+
+El elemento DOM que originó el evento (por ejemplo, el botón que se clicó).
+
+3. e.currentTarget:
+
+El elemento en el que se registró el listener (útil con delegación de eventos).
+
+4. e.bubbles:
+
+Booleano: si el evento burbujea (sube) por la jerarquía DOM.
+
+5. e.cancelable:
+
+Booleano: si se puede cancelar el comportamiento por defecto.
+
+6. e.defaultPrevented:
+
+Booleano: si ya se llamó a e.preventDefault().
+
+7. e.timeStamp:
+
+Marca de tiempo (en ms) de cuándo fue creado el evento.
 
 
+### Métodos más frecuentes 
+
+1. e.preventDefault():
+
+Impide la acción predeterminada del navegador 
+
+```
+form.addEventListener('submit', function(e) {
+  e.preventDefault(); // evita que el formulario recargue la página
+  // tu lógica aquí…
+});
+
+```
+
+
+2. e.stopPropagation() y e.stopImmediatePropagation()
+
+3.stopPropagation(): detiene la burbuja del evento hacia elementos padre.
+
+e.stopImmediatePropagation(): además detiene otros listeners en el mismo elemento.
+
+```
+child.addEventListener('click', e => {
+  e.stopPropagation();
+  console.log('Solo aquí, no sube al padre');
+});
+
+```
+
+
+## Ej
+
+1. Click en un botón
+
+```
+<button id="btn">Pulsa</button>
+<script>
+  document.getElementById('btn').addEventListener('click', function(e) {
+    console.log('Tipo:', e.type);            // "click"
+    console.log('Elemento:', e.target.id);   // "btn"
+  });
+</script>
+
+```
+
+
+2. Teclas en un input
+
+```
+<input id="inp" />
+<script>
+  inp.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+      console.log('Has pulsado Enter');
+      e.preventDefault(); // evita el “ding” o el comportamiento por defecto
+    }
+  });
+</script>
+
+```
+
+
+### Herencias y compatibilidad
+
+1. Todos los eventos heredan de Event.prototype.
+
+2. Eventos específicos (MouseEvent, KeyboardEvent, TouchEvent…) añaden propiedades propias:
+
+    e.clientX, e.clientY en eventos de ratón.
+
+    e.key, e.code en eventos de teclado.
+
+```
+elem.addEventListener('mousemove', function(e) {
+  console.log(e.clientX, e.clientY);
+});
+
+```
+
+
+### Buenas prácticas
+
+Nombrado claro: en vez de e, a veces event mejora la legibilidad.
+
+Un sólo propósito: usa preventDefault sólo cuando sea necesario.
+
+Delegación: aprovecha e.target para manejar muchos elementos desde un ancestro.
+
+
+## Objeto de evento (e) en React 
+
+Los manejadores de eventos no reciben el evento nativo del navegador directamente, sino un SyntheticEvent: una envoltura (wrapper) compatible con todos los navegadores creada por React. 
+
+A grandes rasgos funciona como el objeto e de JavaScript, pero con algunas particularidades:
+
+
+### SyntheticEvent
+
+Es una capa de abstracción que extiende la interfaz nativa Event.
+
+Normaliza diferencias entre navegadores (por ejemplo, e.target siempre consistente).
+
+Se reutiliza y “pooles” internamente: sus propiedades se vuelven null tras el callback para optimizar rendimiento.
+
+
+### Propiedades y métodos (idénticos al objeto nativo)
+
+1. e.type:
+
+Tipo de evento ("click", "change", "submit", etc.).
+
+2. e.target, e.currentTarget:
+
+Igual que en DOM: origen y elemento con el listener
+
+3. e.preventDefault():
+
+Previene comportamiento por defecto.
+
+4. e.stopPropagation():
+
+Detiene propagación (burbuja) del evento.
+
+5. e.nativeEvent:
+
+Referencia al evento nativo original.
+
+6. e.isDefaultPrevented():
+
+Devuelve true si se llamó a preventDefault().
+
+
+### Pooling y acceso asíncrono
+
+React “pooles” los SyntheticEvent: después de tu función, las propiedades se limpian para reutilizar el objeto.
+
+```
+function handleClick(e) {
+  console.log(e.type);           // OK dentro del handler
+  setTimeout(() => {
+    console.log(e.type);         // ¡aquí e.type es null!  
+  }, 1000);
+}
+
+```
+
+
+Si necesitas acceder al evento de forma asíncrona, haz un persist:
+
+```
+function handleClick(e) {
+  e.persist();                    // ya no se limpia automáticamente
+  setTimeout(() => {
+    console.log(e.type);         // sigue disponible
+  }, 1000);
+}
+
+```
+
+
+### Eventos comunes en React
+
+Form: onChange, onSubmit
+
+Mouse: onClick, onMouseEnter, onMouseLeave
+
+Keyboard: onKeyDown, onKeyPress, onKeyUp
+
+Focus: onFocus, onBlur
+    
+```
+function MyForm() {
+  const handleSubmit = e => {
+    e.preventDefault();
+    // …
+  };
+  return (
+    <form onSubmit={handleSubmit}>
+      <input onChange={e => console.log(e.target.value)} />
+      <button type="submit">Enviar</button>
+    </form>
+  );
+}
+
+```    
+
+
+### Extensiones específicas
+
+Algunos eventos extienden SyntheticEvent:
+
+1. ClipboardEvent: e.clipboardData
+
+2. CompositionEvent: e.data, e.locale
+
+3.  KeyboardEvent: e.key, e.code, e.altKey, etc
+    
+4. MouseEvent: e.clientX, e.clientY, e.button
+
+
+### Buenas prácticas 
+
+No abuses de e.persist(): solo cuando realmente necesitas el evento fuera del callback.
+
+Controla formularios con onChange y estado React (componentes controlados).
+
+Usa funciones memoizadas (useCallback) para evitar recrear handlers en cada render.

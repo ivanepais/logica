@@ -10811,7 +10811,8708 @@ function TestCase({
 
 # Objetos en el estado 
 
+El estado puede contener cualquier tipo de valor de JavaScript, incluyendo objetos. 
 
+Sin embargo, no se deben modificar directamente los objetos que se mantienen en el estado de React. 
+
+En su lugar, para actualizar un objeto, se debe crear uno nuevo (o hacer una copia de uno existente) y luego configurar el estado para que use esa copia.
+
+Aprenderás:
+
+Cómo actualizar correctamente un objeto en el estado de React
+Cómo actualizar un objeto anidado sin mutarlo
+Qué es la inmutabilidad y cómo evitar que se rompa
+Cómo hacer que la copia de objetos sea menos repetitiva con Immer
+
+
+## ¿Qué es una mutación?
+
+Puedes almacenar cualquier tipo de valor de JavaScript en el estado.
+
+```
+const [x, setX] = useState(0);
+
+```
+
+### Hasta ahora has trabajado con números, cadenas y booleanos. 
+
+### Estos tipos de valores de JavaScript son "inmutables", es decir, inmutables o de "solo lectura".
+
+(dado por const ?)
+
+Puedes activar una nueva representación para reemplazar un valor:
+
+(trigger re-render)
+
+```
+setX(5);
+
+```
+
+### El estado x cambió de 0 a 5, pero el número 0 no cambió. 
+
+### No es posible realizar cambios en los valores primitivos predefinidos, como números, cadenas y booleanos, en JavaScript.
+
+
+Ahora considera un objeto en el estado:
+
+```
+const [position, setPosition] = useState({ x: 0, y: 0 });
+
+```
+
+### Técnicamente, es posible cambiar el contenido del propio objeto. 
+
+Esto se denomina mutación:
+
+```
+position.x = 5;
+
+```
+
+### Sin embargo, aunque los objetos en estado React son técnicamente mutables, debes tratarlos como si fueran inmutables, como números, booleanos y cadenas. 
+
+### En lugar de mutarlos, siempre debes reemplazarlos.
+
+
+## Tratar el estado como de solo lectura
+
+En otras palabras, cualquier objeto JavaScript que se establezca en estado debe tratarse como de solo lectura.
+
+
+Este ejemplo contiene un objeto en estado para representar la posición actual del puntero. 
+
+El punto rojo se mueve al tocar o mover el cursor sobre el área de vista previa. 
+
+Sin embargo, el punto permanece en su posición inicial:
+
+
+App.js
+
+```
+import { useState } from 'react';
+
+export default function MovingDot() {
+  const [position, setPosition] = useState({
+    x: 0,
+    y: 0
+  });
+  return (
+    <div
+      onPointerMove={e => {
+        position.x = e.clientX;
+        position.y = e.clientY;
+      }}
+      style={{
+        position: 'relative',
+        width: '100vw',
+        height: '100vh',
+      }}>
+      <div style={{
+        position: 'absolute',
+        backgroundColor: 'red',
+        borderRadius: '50%',
+        transform: `translate(${position.x}px, ${position.y}px)`,
+        left: -10,
+        top: -10,
+        width: 20,
+        height: 20,
+      }} />
+    </div>
+  );
+}
+
+```
+
+El problema radica en este fragmento de código.
+
+```
+onPointerMove={e => {
+position.x = e.clientX;
+position.y = e.clientY;
+}}
+
+```
+
+### Este código modifica el objeto asignado a la posición del renderizado anterior. 
+
+### Sin embargo, sin usar la función de configuración de estado, React no tiene conocimiento de que el objeto ha cambiado. 
+
+Por lo tanto, React no responde. 
+
+Es como intentar cambiar el orden después de haber comido. 
+
+Aunque modificar el estado puede funcionar en algunos casos, no lo recomendamos. 
+
+Debe tratar el valor de estado al que tiene acceso en un renderizado como de solo lectura.
+
+
+### Para activar un nuevo renderizado en este caso, cree un nuevo objeto y páselo a la función de configuración de estado:
+
+```
+onPointerMove={e => {
+  setPosition({
+    x: e.clientX,
+    y: e.clientY
+  });
+}}
+
+```
+
+Con setPosition, le estás indicando a React:
+
+1. Reemplaza la posición con este nuevo objeto
+
+2. Y renderiza este componente de nuevo
+
+Observa cómo el punto rojo ahora sigue al puntero al tocar o pasar el cursor sobre el área de vista previa:
+
+
+App.js
+
+```
+import { useState } from 'react';
+
+export default function MovingDot() {
+  const [position, setPosition] = useState({
+    x: 0,
+    y: 0
+  });
+  return (
+    <div
+      onPointerMove={e => {
+        setPosition({
+          x: e.clientX,
+          y: e.clientY
+        });
+      }}
+      style={{
+        position: 'relative',
+        width: '100vw',
+        height: '100vh',
+      }}>
+      <div style={{
+        position: 'absolute',
+        backgroundColor: 'red',
+        borderRadius: '50%',
+        transform: `translate(${position.x}px, ${position.y}px)`,
+        left: -10,
+        top: -10,
+        width: 20,
+        height: 20,
+      }} />
+    </div>
+  );
+}
+
+```
+
+
+### En profundidad: La mutación local es correcta
+
+Código como este es problemático porque modifica un objeto existente en estado:
+
+```
+position.x = e.clientX;
+position.y = e.clientY;
+
+```
+
+Pero código como este es perfectamente correcto porque estás mutando un objeto recién creado:
+
+```
+const nextPosition = {};
+nextPosition.x = e.clientX;
+nextPosition.y = e.clientY;
+setPosition(nextPosition);
+
+```
+
+De hecho, es completamente equivalente a escribir esto:
+
+```
+setPosition({
+x: e.clientX,
+y: e.clientY
+});
+
+```
+
+La mutación solo es problemática cuando se modifican objetos existentes que ya tienen estado. 
+
+Mutar un objeto recién creado es correcto porque ningún otro código lo referencia todavía. 
+
+Cambiarlo no afectará accidentalmente a algo que dependa de él. 
+
+Esto se llama "mutación local". 
+
+Incluso se puede realizar una mutación local durante la renderización. 
+
+¡Muy conveniente y completamente bien!
+
+
+## Copia de objetos con la sintaxis de propagación
+
+### En el ejemplo anterior, el objeto de posición siempre se crea desde la posición actual del cursor. 
+
+### Sin embargo, a menudo querrá incluir datos existentes como parte del nuevo objeto que está creando. 
+
+Por ejemplo, podría querer actualizar solo un campo en un formulario, pero conservar los valores anteriores para todos los demás campos.
+
+
+Estos campos de entrada no funcionan porque los controladores onChange modifican el estado:
+
+App.js
+
+```
+import { useState } from 'react';
+
+export default function Form() {
+  const [person, setPerson] = useState({
+    firstName: 'Barbara',
+    lastName: 'Hepworth',
+    email: 'bhepworth@sculpture.com'
+  });
+
+  function handleFirstNameChange(e) {
+    person.firstName = e.target.value;
+  }
+
+  function handleLastNameChange(e) {
+    person.lastName = e.target.value;
+  }
+
+  function handleEmailChange(e) {
+    person.email = e.target.value;
+  }
+
+  return (
+    <>
+      <label>
+        First name:
+        <input
+          value={person.firstName}
+          onChange={handleFirstNameChange}
+        />
+      </label>
+      <label>
+        Last name:
+        <input
+          value={person.lastName}
+          onChange={handleLastNameChange}
+        />
+      </label>
+      <label>
+        Email:
+        <input
+          value={person.email}
+          onChange={handleEmailChange}
+        />
+      </label>
+      <p>
+        {person.firstName}{' '}
+        {person.lastName}{' '}
+        ({person.email})
+      </p>
+    </>
+  );
+}
+
+```
+
+Por ejemplo, esta línea modifica el estado de una representación anterior:
+
+```
+person.firstName = e.target.value;
+
+```
+
+La forma más fiable de obtener el comportamiento deseado es crear un nuevo objeto y pasárselo a setPerson. Sin embargo, en este caso, también se deben copiar los datos existentes, ya que solo uno de los campos ha cambiado:
+
+```
+setPerson({
+  firstName: e.target.value, // Nuevo nombre de la entrada
+  lastName: person.lastName,
+  email: person.email
+});
+
+```
+
+Puede usar la sintaxis de propagación de objetos ... para no tener que copiar cada propiedad por separado.
+
+```
+setPerson({
+  ...person, // Copiar los campos antiguos
+  firstName: e.target.value // Pero sobrescribir este
+});
+
+```
+
+¡Ahora el formulario funciona!
+
+### Observe que no declaró una variable de estado independiente para cada campo de entrada. 
+
+Para formularios grandes, mantener todos los datos agrupados en un objeto es muy conveniente, 
+
+¡siempre y cuando lo actualice correctamente!
+
+
+App.js
+
+```
+import { useState } from 'react';
+
+export default function Form() {
+  const [person, setPerson] = useState({
+    firstName: 'Barbara',
+    lastName: 'Hepworth',
+    email: 'bhepworth@sculpture.com'
+  });
+
+  function handleFirstNameChange(e) {
+    setPerson({
+      ...person,
+      firstName: e.target.value
+    });
+  }
+
+  function handleLastNameChange(e) {
+    setPerson({
+      ...person,
+      lastName: e.target.value
+    });
+  }
+
+  function handleEmailChange(e) {
+    setPerson({
+      ...person,
+      email: e.target.value
+    });
+  }
+
+  return (
+    <>
+      <label>
+        First name:
+        <input
+          value={person.firstName}
+          onChange={handleFirstNameChange}
+        />
+      </label>
+      <label>
+        Last name:
+        <input
+          value={person.lastName}
+          onChange={handleLastNameChange}
+        />
+      </label>
+      <label>
+        Email:
+        <input
+          value={person.email}
+          onChange={handleEmailChange}
+        />
+      </label>
+      <p>
+        {person.firstName}{' '}
+        {person.lastName}{' '}
+        ({person.email})
+      </p>
+    </>
+  );
+}
+
+```
+
+### Tenga en cuenta que la sintaxis de propagación ... es superficial: solo copia elementos a un nivel de profundidad. 
+
+### Esto la hace rápida, pero también significa que, si desea actualizar una propiedad anidada, deberá usarla más de una vez.
+
+
+## En profundidad: Usar un único controlador de eventos para múltiples campos
+
+También puede usar las llaves ```[ ]``` dentro de la definición de su objeto para especificar una propiedad con un nombre dinámico. 
+
+Aquí tiene el mismo ejemplo, pero con un único controlador de eventos en lugar de tres:
+
+
+```
+import { useState } from 'react';
+
+export default function Form() {
+  const [person, setPerson] = useState({
+    firstName: 'Barbara',
+    lastName: 'Hepworth',
+    email: 'bhepworth@sculpture.com'
+  });
+
+  function handleChange(e) {
+    setPerson({
+      ...person,
+      [e.target.name]: e.target.value
+    });
+  }
+
+  return (
+    <>
+      <label>
+        First name:
+        <input
+          name="firstName"
+          value={person.firstName}
+          onChange={handleChange}
+        />
+      </label>
+      <label>
+        Last name:
+        <input
+          name="lastName"
+          value={person.lastName}
+          onChange={handleChange}
+        />
+      </label>
+      <label>
+        Email:
+        <input
+          name="email"
+          value={person.email}
+          onChange={handleChange}
+        />
+      </label>
+      <p>
+        {person.firstName}{' '}
+        {person.lastName}{' '}
+        ({person.email})
+      </p>
+    </>
+  );
+}
+
+```
+
+Aquí, e.target.name hace referencia a la propiedad de nombre dada al elemento DOM <input>.
+
+
+## Actualización de un objeto anidado
+
+Considere una estructura de objeto anidado como esta:
+
+```
+const [person, setPerson] = useState({
+  name: 'Niki de Saint Phalle',
+  artwork: {
+    title: 'Blue Nana',
+    city: 'Hamburg',
+    image: 'https://i.imgur.com/Sd1AgUOm.jpg',
+  }
+});
+
+```
+
+Si desea actualizar person.artwork.city, es claro cómo hacerlo con mutación:
+
+```
+person.artwork.city = 'New Delhi';
+
+```
+
+Pero en React, ¡el estado se considera 
+
+inmutable! Para cambiar la ciudad, primero deberá generar el nuevo objeto de obra de arte (precargado con los datos de la anterior) y, a continuación, el nuevo objeto de persona que apunta a la nueva obra de arte:
+
+```
+const nextArtwork = { ...person.artwork, city: 'New Delhi' };
+const nextPerson = { ...person, artwork: nextArtwork };
+setPerson(nextPerson);
+
+```
+
+O, escrito como una sola llamada a función:
+
+```
+setPerson({
+...person, // Copiar otros campos
+artwork: { // pero reemplazar la obra de arte
+  ...person.artwork, // por la misma
+  city: 'New Delhi' // ¡pero en Nueva Delhi!
+}
+});
+
+```
+
+### Copiar dos objetos 
+
+Esto puede resultar un poco complejo, pero funciona bien en muchos casos.
+
+
+App.js
+
+```
+import { useState } from 'react';
+
+export default function Form() {
+  const [person, setPerson] = useState({
+    name: 'Niki de Saint Phalle',
+    artwork: {
+      title: 'Blue Nana',
+      city: 'Hamburg',
+      image: 'https://i.imgur.com/Sd1AgUOm.jpg',
+    }
+  });
+
+  function handleNameChange(e) {
+    setPerson({
+      ...person,
+      name: e.target.value
+    });
+  }
+
+  function handleTitleChange(e) {
+    setPerson({
+      ...person,
+      artwork: {
+        ...person.artwork,
+        title: e.target.value
+      }
+    });
+  }
+
+  function handleCityChange(e) {
+    setPerson({
+      ...person,
+      artwork: {
+        ...person.artwork,
+        city: e.target.value
+      }
+    });
+  }
+
+  function handleImageChange(e) {
+    setPerson({
+      ...person,
+      artwork: {
+        ...person.artwork,
+        image: e.target.value
+      }
+    });
+  }
+
+  return (
+    <>
+      <label>
+        Name:
+        <input
+          value={person.name}
+          onChange={handleNameChange}
+        />
+      </label>
+      <label>
+        Title:
+        <input
+          value={person.artwork.title}
+          onChange={handleTitleChange}
+        />
+      </label>
+      <label>
+        City:
+        <input
+          value={person.artwork.city}
+          onChange={handleCityChange}
+        />
+      </label>
+      <label>
+        Image:
+        <input
+          value={person.artwork.image}
+          onChange={handleImageChange}
+        />
+      </label>
+      <p>
+        <i>{person.artwork.title}</i>
+        {' by '}
+        {person.name}
+        <br />
+        (located in {person.artwork.city})
+      </p>
+      <img 
+        src={person.artwork.image} 
+        alt={person.artwork.title}
+      />
+    </>
+  );
+}
+
+```
+
+
+## En profundidad: Los objetos no están realmente anidados
+
+Un objeto como este aparece "anidado" en el código:
+
+```
+let obj = {
+  name: 'Niki de Saint Phalle',
+  artwork: {
+    title: 'Blue Nana',
+    city: 'Hamburg',
+    image: 'https://i.imgur.com/Sd1AgUOm.jpg',
+  }
+};
+
+```
+
+Sin embargo, "anidar" es una forma incorrecta de entender el comportamiento de los objetos. 
+
+Cuando el código se ejecuta, no existe un objeto "anidado". 
+
+En realidad, se trata de dos objetos diferentes:
+
+```
+let obj1 = {
+  title: 'Blue Nana',
+  city: 'Hamburg',
+  image: 'https://i.imgur.com/Sd1AgUOm.jpg',
+};
+
+let obj2 = {
+  name: 'Niki de Saint Phalle',
+  artwork: obj1
+};
+
+```
+
+El objeto obj1 no está "dentro" de obj2. 
+
+Por ejemplo, obj3 también podría "apuntar" a obj1:
+
+```
+let obj1 = {
+  title: 'Blue Nana',
+  city: 'Hamburg',
+  image: 'https://i.imgur.com/Sd1AgUOm.jpg',
+};
+
+let obj2 = {
+  name: 'Niki de Saint Phalle',
+  artwork: obj1
+};
+
+let obj3 = {
+  name: 'Copycat',
+  artwork: obj1
+};
+
+```
+
+Si se mutara obj3.artwork.city, se afectaría tanto a obj2.artwork.city como a obj1.city. 
+
+Esto se debe a que obj3.artwork, obj2.artwork y obj1 son el mismo objeto. 
+
+Esto es difícil de ver cuando se piensa en los objetos como "anidados". 
+
+En realidad, son objetos separados que se "apuntan" entre sí con propiedades.
+
+
+## Escribe una lógica de actualización concisa con Immer
+
+Si tu estado está profundamente anidado, podrías considerar aplanarlo (flattening). 
+
+Pero, si no quieres cambiar la estructura de tu estado, quizá prefieras un atajo a las extensiones anidadas. 
+
+### Immer es una biblioteca popular que te permite escribir usando una sintaxis práctica pero con capacidad de mutación, y se encarga de generar las copias automáticamente. 
+
+Con Immer, el código que escribes parece como si estuvieras "rompiendo las reglas" y mutando un objeto:
+
+```
+updatePerson(draft => {
+  draft.artwork.city = 'Lagos';
+});
+
+```
+Pero a diferencia de una mutación normal, ¡no sobrescribe el estado anterior!
+
+
+## En profundidad: ¿Cómo funciona Immer?
+
+El draft proporcionado por Immer es un tipo especial de objeto, llamado Proxy, que registra lo que haces con él. 
+
+¡Por eso puedes modificarlo libremente! 
+
+Internamente, Immer detecta qué partes del borrador se han modificado y genera un objeto completamente nuevo que contiene tus modificaciones.
+
+Para probar Immer:
+
+1. Ejecuta npm install use-immer para añadir Immer como dependencia.
+
+2. Luego, reemplaza import { useState } from 'react' por import { useImmer } from 'use-immer'.
+
+Aquí está el ejemplo anterior convertido a Immer:
+
+```
+import { useImmer } from 'use-immer';
+
+export default function Form() {
+  const [person, updatePerson] = useImmer({
+    name: 'Niki de Saint Phalle',
+    artwork: {
+      title: 'Blue Nana',
+      city: 'Hamburg',
+      image: 'https://i.imgur.com/Sd1AgUOm.jpg',
+    }
+  });
+
+  function handleNameChange(e) {
+    updatePerson(draft => {
+      draft.name = e.target.value;
+    });
+  }
+
+  function handleTitleChange(e) {
+    updatePerson(draft => {
+      draft.artwork.title = e.target.value;
+    });
+  }
+
+  function handleCityChange(e) {
+    updatePerson(draft => {
+      draft.artwork.city = e.target.value;
+    });
+  }
+
+  function handleImageChange(e) {
+    updatePerson(draft => {
+      draft.artwork.image = e.target.value;
+    });
+  }
+
+  return (
+    <>
+      <label>
+        Name:
+        <input
+          value={person.name}
+          onChange={handleNameChange}
+        />
+      </label>
+      <label>
+        Title:
+        <input
+          value={person.artwork.title}
+          onChange={handleTitleChange}
+        />
+      </label>
+      <label>
+        City:
+        <input
+          value={person.artwork.city}
+          onChange={handleCityChange}
+        />
+      </label>
+      <label>
+        Image:
+        <input
+          value={person.artwork.image}
+          onChange={handleImageChange}
+        />
+      </label>
+      <p>
+        <i>{person.artwork.title}</i>
+        {' by '}
+        {person.name}
+        <br />
+        (located in {person.artwork.city})
+      </p>
+      <img 
+        src={person.artwork.image} 
+        alt={person.artwork.title}
+      />
+    </>
+  );
+}
+
+```
+
+## Rs objetos en state
+
+En React, considera todos los estados como inmutables.
+
+Al almacenar objetos en estado, mutarlos no activará renderizados y cambiará el estado en las instantáneas de renderizado anteriores.
+
+En lugar de mutar un objeto, crea una nueva versión y activa un nuevo renderizado asignándole estado.
+
+Puedes usar la sintaxis de propagación de objetos {...obj, something: 'newValue'} para crear copias de objetos.
+
+La sintaxis de propagación es superficial: solo copia un nivel de profundidad.
+
+Para actualizar un objeto anidado, necesitas crear copias a partir del nivel de actualización.
+
+Para reducir la copia repetitiva de código, usa Immer. 
+
+
+## Ejercicios
+
+1. Corrija las actualizaciones de estado incorrectas
+
+Este formulario tiene algunos errores. 
+
+Haga clic en el botón que aumenta la puntuación varias veces. 
+
+Observe que no aumenta. 
+
+Luego, edite el nombre y observe que la puntuación se ha actualizado repentinamente con los cambios. 
+
+Finalmente, edite el apellido y observe que la puntuación ha desaparecido por completo.
+
+
+Su tarea es corregir todos estos errores. 
+
+A medida que los corrija, explique por qué ocurre cada uno.
+
+App.js 
+
+```
+import { useState } from 'react';
+
+export default function Scoreboard() {
+  const [player, setPlayer] = useState({
+    firstName: 'Ranjani',
+    lastName: 'Shettar',
+    score: 10,
+  });
+
+  function handlePlusClick() {
+    player.score++;
+  }
+
+  function handleFirstNameChange(e) {
+    setPlayer({
+      ...player,
+      firstName: e.target.value,
+    });
+  }
+
+  function handleLastNameChange(e) {
+    setPlayer({
+      lastName: e.target.value
+    });
+  }
+
+  return (
+    <>
+      <label>
+        Score: <b>{player.score}</b>
+        {' '}
+        <button onClick={handlePlusClick}>
+          +1
+        </button>
+      </label>
+      <label>
+        First name:
+        <input
+          value={player.firstName}
+          onChange={handleFirstNameChange}
+        />
+      </label>
+      <label>
+        Last name:
+        <input
+          value={player.lastName}
+          onChange={handleLastNameChange}
+        />
+      </label>
+    </>
+  );
+}
+
+```
+
+
+Solución: 
+
+```
+import { useState } from 'react';
+
+export default function Scoreboard() {
+  const [player, setPlayer] = useState({
+    firstName: 'Ranjani',
+    lastName: 'Shettar',
+    score: 10,
+  });
+
+  function handlePlusClick() {
+    setPlayer({
+      ...player,
+      score: player.score + 1,
+    });
+  }
+
+  function handleFirstNameChange(e) {
+    setPlayer({
+      ...player,
+      firstName: e.target.value,
+    });
+  }
+
+  function handleLastNameChange(e) {
+    setPlayer({
+      ...player,
+      lastName: e.target.value
+    });
+  }
+
+  return (
+    <>
+      <label>
+        Score: <b>{player.score}</b>
+        {' '}
+        <button onClick={handlePlusClick}>
+          +1
+        </button>
+      </label>
+      <label>
+        First name:
+        <input
+          value={player.firstName}
+          onChange={handleFirstNameChange}
+        />
+      </label>
+      <label>
+        Last name:
+        <input
+          value={player.lastName}
+          onChange={handleLastNameChange}
+        />
+      </label>
+    </>
+  );
+}
+
+```
+
+El problema con handlePlusClick era que mutaba el objeto del jugador. 
+
+Como resultado, React desconocía la necesidad de volver a renderizar y no actualizaba la puntuación en pantalla. 
+
+Por eso, al editar el nombre, el estado se actualizaba, lo que activaba un nuevo renderizado que también actualizaba la puntuación en pantalla.
+
+
+El problema con handleLastNameChange era que no copiaba los campos ...player existentes en el nuevo objeto. 
+
+Por eso, la puntuación se perdía tras editar el apellido.
+
+
+2. Encuentra y corrige la mutación.
+
+Hay un cuadro arrastrable sobre un fondo estático. 
+
+Puedes cambiar el color del cuadro usando la entrada de selección.
+
+
+Pero hay un error. 
+
+Si mueves el cuadro primero y luego cambias su color, el fondo (¡que no debería moverse!) saltará a la posición del cuadro. 
+
+Pero esto no debería ocurrir: la propiedad position del fondo está establecida en initialPosition, que es { x: 0, y: 0 }. 
+
+¿Por qué se mueve el fondo después del cambio de color?
+
+
+Encuentra el error y corrígelo.
+
+
+Background.js
+
+```
+export default function Background({
+  position
+}) {
+  return (
+    <div style={{
+      position: 'absolute',
+      transform: `translate(
+        ${position.x}px,
+        ${position.y}px
+      )`,
+      width: 250,
+      height: 250,
+      backgroundColor: 'rgba(200, 200, 0, 0.2)',
+    }} />
+  );
+};
+
+```
+
+
+Box.js 
+
+```
+import { useState } from 'react';
+
+export default function Box({
+  children,
+  color,
+  position,
+  onMove
+}) {
+  const [
+    lastCoordinates,
+    setLastCoordinates
+  ] = useState(null);
+
+  function handlePointerDown(e) {
+    e.target.setPointerCapture(e.pointerId);
+    setLastCoordinates({
+      x: e.clientX,
+      y: e.clientY,
+    });
+  }
+
+  function handlePointerMove(e) {
+    if (lastCoordinates) {
+      setLastCoordinates({
+        x: e.clientX,
+        y: e.clientY,
+      });
+      const dx = e.clientX - lastCoordinates.x;
+      const dy = e.clientY - lastCoordinates.y;
+      onMove(dx, dy);
+    }
+  }
+
+  function handlePointerUp(e) {
+    setLastCoordinates(null);
+  }
+
+  return (
+    <div
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onPointerUp={handlePointerUp}
+      style={{
+        width: 100,
+        height: 100,
+        cursor: 'grab',
+        backgroundColor: color,
+        position: 'absolute',
+        border: '1px solid black',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        transform: `translate(
+          ${position.x}px,
+          ${position.y}px
+        )`,
+      }}
+    >{children}</div>
+  );
+}
+
+```
+
+App.js
+
+```
+import { useState } from 'react';
+import Background from './Background.js';
+import Box from './Box.js';
+
+const initialPosition = {
+  x: 0,
+  y: 0
+};
+
+export default function Canvas() {
+  const [shape, setShape] = useState({
+    color: 'orange',
+    position: initialPosition
+  });
+
+  function handleMove(dx, dy) {
+    shape.position.x += dx;
+    shape.position.y += dy;
+  }
+
+  function handleColorChange(e) {
+    setShape({
+      ...shape,
+      color: e.target.value
+    });
+  }
+
+  return (
+    <>
+      <select
+        value={shape.color}
+        onChange={handleColorChange}
+      >
+        <option value="orange">orange</option>
+        <option value="lightpink">lightpink</option>
+        <option value="aliceblue">aliceblue</option>
+      </select>
+      <Background
+        position={initialPosition}
+      />
+      <Box
+        color={shape.color}
+        position={shape.position}
+        onMove={handleMove}
+      >
+        Drag me!
+      </Box>
+    </>
+  );
+}
+
+```
+
+
+Pista: 
+
+Si algo inesperado cambia, hay una mutación. 
+
+Encuentra la mutación en App.js y corrígela.
+
+
+Solución: 
+
+El problema residía en la mutación dentro de handleMove. 
+
+Mutó shape.position, pero ese es el mismo objeto al que apunta initialPosition. 
+
+Por eso, tanto la forma como el fondo se mueven. 
+
+(Es una mutación, por lo que el cambio no se refleja en la pantalla hasta que una actualización no relacionada (el cambio de color) activa un nuevo renderizado).
+
+
+La solución consiste en eliminar la mutación de handleMove y usar la sintaxis de propagación para copiar la forma. 
+
+Ten en cuenta que += es una mutación, por lo que debes reescribirla para usar una operación + normal.
+
+
+
+Background.js
+
+```
+export default function Background({
+  position
+}) {
+  return (
+    <div style={{
+      position: 'absolute',
+      transform: `translate(
+        ${position.x}px,
+        ${position.y}px
+      )`,
+      width: 250,
+      height: 250,
+      backgroundColor: 'rgba(200, 200, 0, 0.2)',
+    }} />
+  );
+};
+
+```
+
+
+Box.js 
+
+```
+import { useState } from 'react';
+
+export default function Box({
+  children,
+  color,
+  position,
+  onMove
+}) {
+  const [
+    lastCoordinates,
+    setLastCoordinates
+  ] = useState(null);
+
+  function handlePointerDown(e) {
+    e.target.setPointerCapture(e.pointerId);
+    setLastCoordinates({
+      x: e.clientX,
+      y: e.clientY,
+    });
+  }
+
+  function handlePointerMove(e) {
+    if (lastCoordinates) {
+      setLastCoordinates({
+        x: e.clientX,
+        y: e.clientY,
+      });
+      const dx = e.clientX - lastCoordinates.x;
+      const dy = e.clientY - lastCoordinates.y;
+      onMove(dx, dy);
+    }
+  }
+
+  function handlePointerUp(e) {
+    setLastCoordinates(null);
+  }
+
+  return (
+    <div
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onPointerUp={handlePointerUp}
+      style={{
+        width: 100,
+        height: 100,
+        cursor: 'grab',
+        backgroundColor: color,
+        position: 'absolute',
+        border: '1px solid black',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        transform: `translate(
+          ${position.x}px,
+          ${position.y}px
+        )`,
+      }}
+    >{children}</div>
+  );
+}
+
+```
+
+
+App.js 
+
+```
+import { useState } from 'react';
+import Background from './Background.js';
+import Box from './Box.js';
+
+const initialPosition = {
+  x: 0,
+  y: 0
+};
+
+export default function Canvas() {
+  const [shape, setShape] = useState({
+    color: 'orange',
+    position: initialPosition
+  });
+
+  function handleMove(dx, dy) {
+    setShape({
+      ...shape,
+      position: {
+        x: shape.position.x + dx,
+        y: shape.position.y + dy,
+      }
+    });
+  }
+
+  function handleColorChange(e) {
+    setShape({
+      ...shape,
+      color: e.target.value
+    });
+  }
+
+  return (
+    <>
+      <select
+        value={shape.color}
+        onChange={handleColorChange}
+      >
+        <option value="orange">orange</option>
+        <option value="lightpink">lightpink</option>
+        <option value="aliceblue">aliceblue</option>
+      </select>
+      <Background
+        position={initialPosition}
+      />
+      <Box
+        color={shape.color}
+        position={shape.position}
+        onMove={handleMove}
+      >
+        Drag me!
+      </Box>
+    </>
+  );
+}
+
+```
+
+
+3. Actualizar un objeto con Immer
+
+Este es el mismo ejemplo con errores del desafío anterior. 
+
+Esta vez, corrige la mutación usando Immer. 
+
+Para tu comodidad, useImmer ya está importado, por lo que debes cambiar la variable de estado de forma para usarlo.
+
+
+App.js
+
+```
+import { useState } from 'react';
+import { useImmer } from 'use-immer';
+import Background from './Background.js';
+import Box from './Box.js';
+
+const initialPosition = {
+  x: 0,
+  y: 0
+};
+
+export default function Canvas() {
+  const [shape, setShape] = useState({
+    color: 'orange',
+    position: initialPosition
+  });
+
+  function handleMove(dx, dy) {
+    shape.position.x += dx;
+    shape.position.y += dy;
+  }
+
+  function handleColorChange(e) {
+    setShape({
+      ...shape,
+      color: e.target.value
+    });
+  }
+
+  return (
+    <>
+      <select
+        value={shape.color}
+        onChange={handleColorChange}
+      >
+        <option value="orange">orange</option>
+        <option value="lightpink">lightpink</option>
+        <option value="aliceblue">aliceblue</option>
+      </select>
+      <Background
+        position={initialPosition}
+      />
+      <Box
+        color={shape.color}
+        position={shape.position}
+        onMove={handleMove}
+      >
+        Drag me!
+      </Box>
+    </>
+  );
+}
+
+```
+
+
+Solución: 
+
+Esta es la solución reescrita con Immer. 
+
+Observe cómo los controladores de eventos están escritos con mutación, pero el error no ocurre. 
+
+Esto se debe a que, en realidad, Immer nunca muta los objetos existentes.
+
+
+App.js 
+
+```
+import { useImmer } from 'use-immer';
+import Background from './Background.js';
+import Box from './Box.js';
+
+const initialPosition = {
+  x: 0,
+  y: 0
+};
+
+export default function Canvas() {
+  const [shape, updateShape] = useImmer({
+    color: 'orange',
+    position: initialPosition
+  });
+
+  function handleMove(dx, dy) {
+    updateShape(draft => {
+      draft.position.x += dx;
+      draft.position.y += dy;
+    });
+  }
+
+  function handleColorChange(e) {
+    updateShape(draft => {
+      draft.color = e.target.value;
+    });
+  }
+
+  return (
+    <>
+      <select
+        value={shape.color}
+        onChange={handleColorChange}
+      >
+        <option value="orange">orange</option>
+        <option value="lightpink">lightpink</option>
+        <option value="aliceblue">aliceblue</option>
+      </select>
+      <Background
+        position={initialPosition}
+      />
+      <Box
+        color={shape.color}
+        position={shape.position}
+        onMove={handleMove}
+      >
+        Drag me!
+      </Box>
+    </>
+  );
+}
+
+```
+
+
+
+# Arrays en estado
+
+Actualización de arrays en estado
+
+Los arrays son mutables en JavaScript, pero deben considerarse inmutables al almacenarlos en estado. 
+
+Al igual que con los objetos, para actualizar un array almacenado en estado, debe crear uno nuevo (o hacer una copia de uno existente) y luego configurar el estado para que use el nuevo array.
+
+
+Aprenderás:
+
+Cómo añadir, eliminar o modificar elementos en un array en estado de React
+Cómo actualizar un objeto dentro de un array
+Cómo simplificar la copia de arrays con Immer
+
+
+## Actualización de arrays sin mutación
+
+En JavaScript, los arrays son simplemente otro tipo de objeto. 
+
+Al igual que con los objetos, en el estado de React, los arrays deben tratarse como de solo lectura. 
+
+Esto significa que no se deben reasignar elementos dentro de un array como ```arr[0] = 'bird'```, ni usar métodos que lo muten, como ```push()``` y ```pop()```.
+
+
+### En cambio, cada vez que se desee actualizar un array, se deberá pasar un nuevo array a la función de configuración de estado. 
+
+Para ello, se puede crear un nuevo array a partir del array original en el estado llamando a sus métodos no mutables, como ```filter()``` y ```map()```. 
+
+A continuación, se puede establecer el estado del nuevo array resultante.
+
+
+Aquí se muestra una tabla de referencia de operaciones comunes con arrays. 
+
+Al trabajar con arrays en el estado de React:
+
+1. evitar los métodos de la columna izquierda
+
+2. preferir los de la columna derecha:
+
+
+### adding:
+
+Evitar (muta la matriz)
+
+1. push, unshift
+
+
+Preferir (devuelve una nueva matriz)
+
+2. concat, [...arr] spread syntax (example)
+
+
+### removing 
+
+1. removing	pop, shift, splice
+
+2. filter, slice (example)
+
+
+### replacing
+
+1. splice, arr[i] = ... assignment 
+
+2. map (example)
+
+
+### sorting
+
+1. reverse, sort
+
+2. copy the array first (example)
+
+
+Como alternativa, puedes usar Immer, que te permite usar métodos de ambas columnas.
+
+
+### Problema
+
+Desafortunadamente, slice y splice tienen nombres similares, pero son muy diferentes:
+
+1. slice permite copiar un array o parte de él.
+2. splice muta el array (para insertar o eliminar elementos).
+
+### En React, usarás slice (¡sin p!) con mucha más frecuencia porque no querrás mutar objetos o arrays en estado. 
+
+En "Actualizar objetos" se explica qué es la mutación y por qué no se recomienda para el estado.
+
+
+## Añadir a un array
+
+push() mutará un array, lo cual no es deseable:
+
+```
+import { useState } from 'react';
+
+let nextId = 0;
+
+export default function List() {
+  const [name, setName] = useState('');
+  const [artists, setArtists] = useState([]);
+
+  return (
+    <>
+      <h1>Inspiring sculptors:</h1>
+      <input
+        value={name}
+        onChange={e => setName(e.target.value)}
+      />
+      <button onClick={() => {
+        artists.push({
+          id: nextId++,
+          name: name,
+        });
+      }}>Add</button>
+      <ul>
+        {artists.map(artist => (
+          <li key={artist.id}>{artist.name}</li>
+        ))}
+      </ul>
+    </>
+  );
+}
+
+```
+
+En su lugar, cree una nueva matriz que contenga los elementos existentes y un nuevo elemento al final. 
+
+Hay varias maneras de hacerlo, pero la más sencilla es usar la sintaxis ... array spread:
+
+```
+setArtists( // Replace the state
+  [ // with a new array
+    ...artists, // that contains all the old items
+    { id: nextId++, name: name } // and one new item at the end
+  ]
+);
+
+```
+
+
+App.js 
+
+```
+import { useState } from 'react';
+
+let nextId = 0;
+
+export default function List() {
+  const [name, setName] = useState('');
+  const [artists, setArtists] = useState([]);
+
+  return (
+    <>
+      <h1>Inspiring sculptors:</h1>
+      <input
+        value={name}
+        onChange={e => setName(e.target.value)}
+      />
+      <button onClick={() => {
+        setArtists([
+          ...artists,
+          { id: nextId++, name: name }
+        ]);
+      }}>Add</button>
+      <ul>
+        {artists.map(artist => (
+          <li key={artist.id}>{artist.name}</li>
+        ))}
+      </ul>
+    </>
+  );
+}
+
+```
+
+La sintaxis de propagación de matriz también le permite anteponer un elemento colocándolo antes del ...artistas original:
+
+```
+setArtists([
+  { id: nextId++, name: name },
+  ...artists // Put old items at the end
+]);
+
+```
+
+### De esta manera, spread puede realizar la función de push(), añadiendo al final de un array, y de unshift(), añadiendo al principio. 
+
+
+## Eliminar de un array
+
+La forma más sencilla de eliminar un elemento de un array es filtrarlo. 
+
+En otras palabras, se genera un nuevo array que no contendrá ese elemento. 
+
+Para ello, utilice el método de filtro, por ejemplo:
+
+```
+import { useState } from 'react';
+
+let initialArtists = [
+  { id: 0, name: 'Marta Colvin Andrade' },
+  { id: 1, name: 'Lamidi Olonade Fakeye'},
+  { id: 2, name: 'Louise Nevelson'},
+];
+
+export default function List() {
+  const [artists, setArtists] = useState(
+    initialArtists
+  );
+
+  return (
+    <>
+      <h1>Inspiring sculptors:</h1>
+      <ul>
+        {artists.map(artist => (
+          <li key={artist.id}>
+            {artist.name}{' '}
+            <button onClick={() => {
+              setArtists(
+                artists.filter(a =>
+                  a.id !== artist.id
+                )
+              );
+            }}>
+              Delete
+            </button>
+          </li>
+        ))}
+      </ul>
+    </>
+  );
+}
+
+```
+
+Haga clic en el botón “Eliminar” varias veces y observe su controlador de clic.
+
+```
+setArtists(
+  artists.filter(a => a.id !== artist.id)
+);
+
+```
+
+Aquí, artists.filter(a => a.id !== artist.id) significa "crear una matriz que contenga los artistas cuyos IDs sean diferentes de artist.id". 
+
+En otras palabras, al hacer clic en "Eliminar" cada artista, se filtrará y se solicitará una nueva renderización con la matriz resultante. 
+
+Tenga en cuenta que el filtro no modifica la matriz original.
+
+
+## Transformación de un array
+
+Si desea cambiar algunos o todos los elementos del array, puede usar map() para crear un nuevo array. 
+
+La función que pasará a map puede decidir qué hacer con cada elemento, basándose en sus datos o su índice (o ambos).
+
+
+En este ejemplo, un array contiene las coordenadas de dos círculos y un cuadrado. 
+
+Al pulsar el botón, solo los círculos se desplazan 50 píxeles hacia abajo. 
+
+Esto se logra generando un nuevo array de datos mediante map():
+
+
+App.js
+
+```
+import { useState } from 'react';
+
+let initialShapes = [
+  { id: 0, type: 'circle', x: 50, y: 100 },
+  { id: 1, type: 'square', x: 150, y: 100 },
+  { id: 2, type: 'circle', x: 250, y: 100 },
+];
+
+export default function ShapeEditor() {
+  const [shapes, setShapes] = useState(
+    initialShapes
+  );
+
+  function handleClick() {
+    const nextShapes = shapes.map(shape => {
+      if (shape.type === 'square') {
+        // No change
+        return shape;
+      } else {
+        // Return a new circle 50px below
+        return {
+          ...shape,
+          y: shape.y + 50,
+        };
+      }
+    });
+    // Re-render with the new array
+    setShapes(nextShapes);
+  }
+
+  return (
+    <>
+      <button onClick={handleClick}>
+        Move circles down!
+      </button>
+      {shapes.map(shape => (
+        <div
+          key={shape.id}
+          style={{
+          background: 'purple',
+          position: 'absolute',
+          left: shape.x,
+          top: shape.y,
+          borderRadius:
+            shape.type === 'circle'
+              ? '50%' : '',
+          width: 20,
+          height: 20,
+        }} />
+      ))}
+    </>
+  );
+}
+
+```
+
+ 
+## Reemplazar elementos en un array
+
+Es muy común querer reemplazar uno o más elementos en un array.
+
+Asignaciones como ```arr[0] = 'bird'``` mutan el array original, por lo que también conviene usar map para esto.
+
+
+Para reemplazar un elemento, cree un nuevo array con map. 
+
+Dentro de la llamada a map, recibirá el índice del elemento como segundo argumento. 
+
+Úselo para decidir si se devuelve el elemento original (el primer argumento) o algo diferente:
+
+App.js
+ 
+```
+import { useState } from 'react';
+
+let initialCounters = [
+  0, 0, 0
+];
+
+export default function CounterList() {
+  const [counters, setCounters] = useState(
+    initialCounters
+  );
+
+  function handleIncrementClick(index) {
+    const nextCounters = counters.map((c, i) => {
+      if (i === index) {
+        // Increment the clicked counter
+        return c + 1;
+      } else {
+        // The rest haven't changed
+        return c;
+      }
+    });
+    setCounters(nextCounters);
+  }
+
+  return (
+    <ul>
+      {counters.map((counter, i) => (
+        <li key={i}>
+          {counter}
+          <button onClick={() => {
+            handleIncrementClick(i);
+          }}>+1</button>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+```
+
+
+## Inserción en un array
+
+A veces, puede que desee insertar un elemento en una posición específica que no esté ni al principio ni al final. 
+
+Para ello, puede usar la sintaxis de propagación de arrays ... junto con el método slice(). 
+
+El método slice() permite cortar una porción del array. 
+
+Para insertar un elemento, cree un array que extienda la porción antes del punto de inserción, luego el nuevo elemento y, finalmente, el resto del array original.
+
+
+En este ejemplo, el botón Insertar siempre inserta en el índice 1:
+
+```
+import { useState } from 'react';
+
+let nextId = 3;
+const initialArtists = [
+  { id: 0, name: 'Marta Colvin Andrade' },
+  { id: 1, name: 'Lamidi Olonade Fakeye'},
+  { id: 2, name: 'Louise Nevelson'},
+];
+
+export default function List() {
+  const [name, setName] = useState('');
+  const [artists, setArtists] = useState(
+    initialArtists
+  );
+
+  function handleClick() {
+    const insertAt = 1; // Could be any index
+    const nextArtists = [
+      // Items before the insertion point:
+      ...artists.slice(0, insertAt),
+      // New item:
+      { id: nextId++, name: name },
+      // Items after the insertion point:
+      ...artists.slice(insertAt)
+    ];
+    setArtists(nextArtists);
+    setName('');
+  }
+
+  return (
+    <>
+      <h1>Inspiring sculptors:</h1>
+      <input
+        value={name}
+        onChange={e => setName(e.target.value)}
+      />
+      <button onClick={handleClick}>
+        Insert
+      </button>
+      <ul>
+        {artists.map(artist => (
+          <li key={artist.id}>{artist.name}</li>
+        ))}
+      </ul>
+    </>
+  );
+}
+
+```
+
+
+## Realizar otros cambios en un array
+
+Hay algunas cosas que no se pueden hacer solo con la sintaxis de propagación y métodos sin mutación como map() y filter(). 
+
+Por ejemplo, podría querer invertir u ordenar un array. 
+
+Los métodos reverse() y sort() de JavaScript mutan el array original, por lo que no se pueden usar directamente.
+
+
+Sin embargo, puede copiar el array primero y luego modificarlo. 
+
+App.js 
+
+```
+import { useState } from 'react';
+
+const initialList = [
+  { id: 0, title: 'Big Bellies' },
+  { id: 1, title: 'Lunar Landscape' },
+  { id: 2, title: 'Terracotta Army' },
+];
+
+export default function List() {
+  const [list, setList] = useState(initialList);
+
+  function handleClick() {
+    const nextList = [...list];
+    nextList.reverse();
+    setList(nextList);
+  }
+
+  return (
+    <>
+      <button onClick={handleClick}>
+        Reverse
+      </button>
+      <ul>
+        {list.map(artwork => (
+          <li key={artwork.id}>{artwork.title}</li>
+        ))}
+      </ul>
+    </>
+  );
+}
+
+```
+
+Aquí, se usa la sintaxis de propagación ```[...list]``` para crear primero una copia del array original. 
+
+Ahora que se tiene una copia, se pueden usar métodos de mutación como nextList.reverse() o nextList.sort(), o incluso asignar elementos individuales con nextList[0] = "something".
+
+
+Sin embargo, incluso copiando un array, no se pueden mutar directamente los elementos existentes dentro de él. 
+
+Esto se debe a que la copia es superficial: el nuevo array contendrá los mismos elementos que el original. 
+
+Por lo tanto, si se modifica un objeto dentro del array copiado, se está mutando el estado existente. 
+
+Por ejemplo, este tipo de código es problemático.
+
+```
+const nextList = [...list];
+nextList[0].seen = true; // Problem: mutates list[0]
+setList(nextList);
+
+```
+
+Aunque nextList y list son dos arrays diferentes, ```nextList[0]``` y ```list[0]```` apuntan al mismo objeto. 
+
+Por lo tanto, al modificar ```nextList[0].seen```, también se modifica ```list[0].seen```. 
+
+Esto es una mutación de estado, ¡que debe evitarse! 
+
+Puede solucionar este problema de forma similar a la actualización de objetos JavaScript anidados: copiando los elementos individuales que desee modificar en lugar de mutarlos. 
+
+
+## Actualización de objetos dentro de arrays
+
+Los objetos no se encuentran realmente dentro de los arrays. 
+
+Puede que parezcan estar dentro en el código, pero cada objeto de un array es un valor independiente, al que el array apunta. 
+
+Por eso hay que tener cuidado al modificar campos anidados como ```list[0]```. 
+
+La lista de ilustraciones de otra persona podría apuntar al mismo elemento del array!
+
+
+Al actualizar un estado anidado, es necesario crear copias desde el punto donde se desea actualizar hasta el nivel superior. 
+
+Veamos cómo funciona.
+
+
+En este ejemplo, dos listas de ilustraciones independientes tienen el mismo estado inicial. 
+
+Se supone que están aisladas, pero debido a una mutación, su estado se comparte accidentalmente, y al marcar una casilla en una lista, se afecta la otra.
+
+```
+import { useState } from 'react';
+
+let nextId = 3;
+const initialList = [
+  { id: 0, title: 'Big Bellies', seen: false },
+  { id: 1, title: 'Lunar Landscape', seen: false },
+  { id: 2, title: 'Terracotta Army', seen: true },
+];
+
+export default function BucketList() {
+  const [myList, setMyList] = useState(initialList);
+  const [yourList, setYourList] = useState(
+    initialList
+  );
+
+  function handleToggleMyList(artworkId, nextSeen) {
+    const myNextList = [...myList];
+    const artwork = myNextList.find(
+      a => a.id === artworkId
+    );
+    artwork.seen = nextSeen;
+    setMyList(myNextList);
+  }
+
+  function handleToggleYourList(artworkId, nextSeen) {
+    const yourNextList = [...yourList];
+    const artwork = yourNextList.find(
+      a => a.id === artworkId
+    );
+    artwork.seen = nextSeen;
+    setYourList(yourNextList);
+  }
+
+  return (
+    <>
+      <h1>Art Bucket List</h1>
+      <h2>My list of art to see:</h2>
+      <ItemList
+        artworks={myList}
+        onToggle={handleToggleMyList} />
+      <h2>Your list of art to see:</h2>
+      <ItemList
+        artworks={yourList}
+        onToggle={handleToggleYourList} />
+    </>
+  );
+}
+
+function ItemList({ artworks, onToggle }) {
+  return (
+    <ul>
+      {artworks.map(artwork => (
+        <li key={artwork.id}>
+          <label>
+            <input
+              type="checkbox"
+              checked={artwork.seen}
+              onChange={e => {
+                onToggle(
+                  artwork.id,
+                  e.target.checked
+                );
+              }}
+            />
+            {artwork.title}
+          </label>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+```
+
+El problema del código esta en: 
+
+```
+const myNextList = [...myList];
+const artwork = myNextList.find(a => a.id === artworkId);
+artwork.seen = nextSeen; // Problem: mutates an existing item
+setMyList(myNextList);
+
+```
+
+Aunque el array myNextList es nuevo, los elementos son los mismos que en el array myList original. 
+
+Por lo tanto, al cambiar artwork.seen, se modifica el elemento de ilustración original. 
+
+Este elemento también está en yourList, lo que causa el error. 
+
+Errores como este pueden ser difíciles de solucionar, pero afortunadamente desaparecen si se evita la mutación de estado.
+
+
+Se puede usar map para sustituir un elemento antiguo por su versión actualizada sin mutar.
+
+```
+setMyList(myList.map(artwork => {
+  if (artwork.id === artworkId) {
+    // Create a *new* object with changes
+    return { ...artwork, seen: nextSeen };
+  } else {
+    // No changes
+    return artwork;
+  }
+}));
+
+```
+
+
+Aquí, ... se muestra la sintaxis de propagación de objetos utilizada para crear una copia de un objeto.
+
+Con este enfoque, no se modifica ninguno de los elementos de estado existentes y el error se ha corregido.
+
+
+App.js
+
+```
+import { useState } from 'react';
+
+let nextId = 3;
+const initialList = [
+  { id: 0, title: 'Big Bellies', seen: false },
+  { id: 1, title: 'Lunar Landscape', seen: false },
+  { id: 2, title: 'Terracotta Army', seen: true },
+];
+
+export default function BucketList() {
+  const [myList, setMyList] = useState(initialList);
+  const [yourList, setYourList] = useState(
+    initialList
+  );
+
+  function handleToggleMyList(artworkId, nextSeen) {
+    setMyList(myList.map(artwork => {
+      if (artwork.id === artworkId) {
+        // Create a *new* object with changes
+        return { ...artwork, seen: nextSeen };
+      } else {
+        // No changes
+        return artwork;
+      }
+    }));
+  }
+
+  function handleToggleYourList(artworkId, nextSeen) {
+    setYourList(yourList.map(artwork => {
+      if (artwork.id === artworkId) {
+        // Create a *new* object with changes
+        return { ...artwork, seen: nextSeen };
+      } else {
+        // No changes
+        return artwork;
+      }
+    }));
+  }
+
+  return (
+    <>
+      <h1>Art Bucket List</h1>
+      <h2>My list of art to see:</h2>
+      <ItemList
+        artworks={myList}
+        onToggle={handleToggleMyList} />
+      <h2>Your list of art to see:</h2>
+      <ItemList
+        artworks={yourList}
+        onToggle={handleToggleYourList} />
+    </>
+  );
+}
+
+function ItemList({ artworks, onToggle }) {
+  return (
+    <ul>
+      {artworks.map(artwork => (
+        <li key={artwork.id}>
+          <label>
+            <input
+              type="checkbox"
+              checked={artwork.seen}
+              onChange={e => {
+                onToggle(
+                  artwork.id,
+                  e.target.checked
+                );
+              }}
+            />
+            {artwork.title}
+          </label>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+```
+
+En general, solo deberías mutar objetos recién creados. 
+
+Si estuvieras insertando una nueva ilustración, podrías mutarla, pero si trabajas con algo que ya está en estado, necesitas hacer una copia.
+
+
+## Escribe una lógica de actualización concisa con Immer
+
+Actualizar arrays anidados sin mutación puede resultar un poco repetitivo. Al igual que con los objetos:
+
+1. Generalmente, no deberías necesitar actualizar el estado a más de un par de niveles de profundidad. Si tus objetos de estado son muy profundos, podrías reestructurarlos de forma diferente para que sean planos.
+
+2. Si no quieres cambiar la estructura de tu estado, quizás prefieras usar Immer, que te permite escribir usando una sintaxis práctica pero con mutación, y se encarga de generar las copias automáticamente.
+
+Aquí tienes el ejemplo de Art Bucket List reescrito con Immer:
+
+
+App.js 
+
+```
+import { useState } from 'react';
+import { useImmer } from 'use-immer';
+
+let nextId = 3;
+const initialList = [
+  { id: 0, title: 'Big Bellies', seen: false },
+  { id: 1, title: 'Lunar Landscape', seen: false },
+  { id: 2, title: 'Terracotta Army', seen: true },
+];
+
+export default function BucketList() {
+  const [myList, updateMyList] = useImmer(
+    initialList
+  );
+  const [yourList, updateYourList] = useImmer(
+    initialList
+  );
+
+  function handleToggleMyList(id, nextSeen) {
+    updateMyList(draft => {
+      const artwork = draft.find(a =>
+        a.id === id
+      );
+      artwork.seen = nextSeen;
+    });
+  }
+
+  function handleToggleYourList(artworkId, nextSeen) {
+    updateYourList(draft => {
+      const artwork = draft.find(a =>
+        a.id === artworkId
+      );
+      artwork.seen = nextSeen;
+    });
+  }
+
+  return (
+    <>
+      <h1>Art Bucket List</h1>
+      <h2>My list of art to see:</h2>
+      <ItemList
+        artworks={myList}
+        onToggle={handleToggleMyList} />
+      <h2>Your list of art to see:</h2>
+      <ItemList
+        artworks={yourList}
+        onToggle={handleToggleYourList} />
+    </>
+  );
+}
+
+function ItemList({ artworks, onToggle }) {
+  return (
+    <ul>
+      {artworks.map(artwork => (
+        <li key={artwork.id}>
+          <label>
+            <input
+              type="checkbox"
+              checked={artwork.seen}
+              onChange={e => {
+                onToggle(
+                  artwork.id,
+                  e.target.checked
+                );
+              }}
+            />
+            {artwork.title}
+          </label>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+```
+
+Observe cómo con Immer, la mutación como artwork.seen = nextSeen ahora está bien:
+
+```
+updateMyTodos(draft => {
+  const artwork = draft.find(a => a.id === artworkId);
+  artwork.seen = nextSeen;
+});
+
+```
+
+
+Esto se debe a que no se está mutando el estado original, sino un objeto de borrador especial proporcionado por Immer. 
+
+De igual forma, se pueden aplicar métodos de mutación como push() y pop() al contenido del borrador.
+
+
+En segundo plano, Immer siempre construye el siguiente estado desde cero según los cambios realizados en el borrador. 
+
+Esto mantiene la concisión de los controladores de eventos sin necesidad de mutar el estado.
+
+
+## Rs arrays en estado 
+
+Se pueden añadir arrays al estado, pero no se pueden modificar.
+
+En lugar de mutar un array, se crea una nueva versión y se actualiza el estado.
+
+Se puede usar la sintaxis de propagación de arrays ```[...arr, newItem]``` para crear arrays con nuevos elementos.
+
+Se pueden usar filter() y map() para crear nuevos arrays con elementos filtrados o transformados.
+
+Se puede usar Immer para mantener la concisión del código.
+
+
+## Ejercicios 
+
+1. Actualizar un artículo en el carrito de compras
+
+Complete la lógica handleIncreaseClick para que al presionar "+" aumente el número correspondiente:
+
+App.js 
+
+```
+import { useState } from 'react';
+
+const initialProducts = [{
+  id: 0,
+  name: 'Baklava',
+  count: 1,
+}, {
+  id: 1,
+  name: 'Cheese',
+  count: 5,
+}, {
+  id: 2,
+  name: 'Spaghetti',
+  count: 2,
+}];
+
+export default function ShoppingCart() {
+  const [
+    products,
+    setProducts
+  ] = useState(initialProducts)
+
+  function handleIncreaseClick(productId) {
+
+  }
+
+  return (
+    <ul>
+      {products.map(product => (
+        <li key={product.id}>
+          {product.name}
+          {' '}
+          (<b>{product.count}</b>)
+          <button onClick={() => {
+            handleIncreaseClick(product.id);
+          }}>
+            +
+          </button>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+```
+
+
+Solución: 
+
+Puede utilizar la función de mapa para crear una nueva matriz y luego utilizar la sintaxis de propagación de objetos ... para crear una copia del objeto modificado para la nueva matriz:
+
+```
+import { useState } from 'react';
+
+const initialProducts = [{
+  id: 0,
+  name: 'Baklava',
+  count: 1,
+}, {
+  id: 1,
+  name: 'Cheese',
+  count: 5,
+}, {
+  id: 2,
+  name: 'Spaghetti',
+  count: 2,
+}];
+
+export default function ShoppingCart() {
+  const [
+    products,
+    setProducts
+  ] = useState(initialProducts)
+
+  function handleIncreaseClick(productId) {
+    setProducts(products.map(product => {
+      if (product.id === productId) {
+        return {
+          ...product,
+          count: product.count + 1
+        };
+      } else {
+        return product;
+      }
+    }))
+  }
+
+  return (
+    <ul>
+      {products.map(product => (
+        <li key={product.id}>
+          {product.name}
+          {' '}
+          (<b>{product.count}</b>)
+          <button onClick={() => {
+            handleIncreaseClick(product.id);
+          }}>
+            +
+          </button>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+```
+
+
+## Eliminar un artículo del carrito
+
+Este carrito tiene un botón "+" funcional, pero el botón "–" no hace nada. 
+
+Debe agregarle un controlador de eventos para que, al presionarlo, disminuya el recuento del producto correspondiente. 
+
+Si presiona "–" cuando el recuento es 1, el producto se eliminará automáticamente del carrito. 
+
+Asegúrese de que nunca muestre 0.
+
+```
+import { useState } from 'react';
+
+const initialProducts = [{
+  id: 0,
+  name: 'Baklava',
+  count: 1,
+}, {
+  id: 1,
+  name: 'Cheese',
+  count: 5,
+}, {
+  id: 2,
+  name: 'Spaghetti',
+  count: 2,
+}];
+
+export default function ShoppingCart() {
+  const [
+    products,
+    setProducts
+  ] = useState(initialProducts)
+
+  function handleIncreaseClick(productId) {
+    setProducts(products.map(product => {
+      if (product.id === productId) {
+        return {
+          ...product,
+          count: product.count + 1
+        };
+      } else {
+        return product;
+      }
+    }))
+  }
+
+  return (
+    <ul>
+      {products.map(product => (
+        <li key={product.id}>
+          {product.name}
+          {' '}
+          (<b>{product.count}</b>)
+          <button onClick={() => {
+            handleIncreaseClick(product.id);
+          }}>
+            +
+          </button>
+          <button>
+            –
+          </button>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+``` 
+
+Solución: 
+
+Primero puede usar el mapa para producir una nueva matriz y luego filtrar para eliminar productos con un recuento establecido en 0:
+
+```
+import { useState } from 'react';
+
+const initialProducts = [{
+  id: 0,
+  name: 'Baklava',
+  count: 1,
+}, {
+  id: 1,
+  name: 'Cheese',
+  count: 5,
+}, {
+  id: 2,
+  name: 'Spaghetti',
+  count: 2,
+}];
+
+export default function ShoppingCart() {
+  const [
+    products,
+    setProducts
+  ] = useState(initialProducts)
+
+  function handleIncreaseClick(productId) {
+    setProducts(products.map(product => {
+      if (product.id === productId) {
+        return {
+          ...product,
+          count: product.count + 1
+        };
+      } else {
+        return product;
+      }
+    }))
+  }
+
+  function handleDecreaseClick(productId) {
+    let nextProducts = products.map(product => {
+      if (product.id === productId) {
+        return {
+          ...product,
+          count: product.count - 1
+        };
+      } else {
+        return product;
+      }
+    });
+    nextProducts = nextProducts.filter(p =>
+      p.count > 0
+    );
+    setProducts(nextProducts)
+  }
+
+  return (
+    <ul>
+      {products.map(product => (
+        <li key={product.id}>
+          {product.name}
+          {' '}
+          (<b>{product.count}</b>)
+          <button onClick={() => {
+            handleIncreaseClick(product.id);
+          }}>
+            +
+          </button>
+          <button onClick={() => {
+            handleDecreaseClick(product.id);
+          }}>
+            –
+          </button>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+```
+
+
+3. Corrija las mutaciones usando métodos no mutativos.
+
+En este ejemplo, todos los controladores de eventos de App.js usan mutación. 
+
+Por lo tanto, editar y eliminar tareas pendientes no funciona. 
+
+Reescriba handleAddTodo, handleChangeTodo y handleDeleteTodo para usar los métodos no mutativos:
+
+TaskList.js
+
+```
+import { useState } from 'react';
+
+export default function TaskList({
+  todos,
+  onChangeTodo,
+  onDeleteTodo
+}) {
+  return (
+    <ul>
+      {todos.map(todo => (
+        <li key={todo.id}>
+          <Task
+            todo={todo}
+            onChange={onChangeTodo}
+            onDelete={onDeleteTodo}
+          />
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+function Task({ todo, onChange, onDelete }) {
+  const [isEditing, setIsEditing] = useState(false);
+  let todoContent;
+  if (isEditing) {
+    todoContent = (
+      <>
+        <input
+          value={todo.title}
+          onChange={e => {
+            onChange({
+              ...todo,
+              title: e.target.value
+            });
+          }} />
+        <button onClick={() => setIsEditing(false)}>
+          Save
+        </button>
+      </>
+    );
+  } else {
+    todoContent = (
+      <>
+        {todo.title}
+        <button onClick={() => setIsEditing(true)}>
+          Edit
+        </button>
+      </>
+    );
+  }
+  return (
+    <label>
+      <input
+        type="checkbox"
+        checked={todo.done}
+        onChange={e => {
+          onChange({
+            ...todo,
+            done: e.target.checked
+          });
+        }}
+      />
+      {todoContent}
+      <button onClick={() => onDelete(todo.id)}>
+        Delete
+      </button>
+    </label>
+  );
+}
+
+```
+
+
+AddTodo.js
+
+```
+import { useState } from 'react';
+
+export default function AddTodo({ onAddTodo }) {
+  const [title, setTitle] = useState('');
+  return (
+    <>
+      <input
+        placeholder="Add todo"
+        value={title}
+        onChange={e => setTitle(e.target.value)}
+      />
+      <button onClick={() => {
+        setTitle('');
+        onAddTodo(title);
+      }}>Add</button>
+    </>
+  )
+}
+
+```
+
+
+App.js
+
+```
+import { useState } from 'react';
+import AddTodo from './AddTodo.js';
+import TaskList from './TaskList.js';
+
+let nextId = 3;
+const initialTodos = [
+  { id: 0, title: 'Buy milk', done: true },
+  { id: 1, title: 'Eat tacos', done: false },
+  { id: 2, title: 'Brew tea', done: false },
+];
+
+export default function TaskApp() {
+  const [todos, setTodos] = useState(
+    initialTodos
+  );
+
+  function handleAddTodo(title) {
+    todos.push({
+      id: nextId++,
+      title: title,
+      done: false
+    });
+  }
+
+  function handleChangeTodo(nextTodo) {
+    const todo = todos.find(t =>
+      t.id === nextTodo.id
+    );
+    todo.title = nextTodo.title;
+    todo.done = nextTodo.done;
+  }
+
+  function handleDeleteTodo(todoId) {
+    const index = todos.findIndex(t =>
+      t.id === todoId
+    );
+    todos.splice(index, 1);
+  }
+
+  return (
+    <>
+      <AddTodo
+        onAddTodo={handleAddTodo}
+      />
+      <TaskList
+        todos={todos}
+        onChangeTodo={handleChangeTodo}
+        onDeleteTodo={handleDeleteTodo}
+      />
+    </>
+  );
+}
+
+```
+
+
+4. Corrige las mutaciones con Immer
+
+Este es el mismo ejemplo del desafío anterior. 
+
+Esta vez, corrige las mutaciones con Immer. 
+
+Para tu comodidad, useImmer ya está importado, así que debes cambiar la variable de estado "todos" para usarlo.
+
+```
+import { useState } from 'react';
+import { useImmer } from 'use-immer';
+import AddTodo from './AddTodo.js';
+import TaskList from './TaskList.js';
+
+let nextId = 3;
+const initialTodos = [
+  { id: 0, title: 'Buy milk', done: true },
+  { id: 1, title: 'Eat tacos', done: false },
+  { id: 2, title: 'Brew tea', done: false },
+];
+
+export default function TaskApp() {
+  const [todos, setTodos] = useState(
+    initialTodos
+  );
+
+  function handleAddTodo(title) {
+    todos.push({
+      id: nextId++,
+      title: title,
+      done: false
+    });
+  }
+
+  function handleChangeTodo(nextTodo) {
+    const todo = todos.find(t =>
+      t.id === nextTodo.id
+    );
+    todo.title = nextTodo.title;
+    todo.done = nextTodo.done;
+  }
+
+  function handleDeleteTodo(todoId) {
+    const index = todos.findIndex(t =>
+      t.id === todoId
+    );
+    todos.splice(index, 1);
+  }
+
+  return (
+    <>
+      <AddTodo
+        onAddTodo={handleAddTodo}
+      />
+      <TaskList
+        todos={todos}
+        onChangeTodo={handleChangeTodo}
+        onDeleteTodo={handleDeleteTodo}
+      />
+    </>
+  );
+}
+
+```
+
+Con Immer, puedes escribir código mutativo, siempre y cuando solo mutes partes del draft que Immer te proporciona. 
+
+Aquí, todas las mutaciones se realizan en el borrador para que el código funcione:
+
+App.js
+
+```
+import { useState } from 'react';
+import { useImmer } from 'use-immer';
+import AddTodo from './AddTodo.js';
+import TaskList from './TaskList.js';
+
+let nextId = 3;
+const initialTodos = [
+  { id: 0, title: 'Buy milk', done: true },
+  { id: 1, title: 'Eat tacos', done: false },
+  { id: 2, title: 'Brew tea', done: false },
+];
+
+export default function TaskApp() {
+  const [todos, updateTodos] = useImmer(
+    initialTodos
+  );
+
+  function handleAddTodo(title) {
+    updateTodos(draft => {
+      draft.push({
+        id: nextId++,
+        title: title,
+        done: false
+      });
+    });
+  }
+
+  function handleChangeTodo(nextTodo) {
+    updateTodos(draft => {
+      const todo = draft.find(t =>
+        t.id === nextTodo.id
+      );
+      todo.title = nextTodo.title;
+      todo.done = nextTodo.done;
+    });
+  }
+
+  function handleDeleteTodo(todoId) {
+    updateTodos(draft => {
+      const index = draft.findIndex(t =>
+        t.id === todoId
+      );
+      draft.splice(index, 1);
+    });
+  }
+
+  return (
+    <>
+      <AddTodo
+        onAddTodo={handleAddTodo}
+      />
+      <TaskList
+        todos={todos}
+        onChangeTodo={handleChangeTodo}
+        onDeleteTodo={handleDeleteTodo}
+      />
+    </>
+  );
+}
+
+```
+
+También puedes combinar los enfoques mutativos y no mutativos con Immer.
+
+Por ejemplo, en esta versión, handleAddTodo se implementa mutando el borrador de Immer, mientras que handleChangeTodo y handleDeleteTodo utilizan los métodos no mutativos map y filter:
+
+App.js
+
+```
+import { useState } from 'react';
+import { useImmer } from 'use-immer';
+import AddTodo from './AddTodo.js';
+import TaskList from './TaskList.js';
+
+let nextId = 3;
+const initialTodos = [
+  { id: 0, title: 'Buy milk', done: true },
+  { id: 1, title: 'Eat tacos', done: false },
+  { id: 2, title: 'Brew tea', done: false },
+];
+
+export default function TaskApp() {
+  const [todos, updateTodos] = useImmer(
+    initialTodos
+  );
+
+  function handleAddTodo(title) {
+    updateTodos(draft => {
+      draft.push({
+        id: nextId++,
+        title: title,
+        done: false
+      });
+    });
+  }
+
+  function handleChangeTodo(nextTodo) {
+    updateTodos(todos.map(todo => {
+      if (todo.id === nextTodo.id) {
+        return nextTodo;
+      } else {
+        return todo;
+      }
+    }));
+  }
+
+  function handleDeleteTodo(todoId) {
+    updateTodos(
+      todos.filter(t => t.id !== todoId)
+    );
+  }
+
+  return (
+    <>
+      <AddTodo
+        onAddTodo={handleAddTodo}
+      />
+      <TaskList
+        todos={todos}
+        onChangeTodo={handleChangeTodo}
+        onDeleteTodo={handleDeleteTodo}
+      />
+    </>
+  );
+}
+
+```
+
+Con Immer, puedes elegir el estilo que resulte más natural para cada caso.
+
+
+
+# Administrar estado 
+
+A medida que tu aplicación crece, conviene ser más meticuloso con la organización de tu estado y el flujo de datos entre tus componentes. 
+
+Un estado redundante o duplicado es una fuente común de errores. 
+
+En este capítulo, aprenderás a estructurar bien tu estado, a mantener la lógica de actualización de tu estado mantenible y a compartirlo entre componentes distantes.
+
+Cómo considerar los cambios de la interfaz de usuario como cambios de estado
+Cómo estructurar bien el estado
+Cómo "elevar" el estado para compartirlo entre componentes
+Cómo controlar si el estado se conserva o se restablece
+Cómo consolidar la lógica de estado compleja en una función
+Cómo pasar información sin "prop Drilling"
+Cómo escalar la gestión del estado a medida que crece tu aplicación
+
+
+## Reacción a la entrada con estado
+
+### Con React, no modificarás la interfaz de usuario directamente desde el código. 
+
+### Por ejemplo, no escribirás comandos como "deshabilitar el botón", "habilitar el botón", "mostrar el mensaje de éxito", etc. 
+
+### En su lugar, describirás la interfaz de usuario que deseas ver para los diferentes estados visuales de tu componente ("estado inicial", "estado de escritura", "estado de éxito") y luego activarás los cambios de estado en respuesta a la entrada del usuario. 
+
+Esto es similar a cómo los diseñadores conciben la interfaz de usuario.
+
+
+Aquí tienes un formulario de cuestionario creado con React. 
+
+### Observa cómo utiliza la variable de estado "status" para determinar si se habilita o deshabilita el botón de envío y si se muestra el mensaje de éxito en su lugar.
+
+
+App.js 
+
+```
+import { useState } from 'react';
+
+export default function Form() {
+  const [answer, setAnswer] = useState('');
+  const [error, setError] = useState(null);
+  const [status, setStatus] = useState('typing');
+
+  if (status === 'success') {
+    return <h1>That's right!</h1>
+  }
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    setStatus('submitting');
+    try {
+      await submitForm(answer);
+      setStatus('success');
+    } catch (err) {
+      setStatus('typing');
+      setError(err);
+    }
+  }
+
+  function handleTextareaChange(e) {
+    setAnswer(e.target.value);
+  }
+
+  return (
+    <>
+      <h2>City quiz</h2>
+      <p>
+        In which city is there a billboard that turns air into drinkable water?
+      </p>
+      <form onSubmit={handleSubmit}>
+        <textarea
+          value={answer}
+          onChange={handleTextareaChange}
+          disabled={status === 'submitting'}
+        />
+        <br />
+        <button disabled={
+          answer.length === 0 ||
+          status === 'submitting'
+        }>
+          Submit
+        </button>
+        {error !== null &&
+          <p className="Error">
+            {error.message}
+          </p>
+        }
+      </form>
+    </>
+  );
+}
+
+function submitForm(answer) {
+  // Pretend it's hitting the network.
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      let shouldError = answer.toLowerCase() !== 'lima'
+      if (shouldError) {
+        reject(new Error('Good guess but a wrong answer. Try again!'));
+      } else {
+        resolve();
+      }
+    }, 1500);
+  });
+}
+
+```
+
+
+## Elección de la estructura del estado
+
+### Una buena estructura del estado puede marcar la diferencia entre un componente fácil de modificar y depurar y uno que sea una fuente constante de errores. 
+
+### El principio más importante es que el estado no debe contener información redundante ni duplicada. 
+
+Si hay un estado innecesario, es fácil olvidar actualizarlo y generar errores.
+
+
+Por ejemplo, este formulario tiene una variable de estado fullName redundante.
+
+App.js 
+
+```
+import { useState } from 'react';
+
+export default function Form() {
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [fullName, setFullName] = useState('');
+
+  function handleFirstNameChange(e) {
+    setFirstName(e.target.value);
+    setFullName(e.target.value + ' ' + lastName);
+  }
+
+  function handleLastNameChange(e) {
+    setLastName(e.target.value);
+    setFullName(firstName + ' ' + e.target.value);
+  }
+
+  return (
+    <>
+      <h2>Let’s check you in</h2>
+      <label>
+        First name:{' '}
+        <input
+          value={firstName}
+          onChange={handleFirstNameChange}
+        />
+      </label>
+      <label>
+        Last name:{' '}
+        <input
+          value={lastName}
+          onChange={handleLastNameChange}
+        />
+      </label>
+      <p>
+        Your ticket will be issued to: <b>{fullName}</b>
+      </p>
+    </>
+  );
+}
+
+```
+
+### Puedes eliminarlo y simplificar el código calculando fullName mientras se procesa el componente:
+
+```
+import { useState } from 'react';
+
+export default function Form() {
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+
+  const fullName = firstName + ' ' + lastName;
+
+  function handleFirstNameChange(e) {
+    setFirstName(e.target.value);
+  }
+
+  function handleLastNameChange(e) {
+    setLastName(e.target.value);
+  }
+
+  return (
+    <>
+      <h2>Let’s check you in</h2>
+      <label>
+        First name:{' '}
+        <input
+          value={firstName}
+          onChange={handleFirstNameChange}
+        />
+      </label>
+      <label>
+        Last name:{' '}
+        <input
+          value={lastName}
+          onChange={handleLastNameChange}
+        />
+      </label>
+      <p>
+        Your ticket will be issued to: <b>{fullName}</b>
+      </p>
+    </>
+  );
+}
+
+```
+
+### Puede que esto parezca un cambio pequeño, pero muchos errores en las aplicaciones React se solucionan de esta manera.
+
+
+## Compartir estado entre componentes
+
+### A veces, se desea que el estado de dos componentes cambie siempre a la vez. 
+
+Para ello, se elimina el estado de ambos, se mueve al componente principal común más cercano y se lo pasa mediante propiedades. 
+
+Esto se conoce como "elevar el estado" y es una de las acciones más comunes al escribir código React.
+
+
+### En este ejemplo, solo un panel debe estar activo a la vez. 
+
+Para lograrlo, en lugar de mantener el estado activo dentro de cada panel, el componente principal contiene el estado y especifica las propiedades para sus componentes secundarios.
+
+App.js 
+
+```
+import { useState } from 'react';
+
+export default function Accordion() {
+  const [activeIndex, setActiveIndex] = useState(0);
+  return (
+    <>
+      <h2>Almaty, Kazakhstan</h2>
+      <Panel
+        title="About"
+        isActive={activeIndex === 0}
+        onShow={() => setActiveIndex(0)}
+      >
+        With a population of about 2 million, Almaty is Kazakhstan's largest city. From 1929 to 1997, it was its capital city.
+      </Panel>
+      <Panel
+        title="Etymology"
+        isActive={activeIndex === 1}
+        onShow={() => setActiveIndex(1)}
+      >
+        The name comes from <span lang="kk-KZ">алма</span>, the Kazakh word for "apple" and is often translated as "full of apples". In fact, the region surrounding Almaty is thought to be the ancestral home of the apple, and the wild <i lang="la">Malus sieversii</i> is considered a likely candidate for the ancestor of the modern domestic apple.
+      </Panel>
+    </>
+  );
+}
+
+function Panel({
+  title,
+  children,
+  isActive,
+  onShow
+}) {
+  return (
+    <section className="panel">
+      <h3>{title}</h3>
+      {isActive ? (
+        <p>{children}</p>
+      ) : (
+        <button onClick={onShow}>
+          Show
+        </button>
+      )}
+    </section>
+  );
+}
+
+```
+
+
+## Preservación y restablecimiento del estado
+
+### Al volver a renderizar un componente, React debe decidir qué partes del árbol conservar (y actualizar) y cuáles descartar o recrear desde cero. 
+
+En la mayoría de los casos, el comportamiento automático de React funciona correctamente. 
+
+Por defecto, React conserva las partes del árbol que coinciden con el árbol de componentes previamente renderizado.
+
+
+Sin embargo, a veces esto no es lo deseado. 
+
+En esta aplicación de chat, escribir un mensaje y luego cambiar el destinatario no restablece la entrada. 
+
+Esto puede provocar que el usuario envíe un mensaje accidentalmente a la persona equivocada.
+
+
+Chat.js
+
+```
+import { useState } from 'react';
+
+export default function Chat({ contact }) {
+  const [text, setText] = useState('');
+  return (
+    <section className="chat">
+      <textarea
+        value={text}
+        placeholder={'Chat to ' + contact.name}
+        onChange={e => setText(e.target.value)}
+      />
+      <br />
+      <button>Send to {contact.email}</button>
+    </section>
+  );
+}
+
+```
+
+
+ContactList.js
+
+```
+export default function ContactList({
+  selectedContact,
+  contacts,
+  onSelect
+}) {
+  return (
+    <section className="contact-list">
+      <ul>
+        {contacts.map(contact =>
+          <li key={contact.email}>
+            <button onClick={() => {
+              onSelect(contact);
+            }}>
+              {contact.name}
+            </button>
+          </li>
+        )}
+      </ul>
+    </section>
+  );
+}
+
+```
+
+
+App.js
+
+```
+import { useState } from 'react';
+import Chat from './Chat.js';
+import ContactList from './ContactList.js';
+
+export default function Messenger() {
+  const [to, setTo] = useState(contacts[0]);
+  return (
+    <div>
+      <ContactList
+        contacts={contacts}
+        selectedContact={to}
+        onSelect={contact => setTo(contact)}
+      />
+      <Chat contact={to} />
+    </div>
+  )
+}
+
+const contacts = [
+  { name: 'Taylor', email: 'taylor@mail.com' },
+  { name: 'Alice', email: 'alice@mail.com' },
+  { name: 'Bob', email: 'bob@mail.com' }
+];
+
+```
+
+### React permite anular el comportamiento predeterminado y forzar que un componente restablezca su estado pasándole una clave diferente, como <Chat key={email} />. 
+
+### Esto indica a React que, si el destinatario es diferente, debe considerarse un componente de Chat diferente que debe recrearse desde cero con los nuevos datos (y entradas similares a la interfaz de usuario). 
+
+Ahora, al cambiar de destinatario, se restablece el campo de entrada, incluso si se renderiza el mismo componente.
+
+
+## Extracción de la lógica de estado en un reductor
+
+### Los componentes con numerosas actualizaciones de estado distribuidas en varios controladores de eventos pueden resultar abrumadores. 
+
+### En estos casos, puede consolidar toda la lógica de actualización de estado fuera del componente en una sola función llamada "reductor". 
+
+Sus controladores de eventos se vuelven concisos porque solo especifican las "acciones" del usuario. 
+
+Al final del archivo, la función "reductor" especifica cómo debe actualizarse el estado en respuesta a cada acción.
+
+App.js 
+
+```
+import { useReducer } from 'react';
+import AddTask from './AddTask.js';
+import TaskList from './TaskList.js';
+
+export default function TaskApp() {
+  const [tasks, dispatch] = useReducer(
+    tasksReducer,
+    initialTasks
+  );
+
+  function handleAddTask(text) {
+    dispatch({
+      type: 'added',
+      id: nextId++,
+      text: text,
+    });
+  }
+
+  function handleChangeTask(task) {
+    dispatch({
+      type: 'changed',
+      task: task
+    });
+  }
+
+  function handleDeleteTask(taskId) {
+    dispatch({
+      type: 'deleted',
+      id: taskId
+    });
+  }
+
+  return (
+    <>
+      <h1>Prague itinerary</h1>
+      <AddTask
+        onAddTask={handleAddTask}
+      />
+      <TaskList
+        tasks={tasks}
+        onChangeTask={handleChangeTask}
+        onDeleteTask={handleDeleteTask}
+      />
+    </>
+  );
+}
+
+function tasksReducer(tasks, action) {
+  switch (action.type) {
+    case 'added': {
+      return [...tasks, {
+        id: action.id,
+        text: action.text,
+        done: false
+      }];
+    }
+    case 'changed': {
+      return tasks.map(t => {
+        if (t.id === action.task.id) {
+          return action.task;
+        } else {
+          return t;
+        }
+      });
+    }
+    case 'deleted': {
+      return tasks.filter(t => t.id !== action.id);
+    }
+    default: {
+      throw Error('Unknown action: ' + action.type);
+    }
+  }
+}
+
+let nextId = 3;
+const initialTasks = [
+  { id: 0, text: 'Visit Kafka Museum', done: true },
+  { id: 1, text: 'Watch a puppet show', done: false },
+  { id: 2, text: 'Lennon Wall pic', done: false }
+];
+
+```
+
+
+## Transferencia de datos en profundidad mediante contexto
+
+### Normalmente, se transfiere información de un componente padre a un componente hijo mediante propiedades. 
+
+### Sin embargo, transferir propiedades puede resultar inconveniente si se necesita transferir una propiedad a través de varios componentes, o si varios componentes necesitan la misma información. 
+
+### El contexto permite que el componente padre ponga información a disposición de cualquier componente en el árbol inferior, independientemente de su profundidad, sin pasarla explícitamente mediante propiedades.
+
+
+En este caso, el componente Encabezado determina su nivel de encabezado preguntando a la Sección más cercana por su nivel. 
+
+Cada Sección rastrea su propio nivel preguntando a la Sección padre y añadiéndole uno. 
+
+Cada Sección proporciona información a todos los componentes inferiores sin pasar propiedades; lo hace mediante contexto.
+
+App.js 
+
+```
+import Heading from './Heading.js';
+import Section from './Section.js';
+
+export default function Page() {
+  return (
+    <Section>
+      <Heading>Title</Heading>
+      <Section>
+        <Heading>Heading</Heading>
+        <Heading>Heading</Heading>
+        <Heading>Heading</Heading>
+        <Section>
+          <Heading>Sub-heading</Heading>
+          <Heading>Sub-heading</Heading>
+          <Heading>Sub-heading</Heading>
+          <Section>
+            <Heading>Sub-sub-heading</Heading>
+            <Heading>Sub-sub-heading</Heading>
+            <Heading>Sub-sub-heading</Heading>
+          </Section>
+        </Section>
+      </Section>
+    </Section>
+  );
+}
+
+```
+
+
+## Escalado con reductor y contexto
+
+### Los reductores permiten consolidar la lógica de actualización de estado de un componente. 
+
+### El contexto permite transmitir información a otros componentes. 
+
+### Se pueden combinar reductores y contexto para gestionar el estado de una pantalla compleja.
+
+
+### Con este enfoque, un componente principal con un estado complejo lo gestiona con un reductor. 
+
+### Otros componentes en cualquier punto del árbol pueden leer su estado mediante el contexto. 
+
+### También pueden enviar acciones para actualizarlo.
+
+
+App.js
+
+```
+import AddTask from './AddTask.js';
+import TaskList from './TaskList.js';
+import { TasksProvider } from './TasksContext.js';
+
+export default function TaskApp() {
+  return (
+    <TasksProvider>
+      <h1>Day off in Kyoto</h1>
+      <AddTask />
+      <TaskList />
+    </TasksProvider>
+  );
+}
+
+```
+
+
+# Reacción a la entrada con estado
+
+### React ofrece una forma declarativa de manipular la interfaz de usuario (IU). 
+
+### En lugar de manipular directamente partes individuales de la IU, se describen los diferentes estados en los que puede encontrarse el componente y se alterna entre ellos según la entrada del usuario. 
+
+### Esto es similar a cómo los diseñadores conciben la IU.
+
+
+Aprenderás:
+
+En qué se diferencia la programación declarativa de IU de la programación imperativa de IU
+
+Cómo enumerar los diferentes estados visuales en los que puede encontrarse el componente
+
+Cómo activar los cambios entre los diferentes estados visuales desde el código
+
+
+## Comparación entre la interfaz de usuario declarativa y la imperativa
+
+### Al diseñar interacciones de interfaz de usuario, probablemente piense en cómo cambia esta en respuesta a las acciones del usuario. 
+
+Imagine un formulario que permite al usuario enviar una respuesta:
+
+
+1. Al escribir algo en el formulario, se habilita el botón "Enviar".
+
+2. Al presionar "Enviar", tanto el formulario como el botón se deshabilitan y aparece un indicador.
+
+3. Si la solicitud de red se realiza correctamente, el formulario se oculta y aparece el mensaje "Gracias".
+
+4. Si la solicitud de red falla, aparece un mensaje de error y el formulario se vuelve a habilitar.
+
+
+### En programación imperativa, lo anterior se corresponde directamente con la forma de implementar la interacción. 
+
+### Debe escribir las instrucciones exactas para manipular la interfaz de usuario en función de lo que acaba de ocurrir. 
+
+Otra forma de verlo: imagine que va junto a alguien en un coche y le indica paso a paso a dónde ir. 
+
+
+No saben adónde quieres ir, simplemente siguen tus órdenes. 
+
+(¡Y si te equivocas en las instrucciones, terminas en el lugar equivocado!) 
+
+### Se llama imperativo porque tienes que "dar órdenes" a cada elemento, desde el spinner hasta el botón, indicándole al ordenador cómo actualizar la interfaz de usuario.
+
+
+En este ejemplo de programación de interfaz de usuario imperativa, el formulario se crea sin React. 
+
+Solo utiliza el DOM del navegador:
+
+index.js
+
+```
+async function handleFormSubmit(e) {
+  e.preventDefault();
+  disable(textarea);
+  disable(button);
+  show(loadingMessage);
+  hide(errorMessage);
+  try {
+    await submitForm(textarea.value);
+    show(successMessage);
+    hide(form);
+  } catch (err) {
+    show(errorMessage);
+    errorMessage.textContent = err.message;
+  } finally {
+    hide(loadingMessage);
+    enable(textarea);
+    enable(button);
+  }
+}
+
+function handleTextareaChange() {
+  if (textarea.value.length === 0) {
+    disable(button);
+  } else {
+    enable(button);
+  }
+}
+
+function hide(el) {
+  el.style.display = 'none';
+}
+
+function show(el) {
+  el.style.display = '';
+}
+
+function enable(el) {
+  el.disabled = false;
+}
+
+function disable(el) {
+  el.disabled = true;
+}
+
+function submitForm(answer) {
+  // Pretend it's hitting the network.
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      if (answer.toLowerCase() === 'istanbul') {
+        resolve();
+      } else {
+        reject(new Error('Good guess but a wrong answer. Try again!'));
+      }
+    }, 1500);
+  });
+}
+
+let form = document.getElementById('form');
+let textarea = document.getElementById('textarea');
+let button = document.getElementById('button');
+let loadingMessage = document.getElementById('loading');
+let errorMessage = document.getElementById('error');
+let successMessage = document.getElementById('success');
+form.onsubmit = handleFormSubmit;
+textarea.oninput = handleTextareaChange;
+
+```
+
+index.html
+
+```
+<form id="form">
+  <h2>City quiz</h2>
+  <p>
+    What city is located on two continents?
+  </p>
+  <textarea id="textarea"></textarea>
+  <br />
+  <button id="button" disabled>Submit</button>
+  <p id="loading" style="display: none">Loading...</p>
+  <p id="error" style="display: none; color: red;"></p>
+</form>
+<h1 id="success" style="display: none">That's right!</h1>
+
+<style>
+* { box-sizing: border-box; }
+body { font-family: sans-serif; margin: 20px; padding: 0; }
+</style>
+
+```
+
+Manipular la interfaz de usuario (IU) funciona de forma imperativa bastante bien en ejemplos aislados, pero se vuelve exponencialmente más difícil de gestionar en sistemas más complejos. 
+
+Imagina actualizar una página llena de formularios diferentes como este. 
+
+Añadir un nuevo elemento de la IU o una nueva interacción requeriría una revisión cuidadosa de todo el código existente para asegurarse de no haber introducido un error (por ejemplo, olvidar mostrar u ocultar algo).
+
+
+React se creó para resolver este problema.
+
+
+### En React, no se manipula directamente la IU; es decir, no se activan, desactivan, muestran u ocultan componentes directamente. 
+
+### En su lugar, se declara lo que se quiere mostrar y React averigua cómo actualizar la IU. 
+
+Imagina subir a un taxi y decirle al conductor adónde quieres ir en lugar de decirle exactamente dónde girar. 
+
+El trabajo del conductor es llevarte hasta allí, e incluso podría conocer algunos atajos que no has considerado.
+
+
+## Pensando en la interfaz de usuario declarativamente
+
+Ya viste cómo implementar un formulario de forma imperativa. 
+
+Para comprender mejor cómo pensar en React, a continuación te explicaremos cómo reimplementar esta interfaz de usuario en React:
+
+
+1. Identifica los diferentes estados visuales de tu componente.
+
+2. Determina qué desencadena esos cambios de estado.
+
+3. Representa el estado en memoria con useState.
+
+4. Elimina las variables de estado no esenciales.
+
+5. Conecta los controladores de eventos para establecer el estado.
+
+
+## 1. Identifica los diferentes estados visuales de tu componente.
+
+### En informática, es posible que hayas oído hablar de una "máquina de estados" en uno de varios "estados". 
+
+### Si trabajas con un diseñador, es posible que hayas visto maquetas para diferentes "estados visuales". 
+
+React se encuentra en la intersección del diseño y la informática, por lo que ambas ideas son fuentes de inspiración.
+
+### Primero, necesitas visualizar todos los diferentes "estados" de la interfaz de usuario que el usuario podría ver:
+
+
+1. Vacío: El formulario tiene el botón "Enviar" deshabilitado.
+
+2. Escribiendo: El formulario tiene el botón "Enviar" habilitado.
+
+3. Enviando: El formulario está completamente deshabilitado. Se muestra el indicador giratorio.
+
+4. Éxito: Se muestra un mensaje de "Gracias" en lugar de un formulario.
+
+5. Error: Igual que el estado "Escribiendo", pero con un mensaje de error adicional.
+
+
+### Al igual que un diseñador, querrás crear maquetas (mock) para los diferentes estados antes de agregar lógica. 
+
+Por ejemplo, aquí hay una maqueta solo para la parte visual del formulario. 
+
+### Esta simulación (mock) está controlada por una propiedad llamada estado con un valor predeterminado de 'vacío': (prop empy)
+
+
+App.js 
+
+Form toma un prop status con un valor empty que está predeterminado cuando no hay otro. 
+
+### Va a retornar una serie de elementos distintos según el valor de la prop status 
+
+```
+export default function Form({
+  status = 'empty'
+}) {
+  if (status === 'success') {
+    return <h1>That's right!</h1>
+  }
+  return (
+    <>
+      <h2>City quiz</h2>
+      <p>
+        In which city is there a billboard that turns air into drinkable water?
+      </p>
+      <form>
+        <textarea />
+        <br />
+        <button>
+          Submit
+        </button>
+      </form>
+    </>
+  )
+}
+
+```
+
+
+Puedes llamar a esa propiedad como quieras; el nombre no importa. 
+
+### Prueba a modificar status = 'empty' a status = 'success' para ver el mensaje de éxito. 
+
+### La simulación te permite iterar rápidamente en la interfaz de usuario antes de conectar la lógica. 
+
+Aquí tienes un prototipo más completo del mismo componente, aún controlado por la propiedad status:
+
+
+App.js 
+
+### Se agregaron más estados para poder ver que retorna o resulta si sucede uno u otro. 
+
+### Cada estado tiene su retorno
+
+```
+
+export default function Form({
+  // Try 'submitting', 'error', 'success':
+  status = 'empty'
+}) {
+  if (status === 'success') {
+    return <h1>That's right!</h1>
+  }
+  return (
+    <>
+      <h2>City quiz</h2>
+      <p>
+        In which city is there a billboard that turns air into drinkable water?
+      </p>
+      <form>
+        <textarea disabled={
+          status === 'submitting'
+        } />
+        <br />
+        <button disabled={
+          status === 'empty' ||
+          status === 'submitting'
+        }>
+          Submit
+        </button>
+        {status === 'error' &&
+          <p className="Error">
+            Good guess but a wrong answer. Try again!
+          </p>
+        }
+      </form>
+      </>
+  );
+}
+
+```
+
+### Algunos elementos contienen js referido al valor de prop status para activar/desactivar estos mismos. 
+
+
+## En profundidad: Mostrar muchos estados visuales a la vez
+
+### Si un componente tiene muchos estados visuales, puede ser conveniente mostrarlos todos en una página:
+
+
+Form.js
+
+Espera un valor para la prop status
+
+Si es success retorna h1 
+
+De lo contrario un form con diferentes elementos que dependen de la prop status. 
+
+```
+export default function Form({ status }) {
+  if (status === 'success') {
+    return <h1>That's right!</h1>
+  }
+  return (
+    <form>
+      <textarea disabled={
+        status === 'submitting'
+      } />
+      <br />
+      <button disabled={
+        status === 'empty' ||
+        status === 'submitting'
+      }>
+        Submit
+      </button>
+      {status === 'error' &&
+        <p className="Error">
+          Good guess but a wrong answer. Try again!
+        </p>
+      }
+    </form>
+  );
+}
+
+```
+
+
+App.js
+
+```
+import Form from './Form.js';
+
+let statuses = [
+  'empty',
+  'typing',
+  'submitting',
+  'success',
+  'error',
+];
+
+export default function App() {
+  return (
+    <>
+      {statuses.map(status => (
+        <section key={status}>
+          <h4>Form ({status}):</h4>
+          <Form status={status} />
+        </section>
+      ))}
+    </>
+  );
+}
+
+```
+
+### El componente App manipulará al componente Form que espera valores para su estado en la prop status. 
+
+Mapea el array para darle un elemento section con h4 y form. 
+
+la key, el titulo y el componente form el valor de la variable local status
+
+
+### Las páginas como ésta suelen llamarse “guías de estilo", "living styleguides", "storybooks"
+
+
+## 2. Determinar qué desencadena esos cambios de estado.
+
+### Puede activar actualizaciones de estado en respuesta a dos tipos de entradas:
+
+
+1. Entradas humanas (ui), como hacer clic en un botón, escribir en un campo o navegar por un enlace.
+
+2. Entradas informáticas (hard/soft), como la llegada de una respuesta de red, el final de un tiempo de espera o la carga de una imagen. 
+
+
+### En ambos casos, debe configurar variables de estado para actualizar la interfaz de usuario. 
+
+Para el formulario que está desarrollando, deberá cambiar el estado en respuesta a diferentes entradas:
+
+
+1. Al cambiar la entrada de texto (humano), esta pasará del estado Vacío al estado Escribiendo o viceversa, dependiendo de si el cuadro de texto está vacío o no.
+
+2. Al hacer clic en el botón Enviar (humano), pasará al estado Enviando.
+
+3. Una respuesta de red correcta (computadora) pasará al estado Correcto.
+
+4. Una respuesta de red fallida (computadora) pasará al estado Error con el mensaje de error correspondiente.
+
+
+Nota
+
+### ¡Ten en cuenta que las entradas humanas suelen requerir controladores de eventos!
+
+
+### Para visualizar mejor este flujo, intenta dibujar cada estado en papel como un círculo etiquetado y cada cambio entre dos estados como una flecha. 
+
+### De esta manera, puedes esbozar muchos flujos y corregir errores mucho antes de la implementación.
+
+changes (>)
+
+```
+                    
+					Press submit> 
+          (Typing)_ _ _ _ _ _ _ _ _ (Submitting)
+         /							  / 	\
+        / Start typing>              /       \
+(Empty)/                            /         \
+					  Network err> /	       \ Network succ>
+                                  /             \
+                                 /               \
+                              (Error)          (Success) 
+
+```
+
+
+## 3. Representar el estado en memoria con useState
+
+### A continuación, deberá representar los estados visuales de su componente en memoria con useState. 
+
+### La simplicidad es clave: cada parte del estado es una "parte móvil", y se busca la menor cantidad posible de "partes móviles". 
+
+¡Cuanta más complejidad, más errores!
+
+
+### Comience con el estado que debe estar presente. (visible/inicial?) 
+
+#### Por ejemplo, deberá almacenar la respuesta de la entrada y el error (si existe) para almacenar el último error: 
+
+
+Antes (array statuses = 'empty', 'typing', 'submitting', 'success', 'error';)
+
+```
+const [answer, setAnswer] = useState('');
+const [error, setError] = useState(null);
+
+```
+
+### Luego, necesitarás una variable de estado que represente cuál de los estados visuales quieres mostrar. 
+
+Normalmente hay más de una forma de representarlo en memoria, así que tendrás que experimentar.
+
+
+### Si te cuesta encontrar la mejor manera de inmediato, empieza añadiendo suficientes estados como para asegurarte de que todos los estados visuales posibles estén cubiertos:
+
+```
+const [isEmpty, setIsEmpty] = useState(true);
+const [isTyping, setIsTyping] = useState(false);
+const [isSubmitting, setIsSubmitting] = useState(false);
+const [isSuccess, setIsSuccess] = useState(false);
+const [isError, setIsError] = useState(false);
+
+```
+
+Es probable que tu primera idea no sea la mejor, pero no hay problema: ¡refactorizar el estado es parte del proceso!
+
+
+## 4. Elimine las variables de estado no esenciales.
+
+### Desea evitar la duplicación en el contenido del estado, de modo que solo registre lo esencial. 
+
+### Dedicar tiempo a refactorizar la estructura de su estado facilitará la comprensión de sus componentes, reducirá la duplicación y evitará significados no deseados. 
+
+### El objetivo es evitar que el estado en memoria no represente ninguna interfaz de usuario válida que desee que vea el usuario. 
+
+#### (Por ejemplo, nunca debe mostrar un mensaje de error y deshabilitar la entrada al mismo tiempo, ya que el usuario no podrá corregir el error).
+
+
+### Aquí hay algunas preguntas que puede plantearse sobre sus variables de estado:
+
+
+1. ¿Este estado causa una paradoja? 
+
+Por ejemplo, isTyping e isSubmitting no pueden ser ambos verdaderos. 
+
+### Una paradoja suele significar que el estado no está lo suficientemente restringido. 
+
+Hay cuatro combinaciones posibles de dos valores booleanos, pero solo tres corresponden a estados válidos. 
+
+Para eliminar el estado "imposible", puedes combinarlos en un estado que debe tener uno de estos tres valores: 'escribiendo', 'enviando' o 'éxito'.
+
+
+2. ¿Ya está disponible la misma información en otra variable de estado? 
+
+Otra paradoja: isEmpty e isTyping no pueden ser verdaderas simultáneamente. 
+
+### Al convertirlas en variables de estado independientes, corres el riesgo de que se desincronizaran y provoquen errores. 
+
+#### Afortunadamente, puedes eliminar isEmpty y, en su lugar, comprobar answer.length === 0.
+
+
+3. ¿Puedes obtener la misma información de la inversa de otra variable de estado? 
+
+#### isError no es necesario porque puedes comprobar error !== null.
+
+
+Después de esta limpieza, quedan 3 variables de estado esenciales (¡antes 7!):
+
+```
+const [answer, setAnswer] = useState('');
+const [error, setError] = useState(null);
+const [status, setStatus] = useState('typing'); // 'typing', 'submitting', or 'success'
+
+```
+
+### Sabes que son esenciales porque no puedes eliminar ninguno de ellos sin romper la funcionalidad.
+
+
+## En profundidad: Eliminando estados “imposibles” con un reductor
+
+Estas tres variables representan adecuadamente el estado de este formulario. 
+
+### Sin embargo, aún existen estados intermedios que no tienen sentido. 
+
+#### Por ejemplo, un error no nulo no tiene sentido cuando el estado es "éxito". 
+
+Para modelar el estado con mayor precisión, se puede extraer en un reductor. 
+
+### Los reductores permiten unificar múltiples variables de estado en un solo objeto y consolidar toda la lógica relacionada.
+
+
+## 5. Conecte los controladores de eventos para establecer el estado.
+
+### Por último, cree los controladores de eventos que actualicen el estado. 
+
+A continuación se muestra el formulario final, con todos los controladores de eventos conectados: 
+
+
+App.js 
+
+#### Hay dos componentes: Form y submitForm 
+
+#### Form maneja la ui y submitForm una promesa
+
+#### La función async handleSubmit espera la promesa del componente submitForm
+
+
+```
+import { useState } from 'react';
+
+export default function Form() {
+  const [answer, setAnswer] = useState('');
+  const [error, setError] = useState(null);
+  const [status, setStatus] = useState('typing');
+
+  if (status === 'success') {
+    return <h1>That's right!</h1>
+  }
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    setStatus('submitting');
+    try {
+      await submitForm(answer);
+      setStatus('success');
+    } catch (err) {
+      setStatus('typing');
+      setError(err);
+    }
+  }
+
+  function handleTextareaChange(e) {
+    setAnswer(e.target.value);
+  }
+
+  return (
+    <>
+      <h2>City quiz</h2>
+      <p>
+        In which city is there a billboard that turns air into drinkable water?
+      </p>
+      <form onSubmit={handleSubmit}>
+        <textarea
+          value={answer}
+          onChange={handleTextareaChange}
+          disabled={status === 'submitting'}
+        />
+        <br />
+        <button disabled={
+          answer.length === 0 ||
+          status === 'submitting'
+        }>
+          Submit
+        </button>
+        {error !== null &&
+          <p className="Error">
+            {error.message}
+          </p>
+        }
+      </form>
+    </>
+  );
+}
+
+function submitForm(answer) {
+  // Pretend it's hitting the network.
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      let shouldError = answer.toLowerCase() !== 'lima'
+      if (shouldError) {
+        reject(new Error('Good guess but a wrong answer. Try again!'));
+      } else {
+        resolve();
+      }
+    }, 1500);
+  });
+}
+
+```
+
+#### La vista por defecto tiene a los estados answer(""), error(null), status ("typing")
+
+#### Los elementos o la ui de la vista predeterminada/inicial modificarán estos valores con eventos y lógica y se modificará la misma vista. 
+
+#### La función async handleSubmit cambia el estado status("typing") a "submit" con setStatus.
+
+#### Ejecutá código en try  y ejecuta los errores en catch.
+
+#### Espera el valor de la función submitForm(answer) y cambia la variable de estado status.
+
+#### La función handleTextareaChange cambia el estado de answer según e.target.value
+
+
+### Aunque este código es más extenso que el ejemplo imperativo original, es mucho menos frágil. 
+
+### Expresar todas las interacciones como cambios de estado permite introducir posteriormente nuevos estados visuales sin afectar los existentes. 
+
+### También permite cambiar lo que debe mostrarse en cada estado sin cambiar la lógica de la interacción.
+
+
+## Rs inputs
+
+### La programación declarativa implica describir la interfaz de usuario (IU) para cada estado visual en lugar de microgestionarla (imperativo).
+
+### Al desarrollar un componente:
+
+1. Identificar todos sus estados visuales.
+
+2. Determinar los desencadenantes humanos y computacionales de los cambios de estado.
+
+3. Modelar el estado con useState.
+
+4. Eliminar los estados no esenciales para evitar errores y paradojas.
+
+5. Conectar los controladores de eventos para establecer el estado.
+
+
+## Ejercicios
+
+1. Añadir y eliminar una clase CSS
+
+Configure la imagen para que al hacer clic en ella se elimine la clase CSS background--active del <div> externo, pero se añada la clase picture--active al <img>. 
+
+Al hacer clic de nuevo en el fondo, se restaurarán las clases CSS originales.
+
+
+Visualmente, al hacer clic en la imagen se eliminará el fondo morado y se resaltará el borde. 
+
+Al hacer clic fuera de la imagen, se resaltará el fondo, pero se eliminará el resaltado del borde. 
+
+
+App.js 
+
+```
+export default function Picture() {
+  return (
+    <div className="background background--active">
+      <img
+        className="picture"
+        alt="Rainbow houses in Kampung Pelangi, Indonesia"
+        src="https://i.imgur.com/5qwVYb1.jpeg"
+      />
+    </div>
+  );
+}
+
+```
+
+
+Solución:
+
+### Este componente tiene dos estados visuales: cuando la imagen está activa y cuando está inactiva:
+
+1. Cuando la imagen está activa, las clases CSS son background e picture picture--active.
+
+2. Cuando la imagen está inactiva, las clases CSS son background background--active e picture.
+
+
+### Una sola variable de estado booleana es suficiente para recordar si la imagen está activa.
+
+La tarea original consistía en eliminar o añadir clases CSS. 
+
+### Sin embargo, en React es necesario describir lo que se desea ver en lugar de manipular los elementos de la interfaz de usuario. 
+
+#### Por lo tanto, es necesario calcular ambas clases CSS en función del estado actual. 
+
+#### También es necesario detener la propagación para que al hacer clic en la imagen no se registre como un clic en el fondo.
+
+
+Verifique que esta versión funcione haciendo clic en la imagen y luego fuera de ella:
+
+App.js 
+
+```
+import { useState } from 'react';
+
+export default function Picture() {
+  const [isActive, setIsActive] = useState(false);
+
+  let backgroundClassName = 'background';
+  let pictureClassName = 'picture';
+  if (isActive) {
+    pictureClassName += ' picture--active';
+  } else {
+    backgroundClassName += ' background--active';
+  }
+
+  return (
+    <div
+      className={backgroundClassName}
+      onClick={() => setIsActive(false)}
+    >
+      <img
+        onClick={e => {
+          e.stopPropagation();
+          setIsActive(true);
+        }}
+        className={pictureClassName}
+        alt="Rainbow houses in Kampung Pelangi, Indonesia"
+        src="https://i.imgur.com/5qwVYb1.jpeg"
+      />
+    </div>
+  );
+}
+
+```
+
+
+Alternativamente, puede devolver dos fragmentos separados de JSX:
+
+App.js 
+
+```
+import { useState } from 'react';
+
+export default function Picture() {
+  const [isActive, setIsActive] = useState(false);
+  if (isActive) {
+    return (
+      <div
+        className="background"
+        onClick={() => setIsActive(false)}
+      >
+        <img
+          className="picture picture--active"
+          alt="Rainbow houses in Kampung Pelangi, Indonesia"
+          src="https://i.imgur.com/5qwVYb1.jpeg"
+          onClick={e => e.stopPropagation()}
+        />
+      </div>
+    );
+  }
+  return (
+    <div className="background background--active">
+      <img
+        className="picture"
+        alt="Rainbow houses in Kampung Pelangi, Indonesia"
+        src="https://i.imgur.com/5qwVYb1.jpeg"
+        onClick={() => setIsActive(true)}
+      />
+    </div>
+  );
+}
+
+```
+
+### Tenga en cuenta que si dos fragmentos JSX diferentes describen el mismo árbol, su anidación (primero <div> → primero <img>) debe coincidir. 
+
+#### De lo contrario, al activar o desactivar isActive, se recrearía todo el árbol inferior y se restablecería su estado. 
+
+Por eso, si se devuelve un árbol JSX similar en ambos casos, es mejor escribirlos como un solo fragmento JSX.
+
+
+2. Editor de perfiles
+
+Aquí tienes un pequeño formulario implementado con JavaScript y DOM. 
+
+Experimenta con él para comprender su funcionamiento:
+
+
+index.js 
+
+```
+function handleFormSubmit(e) {
+  e.preventDefault();
+  if (editButton.textContent === 'Edit Profile') {
+    editButton.textContent = 'Save Profile';
+    hide(firstNameText);
+    hide(lastNameText);
+    show(firstNameInput);
+    show(lastNameInput);
+  } else {
+    editButton.textContent = 'Edit Profile';
+    hide(firstNameInput);
+    hide(lastNameInput);
+    show(firstNameText);
+    show(lastNameText);
+  }
+}
+
+function handleFirstNameChange() {
+  firstNameText.textContent = firstNameInput.value;
+  helloText.textContent = (
+    'Hello ' +
+    firstNameInput.value + ' ' +
+    lastNameInput.value + '!'
+  );
+}
+
+function handleLastNameChange() {
+  lastNameText.textContent = lastNameInput.value;
+  helloText.textContent = (
+    'Hello ' +
+    firstNameInput.value + ' ' +
+    lastNameInput.value + '!'
+  );
+}
+
+function hide(el) {
+  el.style.display = 'none';
+}
+
+function show(el) {
+  el.style.display = '';
+}
+
+let form = document.getElementById('form');
+let editButton = document.getElementById('editButton');
+let firstNameInput = document.getElementById('firstNameInput');
+let firstNameText = document.getElementById('firstNameText');
+let lastNameInput = document.getElementById('lastNameInput');
+let lastNameText = document.getElementById('lastNameText');
+let helloText = document.getElementById('helloText');
+form.onsubmit = handleFormSubmit;
+firstNameInput.oninput = handleFirstNameChange;
+lastNameInput.oninput = handleLastNameChange;
+
+```
+
+
+index.html
+
+```
+<form id="form">
+  <label>
+    First name:
+    <b id="firstNameText">Jane</b>
+    <input
+      id="firstNameInput"
+      value="Jane"
+      style="display: none">
+  </label>
+  <label>
+    Last name:
+    <b id="lastNameText">Jacobs</b>
+    <input
+      id="lastNameInput"
+      value="Jacobs"
+      style="display: none">
+  </label>
+  <button type="submit" id="editButton">Edit Profile</button>
+  <p><i id="helloText">Hello, Jane Jacobs!</i></p>
+</form>
+
+<style>
+* { box-sizing: border-box; }
+body { font-family: sans-serif; margin: 20px; padding: 0; }
+label { display: block; margin-bottom: 20px; }
+</style>
+
+```
+
+
+### Este formulario cambia entre dos modos: en el modo de edición, se ven las entradas, y en el modo de visualización, solo se ve el resultado. 
+
+La etiqueta del botón cambia entre "Editar" y "Guardar" según el modo en el que se encuentre. 
+
+Al cambiar las entradas, el mensaje de bienvenida en la parte inferior se actualiza en tiempo real.
+
+
+Tu tarea es reimplementarlo en React en el entorno de pruebas que se muestra a continuación. 
+
+Para tu comodidad, el marcado ya se convirtió a JSX, pero tendrás que configurarlo para que muestre y oculte las entradas como el original.
+
+
+¡Asegúrate de que también se actualice el texto en la parte inferior!
+
+App.js 
+
+```
+export default function EditProfile() {
+  return (
+    <form>
+      <label>
+        First name:{' '}
+        <b>Jane</b>
+        <input />
+      </label>
+      <label>
+        Last name:{' '}
+        <b>Jacobs</b>
+        <input />
+      </label>
+      <button type="submit">
+        Edit Profile
+      </button>
+      <p><i>Hello, Jane Jacobs!</i></p>
+    </form>
+  );
+}
+
+```
+
+Solución:
+
+#### Necesitará dos variables de estado para almacenar los valores de entrada: firstName y lastName. 
+
+#### También necesitará una variable de estado isEditing que indique si se muestran o no las entradas. 
+
+No debería necesitar una variable fullName, ya que el nombre completo siempre se puede calcular a partir de firstName y lastName.
+
+
+Finalmente, debería usar la representación condicional para mostrar u ocultar las entradas según isEditing.
+
+
+App.js 
+
+```
+import { useState } from 'react';
+
+export default function EditProfile() {
+  const [isEditing, setIsEditing] = useState(false);
+  const [firstName, setFirstName] = useState('Jane');
+  const [lastName, setLastName] = useState('Jacobs');
+
+  return (
+    <form onSubmit={e => {
+      e.preventDefault();
+      setIsEditing(!isEditing);
+    }}>
+      <label>
+        First name:{' '}
+        {isEditing ? (
+          <input
+            value={firstName}
+            onChange={e => {
+              setFirstName(e.target.value)
+            }}
+          />
+        ) : (
+          <b>{firstName}</b>
+        )}
+      </label>
+      <label>
+        Last name:{' '}
+        {isEditing ? (
+          <input
+            value={lastName}
+            onChange={e => {
+              setLastName(e.target.value)
+            }}
+          />
+        ) : (
+          <b>{lastName}</b>
+        )}
+      </label>
+      <button type="submit">
+        {isEditing ? 'Save' : 'Edit'} Profile
+      </button>
+      <p><i>Hello, {firstName} {lastName}!</i></p>
+    </form>
+  );
+}
+
+```
+
+Compare esta solución con el código imperativo original. ¿En qué se diferencian?
+
+
+3. Refactorizar la solución imperativa sin React
+
+Aquí está el entorno de pruebas original del desafío anterior, escrito imperativamente sin React: 
+
+
+index.js 
+
+```
+function handleFormSubmit(e) {
+  e.preventDefault();
+  if (editButton.textContent === 'Edit Profile') {
+    editButton.textContent = 'Save Profile';
+    hide(firstNameText);
+    hide(lastNameText);
+    show(firstNameInput);
+    show(lastNameInput);
+  } else {
+    editButton.textContent = 'Edit Profile';
+    hide(firstNameInput);
+    hide(lastNameInput);
+    show(firstNameText);
+    show(lastNameText);
+  }
+}
+
+function handleFirstNameChange() {
+  firstNameText.textContent = firstNameInput.value;
+  helloText.textContent = (
+    'Hello ' +
+    firstNameInput.value + ' ' +
+    lastNameInput.value + '!'
+  );
+}
+
+function handleLastNameChange() {
+  lastNameText.textContent = lastNameInput.value;
+  helloText.textContent = (
+    'Hello ' +
+    firstNameInput.value + ' ' +
+    lastNameInput.value + '!'
+  );
+}
+
+function hide(el) {
+  el.style.display = 'none';
+}
+
+function show(el) {
+  el.style.display = '';
+}
+
+let form = document.getElementById('form');
+let editButton = document.getElementById('editButton');
+let firstNameInput = document.getElementById('firstNameInput');
+let firstNameText = document.getElementById('firstNameText');
+let lastNameInput = document.getElementById('lastNameInput');
+let lastNameText = document.getElementById('lastNameText');
+let helloText = document.getElementById('helloText');
+form.onsubmit = handleFormSubmit;
+firstNameInput.oninput = handleFirstNameChange;
+lastNameInput.oninput = handleLastNameChange;
+
+```
+
+index.html 
+
+```
+<form id="form">
+  <label>
+    First name:
+    <b id="firstNameText">Jane</b>
+    <input
+      id="firstNameInput"
+      value="Jane"
+      style="display: none">
+  </label>
+  <label>
+    Last name:
+    <b id="lastNameText">Jacobs</b>
+    <input
+      id="lastNameInput"
+      value="Jacobs"
+      style="display: none">
+  </label>
+  <button type="submit" id="editButton">Edit Profile</button>
+  <p><i id="helloText">Hello, Jane Jacobs!</i></p>
+</form>
+
+<style>
+* { box-sizing: border-box; }
+body { font-family: sans-serif; margin: 20px; padding: 0; }
+label { display: block; margin-bottom: 20px; }
+</style>
+
+```
+
+Imagina que React no existiera. 
+
+¿Podrías refactorizar este código para que la lógica sea menos frágil y más similar a la de la versión de React? 
+
+¿Cómo se vería si el estado fuera explícito, como en React?
+
+
+Si te cuesta saber por dónde empezar, el siguiente stub ya tiene la mayor parte de la estructura. 
+
+Si empiezas aquí, completa la lógica que falta en la función updateDOM. 
+
+(Consulta el código original si es necesario).
+
+
+index.js 
+
+```
+let firstName = 'Jane';
+let lastName = 'Jacobs';
+let isEditing = false;
+
+function handleFormSubmit(e) {
+  e.preventDefault();
+  setIsEditing(!isEditing);
+}
+
+function handleFirstNameChange(e) {
+  setFirstName(e.target.value);
+}
+
+function handleLastNameChange(e) {
+  setLastName(e.target.value);
+}
+
+function setFirstName(value) {
+  firstName = value;
+  updateDOM();
+}
+
+function setLastName(value) {
+  lastName = value;
+  updateDOM();
+}
+
+function setIsEditing(value) {
+  isEditing = value;
+  updateDOM();
+}
+
+function updateDOM() {
+  if (isEditing) {
+    editButton.textContent = 'Save Profile';
+    // TODO: show inputs, hide content
+  } else {
+    editButton.textContent = 'Edit Profile';
+    // TODO: hide inputs, show content
+  }
+  // TODO: update text labels
+}
+
+function hide(el) {
+  el.style.display = 'none';
+}
+
+function show(el) {
+  el.style.display = '';
+}
+
+let form = document.getElementById('form');
+let editButton = document.getElementById('editButton');
+let firstNameInput = document.getElementById('firstNameInput');
+let firstNameText = document.getElementById('firstNameText');
+let lastNameInput = document.getElementById('lastNameInput');
+let lastNameText = document.getElementById('lastNameText');
+let helloText = document.getElementById('helloText');
+form.onsubmit = handleFormSubmit;
+firstNameInput.oninput = handleFirstNameChange;
+lastNameInput.oninput = handleLastNameChange;
+
+```
+
+
+index.html
+
+```
+<form id="form">
+  <label>
+    First name:
+    <b id="firstNameText">Jane</b>
+    <input
+      id="firstNameInput"
+      value="Jane"
+      style="display: none">
+  </label>
+  <label>
+    Last name:
+    <b id="lastNameText">Jacobs</b>
+    <input
+      id="lastNameInput"
+      value="Jacobs"
+      style="display: none">
+  </label>
+  <button type="submit" id="editButton">Edit Profile</button>
+  <p><i id="helloText">Hello, Jane Jacobs!</i></p>
+</form>
+
+<style>
+* { box-sizing: border-box; }
+body { font-family: sans-serif; margin: 20px; padding: 0; }
+label { display: block; margin-bottom: 20px; }
+</style>
+
+```
+
+Solución
+
+La lógica que faltaba incluía alternar la visualización de entradas y contenido, y actualizar las etiquetas:
+
+```
+let firstName = 'Jane';
+let lastName = 'Jacobs';
+let isEditing = false;
+
+function handleFormSubmit(e) {
+  e.preventDefault();
+  setIsEditing(!isEditing);
+}
+
+function handleFirstNameChange(e) {
+  setFirstName(e.target.value);
+}
+
+function handleLastNameChange(e) {
+  setLastName(e.target.value);
+}
+
+function setFirstName(value) {
+  firstName = value;
+  updateDOM();
+}
+
+function setLastName(value) {
+  lastName = value;
+  updateDOM();
+}
+
+function setIsEditing(value) {
+  isEditing = value;
+  updateDOM();
+}
+
+function updateDOM() {
+  if (isEditing) {
+    editButton.textContent = 'Save Profile';
+    hide(firstNameText);
+    hide(lastNameText);
+    show(firstNameInput);
+    show(lastNameInput);
+  } else {
+    editButton.textContent = 'Edit Profile';
+    hide(firstNameInput);
+    hide(lastNameInput);
+    show(firstNameText);
+    show(lastNameText);
+  }
+  firstNameText.textContent = firstName;
+  lastNameText.textContent = lastName;
+  helloText.textContent = (
+    'Hello ' +
+    firstName + ' ' +
+    lastName + '!'
+  );
+}
+
+function hide(el) {
+  el.style.display = 'none';
+}
+
+function show(el) {
+  el.style.display = '';
+}
+
+let form = document.getElementById('form');
+let editButton = document.getElementById('editButton');
+let firstNameInput = document.getElementById('firstNameInput');
+let firstNameText = document.getElementById('firstNameText');
+let lastNameInput = document.getElementById('lastNameInput');
+let lastNameText = document.getElementById('lastNameText');
+let helloText = document.getElementById('helloText');
+form.onsubmit = handleFormSubmit;
+firstNameInput.oninput = handleFirstNameChange;
+lastNameInput.oninput = handleLastNameChange;
+
+```
+
+
+index.html
+
+```
+<form id="form">
+  <label>
+    First name:
+    <b id="firstNameText">Jane</b>
+    <input
+      id="firstNameInput"
+      value="Jane"
+      style="display: none">
+  </label>
+  <label>
+    Last name:
+    <b id="lastNameText">Jacobs</b>
+    <input
+      id="lastNameInput"
+      value="Jacobs"
+      style="display: none">
+  </label>
+  <button type="submit" id="editButton">Edit Profile</button>
+  <p><i id="helloText">Hello, Jane Jacobs!</i></p>
+</form>
+
+<style>
+* { box-sizing: border-box; }
+body { font-family: sans-serif; margin: 20px; padding: 0; }
+label { display: block; margin-bottom: 20px; }
+</style>
+
+```
+
+#### La función updateDOM que escribiste muestra lo que React hace internamente al configurar el estado. 
+
+#### (Sin embargo, React también evita tocar el DOM en el caso de propiedades que no han cambiado desde la última vez que se configuraron).
+
+
+
+# Elección de la estructura de estado
+
+### Una buena estructura de estado puede marcar la diferencia entre un componente fácil de modificar y depurar y uno que sea una fuente constante de errores. 
+
+Aquí tienes algunos consejos que debes tener en cuenta al estructurar el estado.
+
+
+Aprenderás:
+
+Cuándo usar una o varias variables de estado
+
+Qué evitar al organizar el estado
+
+Cómo solucionar problemas comunes con la estructura de estado
+
+
+## Principios para la estructuración de estados
+
+### Al escribir un componente que contiene un estado, deberá decidir cuántas variables de estado usar y cuál debe ser la forma de sus datos. 
+
+Si bien es posible escribir programas correctos incluso con una estructura de estados deficiente, existen algunos principios que pueden guiarle para tomar mejores decisiones:
+
+
+1. Agrupar estados relacionados. 
+
+### Si siempre actualiza dos o más variables de estado simultáneamente, considere fusionarlas en una sola.
+
+
+2. Evitar contradicciones en el estado. 
+
+### Cuando el estado está estructurado de tal manera que varias partes del mismo pueden contradecirse y discrepar entre sí, se abre la posibilidad de errores. 
+
+Intente evitar esto.
+
+
+3. Evitar estados redundantes. 
+
+### Si puede calcular información a partir de las propiedades del componente o de sus variables de estado existentes durante la renderización, no debe incluir esa información en el estado de ese componente.
+
+
+4. Evitar la duplicación de estados. 
+
+### Cuando los mismos datos se duplican entre múltiples variables de estado o dentro de objetos anidados, es difícil mantenerlos sincronizados. 
+
+Reduzca la duplicación siempre que sea posible.
+
+
+5. Evite los estados profundamente anidados. 
+
+Los estados profundamente jerárquicos no son muy fáciles de actualizar. 
+
+### Siempre que sea posible, opte por estructurar el estado de forma plana.
+
+
+### El objetivo de estos principios es facilitar la actualización del estado sin introducir errores. 
+
+### Eliminar datos redundantes y duplicados del estado ayuda a garantizar que todos sus componentes se mantengan sincronizados. 
+
+Esto es similar a cómo un ingeniero de bases de datos querría "normalizar" la estructura de la base de datos para reducir la posibilidad de errores. 
+
+Parafraseando a Albert Einstein: "Simplifique su estado al máximo, pero no más".
+
+
+Veamos ahora cómo se aplican estos principios en la práctica. 
+
+
+## Estado relacionado con el grupo
+
+A veces, podrías tener dudas sobre si usar una o varias variables de estado.
+
+¿Deberías hacerlo?
+
+```
+const [x, setX] = useState(0);
+const [y, setY] = useState(0);
+
+```
+
+o 
+
+```
+const [position, setPosition] = useState({ x: 0, y: 0 });
+
+```
+
+Técnicamente, se puede usar cualquiera de estos enfoques. 
+
+#### Pero si dos variables de estado cambian siempre juntas, sería buena idea unificarlas en una sola. 
+
+Así, no olvidará mantenerlas siempre sincronizadas, como en este ejemplo donde al mover el cursor se actualizan ambas coordenadas del punto rojo:
+
+
+App.js 
+
+```
+import { useState } from 'react';
+
+export default function MovingDot() {
+  const [position, setPosition] = useState({
+    x: 0,
+    y: 0
+  });
+  return (
+    <div
+      onPointerMove={e => {
+        setPosition({
+          x: e.clientX,
+          y: e.clientY
+        });
+      }}
+      style={{
+        position: 'relative',
+        width: '100vw',
+        height: '100vh',
+      }}>
+      <div style={{
+        position: 'absolute',
+        backgroundColor: 'red',
+        borderRadius: '50%',
+        transform: `translate(${position.x}px, ${position.y}px)`,
+        left: -10,
+        top: -10,
+        width: 20,
+        height: 20,
+      }} />
+    </div>
+  )
+}
+
+```
+
+### Otro caso en el que se agrupan datos en un objeto o una matriz es cuando no se sabe cuántos fragmentos de estado se necesitarán. 
+
+Por ejemplo, es útil cuando se tiene un formulario donde el usuario puede agregar campos personalizados.
+
+
+### Error
+
+#### Si tu variable de estado es un objeto, recuerda que no puedes actualizar solo un campo sin copiar explícitamente los demás. 
+
+Por ejemplo, no puedes usar setPosition({ x: 100 }) en el ejemplo anterior porque no tendría la propiedad y. 
+
+En cambio, si quisieras establecer solo x, usarías setPosition({ ...position, x: 100 }) o las dividirías en dos variables de estado y usarías setX(100).
+
+
+## Evite contradicciones de estado.
+
+A continuación, se muestra un formulario de comentarios de un hotel con las variables de estado "isSending" e "isSent":
+
+
+App.js 
+
+```
+import { useState } from 'react';
+
+export default function FeedbackForm() {
+  const [text, setText] = useState('');
+  const [isSending, setIsSending] = useState(false);
+  const [isSent, setIsSent] = useState(false);
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    setIsSending(true);
+    await sendMessage(text);
+    setIsSending(false);
+    setIsSent(true);
+  }
+
+  if (isSent) {
+    return <h1>Thanks for feedback!</h1>
+  }
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <p>How was your stay at The Prancing Pony?</p>
+      <textarea
+        disabled={isSending}
+        value={text}
+        onChange={e => setText(e.target.value)}
+      />
+      <br />
+      <button
+        disabled={isSending}
+        type="submit"
+      >
+        Send
+      </button>
+      {isSending && <p>Sending...</p>}
+    </form>
+  );
+}
+
+// Pretend to send a message.
+function sendMessage(text) {
+  return new Promise(resolve => {
+    setTimeout(resolve, 2000);
+  });
+}
+
+```
+
+#### Si bien este código funciona, deja la puerta abierta a estados "imposibles". 
+
+#### Por ejemplo, si olvida llamar a setIsSent y setIsSending simultáneamente, podría terminar en una situación en la que isSending e isSent sean verdaderos al mismo tiempo. 
+
+Cuanto más complejo sea el componente, más difícil será comprender qué sucedió.
+
+
+### Como isSending e isSent nunca deben ser verdaderos al mismo tiempo, es mejor reemplazarlos con una variable de estado que pueda tomar uno de tres estados válidos: 'typing' (inicial), 'sending' y 'sent'.
+
+App.js
+
+```
+import { useState } from 'react';
+
+export default function FeedbackForm() {
+  const [text, setText] = useState('');
+  const [status, setStatus] = useState('typing');
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    setStatus('sending');
+    await sendMessage(text);
+    setStatus('sent');
+  }
+
+  const isSending = status === 'sending';
+  const isSent = status === 'sent';
+
+  if (isSent) {
+    return <h1>Thanks for feedback!</h1>
+  }
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <p>How was your stay at The Prancing Pony?</p>
+      <textarea
+        disabled={isSending}
+        value={text}
+        onChange={e => setText(e.target.value)}
+      />
+      <br />
+      <button
+        disabled={isSending}
+        type="submit"
+      >
+        Send
+      </button>
+      {isSending && <p>Sending...</p>}
+    </form>
+  );
+}
+
+// Pretend to send a message.
+function sendMessage(text) {
+  return new Promise(resolve => {
+    setTimeout(resolve, 2000);
+  });
+}
+
+```
+
+#### Aún puedes declarar algunas constantes para facilitar la lectura:
+
+```
+const isSending = status === 'sending';
+const isSent = status === 'sent';
+
+```
+
+#### Pero no son variables de estado, así que no tienes que preocuparte de que se desincronizan.
+
+
+## Evitar estados redundantes
+
+### Si se puede calcular información a partir de las propiedades del componente o de sus variables de estado existentes durante el renderizado, no se debe incluir dicha información en el estado del componente.
+
+
+Por ejemplo, considere este formulario. 
+
+Funciona, pero ¿puede encontrar algún estado redundante en él?
+
+```
+import { useState } from 'react';
+
+export default function Form() {
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [fullName, setFullName] = useState('');
+
+  function handleFirstNameChange(e) {
+    setFirstName(e.target.value);
+    setFullName(e.target.value + ' ' + lastName);
+  }
+
+  function handleLastNameChange(e) {
+    setLastName(e.target.value);
+    setFullName(firstName + ' ' + e.target.value);
+  }
+
+  return (
+    <>
+      <h2>Let’s check you in</h2>
+      <label>
+        First name:{' '}
+        <input
+          value={firstName}
+          onChange={handleFirstNameChange}
+        />
+      </label>
+      <label>
+        Last name:{' '}
+        <input
+          value={lastName}
+          onChange={handleLastNameChange}
+        />
+      </label>
+      <p>
+        Your ticket will be issued to: <b>{fullName}</b>
+      </p>
+    </>
+  );
+}
+
+```
+
+#### Este formulario tiene tres variables de estado: firstName, lastName y fullName. 
+
+#### Sin embargo, fullName es redundante. 
+
+#### Siempre puedes calcular fullName a partir de firstName y lastName durante la renderización, así que elimínalo del estado.
+
+
+Así es como puedes hacerlo:
+
+
+App.js 
+
+```
+import { useState } from 'react';
+
+export default function Form() {
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+
+  const fullName = firstName + ' ' + lastName;
+
+  function handleFirstNameChange(e) {
+    setFirstName(e.target.value);
+  }
+
+  function handleLastNameChange(e) {
+    setLastName(e.target.value);
+  }
+
+  return (
+    <>
+      <h2>Let’s check you in</h2>
+      <label>
+        First name:{' '}
+        <input
+          value={firstName}
+          onChange={handleFirstNameChange}
+        />
+      </label>
+      <label>
+        Last name:{' '}
+        <input
+          value={lastName}
+          onChange={handleLastNameChange}
+        />
+      </label>
+      <p>
+        Your ticket will be issued to: <b>{fullName}</b>
+      </p>
+    </>
+  );
+}
+
+```
+
+Aquí, fullName no es una variable de estado. 
+
+Se calcula durante el renderizado:
+
+```
+const fullName = firstName + ' ' + lastName;
+
+```
+
+#### Por lo tanto, los controladores de cambios no necesitan hacer nada especial para actualizarlo. 
+
+#### Al llamar a setFirstName o setLastName, se activa un nuevo renderizado y, a continuación, se calcula el siguiente fullName a partir de los datos actualizados.
+
+
+## En profundidad: no reflejes las props en el estado
+
+### Un ejemplo común de estado redundante es código como este:
+
+```
+function Message({ messageColor }) {
+const [color, setColor] = useState(messageColor);
+
+```
+
+#### Aquí, una variable de estado de color se inicializa con la propiedad messageColor. 
+
+#### El problema radica en que si el componente padre pasa un valor diferente de messageColor posteriormente (por ejemplo, 'rojo' en lugar de 'azul'), la variable de estado de color no se actualizará. 
+
+#### El estado solo se inicializa durante la primera renderización.
+
+
+Por eso, reflejar alguna propiedad en una variable de estado puede generar confusión. 
+
+#### En su lugar, use la propiedad messageColor directamente en su código. 
+
+Si desea darle un nombre más corto, use una constante:
+
+```
+function Message({ messageColor }) {
+  const color = messageColor;
+
+```
+
+#### De esta forma, no se desincronizará con la propiedad pasada desde el componente padre.
+
+### Reflejar propiedades en el estado solo tiene sentido cuando se desean ignorar todas las actualizaciones de una propiedad específica. 
+
+Por convención, el nombre de la propiedad debe comenzar con "initial" o "predeterminado" para aclarar que sus nuevos valores se ignoran:
+
+```
+function Message({ initialColor }) {
+// La variable de estado `color` contiene el *primer* valor de `initialColor`.
+// Los cambios posteriores a la propiedad `initialColor` se ignoran.
+  const [color, setColor] = useState(initialColor);
+
+```
+
+
+## Evitar duplicación de estados
+
+Este componente de lista de menú le permite elegir un único travel snack entre varios:
+
+
+App.js
+
+```
+import { useState } from 'react';
+
+const initialItems = [
+  { title: 'pretzels', id: 0 },
+  { title: 'crispy seaweed', id: 1 },
+  { title: 'granola bar', id: 2 },
+];
+
+export default function Menu() {
+  const [items, setItems] = useState(initialItems);
+  const [selectedItem, setSelectedItem] = useState(
+    items[0]
+  );
+
+  return (
+    <>
+      <h2>What's your travel snack?</h2>
+      <ul>
+        {items.map(item => (
+          <li key={item.id}>
+            {item.title}
+            {' '}
+            <button onClick={() => {
+              setSelectedItem(item);
+            }}>Choose</button>
+          </li>
+        ))}
+      </ul>
+      <p>You picked {selectedItem.title}.</p>
+    </>
+  );
+}
+
+```
+
+Actualmente, almacena el elemento seleccionado como un objeto en la variable de estado selectedItem. 
+
+Sin embargo, esto no es muy útil: el contenido de selectedItem es el mismo objeto que uno de los elementos de la lista de elementos. 
+
+Esto significa que la información sobre el elemento se duplica en dos lugares.
+
+
+¿Por qué es un problema? Hagamos que cada elemento sea editable:
+
+
+App.js
+
+```
+import { useState } from 'react';
+
+const initialItems = [
+  { title: 'pretzels', id: 0 },
+  { title: 'crispy seaweed', id: 1 },
+  { title: 'granola bar', id: 2 },
+];
+
+export default function Menu() {
+  const [items, setItems] = useState(initialItems);
+  const [selectedItem, setSelectedItem] = useState(
+    items[0]
+  );
+
+  function handleItemChange(id, e) {
+    setItems(items.map(item => {
+      if (item.id === id) {
+        return {
+          ...item,
+          title: e.target.value,
+        };
+      } else {
+        return item;
+      }
+    }));
+  }
+
+  return (
+    <>
+      <h2>What's your travel snack?</h2> 
+      <ul>
+        {items.map((item, index) => (
+          <li key={item.id}>
+            <input
+              value={item.title}
+              onChange={e => {
+                handleItemChange(item.id, e)
+              }}
+            />
+            {' '}
+            <button onClick={() => {
+              setSelectedItem(item);
+            }}>Choose</button>
+          </li>
+        ))}
+      </ul>
+      <p>You picked {selectedItem.title}.</p>
+    </>
+  );
+}
+
+```
+
+#### Observa cómo, si primero haces clic en "Seleccionar" en un elemento y luego lo editas, la entrada se actualiza, pero la etiqueta inferior no refleja las modificaciones. 
+
+### Esto se debe a que tienes un estado duplicado y olvidaste actualizar selectedItem.
+
+
+Aunque también podrías actualizar selectedItem, una solución más sencilla es eliminar la duplicación. 
+
+#### En este ejemplo, en lugar de un objeto selectedItem (que crea una duplicación con objetos dentro de los elementos), mantienes el selectedId en el estado y luego obtienes el selectedItem buscando en la matriz de elementos un elemento con ese ID:
+
+```
+import { useState } from 'react';
+
+const initialItems = [
+  { title: 'pretzels', id: 0 },
+  { title: 'crispy seaweed', id: 1 },
+  { title: 'granola bar', id: 2 },
+];
+
+export default function Menu() {
+  const [items, setItems] = useState(initialItems);
+  const [selectedId, setSelectedId] = useState(0);
+
+  const selectedItem = items.find(item =>
+    item.id === selectedId
+  );
+
+  function handleItemChange(id, e) {
+    setItems(items.map(item => {
+      if (item.id === id) {
+        return {
+          ...item,
+          title: e.target.value,
+        };
+      } else {
+        return item;
+      }
+    }));
+  }
+
+  return (
+    <>
+      <h2>What's your travel snack?</h2>
+      <ul>
+        {items.map((item, index) => (
+          <li key={item.id}>
+            <input
+              value={item.title}
+              onChange={e => {
+                handleItemChange(item.id, e)
+              }}
+            />
+            {' '}
+            <button onClick={() => {
+              setSelectedId(item.id);
+            }}>Choose</button>
+          </li>
+        ))}
+      </ul>
+      <p>You picked {selectedItem.title}.</p>
+    </>
+  );
+}
+
+```
+
+El estado solía duplicarse así:
+
+1. ```items = [{ id: 0, title: 'pretzels'}, ...]```
+
+2. selectedItem = {id: 0, title: 'pretzels'}
+
+
+Pero después del cambio, queda así:
+
+1. ```items = [{ id: 0, title: 'pretzels'}, ...]```
+
+2. selectedId = 0
+
+
+¡La duplicación ha desaparecido y solo se conserva el estado esencial!
+
+
+Ahora, si edita el elemento seleccionado, el mensaje a continuación se actualizará inmediatamente. 
+
+### Esto se debe a que setItems activa un nuevo renderizado, y items.find(...) encuentra el elemento con el título actualizado. 
+
+#### No era necesario mantener el estado del elemento seleccionado, ya que solo el ID seleccionado es esencial. 
+
+#### El resto se puede calcular durante el renderizado.
+
+
+## Evite estados muy anidados
+
+Imagine un plan de viaje compuesto por planetas, continentes y países. 
+
+Podría verse tentado a estructurar su estado mediante objetos anidados y matrices, como en este ejemplo:
+
+
+Places.js
+
+```
+export const initialTravelPlan = {
+  id: 0,
+  title: '(Root)',
+  childPlaces: [{
+    id: 1,
+    title: 'Earth',
+    childPlaces: [{
+      id: 2,
+      title: 'Africa',
+      childPlaces: [{
+        id: 3,
+        title: 'Botswana',
+        childPlaces: []
+      }, {
+        id: 4,
+        title: 'Egypt',
+        childPlaces: []
+      }, {
+        id: 5,
+        title: 'Kenya',
+        childPlaces: []
+      }, {
+        id: 6,
+        title: 'Madagascar',
+        childPlaces: []
+      }, {
+        id: 7,
+        title: 'Morocco',
+        childPlaces: []
+      }, {
+        id: 8,
+        title: 'Nigeria',
+        childPlaces: []
+      }, {
+        id: 9,
+        title: 'South Africa',
+        childPlaces: []
+      }]
+    }, {
+      id: 10,
+      title: 'Americas',
+      childPlaces: [{
+        id: 11,
+        title: 'Argentina',
+        childPlaces: []
+      }, {
+        id: 12,
+        title: 'Brazil',
+        childPlaces: []
+      }, {
+        id: 13,
+        title: 'Barbados',
+        childPlaces: []
+      }, {
+        id: 14,
+        title: 'Canada',
+        childPlaces: []
+      }, {
+        id: 15,
+        title: 'Jamaica',
+        childPlaces: []
+      }, {
+        id: 16,
+        title: 'Mexico',
+        childPlaces: []
+      }, {
+        id: 17,
+        title: 'Trinidad and Tobago',
+        childPlaces: []
+      }, {
+        id: 18,
+        title: 'Venezuela',
+        childPlaces: []
+      }]
+    }, {
+      id: 19,
+      title: 'Asia',
+      childPlaces: [{
+        id: 20,
+        title: 'China',
+        childPlaces: []
+      }, {
+        id: 21,
+        title: 'India',
+        childPlaces: []
+      }, {
+        id: 22,
+        title: 'Singapore',
+        childPlaces: []
+      }, {
+        id: 23,
+        title: 'South Korea',
+        childPlaces: []
+      }, {
+        id: 24,
+        title: 'Thailand',
+        childPlaces: []
+      }, {
+        id: 25,
+        title: 'Vietnam',
+        childPlaces: []
+      }]
+    }, {
+      id: 26,
+      title: 'Europe',
+      childPlaces: [{
+        id: 27,
+        title: 'Croatia',
+        childPlaces: [],
+      }, {
+        id: 28,
+        title: 'France',
+        childPlaces: [],
+      }, {
+        id: 29,
+        title: 'Germany',
+        childPlaces: [],
+      }, {
+        id: 30,
+        title: 'Italy',
+        childPlaces: [],
+      }, {
+        id: 31,
+        title: 'Portugal',
+        childPlaces: [],
+      }, {
+        id: 32,
+        title: 'Spain',
+        childPlaces: [],
+      }, {
+        id: 33,
+        title: 'Turkey',
+        childPlaces: [],
+      }]
+    }, {
+      id: 34,
+      title: 'Oceania',
+      childPlaces: [{
+        id: 35,
+        title: 'Australia',
+        childPlaces: [],
+      }, {
+        id: 36,
+        title: 'Bora Bora (French Polynesia)',
+        childPlaces: [],
+      }, {
+        id: 37,
+        title: 'Easter Island (Chile)',
+        childPlaces: [],
+      }, {
+        id: 38,
+        title: 'Fiji',
+        childPlaces: [],
+      }, {
+        id: 39,
+        title: 'Hawaii (the USA)',
+        childPlaces: [],
+      }, {
+        id: 40,
+        title: 'New Zealand',
+        childPlaces: [],
+      }, {
+        id: 41,
+        title: 'Vanuatu',
+        childPlaces: [],
+      }]
+    }]
+  }, {
+    id: 42,
+    title: 'Moon',
+    childPlaces: [{
+      id: 43,
+      title: 'Rheita',
+      childPlaces: []
+    }, {
+      id: 44,
+      title: 'Piccolomini',
+      childPlaces: []
+    }, {
+      id: 45,
+      title: 'Tycho',
+      childPlaces: []
+    }]
+  }, {
+    id: 46,
+    title: 'Mars',
+    childPlaces: [{
+      id: 47,
+      title: 'Corn Town',
+      childPlaces: []
+    }, {
+      id: 48,
+      title: 'Green Hill',
+      childPlaces: []      
+    }]
+  }]
+};
+
+```
+
+
+App.js 
+
+```
+import { useState } from 'react';
+import { initialTravelPlan } from './places.js';
+
+function PlaceTree({ place }) {
+  const childPlaces = place.childPlaces;
+  return (
+    <li>
+      {place.title}
+      {childPlaces.length > 0 && (
+        <ol>
+          {childPlaces.map(place => (
+            <PlaceTree key={place.id} place={place} />
+          ))}
+        </ol>
+      )}
+    </li>
+  );
+}
+
+export default function TravelPlan() {
+  const [plan, setPlan] = useState(initialTravelPlan);
+  const planets = plan.childPlaces;
+  return (
+    <>
+      <h2>Places to visit</h2>
+      <ol>
+        {planets.map(place => (
+          <PlaceTree key={place.id} place={place} />
+        ))}
+      </ol>
+    </>
+  );
+}
+
+```
+
+#### Ahora, supongamos que quieres añadir un botón para eliminar un lugar que ya has visitado. 
+
+#### ¿Cómo lo harías? Actualizar un estado anidado implica copiar todos los objetos desde la parte que cambió. 
+
+### Eliminar un lugar profundamente anidado implica copiar toda su cadena de lugares padre. 
+
+Este código puede ser muy extenso.
+
+
+### Si el estado está demasiado anidado para actualizarse fácilmente, considera hacerlo plano. 
+
+Aquí tienes una forma de reestructurar estos datos. 
+
+### En lugar de una estructura de árbol donde cada lugar tiene un array de sus lugares secundarios, puedes hacer que cada lugar contenga un array de sus ID de lugar secundarios. 
+
+### Luego, almacena una asignación de cada ID de lugar a su lugar correspondiente.
+
+
+Esta reestructuración de datos podría recordarte a una tabla de base de datos:
+
+
+places.js
+
+```
+export const initialTravelPlan = {
+  0: {
+    id: 0,
+    title: '(Root)',
+    childIds: [1, 42, 46],
+  },
+  1: {
+    id: 1,
+    title: 'Earth',
+    childIds: [2, 10, 19, 26, 34]
+  },
+  2: {
+    id: 2,
+    title: 'Africa',
+    childIds: [3, 4, 5, 6 , 7, 8, 9]
+  }, 
+  3: {
+    id: 3,
+    title: 'Botswana',
+    childIds: []
+  },
+  4: {
+    id: 4,
+    title: 'Egypt',
+    childIds: []
+  },
+  5: {
+    id: 5,
+    title: 'Kenya',
+    childIds: []
+  },
+  6: {
+    id: 6,
+    title: 'Madagascar',
+    childIds: []
+  }, 
+  7: {
+    id: 7,
+    title: 'Morocco',
+    childIds: []
+  },
+  8: {
+    id: 8,
+    title: 'Nigeria',
+    childIds: []
+  },
+  9: {
+    id: 9,
+    title: 'South Africa',
+    childIds: []
+  },
+  10: {
+    id: 10,
+    title: 'Americas',
+    childIds: [11, 12, 13, 14, 15, 16, 17, 18],   
+  },
+  11: {
+    id: 11,
+    title: 'Argentina',
+    childIds: []
+  },
+  12: {
+    id: 12,
+    title: 'Brazil',
+    childIds: []
+  },
+  13: {
+    id: 13,
+    title: 'Barbados',
+    childIds: []
+  }, 
+  14: {
+    id: 14,
+    title: 'Canada',
+    childIds: []
+  },
+  15: {
+    id: 15,
+    title: 'Jamaica',
+    childIds: []
+  },
+  16: {
+    id: 16,
+    title: 'Mexico',
+    childIds: []
+  },
+  17: {
+    id: 17,
+    title: 'Trinidad and Tobago',
+    childIds: []
+  },
+  18: {
+    id: 18,
+    title: 'Venezuela',
+    childIds: []
+  },
+  19: {
+    id: 19,
+    title: 'Asia',
+    childIds: [20, 21, 22, 23, 24, 25],   
+  },
+  20: {
+    id: 20,
+    title: 'China',
+    childIds: []
+  },
+  21: {
+    id: 21,
+    title: 'India',
+    childIds: []
+  },
+  22: {
+    id: 22,
+    title: 'Singapore',
+    childIds: []
+  },
+  23: {
+    id: 23,
+    title: 'South Korea',
+    childIds: []
+  },
+  24: {
+    id: 24,
+    title: 'Thailand',
+    childIds: []
+  },
+  25: {
+    id: 25,
+    title: 'Vietnam',
+    childIds: []
+  },
+  26: {
+    id: 26,
+    title: 'Europe',
+    childIds: [27, 28, 29, 30, 31, 32, 33],   
+  },
+  27: {
+    id: 27,
+    title: 'Croatia',
+    childIds: []
+  },
+  28: {
+    id: 28,
+    title: 'France',
+    childIds: []
+  },
+  29: {
+    id: 29,
+    title: 'Germany',
+    childIds: []
+  },
+  30: {
+    id: 30,
+    title: 'Italy',
+    childIds: []
+  },
+  31: {
+    id: 31,
+    title: 'Portugal',
+    childIds: []
+  },
+  32: {
+    id: 32,
+    title: 'Spain',
+    childIds: []
+  },
+  33: {
+    id: 33,
+    title: 'Turkey',
+    childIds: []
+  },
+  34: {
+    id: 34,
+    title: 'Oceania',
+    childIds: [35, 36, 37, 38, 39, 40, 41],   
+  },
+  35: {
+    id: 35,
+    title: 'Australia',
+    childIds: []
+  },
+  36: {
+    id: 36,
+    title: 'Bora Bora (French Polynesia)',
+    childIds: []
+  },
+  37: {
+    id: 37,
+    title: 'Easter Island (Chile)',
+    childIds: []
+  },
+  38: {
+    id: 38,
+    title: 'Fiji',
+    childIds: []
+  },
+  39: {
+    id: 40,
+    title: 'Hawaii (the USA)',
+    childIds: []
+  },
+  40: {
+    id: 40,
+    title: 'New Zealand',
+    childIds: []
+  },
+  41: {
+    id: 41,
+    title: 'Vanuatu',
+    childIds: []
+  },
+  42: {
+    id: 42,
+    title: 'Moon',
+    childIds: [43, 44, 45]
+  },
+  43: {
+    id: 43,
+    title: 'Rheita',
+    childIds: []
+  },
+  44: {
+    id: 44,
+    title: 'Piccolomini',
+    childIds: []
+  },
+  45: {
+    id: 45,
+    title: 'Tycho',
+    childIds: []
+  },
+  46: {
+    id: 46,
+    title: 'Mars',
+    childIds: [47, 48]
+  },
+  47: {
+    id: 47,
+    title: 'Corn Town',
+    childIds: []
+  },
+  48: {
+    id: 48,
+    title: 'Green Hill',
+    childIds: []
+  }
+};
+
+```
+
+
+App.js
+
+```
+import { useState } from 'react';
+import { initialTravelPlan } from './places.js';
+
+function PlaceTree({ id, placesById }) {
+  const place = placesById[id];
+  const childIds = place.childIds;
+  return (
+    <li>
+      {place.title}
+      {childIds.length > 0 && (
+        <ol>
+          {childIds.map(childId => (
+            <PlaceTree
+              key={childId}
+              id={childId}
+              placesById={placesById}
+            />
+          ))}
+        </ol>
+      )}
+    </li>
+  );
+}
+
+export default function TravelPlan() {
+  const [plan, setPlan] = useState(initialTravelPlan);
+  const root = plan[0];
+  const planetIds = root.childIds;
+  return (
+    <>
+      <h2>Places to visit</h2>
+      <ol>
+        {planetIds.map(id => (
+          <PlaceTree
+            key={id}
+            id={id}
+            placesById={plan}
+          />
+        ))}
+      </ol>
+    </>
+  );
+}
+
+```
+
+Ahora que el estado es "plano" (también conocido como "normalizado"), actualizar elementos anidados es más sencillo.
+
+
+### Para eliminar un lugar, solo necesita actualizar dos niveles de estado:
+
+1. La versión actualizada de su lugar padre debe excluir el ID eliminado de su matriz childIds.
+
+2. La versión actualizada del objeto raíz "table" debe incluir la versión actualizada del lugar padre.
+
+
+A continuación, se muestra un ejemplo de cómo podría hacerlo:
+
+
+places.js
+
+```
+export const initialTravelPlan = {
+  0: {
+    id: 0,
+    title: '(Root)',
+    childIds: [1, 42, 46],
+  },
+  1: {
+    id: 1,
+    title: 'Earth',
+    childIds: [2, 10, 19, 26, 34]
+  },
+  2: {
+    id: 2,
+    title: 'Africa',
+    childIds: [3, 4, 5, 6 , 7, 8, 9]
+  }, 
+  3: {
+    id: 3,
+    title: 'Botswana',
+    childIds: []
+  },
+  4: {
+    id: 4,
+    title: 'Egypt',
+    childIds: []
+  },
+  5: {
+    id: 5,
+    title: 'Kenya',
+    childIds: []
+  },
+  6: {
+    id: 6,
+    title: 'Madagascar',
+    childIds: []
+  }, 
+  7: {
+    id: 7,
+    title: 'Morocco',
+    childIds: []
+  },
+  8: {
+    id: 8,
+    title: 'Nigeria',
+    childIds: []
+  },
+  9: {
+    id: 9,
+    title: 'South Africa',
+    childIds: []
+  },
+  10: {
+    id: 10,
+    title: 'Americas',
+    childIds: [11, 12, 13, 14, 15, 16, 17, 18],   
+  },
+  11: {
+    id: 11,
+    title: 'Argentina',
+    childIds: []
+  },
+  12: {
+    id: 12,
+    title: 'Brazil',
+    childIds: []
+  },
+  13: {
+    id: 13,
+    title: 'Barbados',
+    childIds: []
+  }, 
+  14: {
+    id: 14,
+    title: 'Canada',
+    childIds: []
+  },
+  15: {
+    id: 15,
+    title: 'Jamaica',
+    childIds: []
+  },
+  16: {
+    id: 16,
+    title: 'Mexico',
+    childIds: []
+  },
+  17: {
+    id: 17,
+    title: 'Trinidad and Tobago',
+    childIds: []
+  },
+  18: {
+    id: 18,
+    title: 'Venezuela',
+    childIds: []
+  },
+  19: {
+    id: 19,
+    title: 'Asia',
+    childIds: [20, 21, 22, 23, 24, 25],   
+  },
+  20: {
+    id: 20,
+    title: 'China',
+    childIds: []
+  },
+  21: {
+    id: 21,
+    title: 'India',
+    childIds: []
+  },
+  22: {
+    id: 22,
+    title: 'Singapore',
+    childIds: []
+  },
+  23: {
+    id: 23,
+    title: 'South Korea',
+    childIds: []
+  },
+  24: {
+    id: 24,
+    title: 'Thailand',
+    childIds: []
+  },
+  25: {
+    id: 25,
+    title: 'Vietnam',
+    childIds: []
+  },
+  26: {
+    id: 26,
+    title: 'Europe',
+    childIds: [27, 28, 29, 30, 31, 32, 33],   
+  },
+  27: {
+    id: 27,
+    title: 'Croatia',
+    childIds: []
+  },
+  28: {
+    id: 28,
+    title: 'France',
+    childIds: []
+  },
+  29: {
+    id: 29,
+    title: 'Germany',
+    childIds: []
+  },
+  30: {
+    id: 30,
+    title: 'Italy',
+    childIds: []
+  },
+  31: {
+    id: 31,
+    title: 'Portugal',
+    childIds: []
+  },
+  32: {
+    id: 32,
+    title: 'Spain',
+    childIds: []
+  },
+  33: {
+    id: 33,
+    title: 'Turkey',
+    childIds: []
+  },
+  34: {
+    id: 34,
+    title: 'Oceania',
+    childIds: [35, 36, 37, 38, 39, 40, 41],   
+  },
+  35: {
+    id: 35,
+    title: 'Australia',
+    childIds: []
+  },
+  36: {
+    id: 36,
+    title: 'Bora Bora (French Polynesia)',
+    childIds: []
+  },
+  37: {
+    id: 37,
+    title: 'Easter Island (Chile)',
+    childIds: []
+  },
+  38: {
+    id: 38,
+    title: 'Fiji',
+    childIds: []
+  },
+  39: {
+    id: 39,
+    title: 'Hawaii (the USA)',
+    childIds: []
+  },
+  40: {
+    id: 40,
+    title: 'New Zealand',
+    childIds: []
+  },
+  41: {
+    id: 41,
+    title: 'Vanuatu',
+    childIds: []
+  },
+  42: {
+    id: 42,
+    title: 'Moon',
+    childIds: [43, 44, 45]
+  },
+  43: {
+    id: 43,
+    title: 'Rheita',
+    childIds: []
+  },
+  44: {
+    id: 44,
+    title: 'Piccolomini',
+    childIds: []
+  },
+  45: {
+    id: 45,
+    title: 'Tycho',
+    childIds: []
+  },
+  46: {
+    id: 46,
+    title: 'Mars',
+    childIds: [47, 48]
+  },
+  47: {
+    id: 47,
+    title: 'Corn Town',
+    childIds: []
+  },
+  48: {
+    id: 48,
+    title: 'Green Hill',
+    childIds: []
+  }
+};
+
+```
+
+
+App.js
+
+```
+import { useState } from 'react';
+import { initialTravelPlan } from './places.js';
+
+export default function TravelPlan() {
+  const [plan, setPlan] = useState(initialTravelPlan);
+
+  function handleComplete(parentId, childId) {
+    const parent = plan[parentId];
+    // Create a new version of the parent place
+    // that doesn't include this child ID.
+    const nextParent = {
+      ...parent,
+      childIds: parent.childIds
+        .filter(id => id !== childId)
+    };
+    // Update the root state object...
+    setPlan({
+      ...plan,
+      // ...so that it has the updated parent.
+      [parentId]: nextParent
+    });
+  }
+
+  const root = plan[0];
+  const planetIds = root.childIds;
+  return (
+    <>
+      <h2>Places to visit</h2>
+      <ol>
+        {planetIds.map(id => (
+          <PlaceTree
+            key={id}
+            id={id}
+            parentId={0}
+            placesById={plan}
+            onComplete={handleComplete}
+          />
+        ))}
+      </ol>
+    </>
+  );
+}
+
+function PlaceTree({ id, parentId, placesById, onComplete }) {
+  const place = placesById[id];
+  const childIds = place.childIds;
+  return (
+    <li>
+      {place.title}
+      <button onClick={() => {
+        onComplete(parentId, id);
+      }}>
+        Complete
+      </button>
+      {childIds.length > 0 &&
+        <ol>
+          {childIds.map(childId => (
+            <PlaceTree
+              key={childId}
+              id={childId}
+              parentId={id}
+              placesById={placesById}
+              onComplete={onComplete}
+            />
+          ))}
+        </ol>
+      }
+    </li>
+  );
+}
+
+```
+
+Puedes anidar estados tanto como quieras, pero hacerlos planos puede resolver numerosos problemas. 
+
+Facilita la actualización de estados y ayuda a evitar duplicaciones en diferentes partes de un objeto anidado.
+
+
+## En profundidad: Mejorar el uso de la memoria
+
+Idealmente, también eliminaría los elementos eliminados (¡y sus elementos secundarios!) del objeto "tabla" para optimizar el uso de memoria.
+
+Esta versión lo hace. 
+
+Además, utiliza Immer para que la lógica de actualización sea más concisa.
+
+
+places.js
+
+```
+export const initialTravelPlan = {
+  0: {
+    id: 0,
+    title: '(Root)',
+    childIds: [1, 42, 46],
+  },
+  1: {
+    id: 1,
+    title: 'Earth',
+    childIds: [2, 10, 19, 26, 34]
+  },
+  2: {
+    id: 2,
+    title: 'Africa',
+    childIds: [3, 4, 5, 6 , 7, 8, 9]
+  }, 
+  3: {
+    id: 3,
+    title: 'Botswana',
+    childIds: []
+  },
+  4: {
+    id: 4,
+    title: 'Egypt',
+    childIds: []
+  },
+  5: {
+    id: 5,
+    title: 'Kenya',
+    childIds: []
+  },
+  6: {
+    id: 6,
+    title: 'Madagascar',
+    childIds: []
+  }, 
+  7: {
+    id: 7,
+    title: 'Morocco',
+    childIds: []
+  },
+  8: {
+    id: 8,
+    title: 'Nigeria',
+    childIds: []
+  },
+  9: {
+    id: 9,
+    title: 'South Africa',
+    childIds: []
+  },
+  10: {
+    id: 10,
+    title: 'Americas',
+    childIds: [11, 12, 13, 14, 15, 16, 17, 18],   
+  },
+  11: {
+    id: 11,
+    title: 'Argentina',
+    childIds: []
+  },
+  12: {
+    id: 12,
+    title: 'Brazil',
+    childIds: []
+  },
+  13: {
+    id: 13,
+    title: 'Barbados',
+    childIds: []
+  }, 
+  14: {
+    id: 14,
+    title: 'Canada',
+    childIds: []
+  },
+  15: {
+    id: 15,
+    title: 'Jamaica',
+    childIds: []
+  },
+  16: {
+    id: 16,
+    title: 'Mexico',
+    childIds: []
+  },
+  17: {
+    id: 17,
+    title: 'Trinidad and Tobago',
+    childIds: []
+  },
+  18: {
+    id: 18,
+    title: 'Venezuela',
+    childIds: []
+  },
+  19: {
+    id: 19,
+    title: 'Asia',
+    childIds: [20, 21, 22, 23, 24, 25,],   
+  },
+  20: {
+    id: 20,
+    title: 'China',
+    childIds: []
+  },
+  21: {
+    id: 21,
+    title: 'India',
+    childIds: []
+  },
+  22: {
+    id: 22,
+    title: 'Singapore',
+    childIds: []
+  },
+  23: {
+    id: 23,
+    title: 'South Korea',
+    childIds: []
+  },
+  24: {
+    id: 24,
+    title: 'Thailand',
+    childIds: []
+  },
+  25: {
+    id: 25,
+    title: 'Vietnam',
+    childIds: []
+  },
+  26: {
+    id: 26,
+    title: 'Europe',
+    childIds: [27, 28, 29, 30, 31, 32, 33],   
+  },
+  27: {
+    id: 27,
+    title: 'Croatia',
+    childIds: []
+  },
+  28: {
+    id: 28,
+    title: 'France',
+    childIds: []
+  },
+  29: {
+    id: 29,
+    title: 'Germany',
+    childIds: []
+  },
+  30: {
+    id: 30,
+    title: 'Italy',
+    childIds: []
+  },
+  31: {
+    id: 31,
+    title: 'Portugal',
+    childIds: []
+  },
+  32: {
+    id: 32,
+    title: 'Spain',
+    childIds: []
+  },
+  33: {
+    id: 33,
+    title: 'Turkey',
+    childIds: []
+  },
+  34: {
+    id: 34,
+    title: 'Oceania',
+    childIds: [35, 36, 37, 38, 39, 40,, 41],   
+  },
+  35: {
+    id: 35,
+    title: 'Australia',
+    childIds: []
+  },
+  36: {
+    id: 36,
+    title: 'Bora Bora (French Polynesia)',
+    childIds: []
+  },
+  37: {
+    id: 37,
+    title: 'Easter Island (Chile)',
+    childIds: []
+  },
+  38: {
+    id: 38,
+    title: 'Fiji',
+    childIds: []
+  },
+  39: {
+    id: 39,
+    title: 'Hawaii (the USA)',
+    childIds: []
+  },
+  40: {
+    id: 40,
+    title: 'New Zealand',
+    childIds: []
+  },
+  41: {
+    id: 41,
+    title: 'Vanuatu',
+    childIds: []
+  },
+  42: {
+    id: 42,
+    title: 'Moon',
+    childIds: [43, 44, 45]
+  },
+  43: {
+    id: 43,
+    title: 'Rheita',
+    childIds: []
+  },
+  44: {
+    id: 44,
+    title: 'Piccolomini',
+    childIds: []
+  },
+  45: {
+    id: 45,
+    title: 'Tycho',
+    childIds: []
+  },
+  46: {
+    id: 46,
+    title: 'Mars',
+    childIds: [47, 48]
+  },
+  47: {
+    id: 47,
+    title: 'Corn Town',
+    childIds: []
+  },
+  48: {
+    id: 48,
+    title: 'Green Hill',
+    childIds: []
+  }
+};
+
+```
+
+
+App.js 
+
+```
+import { useImmer } from 'use-immer';
+import { initialTravelPlan } from './places.js';
+
+export default function TravelPlan() {
+  const [plan, updatePlan] = useImmer(initialTravelPlan);
+
+  function handleComplete(parentId, childId) {
+    updatePlan(draft => {
+      // Remove from the parent place's child IDs.
+      const parent = draft[parentId];
+      parent.childIds = parent.childIds
+        .filter(id => id !== childId);
+
+      // Forget this place and all its subtree.
+      deleteAllChildren(childId);
+      function deleteAllChildren(id) {
+        const place = draft[id];
+        place.childIds.forEach(deleteAllChildren);
+        delete draft[id];
+      }
+    });
+  }
+
+  const root = plan[0];
+  const planetIds = root.childIds;
+  return (
+    <>
+      <h2>Places to visit</h2>
+      <ol>
+        {planetIds.map(id => (
+          <PlaceTree
+            key={id}
+            id={id}
+            parentId={0}
+            placesById={plan}
+            onComplete={handleComplete}
+          />
+        ))}
+      </ol>
+    </>
+  );
+}
+
+function PlaceTree({ id, parentId, placesById, onComplete }) {
+  const place = placesById[id];
+  const childIds = place.childIds;
+  return (
+    <li>
+      {place.title}
+      <button onClick={() => {
+        onComplete(parentId, id);
+      }}>
+        Complete
+      </button>
+      {childIds.length > 0 &&
+        <ol>
+          {childIds.map(childId => (
+            <PlaceTree
+              key={childId}
+              id={childId}
+              parentId={id}
+              placesById={placesById}
+              onComplete={onComplete}
+            />
+          ))}
+        </ol>
+      }
+    </li>
+  );
+}
+
+```
+
+A veces, también se puede reducir la anidación de estados moviendo algunos de ellos a los componentes secundarios. 
+
+Esto funciona bien con estados de interfaz de usuario efímeros que no necesitan almacenarse, como cuando se pasa el cursor sobre un elemento.
+
+
+## Rs estructurar los datos
+
+Si dos variables de estado siempre se actualizan juntas, considere fusionarlas en una sola.
+
+Elija sus variables de estado con cuidado para evitar crear estados "imposibles".
+
+Estructure su estado de forma que reduzca la probabilidad de errores al actualizarlo.
+
+Evite estados redundantes y duplicados para no tener que mantenerlos sincronizados.
+
+No incluya propiedades en el estado a menos que desee evitar actualizaciones.
+
+### Para patrones de interfaz de usuario como la selección, mantenga el ID o el índice en el estado en lugar del objeto en sí.
+
+Si actualizar un estado muy anidado es complicado, intente simplificarlo.
+
+
+## Ejercicios
+
+1. Corregir un componente que no se actualiza
+
+Este componente Reloj recibe dos propiedades: color y hora. 
+
+Al seleccionar un color diferente en el cuadro de selección, el componente Reloj recibe una propiedad de color diferente a la de su componente principal. 
+
+Sin embargo, por alguna razón, el color mostrado no se actualiza. 
+
+¿Por qué? Solucione el problema.
+
+
+Clock.js 
+
+```
+import { useState } from 'react';
+
+export default function Clock(props) {
+  const [color, setColor] = useState(props.color);
+  return (
+    <h1 style={{ color: color }}>
+      {props.time}
+    </h1>
+  );
+}
+
+```
+
+
+Solución
+
+#### El problema es que este componente tiene el estado de color inicializado con el valor inicial de la propiedad de color. 
+
+#### Sin embargo, cuando esta propiedad cambia, esto no afecta a la variable de estado. 
+
+Por lo tanto, se desincronizan. 
+
+#### Para solucionar este problema, elimine la variable de estado por completo y use la propiedad de color directamente.
+
+
+Clock.js 
+
+```
+import { useState } from 'react';
+
+export default function Clock(props) {
+  return (
+    <h1 style={{ color: props.color }}>
+      {props.time}
+    </h1>
+  );
+}
+
+```
+
+Or, using the destructuring syntax:
+
+```
+import { useState } from 'react';
+
+export default function Clock({ color, time }) {
+  return (
+    <h1 style={{ color: color }}>
+      {time}
+    </h1>
+  );
+}
+
+```
+
+
+2. Arreglar una lista de empaque defectuosa
+
+Esta lista de empaque tiene un pie de página que muestra cuántos artículos están empacados y cuántos hay en total. 
+
+Parece funcionar al principio, pero tiene errores. 
+
+Por ejemplo, si marcas un artículo como empacado y luego lo eliminas, el contador no se actualizará correctamente. 
+
+Corrige el contador para que siempre sea correcto.
+
+
+App.js 
+
+```
+import { useState } from 'react';
+import AddItem from './AddItem.js';
+import PackingList from './PackingList.js';
+
+let nextId = 3;
+const initialItems = [
+  { id: 0, title: 'Warm socks', packed: true },
+  { id: 1, title: 'Travel journal', packed: false },
+  { id: 2, title: 'Watercolors', packed: false },
+];
+
+export default function TravelPlan() {
+  const [items, setItems] = useState(initialItems);
+  const [total, setTotal] = useState(3);
+  const [packed, setPacked] = useState(1);
+
+  function handleAddItem(title) {
+    setTotal(total + 1);
+    setItems([
+      ...items,
+      {
+        id: nextId++,
+        title: title,
+        packed: false
+      }
+    ]);
+  }
+
+  function handleChangeItem(nextItem) {
+    if (nextItem.packed) {
+      setPacked(packed + 1);
+    } else {
+      setPacked(packed - 1);
+    }
+    setItems(items.map(item => {
+      if (item.id === nextItem.id) {
+        return nextItem;
+      } else {
+        return item;
+      }
+    }));
+  }
+
+  function handleDeleteItem(itemId) {
+    setTotal(total - 1);
+    setItems(
+      items.filter(item => item.id !== itemId)
+    );
+  }
+
+  return (
+    <>  
+      <AddItem
+        onAddItem={handleAddItem}
+      />
+      <PackingList
+        items={items}
+        onChangeItem={handleChangeItem}
+        onDeleteItem={handleDeleteItem}
+      />
+      <hr />
+      <b>{packed} out of {total} packed!</b>
+    </>
+  );
+}
+
+```
+
+
+Pista: 
+
+¿Hay algún estado redundante en este ejemplo?
+
+
+Solución: 
+
+Aunque se podría modificar cuidadosamente cada controlador de eventos para actualizar correctamente los contadores de totales y empaquetados.
+
+#### El problema principal es que estas variables de estado no existen. 
+
+#### Son redundantes, ya que siempre se puede calcular el número de elementos (empaquetados o totales) a partir de la propia matriz de elementos. 
+
+#### Elimine el estado redundante para corregir el error.
+
+
+App.js 
+
+```
+import { useState } from 'react';
+import AddItem from './AddItem.js';
+import PackingList from './PackingList.js';
+
+let nextId = 3;
+const initialItems = [
+  { id: 0, title: 'Warm socks', packed: true },
+  { id: 1, title: 'Travel journal', packed: false },
+  { id: 2, title: 'Watercolors', packed: false },
+];
+
+export default function TravelPlan() {
+  const [items, setItems] = useState(initialItems);
+
+  const total = items.length;
+  const packed = items
+    .filter(item => item.packed)
+    .length;
+
+  function handleAddItem(title) {
+    setItems([
+      ...items,
+      {
+        id: nextId++,
+        title: title,
+        packed: false
+      }
+    ]);
+  }
+
+  function handleChangeItem(nextItem) {
+    setItems(items.map(item => {
+      if (item.id === nextItem.id) {
+        return nextItem;
+      } else {
+        return item;
+      }
+    }));
+  }
+
+  function handleDeleteItem(itemId) {
+    setItems(
+      items.filter(item => item.id !== itemId)
+    );
+  }
+
+  return (
+    <>  
+      <AddItem
+        onAddItem={handleAddItem}
+      />
+      <PackingList
+        items={items}
+        onChangeItem={handleChangeItem}
+        onDeleteItem={handleDeleteItem}
+      />
+      <hr />
+      <b>{packed} out of {total} packed!</b>
+    </>
+  );
+}
+
+```
+
+#### Observe cómo los controladores de eventos solo se encargan de llamar a setItems después de este cambio. 
+
+#### El recuento de elementos ahora se calcula durante la siguiente renderización a partir de los elementos, por lo que siempre está actualizado.
+
+
+3. Corregir la desaparición de la selección
+
+Hay una lista de letras en estado. 
+
+Al pasar el cursor o enfocar una letra en particular, esta se resalta. 
+
+La letra resaltada se almacena en la variable de estado highlightLetter. 
+
+Puedes marcar y desmarcar letras individualmente, lo que actualiza la matriz de letras en estado.
+
+Este código funciona, pero tiene un pequeño fallo en la interfaz de usuario. 
+
+Al presionar "Marcar" o "Desmarcar", el resaltado desaparece por un momento. 
+
+#### Sin embargo, reaparece al mover el cursor o cambiar de letra con el teclado. ¿Por qué ocurre esto? 
+
+Arréglalo para que el resaltado no desaparezca al hacer clic en el botón. 
+
+
+data.js 
+
+```
+export const initialLetters = [{
+  id: 0,
+  subject: 'Ready for adventure?',
+  isStarred: true,
+}, {
+  id: 1,
+  subject: 'Time to check in!',
+  isStarred: false,
+}, {
+  id: 2,
+  subject: 'Festival Begins in Just SEVEN Days!',
+  isStarred: false,
+}];
+
+```
+
+
+Letter.js 
+
+```
+export default function Letter({
+  letter,
+  isHighlighted,
+  onHover,
+  onToggleStar,
+}) {
+  return (
+    <li
+      className={
+        isHighlighted ? 'highlighted' : ''
+      }
+      onFocus={() => {
+        onHover(letter);        
+      }}
+      onPointerMove={() => {
+        onHover(letter);
+      }}
+    >
+      <button onClick={() => {
+        onToggleStar(letter);
+      }}>
+        {letter.isStarred ? 'Unstar' : 'Star'}
+      </button>
+      {letter.subject}
+    </li>
+  )
+}
+
+```
+
+
+App.js 
+
+```
+import { useState } from 'react';
+import { initialLetters } from './data.js';
+import Letter from './Letter.js';
+
+export default function MailClient() {
+  const [letters, setLetters] = useState(initialLetters);
+  const [highlightedLetter, setHighlightedLetter] = useState(null);
+
+  function handleHover(letter) {
+    setHighlightedLetter(letter);
+  }
+
+  function handleStar(starred) {
+    setLetters(letters.map(letter => {
+      if (letter.id === starred.id) {
+        return {
+          ...letter,
+          isStarred: !letter.isStarred
+        };
+      } else {
+        return letter;
+      }
+    }));
+  }
+
+  return (
+    <>
+      <h2>Inbox</h2>
+      <ul>
+        {letters.map(letter => (
+          <Letter
+            key={letter.id}
+            letter={letter}
+            isHighlighted={
+              letter === highlightedLetter
+            }
+            onHover={handleHover}
+            onToggleStar={handleStar}
+          />
+        ))}
+      </ul>
+    </>
+  );
+}
+
+```
+
+
+Solución
+
+#### El problema radica en que el objeto letra se encuentra en highlightedLetter. 
+
+#### Sin embargo, también se encuentra la misma información en el array letters. 
+
+#### Por lo tanto, el estado presenta una duplicación. 
+
+Al actualizar el array letters tras hacer clic en el botón, se crea un nuevo objeto letra diferente de highlightedLetter. 
+
+#### Por eso, la comprobación highlightedLetter === letter se vuelve falsa y el resaltado desaparece. 
+
+Reaparece la próxima vez que se llama a setHighlightedLetter al mover el puntero.
+
+
+### Para solucionar el problema, elimine la duplicación del estado. 
+
+### En lugar de almacenar la letra en dos lugares, almacene highlightId. 
+
+### Luego, puede comprobar isHighlighted para cada letra con letter.id === highlightId, lo cual funcionará incluso si el objeto letra ha cambiado desde la última representación.
+
+
+data.js 
+
+```
+export const initialLetters = [{
+  id: 0,
+  subject: 'Ready for adventure?',
+  isStarred: true,
+}, {
+  id: 1,
+  subject: 'Time to check in!',
+  isStarred: false,
+}, {
+  id: 2,
+  subject: 'Festival Begins in Just SEVEN Days!',
+  isStarred: false,
+}];
+
+```
+
+
+Letter.js 
+
+```
+export default function Letter({
+  letter,
+  isHighlighted,
+  onHover,
+  onToggleStar,
+}) {
+  return (
+    <li
+      className={
+        isHighlighted ? 'highlighted' : ''
+      }
+      onFocus={() => {
+        onHover(letter);        
+      }}
+      onPointerMove={() => {
+        onHover(letter);
+      }}
+    >
+      <button onClick={() => {
+        onToggleStar(letter);
+      }}>
+        {letter.isStarred ? 'Unstar' : 'Star'}
+      </button>
+      {letter.subject}
+    </li>
+  )
+}
+
+```
+
+
+App.js 
+
+```
+import { useState } from 'react';
+import { initialLetters } from './data.js';
+import Letter from './Letter.js';
+
+export default function MailClient() {
+  const [letters, setLetters] = useState(initialLetters);
+  const [highlightedLetter, setHighlightedLetter] = useState(null);
+
+  function handleHover(letter) {
+    setHighlightedLetter(letter);
+  }
+
+  function handleStar(starred) {
+    setLetters(letters.map(letter => {
+      if (letter.id === starred.id) {
+        return {
+          ...letter,
+          isStarred: !letter.isStarred
+        };
+      } else {
+        return letter;
+      }
+    }));
+  }
+
+  return (
+    <>
+      <h2>Inbox</h2>
+      <ul>
+        {letters.map(letter => (
+          <Letter
+            key={letter.id}
+            letter={letter}
+            isHighlighted={
+              letter === highlightedLetter
+            }
+            onHover={handleHover}
+            onToggleStar={handleStar}
+          />
+        ))}
+      </ul>
+    </>
+  );
+}
+
+```
+
+
+4. Implementar selección múltiple
+
+En este ejemplo, cada letra tiene una propiedad isSelected y un controlador onToggle que la marca como seleccionada. 
+
+Esto funciona, pero el estado se almacena como un selectedId (ya sea nulo o un ID), por lo que solo se puede seleccionar una letra a la vez.
+
+
+Cambia la estructura del estado para que admita la selección múltiple. 
+
+(¿Cómo la estructurarías? Piensa en esto antes de escribir el código). 
+
+Cada casilla de verificación debe ser independiente de las demás. 
+
+Al hacer clic en una letra seleccionada, esta se desmarcará. 
+
+
+Finalmente, el pie de página debe mostrar el número correcto de elementos seleccionados. 
+
+
+data.js 
+
+```
+export const letters = [{
+  id: 0,
+  subject: 'Ready for adventure?',
+  isStarred: true,
+}, {
+  id: 1,
+  subject: 'Time to check in!',
+  isStarred: false,
+}, {
+  id: 2,
+  subject: 'Festival Begins in Just SEVEN Days!',
+  isStarred: false,
+}];
+
+```
+
+
+Letter.js 
+
+```
+export default function Letter({
+  letter,
+  onToggle,
+  isSelected,
+}) {
+  return (
+    <li className={
+      isSelected ? 'selected' : ''
+    }>
+      <label>
+        <input
+          type="checkbox"
+          checked={isSelected}
+          onChange={() => {
+            onToggle(letter.id);
+          }}
+        />
+        {letter.subject}
+      </label>
+    </li>
+  )
+}
+
+```
+
+
+App.js 
+
+```
+export default function Letter({
+  letter,
+  onToggle,
+  isSelected,
+}) {
+  return (
+    <li className={
+      isSelected ? 'selected' : ''
+    }>
+      <label>
+        <input
+          type="checkbox"
+          checked={isSelected}
+          onChange={() => {
+            onToggle(letter.id);
+          }}
+        />
+        {letter.subject}
+      </label>
+    </li>
+  )
+}
+
+```
+
+
+
+# Compartir estado entre componentes
+
+### A veces, se desea que el estado de dos componentes cambie siempre a la vez. 
+
+Para ello, se elimina el estado de ambos, se mueve a su componente principal común más cercano y luego se lo pasa mediante propiedades. 
+
+Esto se conoce como "elevar estado" y es una de las acciones más comunes al escribir código React.
+
+
+Aprenderás:
+
+Cómo compartir estado entre componentes mediante "elevar estado"
+
+Qué son los componentes controlados y no controlados
+
+
+
+## Ejemplo de elevación de estado
+
+En este ejemplo, un componente principal, Acordeón, renderiza dos paneles separados:
+
+Acordeón
+  Panel
+  Panel
+
+Cada componente Panel tiene un estado booleano "isActive" que determina si su contenido es visible.
+
+Presione el botón "Mostrar" para ambos paneles.
+
+
+App.js
+
+```
+import { useState } from 'react';
+
+function Panel({ title, children }) {
+  const [isActive, setIsActive] = useState(false);
+  return (
+    <section className="panel">
+      <h3>{title}</h3>
+      {isActive ? (
+        <p>{children}</p>
+      ) : (
+        <button onClick={() => setIsActive(true)}>
+          Show
+        </button>
+      )}
+    </section>
+  );
+}
+
+export default function Accordion() {
+  return (
+    <>
+      <h2>Almaty, Kazakhstan</h2>
+      <Panel title="About">
+        With a population of about 2 million, Almaty is Kazakhstan's largest city. From 1929 to 1997, it was its capital city.
+      </Panel>
+      <Panel title="Etymology">
+        The name comes from <span lang="kk-KZ">алма</span>, the Kazakh word for "apple" and is often translated as "full of apples". In fact, the region surrounding Almaty is thought to be the ancestral home of the apple, and the wild <i lang="la">Malus sieversii</i> is considered a likely candidate for the ancestor of the modern domestic apple.
+      </Panel>
+    </>
+  );
+}
+
+```
+
+#### Observe cómo al presionar el botón de un panel no se afecta al otro panel: son independientes.
+
+```
+		Accordion 
+		/		\
+	Panel		Panel
+isActive:false	isActive:false	
+
+```
+
+### Inicialmente, el estado isActive de cada panel es falso, por lo que ambos aparecen contraídos.
+
+
+```
+		Accordion 
+		/		\
+	Panel		Panel
+isActive:true	isActive:false	
+
+```
+
+### Al hacer clic en el botón de cualquiera de los paneles, solo se actualizará el estado "activo" de ese panel.
+
+
+#### Ahora, supongamos que desea cambiarlo para que solo se expanda un panel a la vez. 
+
+#### Con ese diseño, al expandir el segundo panel, el primero se contraerá. 
+
+Para coordinar estos dos paneles, necesita transferir su estado a un componente principal en tres pasos:
+
+1. Eliminar el estado de los componentes secundarios.
+
+2. Transferir datos codificados del componente principal común.
+
+3. Añadir el estado al componente principal común y transmitirlo junto con los controladores de eventos.
+
+
+Esto permitirá que el componente Acordeón coordine ambos paneles y expanda solo uno a la vez.
+
+
+## Paso 1: Eliminar el estado de los componentes secundarios
+
+### Le cederás el control de isActive del Panel a su componente principal. 
+
+### Esto significa que el componente principal pasará isActive al Panel como propiedad. 
+
+Comienza eliminando esta línea del componente Panel:
+
+```
+const [isActive, setIsActive] = useState(false);
+
+```
+
+Y, en su lugar, añade isActive a la lista de propiedades del Panel:
+
+```
+function Panel({ title, children, isActive }) {
+
+```
+
+Ahora, el componente principal del Panel puede controlar isActive pasándolo como propiedad. 
+
+Por el contrario, el componente Panel ya no tiene control sobre el valor de isActive; ahora depende del componente principal.
+
+
+## Paso 2: Pasar datos codificados del componente principal común
+
+### Para elevar el estado, debe localizar el componente principal común más cercano a los dos componentes secundarios que desea coordinar:
+
+Acordeón (componente principal común más cercano)
+  Panel
+  Panel
+
+En este ejemplo, se trata del componente Acordeón. 
+
+### Dado que se encuentra por encima de ambos paneles y puede controlar sus propiedades, se convertirá en la "fuente de verdad" para el panel activo. 
+
+### Haga que el componente Acordeón pase un valor codificado de isActive (por ejemplo, true) a ambos paneles:
+
+
+App.js
+
+```
+import { useState } from 'react';
+
+export default function Accordion() {
+  return (
+    <>
+      <h2>Almaty, Kazakhstan</h2>
+      <Panel title="About" isActive={true}>
+        With a population of about 2 million, Almaty is Kazakhstan's largest city. From 1929 to 1997, it was its capital city.
+      </Panel>
+      <Panel title="Etymology" isActive={true}>
+        The name comes from <span lang="kk-KZ">алма</span>, the Kazakh word for "apple" and is often translated as "full of apples". In fact, the region surrounding Almaty is thought to be the ancestral home of the apple, and the wild <i lang="la">Malus sieversii</i> is considered a likely candidate for the ancestor of the modern domestic apple.
+      </Panel>
+    </>
+  );
+}
+
+function Panel({ title, children, isActive }) {
+  return (
+    <section className="panel">
+      <h3>{title}</h3>
+      {isActive ? (
+        <p>{children}</p>
+      ) : (
+        <button onClick={() => setIsActive(true)}>
+          Show
+        </button>
+      )}
+    </section>
+  );
+}
+
+```
+
+Intente editar los valores isActive codificados en el componente Accordion y vea el resultado en la pantalla.
+
+
+## Paso 3: Añadir estado al panel principal común
+
+### Eliminar el estado suele cambiar la naturaleza de lo que se almacena como estado.
+
+#### En este caso, solo un panel debe estar activo a la vez. 
+
+Esto significa que el componente principal común de Accordion debe registrar cuál es el panel activo. 
+
+#### En lugar de un valor booleano, podría usar un número como índice del panel activo para la variable de estado:
+
+```
+const [activeIndex, setActiveIndex] = useState(0);
+
+```
+
+#### Cuando activeIndex es 0, el primer panel está activo, y cuando es 1, es el segundo.
+
+Al hacer clic en el botón "Mostrar" en cualquiera de los paneles, se cambia el índice activo en Accordion. 
+
+Un panel no puede establecer el estado activeIndex directamente, ya que está definido dentro de Accordion. 
+
+### El componente Accordion debe permitir explícitamente que el componente Panel cambie su estado pasando un controlador de eventos como propiedad: 
+
+
+```
+<>
+  <Panel
+    isActive={activeIndex === 0}
+    onShow={() => setActiveIndex(0)}
+  >
+    ...
+  </Panel>
+  <Panel
+    isActive={activeIndex === 1}
+    onShow={() => setActiveIndex(1)}
+  >
+    ...
+  </Panel>
+</>
+
+```
+
+#### El <button> dentro del Panel ahora utilizará la propiedad onShow como su controlador de evento de clic:
+
+
+App.js
+
+```
+import { useState } from 'react';
+
+export default function Accordion() {
+  const [activeIndex, setActiveIndex] = useState(0);
+  return (
+    <>
+      <h2>Almaty, Kazakhstan</h2>
+      <Panel
+        title="About"
+        isActive={activeIndex === 0}
+        onShow={() => setActiveIndex(0)}
+      >
+        With a population of about 2 million, Almaty is Kazakhstan's largest city. From 1929 to 1997, it was its capital city.
+      </Panel>
+      <Panel
+        title="Etymology"
+        isActive={activeIndex === 1}
+        onShow={() => setActiveIndex(1)}
+      >
+        The name comes from <span lang="kk-KZ">алма</span>, the Kazakh word for "apple" and is often translated as "full of apples". In fact, the region surrounding Almaty is thought to be the ancestral home of the apple, and the wild <i lang="la">Malus sieversii</i> is considered a likely candidate for the ancestor of the modern domestic apple.
+      </Panel>
+    </>
+  );
+}
+
+function Panel({
+  title,
+  children,
+  isActive,
+  onShow
+}) {
+  return (
+    <section className="panel">
+      <h3>{title}</h3>
+      {isActive ? (
+        <p>{children}</p>
+      ) : (
+        <button onClick={onShow}>
+          Show
+        </button>
+      )}
+    </section>
+  );
+}
+
+```
+
+¡Esto completa la elevación del estado! 
+
+### Mover el estado al componente principal común permitió coordinar los dos paneles. 
+
+### Usar el índice activo en lugar de dos indicadores "se muestra" garantizó que solo un panel estuviera activo en un momento dado. 
+
+### Además, pasar el controlador de eventos al componente secundario le permitió cambiar el estado del componente principal.
+
+```
+		Accordion 
+		activeIndex:0
+		/		\
+	Panel		Panel
+isActive:true	isActive:false	
+	|             	|
+  Panel 		  Panel
+  
+```
+
+#### Inicialmente, el activeIndex de Accordion es 0, por lo que el primer Panel recibe isActive = true
+
+```
+		Accordion 
+		activeIndex:1
+		/		\
+	Panel		Panel
+isActive:false	isActive:true	
+	|             	|
+  Panel 		  Panel
+  
+```
+
+#### Cuando el estado activeIndex de Accordion cambia a 1, el segundo Panel recibe isActive = true en su lugar 
+
+
+## En profundidad: Componentes controlados y no controlados
+
+### Es común llamar "no controlado" a un componente con algún estado local. 
+
+#### Por ejemplo, el componente Panel original con la variable de estado isActive no está controlado porque su componente padre no puede influir en si el panel está activo o no.
+
+
+### En cambio, se podría decir que un componente está "controlado" cuando su información importante se controla mediante propiedades en lugar de su propio estado local. 
+
+#### Esto permite que el componente padre especifique completamente su comportamiento. 
+
+El componente Panel final con la propiedad isActive está controlado por el componente Accordion.
+
+
+#### Los componentes no controlados son más fáciles de usar dentro de sus componentes principales porque requieren menos configuración. 
+
+#### Sin embargo, son menos flexibles cuando se desea coordinarlos entre sí. 
+
+Los componentes controlados son extremadamente flexibles, pero requieren que el componente padre los configure completamente con propiedades.
+
+
+#### En la práctica, "controlado" y "no controlado" no son términos estrictamente técnicos; cada componente suele tener una combinación de estado local y propiedades. 
+
+Sin embargo, esta es una forma útil de describir cómo se diseñan los componentes y qué capacidades ofrecen.
+
+
+### Al escribir un componente, considere qué información debe controlarse (mediante propiedades) y qué información no debe controlarse (mediante el estado). 
+
+Sin embargo, siempre puede cambiar de opinión y refactorizarlo más adelante.
+
+
+## Una única fuente de verdad para cada estado
+
+En una aplicación React, muchos componentes tienen su propio estado. 
+
+Algunos estados pueden residir cerca de los componentes hoja (componentes en la base del árbol), como las entradas. 
+
+Otros pueden residir más cerca de la cima de la aplicación. 
+
+Por ejemplo, incluso las bibliotecas de enrutamiento del lado del cliente suelen implementarse almacenando la ruta actual en el estado de React y pasándola mediante propiedades.
+
+
+### Para cada componente de estado, se elige el componente que lo posee. 
+
+Este principio también se conoce como una "única fuente de verdad". 
+
+#### No significa que todos los estados residan en un solo lugar, sino que para cada componente hay un componente específico que contiene esa información. 
+
+En lugar de duplicar el estado compartido entre componentes, se eleva a su componente principal común y se pasa a los componentes secundarios que lo necesitan.
+
+
+La aplicación cambiará a medida que se trabaja en ella. 
+
+Es común mover un estado hacia abajo o hacia arriba mientras se determina dónde reside cada componente. 
+
+¡Todo esto es parte del proceso!
+
+
+Para ver cómo se siente esto en la práctica con algunos componentes más, lee "Pensando en React".
+
+
+## Rs compartir estado 
+
+Para coordinar dos componentes, transfiera su estado a su componente principal común.
+
+Luego, transmita la información mediante propiedades desde su componente principal común.
+
+Finalmente, transmita los controladores de eventos para que los componentes secundarios puedan cambiar el estado del componente principal.
+
+Es útil considerar los componentes como "controlados" (controlados por propiedades) o "no controlados" (controlados por estado).
+
+
+## Ejercicio
+
+1. Entradas sincronizadas
+
+Estas dos entradas son independientes. 
+
+Manténgalas sincronizadas: al editar una, la otra debería actualizarse con el mismo texto, y viceversa.
+
+
+App.js
+
+```
+import { useState } from 'react';
+
+export default function SyncedInputs() {
+  return (
+    <>
+      <Input label="First input" />
+      <Input label="Second input" />
+    </>
+  );
+}
+
+function Input({ label }) {
+  const [text, setText] = useState('');
+
+  function handleChange(e) {
+    setText(e.target.value);
+  }
+
+  return (
+    <label>
+      {label}
+      {' '}
+      <input
+        value={text}
+        onChange={handleChange}
+      />
+    </label>
+  );
+}
+
+```
+
+Pista: 
+
+Necesitarás elevar su estado al componente principal.
+
+
+Solución
+
+### Mueva la variable de estado de texto al componente principal junto con el controlador handleChange. 
+
+### Luego, páselos como propiedades a ambos componentes de entrada. 
+
+Esto los mantendrá sincronizados.
+
+
+App.js
+
+```
+import { useState } from 'react';
+
+export default function SyncedInputs() {
+  const [text, setText] = useState('');
+
+  function handleChange(e) {
+    setText(e.target.value);
+  }
+
+  return (
+    <>
+      <Input
+        label="First input"
+        value={text}
+        onChange={handleChange}
+      />
+      <Input
+        label="Second input"
+        value={text}
+        onChange={handleChange}
+      />
+    </>
+  );
+}
+
+function Input({ label, value, onChange }) {
+  return (
+    <label>
+      {label}
+      {' '}
+      <input
+        value={value}
+        onChange={onChange}
+      />
+    </label>
+  );
+}
+
+```
+
+
+2. Filtrado de una lista
+
+### En este ejemplo, la barra de búsqueda tiene su propio estado de consulta que controla la entrada de texto. 
+
+Su componente principal, FilterableList, muestra una lista de elementos, pero no tiene en cuenta la consulta de búsqueda.
+
+
+Utilice la función filterItems(foods, query) para filtrar la lista según la consulta de búsqueda. 
+
+Para probar los cambios, verifique que al escribir "s" en la entrada, la lista se filtre a "Sushi", "Shish kebab" y "Dim sum".
+
+
+Tenga en cuenta que filterItems ya está implementado e importado, por lo que no necesita escribirlo usted mismo.
+
+
+data.js
+
+```
+export function filterItems(items, query) {
+  query = query.toLowerCase();
+  return items.filter(item =>
+    item.name.split(' ').some(word =>
+      word.toLowerCase().startsWith(query)
+    )
+  );
+}
+
+export const foods = [{
+  id: 0,
+  name: 'Sushi',
+  description: 'Sushi is a traditional Japanese dish of prepared vinegared rice'
+}, {
+  id: 1,
+  name: 'Dal',
+  description: 'The most common way of preparing dal is in the form of a soup to which onions, tomatoes and various spices may be added'
+}, {
+  id: 2,
+  name: 'Pierogi',
+  description: 'Pierogi are filled dumplings made by wrapping unleavened dough around a savoury or sweet filling and cooking in boiling water'
+}, {
+  id: 3,
+  name: 'Shish kebab',
+  description: 'Shish kebab is a popular meal of skewered and grilled cubes of meat.'
+}, {
+  id: 4,
+  name: 'Dim sum',
+  description: 'Dim sum is a large range of small dishes that Cantonese people traditionally enjoy in restaurants for breakfast and lunch'
+}];
+
+```
+
+
+App.js
+
+```
+import { useState } from 'react';
+import { foods, filterItems } from './data.js';
+
+export default function FilterableList() {
+  return (
+    <>
+      <SearchBar />
+      <hr />
+      <List items={foods} />
+    </>
+  );
+}
+
+function SearchBar() {
+  const [query, setQuery] = useState('');
+
+  function handleChange(e) {
+    setQuery(e.target.value);
+  }
+
+  return (
+    <label>
+      Search:{' '}
+      <input
+        value={query}
+        onChange={handleChange}
+      />
+    </label>
+  );
+}
+
+function List({ items }) {
+  return (
+    <table>
+      <tbody>
+        {items.map(food => (
+          <tr key={food.id}>
+            <td>{food.name}</td>
+            <td>{food.description}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+}
+
+```
+
+Pista: 
+
+Deberá eliminar el estado de la consulta y el controlador handleChange de SearchBar y moverlos a FilterableList. 
+
+Luego, páselos a SearchBar como propiedades de consulta y onChange.
+
+
+Solución
+
+Eleva el estado de la consulta al componente FilterableList. 
+
+Llama a filterItems(foods, query) para obtener la lista filtrada y pasarla a la lista. 
+
+Ahora, el cambio en la entrada de la consulta se refleja en la lista:
+
+
+App.js 
+
+```
+import { useState } from 'react';
+import { foods, filterItems } from './data.js';
+
+export default function FilterableList() {
+  const [query, setQuery] = useState('');
+  const results = filterItems(foods, query);
+
+  function handleChange(e) {
+    setQuery(e.target.value);
+  }
+
+  return (
+    <>
+      <SearchBar
+        query={query}
+        onChange={handleChange}
+      />
+      <hr />
+      <List items={results} />
+    </>
+  );
+}
+
+function SearchBar({ query, onChange }) {
+  return (
+    <label>
+      Search:{' '}
+      <input
+        value={query}
+        onChange={onChange}
+      />
+    </label>
+  );
+}
+
+function List({ items }) {
+  return (
+    <table>
+      <tbody> 
+        {items.map(food => (
+          <tr key={food.id}>
+            <td>{food.name}</td>
+            <td>{food.description}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+}
+
+```
+
+
+# Preservación y restablecimiento del estado
+
+### El estado se aísla entre componentes. 
+
+### React registra qué estado pertenece a cada componente según su ubicación en el árbol de interfaz de usuario. 
+
+### Puedes controlar cuándo preservar el estado y cuándo restablecerlo entre renderizaciones.
+
+
+Aprenderás:
+
+Cuándo React decide preservar o restablecer el estado
+
+Cómo forzar a React a restablecer el estado del componente
+
+Cómo las claves y los tipos afectan la preservación del estado
+
+
+## El estado está vinculado a una posición en el árbol de renderizado.
+
+### React crea árboles de renderizado para la estructura del componente en tu interfaz de usuario.
+
+
+#### Al asignar el estado a un componente, podrías pensar que reside dentro del componente. 
+
+### Sin embargo, en realidad, el estado se almacena dentro de React. 
+
+### React asocia cada parte del estado que contiene con el componente correcto según su ubicación en el árbol de renderizado.
+
+
+Aquí solo hay una etiqueta JSX <Counter />, pero se representa en dos posiciones diferentes:
+
+
+App.js
+
+```
+import { useState } from 'react';
+
+export default function App() {
+  const counter = <Counter />;
+  return (
+    <div>
+      {counter}
+      {counter}
+    </div>
+  );
+}
+
+function Counter() {
+  const [score, setScore] = useState(0);
+  const [hover, setHover] = useState(false);
+
+  let className = 'counter';
+  if (hover) {
+    className += ' hover';
+  }
+
+  return (
+    <div
+      className={className}
+      onPointerEnter={() => setHover(true)}
+      onPointerLeave={() => setHover(false)}
+    >
+      <h1>{score}</h1>
+      <button onClick={() => setScore(score + 1)}>
+        Add one
+      </button>
+    </div>
+  );
+}
+
+```
+
+### Así es como se ven como un árbol:
+
+```
+	 div 
+	/	\
+Counter Counter
+count:0 count:0 
+
+```
+
+#### Se trata de dos contadores independientes, ya que cada uno se renderiza en su propia posición en el árbol. 
+
+Normalmente no es necesario pensar en estas posiciones para usar React, pero puede ser útil para comprender su funcionamiento.
+
+
+### En React, cada componente en pantalla tiene un estado completamente aislado. 
+
+Por ejemplo, si renderizas dos componentes Counter uno al lado del otro, cada uno tendrá sus propios estados independientes de puntuación y desplazamiento.
+
+
+Prueba a hacer clic en ambos contadores y observa que no se afectan entre sí.
+
+
+App.js 
+
+```
+import { useState } from 'react';
+
+export default function App() {
+  return (
+    <div>
+      <Counter />
+      <Counter />
+    </div>
+  );
+}
+
+function Counter() {
+  const [score, setScore] = useState(0);
+  const [hover, setHover] = useState(false);
+
+  let className = 'counter';
+  if (hover) {
+    className += ' hover';
+  }
+
+  return (
+    <div
+      className={className}
+      onPointerEnter={() => setHover(true)}
+      onPointerLeave={() => setHover(false)}
+    >
+      <h1>{score}</h1>
+      <button onClick={() => setScore(score + 1)}>
+        Add one
+      </button>
+    </div>
+  );
+}
+
+```
+
+Como puede ver, cuando se actualiza un contador, solo se actualiza el estado de ese componente:
+
+```
+	 div 
+	/	\
+Counter Counter
+count:0 count:1
+
+```
+
+Actualización del estado 
+
+
+### React conservará el estado mientras renderices el mismo componente en la misma posición del árbol. 
+
+Para comprobarlo, incrementa ambos contadores, elimina el segundo componente desmarcando la casilla "Renderizar el segundo contador" y vuelve a añadirlo marcándola:
+
+
+App.js 
+
+```
+import { useState } from 'react';
+
+export default function App() {
+  const [showB, setShowB] = useState(true);
+  return (
+    <div>
+      <Counter />
+      {showB && <Counter />} 
+      <label>
+        <input
+          type="checkbox"
+          checked={showB}
+          onChange={e => {
+            setShowB(e.target.checked)
+          }}
+        />
+        Render the second counter
+      </label>
+    </div>
+  );
+}
+
+function Counter() {
+  const [score, setScore] = useState(0);
+  const [hover, setHover] = useState(false);
+
+  let className = 'counter';
+  if (hover) {
+    className += ' hover';
+  }
+
+  return (
+    <div
+      className={className}
+      onPointerEnter={() => setHover(true)}
+      onPointerLeave={() => setHover(false)}
+    >
+      <h1>{score}</h1>
+      <button onClick={() => setScore(score + 1)}>
+        Add one
+      </button>
+    </div>
+  );
+}
+
+```
+
+#### Observa cómo, al dejar de renderizar el segundo contador, su estado desaparece por completo. 
+
+### Esto se debe a que, al eliminar un componente, React destruye su estado.
+
+```
+	 div 
+	/	
+Counter 
+count:0 
+
+```
+
+Componente eliminado 
+
+
+### Cuando marca “Renderizar el segundo contador”, se inicializan un segundo contador y su estado desde cero (puntaje = 0) y se agregan al DOM.
+
+```
+	 div 
+	/	\
+Counter Counter
+count:0 count:0 
+
+```
+
+Agregando componente 
+
+
+### React conserva el estado de un componente mientras se renderiza en su posición en el árbol de interfaz de usuario. 
+
+### Si se elimina o se renderiza otro componente en la misma posición, React descarta su estado.
+
+
+## El mismo componente en la misma posición conserva el estado.
+
+En este ejemplo, hay dos etiquetas <Counter /> diferentes:
+
+
+App.js 
+
+```
+import { useState } from 'react';
+
+export default function App() {
+  const [isFancy, setIsFancy] = useState(false);
+  return (
+    <div>
+      {isFancy ? (
+        <Counter isFancy={true} /> 
+      ) : (
+        <Counter isFancy={false} /> 
+      )}
+      <label>
+        <input
+          type="checkbox"
+          checked={isFancy}
+          onChange={e => {
+            setIsFancy(e.target.checked)
+          }}
+        />
+        Use fancy styling
+      </label>
+    </div>
+  );
+}
+
+function Counter({ isFancy }) {
+  const [score, setScore] = useState(0);
+  const [hover, setHover] = useState(false);
+
+  let className = 'counter';
+  if (hover) {
+    className += ' hover';
+  }
+  if (isFancy) {
+    className += ' fancy';
+  }
+
+  return (
+    <div
+      className={className}
+      onPointerEnter={() => setHover(true)}
+      onPointerLeave={() => setHover(false)}
+    >
+      <h1>{score}</h1>
+      <button onClick={() => setScore(score + 1)}>
+        Add one
+      </button>
+    </div>
+  );
+}
+
+```
+
+#### Al marcar o desmarcar la casilla, el estado del contador no se restablece. 
+
+#### Independientemente de si isFancy es verdadero o falso, siempre se tiene un <Counter /> como primer elemento secundario del div devuelto por el componente raíz de la aplicación:
+
+1 -> 2
+
+1. 
+
+```
+App
+isFancy: false
+  |
+ div 
+  |
+ isFancy:false 
+  |
+ Counter
+ count:3
+
+```
+
+2. 
+
+```
+App
+isFancy: true
+  |
+ div 
+  |
+ isFancy:true 
+  |
+ Counter
+ count:3
+
+```
+
+### Actualizar el estado de la aplicación no reinicia el contador, ya que este permanece en la misma posición.
+
+#### Es el mismo componente en la misma posición; por lo tanto, desde la perspectiva de React, es el mismo contador.
+
+
+### Error
+
+Recuerde que lo que importa en React es la posición en el árbol de la interfaz de usuario, no el marcado JSX. 
+
+Este componente tiene dos cláusulas de retorno con diferentes etiquetas JSX <Counter /> dentro y fuera del if:
+
+```
+import { useState } from 'react';
+
+export default function App() {
+  const [isFancy, setIsFancy] = useState(false);
+  if (isFancy) {
+    return (
+      <div>
+        <Counter isFancy={true} />
+        <label>
+          <input
+            type="checkbox"
+            checked={isFancy}
+            onChange={e => {
+              setIsFancy(e.target.checked)
+            }}
+          />
+          Use fancy styling
+        </label>
+      </div>
+    );
+  }
+  return (
+    <div>
+      <Counter isFancy={false} />
+      <label>
+        <input
+          type="checkbox"
+          checked={isFancy}
+          onChange={e => {
+            setIsFancy(e.target.checked)
+          }}
+        />
+        Use fancy styling
+      </label>
+    </div>
+  );
+}
+
+function Counter({ isFancy }) {
+  const [score, setScore] = useState(0);
+  const [hover, setHover] = useState(false);
+
+  let className = 'counter';
+  if (hover) {
+    className += ' hover';
+  }
+  if (isFancy) {
+    className += ' fancy';
+  }
+
+  return (
+    <div
+      className={className}
+      onPointerEnter={() => setHover(true)}
+      onPointerLeave={() => setHover(false)}
+    >
+      <h1>{score}</h1>
+      <button onClick={() => setScore(score + 1)}>
+        Add one
+      </button>
+    </div>
+  );
+}
+
+```
+
+Podrías esperar que el estado se restablezca al marcar la casilla, ¡pero no es así! 
+
+Esto se debe a que ambas etiquetas <Counter /> se renderizan en la misma posición. 
+
+#### React no sabe dónde colocas las condiciones en tu función. Solo ve el árbol que devuelves.
+
+
+En ambos casos, el componente App devuelve un <div> con <Counter /> como primer hijo. 
+
+### Para React, estos dos contadores tienen la misma dirección: el primer hijo del primer hijo de la raíz. 
+
+#### Así es como React los relaciona entre la renderización anterior y la siguiente, independientemente de cómo estructures tu lógica.
+
+
+## Diferentes componentes en la misma posición restablecen el estado.
+
+En este ejemplo, al marcar la casilla, se reemplazará <Counter> por <p>.
+
+App.js 
+
+```
+import { useState } from 'react';
+
+export default function App() {
+  const [isPaused, setIsPaused] = useState(false);
+  return (
+    <div>
+      {isPaused ? (
+        <p>See you later!</p> 
+      ) : (
+        <Counter /> 
+      )}
+      <label>
+        <input
+          type="checkbox"
+          checked={isPaused}
+          onChange={e => {
+            setIsPaused(e.target.checked)
+          }}
+        />
+        Take a break
+      </label>
+    </div>
+  );
+}
+
+function Counter() {
+  const [score, setScore] = useState(0);
+  const [hover, setHover] = useState(false);
+
+  let className = 'counter';
+  if (hover) {
+    className += ' hover';
+  }
+
+  return (
+    <div
+      className={className}
+      onPointerEnter={() => setHover(true)}
+      onPointerLeave={() => setHover(false)}
+    >
+      <h1>{score}</h1>
+      <button onClick={() => setScore(score + 1)}>
+        Add one
+      </button>
+    </div>
+  );
+}
+
+```
+
+#### Aquí, se alterna entre diferentes tipos de componentes en la misma posición. 
+
+#### Inicialmente, el primer elemento secundario del <div> contenía un contador. 
+
+#### Sin embargo, al intercambiarlo con un p, React eliminó el contador del árbol de interfaz de usuario y destruyó su estado.
+
+
+```
+	div  ->	 div  ->  div
+	 |		  |        |	
+ Counter  			   p	
+ count:3
+
+```
+
+Cuando el Contador cambia a p, el Contador se elimina y se agrega p
+
+
+Además, al renderizar un componente diferente en la misma posición, se restablece el estado de todo su subárbol. 
+
+Para ver cómo funciona, incremente el contador y marque la casilla:
+
+
+App.js
+
+```
+import { useState } from 'react';
+
+export default function App() {
+  const [isFancy, setIsFancy] = useState(false);
+  return (
+    <div>
+      {isFancy ? (
+        <div>
+          <Counter isFancy={true} /> 
+        </div>
+      ) : (
+        <section>
+          <Counter isFancy={false} />
+        </section>
+      )}
+      <label>
+        <input
+          type="checkbox"
+          checked={isFancy}
+          onChange={e => {
+            setIsFancy(e.target.checked)
+          }}
+        />
+        Use fancy styling
+      </label>
+    </div>
+  );
+}
+
+function Counter({ isFancy }) {
+  const [score, setScore] = useState(0);
+  const [hover, setHover] = useState(false);
+
+  let className = 'counter';
+  if (hover) {
+    className += ' hover';
+  }
+  if (isFancy) {
+    className += ' fancy';
+  }
+
+  return (
+    <div
+      className={className}
+      onPointerEnter={() => setHover(true)}
+      onPointerLeave={() => setHover(false)}
+    >
+      <h1>{score}</h1>
+      <button onClick={() => setScore(score + 1)}>
+        Add one
+      </button>
+    </div>
+  );
+}
+
+```
+
+El estado del contador se restablece al marcar la casilla. 
+
+Aunque se renderiza un contador, el primer elemento secundario del div cambia de div a sección. 
+
+Al eliminar el div secundario del DOM, también se destruyó todo el árbol inferior (incluido el contador y su estado).
+
+```
+	div  ->	 div  ->  div
+	 |		  |        |	
+ section    		  div
+	|					|
+ Counter  			   Counter	
+ count:3        	   count:0
+
+```
+
+Cuando la sección cambia a div, la sección se elimina y se agrega el nuevo div
+
+```
+	div  ->	 div  ->  div
+	 |		  |        |	
+	div    		  	section
+	|					|
+ Counter  			   Counter	
+ count:0        	   count:0
+
+```
+
+Al volver a la configuración anterior, se elimina el div y se añade la nueva sección.
+
+
+### Como regla general, si desea conservar el estado entre renderizaciones, la estructura de su árbol debe coincidir de una renderización a otra. 
+
+### Si la estructura es diferente, el estado se destruye, ya que React lo destruye al eliminar un componente del árbol.
+
+
+### Error
+
+Por esta razón, no se deben anidar las definiciones de funciones de componentes.
+
+En este caso, la función del componente MyTextField se define dentro de MyComponent:
+
+
+App.js 
+
+```
+import { useState } from 'react';
+
+export default function MyComponent() {
+  const [counter, setCounter] = useState(0);
+
+  function MyTextField() {
+    const [text, setText] = useState('');
+
+    return (
+      <input
+        value={text}
+        onChange={e => setText(e.target.value)}
+      />
+    );
+  }
+
+  return (
+    <>
+      <MyTextField />
+      <button onClick={() => {
+        setCounter(counter + 1)
+      }}>Clicked {counter} times</button>
+    </>
+  );
+}
+
+```
+
+#### Cada vez que haces clic en el botón, ¡el estado de entrada desaparece! 
+
+#### Esto se debe a que se crea una función MyTextField diferente para cada renderizado de MyComponent. 
+
+Al renderizar un componente diferente en la misma posición, React restablece todos los estados inferiores. 
+
+Esto genera errores y problemas de rendimiento.
+
+### Para evitar este problema, declara siempre las funciones del componente en el nivel superior y no anides sus definiciones.
 
 
 
