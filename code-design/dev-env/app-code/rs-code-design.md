@@ -1274,6 +1274,208 @@ Lenguajes mencionados:
 
 
 
+# The Design Of Everyday Things
+
+Explora cómo el diseño de los objetos y sistemas cotidianos puede influir en nuestra experiencia y comportamiento.
+
+
+La importancia del diseño: Norman argumenta que el diseño no es solo una cuestión de estética, sino que también puede influir en la funcionalidad y la usabilidad de un objeto o sistema.
+
+La teoría de la acción: Norman introduce la teoría de la acción, que sostiene que los usuarios de un objeto o sistema tienen una serie de objetivos y metas que intentan alcanzar. El diseño debe ser capaz de apoyar y facilitar estas acciones.
+
+Los siete principios del diseño: Norman identifica siete principios que deben guiar el diseño de los objetos y sistemas:
+
+1. Visibilidad: El diseño debe ser claro y visible, de manera que los usuarios puedan entender cómo funciona y qué se espera de ellos.
+
+2. Retroalimentación: El diseño debe proporcionar retroalimentación clara y oportuna sobre las acciones del usuario.
+
+3. Consistencia: El diseño debe ser consistente en su lógica y comportamiento.
+
+4. Mapeo: El diseño debe proporcionar un mapeo claro entre las acciones del usuario y los resultados esperados.
+
+5. Flexibilidad: El diseño debe ser flexible y adaptable a las necesidades y preferencias del usuario.
+
+6. Error: El diseño debe ser capaz de manejar y recuperarse de los errores de manera efectiva.
+
+7. Estándares: El diseño debe seguir estándares y convenciones establecidas para evitar la confusión y la frustración del usuario.
+
+La diferencia entre conocimiento en la cabeza y conocimiento en el mundo: Norman distingue entre el conocimiento que se encuentra en la cabeza del usuario (conocimiento en la cabeza) y el conocimiento que se encuentra en el mundo (conocimiento en el mundo). El diseño debe aprovechar el conocimiento en el mundo para reducir la carga cognitiva del usuario.
+    
+La importancia de la usabilidad: Norman enfatiza la importancia de la usabilidad en el diseño, argumentando que un diseño que es fácil de usar y entender es más probable que sea utilizado de manera efectiva.
+
+
+
+# Specification by Example
+
+Explora la técnica de especificación por ejemplo como una forma de mejorar la comunicación y la colaboración entre los equipos de desarrollo de software y los stakeholders
+
+Especificación por ejemplo: La especificación por ejemplo es una técnica que implica describir el comportamiento de un sistema o aplicación a través de ejemplos concretos y específicos. En lugar de describir el comportamiento de manera abstracta, se utilizan ejemplos para ilustrar cómo debe funcionar el sistema.
+Ventajas de la especificación por ejemplo: Adzic identifica varias ventajas de la especificación por ejemplo, incluyendo:
+
+Mejora la comunicación entre los equipos de desarrollo y los stakeholders.
+Reduce la ambigüedad y la incertidumbre en la especificación del sistema.
+Permite a los equipos de desarrollo entender mejor los requisitos del sistema.
+Facilita la creación de pruebas automatizadas.
+
+Técnicas de especificación por ejemplo: Adzic describe varias técnicas para implementar la especificación por ejemplo, incluyendo:
+
+Ejemplos concretos: Utilizar ejemplos concretos y específicos para describir el comportamiento del sistema.
+Escenarios: Utilizar escenarios para describir cómo se utilizará el sistema en diferentes situaciones.
+Criterios de aceptación: Utilizar criterios de aceptación para describir los requisitos del sistema de manera clara y concisa.
+
+La importancia de la colaboración: Adzic enfatiza la importancia de la colaboración entre los equipos de desarrollo y los stakeholders para crear una especificación por ejemplo efectiva.
+La relación entre la especificación por ejemplo y las pruebas: Adzic explora la relación entre la especificación por ejemplo y las pruebas, y cómo la especificación por ejemplo puede ser utilizada para crear pruebas automatizadas efectivas.
+La importancia de la revisión y la iteración: Adzic destaca la importancia de revisar y iterar la especificación por ejemplo para asegurarse de que se ajusta a los requisitos del sistema y de que es efectiva.
+
+
+Algunos de los conceptos clave que se pueden aplicar en la práctica son:
+
+Crear ejemplos concretos: En lugar de describir el comportamiento de manera abstracta, crear ejemplos concretos y específicos para ilustrar cómo debe funcionar el sistema.
+
+Utilizar escenarios: Utilizar escenarios para describir cómo se utilizará el sistema en diferentes situaciones.
+
+Establecer criterios de aceptación: Establecer criterios de aceptación claros y concisos para describir los requisitos del sistema.
+
+Colaborar con los stakeholders: Colaborar con los stakeholders para crear una especificación por ejemplo efectiva.
+
+Revisar y iterar: Revisar y iterar la especificación por ejemplo para asegurarse de que se ajusta a los requisitos del sistema y de que es efectiva
+
+
+
+# Apprenticeship Patterns: Guidance for the Aspiring Software Craftsman
+
+Explora los patrones y principios que pueden ayudar a los desarrolladores de software a mejorar sus habilidades y convertirse en artesanos de software.
+
+
+La importancia de la formación: Los autores enfatizan la importancia de la formación y el aprendizaje continuo para los desarrolladores de software. La formación no solo se refiere a la adquisición de nuevas habilidades, sino también a la mejora de las habilidades existentes y la adaptación a las nuevas tecnologías y tendencias.
+El concepto de "aprendizaje": Los autores definen el aprendizaje como un proceso de adquisición de habilidades y conocimientos a través de la práctica y la experiencia. El aprendizaje es un proceso continuo que requiere dedicación y esfuerzo.
+Los patrones de aprendizaje: Los autores identifican varios patrones de aprendizaje que pueden ayudar a los desarrolladores de software a mejorar sus habilidades, incluyendo:
+
+Aprender por hacer: Aprender a través de la práctica y la experiencia.
+Aprender de los demás: Aprender de los colegas y mentores.
+Aprender de los errores: Aprender de los errores y fracasos.
+Aprender a través de la reflexión: Aprender a través de la reflexión y la autoevaluación.
+
+La importancia de la comunidad: Los autores enfatizan la importancia de la comunidad y la colaboración en el proceso de aprendizaje. La comunidad puede proporcionar apoyo, orientación y retroalimentación valiosa.
+El concepto de "maestro": Los autores definen el concepto de "maestro" como alguien que ha alcanzado un alto nivel de habilidad y experiencia en su campo. Un maestro puede servir como modelo y mentor para los desarrolladores de software que están en proceso de aprendizaje.
+Los patrones de mentoría: Los autores identifican varios patrones de mentoría que pueden ayudar a los desarrolladores de software a encontrar y trabajar con un mentor, incluyendo:
+
+Buscar un mentor: Buscar un mentor que pueda proporcionar orientación y apoyo.
+Establecer una relación: Establecer una relación con el mentor y definir las expectativas y objetivos.
+Aprender de la experiencia: Aprender de la experiencia y la sabiduría del mentor.
+
+La importancia de la práctica: Los autores enfatizan la importancia de la práctica y la experimentación en el proceso de aprendizaje. La práctica puede ayudar a los desarrolladores de software a desarrollar habilidades y confianza.
+
+Algunos de los patrones de aprendizaje que se pueden aplicar en la práctica son:
+
+Unirse a una comunidad: Unirse a una comunidad de desarrolladores de software para conectarse con otros profesionales y aprender de sus experiencias.
+Buscar un mentor: Buscar un mentor que pueda proporcionar orientación y apoyo en el proceso de aprendizaje.
+Establecer un plan de aprendizaje: Establecer un plan de aprendizaje y definir los objetivos y metas.
+Practicar y experimentar: Practicar y experimentar con nuevas tecnologías y habilidades.
+Reflexionar y autoevaluarse: Reflexionar y autoevaluarse para identificar áreas de mejora y ajustar el plan de aprendizaje
+
+
+
+# Pragmatic Thinking and Learning: Refactor Your Wetware
+
+Explora cómo mejorar la forma en que pensamos y aprendemos, y cómo aplicar estos conceptos en el contexto de la programación y el desarrollo de software
+
+
+La importancia de la reflexión: Hunt enfatiza la importancia de la reflexión y la autoevaluación en el proceso de aprendizaje y mejora. La reflexión nos permite identificar áreas de mejora y ajustar nuestro enfoque.
+El concepto de "wetware": Hunt utiliza el término "wetware" para referirse al cerebro y la forma en que procesamos la información. El objetivo del libro es ayudar a los lectores a "refactorizar" su wetware, es decir, a mejorar la forma en que pensamos y aprendemos.
+La teoría de la carga cognitiva: Hunt explica la teoría de la carga cognitiva, que sostiene que nuestro cerebro tiene una capacidad limitada para procesar información. Cuando la carga cognitiva es demasiado alta, podemos experimentar fatiga mental y disminución de la productividad.
+La importancia de la práctica: Hunt enfatiza la importancia de la práctica y la experimentación en el proceso de aprendizaje. La práctica nos permite desarrollar habilidades y confianza.
+El concepto de "Dreyfus modelo": Hunt presenta el modelo de Dreyfus, que describe las etapas del aprendizaje y la mejora. El modelo identifica cinco etapas: principiante, avanzado, competente, proficiente y experto.
+La importancia de la retroalimentación: Hunt enfatiza la importancia de la retroalimentación en el proceso de aprendizaje y mejora. La retroalimentación nos permite identificar áreas de mejora y ajustar nuestro enfoque.
+El concepto de "refactorización": Hunt utiliza el término "refactorización" para referirse al proceso de mejorar y simplificar nuestro código, pero también se aplica a la forma en que pensamos y aprendemos. La refactorización nos permite identificar patrones y simplificar nuestro enfoque.
+
+Algunos de los patrones y técnicas que se pueden aplicar en la práctica son:
+
+Practicar la reflexión: Establecer un hábito de reflexión y autoevaluación para identificar áreas de mejora y ajustar nuestro enfoque.
+Reducir la carga cognitiva: Identificar formas de reducir la carga cognitiva y mejorar la productividad.
+Practicar la experimentación: Establecer un hábito de experimentación y práctica para desarrollar habilidades y confianza.
+Buscar retroalimentación: Buscar retroalimentación de otros para identificar áreas de mejora y ajustar nuestro enfoque.
+Refactorizar nuestro enfoque: Identificar patrones y simplificar nuestro enfoque para mejorar la eficiencia y la productividad
+
+
+
+# Grokking Simplicity
+
+Explora cómo aplicar el pensamiento funcional para simplificar y mejorar la calidad del software
+
+
+La importancia de la simplicidad: Normand enfatiza la importancia de la simplicidad en el software, ya que la complejidad puede llevar a errores, bugs y dificultades para mantener y escalar el sistema.
+El pensamiento funcional: Normand introduce el concepto de pensamiento funcional, que se enfoca en la idea de que el software debe ser diseñado para realizar tareas específicas de manera eficiente y efectiva, sin considerar la implementación detallada.
+La separación de preocupaciones: Normand destaca la importancia de separar las preocupaciones en el software, es decir, dividir el sistema en componentes independientes que se encargan de tareas específicas, lo que facilita la mantenibilidad y la escalabilidad.
+La inmutabilidad: Normand enfatiza la importancia de la inmutabilidad en el software, es decir, que los datos y los objetos no deben ser modificados una vez creados, lo que ayuda a prevenir errores y a mejorar la seguridad.
+La composición: Normand introduce el concepto de composición, que se refiere a la forma en que los componentes del software se combinan para crear un sistema más grande y complejo.
+La recursividad: Normand explora el concepto de recursividad, que se refiere a la forma en que un componente del software puede ser utilizado para resolver problemas más pequeños y similares, lo que ayuda a reducir la complejidad y a mejorar la eficiencia.
+La importancia de la abstracción: Normand destaca la importancia de la abstracción en el software, es decir, la capacidad de ignorar los detalles irrelevantes y enfocarse en los aspectos más importantes del sistema.
+
+Algunos de los patrones y técnicas que se pueden aplicar en la práctica son:
+
+Diseñar para la simplicidad: Enfocarse en la simplicidad y la eficiencia al diseñar el software, en lugar de la complejidad y la sofisticación.
+Utilizar el pensamiento funcional: Aplicar el pensamiento funcional para diseñar y desarrollar el software, enfocándose en la idea de que el software debe ser diseñado para realizar tareas específicas de manera eficiente y efectiva.
+Separar las preocupaciones: Dividir el sistema en componentes independientes que se encargan de tareas específicas, lo que facilita la mantenibilidad y la escalabilidad.
+Utilizar la inmutabilidad: Diseñar el software para que los datos y los objetos no sean modificados una vez creados, lo que ayuda a prevenir errores y a mejorar la seguridad.
+Componer componentes: Combinar componentes del software para crear un sistema más grande y complejo, lo que ayuda a reducir la complejidad y a mejorar la eficiencia
+
+
+
+# The Little Schemer
+
+Introducción a la programación funcional y a la lógica matemática utilizando el lenguaje de programación Scheme
+
+
+La programación funcional: El libro introduce la programación funcional, que se enfoca en la idea de que los programas deben ser diseñados como una serie de funciones que se componen para resolver problemas.
+El lenguaje Scheme: El libro utiliza el lenguaje Scheme para ilustrar los conceptos de programación funcional. Scheme es un lenguaje de programación que se enfoca en la simplicidad y la elegancia.
+La recursividad: El libro explora el concepto de recursividad, que se refiere a la forma en que una función puede llamarse a sí misma para resolver problemas más pequeños y similares.
+La inducción: El libro introduce el concepto de inducción, que se refiere a la forma en que se puede demostrar que una propiedad es verdadera para todos los números naturales.
+La lógica matemática: El libro introduce la lógica matemática, que se enfoca en la idea de que los enunciados matemáticos pueden ser demostrados utilizando reglas lógicas.
+El razonamiento deductivo: El libro explora el concepto de razonamiento deductivo, que se refiere a la forma en que se puede demostrar que un enunciado es verdadero utilizando reglas lógicas y premisas verdaderas.
+
+Algunos de los patrones y técnicas que se pueden aplicar en la práctica son:
+
+Diseñar funciones: Diseñar funciones que se componen para resolver problemas.
+Utilizar la recursividad: Utilizar la recursividad para resolver problemas más pequeños y similares.
+Demostrar propiedades: Demostrar propiedades utilizando la inducción y la lógica matemática.
+Razonar deductivamente: Razonar deductivamente para demostrar que un enunciado es verdadero.
+
+El libro también introduce algunos conceptos avanzados, como:
+
+La teoría de tipos: La teoría de tipos, que se enfoca en la idea de que los datos tienen tipos y que las funciones deben ser diseñadas para trabajar con esos tipos.
+La semántica denotacional: La semántica denotacional, que se enfoca en la idea de que el significado de un programa puede ser definido en términos de su comportamiento
+
+
+
+# Elegant Objects
+
+Explora los principios y patrones de diseño de software para crear objetos y sistemas más elegantes, mantenibles y escalables
+
+
+La importancia de la simplicidad: Bugayenko enfatiza la importancia de la simplicidad en el diseño de software, ya que la complejidad puede llevar a errores, bugs y dificultades para mantener y escalar el sistema.
+El principio de la responsabilidad única: Bugayenko introduce el principio de la responsabilidad única, que establece que cada objeto o clase debe tener una sola responsabilidad y no debe ser responsable de múltiples tareas.
+La separación de preocupaciones: Bugayenko destaca la importancia de separar las preocupaciones en el diseño de software, es decir, dividir el sistema en componentes independientes que se encargan de tareas específicas.
+La inmutabilidad: Bugayenko enfatiza la importancia de la inmutabilidad en el diseño de software, es decir, que los objetos y datos no deben ser modificados una vez creados.
+La composición: Bugayenko introduce el concepto de composición, que se refiere a la forma en que los objetos y componentes se combinan para crear un sistema más grande y complejo.
+La recursividad: Bugayenko explora el concepto de recursividad, que se refiere a la forma en que un objeto o componente puede ser utilizado para resolver problemas más pequeños y similares.
+La importancia de la abstracción: Bugayenko destaca la importancia de la abstracción en el diseño de software, es decir, la capacidad de ignorar los detalles irrelevantes y enfocarse en los aspectos más importantes del sistema.
+
+Algunos de los patrones y técnicas que se pueden aplicar en la práctica son:
+
+Diseñar objetos simples: Diseñar objetos que tengan una sola responsabilidad y no sean responsables de múltiples tareas.
+Utilizar la composición: Utilizar la composición para combinar objetos y componentes y crear un sistema más grande y complejo.
+Aplicar la inmutabilidad: Aplicar la inmutabilidad para evitar que los objetos y datos sean modificados una vez creados.
+Utilizar la recursividad: Utilizar la recursividad para resolver problemas más pequeños y similares.
+Abstraer detalles: Abstraer detalles irrelevantes y enfocarse en los aspectos más importantes del sistema.
+
+El libro también introduce algunos conceptos avanzados, como:
+
+La teoría de la complejidad: La teoría de la complejidad, que se enfoca en la idea de que la complejidad de un sistema puede ser medida y analizada.
+La teoría de la información: La teoría de la información, que se enfoca en la idea de que la información puede ser medida y analizada
+
+
+
 # DRY, KISS, YAGNI
 
 1. Don't Repeat Yourself (DRY)
@@ -2522,4 +2724,170 @@ Se ocultan los detalles internos y solo se expone lo necesario
 
 
 Regla clave: La abstracción permite definir qué hace una clase sin preocuparse por cómo lo hace.
+
+
+
+# CS50: 
+
+1. Comprender el problema con claridad
+
+Desglosar el problema: El primer paso siempre es comprenderlo completamente antes de empezar a escribir código. Lea atentamente el enunciado del problema y piense en las entradas que tiene y las salidas esperadas.
+
+Simplificar el problema: Intente identificar las partes clave del problema. ¿Puede dividirlo en subproblemas más pequeños? ¿Existe una versión más sencilla del problema que pueda resolverse primero?
+
+Aclarar los casos límite: Considere cualquier caso especial, como entradas vacías, entradas extremadamente grandes u otras condiciones límite que podrían romper el algoritmo.
+
+
+2. Pseudocódigo y Diseño de Algoritmos
+
+Planificar antes de codificar: En CS50, se recomienda pensar en pseudocódigo antes de empezar a codificar. Anote los pasos del algoritmo en lenguaje sencillo para aclarar su razonamiento.
+
+Pasos para la resolución de problemas:
+
+Defina el objetivo: ¿Qué intenta lograr exactamente?
+
+Elija una estrategia: Según el problema, considere enfoques como fuerza bruta, divide y vencerás, algoritmos voraces, programación dinámica, etc.
+
+Escriba pseudocódigo: Esto le permite centrarse en el flujo lógico de la solución sin preocuparse por la sintaxis.
+
+
+3. Elija las Estructuras de Datos Adecuadas
+
+Estructuras de datos eficientes: CS50 enfatiza la importancia de elegir la estructura de datos adecuada para el problema en cuestión, ya que esto puede afectar drásticamente el rendimiento de su algoritmo. Por ejemplo:
+
+Matrices y Listas: Excelentes para datos secuenciales, pero ineficientes para operaciones de búsqueda (a menos que estén ordenados).
+
+Tablas hash (Diccionarios/Mapas): Eficientes para búsquedas, inserciones y eliminaciones.
+
+Pilas y colas: Útiles para problemas que requieren operaciones LIFO (último en entrar, primero en salir) o FIFO (primero en entrar, primero en salir).
+
+Árboles: En particular, árboles de búsqueda binaria para una búsqueda, inserción y eliminación eficientes.
+
+Gráficos: Para representar datos interconectados (como redes sociales u hojas de ruta).
+
+
+4. Análisis de complejidad temporal y espacial
+
+Notación Big O: Aprenda a evaluar la complejidad temporal y espacial de sus algoritmos. Esta es una parte fundamental de CS50 y es esencial para la resolución eficiente de problemas. El objetivo es reducir la complejidad computacional innecesaria (O(n²), O(2^n), etc.) y optimizar para tiempos de ejecución más rápidos.
+
+Optimizar algoritmos: CS50 enseña que, a menudo, hay más de una manera de resolver un problema y que se debe buscar el enfoque más eficiente. Por ejemplo:
+
+Algoritmos de ordenamiento: Ordenamiento de burbuja vs. Ordenamiento por fusión (O(n²) vs. O(n log n)).
+
+Algoritmos de búsqueda: Búsqueda lineal vs. Búsqueda binaria (O(n) vs. O(log n)).
+
+
+5. Divide y vencerás
+
+Divide los problemas grandes en problemas más pequeños: Divide y vencerás es un paradigma clave utilizado en muchos algoritmos eficientes (como el ordenamiento por fusión o el ordenamiento rápido). Al dividir los problemas en subproblemas más pequeños, a menudo se pueden resolver recursivamente y combinar los resultados de forma eficiente.
+
+
+6. Iterar y probar
+
+Empieza por lo simple: No intentes crear una solución compleja de inmediato. Empieza resolviendo el problema de la forma más sencilla posible (aunque sea ineficiente) y luego mejóralo gradualmente. Esto se conoce como "enfoque iterativo".
+
+Prueba exhaustivamente: Escribe casos de prueba, especialmente casos extremos, para asegurarte de que tu solución funciona en todas las condiciones. CS50 enfatiza esto en sus conjuntos de problemas.
+
+Depuración: Utilice herramientas de depuración, sentencias de impresión o un depurador para rastrear su código y asegurarse de que funcione correctamente.
+
+
+7. Aproveche las bibliotecas y las funciones integradas
+
+No reinvente la rueda: CS50 le anima a utilizar bibliotecas y funciones integradas siempre que sea posible. Por ejemplo, utilice qsort() para ordenar en C o sort() en Python. Las bibliotecas suelen implementar las soluciones más optimizadas y eficientes.
+
+
+8. Piense recursivamente (si cabe)
+
+Soluciones recursivas: Muchos problemas se pueden resolver de forma elegante mediante la recursión, y CS50 profundiza en el pensamiento recursivo. La recursión puede simplificar el proceso de resolución de problemas, especialmente para problemas que involucran árboles, grafos o problemas que se descomponen naturalmente en subproblemas más pequeños.
+
+Caso base: Asegúrese de definir un caso base claro para las funciones recursivas para evitar la recursión infinita y los desbordamientos de pila.
+
+
+9. Trabaje a la inversa
+
+Pensamiento inverso: En algunos casos, resolver el problema a la inversa puede ser útil. Por ejemplo, si intentas encontrar una ruta en un gráfico, podrías trabajar en sentido inverso desde el objetivo hasta el inicio.
+
+Piensa en la condición final: ¿Cómo se ve la solución una vez resuelto el problema? Esto puede ayudarte a retroceder y a trazar los pasos para llegar a ella.
+
+
+10. Colabora y busca retroalimentación
+
+Discute las soluciones: Una de las principales ventajas de cursos como CS50 son la comunidad y la retroalimentación entre compañeros. No dudes en compartir tu enfoque con otros para obtener nuevas perspectivas sobre la resolución de problemas.
+
+Práctica: Cuantos más problemas resuelvas, mejor te volverás en el pensamiento algorítmico. Los conjuntos de problemas de CS50 están diseñados para aumentar su dificultad, lo que te ayudará a perfeccionar gradualmente tus habilidades de resolución de problemas.
+
+
+Ejemplos de algoritmos principales tratados en CS50:
+
+Algoritmos de ordenamiento:
+
+Ordenamiento de burbuja, Ordenamiento por selección, Ordenamiento por fusión, Ordenamiento rápido.
+
+
+Algoritmos de búsqueda:
+
+Búsqueda lineal, Búsqueda binaria.
+
+
+Algoritmos voraces:
+
+Problemas como el cambio de monedas o la programación de intervalos.
+
+
+Programación dinámica:
+
+Secuencia de Fibonacci, problema de la mochila.
+
+
+Enfoque general para la resolución eficiente de problemas en CS50:
+
+Paso 1: Comprender el problema mediante una lectura atenta y su análisis.
+
+Paso 2: Planifica y escribe pseudocódigo para delinear los pasos.
+
+Paso 3: Selecciona las estructuras de datos y el enfoque adecuados según el problema.
+
+Paso 4: Escribe y optimiza el código, considerando la complejidad temporal y espacial.
+
+Paso 5: Realiza pruebas exhaustivas, incluyendo casos extremos, y perfecciona la solución.
+
+
+
+
+# Rs code design
+
+## Alto nivel: entrada, cálculo y salida
+
+Entrada: datos
+
+Cálculo: guardado/copia de datos, procesos, algoritmos
+
+Salida: ui, resultados
+
+
+
+## Solución software
+
+
+### Técnicas o métodos sistematicos 
+
+
+### DRY, etc. 
+
+
+
+## Comportamiento del software 
+
+
+### Estado 
+
+
+### Estruración datos   
+
+
+### Sincronización
+
+
+### Dínamismo 
+
 
