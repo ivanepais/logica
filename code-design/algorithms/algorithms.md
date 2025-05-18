@@ -1215,6 +1215,78 @@ def find_empty(board):
 ```
 
 
+
+# Fuerza Bruta
+
+Tambien conocido como algoritmo exhaustivo, es un enfoque general para resolver problemas computacionales en el que se prueban todas las posibles soluciones hasta encontrar la correcta (o todas las correctas, si el problema lo requiere).
+
+
+Características:
+
+1. Simplicidad: fácil de entender e implementar.
+
+2. Generalidad: se puede aplicar a muchos tipos de problemas.
+
+3. Costoso en tiempo: generalmente tiene un alto costo computacional, ya que explora todo el espacio de soluciones posibles.
+
+
+Ejemplo 1: Búsqueda de un elemento en un arreglo
+
+Supongamos que tienes un arreglo y quieres saber si contiene el número 5.
+
+```
+def buscar_fuerza_bruta(arr, objetivo):
+    for elemento in arr:
+        if elemento == objetivo:
+            return True
+    return False
+
+```
+
+Este algoritmo recorre todos los elementos hasta encontrar el objetivo (o hasta el final si no está).
+
+
+Ejemplo 2: Problema de la contraseña
+
+Si quieres descubrir una contraseña de 4 letras usando solo letras minúsculas (26 letras), un algoritmo de fuerza bruta probaría todas las combinaciones posibles
+
+```
+import itertools
+import string
+
+def adivinar_contraseña(contraseña_real):
+    caracteres = string.ascii_lowercase  # 'abcdefghijklmnopqrstuvwxyz'
+    for intento in itertools.product(caracteres, repeat=len(contraseña_real)):
+        intento_str = ''.join(intento)
+        if intento_str == contraseña_real:
+            return intento_str
+
+```
+
+Ventajas
+
+Siempre encuentra una solución (si existe).
+
+No requiere técnicas complejas.
+
+
+Desventajas
+
+Muy ineficiente para entradas grandes.
+
+Tiempo de ejecución puede crecer exponencialmente con el tamaño del problema
+
+
+Uso: 
+
+Cuando el espacio de búsqueda es pequeño.
+
+Como solución inicial antes de optimizar.
+
+Para validar otros algoritmos (como "fuerza bruta vs solución optimizada").
+
+
+
 # Ordenacion
 
 
