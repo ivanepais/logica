@@ -10329,6 +10329,829 @@ Consulte la interoperabilidad de RxJS con señales de Angular para obtener más 
 
 
 
+## Components
+
+Todo componente debe tener:
+
+Una clase TypeScript con comportamientos como el manejo de la entrada del usuario y la obtención de datos de un servidor.
+Una plantilla HTML que controla lo que se renderiza en el DOM.
+Un selector CSS que define cómo se usa el componente en HTML.
+
+Se proporciona información específica de Angular para un componente añadiendo un decorador @Component sobre la clase TypeScript. 
+
+```
+@Component({
+  selector: 'profile-photo',
+  template: `<img src="profile-photo.jpg" alt="Your profile photo">`,
+})
+export class ProfilePhoto { }
+
+```
+
+#### El objeto pasado al decorador @Component se denomina metadatos del componente. 
+
+Esto incluye el selector, la plantilla y otras propiedades descritas a lo largo de esta guía.
+
+Los componentes pueden incluir opcionalmente una lista de estilos CSS aplicables a su DOM.
+
+```
+@Component({
+  selector: 'profile-photo',
+  template: `<img src="profile-photo.jpg" alt="Your profile photo">`,
+  styles: `img { border-radius: 50%; }`,
+})
+export class ProfilePhoto { }
+
+```
+
+Por defecto, los estilos de un componente solo afectan a los elementos definidos en su plantilla. 
+
+También puedes escribir la plantilla y los estilos en archivos separados.
+
+```
+@Component({
+  selector: 'profile-photo',
+  templateUrl: 'profile-photo.html',
+  styleUrl: 'profile-photo.css',
+})
+export class ProfilePhoto { }
+
+```
+
+#### Esto puede ayudar a separar las preocupaciones sobre la presentación del comportamiento en tu proyecto. 
+
+Puedes elegir un enfoque para todo el proyecto o decidir cuál usar para cada componente.
+
+#### Tanto templateUrl como styleUrl son relativos al directorio donde reside el componente.
+
+
+### Uso de componentes
+
+### Importaciones en el decorador @Component
+
+#### Para usar un component, directive, o pipe, debe agregarlo a la matriz de importaciones del decorador @Component.
+
+```
+import {ProfilePhoto} from './profile-photo';
+
+@Component({
+	//Importar el componente «ProfilePhoto»
+	// para usarlo en la plantilla de este componente.
+	imports: [ProfilePhoto],
+	... 
+})
+export class UserProfile { }	
+
+```
+
+#### Por defecto, los componentes de Angular son independientes, lo que significa que se pueden añadir directamente a la matriz de importaciones de otros componentes. 
+
+#### Los componentes creados con una versión anterior (< v.19) de Angular pueden especificar standalone: ​​false en su decorador @Component. 
+
+Para estos componentes, se importa el NgModule en el que se define el componente. 
+
+Consulta la guía completa de NgModule para más detalles.
+
+#### IMPORTANTE: En versiones de Angular anteriores a la 19.0.0, la opción standalone tiene el valor predeterminado false.
+
+
+### Visualización de componentes en una plantilla
+
+Cada componente define un selector CSS:
+
+```
+@Component({
+  selector: 'profile-photo',
+  ...
+})
+export class ProfilePhoto { }
+
+```
+
+Para mostrar un componente, cree un elemento HTML coincidente en la plantilla de otros componentes:
+
+```
+@Component({
+  selector: 'profile-photo',
+})
+export class ProfilePhoto { }
+
+@Component({
+  imports: [ProfilePhoto],
+  template: `<profile-photo />`
+})
+export class UserProfile { }
+
+```
+
+selector: profile-photo -> <profile-photo />
+
+
+#### Angular crea una instancia del componente por cada elemento HTML coincidente que encuentra. 
+
+El elemento DOM que coincide con el selector de un componente se denomina elemento anfitrión de ese componente (component's host element). 
+
+#### El contenido de la plantilla de un componente se renderiza dentro de su elemento anfitrión.
+
+
+#### El DOM renderizado por un componente, correspondiente a su plantilla, se denomina vista del componente (component's view.).
+
+#### Al componer componentes de esta manera, puede considerar su aplicación Angular como un árbol de componentes.
+
+```
+		AccountSettings
+		/			\
+	UserProfile		Paymentinfo
+	/		\
+ProfilePic 	UserBio
+	
+```
+
+#### Esta estructura de árbol es importante para comprender varios otros conceptos de Angular, incluida la inyección de dependencia y las consultas secundarias (child queries).
+
+
+
+## Templates
+
+En Angular, una plantilla es un fragmento de HTML. 
+
+Usa una sintaxis especial dentro de una plantilla para aprovechar muchas de las funciones de Angular.
+
+
+#### Cada componente de Angular tiene una plantilla que define el DOM que el componente renderiza en la página. 
+
+#### Mediante el uso de plantillas, Angular mantiene la página actualizada automáticamente a medida que cambian los datos.
+
+Las plantillas suelen encontrarse en la propiedad "template" de un archivo ```*.component.ts o *.component.html```. 
+
+
+### ¿Cómo funcionan las plantillas?
+
+Las plantillas se basan en la sintaxis HTML, con características adicionales como funciones de plantilla integradas, enlace de datos, escucha de eventos, variables y más.
+
+(template functions, data binding, event listening, variables)
+
+
+Angular compila las plantillas en JavaScript para comprender mejor tu aplicación. 
+
+Una de las ventajas de esto son las optimizaciones de renderizado integradas que Angular aplica automáticamente a tu aplicación.
+
+
+### Diferencias con el HTML estándar
+
+Algunas diferencias entre las plantillas y la sintaxis HTML estándar incluyen:
+
+1. Los comentarios en el código fuente de la plantilla no se incluyen en la salida renderizada.
+
+2. Los elementos de componente y directiva pueden autocerrarse (p. ej., <UserProfile />).
+
+3. Los atributos con ciertos caracteres (p. ej., ```[]```, ```()```, etc.) tienen un significado especial para Angular. 
+
+(binding) y (event listeners)
+
+4. El carácter @ tiene un significado especial para Angular, ya que permite añadir comportamiento dinámico, como el flujo de control, a las plantillas. 
+
+(@If, @Else, @For)
+
+Puedes incluir un carácter @ literal escapándolo como código de entidad HTML (&commat; o &#64;).
+
+5. Angular ignora y contrae los espacios en blanco innecesarios. 
+
+(De ser necesarios, crear un string ' ')
+
+6. Angular puede añadir nodos de comentario a una página como marcadores de posición/placeholders para contenido dinámico, pero los desarrolladores pueden ignorarlos.
+
+
+Además, aunque la mayor parte de la sintaxis HTML es válida para plantillas, Angular no admite el elemento <script> en las plantillas. 
+
+Para más información, consulte la página de Seguridad.
+
+
+
+## Directives 
+
+#### Son clases que agregan comportamiento adicional a los elementos en sus aplicaciones Angular.
+
+#### Utilice las directivas integradas de Angular para gestionar formularios, listas, estilos y lo que ven los usuarios.
+
+Los diferentes tipos de directivas de Angular son los siguientes:
+
+1. Components: 
+
+Se utiliza con una plantilla. 
+
+Este tipo de directiva es el más común.
+
+2. Attribute directives: 
+
+Cambia la apariencia o el comportamiento de un elemento, componente u otra directiva.
+
+3. Structural directives: 
+
+Cambia el diseño del DOM añadiendo y eliminando elementos.
+
+
+### Directivas de atributos integradas
+
+Las directivas de atributos escuchan y modifican el comportamiento de otros elementos, atributos, propiedades y componentes HTML.
+
+Las directivas de atributos más comunes son las siguientes:
+
+1. NgClass
+
+Añade y elimina un conjunto de clases CSS.
+
+2. NgStyle
+
+Añade y elimina un conjunto de estilos HTML.
+
+3. NgModel
+
+Añade un enlace de datos bidireccional a un elemento de formulario HTML.
+
+
+ÚTIL: Las directivas integradas solo utilizan API públicas. 
+No tienen acceso especial a ninguna API privada a la que otras directivas no puedan acceder.
+
+
+### Añadir y eliminar clases con NgClass
+
+#### Agregue o elimine varias clases CSS simultáneamente con ngClass.
+
+ÚTIL: Para agregar o eliminar una sola clase, utilice la vinculación de clases en lugar de NgClass.
+
+(class binding)
+
+
+### Importar NgClass en el componente
+
+Para usar NgClass, añádalo a la lista de importaciones del componente.
+
+src/app/app.component.ts (NgClass import)
+
+```
+import {NgClass} from '@angular/common';
+	...
+@Component({
+	...
+    NgClass, // <-- import into the component
+	...
+  ],
+})
+export class AppComponent implements OnInit {
+	...
+}
+
+```
+
+
+### Uso de NgClass con una expresión
+
+En el elemento al que desea aplicar estilo, agregue ```[ngClass]``` y establézcalo como una expresión. 
+
+En este caso, isSpecial es un booleano establecido como verdadero en app.component.ts. 
+
+#### Dado que isSpecial es verdadero, ngClass aplica la clase de especial al <div>.
+
+src/app/app.component.html
+
+```
+<!-- Activar o desactivar la clase "especial" con una propiedad -->
+<div [ngClass]="isSpecial ? 'special' : ''">This div is special</div>
+
+```
+
+
+### Uso de NgClass con un método
+
+1. Para usar NgClass con un método, añada el método a la clase del componente. 
+
+En el siguiente ejemplo, setCurrentClasses() establece la propiedad currentClasses con un objeto que añade o elimina tres clases según el estado verdadero o falso de otras tres propiedades del componente.
+
+
+#### Cada clave del objeto es un nombre de clase CSS. 
+
+Si una clave es verdadera, ngClass añade la clase. 
+
+Si una clave es falsa, ngClass la elimina.
+
+src/app/app.component.ts
+
+```
+currentClasses: Record<string, boolean> = {};
+...
+  setCurrentClasses() {
+	//Clases CSS: agregadas/eliminadas según el estado actual de las propiedades del componente
+    this.currentClasses = {
+      saveable: this.canSave,
+      modified: !this.isUnchanged,
+      special: this.isSpecial,
+    };
+  }
+
+```
+
+2. En la plantilla, agregue la vinculación de la propiedad ngClass a currentClasses para establecer las clases del elemento
+
+src/app/app.component.html
+
+```
+<div [ngClass]="currentClasses">This div is initially saveable, unchanged, and special.</div>
+
+```
+
+#### Para este caso de uso, Angular aplica las clases al inicializarse y en caso de cambios causados ​​por la reasignación del objeto currentClasses. 
+
+#### El ejemplo completo llama a setCurrentClasses() inicialmente con ngOnInit() cuando el usuario hace clic en el botón Actualizar currentClasses. 
+
+Estos pasos no son necesarios para implementar ngClass.
+
+
+### Dependency Injection
+
+#### Es un patrón de diseño y un mecanismo para crear y entregar partes de una aplicación a otras que requieren la misma.
+
+
+#### Al desarrollar una parte más pequeña de su sistema, como un módulo o una clase, podría necesitar usar características de otras clases. 
+
+Por ejemplo, podría necesitar un servicio HTTP para realizar llamadas de backend. 
+
+La inyección de dependencias (DI) es un patrón de diseño y un mecanismo para crear y entregar partes de una aplicación a otras que las requieren. 
+
+Angular admite este patrón de diseño y puede usarlo en sus aplicaciones para aumentar la flexibilidad y la modularidad.
+
+
+#### En Angular, las dependencias suelen ser servicios, pero también pueden ser valores, como cadenas o funciones. 
+
+#### Un inyector para una aplicación (creado automáticamente durante el arranque) instancia las dependencias cuando es necesario, utilizando un proveedor configurado del servicio o valor.
+
+
+### Conceptos básicos 
+
+#### La DI está integrada en el framework Angular y permite que las clases con decoradores Angular, como Componentes, Directivas, Pipes e Inyectables, configuren las dependencias que necesitan.
+
+#### Existen dos roles principales en el sistema de DI: consumidor de dependencias y proveedor de dependencias.
+
+
+Angular facilita la interacción entre consumidores y proveedores de dependencias mediante una abstracción llamada Inyector. 
+
+#### Cuando se solicita una dependencia, el inyector revisa su registro para ver si ya hay una instancia disponible. 
+
+#### De no ser así, se crea una nueva instancia y se almacena en el registro. 
+
+#### Angular crea un inyector para toda la aplicación (también conocido como inyector "raíz") durante el proceso de arranque de la aplicación. 
+
+#### En la mayoría de los casos, no es necesario crear inyectores manualmente, pero es importante saber que existe una capa que conecta a proveedores y consumidores.
+
+
+Este tema abarca escenarios básicos de cómo una clase puede actuar como dependencia. 
+
+Angular también permite usar funciones, objetos, tipos primitivos como cadenas o booleanos, o cualquier otro tipo como dependencias. 
+
+Para más información, consulte Proveedores de dependencias.
+
+
+### Proporcionar una dependencia
+
+#### Considere una clase llamada HeroService que debe actuar como dependencia en un componente.
+
+El primer paso es agregar el decorador @Injectable para indicar que la clase se puede inyectar. 
+
+```
+@Injectable()
+class HeroService {}
+
+```
+
+El siguiente paso es proporcionarla en la instancia de DI.
+
+Una dependencia se puede proporcionar en varios lugares:
+
+1. Preferred/Preferible: En la raíz de la aplicación mediante providedIn
+
+2. En el componente/component level
+
+3. En la raíz de la aplicación/application root level mediante ApplicationConfig
+
+4. Aplicaciones basadas en NgModule
+
+
+### Preferred/Preferible: En la raíz de la aplicación usando providedIn
+
+#### Proporcionar un servicio en la raíz de la aplicación usando providedIn permite inyectar el servicio en todas las demás clases. 
+
+#### Usar providedIn permite que los optimizadores de código de Angular y JavaScript eliminen eficazmente los servicios no utilizados (lo que se conoce como tree-shaking).
+
+
+Puede proporcionar un servicio usando providedIn: 'root' en el decorador @Injectable.
+
+```
+@Injectable({
+  providedIn: 'root'
+})
+class HeroService {}
+
+```
+
+#### Cuando proporciona el servicio en el nivel raíz, Angular crea una única instancia compartida de HeroService y la inyecta en cualquier clase que la solicite.
+
+
+### En component level 
+
+Puede proporcionar servicios a nivel de @Component utilizando el campo "providers" del decorador @Component. 
+
+En este caso, HeroService estará disponible para todas las instancias de este componente y de otros componentes y directivas utilizados en la plantilla.
+
+Por ejemplo
+
+```
+@Component({
+  selector: 'hero-list',
+  template: '...',
+  providers: [HeroService]
+})
+class HeroListComponent {}
+
+```
+
+#### Al registrar un proveedor a nivel de componente, se obtiene una nueva instancia del servicio con cada nueva instancia de ese componente.
+
+NOTA: Declarar un servicio de esta manera hace que HeroService siempre se incluya en la aplicación, incluso si no se utiliza.
+
+
+### En la raíz de la aplicación, usando ApplicationConfig
+
+Puede usar el campo proveedores de ApplicationConfig (pasado a la función bootstrapApplication) para proporcionar un servicio u otro Inyectable a nivel de aplicación.
+
+En el siguiente ejemplo, HeroService está disponible para todos los componentes, directivas y tuberías.
+
+```
+export const appConfig: ApplicationConfig = {
+    providers: [
+      { provide: HeroService },
+    ]
+};
+
+```
+
+Luego, en main.ts:
+
+```
+bootstrapApplication(AppComponent, appConfig)
+
+```
+
+#### NOTA: Declarar un servicio como este hace que HeroService siempre se incluya en su aplicación, incluso si el servicio no se utiliza.
+
+
+### Aplicaciones basadas en NgModule
+
+Las aplicaciones basadas en @NgModule utilizan el campo proveedores del decorador @NgModule para proporcionar un servicio u otro Inyectable disponible a nivel de aplicación.
+
+
+Un servicio proporcionado en un módulo está disponible para todas las declaraciones del módulo o para cualquier otro módulo que comparta el mismo ModuleInjector. 
+
+Para comprender todos los casos extremos, consulte Inyectores jerárquicos.
+
+
+NOTA: Declarar un servicio mediante proveedores hace que este se incluya en la aplicación, incluso si no se utiliza.
+
+
+### Inyectar/consumir una dependencia
+
+Utilice la función de inyección de Angular para recuperar dependencias.
+
+```
+import {inject, Component} from 'angular/core';
+@Component({/* ... */})
+export class UserProfile {
+  //También puedes usar la función `inject` en un constructor.
+  private userClient = inject(UserClient);
+  constructor() {
+    const logger = inject(Logger);
+  }
+}
+
+```
+
+Puedes usar la función inject en cualquier contexto de inyección. 
+
+Generalmente, se trata de un inicializador de propiedad de clase o un constructor de clase para componentes, directivas, servicios y tuberías.
+
+
+Cuando Angular detecta que un componente depende de un servicio, primero comprueba si el inyector tiene instancias existentes de ese servicio. 
+
+Si la instancia del servicio solicitado aún no existe, el inyector crea una usando el proveedor registrado y la agrega al inyector antes de devolver el servicio a Angular.
+
+
+Una vez resueltos y devueltos todos los servicios solicitados, Angular puede llamar al constructor del componente con esos servicios como argumentos.
+
+```
+			  Injector 
+			/	/  \	\
+Service A HeroService Service C Service D 
+			/
+		Component
+		 heroService = inject(HeroService)
+		 
+```
+
+
+
+## Creación de un servicio inyectable
+ 
+#### Un servicio es una categoría amplia que abarca cualquier valor, función o característica que necesite una aplicación. 
+
+#### Un servicio suele ser una clase con un propósito específico y bien definido. 
+
+#### Un componente es un tipo de clase que puede usar DI.
+
+
+Angular distingue entre componentes y servicios para aumentar la modularidad y la reutilización. 
+
+Al separar las características relacionadas con la vista de un componente de otros tipos de procesamiento, se pueden lograr clases de componentes ágiles y eficientes.
+
+
+#### Idealmente, la función de un componente es facilitar la experiencia del usuario y nada más. 
+
+#### Un componente debe presentar propiedades y métodos para la vinculación de datos, para mediar entre la vista (representada por la plantilla) y la lógica de la aplicación (que a menudo incluye la noción de un modelo).
+
+
+#### Un componente puede delegar ciertas tareas a servicios, como obtener datos del servidor, validar la entrada del usuario o iniciar sesión directamente en la consola. 
+
+#### Al definir estas tareas de procesamiento en una clase de servicio inyectable, se ponen a disposición de cualquier componente.
+
+También puede mejorar la adaptabilidad de su aplicación configurando diferentes proveedores del mismo tipo de servicio, según corresponda en diferentes circunstancias.
+
+
+Angular no impone estos principios. 
+
+Angular le ayuda a seguirlos facilitando la factorización de la lógica de su aplicación en servicios y haciendo que estos servicios estén disponibles para los componentes mediante DI.
+
+
+### Ej. Services
+
+Una clase de servicio que registra en la consola del navegador:
+
+src/app/logger.service.ts 
+
+```
+export class Logger {
+  log(msg: unknown) { console.log(msg); }
+  error(msg: unknown) { console.error(msg); }
+  warn(msg: unknown) { console.warn(msg); }
+}
+
+```
+
+Los servicios pueden depender de otros servicios. 
+
+Por ejemplo, aquí hay un HeroService que depende del servicio Logger y también usa BackendService para obtener héroes. 
+
+Ese servicio, a su vez, podría depender del servicio HttpClient para obtener héroes de forma asíncrona desde un servidor.
+
+src/app/hero.service.ts
+
+```
+import { inject } from "@angular/core";
+export class HeroService {
+  private heroes: Hero[] = [];
+  private backend = inject(BackendService);
+  private logger = inject(Logger);
+  async getHeroes() {
+    // Fetch
+    this.heroes = await this.backend.getAll(Hero);
+    // Log
+    this.logger.log(`Fetched ${this.heroes.length} heroes.`);
+    return this.heroes;
+  }
+}
+
+```
+
+
+### Creación de un servicio inyectable
+
+La CLI de Angular proporciona un comando para crear un nuevo servicio. 
+
+En el siguiente ejemplo, se agrega un nuevo servicio a una aplicación existente.
+
+
+Para generar una nueva clase HeroService en la carpeta src/app/heroes, siga estos pasos:
+
+1. Ejecute este comando de la CLI de Angular
+
+```
+ng generate service heroes/hero
+
+```
+
+Este comando crea el siguiente HeroService predeterminado:
+
+src/app/heroes/hero.service.ts (CLI-generated)
+
+```
+import { Injectable } from '@angular/core';
+
+@Injectable({
+  providedIn: 'root',
+})
+export class HeroService {}
+
+```
+
+El decorador @Injectable() especifica que Angular puede usar esta clase en el sistema DI. 
+
+Los metadatos, providedIn: 'root', indican que HeroService se proporciona en toda la aplicación.
+
+
+Agregue un método getHeroes() que devuelva los héroes de mock.heroes.ts para obtener los datos simulados del héroe.
+
+src/app/heroes/hero.service.ts
+
+```
+import { Injectable } from '@angular/core';
+import { HEROES } from './mock-heroes';
+
+@Injectable({
+	//Declara que este servicio debe ser creado 
+	//por el inyector de la aplicación raíz.
+  providedIn: 'root',
+})
+export class HeroService {
+  getHeroes() {
+    return HEROES;
+  }
+}
+
+```
+
+Para mayor claridad y facilidad de mantenimiento, se recomienda definir componentes y servicios en archivos separados.
+
+
+### Inyección de servicios
+
+Para inyectar un servicio como dependencia en un componente, se puede declarar un campo de clase que represente la dependencia y usar la función de inyección de Angular para inicializarlo.
+
+
+El siguiente ejemplo especifica HeroService en HeroListComponent. 
+
+El tipo de heroService es HeroService.
+
+src/app/heroes/hero-list.component.ts
+
+```
+import { inject } from "@angular/core";
+export class HeroListComponent {
+  private heroService = inject(HeroService);
+}
+
+```
+
+También es posible inyectar un servicio en un componente utilizando el constructor del componente:
+
+src/app/heroes/hero-list.component.ts (constructor signature/firma construct)
+
+```
+constructor(private heroService: HeroService)
+    
+```
+
+El método de inyección puede usarse tanto en clases como en funciones, mientras que el método constructor, naturalmente, solo puede usarse en un constructor de clase. 
+
+Sin embargo, en ambos casos, una dependencia solo puede inyectarse en un contexto de inyección válido, generalmente durante la construcción o inicialización de un componente.
+
+src/app/herores/hero.service.ts
+
+```
+import { inject, Injectable } from '@angular/core';
+import { HEROES } from './mock-heroes';
+import { Logger } from '../logger.service';
+
+@Injectable({
+  providedIn: 'root',
+})
+export class HeroService {
+  private logger = inject(Logger);
+  getHeroes() {
+    this.logger.log('Getting heroes.');
+    return HEROES;
+  }
+}
+
+```
+
+En este ejemplo, el método getHeroes() utiliza el servicio Logger al registrar un mensaje al obtener héroes.
+
+
+### Configuración de proveedores de dependencias
+
+#### Las secciones anteriores describieron cómo usar instancias de clase como dependencias. 
+
+#### Además de las clases, también puede usar valores como booleanos, cadenas, fechas y objetos como dependencias. 
+
+Angular proporciona las API necesarias para flexibilizar la configuración de dependencias, de modo que pueda habilitar esos valores en la DI.
+
+
+### Especificación de un token de proveedor
+
+Si se especifica la clase de servicio como token de proveedor, el inyector, por defecto, instancia dicha clase mediante el operador `new`.
+
+En el siguiente ejemplo, el componente `app` proporciona una instancia de `Logger`.
+
+src/app/app.component.ts
+
+```
+      providers: [Logger],
+    
+```
+
+Sin embargo, se puede configurar la DI para asociar el token del proveedor del registrador con una clase diferente o cualquier otro valor. 
+
+De esta forma, al inyectar el registrador, se utiliza el valor configurado.
+
+
+De hecho, la sintaxis del proveedor de la clase es una expresión abreviada que se expande a una configuración del proveedor, definida por la interfaz Provider. 
+
+En este caso, Angular expande el valor del proveedor a un objeto proveedor completo, como se indica a continuación.
+
+src/app/app.component.ts
+
+```
+      
+[{ provide: Logger, useClass: Logger }]
+
+```
+
+La configuración expandida del proveedor es un literal de objeto con dos propiedades:
+
+1. La propiedad `provider` contiene el token que sirve como clave para consumir el valor de la dependencia.
+
+2. La segunda propiedad es un objeto de definición del proveedor, que indica al inyector cómo crear el valor de la dependencia. La definición del proveedor puede ser una de las siguientes:
+
+`useClass`: esta opción indica a Angular DI que instancia una clase proporcionada cuando se inyecta una dependencia.
+
+`useExisting`: permite crear un alias para un token y referenciar cualquiera existente.
+
+`useFactory`: permite definir una función que construye una dependencia.
+
+`useValue`: proporciona un valor estático que debe usarse como dependencia.
+
+
+### Usar las diferentes definiciones de proveedor.
+
+### Proveedores de clases: useClass
+
+### La clave del proveedor useClass permite crear y devolver una nueva instancia de la clase especificada.
+
+Puede usar este tipo de proveedor para sustituir una implementación alternativa de una clase común o predeterminada. 
+
+La implementación alternativa puede, por ejemplo, implementar una estrategia diferente, extender la clase predeterminada o emular el comportamiento de la clase real en un caso de prueba.
+
+
+En el siguiente ejemplo, se instanciaría BetterLogger cuando se solicita la dependencia de Logger en un componente o en cualquier otra clase.
+
+src/app/app.component.ts
+
+```
+[{ provide: Logger, useClass: BetterLogger }]
+    
+```
+
+Si los proveedores de clases alternativas tienen sus propias dependencias, especifique ambos proveedores en la propiedad de metadatos de proveedores del módulo o componente principal.
+
+src/app/app.component.ts
+
+```
+[
+  UserService, // dependency needed in `EvenBetterLogger`.
+  { provide: Logger, useClass: EvenBetterLogger },
+]
+
+```
+
+En este ejemplo, EvenBetterLogger muestra el nombre de usuario en el mensaje de registro. 
+
+Este registrador/logger obtiene el usuario de una instancia de UserService inyectada.
+
+src/app/even-better-logger.component.ts
+
+```
+@Injectable()
+export class EvenBetterLogger extends Logger {
+  private userService = inject(UserService);
+  override log(message: string) {
+    const name = this.userService.user.name;
+    super.log(`Message to ${name}: ${message}`);
+  }
+}
+
+```
+
+Angular DI sabe cómo construir la dependencia UserService, ya que se ha configurado anteriormente y está disponible en el inyector.
+
+
+
 # Arquitectura Angular 
 
 1. Componente: selector css, plantila html (contenido/representación de la lógica) y clase TS (lógica). 
