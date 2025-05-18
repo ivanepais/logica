@@ -2796,4 +2796,590 @@ print(txt)
 
 # Módulo Matemático 
 
+Conjunto de funciones matemáticas integradas, incluido un extenso módulo de matemáticas
+
+
+## Built-in Math
+
+Las funciones min() y max() se pueden usar para encontrar el valor más bajo o más alto en un iterable:
+
+```
+x = min(5, 10, 25)
+y = max(5, 10, 25)
+
+print(x)
+print(y) 
+
+```
+
+La función abs() devuelve el valor absoluto (positivo) del número especificado
+
+```
+x = abs(-7.25)
+print(x)
+
+```
+
+La función pow(x, y) devuelve el valor de x elevado a y (x^y).
+
+```
+x = pow(4, 3)
+print(x) 
+
+```
+
+
+## Math Mod
+
+Módulo incorporado que amplía la lista de funciones matemáticas integrado.
+
+Se importa el módulo math
+
+```
+import math
+
+```
+
+Podrá comenzar a utilizar los métodos y constantes del módulo
+
+
+math.sqrt(): 
+
+Devuelve la raíz cuadrada de un número.
+
+```
+import math
+x = math.sqrt(64)
+print(x)
+
+```
+
+El método math.ceil() redondea un número hacia arriba hasta su entero más cercano
+
+el método math.floor() redondea un número hacia abajo hasta su entero más cercano y devuelve el resultado:
+
+```
+import math
+
+x = math.ceil(1.4)
+y = math.floor(1.4)
+
+print(x) # returns 2
+print(y) # returns 1
+
+```
+
+La constante math.pi devuelve el valor de PI (3,14...):
+
+```
+import math
+x = math.pi
+print(x)
+
+```
+
+Ref
+
+```
+math.factorial()
+
+math.fmod() //Returns the remainder of x/y
+math.fsum() //Returns the sum of all items in any iterable (tuples, arrays, lists, etc.)
+math.isfinite() 	//Checks whether a number is finite or not
+math.isinf() 	//Checks whether a number is infinite or not
+math.isnan() 	//Checks whether a value is NaN (not a number) or not
+math.isqrt() 	//Rounds a square root number downwards to the nearest integer
+math.trunc() 	//Returns the truncated integer parts of a number
+
+```
+
+## Math constantes
+
+```
+math.e 	//Returns Euler's number (2.7182...)
+math.inf 	//Returns a floating-point positive infinity
+math.nan 	//Returns a floating-point NaN (Not a Number) value
+math.pi 	//Returns PI (3.1415...)
+math.tau 	//Returns tau (6.2831...)
+
+```
+
+## cmath Mod
+
+Módulo incorporado que puedes usar para tareas matemáticas con números complejos.
+
+Los métodos de este módulo aceptan números enteros, de punto flotante y complejos. 
+
+Incluso acepta objetos de Python con un método
+
+```
+ __complex__()
+ 
+ __float__()
+
+```
+
+Los métodos de este módulo casi siempre devuelven un número complejo. 
+
+Si el valor de retorno puede expresarse como un número real, su parte imaginaria es 0
+
+El módulo cmath tiene un conjunto de métodos y constantes
+
+```
+cmath.acos(x) 	//Returns the arc cosine value of x
+cmath.acosh(x) 	//Returns the hyperbolic arc cosine of x
+cmath.asin(x) 	//Returns the arc sine of x
+cmath.asinh(x) 	//Returns the hyperbolic arc sine of x
+cmath.atan(x) 	//Returns the arc tangent value of x
+cmath.atanh(x) 	//Returns the hyperbolic arctangent value of x
+cmath.cos(x) 	//Returns the cosine of x
+
+```
+
+cMath Constants
+
+```
+cmath.e 	Returns Euler's number (2.7182...)
+cmath.inf 	Returns a floating-point positive infinity value
+cmath.infj 	Returns a complex infinity value
+cmath.nan 	Returns floating-point NaN (Not a Number) value
+cmath.nanj 	Returns coplext NaN (Not a Number) value
+cmath.pi 	Returns PI (3.1415...)
+cmath.tau 	Returns tau (6.2831...)
+
+```
+
+
+# How to 
+
+#### Duplicados en lista 
+
+1. 
+
+```
+mylist = ["a", "b", "a", "c", "c"]
+mylist = list(dict.fromkeys(mylist))
+print(mylist)
+
+```
+
+1. Lista que contiene duplicados
+2. Crea un diccionario usando los elementos de la lista como claves. Esto eliminará automáticamente los duplicados, ya que los diccionarios no pueden tener claves duplicadas.
+3. Convertir el diccionario nuevamente en una lista: 
+
+Tenemos una Lista sin duplicados y tiene el mismo orden que la Lista original.
+
+Imprima la lista para demostrar el resultado.
+
+
+2. 
+
+Enviar sus listas y recuperarlas sin duplicados
+
+```
+def my_function(x):
+  return list(dict.fromkeys(x))
+
+mylist = my_function(["a", "b", "a", "c", "c"])
+
+print(mylist) 
+
+```
+
+1. Crea una función que tome una lista como argumento.
+
+2. Crea un diccionario, utilizando los elementos de esta lista como claves.
+
+3. Convierte el diccionario en una lista. 
+
+4. Return the list
+
+5. Call the function, with a list as a parameter
+
+6. print result
+
+
+#### Invertir una cadena
+
+No hay ninguna función incorporada para revertir una cadena en Python.
+
+1. 
+
+La forma más rápida (¿y fácil?) es utilizar un corte que avance hacia atrás, -1.
+
+```
+txt = "Hello World"[::-1]
+print(txt)
+
+```
+
+1. Crea un segmento que comience en el final de la cadena y se mueva hacia atrás.
+
+2. En este ejemplo particular, la declaración de corte [::-1] significa comenzar al final de la cadena y terminar en la posición 0, moverse con el paso -1, menos uno, lo que significa un paso hacia atrás.
+
+
+2. 
+
+```
+def my_function(x):
+  return x[::-1]
+
+mytxt = my_function("I wonder how this text looks like backwards")
+
+print(mytxt)
+
+```
+
+1. Cortar la cadena empezando por el extremo para moverse hacia atrás.
+
+2. Llamar a la función, con una cadena como parámetro
+
+
+#### Divisiones
+
+1.  Div
+ 
+```
+x = 12
+y = 3
+
+print(x / y)
+
+```
+
+4
+
+
+2. Mod
+ 
+```
+x = 5
+y = 2
+
+print(x % y)
+
+```
+
+
+
+#### Lambda
+
+1. 
+
+```
+x = lambda a: a + 10
+print(x(5))
+
+```
+15
+
+
+2. 
+
+```
+x = lambda a, b: a * b
+print(x(5, 6))
+
+```
+30 
+
+
+3. 
+
+```
+x = lambda a, b, c: a + b + c
+print(x(5, 6, 2))
+
+```
+
+
+
+# Manejo de archivos
+
+Python tiene varias funciones para crear, leer, actualizar y eliminar archivos.
+
+
+La función clave para trabajar con archivos en Python es la función open().
+
+La función open() toma dos parámetros: nombre de archivo y modo.
+
+Hay cuatro métodos (modos) diferentes para abrir un archivo
+
+1. "r" - Lectura
+Valor predeterminado. 
+Abre un archivo para lectura.
+ Se produce un error si el archivo no existe.
+
+2. "a" - Anexar  
+Abre un archivo para anexarlo, crea el archivo si no existe
+
+3. "w" - Escribir
+Abre un archivo para escribir, crea el archivo si no existe
+
+4. "x" - Crear 
+Crea el archivo especificado, devuelve un error si el archivo existe
+
+
+Además, puede especificar si el archivo debe manejarse en modo binario o de texto.
+
+1. "t" - Texto
+Valor predeterminado. 
+Modo texto
+
+2. "b" - Binario
+Modo binario (p. ej., imágenes)
+
+
+Ej: 
+
+Para abrir un archivo para su lectura es suficiente especificar el nombre del archivo:
+
+```
+f = open("demofile.txt")
+
+```
+
+
+El código anterior es el mismo que:
+
+```
+f = open("demofile.txt", "rt")
+
+```
+
+Dado que "r" para leer y "t" para texto son los valores predeterminados, no es necesario especificarlos.
+
+Nota: asegúrese de que el archivo exista o recibirá un error.
+
+
+#### Abrir archivo en el server 
+
+##### Ruta del archivo
+
+Ej: con el siguiente archivo, ubicado en la misma carpeta que Python
+
+demofile.txt
+
+```
+Hello! Welcome to demofile.txt
+This file is for testing purposes.
+Good Luck!
+
+```
+
+Para abrir el archivo, utilice la función incorporada open().
+
+La función open() devuelve un objeto de archivo, que tiene un método read() para leer el contenido del archivo.
+
+```
+f = open("demofile.txt")
+print(f.read())
+
+```
+
+Si el archivo se encuentra en una ubicación diferente, deberá especificar la ruta del archivo, de la siguiente manera:
+
+```
+f = open("D:\\myfiles\welcome.txt")
+print(f.read()) 
+
+```
+
+
+##### Declaración with
+
+También puedes utilizar la instrucción with al abrir un archivo
+
+```
+with open("demofile.txt") as f:
+  print(f.read()) 
+
+```
+
+Entonces no tendrá que preocuparse por cerrar sus archivos, la declaración with se encarga de eso.
+
+
+Cerrar archivos:
+
+Es una buena práctica cerrar siempre el archivo cuando hayas terminado de usarlo.
+
+Si no está utilizando la declaración with, debe escribir una declaración close para cerrar el archivo
+
+```
+f = open("demofile.txt")
+print(f.readline())
+f.close()
+
+```
+
+Nota: Siempre debe cerrar sus archivos. 
+En algunos casos, debido al almacenamiento en búfer, es posible que los cambios realizados en un archivo no se muestren hasta que lo cierre.
+
+
+##### Leer partes
+
+De forma predeterminada, el método read() devuelve el texto completo, pero también puedes especificar cuántos caracteres quieres devolver:
+
+Ej:
+Devuelve los 5 primeros caracteres del archivo:
+
+```
+with open("demofile.txt") as f:
+  print(f.read(5)) 
+
+```
+
+Leer líneas
+
+Puede devolver una línea utilizando el método readline():
+
+Ej:
+Leer una línea del archivo:
+
+```
+with open("demofile.txt") as f:
+  print(f.readline()) 
+
+```
+
+
+Al llamar a readline() dos veces, puedes leer las dos primeras líneas:
+
+Ej:
+Leer dos líneas del archivo:
+
+```
+with open("demofile.txt") as f:
+  print(f.readline())
+  print(f.readline())
+
+```
+
+Al recorrer las líneas del archivo, puede leer el archivo completo, línea por línea:
+
+Recorrer el archivo línea por línea:
+
+```
+ with open("demofile.txt") as f:
+  for x in f:
+    print(x) 
+
+```
+
+
+##### Escribir existente 
+
+Agregar un parámetro a la función open():
+
+1. "a" - Anexar 
+se agregará al final del archivo
+
+2. "w" - Escribir
+sobrescribirá cualquier contenido existente
+
+
+Ej: 
+
+Abra el archivo "demofile.txt" y agregue contenido al archivo:
+
+```
+with open("demofile.txt", "a") as f:
+  f.write("Now the file has more content!")
+
+#abre y lee el archivo después de agregarlo:
+with open("demofile.txt") as f:
+  print(f.read())
+
+```
+
+Sobrescribir contenido existente
+
+Para sobrescribir el contenido existente en el archivo, utilice el parámetro w:
+
+Ej
+Abra el archivo "demofile.txt" y sobrescriba el contenido:
+
+```
+with open("demofile.txt", "w") as f:
+  f.write("Woops! I have deleted the content!")
+
+#Abrir y leer el archivo después de sobrescribirlo
+with open("demofile.txt") as f:
+  print(f.read())
+  
+```
+
+Nota: el método "w" sobrescribirá todo el archivo.
+
+
+##### Crear archivo
+
+El método open(), con uno de los siguientes parámetros:
+
+1. "x" - Crear
+creará un archivo, devuelve un error si el archivo existe
+
+2. "a" - Anexar
+creará un archivo si el archivo especificado no existe
+
+3. "w" - Escribir
+creará un archivo si el archivo especificado no existe
+
+Ej
+
+Crea un nuevo archivo llamado "myfile.txt":
+
+```
+f = open("myfile.txt", "x") 
+
+```
+
+Resultado: se crea un nuevo archivo vacío.
+
+Nota: Si el archivo ya existe, se generará un error.
+
+
+##### Delete file
+
+Importar el módulo OS y ejecutar su función os.remove():
+
+```
+import os
+os.remove("demofile.txt") 
+
+```
+
+Comprobar si el archivo existe:
+
+Para evitar recibir un error, es posible que desees verificar si el archivo existe antes de intentar eliminarlo:
+
+Ej
+Comprueba si el archivo existe y luego elimínalo
+
+```
+import os
+if os.path.exists("demofile.txt"):
+  os.remove("demofile.txt")
+else:
+  print("The file does not exist") 
+
+```
+
+
+Eliminar carpeta
+
+Para eliminar una carpeta entera, utilice el método os.rmdir():
+
+Ej
+Eliminar la carpeta "micarpeta":
+
+```
+import os
+os.rmdir("myfolder") 
+
+```
+
+Sólo puedes eliminar carpetas vacías.
+
+
 
