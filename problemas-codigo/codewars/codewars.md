@@ -3383,3 +3383,500 @@ Sólo puedes eliminar carpetas vacías.
 
 
 
+# 6. ¡Convierte un número en una cadena!
+
+Necesitamos una función que pueda transformar un número (entero) en una cadena.
+
+¿Qué formas de lograr esto conoces?
+Ejemplos (entrada --> salida):
+
+123 --> "123"
+999 --> "999"
+-100 --> "-100"
+
+
+
+## Planteo simple: 
+
+1. Descomposición 
+
+
+2. Descomposición profunda: 
+
+
+3. Pseudocódigo: 
+
+1. def:
+
+2. estructuras: 
+
+3. operadores:
+
+4. técnicas:
+
+5. entradas y salidas internas, ultimas: 
+
+
+
+## Planteo general: 
+
+1. Diseñar una solución paso a paso:
+
+Escribe un plan en pseudocódigo:
+Define los pasos de tu solución de manera clara y comprensible.
+Ejemplo: "Recorrer el array, sumar elementos, actualizar la máxima suma si es mayor".
+
+Piensa en estructuras de datos adecuadas:
+¿Necesitas pilas, colas, diccionarios, o conjuntos para facilitar el trabajo?
+
+Esquematiza el flujo del algoritmo:
+Usa diagramas de flujo o pasos secuenciales para visualizar cómo se resolverá el problema.
+
+1. pseudocod
+
+2. estr dat 
+
+3. diagram
+
+
+2. Documentar y escribir el código:
+
+1. Escribe el código basado en tu plan:
+Sigue el pseudocódigo y comenta cada paso.
+
+2. Hazlo modular:
+Divide tu solución en funciones pequeñas y reutilizables.
+
+3. Incluye validaciones y manejo de errores:
+Por ejemplo, si el input es nulo o no tiene el formato esperado.
+
+
+3. Comparar con otros enfoques:
+
+1. Explora soluciones alternativas:
+Tal vez haya una técnica más directa o eficiente.
+
+2. Aprende de problemas similares:
+Busca patrones en soluciones
+
+
+4. Técnicas para plantear soluciones:
+
+Descomposición del problema.
+Uso de ejemplos concretos.
+Identificación de patrones repetitivos.
+Seleccionar estructuras de datos adecuadas.
+Definir un pseudocódigo claro.
+Probar con casos límites.
+Optimización progreso.
+
+
+5. Comprensión profunda: 
+
+1. Comprender el problema
+
+¿Cuál es el problema?
+¿Qué se te da? (datos de entrada).
+¿Qué se busca? (solución deseada).
+¿Puedes expresar el problema en tus propias palabras?
+¿Qué información o condiciones son relevantes?
+
+
+Haz preguntas como:
+
+¿Cuáles son los datos de entrada y salida?
+¿Qué restricciones existen?
+¿Qué casos especiales deben considerarse?
+
+
+2. Dividir el problema en partes más pequeñas:
+
+En lugar de abordar el problema completo, descomponlo en tareas más simples.
+Por ejemplo, si tienes que ordenar una lista y luego eliminar duplicados:
+Paso 1: Escribe un algoritmo para ordenar la lista.
+Paso 2: Escribe otro para eliminar duplicados.
+
+
+3. Implementar y probar por partes:
+
+Escribe y prueba cada componente de tu solución de forma incremental.
+Evita escribir todo el código de una sola vez sin probarlo.
+
+Refactorizar 
+
+
+4. Plan: 
+
+¿Has resuelto un problema similar antes?
+¿Puedes reducir el problema a uno más simple?
+¿Existen patrones o conexiones con problemas conocidos?
+
+Resolver un caso más simple o particular.
+Trabajar hacia atrás (de la solución al problema).
+Identificar patrones.
+Dividir el problema en partes más manejables.
+
+
+5. Código modular: 
+
+Dividir un programa en módulos más pequeños y bien definidos que realizan tareas específicas. 
+Cada módulo tiene una responsabilidad clara y se puede desarrollar, probar y mantener de forma independiente.
+Los módulos se pueden componer para construir el programa completo.
+Cada módulo se centra en una tarea o funcionalidad específica, lo que facilita la lectura, el mantenimiento y la depuración del código.
+Se pueden reutilizar en diferentes proyectos o contextos, lo que ahorra tiempo y esfuerzo
+Se pueden implementar utilizando clases, funciones, paquetes o cualquier otro mecanismo proporcionado por el lenguaje de programación.
+Es importante definir interfaces claras entre los módulos para establecer cómo interactúan y se comunican entre sí. Esto permite que los módulos sean independientes unos de otros y se puedan modificar o reemplazar sin afectar a otros módulos.
+
+
+Funciones: 
+
+Necesitan una serie de cuidados: 
+
+1. Encapsular: 
+Meter el código que crea los objetos en las definiciones de función.
+
+2. Generalizar:
+Crear variables genericas en el cuerpo de la función, sin valores determinados para pasarles valores en la llamada.
+Así los objetos son diferentes en dimensiones, formas, aspecto, etc.
+
+3. Diseño de interfaz:
+Explica como se utiliza la función: 
+
+¿cuáles son los parámetros? 
+¿Qué hace la función? 
+¿Y cuál es el valor de retorno? 
+Una interfaz es “limpia” si permite a la sentencia llamadora hacer lo que quiere sin lidiar con detalles innecesarios.		
+
+4. Refactorización:
+Reorganizar un programa para mejorar las interfaces y facilitar la reutilización de código.
+
+
+6. CS50:
+
+1. Comprender el problema con claridad
+Desglosar el problema: El primer paso siempre es comprenderlo completamente antes de empezar a escribir código. Lea atentamente el enunciado del problema y piense en las entradas que tiene y las salidas esperadas.
+Simplificar el problema: Intente identificar las partes clave del problema. ¿Puede dividirlo en subproblemas más pequeños? ¿Existe una versión más sencilla del problema que pueda resolverse primero?
+Aclarar los casos límite: Considere cualquier caso especial, como entradas vacías, entradas extremadamente grandes u otras condiciones límite que podrían romper el algoritmo.
+
+2. Pseudocódigo y Diseño de Algoritmos
+Planificar antes de codificar: En CS50, se recomienda pensar en pseudocódigo antes de empezar a codificar. Anote los pasos del algoritmo en lenguaje sencillo para aclarar su razonamiento.
+Pasos para la resolución de problemas:
+Defina el objetivo: ¿Qué intenta lograr exactamente?
+Elija una estrategia: Según el problema, considere enfoques como fuerza bruta, divide y vencerás, algoritmos voraces, programación dinámica, etc.
+Escriba pseudocódigo: Esto le permite centrarse en el flujo lógico de la solución sin preocuparse por la sintaxis.
+
+3. Elija las Estructuras de Datos Adecuadas
+##### Estructuras de datos eficientes: CS50 enfatiza la importancia de elegir la estructura de datos adecuada para el problema en cuestión, ya que esto puede afectar drásticamente el rendimiento de su algoritmo. Por ejemplo:
+Matrices y Listas: Excelentes para datos secuenciales, pero ineficientes para operaciones de búsqueda (a menos que estén ordenados).
+Tablas hash (Diccionarios/Mapas): Eficientes para búsquedas, inserciones y eliminaciones.
+Pilas y colas: Útiles para problemas que requieren operaciones LIFO (último en entrar, primero en salir) o FIFO (primero en entrar, primero en salir).
+Árboles: En particular, árboles de búsqueda binaria para una búsqueda, inserción y eliminación eficientes.
+Gráficos: Para representar datos interconectados (como redes sociales u hojas de ruta).
+
+4. Análisis de complejidad temporal y espacial
+Notación Big O: Aprenda a evaluar la complejidad temporal y espacial de sus algoritmos. Esta es una parte fundamental de CS50 y es esencial para la resolución eficiente de problemas. El objetivo es reducir la complejidad computacional innecesaria (O(n²), O(2^n), etc.) y optimizar para tiempos de ejecución más rápidos.
+Optimizar algoritmos: CS50 enseña que, a menudo, hay más de una manera de resolver un problema y que se debe buscar el enfoque más eficiente. Por ejemplo:
+Algoritmos de ordenamiento: Ordenamiento de burbuja vs. Ordenamiento por fusión (O(n²) vs. O(n log n)).
+Algoritmos de búsqueda: Búsqueda lineal vs. Búsqueda binaria (O(n) vs. O(log n)).
+
+5. Divide y vencerás
+Divide los problemas grandes en problemas más pequeños: Divide y vencerás es un paradigma clave utilizado en muchos algoritmos eficientes (como el ordenamiento por fusión o el ordenamiento rápido). Al dividir los problemas en subproblemas más pequeños, a menudo se pueden resolver recursivamente y combinar los resultados de forma eficiente.
+
+6. Iterar y probar
+Empieza por lo simple: No intentes crear una solución compleja de inmediato. Empieza resolviendo el problema de la forma más sencilla posible (aunque sea ineficiente) y luego mejóralo gradualmente. Esto se conoce como "enfoque iterativo".
+Prueba exhaustivamente: Escribe casos de prueba, especialmente casos extremos, para asegurarte de que tu solución funciona en todas las condiciones. CS50 enfatiza esto en sus conjuntos de problemas.
+Depuración: Utilice herramientas de depuración, sentencias de impresión o un depurador para rastrear su código y asegurarse de que funcione correctamente.
+
+7. Aproveche las bibliotecas y las funciones integradas
+No reinvente la rueda: CS50 le anima a utilizar bibliotecas y funciones integradas siempre que sea posible. Por ejemplo, utilice qsort() para ordenar en C o sort() en Python. Las bibliotecas suelen implementar las soluciones más optimizadas y eficientes.
+
+8. Piense recursivamente (si cabe)
+Soluciones recursivas: Muchos problemas se pueden resolver de forma elegante mediante la recursión, y CS50 profundiza en el pensamiento recursivo. La recursión puede simplificar el proceso de resolución de problemas, especialmente para problemas que involucran árboles, grafos o problemas que se descomponen naturalmente en subproblemas más pequeños.
+Caso base: Asegúrese de definir un caso base claro para las funciones recursivas para evitar la recursión infinita y los desbordamientos de pila.
+
+9. Trabaje a la inversa
+Pensamiento inverso: En algunos casos, resolver el problema a la inversa puede ser útil. Por ejemplo, si intentas encontrar una ruta en un gráfico, podrías trabajar en sentido inverso desde el objetivo hasta el inicio.
+Piensa en la condición final: ¿Cómo se ve la solución una vez resuelto el problema? Esto puede ayudarte a retroceder y a trazar los pasos para llegar a ella.
+ 
+
+#### kISS, DRY, YAGNI, SPR, O-C,  
+
+KISS: 
+El código debe ser: Fácil de entender, mantener, probar y difícil de romper
+
+Ventajas: 
+1. Menos bugs: El código simple tiene menos lugares donde esconder errores.
+2. Más fácil de mantener: Otros (¡y tú mismo en el futuro!) entenderán lo que hiciste.
+3. Facilita la colaboración: Es más fácil revisar y compartir código sencillo.
+4. Agiliza los cambios: Si algo necesita cambiar, un diseño simple es más flexible.
+
+Usos: 
+1. Cuando diseñes funciones, clases, módulos o arquitectura.
+2. Al elegir una solución: ¿necesitas realmente un framework, o basta con unas líneas de código?
+3. Cuando tu primera idea suena “ingeniosa” pero poco clara: replantéala más simple
+
+Ej: 
+
+1. 
+No KISS: Aplicar demasiada lógica
+KISS: expresión clara y Pythonic
+
+2. 
+No KISS: Usar if else para errores
+KISS: Usar try except
+
+3. 
+No KISS: Demasiadas variables para un cálculo/proceso
+KISS: Usar métodos, expresiones cortas
+
+
+DRY: 
+Evitar la duplicación de lógica o datos dentro de un sistema, para mejorar su mantenimiento, legibilidad y reducir la probabilidad de errores
+Cada pieza de conocimiento (código, una consulta SQL, una definición de dato) debe existir en un único lugar dentro de la base de código.
+
+Ventajas: 
+1. Mantenibilidad: Si algo cambia, solo se actualiza en un sitio, no en todos los duplicados.
+2. Legibilidad: Evita confusión sobre qué fragmento es “el verdadero”.
+3. Menos errores: Al corregir un bug, se hace en un solo lugar 
+
+Prácticas:
+1. Funciones reutilizables: Extraer lógica común en helpers o utilidades.
+2. Clases y herencia / composición: Factorizar comportamiento compartido.
+3. Plantillas / componentes: En front-end, unificar vistas repetidas.
+4. Módulos y paquetes: Centralizar constantes y configuraciones
+
+Ej: 
+No DRY: Repetir parte lógica/instrucciones en diferentes clases, func, etc. 
+DRY: Abstraer ese código repetido en una func, métodos de clases, etc. 
+
+No DRY: Repetir bucles, estructuras, acumuladores
+DRY: Extraemos la parte común en una func, método de clase para usarlo en otras funciones, clases. 
+
+No DRY: Duplicar datos/valores en entidades de bases de datos/código 
+DRY: Abstraer esos datos en una estructura. 
+
+
+YAGNI:
+No se debería escribir código por adelantado para funcionalidades que todavía no necesitas.
+
+El código no necesario: 
+1. Suele ser una perdida de tiempo. 
+2. Es muy probable que esos casos nunca ocurran.
+3. El código extra complica el sistema innecesariamente.
+4. Retrasa lo que realmente importa: resolver el problema actual
+
+Ventajas: 
+1. Evita complejidad innecesaria: Menos cosas que mantener, entender y probar.
+2. Más velocidad: Te enfocas solo en lo que agrega valor ahora.
+3. Más flexibilidad: Es más fácil adaptarse a cambios reales que a predicciones.
+4. Menos bugs: El código no utilizado tiende a contener errores invisibles
+
+Aplicación: 
+1. Al escribir funciones: evita parámetros opcionales innecesarios.
+2. Al diseñar arquitecturas: no prepares módulos que no usarás ahora.
+3. Al comentar: evita anotar futuros escenarios hipotéticos como si fueran urgentes.
+4. Al añadir dependencias: solo instala librerías si las estás usando ya
+
+Ej: 
+No YAGNI: Añadir una función, operación a una función, objeto, clase que no la necesita en el momento. 
+YAGNI: Agregar la función cuando se la necesite. 
+
+No YAGNI: Añadir parámetros que no son usados o no son necesarios para las funciones que se usan en el momento. 
+YAGNI: Añadir funcionalidades, métodos de clase cuando las necesites. 
+
+No YAGNI: Crear configuraciones que no se usan. 
+YAGNI: Agregarlas cuando se puedan usar. 
+
+No YAGNI: Diseñar interfaces para métodos que no se van a utilizar. 
+YAGNI: Añadir esos métodos cuando se os necesites. 
+
+
+SRP:
+Una clase, módulo, función o componente debe tener una sola razón para cambiar.
+Debe encargarse de una única cosa. 
+Si hace más de una cosa, se vuelve difícil de mantener, probar o extender.
+
+Ventajas: 
+1. Mantenibilidad: Si un cambio en una parte del sistema afecta muchas funciones dentro de un archivo/clase, SRP no se está cumpliendo.
+2. Legibilidad: Cada parte del código tiene un propósito claro.
+3. Reutilización: Las piezas especializadas son más fáciles de usar en otros contextos.
+4. Pruebas más simples: Puedes probar responsabilidades individuales sin interferencias
+
+Usos: 
+1. Al diseñar clases u objetos en POO.
+2. Al dividir módulos o archivos grandes.
+3. Al crear componentes en frameworks como React o Vue.
+4. Al estructurar microservicios
+
+Ej: 
+No SRP: Una clase con varias responsabilidades/cálculos
+SRP: Crear clase/dividirlas con la responsabilidad correspondiente. 
+
+No SRP: Clase que hace varias cosas distintas con varios métodos
+Genera multiples razones de cambio. 
+SRP: Dividir, funciones, clases para que tengan una sola responsabiliddad. 
+Para que cada función haga lo que le corresponde. 
+
+
+Open-closed: 
+“Las entidades de software (clases, módulos, funciones, etc.) deben estar abiertas para su extensión, pero cerradas para su modificación.”
+
+1. Abierto para extensión
+Añadir nuevo comportamiento o funcionalidades a una pieza de código sin alterar su código fuente original
+
+2. Cerrado para modificación
+No debes tocar el código existente —que ya funciona y está probado— cada vez que necesites cambiar o ampliar su comportamiento
+
+Ventajas:
+1. Estabilidad de la base de código
+Al no modificar clases ya probadas, reduces el riesgo de introducir regresiones.
+
+2. Facilidad de mantenimiento
+El código se convierte en un conjunto de “bloques” extensibles que interactúan por interfaces conocidas.
+
+3. Escalabilidad
+Al crecer el sistema, puedes incorporar nuevos requisitos sin reescribir lo que ya funciona.
+
+Aplicación: 
+1. Herencia y polimorfismo (en POO)
+Define una interfaz o clase base, y “extiende” su comportamiento con subclases nuevas.
+
+2. Composición y delegación
+Envuelve o inyecta dependencias que cumplan una interfaz común, permitiendo sustituir implementaciones.
+
+3. Patrones de diseño
+Muchos patrones (Strategy, Decorator, Factory Method) facilitan agregar funcionalidades sin tocar el código existente
+
+Prácticas: 
+1. Programar contra interfaces (o clases abstractas), no contra implementaciones concretas.
+2. Inyección de dependencias: permite “inyectar” la implementación que quieras sin modificar al consumidor.
+3. Favorecer la composición: en muchos casos, es más flexible que la herencia.
+
+
+Ej: 
+No O-C: Crear métodos directos para agregar funcionalidad
+Hace que tengamos que modificar el archivo de código fuente de esta funcionalidad. 
+
+O-C: Crear una clase superior abstracta, abstracciones 
+Pasar abstracciones a las subclases. 
+No se necesita modificar el archivo de la clase base. 
+Se crear clases abstractas. 
+
+
+Liskov substitution:
+“Si S es un subtipo de T, entonces los objetos de tipo T en un programa pueden ser sustituidos por objetos de tipo S sin alterar las propiedades deseables del programa (corrección, tareas realizadas, etc.).”
+
+1. Subtipo sustituible: 
+Cualquier clase derivada (subclase) debe comportarse de modo que, cuando usemos un objeto de la subclase donde se espera uno de la superclase, el programa siga funcionando correctamente.
+
+2. Contrato intacto: 
+La subclase no debe violar las expectativas (precondiciones, postcondiciones o invariantes) definidas por la clase base.
+
+Ventajas: 
+1. Seguridad de tipo: 
+Permite que el polimorfismo sea fiable sin tener que hacer “chequeos extra” en tiempo de ejecución.
+
+2. Extensibilidad: 
+Nuevas subclases pueden añadirse sin cambiar código cliente que trabaja con la clase base.
+
+3. Mantenibilidad: 
+Reduce casos especiales y excepciones, haciendo el diseño más consistente.
+
+
+Prácticas: 
+1. No reforzar precondiciones en la subclase: 
+No exigir más (por ejemplo, parámetros adicionales) que la clase base.
+
+2. No debilitar postcondiciones: 
+La subclase debe cumplir, al menos, con lo prometido por la base.
+
+3. Mantener invariantes: 
+Cualquier propiedad que la clase base garantice debe seguir siendo válida tras usar la subclase.
+
+4. Programar contra abstracciones (interfaces o clases abstractas), no contra implementaciones concretas
+
+Ej: 
+No Liskov: Usar herencia
+Liskov: Usar interfaces
+
+No Liskov: No crear contratos, solo métodos
+Liskov: Crear contratos, respetar los contratos. 
+
+
+Interface segregation
+
+“Los clientes no deberían verse forzados a depender de interfaces que no utilizan.”
+
+Es mejor tener muchas interfaces específicas y pequeñas que una sola grande y genérica
+
+
+Conceptos: 
+1. Segregar interfaces: 
+Divide una interfaz amplia en varias interfaces más pequeñas y enfocadas
+ 
+2. Clientes ligeros:
+Cada cliente implementa solo la interfaz (o interfaces) que realmente necesita
+
+Ventajas: 
+1. Menos dependencias innecesarias:
+Si tu clase implementa métodos que no usa, se vuelve más frágil y difícil de mantener.
+
+2. Mayor cohesión:
+Las interfaces pequeñas agrupan comportamientos muy relacionados, facilitando la comprensión.
+
+3. Flexibilidad y extensibilidad:
+Nuevos clientes o implementaciones pueden elegir únicamente las interfaces relevantes, sin arrastrar métodos ajenos
+
+Claves de la implementación en los ejemplos: 
+1. Cada interfaz agrupa solo las operaciones necesarias.
+2. Las clases clientes implementan únicamente las interfaces que usan, evitando métodos “vacíos” o excepciones innecesarias.
+3. Así logramos cohesión alta y bajo acoplamiento, facilitando mantenimiento y evolución
+
+Ejs:
+
+No ISP: Tener una gran interfaz con muchos métodos
+ISP: Tener muchas interfaces con los métodos necesarios. 
+
+No ISP: Una gran clase abstracta/interfaz con muchos métodos
+Otra gran clase que aplique todos esos metódos uno tras otro. 
+ISP: Varias clases abstractas con un método especifico
+Varias clases que aplican un método correspondiente. 
+
+
+Dependency inversion: 
+
+“Los módulos de alto nivel no deben depender de módulos de bajo nivel. 
+Ambos deben depender de abstracciones.
+Las abstracciones no deben depender de detalles. 
+Los detalles deben depender de abstracciones.”
+
+1. Módulos de alto nivel (la lógica de negocio, “qué hace” tu aplicación)
+2. Módulos de bajo nivel (implementaciones concretas: acceso a BD, envío de correo, llamadas a API…)
+
+DIP dice que ninguno de esos niveles debe acoplarse directamente al otro, sino que ambos se relacionan a través de interfaces o clases abstractas. 
+Así:
+1. El código de negocio programa contra una interfaz (p. ej. Notifier), no contra la clase concreta (EmailSender, SMSSender, etc.).
+2. Las implementaciones concretas (“detalles”) implementan esa interfaz.
+
+
+Importancia: 
+1. Desacoplamiento: Cambiar la forma en que envías notificaciones (de Email a SMS, o añadir Push) no obliga a tocar la lógica de negocio.
+2. Testabilidad: En pruebas unitarias puedes inyectar un “doble” (mock o stub) de la interfaz que simule la dependencia, sin tocar código real.
+3. Extensibilidad: Añadir nuevas implementaciones (por ejemplo, SlackNotifier) se reduce a crear una clase que implemente la interfaz, sin modificar nada más
+
+Patrones para aplicarlo:
+1. Inyección de dependencias (Dependency Injection)
+Pasar la implementación concreta al constructor, a un setter o a un método factory, en lugar de instanciarla dentro de la clase de negocio.
+
+2. Inversión de control (IoC Container)
+En frameworks grandes, delegar al contenedor la responsabilidad de construir y ensamblar objetos según configuraciones.
+
+3. Programar contra abstracciones
+Definir interfaces o clases abstractas que describan únicamente el comportamiento necesario, manteniendo a raya los detalles
+
+Ejs: 
+No DIP: No crear modulos de negocio (Alto nivel: Clases abstractas/clases con métodos abstractos/abstracciones) 
+y modulo de implementaciones (bajo nivel: usan las abstracciones de alto nivel)
+A su vez inyectan métodos de otras clases. 
+DIP: En sus constructores las clases inyectan tipos de clases de alto nivel
+Las instancias se contruyen con las clases que inyectaron tipos de alto nivel en sus constructores. 
