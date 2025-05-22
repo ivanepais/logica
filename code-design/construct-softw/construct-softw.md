@@ -774,7 +774,7 @@ Paso 4: Escribe y optimiza el código, considerando la complejidad temporal y es
 Paso 5: Realiza pruebas exhaustivas, incluyendo casos extremos, y perfecciona la solución.
 
 
-#### 6. kISS, DRY, YAGNI, SPR, O-C,  
+#### 6. kISS, DRY, YAGNI, SOLID 
 
 ##### KISS
 

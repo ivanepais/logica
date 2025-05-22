@@ -3599,9 +3599,9 @@ Pensamiento inverso: En algunos casos, resolver el problema a la inversa puede s
 Piensa en la condición final: ¿Cómo se ve la solución una vez resuelto el problema? Esto puede ayudarte a retroceder y a trazar los pasos para llegar a ella.
  
 
-#### kISS, DRY, YAGNI, SPR, O-C,  
+#### kISS, DRY, YAGNI, SOLID 
 
-KISS: 
+##### 1. KISS: 
 El código debe ser: Fácil de entender, mantener, probar y difícil de romper
 
 Ventajas: 
@@ -3617,20 +3617,39 @@ Usos:
 
 Ej: 
 
-1. 
 No KISS: Aplicar demasiada lógica
 KISS: expresión clara y Pythonic
-
-2. 
+ 
 No KISS: Usar if else para errores
 KISS: Usar try except
-
-3. 
+ 
 No KISS: Demasiadas variables para un cálculo/proceso
 KISS: Usar métodos, expresiones cortas
 
+```
+def sumar(a, b):
+  return a + b;
 
-DRY: 
+def es_par(n):
+    return n % 2 == 0
+    
+def contar_pares(lista):
+    return sum(1 for n in lista if n % 2 == 0)
+
+def dividir(a, b):
+    try:
+        return a / b
+    except ZeroDivisionError:
+        return "Error: división por cero"
+
+def leer_archivo(nombre_archivo):
+    with open(nombre_archivo, 'r') as f:
+        return f.readlines()
+
+```
+
+
+##### 2. DRY: 
 Evitar la duplicación de lógica o datos dentro de un sistema, para mejorar su mantenimiento, legibilidad y reducir la probabilidad de errores
 Cada pieza de conocimiento (código, una consulta SQL, una definición de dato) debe existir en un único lugar dentro de la base de código.
 
@@ -3655,8 +3674,59 @@ DRY: Extraemos la parte común en una func, método de clase para usarlo en otra
 No DRY: Duplicar datos/valores en entidades de bases de datos/código 
 DRY: Abstraer esos datos en una estructura. 
 
+```
+def producto(a, b): return a * b;
+def calcularAreaRectangulo(a, b): return producto(a, b); 
+def calcularAreaTriangulo(base, altura): return producto(base, altura) / 2;
+def calcularAreaParalelogramo(a, b): return producto(a, b);
 
-YAGNI:
+def mostrar_error(mensaje):
+    print(f"ERROR: {mensaje}")
+
+def validar_usuario(usuario):
+    if not usuario:
+        mostrar_error("usuario inválido")
+        return False
+    # …
+
+def validar_contrasena(contrasena):
+    if len(contrasena) < 8:
+        mostrar_error("contraseña inválida")
+        return False
+    # …
+
+def sumar_por_condicion(lista, condicion):
+    total = 0
+    for x in lista:
+        if condicion(x):
+            total += x
+    return total
+
+# Ahora reutilizamos:
+sumar_pares   = lambda lista: sumar_por_condicion(lista, lambda x: x % 2 == 0)
+sumar_impares = lambda lista: sumar_por_condicion(lista, lambda x: x % 2 != 0)
+
+# config.py
+DB_HOST       = "db.ejemplo.com"
+DB_PUERTO     = 5432
+DB_USUARIO    = "admin"
+DB_CONTRASEÑA = "secreto"
+
+# main.py
+import config
+
+def conectar_bd():
+    # usa config.DB_HOST, config.DB_PUERTO, etc.
+    pass
+
+def crear_backup():
+    # usa config.DB_HOST, config.DB_PUERTO, etc.
+    pass
+
+```
+
+
+##### 3. YAGNI:
 No se debería escribir código por adelantado para funcionalidades que todavía no necesitas.
 
 El código no necesario: 
@@ -3690,8 +3760,87 @@ YAGNI: Agregarlas cuando se puedan usar.
 No YAGNI: Diseñar interfaces para métodos que no se van a utilizar. 
 YAGNI: Añadir esos métodos cuando se os necesites. 
 
+```
+# Función que calcula la suma, pero prepara también una opción para multiplicar (aunque no se usa)
+def operar(a, b, modo='suma'):
+    if modo == 'suma':
+        return a + b
+    elif modo == 'multiplicacion':
+        return a * b
+    else:
+        raise ValueError("Modo no soportado")
 
-SRP:
+def sumar(a, b):
+    return a + b
+
+
+def procesar_pedido(pedido, enviar_email=False, generar_factura=False, registrar_log=False):
+    """
+    Procesa un pedido y opcionalmente envía email, genera factura y registra en log.
+    """
+    # Lógica principal de procesamiento
+    resultado = _procesar(pedido)
+
+    if enviar_email:
+        _enviar_email(pedido, resultado)
+	...
+
+
+def procesar_pedido(pedido):
+    """
+    Procesa un pedido (hoy solo procesar).
+    """
+    return _procesar(pedido)
+
+
+class GestorUsuarios:
+	# solo lo necesario
+    def crear_usuario(self, datos):
+        # lógica de creación
+        pass
+
+    def actualizar_usuario(self, datos):
+        # lógica de actualización
+        pass
+
+# config.py
+# solo la config necesaria
+DB_HOST = "localhost"
+DB_PORT = 5432
+
+```
+
+###### Diseño de interfaces: 
+
+No YAGNI: que no las usaremos 
+
+```
+from abc import ABC, abstractmethod
+
+class Almacenamiento(ABC):
+    @abstractmethod
+    def guardar(self, dato):
+        pass
+
+    @abstractmethod
+    def leer(self, clave):
+        pass
+	...
+	
+```
+
+YAGNI: 
+
+```
+class AlmacenamientoSimple:
+    def guardar(self, dato):
+        # solo guardar, hoy no necesitamos leer o eliminar
+        pass
+
+```
+
+
+##### 4. SRP:
 Una clase, módulo, función o componente debe tener una sola razón para cambiar.
 Debe encargarse de una única cosa. 
 Si hace más de una cosa, se vuelve difícil de mantener, probar o extender.
@@ -3717,8 +3866,43 @@ Genera multiples razones de cambio.
 SRP: Dividir, funciones, clases para que tengan una sola responsabiliddad. 
 Para que cada función haga lo que le corresponde. 
 
+```
+class Reporte:
+    def __init__(self, datos):
+        self.datos = datos
 
-Open-closed: 
+    def calcular_promedio(self):
+        return sum(self.datos) / len(self.datos)
+
+    def guardar_como_pdf(self, nombre_archivo):
+        # Lógica para exportar como PDF
+        pass
+
+```
+
+```
+class AnalizadorDeDatos:
+    def __init__(self, datos):
+        self.datos = datos
+
+    def calcular_promedio(self):
+        return sum(self.datos) / len(self.datos)
+
+class ExportadorPDF:
+    def guardar(self, datos, nombre_archivo):
+        # Lógica para exportar como PDF
+        pass
+
+```
+
+###### init y métodos en clases: 
+init solo cuando la clase tiene propiedades, así las puede usar. 
+métodos: puede que no necesite propiedades de clase. 
+
+Ahora cada clase tiene una sola razón para cambiar
+
+
+##### 5. Open-closed: 
 “Las entidades de software (clases, módulos, funciones, etc.) deben estar abiertas para su extensión, pero cerradas para su modificación.”
 
 1. Abierto para extensión
@@ -3763,7 +3947,113 @@ No se necesita modificar el archivo de la clase base.
 Se crear clases abstractas. 
 
 
-Liskov substitution:
+1. Usar extensiones, abstracciones, contratos, etc
+2. No modificar código interno. 
+
+Básico: Herencia y polimorfismo; clase base o interfaz para que subclases las apliquen.
+Avanzado: composición, delegación o patrones de diseño; strategy, decorador o factory.
+
+Sin Open–Closed: 
+
+```
+class Reporte:
+    def __init__(self, datos):
+        self.datos = datos
+
+    def imprimir(self, tipo):
+        if tipo == 'PDF':
+            # lógica de impresión PDF
+            pass
+        elif tipo == 'HTML':
+            # lógica de impresión HTML
+            pass
+        # cada vez que queramos un nuevo formato, modificamos esta clase...
+
+```
+
+Cada vez que añades un nuevo formato (CSV, Markdown…), tienes que abrir y editar Reporte.imprimir(): riesgo de romper lo existente
+
+
+Con Open-Closed: 
+
+```
+from abc import ABC, abstractmethod
+
+class Reporte(ABC):
+    def __init__(self, datos):
+        self.datos = datos
+
+    @abstractmethod
+    def imprimir(self):
+        pass
+
+class ReportePDF(Reporte):
+    def imprimir(self):
+        # lógica de impresión PDF
+        pass
+
+class ReporteHTML(Reporte):
+    def imprimir(self):
+        # lógica de impresión HTML
+        pass
+
+# Cuando necesites un nuevo formato, creas una nueva subclase:
+class ReporteCSV(Reporte):
+    def imprimir(self):
+        # lógica de CSV
+        pass
+
+# Uso:
+def generar_reporte(reporte: Reporte):
+    reporte.imprimir()
+
+# No cambias nada en las clases existentes, solo añades ReporteCSV.
+
+```
+
+pen-closed con estrategia
+
+```
+from abc import ABC, abstractmethod
+
+class Descuento(ABC):
+    @abstractmethod
+    def aplicar(self, precio):
+        pass
+
+class DescuentoFijo(Descuento):
+    def __init__(self, monto):
+        self.monto = monto
+
+    def aplicar(self, precio):
+        return precio - self.monto
+
+class DescuentoPorcentaje(Descuento):
+    def __init__(self, porcentaje):
+        self.porcentaje = porcentaje
+
+    def aplicar(self, precio):
+        return precio * (1 - self.porcentaje)
+
+# Para agregar otro tipo de descuento, creas otra clase que implemente Descuento.
+
+def calcular_precio_final(precio, descuento: Descuento):
+    return descuento.aplicar(precio)
+
+# Uso:
+precio = 100
+d1 = DescuentoFijo(10)
+d2 = DescuentoPorcentaje(0.2)
+
+print(calcular_precio_final(precio, d1))  # 90
+print(calcular_precio_final(precio, d2))  # 80
+
+```
+
+Con estos patrones, tu código queda cerrado a modificaciones (no tocas las clases ya probadas) y abierto a nuevas extensiones (añades nuevas subclases que implementen la interfaz/abstracta).
+
+
+##### 6. Liskov substitution:
 “Si S es un subtipo de T, entonces los objetos de tipo T en un programa pueden ser sustituidos por objetos de tipo S sin alterar las propiedades deseables del programa (corrección, tareas realizadas, etc.).”
 
 1. Subtipo sustituible: 
@@ -3803,7 +4093,71 @@ No Liskov: No crear contratos, solo métodos
 Liskov: Crear contratos, respetar los contratos. 
 
 
-Interface segregation
+Con LSP: diseño basado en interfaces
+
+En lugar de heredar “Cuadrado” de “Rectángulo”, definimos una jerarquía más adecuada
+
+```
+from abc import ABC, abstractmethod
+
+class Figura2D(ABC):
+    @abstractmethod
+    def area(self):
+        pass
+
+class Rectangulo(Figura2D):
+    def __init__(self, ancho, alto):
+        self.ancho = ancho
+        self.alto = alto
+
+    def area(self):
+        return self.ancho * self.alto
+
+class Cuadrado(Figura2D):
+    def __init__(self, lado):
+        self.lado = lado
+
+    def area(self):
+        return self.lado * self.lado
+
+def imprimir_area(fig: Figura2D):
+    print(f"Área: {fig.area()}")
+
+# Ahora funciona correctamente con ambos:
+imprimir_area(Rectangulo(5, 10))  # 50  
+imprimir_area(Cuadrado(7))       # 49
+
+```
+
+Cada subclase implementa el método area() sin alterar el contrato, y el código cliente no necesita saber el tipo concreto
+
+
+LSP con precondiciones y poscondiciones
+
+La subclase no refuerza precondiciones ni debilita postcondiciones:
+
+```
+class Base:
+    def procesar(self, valor: int) -> int:
+        if valor < 0:
+            raise ValueError("Valor negativo no permitido")
+        return valor * 2
+
+class Derivada(Base):
+    def procesar(self, valor: int) -> int:
+        # cumple exactamente las mismas condiciones de entrada
+        resultado = super().procesar(valor)
+        # añade comportamiento extra que no cambia el contrato:
+        print(f"Valor procesado correctamente: {valor}")
+        return resultado
+
+```
+
+Aquí Derivada extiende procesar sin restringir casos válidos ni alterar el resultado esperado
+
+
+
+##### 7. Interface segregation
 
 “Los clientes no deberían verse forzados a depender de interfaces que no utilizan.”
 
@@ -3843,7 +4197,97 @@ ISP: Varias clases abstractas con un método especifico
 Varias clases que aplican un método correspondiente. 
 
 
-Dependency inversion: 
+1. Interfaces pequeñas, en lugar de una gran interfaz con muchos métodos
+2. Se implementan solo los métodos necesarios para cada cliente/subclase
+3. Interfaces por rol o uso: Cada interfaz agrupa métodos muy relacionados.
+4. Composición: Un objeto puede implementar varias interfaces según sus capacidades.
+5. Revisa y refactoriza cuando una interfaz crece demasiado:  Sepárala en partes más manejables
+
+
+Separamos la gran interfaz en varias, cada una con responsabilidad única
+
+```
+class Impresora(ABC):
+    @abstractmethod
+    def imprimir(self, documento):
+        pass
+
+class Escaner(ABC):
+    @abstractmethod
+    def escanear(self, documento):
+        pass
+
+class Fax(ABC):
+    @abstractmethod
+    def enviar_fax(self, documento, numero):
+        pass
+
+# Ahora las implementaciones solo toman lo que usan:
+class ImpresoraBasica(Impresora):
+    def imprimir(self, documento):
+        print(f"Imprimiendo {documento}")
+
+class EquipoOficina(Impresora, Escaner, Fax):
+    def imprimir(self, documento):
+        print(f"Imprimiendo {documento}")
+    def escanear(self, documento):
+        print(f"Escaneando {documento}")
+    def enviar_fax(self, documento, numero):
+        print(f"Enviando fax de {documento} al {numero}")
+
+```
+
+ImpresoraBasica: solo implementa Impresora.
+
+EquipoOficina: implementa las tres interfaces porque las necesita
+
+
+Con ISP: 
+
+```
+from abc import ABC, abstractmethod
+
+class NotificadorEmail(ABC):
+    @abstractmethod
+    def enviar_email(self, destino, mensaje):
+        pass
+
+class NotificadorSMS(ABC):
+    @abstractmethod
+    def enviar_sms(self, destino, mensaje):
+        pass
+
+class NotificadorPush(ABC):
+    @abstractmethod
+    def enviar_push(self, destino, mensaje):
+        pass
+
+# Implementaciones centradas:
+
+class ServicioEmail(NotificadorEmail):
+    def enviar_email(self, destino, mensaje):
+        # lógica real…
+        pass
+
+class ServicioSMS(NotificadorSMS):
+    def enviar_sms(self, destino, mensaje):
+        # lógica real…
+        pass
+
+class ServicioPush(NotificadorPush):
+    def enviar_push(self, destino, mensaje):
+        # lógica real…
+        pass
+
+```
+
+Claves de la implementación en los ejemplos: 
+1. Cada interfaz agrupa solo las operaciones necesarias.
+2. Las clases clientes implementan únicamente las interfaces que usan, evitando métodos “vacíos” o excepciones innecesarias.
+3. Así logramos cohesión alta y bajo acoplamiento, facilitando mantenimiento y evolución
+
+
+##### 8. Dependency inversion: 
 
 “Los módulos de alto nivel no deben depender de módulos de bajo nivel. 
 Ambos deben depender de abstracciones.
@@ -3857,7 +4301,6 @@ DIP dice que ninguno de esos niveles debe acoplarse directamente al otro, sino q
 Así:
 1. El código de negocio programa contra una interfaz (p. ej. Notifier), no contra la clase concreta (EmailSender, SMSSender, etc.).
 2. Las implementaciones concretas (“detalles”) implementan esa interfaz.
-
 
 Importancia: 
 1. Desacoplamiento: Cambiar la forma en que envías notificaciones (de Email a SMS, o añadir Push) no obliga a tocar la lógica de negocio.
@@ -3880,3 +4323,1593 @@ y modulo de implementaciones (bajo nivel: usan las abstracciones de alto nivel)
 A su vez inyectan métodos de otras clases. 
 DIP: En sus constructores las clases inyectan tipos de clases de alto nivel
 Las instancias se contruyen con las clases que inyectaron tipos de alto nivel en sus constructores. 
+
+Rs:
+1. Modulos de alto nivel: la lógica de negocio, “qué hace” tu aplicación 
+2. Modulos de bajo nivel: implementaciones concretas: acceso a BD, envío de correo, llamadas a API 
+3. Ambos dependen de abstracciones, no acoplamiento. 
+4. Los detalles deben depender de abstracciones, no al reves.
+5. Los modulos se relacionan con interfaces o clases abstractas
+
+Código DI: 
+1. El código de negocio programa contra una interfaz (p. ej. Notifier), no contra la clase concreta (EmailSender, SMSSender, etc.).
+2. Las implementaciones concretas (“detalles”) implementan esa interfaz.
+
+Ventajas: 
+1. Desacoplamiento: Cambiar la forma en que envías notificaciones (de Email a SMS, o añadir Push) no obliga a tocar la lógica de negocio.
+2. Testabilidad: En pruebas unitarias puedes inyectar un “doble” (mock o stub) de la interfaz que simule la dependencia, sin tocar código real.
+3. Extensibilidad: Añadir nuevas implementaciones (por ejemplo, SlackNotifier) se reduce a crear una clase que implemente la interfaz, sin modificar nada más
+
+Aplicación
+1. Inyección de dependencias (Dependency Injection)
+Pasar la implementación concreta al constructor, a un setter o a un método factory, en lugar de instanciarla dentro de la clase de negocio.
+
+2. Inversión de control (IoC Container)
+En frameworks grandes, delegar al contenedor la responsabilidad de construir y ensamblar objetos según configuraciones.
+
+3. Programar contra abstracciones
+Definir interfaces o clases abstractas que describan únicamente el comportamiento necesario, manteniendo a raya los detalles
+
+Ej: 
+Repositorio de datos:
+
+Sin DIP: 
+El servicio de negocio instancia directamente un repositorio concreto de base de datos
+
+```
+class UserRepositorySQL:
+    def get_user(self, user_id):
+        # Lógica para consultar SQL
+        pass
+
+class UserService:
+    def __init__(self):
+        self.repo = UserRepositorySQL()  # dependencia directa
+
+    def find_user(self, user_id):
+        return self.repo.get_user(user_id)
+
+```
+
+
+Con DIP:
+Definimos una interfaz de repositorio y pasamos la implementación por inyección:
+
+```
+from abc import ABC, abstractmethod
+
+class UserRepository(ABC):
+    @abstractmethod
+    def get_user(self, user_id):
+        pass
+
+class UserRepositorySQL(UserRepository):
+    def get_user(self, user_id):
+        # Lógica SQL…
+        return {"id": user_id, "nombre": "Alice"}
+
+class UserRepositoryMongo(UserRepository):
+    def get_user(self, user_id):
+        # Lógica Mongo…
+        return {"_id": user_id, "nombre": "Alice"}
+
+class UserService:
+    def __init__(self, repo: UserRepository):
+        self.repo = repo  # sólo conoce la abstracción
+
+    def find_user(self, user_id):
+        return self.repo.get_user(user_id)
+
+# Al instanciar:
+sql_repo   = UserRepositorySQL()
+mongo_repo = UserRepositoryMongo()
+
+service_sql   = UserService(sql_repo)
+service_mongo = UserService(mongo_repo)
+
+```
+
+1. UserService (módulo de alto nivel) queda independiente de la tecnología de persistencia.
+2. Para agregar nuevas formas de almacenar usuarios, solo creas nuevas implementaciones de UserRepository sin tocar UserService
+
+Claves:
+1. Desacoplamiento: los componentes de alto nivel no se rompen cuando cambian los de bajo nivel.
+2. Testabilidad: podemos pasar mocks o stubs de la interfaz en tests sin tocar el código real.
+3. Extensibilidad: añadir nuevas implementaciones no requiere modificar la lógica de negocio existente.
+
+Con los patrones se logra un diseño más modular, flexible y robusto ante cambios futuros
+
+
+
+# Built in functions
+
+```
+map()	Returns the specified iterator with the specified function applied to each item
+next()	Returns the next item in an iterable
+min()	Returns the smallest item in an iterable
+object()	Returns a new object
+reversed()	Returns a reversed iterator
+round()	Rounds a numbers
+sum()	Sums the items of an iterator
+ascii() Returns a readable version of an object. Replaces none-ascii characters with escape character
+classmethod()	Converts a method into a class method
+filter()	Use a filter function to exclude items in an iterable object
+getattr()	Returns the value of the specified attribute (property or method)
+isinstance()	Returns True if a specified object is an instance of a specified object
+issubclass()	Returns True if a specified class is a subclass of a specified object
+
+```
+
+
+# Keywords
+
+```
+return	To exit a function and return a value
+as	To create an alias
+assert	For debugging
+from	To import specific parts of a module
+To check if a value is present in a list, tuple, etc.
+is	To test if two variables are equal
+with	Used to simplify exception handling
+yield	To return a list of values from a generator
+
+```
+
+
+# Exceptions
+
+1. El bloque try le permite probar un bloque de código para detectar errores.
+2. El bloque except le permite manejar el error.
+3. El bloque else le permite ejecutar código cuando no hay ningún error.
+4. El bloque finally le permite ejecutar código, independientemente del resultado de los bloques try y except
+
+### Manejo de excepciones:
+
+Cuando ocurre un error, o excepción como lo llamamos, Python normalmente se detendrá y generará un mensaje de error.
+
+Estas excepciones se pueden manejar mediante la declaración try
+
+Ej: 
+
+El bloque try generará una excepción, porque x no está definido:
+
+```
+try:
+  print(x)
+except:
+  print("An exception occurred") 
+
+```
+
+Dado que el bloque try genera un error, se ejecutará el bloque except.
+
+
+Sin el bloque try, el programa se bloqueará y generará un error:
+
+Ejemplo:
+
+Esta declaración generará un error, porque x no está definido:
+
+```
+print(x) 
+
+```
+
+
+Muchas excepciones:
+
+Puede definir tantos bloques exceptión como desee, por ejemplo, si desea ejecutar un bloque de código especial para un tipo especial de error:
+
+Ejemplo:
+
+Imprima un mensaje si el bloque try genera (raise) un NameError y otro para otros errores
+
+```
+ try:
+  print(x)
+except NameError:
+  print("Variable x is not defined")
+except:
+  print("Something else went wrong") 
+  
+```
+
+
+### Else: 
+
+Define un bloque de código que se ejecutará si no se produjeron errores:
+
+En este ejemplo, el bloque try no genera ningún error:
+
+```
+try:
+  print("Hello")
+except:
+  print("Something went wrong")
+else:
+  print("Nothing went wrong")
+
+```
+Hello
+Nothing went wrong
+
+
+### Finally:
+
+si se especifica, se ejecutará independientemente de si el bloque try genera un error o no.
+
+```
+ try:
+  print(x)
+except:
+  print("Something went wrong")
+finally:
+  print("The 'try except' is finished") 
+
+```
+
+Something went wrong
+The 'try except' is finished
+
+#### Esto puede ser útil para cerrar objetos y limpiar recursos:
+
+Ej: 
+
+Intente abrir y escribir en un archivo que no se puede escribir:
+
+```
+try:
+  f = open("demofile.txt")
+  try:
+    f.write("Lorum Ipsum")
+  except:
+    print("Something went wrong when writing to the file")
+  finally:
+    f.close()
+except:
+  print("Something went wrong when opening the file") 
+
+```
+Something went wrong when writing to the file
+
+El programa puede continuar sin dejar abierto el objeto de archivo.
+
+
+### Raise/Generar una excepción
+
+Puedes elegir lanzar una excepción si ocurre una condición.
+
+Para lanzar (o generar) una excepción, utilice la palabra clave raise.
+
+Ejemplo:
+
+Genera un error y detiene el programa si x es menor que 0:
+
+```
+x = -1
+
+if x < 0:
+  raise Exception("Sorry, no numbers below zero") 
+  
+```
+Traceback (most recent call last):
+  File "demo_ref_keyword_raise.py", line 4, in <module>
+    raise Exception("Sorry, no numbers below zero")
+Exception: Sorry, no numbers below zero 
+
+
+La palabra clave raise se utiliza para generar una excepción.
+
+Puede definir qué tipo de error generar y el texto que se imprimirá para el usuario.
+
+Genera un TypeError si x no es un entero:
+
+```
+ x = "hello"
+
+if not type(x) is int:
+  raise TypeError("Only integers are allowed") 
+
+```
+Traceback (most recent call last):
+  File "demo_ref_keyword_raise2.py", line 4, in <module>
+    raise TypeError("Only integers are allowed")
+TypeError: Only integers are allowed
+
+
+Excepciones integradas que suelen generarse en Python:
+
+```
+ImportError 	Raised when an imported module does not exist
+ArithmeticError 	Raised when an error occurs in numeric calculations
+AssertionError 	Raised when an assert statement fails
+AttributeError 	Raised when attribute reference or assignment fails
+IndexError 	Raised when an index of a sequence does not exist
+KeyError 	Raised when a key does not exist in a dictionary 
+TypeError 	Raised when two different types are combined
+ValueError 	Raised when there is a wrong value in a specified data type
+ZeroDivisionError 	Raised when the second operator in a division is zero
+...
+
+```
+
+
+# Prácticas de Clases: 
+
+### 1. Diseño general de clases
+
+Sigue el principio de una sola responsabilidad (SRP):
+Cada clase debe tener una única responsabilidad o razón para cambiar.
+
+2. Prefiere la composición sobre la herencia, salvo que haya una clara relación jerárquica ("es-un").
+
+3. Haz uso de __str__ y __repr__:
+
+	__str__: Para una representación legible por humanos.
+
+	__repr__: Para una representación útil para depuración y desarrollo (idealmente que pueda usarse con eval para recrear el objeto).
+
+4. Evita clases "Dios" (God objects):
+No hagas clases que controlen todo; divide en componentes más pequeños
+
+
+### 2. Constructores y atributos
+
+1. Usa el constructor init correctamente:
+Inicializa solo lo necesario y evita lógica compleja allí.
+
+2. Haz que los atributos privados lo sean usando (__)o (_):
+
+```
+self._atributo_interno  # convención: protegido
+self.__atributo_privado  # nombre mangling: más "privado"
+
+```
+
+### 3. Usa propiedades (@property) en lugar de exponer atributos directamente:
+
+```
+@property
+def saldo(self):
+    return self._saldo
+
+```
+
+
+### 4. Métodos
+
+1. Distingue entre métodos de instancia, clase y estáticos 
+
+```
+def metodo_instancia(self): pass
+@classmethod
+def metodo_de_clase(cls): pass
+@staticmethod
+def metodo_estatico(): pass
+
+```
+
+1. Haz que los métodos sean cohesivos:
+Cada método debe hacer una cosa específica.
+
+2. Evita side-effects inesperados:
+Si un método cambia el estado, que quede claro en su nombre (agregar_item, resetear...).
+
+
+### 5. Herencia y abstracción
+
+1. Si usas herencia, aplica el principio Liskov:
+Las subclases deben poder reemplazar a las superclases sin romper el código.
+
+2. Usa clases abstractas si necesitas una interfaz común
+
+```
+from abc import ABC, abstractmethod
+class Vehiculo(ABC):
+    @abstractmethod
+    def arrancar(self): pass
+
+```
+
+### 6. Estilo y convenciones
+
+1. Sigue las convenciones de nombres de PEP 8:
+
+Clases: CamelCase
+
+Métodos/atributos: snake_case
+
+Constantes: ALL_CAPS
+
+2. Evita atributos públicos innecesarios:
+Usa propiedades o métodos para acceder a datos internos si podrían cambiar 
+
+```
+class CuentaBancaria:
+    def __init__(self, titular, saldo=0):
+        self.titular = titular
+        self._saldo = saldo
+
+    @property
+    def saldo(self):
+        return self._saldo
+
+    def depositar(self, cantidad):
+        if cantidad > 0:
+            self._saldo += cantidad
+
+    def retirar(self, cantidad):
+        if 0 < cantidad <= self._saldo:
+            self._saldo -= cantidad
+            return True
+        return False
+
+    def __str__(self):
+        return f"Cuenta de {self.titular}, saldo: {self._saldo}"
+
+```
+
+
+# Diseño de Clases 
+
+
+## 1. init y métodos en clases: 
+
+init solo cuando la clase tiene propiedades, así las puede usar. 
+
+métodos: puede que no necesite propiedades de clase. 
+
+
+## 2. Interfaces:
+
+Al principio del archivo importamos ABC y abstractmethod
+
+La clase normal toma ABC y definimos un decorador @abstract method. 
+
+
+```
+from abc import ABC, abstractmethod
+
+class Almacenamiento(ABC):
+    @abstractmethod
+    def guardar(self, dato):
+        pass
+
+    @abstractmethod
+    def leer(self, clave):
+        pass
+	...
+	
+```
+
+Clase base toma ABC como param
+
+Las subclases toman a la clase base. 
+
+
+```
+from abc import ABC, abstractmethod
+
+class Reporte(ABC):
+    def __init__(self, datos):
+        self.datos = datos
+
+    @abstractmethod
+    def imprimir(self):
+        pass
+
+class ReportePDF(Reporte):
+    def imprimir(self):
+        # lógica de impresión PDF
+        pass
+
+class ReporteHTML(Reporte):
+    def imprimir(self):
+        # lógica de impresión HTML
+        pass
+
+# Cuando necesites un nuevo formato, creas una nueva subclase:
+class ReporteCSV(Reporte):
+    def imprimir(self):
+        # lógica de CSV
+        pass
+
+# Uso:
+def generar_reporte(reporte: Reporte):
+    reporte.imprimir()
+
+# No cambias nada en las clases existentes, solo añades ReporteCSV.
+
+```
+
+
+## Clase base y subclases
+
+Figura2D pasará a las subclases 
+
+```
+from abc import ABC, abstractmethod
+
+class Figura2D(ABC):
+    @abstractmethod
+    def area(self):
+        pass
+
+class Rectangulo(Figura2D):
+    def __init__(self, ancho, alto):
+        self.ancho = ancho
+        self.alto = alto
+
+    def area(self):
+        return self.ancho * self.alto
+
+class Cuadrado(Figura2D):
+    def __init__(self, lado):
+        self.lado = lado
+
+    def area(self):
+        return self.lado * self.lado
+
+def imprimir_area(fig: Figura2D):
+    print(f"Área: {fig.area()}")
+
+# Ahora funciona correctamente con ambos:
+imprimir_area(Rectangulo(5, 10))  # 50  
+imprimir_area(Cuadrado(7))       # 49
+
+```
+
+Cada subclase implementa el método area() sin alterar el contrato, y el código cliente no necesita saber el tipo concreto
+
+
+LSP con precondiciones y poscondiciones
+
+La subclase no refuerza precondiciones ni debilita postcondiciones:
+
+```
+class Base:
+    def procesar(self, valor: int) -> int:
+        if valor < 0:
+            raise ValueError("Valor negativo no permitido")
+        return valor * 2
+
+class Derivada(Base):
+    def procesar(self, valor: int) -> int:
+        # cumple exactamente las mismas condiciones de entrada
+        resultado = super().procesar(valor)
+        # añade comportamiento extra que no cambia el contrato:
+        print(f"Valor procesado correctamente: {valor}")
+        return resultado
+
+```
+
+Aquí Derivada extiende procesar sin restringir casos válidos ni alterar el resultado esperado
+
+
+Con ISP: 
+
+```
+from abc import ABC, abstractmethod
+
+class NotificadorEmail(ABC):
+    @abstractmethod
+    def enviar_email(self, destino, mensaje):
+        pass
+
+class NotificadorSMS(ABC):
+    @abstractmethod
+    def enviar_sms(self, destino, mensaje):
+        pass
+
+class NotificadorPush(ABC):
+    @abstractmethod
+    def enviar_push(self, destino, mensaje):
+        pass
+
+# Implementaciones centradas:
+
+class ServicioEmail(NotificadorEmail):
+    def enviar_email(self, destino, mensaje):
+        # lógica real…
+        pass
+
+class ServicioSMS(NotificadorSMS):
+    def enviar_sms(self, destino, mensaje):
+        # lógica real…
+        pass
+
+class ServicioPush(NotificadorPush):
+    def enviar_push(self, destino, mensaje):
+        # lógica real…
+        pass
+
+```
+
+Claves de la implementación en los ejemplos: 
+
+1. Cada interfaz agrupa solo las operaciones necesarias.
+2. Las clases clientes implementan únicamente las interfaces que usan, evitando métodos “vacíos” o excepciones innecesarias.
+3. Así logramos cohesión alta y bajo acoplamiento, facilitando mantenimiento y evolución
+
+
+Con DIP:
+Definimos una interfaz de repositorio y pasamos la implementación por inyección:
+
+```
+from abc import ABC, abstractmethod
+
+class UserRepository(ABC):
+    @abstractmethod
+    def get_user(self, user_id):
+        pass
+
+class UserRepositorySQL(UserRepository):
+    def get_user(self, user_id):
+        # Lógica SQL…
+        return {"id": user_id, "nombre": "Alice"}
+
+class UserRepositoryMongo(UserRepository):
+    def get_user(self, user_id):
+        # Lógica Mongo…
+        return {"_id": user_id, "nombre": "Alice"}
+
+class UserService:
+    def __init__(self, repo: UserRepository):
+        self.repo = repo  # sólo conoce la abstracción
+
+    def find_user(self, user_id):
+        return self.repo.get_user(user_id)
+
+# Al instanciar:
+sql_repo   = UserRepositorySQL()
+mongo_repo = UserRepositoryMongo()
+
+service_sql   = UserService(sql_repo)
+service_mongo = UserService(mongo_repo)
+
+```
+
+1. UserService (módulo de alto nivel) queda independiente de la tecnología de persistencia.
+2. Para agregar nuevas formas de almacenar usuarios, solo creas nuevas implementaciones de UserRepository sin tocar UserService
+
+Claves:
+1. Desacoplamiento: los componentes de alto nivel no se rompen cuando cambian los de bajo nivel.
+2. Testabilidad: podemos pasar mocks o stubs de la interfaz en tests sin tocar el código real.
+3. Extensibilidad: añadir nuevas implementaciones no requiere modificar la lógica de negocio existente.
+
+Con los patrones se logra un diseño más modular, flexible y robusto ante cambios futuros
+
+
+
+# Composición 
+
+Es una forma de construir objetos complejos “ensamblándolos” a partir de otros más sencillos. 
+
+En lugar de heredar de una clase padre, un objeto contiene (o “tiene un”) otro objeto como parte de su estado interno.
+
+
+Ventajas: 
+
+1. Flexibilidad: Permite cambiar dinámicamente el comportamiento al reemplazar subcomponentes.
+
+2. Reutilización: Puedes combinar clases reutilizables sin crear jerarquías profundas de herencia.
+
+3. Aislamiento: Cada clase se encarga sólo de su propia lógica, facilitando pruebas unitarias y mantenimiento
+
+
+Implementación: 
+
+1. Definir clases independientes: cada una con su responsabilidad.
+
+2. Inyectar instancias de esas clases dentro de la clase compuesta, normalmente vía constructor o un setter
+
+
+##### Ej: Básico
+
+```
+class Motor:
+    def __init__(self, potencia):
+        self.potencia = potencia  # en caballos de fuerza
+
+    def arrancar(self):
+        print(f"Motor de {self.potencia} CV arrancado.")
+
+class Rueda:
+    def __init__(self, diametro):
+        self.diametro = diametro  # en pulgadas
+
+    def girar(self):
+        print(f"Rueda de {self.diametro} pulgadas girando.")
+
+class Coche:
+    def __init__(self, motor: Motor, ruedas: list[Rueda]):
+        self.motor = motor            # composición: el coche tiene un motor
+        self.ruedas = ruedas          # composición: el coche tiene 4 ruedas
+
+    def arrancar(self):
+        self.motor.arrancar()
+        for rueda in self.ruedas:
+            rueda.girar()
+
+# Uso:
+motor_v8 = Motor(potencia=450)
+ruedas = [Rueda(diametro=18) for _ in range(4)]
+mi_coche = Coche(motor_v8, ruedas)
+mi_coche.arrancar()
+
+```
+
+Coche no hereda de Motor ni de Rueda.
+
+En cambio, contiene objetos Motor y una lista de Rueda.
+
+Si mañana quisiéramos usar un motor eléctrico, solo necesitamos otra clase MotorElectrico que tenga el mismo “contrato” (método arrancar) y pasarla al constructor de Coche
+
+
+Composición vs. Herencia:
+
+Aspecto: 
+
+1. Relación “tiene un”: 
+Composición (si) - Herencia (no). 
+
+2. Relación “es un”:
+ no - si. 
+ 
+3. Grado de acoplamiento: 
+Bajo: cada clase tiene su rol - Alto: la subclase depende de la superclase .
+
+4. Cambio de comportamiento
+Fácil: solo hay que inyectar otro objeto. 
+Dificil: suele requerir reescritura o mix-ins
+
+
+Prácticas de composición: 
+
+1. Programar contra interfaces (o clases abstractas):
+
+Define un conjunto de métodos esperados (por ejemplo, usando ABC) para que las implementaciones sean intercambiables
+
+
+2. Inyección de dependencias:
+
+Pasa instancias al constructor o mediante setters en lugar de crearlas internamente; así facilitas las pruebas y la reutilización
+
+
+3. Delegación clara:
+
+Documenta qué métodos de los subcomponentes expone la clase compuesta y considera usar __getattr__ con cuidado para “delegar” llamadas automáticamente
+
+```
+getattr()	Returns the value of the specified attribute (property or method)
+
+```
+
+
+4. Evita la sobre‑composición:
+
+No fragmentes en exceso; si un objeto está compuesto por demasiados subobjetos diminutos, la lógica puede dispersarse y volverse difícil de seguir
+
+
+##### Ej avanzado: interfaz abstracta para motores
+
+```
+from abc import ABC, abstractmethod
+
+class IMotor(ABC):
+    @abstractmethod
+    def arrancar(self): pass
+
+class MotorGasolina(IMotor):
+    def arrancar(self): print("Arrancando motor de gasolina…")
+
+class MotorElectrico(IMotor):
+    def arrancar(self): print("Arrancando motor eléctrico…")
+
+class Coche:
+    def __init__(self, motor: IMotor):
+        self.motor = motor
+
+    def arrancar(self):
+        self.motor.arrancar()
+
+# Puedo elegir en tiempo de ejecución:
+mi_coche_gas = Coche(MotorGasolina())
+mi_coche_elec = Coche(MotorElectrico())
+
+mi_coche_gas.arrancar()   # “Arrancando motor de gasolina…”
+mi_coche_elec.arrancar()  # “Arrancando motor eléctrico…”
+
+```
+
+La abstracción IMotor garantiza que cualquier implementación de motor puede usarse con Coche, sin acoplar la clase a detalles concretos.
+
+
+## Plan OOP
+
+
+### Prácticas OOP 
+
+
+
+### 1. Diseño simple: Funciones
+
+Diseño basado en multiples funciones pequeñas con una sola responsabilidad. 
+
+Estas se rehusarán en otras funciones. 
+
+
+Uso de KISS, DRY y YAGNI
+
+KISS: 
+
+No KISS: Aplicar demasiada lógica
+KISS: expresión clara y Pythonic
+ 
+No KISS: Usar if else para errores
+KISS: Usar try except
+ 
+No KISS: Demasiadas variables para un cálculo/proceso
+KISS: Usar métodos, expresiones cortas
+
+
+DRY: 
+
+No DRY: Repetir parte lógica/instrucciones en diferentes clases, func, etc. 
+DRY: Abstraer ese código repetido en una func, métodos de clases, etc. 
+
+No DRY: Repetir bucles, estructuras, acumuladores
+DRY: Extraemos la parte común en una func, método de clase para usarlo en otras funciones, clases. 
+
+No DRY: Duplicar datos/valores en entidades de bases de datos/código 
+DRY: Abstraer esos datos en una estructura. 
+
+
+YAGNI:
+
+No YAGNI: Añadir una función, operación a una función, objeto, clase que no la necesita en el momento. 
+YAGNI: Agregar la función cuando se la necesite. 
+
+No YAGNI: Añadir parámetros que no son usados o no son necesarios para las funciones que se usan en el momento. 
+YAGNI: Añadir funcionalidades, métodos de clase cuando las necesites. 
+
+No YAGNI: Crear configuraciones que no se usan. 
+YAGNI: Agregarlas cuando se puedan usar. 
+
+No YAGNI: Diseñar interfaces para métodos que no se van a utilizar. 
+YAGNI: Añadir esos métodos cuando se os necesites. 
+
+
+KISS: 
+
+```
+def sumar(a, b):
+  return a + b;
+
+def es_par(n):
+    return n % 2 == 0
+    
+def contar_pares(lista):
+    return sum(1 for n in lista if n % 2 == 0)
+
+def dividir(a, b):
+    try:
+        return a / b
+    except ZeroDivisionError:
+        return "Error: división por cero"
+
+def leer_archivo(nombre_archivo):
+    with open(nombre_archivo, 'r') as f:
+        return f.readlines()
+
+```
+
+
+DRY:
+
+```
+def producto(a, b): return a * b;
+def calcularAreaRectangulo(a, b): return producto(a, b); 
+def calcularAreaTriangulo(base, altura): return producto(base, altura) / 2;
+def calcularAreaParalelogramo(a, b): return producto(a, b);
+
+def mostrar_error(mensaje):
+    print(f"ERROR: {mensaje}")
+
+def validar_usuario(usuario):
+    if not usuario:
+        mostrar_error("usuario inválido")
+        return False
+    # …
+
+def validar_contrasena(contrasena):
+    if len(contrasena) < 8:
+        mostrar_error("contraseña inválida")
+        return False
+    # …
+
+def sumar_por_condicion(lista, condicion):
+    total = 0
+    for x in lista:
+        if condicion(x):
+            total += x
+    return total
+
+# Ahora reutilizamos:
+sumar_pares   = lambda lista: sumar_por_condicion(lista, lambda x: x % 2 == 0)
+sumar_impares = lambda lista: sumar_por_condicion(lista, lambda x: x % 2 != 0)
+
+# config.py
+DB_HOST       = "db.ejemplo.com"
+DB_PUERTO     = 5432
+DB_USUARIO    = "admin"
+DB_CONTRASEÑA = "secreto"
+
+# main.py
+import config
+
+def conectar_bd():
+    # usa config.DB_HOST, config.DB_PUERTO, etc.
+    pass
+
+def crear_backup():
+    # usa config.DB_HOST, config.DB_PUERTO, etc.
+    pass
+
+```
+
+
+YAGNI: 
+
+```
+def sumar(a, b):
+    return a + b
+    
+def procesar_pedido(pedido):
+    """
+    Procesa un pedido (hoy solo procesar).
+    """
+    return _procesar(pedido)
+
+class GestorUsuarios:
+    def crear_usuario(self, datos):
+        # lógica de creación
+        pass
+
+    def actualizar_usuario(self, datos):
+        # lógica de actualización
+        pass
+
+# config.py
+DB_HOST = "localhost"
+DB_PORT = 5432
+
+class AlmacenamientoSimple:
+    def guardar(self, dato):
+        # solo guardar, hoy no necesitamos leer o eliminar
+        pass
+
+```
+
+
+### 2. Diseño OOP: Interfaces 
+
+Multiples interfaces pequeñas y multiples clases que las aplican 
+
+Las multiples clases no usan herencia, super, init clase superior 
+
+Solo clase base y subclases que toman a la clase base. 
+
+Uso SRP, O-C y LSP.
+
+
+SRP: 
+
+No SRP: Una clase con varias responsabilidades/cálculos
+SRP: Crear clase/dividirlas con la responsabilidad correspondiente. 
+
+No SRP: Clase que hace varias cosas distintas con varios métodos
+Genera multiples razones de cambio. 
+SRP: Dividir, funciones, clases para que tengan una sola responsabiliddad. 
+Para que cada función haga lo que le corresponde. 
+
+
+O-C: 
+
+No O-C: Crear métodos directos para agregar funcionalidad
+Hace que tengamos que modificar el archivo de código fuente de esta funcionalidad. 
+
+O-C: Crear una clase superior abstracta, abstracciones 
+Pasar abstracciones a las subclases. 
+No se necesita modificar el archivo de la clase base. 
+Se crear clases abstractas. 
+
+
+LSP:
+
+No Liskov: Usar herencia
+Liskov: Usar interfaces
+
+No Liskov: No crear contratos, solo métodos
+Liskov: Crear contratos, respetar los contratos. 
+
+
+SRP 
+
+1. Simple: 
+
+Funciones con una responsabilidad aplicando KISS, DRY y YAGNI. 
+
+```
+def filtrar_activos(usuarios):
+    return [u for u in usuarios if u['activo']]
+
+def guardar_csv(registros, nombre_archivo):
+    with open(nombre_archivo, 'w') as f:
+        for r in registros:
+            f.write(f"{r['nombre']},{r['email']}\n")
+
+# Uso compuesto
+usuarios_activos = filtrar_activos(usuarios)
+cantidad = len(usuarios_activos)
+guardar_csv(usuarios_activos, 'activos.csv')
+
+```
+
+
+2. Clases con una sola responsabilidad
+
+Los métodos usan KISS, DRY y YAGNI
+
+```
+class AnalizadorDeDatos:
+    def __init__(self, datos):
+        self.datos = datos
+
+    def calcular_promedio(self):
+        return sum(self.datos) / len(self.datos)
+
+class ExportadorPDF:
+    def guardar(self, datos, nombre_archivo):
+        # Lógica para exportar como PDF
+        pass
+```
+
+
+3. Complejo: 
+
+###### Inyecta dependencias y composición: clase base en constructor de otra clase independiente para ejecutar sus métodos. 
+
+Son clases simples, no aplican interfaces. 
+
+Estas clases independientes o sus instancias/objetos van a usar los métodos de la clase inyectada. 
+
+```
+class AnalizadorDeDatos:
+    def __init__(self, datos):
+        self.datos = datos
+
+    def calcular_promedio(self):
+        return sum(self.datos) / len(self.datos)
+
+
+class GeneradorDeReporteTXT:
+    def __init__(self, analizador: AnalizadorDeDatos):
+        self.analizador = analizador
+
+    def generar(self, nombre_archivo):
+        promedio = self.analizador.calcular_promedio()
+        with open(nombre_archivo, 'w') as f:
+            f.write(f"Promedio: {promedio}\n")
+
+
+class EnviadorDeEmail:
+    def enviar(self, destinatario, ruta_archivo):
+        # Lógica ficticia de envío de email con adjunto
+        print(f"Enviando {ruta_archivo} a {destinatario}")
+
+```
+
+
+O-C:
+
+##### Uso intensivo de Interfaces/abstracciones e inyección de dependencia y composición. 
+
+Clase base y clases independientes que toman a la clase base. 
+
+Uso: inyección de dependencia en clase que llama a los métodos de la clase que inyecto. 
+
+1. 
+
+```
+from abc import ABC, abstractmethod
+
+class Reporte(ABC):
+    def __init__(self, datos):
+        self.datos = datos
+
+    @abstractmethod
+    def imprimir(self):
+        pass
+
+class ReportePDF(Reporte):
+    def imprimir(self):
+        # lógica de impresión PDF
+        pass
+
+class ReporteHTML(Reporte):
+    def imprimir(self):
+        # lógica de impresión HTML
+        pass
+
+# Cuando necesites un nuevo formato, creas una nueva subclase:
+class ReporteCSV(Reporte):
+    def imprimir(self):
+        # lógica de CSV
+        pass
+
+# Uso:
+def generar_reporte(reporte: Reporte):
+    reporte.imprimir()
+
+# No cambias nada en las clases existentes, solo añades ReporteCSV.
+
+```
+
+
+2. Clase base y clases independientes que toman esa clase base. 
+
+Uso inyección de dependencias en clase que llama a los métodos de la clase que inyecto. 
+
+```
+from abc import ABC, abstractmethod
+
+class ExportadorBase(ABC):
+    def __init__(self, datos):
+        self.datos = datos
+
+    @abstractmethod
+    def exportar(self):
+        pass
+
+class ExportadorJSON(ExportadorBase):
+    def exportar(self):
+        import json
+        return json.dumps(self.datos)
+
+class ExportadorXML(ExportadorBase):
+    def exportar(self):
+        elementos = ''.join(f"<{k}>{v}</{k}>" for k, v in self.datos.items())
+        return f"<root>{elementos}</root>"
+
+# Para un nuevo formato solo añades una subclase:
+class ExportadorCSV(ExportadorBase):
+    def exportar(self):
+        lineas = [','.join(str(v) for v in self.datos.values())]
+        return '\n'.join(lineas)
+
+# Uso:
+def generar_exportacion(exportador: ExportadorBase):
+    resultado = exportador.exportar()
+    print(resultado)
+
+datos = {'a': 1, 'b': 2}
+generar_exportacion(ExportadorJSON(datos))
+generar_exportacion(ExportadorCSV(datos))
+# No tocamos las clases existentes, solo creamos nuevas.
+
+```
+
+
+###### 3. Clase base y clases independientes: Uso inyección de dependencias 
+
+```
+from abc import ABC, abstractmethod
+
+class Descuento(ABC):
+    @abstractmethod
+    def aplicar(self, precio):
+        pass
+
+class DescuentoFijo(Descuento):
+    def __init__(self, monto):
+        self.monto = monto
+
+    def aplicar(self, precio):
+        return precio - self.monto
+
+class DescuentoPorcentaje(Descuento):
+    def __init__(self, porcentaje):
+        self.porcentaje = porcentaje
+
+    def aplicar(self, precio):
+        return precio * (1 - self.porcentaje)
+
+# Para agregar otro tipo de descuento, creas otra clase que implemente Descuento.
+
+def calcular_precio_final(precio, descuento: Descuento):
+    return descuento.aplicar(precio)
+
+# Uso:
+precio = 100
+d1 = DescuentoFijo(10)
+d2 = DescuentoPorcentaje(0.2)
+
+print(calcular_precio_final(precio, d1))  # 90
+print(calcular_precio_final(precio, d2))  # 80
+
+```
+
+###### Uso de métodos inyectados: en funciones simples, en instancias y en métodos de clase. 
+
+
+
+LSP: 
+
+1. Abstracciones simples: Clase base y clases independientes
+
+```
+from abc import ABC, abstractmethod
+
+class Figura2D(ABC):
+    @abstractmethod
+    def area(self):
+        pass
+
+class Rectangulo(Figura2D):
+    def __init__(self, ancho, alto):
+        self.ancho = ancho
+        self.alto = alto
+
+    def area(self):
+        return self.ancho * self.alto
+
+class Cuadrado(Figura2D):
+    def __init__(self, lado):
+        self.lado = lado
+
+    def area(self):
+        return self.lado * self.lado
+
+def imprimir_area(fig: Figura2D):
+    print(f"Área: {fig.area()}")
+
+# Ahora funciona correctamente con ambos:
+imprimir_area(Rectangulo(5, 10))  # 50  
+imprimir_area(Cuadrado(7))       # 49
+
+```
+
+2. Precondiciones, postcondiciones 
+
+```
+class Base:
+    def procesar(self, valor: int) -> int:
+        if valor < 0:
+            raise ValueError("Valor negativo no permitido")
+        return valor * 2
+
+class Derivada(Base):
+    def procesar(self, valor: int) -> int:
+        # cumple exactamente las mismas condiciones de entrada
+        resultado = super().procesar(valor)
+        # añade comportamiento extra que no cambia el contrato:
+        print(f"Valor procesado correctamente: {valor}")
+        return resultado
+
+```
+
+###### Uso de objetos inyectados: las funciones y métodos que usan clases inyectadas toman como parámetro una clase que tenga incorporada/inyectada/compuesta la clase base; el param de tipo clase base llamará al método 
+
+ej: 
+
+```
+class Figura2D(ABC): #clase base
+	def area		  #mét abstrac/contrato
+
+class Cuadrado(Figura2D): #subclase
+	def area			   #aplic abstracc/cumplir contrato
+
+class Rectangulo(Figura2D): #subclase
+	def area 				 #aplic met abstract/contrato
+
+def imprimir_area(fig: Figura2D): #función simple que inyecc clase base
+    print(f"Área: {fig.area()}")	#param tipo clase base, llamará al met
+
+```
+
+
+### 3. Diseño OOP avanzado: Módulos de interfaces de negocio (lógica) e implementación. 
+
+Ambos dependen de interfaces, no se acoplan. 
+
+Uso de IS, DI
+
+
+IS: 
+
+1. Multiples Clases bases abstractas y multiples subclases que las alican. 
+
+```
+class Impresora(ABC):
+    @abstractmethod
+    def imprimir(self, documento):
+        pass
+
+class Escaner(ABC):
+    @abstractmethod
+    def escanear(self, documento):
+        pass
+
+class Fax(ABC):
+    @abstractmethod
+    def enviar_fax(self, documento, numero):
+        pass
+
+# Ahora las implementaciones solo toman lo que usan:
+class ImpresoraBasica(Impresora):
+    def imprimir(self, documento):
+        print(f"Imprimiendo {documento}")
+
+class EquipoOficina(Impresora, Escaner, Fax):
+    def imprimir(self, documento):
+        print(f"Imprimiendo {documento}")
+    def escanear(self, documento):
+        print(f"Escaneando {documento}")
+    def enviar_fax(self, documento, numero):
+        print(f"Enviando fax de {documento} al {numero}")
+
+```
+
+2. 
+
+```
+from abc import ABC, abstractmethod
+
+class NotificadorEmail(ABC):
+    @abstractmethod
+    def enviar_email(self, destino, mensaje):
+        pass
+
+class NotificadorSMS(ABC):
+    @abstractmethod
+    def enviar_sms(self, destino, mensaje):
+        pass
+
+class NotificadorPush(ABC):
+    @abstractmethod
+    def enviar_push(self, destino, mensaje):
+        pass
+
+# Implementaciones centradas:
+
+class ServicioEmail(NotificadorEmail):
+    def enviar_email(self, destino, mensaje):
+        # lógica real…
+        pass
+
+class ServicioSMS(NotificadorSMS):
+    def enviar_sms(self, destino, mensaje):
+        # lógica real…
+        pass
+
+class ServicioPush(NotificadorPush):
+    def enviar_push(self, destino, mensaje):
+        # lógica real…
+        pass
+
+```
+
+
+DI: 
+
+###### DI simple: una clase abstracta con una sola responsabilidad, las subclases las toman como param para aplicar el método abstracto. La última clase inyecta la clase base en su contructor; esta define una prop y un método que toma su prop para usar y llamar al método abstracto. 
+
+```
+from abc import ABC, abstractmethod
+
+class UserRepository(ABC):
+    @abstractmethod
+    def get_user(self, user_id):
+        pass
+
+class UserRepositorySQL(UserRepository):
+    def get_user(self, user_id):
+        # Lógica SQL…
+        return {"id": user_id, "nombre": "Alice"}
+
+class UserRepositoryMongo(UserRepository):
+    def get_user(self, user_id):
+        # Lógica Mongo…
+        return {"_id": user_id, "nombre": "Alice"}
+
+class UserService:
+    def __init__(self, repo: UserRepository):
+        self.repo = repo  # sólo conoce la abstracción
+
+    def find_user(self, user_id):
+        return self.repo.get_user(user_id)
+
+# Al instanciar:
+sql_repo   = UserRepositorySQL()
+mongo_repo = UserRepositoryMongo()
+
+service_sql   = UserService(sql_repo)
+service_mongo = UserService(mongo_repo)
+
+```
+
+
+
+### 4. Composición 
+
+1. Simple:  Clases simples, sin abstracciones.
+ 
+Clases independientes (Motor y Rueda) que se unen a una clase compuesta (Coche)
+### Las clases independientes tiene su contructor, prop y un métodos que usa esa prop (para cuando a instancien y le den valor) esto es SRP. 
+### La clase compuesta toma en su contructor a las clases independientes como param. 
+### Estos param son tipo class que tomaran valor cuando instancien la clase compuesta. 
+### La clase compuesta define un método en común. 
+### La clase compuesta usa la prop que a su vez es una clase independiente para llamar/usar estos métodos. 
+### Instancia las clases independientes (Motor y Rueda) toman valor. 
+### Instancia la clase compuesta y le pasa estas instancias/objeto como valor 
+### ya que era lo que esperaba el constructor. 
+### LLama a su método arrancar. 
+
+```
+class Motor:
+    def __init__(self, potencia):
+        self.potencia = potencia  # en caballos de fuerza
+
+    def arrancar(self):
+        print(f"Motor de {self.potencia} CV arrancado.")
+
+class Rueda:
+    def __init__(self, diametro):
+        self.diametro = diametro  # en pulgadas
+
+    def girar(self):
+        print(f"Rueda de {self.diametro} pulgadas girando.")
+
+class Coche:
+    def __init__(self, motor: Motor, ruedas: list[Rueda]):
+        self.motor = motor            # composición: el coche tiene un motor
+        self.ruedas = ruedas          # composición: el coche tiene 4 ruedas
+
+    def arrancar(self):
+        self.motor.arrancar()
+        for rueda in self.ruedas:
+            rueda.girar()
+
+# Uso:
+motor_v8 = Motor(potencia=450)
+ruedas = [Rueda(diametro=18) for _ in range(4)]
+mi_coche = Coche(motor_v8, ruedas)
+mi_coche.arrancar()
+
+```
+
+2. Avanzado: interfaz abstracta para motores
+
+## Clase base de interfaz IMotor define un método abstracto/contrato
+## Subclases toman la interfaz (en su definición) y implementa el método/contrato
+## Clase compuesta toma la interfaz IMotor en su contructor. 
+## Define un método para usar el método arrancar de motor. 
+## Instanciamos dos tipos de coches
+## Usará el método arrancar.
+
+```
+from abc import ABC, abstractmethod
+
+class IMotor(ABC):
+    @abstractmethod
+    def arrancar(self): pass
+
+class MotorGasolina(IMotor):
+    def arrancar(self): print("Arrancando motor de gasolina…")
+
+class MotorElectrico(IMotor):
+    def arrancar(self): print("Arrancando motor eléctrico…")
+
+class Coche:
+    def __init__(self, motor: IMotor):
+        self.motor = motor
+
+    def arrancar(self):
+        self.motor.arrancar()
+
+# Puedo elegir en tiempo de ejecución:
+mi_coche_gas = Coche(MotorGasolina())
+mi_coche_elec = Coche(MotorElectrico())
+
+mi_coche_gas.arrancar()   # “Arrancando motor de gasolina…”
+mi_coche_elec.arrancar()  # “Arrancando motor eléctrico…”
+
+```
+
+
+
+
+
+# Rs Uso inyección dependencia/composición: 
+
+## 1.SRP: Inyecta dependencias y composición; clase base en constructor de otra clase independiente para ejecutar sus métodos. 
+Son clases simples, no aplican interfaces. 
+Estas clases independientes o sus instancias/objetos van a usar los métodos de la clase inyectada. 
+
+```
+
+```
+
+
+## 2. O-C: Uso intensivo de Interfaces/abstracciones e inyección de dependencia y composición. 
+Clase base y clases independientes que toman a la clase base. 
+Uso: inyección de dependencia en clase que llama a los métodos de la clase que inyecto. 
+
+```
+
+```
+
+## 3. O-C: Clase base y clases independientes; Uso inyección de dependencias 
+ 
+```
+
+```
+
+## 4. O-C: Uso de métodos inyectados: en funciones simples, en instancias y en métodos de clase. 
+
+
+## LSP: Uso de objetos inyectados: 
+Las funciones y métodos que usan clases inyectadas toman como parámetro una clase que tenga incorporada/inyectada/compuesta la clase base; el param de tipo clase base llamará al método 
+
+```
+class Figura2D(ABC): #clase base
+	def area		  #mét abstrac/contrato
+
+class Cuadrado(Figura2D): #subclase
+	def area			   #aplic abstracc/cumplir contrato
+
+class Rectangulo(Figura2D): #subclase
+	def area 				 #aplic met abstract/contrato
+
+def imprimir_area(fig: Figura2D): #función simple que inyecc clase base
+    print(f"Área: {fig.area()}")	#param tipo clase base, llamará al met
+
+```
+
+
+## DI: Módulo negocio (lógica) y módulo interfaz.
+Una clase abstracta con una sola responsabilidad
+Las subclases las toman como param para aplicar el método abstracto. 
+La última clase inyecta la clase base en su contructor; esta define una prop y un método que toma su prop para usar y llamar al método abstracto. 
+
+```
+class UserRepository(ABC):
+    @abstractmethod
+	def get_user
+	
+class UserRepositorySQL(UserRepository):
+    def get_user
+    
+class UserService:
+    def __init__(self, repo: UserRepository):
+        self.repo = repo
+    def find_user(self, user_id):
+        return self.repo.get_user(user_id)
+
+sql_repo   = UserRepositorySQL()
+
+service_sql   = UserService(sql_repo)
+
+
+```
+
+# Rs: Prácticas 
+
+## 1. Tomar clase base en definición de subclase
+(subclase)
+
+## 2. Tomar clase base/interfaz abs en constructor (solo en ABS?) 
+(usar prop/cambiar prop, métodos)
+
+## 3. Todo para lograr cambios en el estado interno sin modificar el código
