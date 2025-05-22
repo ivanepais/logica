@@ -5334,7 +5334,7 @@ No Liskov: No crear contratos, solo métodos
 Liskov: Crear contratos, respetar los contratos. 
 
 
-SRP 
+SRP: 
 
 1. Simple: 
 
@@ -5829,15 +5829,37 @@ mi_coche_elec.arrancar()  # “Arrancando motor eléctrico…”
 
 
 
-
-
 # Rs Uso inyección dependencia/composición: 
 
-## 1.SRP: Inyecta dependencias y composición; clase base en constructor de otra clase independiente para ejecutar sus métodos. 
+## 1.SRP: Inyecta dependencias y composición
+
+Clase base en constructor de otra clase independiente para ejecutar sus métodos. 
 Son clases simples, no aplican interfaces. 
 Estas clases independientes o sus instancias/objetos van a usar los métodos de la clase inyectada. 
 
 ```
+class AnalizadorDeDatos:
+    def __init__(self, datos):
+        self.datos = datos
+
+    def calcular_promedio(self):
+        return sum(self.datos) / len(self.datos)
+
+
+class GeneradorDeReporteTXT:
+    def __init__(self, analizador: AnalizadorDeDatos):
+        self.analizador = analizador
+
+    def generar(self, nombre_archivo):
+        promedio = self.analizador.calcular_promedio()
+        with open(nombre_archivo, 'w') as f:
+            f.write(f"Promedio: {promedio}\n")
+
+
+class EnviadorDeEmail:
+    def enviar(self, destinatario, ruta_archivo):
+        # Lógica ficticia de envío de email con adjunto
+        print(f"Enviando {ruta_archivo} a {destinatario}")
 
 ```
 
@@ -5847,19 +5869,87 @@ Clase base y clases independientes que toman a la clase base.
 Uso: inyección de dependencia en clase que llama a los métodos de la clase que inyecto. 
 
 ```
+from abc import ABC, abstractmethod
+
+class Reporte(ABC):
+    def __init__(self, datos):
+        self.datos = datos
+
+    @abstractmethod
+    def imprimir(self):
+        pass
+
+class ReportePDF(Reporte):
+    def imprimir(self):
+        # lógica de impresión PDF
+        pass
+
+class ReporteHTML(Reporte):
+    def imprimir(self):
+        # lógica de impresión HTML
+        pass
+
+# Cuando necesites un nuevo formato, creas una nueva subclase:
+class ReporteCSV(Reporte):
+    def imprimir(self):
+        # lógica de CSV
+        pass
+
+# Uso:
+def generar_reporte(reporte: Reporte):
+    reporte.imprimir()
+
+# No cambias nada en las clases existentes, solo añades ReporteCSV.
 
 ```
 
-## 3. O-C: Clase base y clases independientes; Uso inyección de dependencias 
- 
-```
+
+## 3. O-C: Clase base y clases independientes: 
+
+Uso inyección de dependencias. 
+
+Uso de métodos inyectados: en funciones simples, en instancias y en métodos de clase. 
+
 
 ```
+from abc import ABC, abstractmethod
 
-## 4. O-C: Uso de métodos inyectados: en funciones simples, en instancias y en métodos de clase. 
+class Descuento(ABC):
+    @abstractmethod
+    def aplicar(self, precio):
+        pass
+
+class DescuentoFijo(Descuento):
+    def __init__(self, monto):
+        self.monto = monto
+
+    def aplicar(self, precio):
+        return precio - self.monto
+
+class DescuentoPorcentaje(Descuento):
+    def __init__(self, porcentaje):
+        self.porcentaje = porcentaje
+
+    def aplicar(self, precio):
+        return precio * (1 - self.porcentaje)
+
+# Para agregar otro tipo de descuento, creas otra clase que implemente Descuento.
+
+def calcular_precio_final(precio, descuento: Descuento):
+    return descuento.aplicar(precio)
+
+# Uso:
+precio = 100
+d1 = DescuentoFijo(10)
+d2 = DescuentoPorcentaje(0.2)
+
+print(calcular_precio_final(precio, d1))  # 90
+print(calcular_precio_final(precio, d2))  # 80
+
+```
 
 
-## LSP: Uso de objetos inyectados: 
+## 4. LSP: Uso de objetos inyectados: 
 Las funciones y métodos que usan clases inyectadas toman como parámetro una clase que tenga incorporada/inyectada/compuesta la clase base; el param de tipo clase base llamará al método 
 
 ```
@@ -5878,7 +5968,82 @@ def imprimir_area(fig: Figura2D): #función simple que inyecc clase base
 ```
 
 
-## DI: Módulo negocio (lógica) y módulo interfaz.
+## 5. IS: 
+
+1. Multiples Clases bases abstractas y multiples subclases que las alican. 
+
+```
+class Impresora(ABC):
+    @abstractmethod
+    def imprimir(self, documento):
+        pass
+
+class Escaner(ABC):
+    @abstractmethod
+    def escanear(self, documento):
+        pass
+
+class Fax(ABC):
+    @abstractmethod
+    def enviar_fax(self, documento, numero):
+        pass
+
+# Ahora las implementaciones solo toman lo que usan:
+class ImpresoraBasica(Impresora):
+    def imprimir(self, documento):
+        print(f"Imprimiendo {documento}")
+
+class EquipoOficina(Impresora, Escaner, Fax):
+    def imprimir(self, documento):
+        print(f"Imprimiendo {documento}")
+    def escanear(self, documento):
+        print(f"Escaneando {documento}")
+    def enviar_fax(self, documento, numero):
+        print(f"Enviando fax de {documento} al {numero}")
+
+```
+
+2. 
+
+```
+from abc import ABC, abstractmethod
+
+class NotificadorEmail(ABC):
+    @abstractmethod
+    def enviar_email(self, destino, mensaje):
+        pass
+
+class NotificadorSMS(ABC):
+    @abstractmethod
+    def enviar_sms(self, destino, mensaje):
+        pass
+
+class NotificadorPush(ABC):
+    @abstractmethod
+    def enviar_push(self, destino, mensaje):
+        pass
+
+# Implementaciones centradas:
+
+class ServicioEmail(NotificadorEmail):
+    def enviar_email(self, destino, mensaje):
+        # lógica real…
+        pass
+
+class ServicioSMS(NotificadorSMS):
+    def enviar_sms(self, destino, mensaje):
+        # lógica real…
+        pass
+
+class ServicioPush(NotificadorPush):
+    def enviar_push(self, destino, mensaje):
+        # lógica real…
+        pass
+
+```
+
+
+## 6. DI: Módulo negocio (lógica) y módulo interfaz.
 Una clase abstracta con una sola responsabilidad
 Las subclases las toman como param para aplicar el método abstracto. 
 La última clase inyecta la clase base en su contructor; esta define una prop y un método que toma su prop para usar y llamar al método abstracto. 
@@ -5913,3 +6078,323 @@ service_sql   = UserService(sql_repo)
 (usar prop/cambiar prop, métodos)
 
 ## 3. Todo para lograr cambios en el estado interno sin modificar el código
+
+## 4. Estructura Composición-Inyección de dependencias: 
+
+
+1. Clases simples:
+
+Clases base y subclases
+
+Syntaxis: 
+
+```
+1. Clase base
+
+2. Subclases toman clase base
+
+3. Funciones independientes que inyectan clase base y subclases para usar métodos 
+
+4. Instancias que usan constructor y métodos
+
+```
+
+
+2. Interfaces: 
+
+Clases abstractas y clases que implementan metodos abstractos
+
+```
+1. Clase base abstracta: 
+
+2. Subclases toman clase base: 
+
+3. Funciones independientes que inyectan en su param clase base y subclases para usar métodos 
+
+4. Clases que inyectan en su constructor clases para usar métodoss
+
+5. Instancias que usan constructor y métodos
+
+```
+
+
+### Ejs: 
+
+1. Función que inyecta clase base abstracta
+
+#### Subclases (toman param a clase base en su def): usarán método clase base
+
+Ej 1: 
+
+```
+from abc import ABC, abstractmethod
+
+class Descuento(ABC):
+    @abstractmethod
+    def aplicar(self, precio):
+        pass
+
+class DescuentoFijo(Descuento):
+    def __init__(self, monto):
+        self.monto = monto
+
+    def aplicar(self, precio):
+        return precio - self.monto
+
+class DescuentoPorcentaje(Descuento):
+    def __init__(self, porcentaje):
+        self.porcentaje = porcentaje
+
+    def aplicar(self, precio):
+        return precio * (1 - self.porcentaje)
+
+# Para agregar otro tipo de descuento, creas otra clase que implemente Descuento.
+
+def calcular_precio_final(precio, descuento: Descuento):
+    return descuento.aplicar(precio)
+
+# Uso:
+precio = 100
+d1 = DescuentoFijo(10)
+d2 = DescuentoPorcentaje(0.2)
+
+print(calcular_precio_final(precio, d1))  # 90
+print(calcular_precio_final(precio, d2))  # 80
+
+```
+
+Ej 2:
+
+```
+from abc import ABC, abstractmethod
+
+class Reporte(ABC):
+    def __init__(self, datos):
+        self.datos = datos
+
+    @abstractmethod
+    def imprimir(self):
+        pass
+
+class ReportePDF(Reporte):
+    def imprimir(self):
+        # lógica de impresión PDF
+        pass
+
+class ReporteHTML(Reporte):
+    def imprimir(self):
+        # lógica de impresión HTML
+        pass
+
+# Cuando necesites un nuevo formato, creas una nueva subclase:
+class ReporteCSV(Reporte):
+    def imprimir(self):
+        # lógica de CSV
+        pass
+
+# Uso:
+def generar_reporte(reporte: Reporte):
+    reporte.imprimir()
+
+# No cambias nada en las clases existentes, solo añades ReporteCSV.
+
+```
+
+
+Ej 3: 
+
+```
+from abc import ABC, abstractmethod
+
+class Figura2D(ABC):
+    @abstractmethod
+    def area(self):
+        pass
+
+class Rectangulo(Figura2D):
+    def __init__(self, ancho, alto):
+        self.ancho = ancho
+        self.alto = alto
+
+    def area(self):
+        return self.ancho * self.alto
+
+class Cuadrado(Figura2D):
+    def __init__(self, lado):
+        self.lado = lado
+
+    def area(self):
+        return self.lado * self.lado
+
+def imprimir_area(fig: Figura2D):
+    print(f"Área: {fig.area()}")
+
+# Ahora funciona correctamente con ambos:
+imprimir_area(Rectangulo(5, 10))  # 50  
+imprimir_area(Cuadrado(7))       # 49
+
+```
+
+
+#### Multiple métodos abstractos
+
+ISP:
+
+Separamos la gran interfaz en varias, cada una con responsabilidad única
+
+Ej 1: 
+
+```
+class Impresora(ABC):
+    @abstractmethod
+    def imprimir(self, documento):
+        pass
+
+class Escaner(ABC):
+    @abstractmethod
+    def escanear(self, documento):
+        pass
+
+class Fax(ABC):
+    @abstractmethod
+    def enviar_fax(self, documento, numero):
+        pass
+
+# Ahora las implementaciones solo toman lo que usan:
+class ImpresoraBasica(Impresora):
+    def imprimir(self, documento):
+        print(f"Imprimiendo {documento}")
+
+class EquipoOficina(Impresora, Escaner, Fax):
+    def imprimir(self, documento):
+        print(f"Imprimiendo {documento}")
+    def escanear(self, documento):
+        print(f"Escaneando {documento}")
+    def enviar_fax(self, documento, numero):
+        print(f"Enviando fax de {documento} al {numero}")
+
+```
+
+
+Ej 2: 
+
+```
+from abc import ABC, abstractmethod
+
+class NotificadorEmail(ABC):
+    @abstractmethod
+    def enviar_email(self, destino, mensaje):
+        pass
+
+class NotificadorSMS(ABC):
+    @abstractmethod
+    def enviar_sms(self, destino, mensaje):
+        pass
+
+class NotificadorPush(ABC):
+    @abstractmethod
+    def enviar_push(self, destino, mensaje):
+        pass
+
+# Implementaciones centradas:
+
+class ServicioEmail(NotificadorEmail):
+    def enviar_email(self, destino, mensaje):
+        # lógica real…
+        pass
+
+class ServicioSMS(NotificadorSMS):
+    def enviar_sms(self, destino, mensaje):
+        # lógica real…
+        pass
+
+class ServicioPush(NotificadorPush):
+    def enviar_push(self, destino, mensaje):
+        # lógica real…
+        pass
+
+```
+
+2. Clase que inyecta clase base en su constructor:
+
+Clases independientes, no subclases 
+
+### Clase que inyecta clase base en su constructor: su prop usa método de la clase que inyecto. 
+
+Ej1: 
+
+SRP:
+
+```
+class AnalizadorDeDatos:
+    def __init__(self, datos):
+        self.datos = datos
+
+    def calcular_promedio(self):
+        return sum(self.datos) / len(self.datos)
+
+
+class GeneradorDeReporteTXT:
+    def __init__(self, analizador: AnalizadorDeDatos):
+        self.analizador = analizador
+
+    def generar(self, nombre_archivo):
+        promedio = self.analizador.calcular_promedio()
+        with open(nombre_archivo, 'w') as f:
+            f.write(f"Promedio: {promedio}\n")
+
+
+class EnviadorDeEmail:
+    def enviar(self, destinatario, ruta_archivo):
+        # Lógica ficticia de envío de email con adjunto
+        print(f"Enviando {ruta_archivo} a {destinatario}")
+
+```
+
+
+Ej 2: 
+
+Con DIP:
+
+Modulo neg (log) e interf (implement)
+
+Definimos una interfaz de repositorio y pasamos la implementación por inyección:
+
+```
+from abc import ABC, abstractmethod
+
+class UserRepository(ABC):
+    @abstractmethod
+    def get_user(self, user_id):
+        pass
+
+class UserRepositorySQL(UserRepository):
+    def get_user(self, user_id):
+        # Lógica SQL…
+        return {"id": user_id, "nombre": "Alice"}
+
+class UserRepositoryMongo(UserRepository):
+    def get_user(self, user_id):
+        # Lógica Mongo…
+        return {"_id": user_id, "nombre": "Alice"}
+
+class UserService:
+    def __init__(self, repo: UserRepository):
+        self.repo = repo  # sólo conoce la abstracción
+
+    def find_user(self, user_id):
+        return self.repo.get_user(user_id)
+
+# Al instanciar:
+sql_repo   = UserRepositorySQL()
+mongo_repo = UserRepositoryMongo()
+
+service_sql   = UserService(sql_repo)
+service_mongo = UserService(mongo_repo)
+
+```
+
+
+
+
+
