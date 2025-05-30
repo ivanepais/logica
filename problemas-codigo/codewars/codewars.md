@@ -6395,6 +6395,2173 @@ service_mongo = UserService(mongo_repo)
 ```
 
 
+# kata 7
+
+El ácido desoxirribonucleico (ADN) es la principal molécula de almacenamiento de información en los sistemas biológicos. 
+Está compuesto por cuatro bases de ácidos nucleicos: guanina («G»), citosina («C»), adenina («A») y timina («T»).
+
+El ácido ribonucleico (ARN) es la principal molécula mensajera de las células. 
+El ARN difiere ligeramente del ADN en su estructura química y no contiene timina. 
+En el ARN, la timina es reemplazada por otro ácido nucleico, el uracilo («U»).
+
+Crea una función que traduzca una cadena de ADN dada en ARN.
+
+Por ejemplo:
+
+"GCAT" => "GCAU"
+
+La cadena de entrada puede tener una longitud arbitraria; en particular, puede estar vacía. 
+Se garantiza la validez de toda la entrada; es decir, cada cadena de entrada solo contendrá 'G', 'C', 'A' y/o 'T'.
+
+
+Planteo: 
+
+1. Descomposición 
+ADN: molec almac info sist biolog
+acidos: 
+guanina («G»), citosina («C»), adenina («A») y timina («T»).
+
+ARN: 
+molécula mensajera de las células
+No contiene timina(T).
+Es reemplazada por uracilo («U»).
+
+func conviert cadena adn en arn 
+
+2. Descomposición profunda: 
+
+adn: G, C, A, T
+arn: G, C, A, U 
+
+arn = adn-T+U
+
+```
+func adnToARN(adn): 
+	rtn adn.replace('T', 'U')
+	
+```
+
+3. Pseudocódigo: 
+
+1. def:
+
+2. estructuras: 
+
+3. operadores:
+
+4. técnicas:
+
+5. entradas y salidas internas, ultimas: 
+
+6. KISS, DRY, YAGNI, SOLID 
+
+
+# kata 8
+
+Alex acaba de conseguir un nuevo hula hoop, le encanta pero se siente desanimado porque su hermano pequeño es mejor que él.
+
+Escriba un programa donde Alex pueda ingresar (n) cuántas veces gira el aro y le devolverá un mensaje de aliento:
+
+Si Alex consigue 10 o más aros, devuelve la cadena "Genial, ahora pasemos a los trucos".
+Si no consigue 10 aros, devuelve la cadena "Sigue intentándolo hasta que lo consigas".
+
+
+Planteo: 
+
+hulaHoop(nhoop): 
+if nhoop >= 10: 
+"Great"
+else: 
+"keep"
+
+ternario:
+
+Ej:
+n = 5
+res = "Even" if n % 2 == 0 else "Odd"
+print(res)
+
+hoop(numHula):
+alex = "Great" if n >= 10 else "Keep"
+rnt alex
+
+
+expresivo:
+great >= 10 
+keep < 10 
+
+msjGreat = "Great"
+msjKeep = "Keep"
+
+if great rtn msjGreat
+if keep rtn msjKeep 
+
+tabla verdad 
+condicion del problema 
+
+variables | total 
+valores 
+
+Ej: 
+condicion del problema si t y s... 
+tabla verdad
+t s
+i p V
+p i V
+i i F
+p p F 
+
+condicion problema -> n>=10 -> V
+variables -> n
+valores -> 
+
+
+cortar expresion:
+def hoop_count(n): return "Great, now move on to tricks" \
+    if n >= 10 else "Keep at it until you get it"
+ 
+ expresividad:
+ def hoopCount(n):
+    success = "Great, now move on to tricks"
+    fail = "Keep at it until you get it"
+    return success if n >= 10 else fail
+ 
+
+# 9. Qué tan bueno eres
+
+Hubo un examen en tu clase y lo aprobaste. ¡Felicidades!
+
+Pero eres ambicioso. Quieres saber si eres mejor que el promedio de tu clase.
+
+Recibirás una matriz con las puntuaciones de tus compañeros. 
+
+¡Ahora calcula el promedio y compara tu puntuación!
+
+¡Devuelve verdadero si eres mejor, de lo contrario falso!
+
+Nota:
+
+Tus puntos no se incluyen en la matriz de puntos de tu clase. 
+
+¡No los olvides al calcular la puntuación media!
+
+
+Planteo: 
+
+class_points: arr
+
+your_points: numb
+
+average: (sum(arr))/len(arr)
+
+best: true if yPoint > average: else "false"
+
+```
+def bett_th_average(cPoints, yPoints): 
+	average = (sum(arr))/len(arr)
+	best: True if yPoint > average: else False
+	return best 
+	
+```
 
 
 
+# kata 10 
+
+MakeUpperCase
+
+Escriba una función que convierta la cadena de entrada a mayúsculas.
+
+
+Planteo: 
+
+def upper(string): rtn string.upper()
+
+
+
+# Detrás de cada nombre/variable hay un objeto.
+
+Si puedes hacer esto
+
+```
+a = 3
+b = a
+print(b + 2)
+
+```
+
+y espera que puedas hacer la misma operación (+) en ambos porque a y b son la misma cosa (a es b) entonces de la misma manera si puedes hacer
+
+```
+str.upper('abc')
+
+```
+
+(donde la operación es () es decir puedes "llamar" al objeto) y
+
+```
+make_upper_case = str.upper
+
+```
+
+luego una llamada
+
+```
+make_upper_case('abc')
+
+```
+
+Es básicamente el mismo que el primero.
+
+¿Por qué puedes llamar a str.upper de ambas formas como se muestra a continuación con el mismo efecto?
+
+```
+'abc'.upper()
+str.upper('abc')
+
+```
+
+Porque cada método es solo una función con algo de "magia" relacionada con pasar self. 
+
+La segunda llamada no usa "magia" y puedes entender fácilmente cómo se le pasó self (es solo un primer argumento).
+
+
+
+# kata 11 
+
+Cantidad total de puntos 
+
+Nuestro equipo de fútbol ha terminado el campeonato.
+
+Los resultados de los partidos de nuestro equipo se registran en una colección de cadenas. 
+
+Cada partido se representa mediante una cadena con el formato "x:y", donde x es la puntuación de nuestro equipo e y es la de nuestro oponente.
+
+Por ejemplo: ["3:1", "2:2", "0:1", ...]
+
+Los puntos se otorgan por cada partido de la siguiente manera:
+
+    si x > y: 3 puntos (victoria)
+    si x < y: 0 puntos (pérdida)
+    si x = y: 1 punto (empate)
+
+Necesitamos escribir una función que tome esta colección y devuelva la cantidad de puntos que nuestro equipo (x) obtuvo en el campeonato según las reglas dadas anteriormente.
+
+Notas:
+
+1. Nuestro equipo siempre juega 10 partidos en el campeonato.
+2. 0 <= x <= 4
+3. 0 <= y <= 4
+
+
+Planteo: 
+
+1. Descomposición: 
+
+campeonato terminado 
+
+arr string: resultados 
+
+partidos totales: 10 
+0 <= x <= 4
+0 <= y <= 4
+
+index(9) arr 
+
+x: equipo 
+y: oponent
+
+puntos: 
+x > y: 3 p (victoria)
+x < y: 0 p (pérdida)
+x = y: 1 p (empate)
+
+func (arrStr) rtn total p of x 
+
+
+2. psCódigo: 
+
+input: 
+
+arrStr -> results
+
+calc:
+
+tomar resultX y resultY -> rX = arrStr[0], rY = arrStr[-1]
+
+vict, derr, emp -> rX > rY, rX < rY, rX==rY
+
+puntos -> vict = 3, derr = 0, emp = 1
+
+totalPuntos = sum(totalVic, totalEmp)
+
+
+Rs: 
+loop/fuerz brt:
+p=0
+guardar x, guardar y
+if comparar x con y -> guardar vic, derr -> rtn p+=3, p+=1
+rtn p
+
+out: 
+
+
+condicional: ubicacion... 
+
+
+alternativas: nuevo arr, 
+
+Si alguno de los equipos anota 10 o más
+desearás haber usado la división.
+Aunque es poco común, su simple posibilidad justifica su programación.
+
+```
+def points(games):
+    count = 0
+    for score in games:
+        res = score.split(':')
+        if res[0]>res[1]:
+            count += 3
+        elif res[0] == res[1]:
+            count += 1
+    return count
+
+```
+
+
+
+
+```
+for x, y in (s.split(":") for s in a) 
+
+```
+
+esto itera sobre la matriz de puntajes tomando el número de goles de cada equipo como x e y:
+
+```
+["1:1", "1:2", "2:1"] =>
+  x = "1", y = "1"
+  x = "1", y = "2"
+  x = "2", y = "1"
+
+```
+
+```
+(x >= y) + 2 * (x > y) 
+
+```
+
+esto compara puntajes (alfabéticamente, pero eso está bien con las restricciones actuales):
+
+1. Si x es menor que y, esto se convierte en 0 + 2 * 0 => 0
+2. si x es mayor o igual que y, esto se convierte en 1 + 2 * 0 => 1
+3. y si x es estrictamente mayor que y, esto se convierte en 1 + 2 * 1 => 3
+
+Esto también se puede reescribir como 0 si x < y, de lo contrario 1 si x == y, de lo contrario 3 si x > y, pero es mucho más largo, ¿no?
+
+Al final todos los valores se suman
+
+
+```
+points = lambda g: sum((x>y)*3 or x==y for x,_,y in g)
+
+```
+
+
+
+# kata 12 
+
+Square(n)
+
+Complete la función suma al cuadrado de modo que eleve al cuadrado cada número que se le pase y luego sume los resultados.
+
+Por ejemplo, para [1, 2, 2] debería devolver 9 porque 1^2 + 2^2 + 2^2 = 9 
+
+
+Planteo: 
+
+n^2 + ...
+
+sum(iter)
+pow(x, y)
+
+
+sumPow(arrNum):
+sum = 0 
+for n in arrNum: 
+p = pow (n, 2) 
+sum += p
+
+
+altern: 
+
+sumPow(arrNum): rtn sum(arrNum) for pow in arrNum ...
+
+sum = 0 
+for e in arrNum
+pow = n[e]*n[e] 
+sum += pow
+
+```
+def sumPow(arrNum)
+sumP = []
+
+def pow(arrNum)
+for e in arrNum
+p = e*e
+sum += append[p]
+
+sum
+
+```
+
+
+# list comprehension
+
+Sin corchetes: 
+
+La línea (x ** 2 for x in numbers) me da un objeto generador. 
+La respuesta es equivalente a suma((x ** 2 for x in numbers))
+Se omite el segundo par de paréntesis por comodidad.
+
+sum() toma un iterable como parámetro, y el objeto generador (x ** 2 for x in numbers) 
+Es un iterable, por lo que uno puede escribir sum(x ** 2 for x in numbers) 
+y hará lo mismo que 
+
+corchetes: 
+
+```
+sum([x ** 2 for x in números])
+
+```
+porque una lista también es un iterable.
+
+Syntax: sum(list comprehension/generator) 
+
+```
+def square_sum(numbers):
+    return sum(x ** 2 for x in numbers)
+
+```
+
+
+# Map 
+
+La función map() ejecuta una función específica para cada elemento de un iterable. 
+
+El elemento se envía a la función como parámetro.
+
+Ej: 
+
+Calcula la longitud de cada palabra en la tupla:
+
+```
+def myfunc(n):
+  return len(n)
+
+x = map(myfunc, ('apple', 'banana', 'cherry'))
+
+convert the map into a list, for readability:
+print(list(x))
+
+```
+<map object at 0x056D44F0>
+([5, 6, 6])
+
+
+Syntax: 
+
+map(function, iterables)
+
+Función obligatoria: La función que se ejecutará para cada elemento.
+
+Iterable obligatorio: Una secuencia, una colección o un objeto iterador. 
+Puedes enviar tantos iterables como quieras, solo asegúrate de que la función tenga un parámetro para cada iterable.
+
+
+Ej: 
+
+Crea nuevas frutas enviando dos objetos iterables a la función:
+
+```
+def myfunc(a, b):
+  return a + b
+
+x = map(myfunc, ('apple', 'banana', 'cherry'), ('orange', 'lemon', 'pineapple'))
+
+print(x)
+
+#convert the map into a list, for readability:
+print(list(x))
+
+```
+
+<map object at 0x034244F0>
+(['appleorange', 'bananalemon', 'cherrypineapple'])
+
+
+
+# kata 13 
+
+Eliminar los signos de exclamación
+
+Escriba la función RemoveExclamationMarks que elimina todos los signos de exclamación de una cadena determinada.
+
+
+Planteo: 
+
+match ¡!
+
+opciones: 
+
+replace, strip, split, combinación entre ellos, etc. 
+
+sin método: 
+
+tomar cadena, procesarla, comparar signos
+crear una nueva cadena con las letras que no son exclamacion 
+
+
+ 
+# kata 14 
+
+Survive 
+
+Un héroe se dirige al castillo para completar su misión. 
+
+Sin embargo, le han dicho que el castillo está rodeado por un par de poderosos dragones. 
+
+Cada dragón necesita dos balas para ser derrotado, y nuestro héroe no tiene ni idea de cuántas debería llevar. 
+
+Suponiendo que consiga un número específico de balas y avance para luchar contra otro número específico de dragones, ¿sobrevivirá?
+
+Devuelve verdadero si es así, falso en caso contrario :)
+
+
+
+Planteo: 
+
+
+Descomposición: 
+
+heroe misión castillo par de dragones 
+
+Cada dragón necesita dos balas para ser derrotado
+
+héroe no tiene ni idea de cuántas debería llevar
+
+Suponiendo que consiga un número específico de balas 
+
+y avance para luchar contra otro número específico de drag
+
+sobrevivirá, devuelve verdadero si es así, falso en caso contrario
+
+
+heroe
+
+dragones 
+
+balas
+
+n balas
+
+n dragones 
+
+surv t o f 
+
+
+Mat: 
+
+caso espec: 
+
+form:
+
+h = 1 
+d = x
+b = y
+
+surv = -dx
+mdra = 2y
+
+S = (h 2b * d; )
+M = (h 0b * d; )
+
+2b = -2d
+
+
+caso general 
+
+form: 
+
+
+Diagram:
+
+inp: 
+
+balas 
+
+
+calc: 
+
+if balas > 2 -> dragón -1 
+
+out: 
+
+if dragón -2 -> Surv: T; else -> Surv: F
+
+
+
+PsCod:
+
+if hero 2 balas por dragón = sobrevivir 
+
+2b * drg = 
+
+ndrg = 
+
+
+
+Log: 
+
+control, pregunta 
+
+2b * ndrg -> s = T
+
+
+
+Expresivo: 
+
+
+
+Kiss, dry, yagni: 
+
+
+
+Solid: 
+
+
+
+# Precondiciones y postcondiciones 
+
+```
+def hero(bullets, dragons):
+    '''
+    Ascertains if hero can survive
+    Parameters:
+        bullets: (int) - number of bullets hero has
+        dragons: (int) - number of dragons
+    Returns:
+        True (Survive) or False (Hero gets killed)
+    '''
+    if bullets >= 2*dragons:
+        return True
+    elif bullets < 2*dragons:
+        return False
+
+```
+
+Una solución sobredimensionada, pero por lo demás muy limpia. 
+Suele ser recomendable anotar las precondiciones y poscondiciones de una función, así como lo que representan los parámetros; sin embargo, en este caso es innecesariamente excesivo.
+
+```
+si (cond):
+  devuelve Verdadero
+
+```
+
+es lógicamente equivalente a
+
+```
+retorno (cond)
+
+```
+
+y por tanto también erróneo en esta situación.
+
+```
+si (cond):
+  devolver X
+demás:
+  devolver Y
+
+```
+
+es equivalente a
+
+```
+si (cond):
+  devolver X
+devolver Y
+
+```
+
+en algunos casos, dado que las declaraciones de retorno tienden a actuar como un cortocircuito en la mayor parte de la lógica del programa
+
+
+
+# kata 15 - quarter of the year
+
+Trimestre del año: 
+
+Dado un mes como un número entero del 1 al 12, devuelva a qué trimestre del año pertenece como un número entero.
+
+Por ejemplo: el mes 2 (febrero), es parte del primer trimestre; 
+
+el mes 6 (junio), es parte del segundo trimestre; 
+
+y el mes 11 (noviembre), es parte del cuarto trimestre.
+
+
+Restricción:
+
+1 <= mes <= 12
+
+
+## Planteo: 
+
+descomposición, mat, diagram, pscod, log, expres, k/d/y, solid 
+inp, out, calc; restricc, casos espec; condiciones
+dat/estr, contrl (for/while); try/exc/err
+pilas, colas, diccionarios, o conjuntos
+estrateg, patrones repetit, de soluc/fin a prob/inic
+1 func 1srp; limites, subproblemas
+func: transf params, actualizar param
+estado inicial, methds afectar estado 
+
+Descomposición:
+
+Trimestre, mes entero(int) de 1 a 12 
+retornar trimestre a que pertenece el entero 
+
+month (int, 1-12) -> quarter (1-4)
+ej: m2 (feb) -> 1q; m6 (jun) -> 2q; m11 (nov) -> q4
+
+Restricción:
+1 <= mes <= 12
+
+
+Mat: 
+
+
+Diagram: 
+
+inp: month
+out: quart
+
+calc: 
+1quart = 3month (3/3) (3*1) 
+12m = 4quart (12/3) (4*3)
+
+dat: 
+months = (e: 1, f: 2, m: 3, a: 4, m: 5, jun: 6, jul: 7
+ag: 8, sep: 9, oct: 10, nov: 11, dec: 12)
+quar = (1q: e, f, m; 2q: a, m, jun; 3q: jul, ag, set; 4q: oct, nov, dic)
+
+err: 
+err = "solo hay 12mo"
+if month > 12: rtn err
+
+
+pscod: 
+
+func(mes)
+
+ifs: mes <= 4 
+
+altern: 
+dictM: (1q: Xmes)
+dictQ: (.. Xmes)
+
+```
+dictQ =	{
+  "q1": [1, 2, 3],
+  "q2": [4, 5, 6],
+  "q3": [7, 8, 9],
+  "q4": [10, 11, 12]
+} 
+
+```
+
+claves, una a una:
+ 
+for x in dictQ:
+  print(x) 
+
+
+values, una a una: 
+
+```
+ for x in thisdict:
+  print(thisdict[x])
+
+```
+
+claves: (q1, q2, etc)
+
+ for x in thisdict.keys():
+  print(x) 
+
+
+valores: 
+ for x in thisdict.values():
+  print(x)
+
+
+for month in thisdict.keys(): 
+	check month in thisdict.keys
+
+altern: 
+for dict 
+dict1 (m1 = iq)
+dict2 (m1 = 1)
+
+
+altern: 
+
+ quarthers = {
+  "q1": {
+    "name" : "Emil",
+    "year" : 2004
+  },
+  "q2": {
+    "name" : "Tobias",
+    "year" : 2007
+  },
+  "q3": {
+    "name" : "Linus",
+    "year" : 2011
+  },
+  "q4": {
+    "name" : "Linus",
+    "year" : 2011
+  }
+} 
+
+```
+ print(myfamily["child2"]["name"]) 
+
+```
+
+```
+for x, obj in myfamily.items():
+  print(x)
+
+  for y in obj:
+    print(y + ':', obj[y]) 
+
+```
+
+entrada: month
+retorno: q1 (string, number?)
+
+methds:
+keys()	Returns a list containing the dictionary's keys
+values()  Returns a list of all the values in the dictionary
+
+Loop through both keys and values, by using the items() method:
+for x, y in thisdict.items():
+  print(x, y) 
+
+
+altern 
+set1->q1={1, 2, 3}
+set2->q2={4, 5, 6}
+set3->q3={7, 8, 9}
+set4->q4={10, 11, 12}
+
+operations: 
+access, check, not in 
+
+if month check in q1 
+
+m = 0
+month in q1 or q2...
+return m+= 
+
+
+alter simple - vars: 
+
+q1 = if 
+
+
+alter simple for: 
+
+
+alter simple if:
+
+
+express: 
+
+
+
+# kata 16 
+
+Reverse words
+
+Completa la función que acepta un parámetro de cadena e invierte cada palabra de la cadena. 
+
+Se deben conservar todos los espacios en la cadena.
+
+Ej: 
+
+"This is an example!" ==> "sihT si na !elpmaxe"
+"double  spaces"      ==> "elbuod  secaps"
+
+
+planteo: 
+
+inp: str
+
+out: rev str, conserv espac
+
+calc:
+fun(string):
+ func1(), func2()
+ callf1(), callf2()
+
+
+list(string): devuelve arr con espacios
+
+iter.reverse(): revierte el orden 
+
+reversed(secuend): devuelve un obj iter invert
+
+
+```
+Reverse the sequence of a list, and print each item:
+alph = ["a", "b", "c", "d"]
+ralph = reversed(alph)
+for x in ralph:
+  print(x) 
+
+```
+d
+c
+b
+a
+
+
+```
+fruits = ['apple', 'banana', 'cherry']
+
+fruits.reverse() 
+
+```
+retorna
+
+```
+['cherry', 'banana', 'apple']
+
+```
+
+
+
+```
+def reverse_words(s):
+    palabras = s.split(' ')
+    palabras_invertidas = [palabra[::-1] for palabra in palabras]
+    return ' '.join(palabras_invertidas)
+
+print(reverse_words("This is an example!"))  # "sihT si na !elpmaxe"
+print(reverse_words("double  spaces"))  # "elbuod  secaps"
+
+```
+
+En este código, se utiliza la función split para dividir la cadena en una lista de palabras, luego se utiliza una lista por comprensión para invertir cada palabra utilizando slicing ([::-1]), y finalmente se utiliza la función join para unir las palabras invertidas en una sola cadena con espacios en medio.
+
+También se pueden conservar los espacios dobles o triples en la cadena original, ya que el código solo divide la cadena en palabras cuando encuentra un espacio, y luego vuelve a unir las palabras con un espacio en medio. Si hay varios espacios consecutivos en la cadena original, el código los conservará.
+
+Por ejemplo:
+
+```
+print(reverse_words("double   spaces"))  # "elbuod   secaps
+
+```
+
+Sin ls: 
+
+```
+def reverse_words(s):
+    palabras = s.split(' ')
+    palabras_invertidas = []
+    for palabra in palabras:
+        palabras_invertidas.append(palabra[::-1])
+    return ' '.join(palabras_invertidas)
+
+print(reverse_words("This is an example!"))  # "sihT si na !elpmaxe"
+print(reverse_words("double  spaces"))  # "elbuod  secaps"
+
+```
+
+En este código, se utiliza un bucle for para iterar sobre cada palabra en la lista de palabras, y se invierte cada palabra utilizando slicing ([::-1]) antes de agregarla a la lista de palabras invertidas.
+
+También se puede hacer de una manera más sencilla utilizando la función map:
+
+```
+def reverse_words(s):
+    return ' '.join(map(lambda x: x[::-1], s.split(' ')))
+
+print(reverse_words("This is an example!"))  # "sihT si na !elpmaxe"
+print(reverse_words("double  spaces"))  # "elbuod  secaps"
+
+```
+En este caso, la función map aplica la función lambda (que invierte cada palabra) a cada elemento de la lista de palabras, y luego se une el resultado con la función join.
+
+
+## ls
+
+```
+def reverse_words(str):
+    return ' '.join(s[::-1] for s in str.split(' '))
+```
+retornar join (string) que introduce slice en un for par s que esta en la cadena split...
+
+## espacio doble 
+
+Al dividir la cadena, cualquier espacio doble "separa" 
+una cadena vacía incluida en la lista, por lo que 
+el espacio doble se restaura porque, al unir la lista, 
+se coloca un espacio entre la palabra y la cadena vacía, 
+y de nuevo entre la cadena vacía y la siguiente palabra
+
+Rs: Solo tomamos un espacio para dividir, si hay un segundo, queda como caracter
+
+
+# Análisis de algoritmo 
+
+## For: 
+
+### Actualizar var
+
+```
+def arrToSentence(arrStr):
+    sentence = ""
+    for w in arrStr:
+        sentence += f"{w} "
+    return sentence 
+
+print(arrToSentence(listOne))
+
+```
+
+El for recorrerá uno a uno los elementos, se guardarán temporalmente en cada pasada. 
+
+Usarémos otra estructura/var local no temporal (fuera del for) para guardar esos elementos modifacados
+
+
+### Actualizar estructura - uso de método 
+
+```
+def rvStr(string):
+    rs = string.split(" ")  
+    ns = []
+    for w in rs:
+        ns.append(w[::-1])
+    return " ".join(ns)
+
+print(rvStr("This is an example!"))
+
+```
+
+Guardamos el param recibido en una nueva var local, para manipularlo. 
+
+Usamos un método en esta nueva variable para cambiar el parámetro recibido. 
+
+Creamos una estructura vacía. 
+
+Recorremos la variable modificada cada elem suyo lo guardamos en una nueva var local. 
+
+Modificamos/manipulamos la var local que tiene el elemento. 
+
+Lo guardamos en la estructura vacía.
+
+Retornamos la nueva estructura. 
+
+
+### Nested loop
+
+Bucle dentro de un bucle.
+
+El "bucle interno" se ejecutará una vez por cada iteración del "bucle externo":
+
+Ej:
+
+Imprime cada adjetivo para cada fruta:
+
+```
+adj = ["red", "big", "tasty"]
+fruits = ["apple", "banana", "cherry"]
+
+for x in adj:
+  for y in fruits:
+    print(x, y) 
+    
+```
+
+Recorremos las dos estructuras con dos bucles. 
+
+El bucle externo guardará en x cada elem de adj.
+
+En su primera iteración creará otro bucle con una var para guardar cada elem de la segunda estructura. 
+
+Posicionados en el segundo bucle/estructura, imprimimos los elementos guardados hasta el momento. 
+
+
+Otra opcion es crear una nueva estruc uniendo las dos existentes.
+
+
+### Map - Lambda
+
+
+#### Lambda
+
+Agregar 10 al argumento a y devolver el resultado
+
+```
+x = lambda a : a + 10
+print(x(5)) 
+
+```
+
+Pueden tomar cualquier número de argumentos:
+
+```
+x = lambda a, b : a * b
+print(x(5, 6)) 
+
+```
+
+
+Se utiliza principalmente como una función anónima dentro de otra función.
+
+Ej: 
+
+1. Función que toma un argumento y ese argumento se multiplicará por un número desconocido:
+
+```
+def myfunc(n):
+  return lambda a : a * n
+
+```
+
+2. Utilizar esa definición de función para crear una función que siempre duplique el número que envíe
+
+```
+mydoubler = myfunc(2)
+
+print(mydoubler(11)) 
+
+```
+
+22
+
+
+3. Utilizar la misma definición de función para crear una función que siempre triplique el número que envíe
+
+```
+def myfunc(n):
+  return lambda a : a * n
+
+mytripler = myfunc(3)
+
+print(mytripler(11)) 
+
+```
+
+
+4. Utilizar la misma definición de función para realizar ambas funciones, en el mismo programa
+
+```
+def myfunc(n):
+  return lambda a : a * n
+
+mydoubler = myfunc(2)
+mytripler = myfunc(3)
+
+print(mydoubler(11))
+print(mytripler(11)) 
+
+```
+
+Utilice funciones lambda cuando se requiera una función anónima por un período corto de tiempo.
+
+
+#### Usos de Lambda
+
+Como las funciones anónimas se utilizan para crear funciones pequeñas y rápidas de una sola expresión.
+
+Útiles cuando necesitas una función simple y no quieres definirla con def.
+
+
+1. Sorted: 
+
+Ej: Ordenar una lista de tuplas por el segundo valor
+
+```
+pares = [(1, 3), (2, 2), (4, 1)]
+ordenados = sorted(pares, key=lambda x: x[1])
+print(ordenados)  # [(4, 1), (2, 2), (1, 3)]
+
+```
+
+
+2. Filter
+
+Ej: Filtrar una lista para obtener solo los números pares:
+
+```
+numeros = [1, 2, 3, 4, 5, 6]
+pares = list(filter(lambda x: x % 2 == 0, numeros))
+print(pares)  # [2, 4, 6]
+
+```
+
+
+3. Map
+
+Elevar al cuadrado cada elemento de una lista:
+
+```
+numeros = [1, 2, 3, 4]
+cuadrados = list(map(lambda x: x ** 2, numeros))
+print(cuadrados)  # [1, 4, 9, 16]
+
+```
+
+
+4. Reducir
+
+Con functools.reduce(), ej: sumar todos los elementos de una lista:
+
+```
+from functools import reduce
+numeros = [1, 2, 3, 4]
+suma = reduce(lambda x, y: x + y, numeros)
+print(suma)  # 10
+
+```
+
+
+5. Callbacks o funciones pequeñas "en línea"
+
+Ej: botón de una interfaz gráfica con Tkinter
+
+```
+import tkinter as tk
+
+root = tk.Tk()
+boton = tk.Button(root, text="Click", command=lambda: print("¡Hola!"))
+boton.pack()
+root.mainloop()
+
+```
+
+
+6. Estructuras de datos
+
+Para hacer operaciones simples directas: 
+
+```
+operaciones = {
+    'suma': lambda x, y: x + y,
+    'resta': lambda x, y: x - y
+}
+
+print(operaciones['suma'](10, 5))  # 15
+
+```
+
+
+Las lambda deben ser simples, ya que:
+
+1. No tienen nombre (a menos que las asignes).
+
+2. No permiten múltiples líneas.
+
+3. No son ideales para lógica compleja.
+
+
+
+#### Map
+
+Calcula la longitud de cada palabra en la tupla:
+
+```
+ def myfunc(n):
+  return len(n)
+
+x = map(myfunc, ('apple', 'banana', 'cherry')) 
+
+```
+
+
+Syntax: 
+
+map(function, iterables)
+
+La función map() ejecuta una función específica para cada elemento de un iterable. 
+
+El elemento se envía a la función como parámetro.
+
+
+Función requerida:
+La función que se ejecutará para cada elemento.
+
+Iterable (obligatorio): 
+Una secuencia, una colección o un objeto iterador. 
+Puedes enviar tantos iterables como quieras, solo asegúrate de que la función tenga un parámetro para cada iterable.
+
+Ej: 
+
+Crea nuevas frutas enviando dos objetos iterables a la función:
+
+```
+ def myfunc(a, b):
+  return a + b
+
+x = map(myfunc, ('apple', 'banana', 'cherry'), ('orange', 'lemon', 'pineapple')) 
+
+print(x)
+
+```
+ <map object at 0x034244F0>
+ 
+ 
+##### Convierte map en una lista, para facilitar su lectura:
+
+```
+print(list(x))
+
+```
+
+```
+ ['appleorange', 'bananalemon', 'cherrypineapple'] 
+
+```
+
+
+#### Usos de map
+
+Aplica una función a cada elemento de un iterable (como una lista) y devuelve un iterador con los resultados
+
+1. Cuadrado de una lista de num
+
+```
+numeros = [1, 2, 3, 4, 5]
+cuadrados = list(map(lambda x: x ** 2, numeros))
+print(cuadrados)  # [1, 4, 9, 16, 25]
+
+```
+
+
+2. Convertir una lista de cadenas a enteros
+
+```
+cadenas = ["1", "2", "3"]
+enteros = list(map(int, cadenas))
+print(enteros)  # [1, 2, 3]
+
+```
+
+
+3. Convertir a mayúsculas
+
+```
+palabras = ["hola", "mundo"]
+mayusculas = list(map(str.upper, palabras))
+print(mayusculas)  # ['HOLA', 'MUNDO']
+
+```
+
+
+4. Sumar dos listas elemento a elemento
+
+```
+a = [1, 2, 3]
+b = [4, 5, 6]
+suma = list(map(lambda x, y: x + y, a, b))
+print(suma)  # [5, 7, 9]
+
+``` 
+
+
+5. Formatear valores
+
+```
+precios = [10.5, 20.0, 30.75]
+formateados = list(map(lambda x: f"${x:.2f}", precios))
+print(formateados)  # ['$10.50', '$20.00', '$30.75']
+
+```
+
+6. Extraer campos de una lista de diccionarios
+
+```
+personas = [
+    {"nombre": "Ana", "edad": 30},
+    {"nombre": "Luis", "edad": 25},
+    {"nombre": "Marta", "edad": 40}
+]
+
+nombres = list(map(lambda p: p["nombre"], personas))
+print(nombres)  # ['Ana', 'Luis', 'Marta']
+
+```
+
+Rs: 
+
+map() es muy útil cuando se quiere aplicar una transformación simple y rápida sin necesidad de usar un bucle for
+
+
+
+
+# List Comprehension
+
+Sintaxis más corta cuando desea crear una nueva lista basada en los valores de una lista existente.
+
+Ej:
+
+A partir de una lista de frutas (existente), desea una nueva lista, que contenga solo las frutas con la letra "a" en el nombre.
+
+Sin comprensión de listas, tendrá que escribir una declaración for con una prueba condicional dentro.
+
+```
+ fruits = ["apple", "banana", "cherry", "kiwi", "mango"]
+newlist = []
+
+for x in fruits:
+  if "a" in x:
+    newlist.append(x)
+
+print(newlist) 
+
+```
+
+Con la comprensión de listas puedes hacer todo eso con solo una línea de código:
+
+```
+fruits = ["apple", "banana", "cherry", "kiwi", "mango"]
+
+newlist = [x for x in fruits if "a" in x]
+
+print(newlist)
+
+```
+
+El código se ejecutará dentro de los corchetes de la nueva lista. 
+
+El array, x y true genera la modificación (newlist.append(x) ?)
+
+```
+['apple', 'banana', 'mango']
+
+```
+
+Syntax: 
+
+```
+newlist = [expression for item in iterable if condition == True] 
+
+```
+
+El valor de retorno es una nueva lista, dejando la lista anterior sin cambios.
+
+
+Condición: 
+
+Es como un filtro que sólo acepta los elementos que evalúan como Verdadero.
+
+Ej: 
+
+Acepta únicamente artículos que no sean "manzana":
+
+```
+newlist = [x for x in fruits if x != "apple"] 
+ 
+```
+
+#### La condición si x != "manzana" devolverá Verdadero para todos los elementos excepto "manzana", lo que hará que la nueva lista contenga todas las frutas excepto "manzana".
+
+
+La condición es opcional y se puede omitir:
+
+Ej: 
+
+Sin declaración if:
+
+```
+ newlist = [x for x in fruits] 
+
+```
+
+Retorna un nuevo arr: 
+
+```
+['apple', 'banana', 'cherry', 'kiwi', 'mango']
+
+```
+
+
+Iterable: 
+
+Puede ser cualquier objeto iterable, como una lista, una tupla, un conjunto, etc.
+
+Ej: 
+
+Puede utilizar la función range() para crear un iterable:
+
+```
+newlist = [x for x in range(10)] 
+
+```
+
+```
+
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+```
+
+
+Mismo ejemplo, pero con una condición:
+
+Ej: 
+
+Acepte sólo números menores a 5:
+
+```
+newlist = [x for x in range(10) if x < 5] 
+
+```
+
+newList tendrá: 
+
+```
+[0, 1, 2, 3, 4]
+
+```
+
+
+Expresión:
+
+Es el elemento actual en la iteración, pero también es el resultado, que puedes manipular antes de que termine como un elemento de lista en la nueva lista:
+
+Ej:
+
+Establezca los valores en la nueva lista en mayúsculas
+
+```
+newlist = [x.upper() for x in fruits] 
+
+```
+
+```
+
+['APPLE', 'BANANA', 'CHERRY', 'KIWI', 'MANGO']
+
+```
+
+Puedes configurar el resultado como desees:
+
+Manipulando la expresión 
+
+Ej: 
+
+Establezca todos los valores en la nueva lista en 'hola':
+
+```
+newlist = ['hello' for x in fruits] 
+
+```
+
+```
+
+['hello', 'hello', 'hello', 'hello', 'hello']
+
+```
+
+
+La expresión también puede contener condiciones, no como un filtro, sino como una forma de manipular el resultado:
+
+Ej: 
+
+Devuelve "naranja" en lugar de "plátano":
+
+```
+newlist = [x if x != "banana" else "orange" for x in fruits] 
+
+```
+
+```
+
+['apple', 'orange', 'cherry', 'kiwi', 'mango']
+
+```
+
+Se puede leer como: 
+
+"Devuelve el artículo si no es plátano, si es plátano devuelve naranja".
+
+
+## Usos de LS 
+
+Crear listas a partir de iterables, aplicando una transformación y/o un filtro en una sola línea.
+
+```
+[expresión for elemento in iterable if condición]
+
+```
+
+
+1. Lista de cuadrados
+
+```
+cuadrados = [x**2 for x in range(10)]
+print(cuadrados)  # [0, 1, 4, 9, 16, 25, 36, 49, 64, 81]
+
+```
+
+
+2. Filtrar solo números pares
+
+```
+pares = [x for x in range(20) if x % 2 == 0]
+print(pares)  # [0, 2, 4, 6, 8, 10, 12, 14, 16, 18]
+
+```
+
+
+3. Texto a mayús 
+
+```
+nombres = ["ana", "luis", "marta"]
+mayusculas = [nombre.upper() for nombre in nombres]
+print(mayusculas)  # ['ANA', 'LUIS', 'MARTA']
+
+```
+
+
+4. Primera letra de cada palabra
+
+```
+palabras = ["Perro", "Gato", "Elefante"]
+iniciales = [p[0] for p in palabras]
+print(iniciales)  # ['P', 'G', 'E']
+
+
+```
+
+
+5. Multiplicar elementos de dos listas
+
+```
+a = [1, 2, 3]
+b = [10, 20, 30]
+producto = [x * y for x, y in zip(a, b)]
+print(producto)  # [10, 40, 90]
+
+```
+
+
+6. Aplanar una lista de listas (matriz)
+
+```
+matriz = [[1, 2], [3, 4], [5, 6]]
+aplanada = [num for fila in matriz for num in fila]
+print(aplanada)  # [1, 2, 3, 4, 5, 6]
+
+```
+
+
+7. Crear una lista de pares (x, y) combinando dos listas
+
+```
+colores = ["rojo", "azul"]
+tamaños = ["S", "M"]
+combinaciones = [(c, t) for c in colores for t in tamaños]
+print(combinaciones)  # [('rojo', 'S'), ('rojo', 'M'), ('azul', 'S'), ('azul', 'M')]
+
+```
+
+
+Rs: 
+
+1. Cuando necesitas crear una nueva lista a partir de otra colección de datos.
+
+2. Cuando quieres que tu código sea compacto y legible (sin sacrificar claridad).
+
+4. Cuando la lógica dentro del for no es demasiado compleja
+
+
+
+
+#### Iterador (bucle) vs Iterable (objeto secuencia items)
+
+Son fundamentales para bucles for, map(), filter(), y otras construcciones relacionadas.
+
+
+1. Iterable: 
+
+Cualquier objeto de Python del que puedes obtener un iterador. 
+
+En otras palabras, es algo que puede ser recorrido (iterado).
+
+Listas ```[1, 2, 3]```
+
+Tuplas ((4, 5, 6))
+
+Cadenas ("hola")
+
+Diccionarios ({'a': 1, 'b': 2})
+
+Conjuntos ({1, 2, 3})
+
+Archivos abiertos
+
+Objetos personalizados que implementan ```__iter__()```
+
+```
+numeros = [1, 2, 3]  # Esto es un iterable
+
+```
+
+Los iterables tienen el método especial __iter__().
+
+
+2. Iterador:
+
+Objeto que hace la iteración. 
+
+Mantiene el estado de la posición actual en la secuencia y sabe cómo obtener el siguiente valor usando el método ```__next__()```.
+
+Se obtiene a partir de un iterable
+
+```
+numeros = [1, 2, 3]
+it = iter(numeros)  # Esto es un iterador
+print(next(it))     # 1
+print(next(it))     # 2
+print(next(it))     # 3
+
+```
+
+
+Los iteradores tienen los métodos especiales ```__iter__()``` y ```__next__()```.
+
+
+Rs: 
+
+Iterable: 
+
+Contenedor de elementos que se puede recorrer
+
+Método: ```__iter__()```
+
+Ej: ```[]1, 2, 3], "hola"```
+
+
+Iterador: 
+
+Objeto que produce valores de un iterable
+
+```__next__(), __iter__()````
+
+Ej: ```iter([1, 2, 3])```
+
+
+
+3. Relación: 
+
+Al usar for, el lenguaje sigue estas instrucciones internamente (están abstraidas):
+
+```
+iterable = [10, 20, 30]
+iterador = iter(iterable)
+
+while True:
+    try:
+        elemento = next(iterador)
+        print(elemento)
+    except StopIteration:
+        break
+
+```
+
+
+
+
+#### Rs lambda, map, ls 
+
+Lambda: 
+
+1. Función anónima dentro de otra función.
+
+2. Cuando se requiera una función anónima por un período corto de tiempo.
+
+3. Crear funciones pequeñas y rápidas de una sola expresión.
+
+4. Útiles cuando necesitas una función simple y no quieres definirla con def.
+
+
+Deben ser simples, ya que:
+
+1. No tienen nombre (a menos que las asignes).
+
+2. No permiten múltiples líneas.
+
+3. No son ideales para lógica compleja.
+
+
+Map: 
+
+1. Aplica una función a cada elemento de un iterable (como una lista) y devuelve un iterador con los resultados
+
+2. Es muy útil cuando se quiere aplicar una transformación simple y rápida sin necesidad de usar un bucle for
+
+
+LS:
+
+1. Cuando necesitas crear una nueva lista a partir de otra colección de datos.
+
+2. Cuando quieres que tu código sea compacto y legible (sin sacrificar claridad).
+
+4. Cuando la lógica dentro del for no es demasiado compleja
+ 
+
+# Combinar estructuras de datos:  
+
+## Comprende las estructuras básicas
+
+Tipo; Mutabilidad; Orden; Uso típico
+
+1. list; Sí; Sí; Secuencia ordenada, general
+
+2. tuple; No; Sí; Secuencia inmutable
+
+3. set; Sí; No;	Elementos únicos, sin orden
+
+4. dict; Sí; Sí; Asociación clave-valor
+
+5. str;	No;	Sí;	Texto
+
+
+## Combinar estructuras: patrones comunes
+
+1. Lista de tuplas
+
+Para representar pares ordenados
+
+```
+pares = [(1, 'uno'), (2, 'dos'), (3, 'tres')]
+
+```
+
+
+2. Diccionario con listas como valores
+
+Ideal para agrupar elementos bajo una clave:
+
+```
+grupos = {
+    'manzanas': [1, 2, 3],
+    'naranjas': [4, 5]
+}
+
+```
+
+
+3. Diccionario con tuplas como claves
+
+Cuando necesitas claves compuestas:
+
+```
+coordenadas = {
+    (0, 0): 'origen',
+    (1, 2): 'punto A'
+}
+
+```
+
+
+4. Lista de diccionarios
+
+Muy común en bases de datos, JSON, etc.:
+
+```
+personas = [
+    {'nombre': 'Ana', 'edad': 30},
+    {'nombre': 'Luis', 'edad': 25}
+]
+
+```
+
+
+5. Diccionario de diccionarios
+
+Útil para representar tablas o registros complejos:
+
+```
+usuarios = {
+    'ana': {'edad': 30, 'pais': 'ES'},
+    'luis': {'edad': 25, 'pais': 'MX'}
+}
+
+```
+
+
+6. Set de tuplas
+
+Para mantener pares únicos sin repetir
+
+```
+relaciones = {('a', 'b'), ('b', 'c')}
+
+```
+
+
+## Prácticas: 
+
+1. Usa tuples como claves de diccionarios o elementos de sets (ya que son inmutables).
+
+2. Usa namedtuple o dataclass si tu tupla empieza a tener demasiados campos sin nombres.
+
+3. Para acceder fácilmente a datos anidados, evalúa usar collections.defaultdict o estructuras tipo JSON.
+
+4. Usa comprensión de listas/diccionarios para transformar datos complejos
+
+```
+# Transformar una lista de diccionarios en otra lista
+edades = [persona['edad'] for persona in personas]
+
+```
+
+
+## Estructura adecuada
+
+1. ¿Importa el orden? → Usa list o tuple.
+
+2. ¿Necesitas clave-valor? → Usa dict.
+
+3. ¿Solo valores únicos? → Usa set.
+
+4. ¿Datos que no deben cambiar? → Usa tuple.
+
+5. ¿Consultas frecuentes por clave? → Usa dict
+
+
+Ej: 
+
+Modelar una estructura de datos para algún problema específico
+
+(por ejemplo: inventario, usuarios, relaciones, horarios, etc.).
+
+
+```
+datos = [
+    {'nombre': 'Ana', 'notas': [7, 9, 8]},
+    {'nombre': 'Luis', 'notas': [6, 7, 5]}
+]
+
+```
+
+Calcular el promedio por persona:
+
+```
+promedios = [
+    {'nombre': d['nombre'], 'promedio': sum(d['notas']) / len(d['notas'])}
+    for d in datos
+]
+
+```
+
+
+### Moldear estructura de datos 
+
+1. Carácteristicas necesarias en la estruc
+
+2. Obj = estructura(contenido...)
+
+
+
+# Combinar control de flujo:  
+
+## Condicionales (if (elif, else), in, range, len), bucles (for, while, ls) y manejo de errores (try, except, finally, err).
+
+## 1. Control de flujo
+
+Estructura; Uso principal 
+
+1. if / elif / else -> Toma de decisiones
+
+2. for -> Iteración sobre elementos
+
+3. while -> Bucle basado en condición
+
+4. break / continue -> Control interno de bucles
+
+5. try / except / finally -> Manejo de errores
+
+6. match / case (Python 3.10+) -> Patrón estructural
+
+7. with -> Manejo de recursos (archivos, etc.)
+
+8. Funciones (def, return) -> Reutilización de código
+
+
+### 2. Combinar estructuras 
+
+1. IF dentro de FOR
+
+Muy común para procesar datos con condiciones:
+
+```
+for x in range(10):
+    if x % 2 == 0:
+        print(f"{x} es par")
+
+```
+
+
+2. FOR anidados con IF
+
+Por ejemplo, recorrer matrices y aplicar lógica:
+
+```
+matriz = [[1, 2], [3, 4]]
+for fila in matriz:
+    for num in fila:
+        if num > 2:
+            print(num)
+
+``` 
+
+
+3. TRY dentro de FOR
+
+Ideal para continuar procesamiento si hay errores:
+
+```
+valores = ["10", "abc", "30"]
+for v in valores:
+    try:
+        numero = int(v)
+        print(numero)
+    except ValueError:
+        print(f"'{v}' no es un número")
+
+```
+
+
+4. WHILE + IF 
+
+Cuando el final no está claramente definido:
+
+```
+n = 10
+while n > 0:
+    if n % 2 == 0:
+        print(f"{n} es par")
+    n -= 1
+
+```
+
+
+5. WITH + TRY
+
+Patrón muy usado para trabajar con archivos de forma segura
+
+```
+try:
+    with open("archivo.txt") as f:
+        for linea in f:
+            print(linea.strip())
+except FileNotFoundError:
+    print("Archivo no encontrado.")
+
+```
+
+
+## Prácticas
+
+1. Evitar anidar demasiadas estructuras (máximo 2–3 niveles anidados): 
+
+Usa funciones para dividir.
+
+
+2. Usar guard clauses (condiciones que devuelven temprano) para evitar else innecesarios.
+
+```
+def procesar(x):
+    if x < 0:
+        return "negativo"
+    return "positivo"
+
+```
+
+
+3. Usa match/case para lógica compleja de múltiples condiciones (Python 3.10+):
+
+```
+def clasificar(valor):
+    match valor:
+        case 0:
+            return "cero"
+        case 1 | 2:
+            return "uno o dos"
+        case _:
+            return "otro"
+
+```
+
+
+4. Evita while True infinitos si puedes usar for o establecer una condición clara.
+
+
+5. Usa try/except para errores previsibles, no para control general de lógica.
+
+
+## Caso práctico 
+
+```
+usuarios = ["Ana", "Luis", 42, "Marta", None]
+
+for u in usuarios:
+    try:
+        if isinstance(u, str):
+            print(u.upper())
+        else:
+            raise TypeError("Dato inválido")
+    except TypeError as e:
+        print(f"Error: {e}")
+
+```
+
+
+## Estándar lógico (regla general de combinación)
+
+Piensa siempre en:
+
+1. ¿Qué pasa si...? -> (usa if)
+
+2. ¿Qué hago para cada...? -> (usa for)
+
+3. ¿Hasta cuándo sigo...? -> (usa while)
+
+4. ¿Qué pasa si algo falla...? -> (usa try)
+
+5. ¿Cómo manejo estructuras externas...? -> (usa with)
+
+6. ¿Cómo encapsulo esta lógica...? -> (usa funciones)
+
+
+
+# Planteo 
+
+Preguntas: Por qué usaría tal o cual cosa, dar los motivos y resultados esperados. 
+
+Uso de sintaxis o funciones avanzadas (lambda, map, ls)
+
+Combinación de control (Condicionales (if (elif, else), in, range, len), bucles (for, while, ls) y manejo de errores (try, except, finally, err).)
+
+Combinación de esstructuras (list, dict, tuple, set)
+
+Características del control y estructuras necesarias. 
