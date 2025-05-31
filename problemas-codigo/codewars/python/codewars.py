@@ -1330,6 +1330,125 @@ def reverse_words (string):
 
 # kata 17
 
+"""
+Exes and Ohs
+
+Check to see if a string has the same amount of 'x's and 'o's.
+The method must return a boolean and be case insensitive.
+The string can contain any char.
+
+Examples input/output:
+
+XO("ooxx") => true
+XO("xooxx") => false
+XO("ooxXm") => true
+XO("zpzpzpp") => true // when no 'x' and 'o' is present should return true
+XO("zzoo") => false
+
+""" 
+
+def xo(string):
+    lows = string.lower()
+    x = lows.count("x")
+    o = lows.count("o")
+    if x == o: 
+        return True
+    else:
+        return False
+
+""
+
+"""
+var equal = True if x == 0 else False
+
+"""
+
+
+"""
+x == 0 (igualdad de valores)
+también chequea la no existencia
+0 == 0 -> true
+"""
+print(xo("ooxx"))
+print(xo("xooxx"))
+print(xo("ooxXm"))
+print(xo("zpzpzpp"))
+print(xo("zzoo"))
+
+
+"""
+expression var
+
+Evitar lógica innecesaria:
+    if x == y 
+        return True
+    
+    return True
+
+ if x == y 
+     return True
+ elif (lows != "x" and lows != "y")
+     return True
+ else:
+     return false
+
+"""
+
+def Xo(s):
+    return s.lower().count('x') == s.lower().count('o')
+
+
+def xO(s):
+        
+    letters = s.casefold()    
+    o = letters.count("o")
+    x = letters.count("x")
+    
+    if o == x :
+        type = True
+    else:
+        type = False
+    
+    return type
+
+
+
+# kata 18
+
+"""
+String ends with?
+
+Complete the solution so that it returns true:
+if the first argument(string) passed in ends with the 2nd argument (also a string).
+
+Examples:
+
+solution('abc', 'bc') # returns true
+solution('abc', 'd') # returns false
+
+"""
+
+"""
+en rtn calculamos como true la primera express:
+
+"""
+
+def strEnds(stringOne, stringTwo):
+    return stringOne.endswith(stringTwo) 
+
+#print(strEnds("abc", "bc"))
+#print(strEnds("abc", "d"))
+
+"""
+solution = str.endswith
+
+"""
+
+
+
+# kata 19 
+
+
 
 
 

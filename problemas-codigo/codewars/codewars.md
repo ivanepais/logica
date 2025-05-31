@@ -8558,10 +8558,803 @@ Piensa siempre en:
 
 Preguntas: Por qué usaría tal o cual cosa, dar los motivos y resultados esperados. 
 
-Uso de sintaxis o funciones avanzadas (lambda, map, ls)
+Uso de sintaxis o funciones avanzadas (lambda, map, ls):
+lambda (f linea) 
+map(transf, f y iter obj)
+ls nueva lista a partir de otra (expre/cambio expres/cond/accion; for expres cond) -> true
 
 Combinación de control (Condicionales (if (elif, else), in, range, len), bucles (for, while, ls) y manejo de errores (try, except, finally, err).)
 
 Combinación de esstructuras (list, dict, tuple, set)
 
 Características del control y estructuras necesarias. 
+
+Express, cond, func en var
+
+
+## Reducir las posibilidades 
+
+Enfocar el problema, encontrar los elem claves
+
+Retorno de los objetos 
+
+Del final al inicio
+
+
+
+# Kata 17
+
+Exes and Ohs
+
+Comprueba si una cadena tiene la misma cantidad de "x" y "o". 
+
+El método debe devolver un valor booleano y no distinguir entre mayúsculas y minúsculas. 
+
+La cadena puede contener cualquier carácter.
+
+Ejemplos de entrada/salida:
+
+```
+XO("ooxx") => verdadero
+XO("xooxx") => falso
+XO("ooxXm") => verdadero
+XO("zpzpzpp") => true // cuando no hay 'x' ni 'o' presentes, debe devolver verdadero
+XO("zzoo") => falso
+
+```
+
+
+Planteo: 
+
+Descomposición: 
+
+Comprueba cadena si misma cantidad de "x" y "o":
+x, o len
+
+devolver bool y no distinguir entre mayús, minús:
+if lenX == lenY -> true; false
+
+cualquier cadena es valida:
+
+XO("ooxx") => verdadero
+XO("xooxx") => falso
+XO("ooxXm") => verdadero
+XO("zpzpzpp") => true // cuando no hay 'x' ni 'o' presentes, debe devolver verdadero
+XO("zzoo") => falso
+
+
+psCode, diagrama: 
+
+contar x, y; comparar, devolver
+
+alter: 
+check, calc, cond, split(make arr), join(make string) 
+slice, range, count(valueInString), casefold(str in lowc)
+
+
+inp:
+string 
+
+calc:
+recorer string, contar x, y
+check lenX, lenY
+cambios a la var clave
+
+out: 
+tru or false
+
+
+meths avanz: 
+lambda (f linea), 
+map(transf, f y iter obj)
+ls nueva lista a partir de otra (expre/cambio expres/cond/accion; for expres cond) -> true
+
+ls for -> aplicar calc a la express / aunque return list
+
+
+
+# Expresiones en variables 
+
+```
+def xo(string):
+    lows = string.lower()
+    x = lows.count("x")
+    o = lows.count("o")
+    if x == o: 
+        return True
+    else:
+        return False
+```
+
+var equal = True if x == 0 else False
+
+```
+def xo(string):
+    lows = string.lower()
+    x = lows.count("x")
+    o = lows.count("o")
+    equal = True if x == o else False
+
+```
+
+
+```
+def reverse_words (string): 
+    string = string[::-1] 
+    word_r = string.split(' ')
+    word_r.reverse()
+    output = ' '.join(word_r)
+    return output
+
+```
+
+# Combinación de condicionales: condicionales y comparaciones anidados 
+
+1. Evita comparaciones redundantes con True o False
+
+```
+if activo == True:
+    ...
+
+```
+
+Mejor: 
+
+```
+if activo:
+    ...
+
+```
+
+
+2. Usar valores "truthy" y "falsy"
+
+Valores se consideran falsy:
+
+```
+False, None, 0, "", [], {}, set()
+
+```
+
+Redundante:
+
+```
+if len(lista) > 0:
+    ...
+
+```
+
+Simple: 
+
+```
+if lista:
+    ...
+
+```
+
+
+3. Combina condiciones relacionadas
+
+Lógica anidada innecesaria:
+
+```
+if a:
+    if b:
+        hacer_algo()
+
+```
+
+Mejor:
+
+```
+if a and b:
+    hacer_algo()
+
+```
+
+
+4. Usa comparaciones encadenadas
+
+```
+if x >= 0 and x <= 10:
+
+```
+
+Mejor:
+
+```
+if 0 <= x <= 10:
+
+```
+
+
+5. Usa in para comprobar pertenencia a múltiples valores
+
+Lento y repetitivo:
+
+```
+if fruta == "manzana" or fruta == "pera" or fruta == "plátano":
+
+```
+
+Mejor:
+
+```
+if fruta in ["manzana", "pera", "plátano"]:
+
+```
+
+
+6. Not y Distinto: 
+
+Invierte cuando se más claro 
+
+```
+if not x == 0:
+
+``` 
+
+```
+if x != 0:
+
+```
+
+
+7. Usa variables intermedias con nombres claros
+
+```
+if (edad > 18 and not banneado and region in permitidas and tiene_documento):
+
+```
+
+Legible:
+
+```
+es_mayor = edad > 18
+acceso_region = region in permitidas
+condicion_valida = es_mayor and not banneado and acceso_region and tiene_documento
+
+if condicion_valida:
+    ...
+
+```
+
+
+8. Operador ternario para expresiones simples
+
+```
+estado = "mayor" if edad >= 18 else "menor"
+
+```
+
+úsalo si la lógica es clara y corta.
+
+
+9. Extrae condiciones repetidas en funciones
+
+```
+def es_valido(usuario):
+    return usuario["activo"] and usuario["edad"] >= 18
+
+if es_valido(u1) and es_valido(u2):
+    ...
+
+```
+
+
+10. Leer las condiciones, elegir la mas fácil
+
+Complicado de leer sin equivocarse
+
+```
+if not ((x == 0 or x == 1) and not y > 5):
+
+```
+
+Mejor: 
+
+```
+es_binario = x in (0, 1)
+y_pequeño = y <= 5
+
+if es_binario and y_pequeño:
+    ...
+
+```
+
+
+Rs: 
+
+Usa valores truthy/falsy:	
+if lista en lugar de if len(lista)>0
+
+Usa comparaciones encadenadas:	
+if 0 <= x <= 10
+
+Usa in y funciones:	
+Reemplaza or/and repetitivos
+
+Extrae lógica compleja:
+Con variables o funciones intermedias
+
+
+
+# Expresiones lógicas
+
+Cualquier expresión que evalúa a True o False
+
+```
+x > 5
+a and b
+not (usuario_activo and tiene_permiso)
+
+```
+
+
+1. Guardar directamente el resultado lógico (booleans)
+
+```
+edad = 20
+es_mayor = edad >= 18  # Guarda el resultado: True
+print(es_mayor)        # → True
+
+```
+
+
+2. Guardar la expresión completa como función
+
+Evaluar la lógica varias veces con distintos valores
+
+```
+def es_mayor_de_edad(edad):
+    return edad >= 18
+
+print(es_mayor_de_edad(16))  # → False
+print(es_mayor_de_edad(22))  # → True
+
+```
+
+```
+filtro = lambda edad: edad >= 18
+print(filtro(21))  # → True
+
+```
+
+
+3. Combinar múltiples expresiones lógicas
+
+```
+activo = True
+edad = 25
+tiene_permiso = False
+
+puede_ingresar = activo and edad >= 18 and tiene_permiso
+print(puede_ingresar)  # → False
+
+```
+
+
+4. Guardar expresiones lógicas como objetos evaluables (avanzado)
+
+Si quieres guardar la estructura lógica como texto para evaluarla dinámicamente:
+
+```
+condicion = "edad >= 18 and activo"
+edad = 20
+activo = True
+
+resultado = eval(condicion)  # → True
+
+```
+
+Evita eval() con datos externos sin validación por motivos de seguridad
+
+
+5. Funciones con múltiples condiciones agrupadas
+
+```
+def es_valido(usuario):
+    return usuario["edad"] >= 18 and usuario["activo"]
+
+u = {"edad": 25, "activo": True}
+print(es_valido(u))  # → True
+
+```
+
+```
+usuario = {
+    "edad": 17,
+    "activo": True,
+    "rol": "admin"
+}
+
+es_mayor = usuario["edad"] >= 18
+es_admin = usuario["rol"] == "admin"
+activo = usuario["activo"]
+
+puede_acceder = es_mayor and es_admin and activo
+
+if puede_acceder:
+    print("Acceso concedido")
+else:
+    print("Acceso denegado")
+
+```
+
+Rs:
+
+es_mayor = edad >= 18L: mejor que	
+if edad >= 18 and rol == "admin" and ...
+
+if condicion: mejor que
+if activo == True and not banneado == True
+
+def cumple_reglas(x): return ...
+Para repetir la condición en varios if
+
+
+Ej: 
+
+lógica condicional reusable con diccionarios
+
+```
+condiciones = {
+    "mayor": lambda u: u["edad"] >= 18,
+    "activo": lambda u: u["activo"],
+    "admin": lambda u: u["rol"] == "admin"
+}
+
+usuario = {"edad": 19, "activo": True, "rol": "admin"}
+
+if all(cond(usuario) for cond in condiciones.values()):
+    print("✔ Usuario válido")
+
+```
+
+
+
+# Partial, compile, functions.tools...
+
+
+# Plantilla condicional 
+
+## Acceso de usuario: 
+
+Condiciones: 
+
+1. Debe tener al menos 18 años.
+
+2. Debe tener una cuenta activa.
+
+3. Debe aceptar los términos y condiciones.
+
+4. Si es menor de edad, solo puede acceder si tiene permiso parental y es un usuario verificado.
+
+
+Modelo de datos del usuario:
+
+```
+usuario = {
+    "nombre": "Ana",
+    "edad": 16,
+    "activo": True,
+    "acepta_terminos": True,
+    "permiso_parental": True,
+    "verificado": True
+}
+
+```
+
+
+Reglas lógicas como variables:
+
+```
+es_mayor = usuario["edad"] >= 18
+cuenta_activa = usuario["activo"]
+acepta_terminos = usuario["acepta_terminos"]
+acceso_completo = es_mayor and cuenta_activa and acepta_terminos
+
+```
+
+
+Reglas alternativas (si es menor de edad):
+
+```
+permiso_extra = usuario["permiso_parental"] and usuario["verificado"]
+acceso_limitado = not es_mayor and cuenta_activa and acepta_terminos and permiso_extra
+
+```
+
+
+Lógica de acceso final:
+
+```
+puede_acceder = acceso_completo or acceso_limitado
+
+if puede_acceder:
+    print(f"✅ Acceso concedido a {usuario['nombre']}")
+else:
+    print(f"❌ Acceso denegado a {usuario['nombre']}")
+
+```
+
+
+2. Validación por nombre de regla
+
+Organizar las reglas en un diccionario si quieres evaluar dinámicamente
+
+```
+reglas = {
+    "mayor_de_edad": lambda u: u["edad"] >= 18,
+    "activo": lambda u: u["activo"],
+    "acepta_terminos": lambda u: u["acepta_terminos"],
+    "permiso_extra": lambda u: u["permiso_parental"] and u["verificado"]
+}
+
+usuario = {...}
+
+acceso_general = (
+    reglas["mayor_de_edad"](usuario) and
+    reglas["activo"](usuario) and
+    reglas["acepta_terminos"](usuario)
+)
+
+acceso_excepcion = (
+    not reglas["mayor_de_edad"](usuario) and
+    reglas["activo"](usuario) and
+    reglas["acepta_terminos"](usuario) and
+    reglas["permiso_extra"](usuario)
+)
+
+puede_acceder = acceso_general or acceso_excepcion
+
+```
+
+
+## Validar datos/ aplicar reglas de negocio
+
+Ej: 
+
+Validar un formulario (registro, login, contacto)
+
+Aplicar reglas de elegibilidad
+
+Filtrar datos (productos, usuarios, registros
+
+
+1. Criterios como funciones (si es posible)
+
+Esto te permite hacer tu lógica más modular, legible y testeable 
+
+```
+def es_mayor_de_edad(edad):
+    return edad >= 18
+
+def es_correo_valido(correo):
+    return "@" in correo and "." in correo
+
+def es_usuario_activo(usuario):
+    return usuario.get("activo", False)
+
+```
+
+
+2. Variables intermedias para legibilidad
+
+```
+usuario = {
+    "nombre": "Ana",
+    "edad": 25,
+    "correo": "ana@mail.com",
+    "activo": True,
+    "pais": "ES"
+}
+
+mayor = es_mayor_de_edad(usuario["edad"])
+correo_valido = es_correo_valido(usuario["correo"])
+activo = es_usuario_activo(usuario)
+pais_permitido = usuario["pais"] in ["ES", "MX", "AR"]
+
+```
+
+
+3. Evalúa todo en un bloque de decisión central
+
+```
+if mayor and correo_valido and activo and pais_permitido:
+    print("✔ Usuario válido")
+else:
+    print("✖ Usuario inválido")
+
+```
+
+
+4. Devolver mensajes de error 
+
+Mostrar fallo, acumulación de errores
+
+```
+errores = []
+
+if not mayor:
+    errores.append("Debe ser mayor de edad")
+if not correo_valido:
+    errores.append("Correo inválido")
+if not activo:
+    errores.append("Cuenta inactiva")
+if not pais_permitido:
+    errores.append("País no permitido")
+
+if errores:
+    print("Errores encontrados:")
+    for e in errores:
+        print("-", e)
+else:
+    print("✔ Usuario válido")
+
+```
+
+
+Rs cod: 
+
+```
+def validar_dato(x):
+    return cond1 and cond2
+
+def regla_negocio(obj):
+    condicion1 = ...
+    condicion2 = ...
+    return condicion1 and condicion2
+
+errores = []
+
+if not condicion1:
+    errores.append("Regla 1 no cumplida")
+if not condicion2:
+    errores.append("Regla 2 no cumplida")
+
+if errores:
+    return errores
+else:
+    return "Todo válido"
+
+```
+
+
+Usos:
+
+Validaciones de entrada de formularios (edad, email, nombre, etc.)
+
+Reglas de negocio (¿puede comprar? ¿puede registrarse?)
+
+Filtros en APIs o motores de búsqueda
+
+Lógica en pipelines de datos
+
+
+
+# Kata 18
+
+String ends with?
+
+Complete la solución para que devuelva verdadero: 
+si el primer argumento (cadena) pasado termina con el segundo argumento (también una cadena).
+
+Ej:
+
+solución('abc', 'bc') # devuelve verdadero
+solución('abc', 'd') # devuelve falso
+
+
+```
+def solution(string, ending):
+    return string.endswith(ending)
+
+```
+
+
+# Truthy, Falsy: método de clase 
+
+## Usar el parámetro "self" para recibir el argumento de cadena
+
+Método de la clase string (al que se accede desde str mediante un punto).
+
+La solución se asigna básicamente como un duplicado de esa función.
+
+```
+solution = str.endswith
+
+```
+
+Los métodos de clase toman un argumento propio que generalmente se completa implícitamente con la instancia de la clase desde la que estás llamando, pero si llamas desde la clase misma
+
+```
+class Breakfast:
+  def __init__(self, items):
+    self.items = items
+  
+  def get_nth_item(self, n):
+    return self.items[n]
+
+my_breakfast = Breakfast(['spam', 'egg', 'spam', 'spam', 'bacon', 'spam'])
+print(my_breakfast.get_nth_item(2)) # spam
+
+```
+
+get_nth_item está definido para aceptar dos argumentos, pero se llama solo con uno. 
+
+Esto se debe a que, al llamar a un método en un objeto, el primer argumento se completa implícitamente con el propio argumento. 
+
+Puedes comprobarlo llamándolo con demasiados argumentos:
+
+```
+Breakfast.get_nth_item(my_breakfast, 2) # spam
+
+```
+
+Aquí solo llamamos a get_nth_item explícitamente desde la propia clase, por lo que no se pasa ningún argumento "self" implícito. 
+
+Así que lo llamamos exactamente como debería llamarse: con dos argumentos, que se llaman "self" y "n".
+
+En esta solución ocurre exactamente lo mismo. 
+
+Al imaginar llamar a 'egg and spam'.endswith('spam'), se está llamando a un método de un objeto de la clase str. 
+
+Pero también se puede llamar al método como una función, str.endswith('egg and spam', 'spam'). 
+
+Y, casualmente, esa función es exactamente lo que pide la kata, incluyendo el orden de los argumentos. 
+
+Solo tenemos que usar la asociación de nombres flexible de Python para que la solución de nombres apunte a esa función, ¡y listo!
+
+Esto también aplica a ```__init__```, pero la razón específica es mucho más peculiar. 
+
+Profundizar sobre las diferencias entre ```__init__``` y ```__new__``` es bastante interesante.
+
+
+## Comportamiento de métodos y clases
+
+```
+variable = str.upper # variable becomes an alias to the method
+string = "something"
+
+# These behave the same:
+a = "something".upper()
+b = string.upper()
+c = str.upper(string)
+d = variable(string)
+
+print(a == b == c == d) # True
+
+```
+
+str es una clase integrada en Python. 
+
+Al usar str.method("something"), invocamos un método directamente desde la clase str y pasamos "something" como argumento al parámetro "self". 
+
+En Python, tenemos un método integrado de magic/dunder, ```__init__```, que funciona como constructor. 
+
+Este constructor toma la palabra clave "self" como parámetro, que apunta a la instancia actual de la clase.
+
+Así es como se vería un ejemplo:
+
+```
+class Person:
+    def __init__(self, name):
+        self.name = name
+
+    def display_name(self):
+        print(f"Name: {self.name}")
+
+
+bob = Person("Bob")
+# These behave the same:
+bob.display_name()
+Person.display_name(bob)
+
+```
+
+
+
+# kata 19 
+
+
