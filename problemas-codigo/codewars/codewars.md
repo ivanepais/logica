@@ -8227,6 +8227,7 @@ LS:
 4. Cuando la lógica dentro del for no es demasiado compleja
  
 
+
 # Combinar estructuras de datos:  
 
 ## Comprende las estructuras básicas
@@ -9253,9 +9254,13 @@ def solution(string, ending):
 ```
 
 
-# Truthy, Falsy: método de clase 
+# Asertividad/eficiencia 
 
-## Usar el parámetro "self" para recibir el argumento de cadena
+## Cuando no es...
+
+## Truthy, Falsy: método de clase 
+
+### Usar el parámetro "self" para recibir el argumento de cadena
 
 Método de la clase string (al que se accede desde str mediante un punto).
 
@@ -9357,4 +9362,1543 @@ Person.display_name(bob)
 
 # kata 19 
 
+You're a square!
 
+Un cuadrado de cuadrados
+
+Te gustan los bloques de construcción. 
+
+Te gustan especialmente los bloques cuadrados. 
+
+¡Y lo que te gusta aún más es organizarlos formando un cuadrado de bloques cuadrados!
+
+Sin embargo, a veces no puedes organizarlos en un cuadrado. 
+
+¡En cambio, terminas con un rectángulo normal! 
+
+¡Malditas cosas!
+
+ Si tuvieras una forma de saber si estás trabajando en vano... 
+ 
+ ¡Espera! ¡Eso es! Solo tienes que comprobar si tu número de bloques es un cuadrado perfecto.
+
+
+Tarea
+
+Dado un número entero, determine si es un número cuadrado:
+
+    En matemáticas, un número cuadrado o cuadrado perfecto es un número entero que es el cuadrado de un número entero; en otras palabras, es el producto de algún número entero consigo mismo.
+
+Las pruebas siempre utilizarán algún número entero, así que no te preocupes por eso en lenguajes tipados dinámicamente.
+
+Ej
+
+```
+-1 => falso
+ 0 => verdadero
+ 3 => falso
+ 4 => verdadero
+25 => verdadero
+26 => falso
+
+```
+
+Planteo: 
+
+Descomposición: 
+
+1. Cuadrado:
+figura geométrica plana con cuatro lados iguales,
+cuatro ángulos rectos (90 grados).
+o
+rectángulo con todos los lados de igual longitud.
+
+2. rectángulo: 
+cuatro lados y cuatro ángulos rectos (90 grados).
+tiene dos pares de lados opuestos de igual longitud
+pero no necesariamente todos los lados tienen la misma longitud.
+
+ej: 
+un par de lados de 5 cm y otro par de lados de 10 cm. 
+En este caso, los lados opuestos son iguales
+pero no todos los lados tienen la misma longitud.
+
+si un rectángulo tiene todos los lados de igual longitud,
+entonces se convierte en un cuadrado.
+ej: 
+si un rectángulo tiene dos pares de lados de 5 cm cada uno
+entonces es un cuadrado, todos sus lados tienen igual longitud.
+
+Todos los cuadrados son rectángulos,
+pero no todos los rectángulos son cuadrados
+condición adicional que hace que un rectángulo
+sea un cuadrado es que: todos los lados tengan la misma longitud
+
+
+3. Cuadrado de cuadrados:
+cuadrado grande dividido en filas y columnas, 
+donde cada intersección de una fila y una columna 
+contiene un cuadrado más pequeño
+
+Si cada uno de estos cuadrados más pequeños 
+es un cuadrado perfecto, forma un cuadrado de cuadrado
+
+si tienes un cuadrado de 4x4, puedes dividirlo en 16 
+cuadrados más pequeños, cada uno de ellos con una 
+longitud de lado igual.
+
+
+4. bloques de construcción
+
+5. bloques de cuadrados
+
+6. organización:
+cuadrado de bloques cuadrados o rectángulo
+
+7. Comprobar si tu número de bloques es un cuadrado perfecto:
+número de bloques
+cuadrado perfecto
+
+8. Cuando no es cuadrado:
+Un número no es un cuadrado perfecto cuando no puede ser
+expresado como el resultado de multiplicar un número entero por sí mismo.
+
+si no existe un número entero que, al ser elevado al cuadrado, 
+dé como resultado ese número.
+
+el número 16 es un cuadrado perfecto porque 
+es el resultado de multiplicar 4 por sí mismo (4² = 16).
+
+el número 20 no es un cuadrado perfecto porque no existe
+un número entero que, al ser elevado al cuadrado, 
+dé como resultado 20.
+
+un número no es un cuadrado perfecto si su raíz cuadrada 
+no es un número entero
+la raíz cuadrada de 16 es 4
+la raíz cuadrada de 20 es aproximadamente 4,47, 
+que no es un número entero.
+
+1 (1² = 1)
+4 (2² = 4)
+9 (3² = 9)
+16 (4² = 16)
+25 (5² = 25)
+
+3
+5
+7
+10
+20
+23
+
+
+9. Cuando no es entero 
+Cuando tiene una parte decimal o fraccionaria, no está completo
+Cuando no puede ser +(0,1,2..) o -(-1, -2...)
+
+
+
+Probl: 
+int: número entero
+
+Out: número cuadrado
+n cuadrado = n*n
+ 
+diagrama: 
+cálc:
+n = int(num)
+s = math.sqrt(n)
+i = n is s 
+
+true if type(s) is float else flase
+
+
+
+# kata 20 
+
+Friend or Foe
+
+Crea un programa que filtre una lista de cadenas y devuelva una lista que solo contenga los nombres de tus amigos.
+
+Si un nombre tiene exactamente 4 letras, ¡seguro que es amigo tuyo! 
+
+De lo contrario, seguro que no lo es...
+
+```
+Entrada = ["Ryan", "Kieran", "Jason", "Yous"]
+Salida = ["Ryan", "Yous"]
+
+Entrada = ["Peter", "Stephen", "Joe"]
+Salida = []
+
+```
+Las cadenas de entrada solo contendrán letras.
+Nota: mantenga el orden original de los nombres en la salida.
+
+
+Planteo: 
+
+filtre una lista de cadenas:
+
+devuelva una lista string:
+
+contenga los nombres de tus amigos, tienen cuatro letras 
+len 4/0-3
+
+
+methds: 
+
+map(lambda, iter), for, ls(ex, for), lambda, len(iter)
+
+
+
+# Regex
+
+## Secuencia de caracteres que forma un patrón de búsqueda.
+
+### RegEx se puede utilizar para comprobar si una cadena contiene el patrón de búsqueda especificado
+
+re, que se puede utilizar para trabajar con expresiones regulares.
+
+```
+import re
+
+```
+
+Ej: 
+
+Busca la cadena para ver si empieza con "The" y termina con "Spain":
+
+```
+import re
+
+txt = "The rain in Spain"
+x = re.search("^The.*Spain$", txt) 
+
+```
+
+```
+función: re.search()
+
+Empieza: ^
+
+Termina: * 
+
+```
+
+
+## RegEx Functions
+
+re ofrece un conjunto de funciones que nos permiten buscar una coincidencia en una cadena:
+
+```
+findal() Devuelve una lista que contiene todas las coincidencias
+search() Devuelve un objeto Match si hay una coincidencia en cualquier parte de la cadena
+split() Devuelve una lista donde la cadena se ha dividido en cada coincidencia
+sub() Reemplaza una o varias coincidencias con una cadena
+
+```
+
+
+## Metacharacters
+
+Son caracteres con un significado especial:
+
+Char; Description; exmple; 
+
+```
+[] Un conjunto de chars "[a-m]"
+\ Señala una secuencia especial (también se puede utilizar para escapar caracteres especiales) "\d"
+. Cualquier carácter (excepto el carácter de nueva línea) "he..o"
+^ Comienza con "^hello"
+$ Termina con "planet$"
+* Cero o más ocurrencias "he.*o" (retorna algo seguido de 0 o más, depende de otros metachar, func )
++ Una o más ocurrencias "he.+o" 
+? Cero o una ocurrencia "he.?o"
+{} Exactamente el número especificado de ocurrencias "he.{2}o"
+| O bien o bien "falls|stays"
+() Captura y agrupa
+
+```
+
+
+## Flags
+
+Puedes agregar banderas al patrón cuando uses expresiones regulares.
+
+Flag; Shorthand; Description:
+
+```
+re.ASCII re.A Devuelve solo coincidencias ASCII
+re.DEBUG Devuelve información de depuración
+re.DOTALL re.S Hace que el carácter . coincida con todos los caracteres (incluido el carácter de nueva línea)
+re.IGNORECASE re.I Coincidencia sin distinción entre mayúsculas y minúsculas
+re.MULTILINE re.M Devuelve sólo las coincidencias al principio de cada línea
+re.NOFLAG Especifica que no hay ninguna bandera establecida para este patrón
+re.UNICODE re.U Devuelve coincidencias Unicode. Esta opción es predeterminada en Python 3. En Python 2: use esta opción para devolver solo coincidencias Unicode.
+re.VERBOSE re.X Permite espacios en blanco y comentarios dentro de los patrones. Facilita la lectura del patrón.
+
+```
+
+
+## Secuencias especiales
+
+Una secuencia especial es un \ seguido de uno de los caracteres de la lista a continuación y tiene un significado especial: 
+
+```
+\A Devuelve una coincidencia si los caracteres especificados están al principio de la cadena "\AThe"
+\b Devuelve una coincidencia donde los caracteres especificados están al principio o al final de una palabra r"\bain"
+\B Devuelve una coincidencia donde los caracteres especificados están presentes, pero NO al principio (o al final) de una palabra (la "r" al principio garantiza que la cadena se trate como una "cadena sin formato") r"\Bain" r"ain\B" 
+\d Devuelve una coincidencia donde la cadena contiene dígitos (números del 0 al 9) "\d"
+\D Devuelve una coincidencia donde la cadena NO contiene dígitos "\D"
+\s Devuelve una coincidencia donde la cadena contiene un carácter de espacio en blanco "\s" 
+\S Devuelve una coincidencia donde la cadena NO contiene un carácter de espacio en blanco "\S"
+\w Devuelve una coincidencia donde la cadena contiene cualquier carácter de palabra (caracteres de la a a la Z, dígitos del 0 al 9 y el carácter de guión bajo _) "\w"
+\W Devuelve una coincidencia donde la cadena NO contiene ningún carácter de palabra "\W"
+\Z Devuelve una coincidencia si los caracteres especificados están al final de la cadena "Spain\Z"
+
+```
+
+
+## Sets
+
+Conjunto de caracteres dentro de un par de corchetes ```[]``` con un significado especial:
+
+```
+[arn] Devuelve una coincidencia donde uno de los caracteres especificados (a, r o n) está presente
+[a-n] Devuelve una coincidencia para cualquier carácter en minúscula, alfabéticamente entre a y n
+[^arn] Devuelve una coincidencia para cualquier carácter EXCEPTO a, r y n 
+[0123] Devuelve una coincidencia donde cualquiera de los dígitos especificados (0, 1, 2 o 3) está presente
+[0-9] Devuelve una coincidencia para cualquier dígito entre 0 y 9
+[0-5][0-9] Devuelve una coincidencia para cualquier número de dos dígitos entre 00 y 59
+[a-zA-Z] Devuelve una coincidencia para cualquier carácter alfabético entre a y z, en minúsculas o mayúsculas.
+[+] En conjuntos, +, *, ., |, (), $,{} no tienen un significado especial, por lo que [+] significa: devolver una coincidencia para cualquier carácter + en la cadena
+
+```
+
+
+## Functions
+
+1. findall()
+
+Devuelve una lista que contiene todas las coincidencias.
+
+Ej: 
+
+Imprimir una lista de todas las coincidencias:
+
+```
+import re
+
+txt = "The rain in Spain"
+x = re.findall("ai", txt)
+print(x)
+
+```
+
+```
+['ai', 'ai']
+
+```
+
+La lista contiene las coincidencias en el orden en que se encuentran.
+
+Si no se encuentran coincidencias, se devuelve una lista vacía
+
+
+Ej:
+
+Devuelve una lista vacía si no se encontró ninguna coincidencia:
+
+```
+import re
+
+txt = "The rain in Spain"
+x = re.findall("Portugal", txt)
+print(x)
+
+```
+
+```
+[]
+ 
+```
+
+
+2. search()
+
+Busca una coincidencia en la cadena y devuelve un objeto Match si hay una coincidencia.
+
+Si hay más de una coincidencia, solo se devolverá la primera aparición de la coincidencia:
+
+Ej:
+
+Busque el primer carácter de espacio en blanco en la cadena:
+
+```
+ import re
+
+txt = "The rain in Spain"
+x = re.search("\s", txt)
+
+print("The first white-space character is 
+located in position:", x.start()) 
+
+```
+
+```
+
+The first white-space character is located in position: 3
+
+```
+
+Si no se encuentran coincidencias, se devuelve el valor None:
+
+Ej:
+
+Realizar una búsqueda que no devuelva ninguna coincidencia
+
+```
+import re
+
+txt = "The rain in Spain"
+x = re.search("Portugal", txt)
+print(x)
+
+```
+
+```
+
+None
+
+```
+
+
+3. split()
+
+Devuelve una lista donde la cadena se ha dividido en cada coincidencia:
+
+Ej
+
+Dividir en cada carácter de espacio en blanco:
+
+```
+import re
+
+txt = "The rain in Spain"
+x = re.split("\s", txt)
+print(x) 
+
+```
+
+```
+
+['The', 'rain', 'in', 'Spain']
+
+```
+
+
+Puede controlar el número de ocurrencias especificando el parámetro maxsplit:
+
+Ej:
+
+Dividir la cadena solo en la primera aparición
+
+```
+import re
+
+txt = "The rain in Spain"
+x = re.split("\s", txt, 1)
+print(x)
+
+```
+
+```
+['The', 'rain in Spain']
+
+```
+
+
+4. sub()
+
+Reemplaza las coincidencias con el texto de su elección:
+
+Ej:
+
+Reemplace cada carácter de espacio en blanco con el número 9:
+
+```
+import re
+
+txt = "The rain in Spain"
+x = re.sub("\s", "9", txt)
+print(x)
+
+```
+
+```
+The9rain9in9Spain
+
+```
+
+Puede controlar el número de reemplazos especificando el parámetro de conteo:
+
+Ej:
+
+Reemplace las primeras 2 ocurrencias
+
+```
+
+import re
+
+txt = "The rain in Spain"
+x = re.sub("\s", "9", txt, 2)
+print(x) 
+
+```
+
+```
+
+The9rain9in Spain
+
+```
+
+
+## Match Object 
+
+Es un objeto que contiene información sobre la búsqueda y el resultado.
+
+Nota: Si no hay coincidencia, se devolverá el valor None, en lugar del objeto de coincidencia.
+
+Ej:
+
+Realizar una búsqueda que devolverá un objeto coincidente
+
+```
+import re
+
+txt = "The rain in Spain"
+x = re.search("ai", txt)
+print(x) #this will print an object
+
+```
+
+```
+<_sre.SRE_Match object; span=(5, 7), match='ai'>
+
+```
+
+El objeto Match tiene propiedades y métodos que se utilizan para recuperar información sobre la búsqueda y el resultado:
+
+.span() devuelve una tupla que contiene las posiciones de inicio y final de la coincidencia.
+.string devuelve la cadena pasada a la función
+.group() devuelve la parte de la cadena donde hubo una coincidencia
+
+Ej:
+
+Imprima la posición (posición inicial y final) de la primera coincidencia.
+
+La expresión regular busca cualquier palabra que comience con una "S" mayúscula:
+
+```
+import re
+
+txt = "The rain in Spain"
+x = re.search(r"\bS\w+", txt)
+print(x.span())
+
+```
+
+```
+
+(12, 17)
+
+```
+
+
+Ej:
+
+Imprima la cadena pasada a la función
+
+```
+import re
+
+txt = "The rain in Spain"
+x = re.search(r"\bS\w+", txt)
+print(x.string)
+
+```
+
+```
+
+The rain in Spain
+
+```
+
+
+Ej:
+
+Imprima la parte de la cadena donde hubo una coincidencia.
+
+La expresión regular busca cualquier palabra que comience con una "S" mayúscula:
+
+```
+import re
+
+txt = "The rain in Spain"
+x = re.search(r"\bS\w+", txt)
+print(x.group()) 
+
+```
+
+```
+
+Spain
+
+```
+
+Nota: Si no hay coincidencia, se devolverá el valor None, en lugar del objeto de coincidencia.
+
+
+
+# Kata 21 - Regex
+
+Validate PIN code
+
+Los cajeros automáticos permiten códigos PIN de 4 o 6 dígitos, 
+y los códigos PIN no pueden contener más que exactamente 4 o 6 dígitos.
+
+Si se le pasa a la función una cadena PIN válida, devuelve verdadero; 
+de lo contrario, devuelve falso.
+
+Ejemplos (Entrada --> Salida)
+
+"1234" --> verdadero
+"12345" --> falso
+"a234" --> falso
+
+func(pin)
+re
+re.pin
+rtn pin
+
+Planteo: 
+
+regEx: func a partir de cadena; metachars; flags; specSeq
+sets
+
+pin: 4-6 ("0-9, a-z")
+
+cadena PIN válida: entrada
+T/F: salida
+
+methds
+"\d" 0-9
+"\w" 0-9 a-z guión bajo
+
+```
+x = re.search("^The.*Spain$", stringA)
+
+```
+search, findall, set ```[0-9]``` 
+
+find rtn len == 4 or len == 6
+search .string len 4 or 6 
+
+search(...).string
+
+return search("\d", string).string
+
+hacerlo true:
+
+p = search("\d", string).string
+
+vp = True if len(p) == 4 or len(p) == 6 else False
+
+
+```
+def pin(string):
+    from re import findall
+    l = list(string)
+    filt = list(findall("[0-9]", string))
+
+    if l == filt: 
+        return True if len(l) == 4 or len(l) == 6 else False
+    else:
+        return False
+
+```
+
+
+
+# Restricciones
+
+Condiciones que deben cumplirse durante la ejecución de un algoritmo, como:
+
+Ej: 
+
+1. Límites de entrada (n < 1000)
+
+2. Reglas de negocio (una persona no puede votar si no tiene 18 años)
+
+3. Requisitos de estructura (una lista debe estar ordenada)
+
+4. Restricciones de recursos (tiempo, espacio, memoria)
+
+
+## Tipos comunes de restricciones:
+
+1. De entrada: 0 <= n <= 1000
+
+2. De formato: Cadena válida, números enteros, fechas correctas
+
+3. De lógica: Solo se permite una acción si la anterior se completó
+
+4. De contexto o negocio: Un usuario no puede comprar si no tiene saldo suficiente
+
+5. De complejidad: El algoritmo debe correr en O(n log n) como máximo
+
+
+## Tratar restricciones en un algoritmo
+
+1. Validar antes de ejecutar el algoritmo
+
+Evita cálculos innecesarios y errores
+
+```
+def procesar(n):
+    if n < 0:
+        raise ValueError("n debe ser no negativo")
+    # ... lógica principal
+
+```
+
+
+2. Filtrar o ajustar datos de entrada
+
+```
+# Filtrar solo edades válidas (0–120)
+edades_validas = [e for e in edades if 0 <= e <= 120]
+
+```
+
+
+3. Incluir restricciones dentro del flujo lógico
+
+```
+def puede_comprar(usuario):
+    return usuario["activo"] and usuario["saldo"] > 0
+
+```
+
+
+4. Usar funciones auxiliares para reglas complejas
+
+Esto mejora la claridad y la reutilización
+
+```
+def cumple_requisitos(usuario):
+    return (
+        usuario["edad"] >= 18 and
+        usuario["rol"] in ["admin", "cliente"] and
+        not usuario["baneado"]
+    )
+
+```
+
+
+5. Controlar violaciones con excepciones o mensajes
+
+```
+if not cumple_requisitos(usuario):
+    raise PermissionError("El usuario no cumple los requisitos.")
+
+```
+
+
+6. 
+
+Ej: Backtracking
+
+Las restricciones guían el espacio de búsqueda. 
+
+```
+def resolver_sudoku(tablero):
+    for celda in vacías:
+        for valor in posibles(celda):
+            if cumple_restricciones(tablero, celda, valor):
+                colocar_valor(celda, valor)
+                if resolver_sudoku(tablero):
+                    return True
+                quitar_valor(celda)
+    return False
+
+```
+
+
+## Patrones útiles para restricciones
+
+1. assert condicion → para validaciones en desarrollo
+
+2. raise Exception(...) → para restricciones estrictas
+
+3. if not cond: return → para salidas tempranas
+
+4. Diccionarios de reglas → para validar múltiples campos
+
+5. Funciones puras → para validar sin efectos colaterales
+
+
+Ej: 
+
+```
+def registrar_usuario(nombre, edad, email):
+    if not nombre:
+        raise ValueError("Nombre obligatorio")
+    if edad < 13:
+        raise ValueError("Edad mínima: 13 años")
+    if "@" not in email:
+        raise ValueError("Email no válido")
+
+    print(f"Registrado: {nombre}, {edad}, {email}")
+
+```
+
+
+## Lógica
+
+1. Expresión lógica de asignación directa: 
+
+```
+a = 5
+b = 10
+
+es_mayor = a > b         # False
+es_igual = a == 5        # True
+es_par = a % 2 == 0      # False
+
+```
+
+
+2. Asignación con operadores lógicos compuestos
+
+```
+valido = a > 0 and b > 0        # True si ambos > 0
+es_raro = not (a == b)          # True si a ≠ b
+rango_valido = 0 <= a <= 100    # Encadenamiento de comparaciones
+
+```
+
+
+3. Funciones lógicas
+
+```
+def es_valido(nombre, edad):
+    return isinstance(nombre, str) and edad >= 18
+
+resultado = es_valido("Ana", 20)  # True
+
+
+```
+
+
+4. Expresiones lógicas en lambdas 
+
+```
+es_mayor_de_edad = lambda edad: edad >= 18
+print(es_mayor_de_edad(16))  # False
+
+```
+
+
+5. Expresiones lógicas en list comprehensions
+
+```
+numeros = [5, 12, 8, 3]
+pares = [n for n in numeros if n % 2 == 0]
+
+```
+
+
+6.  Asignar una lógica basada en estructuras (listas, dicts, etc)
+
+```
+usuario = {"activo": True, "rol": "admin"}
+es_admin_activo = usuario["activo"] and usuario["rol"] == "admin"
+
+```
+
+
+7. Asignar el resultado de evaluaciones dinámicas (eval)
+
+```
+expresion = "x > 10 and x < 20"
+x = 15
+resultado = eval(expresion)  # True, pero ⚠️ solo si tú controlas el contenido
+
+```
+
+
+8. Usar lógica simbólica con sympy (avanzado)
+
+```
+from sympy import symbols, And
+
+x, y = symbols('x y')
+expr_logica = And(x > 0, y < 5)
+
+```
+
+
+9. Postprocesamiento lógico en estructuras más grandes
+
+```
+usuarios = [{"edad": 20}, {"edad": 17}]
+mayores = [u["edad"] >= 18 for u in usuarios]  # [True, False]
+
+```
+
+
+10. Guardar múltiples expresiones lógicas (funciones o condiciones)
+
+```
+condiciones = [
+    lambda x: x > 0,
+    lambda x: x < 100,
+    lambda x: x != 42,
+]
+
+x = 50
+cumple_todas = all(cond(x) for cond in condiciones)  # True
+
+```
+
+
+## Precondiciones y Postcondiciones
+
+Principios del diseño por contrato (Design by Contract), que ayudan a formalizar lo que una función espera y lo que garantiza al terminar.
+
+1. Precondición: Lo que debe cumplirse antes de ejecutar una función
+
+2. Postcondición: Lo que se garantiza después de que la función se ejecuta exitosamente
+
+
+## Implementar precondiciones en Python
+
+Usamos validaciones explícitas, assert, raise, o anotaciones de tipo.
+
+```
+def dividir(a, b):
+    # Precondición: b ≠ 0
+    if b == 0:
+        raise ValueError("El divisor no puede ser cero")
+    return a / b
+
+```
+
+
+Usar assert (útil en desarrollo):
+
+```
+def dividir(a, b):
+    assert b != 0, "Precondición fallida: b debe ser distinto de 0"
+    return a / b
+
+```
+
+assert se desactiva en producción con el flag -O, así que úsalo principalmente para pruebas o entornos controlados.
+
+
+
+## Implementar postcondiciones
+
+Validamos que el resultado cumple una condición esperada
+
+```
+def cuadrado(x):
+    resultado = x * x
+    assert resultado >= 0, "Postcondición fallida: el resultado debe ser positivo"
+    return resultado
+
+```
+
+
+Ej: Precondciones y postcondiciones 
+
+```
+def registrar_usuario(nombre, edad):
+    # Precondiciones
+    assert isinstance(nombre, str), "nombre debe ser str"
+    assert edad >= 0, "edad debe ser no negativa"
+    
+    usuario = {"nombre": nombre, "edad": edad}
+
+    # Postcondiciones
+    assert "nombre" in usuario
+    assert usuario["edad"] >= 0
+
+    return usuario
+
+```
+
+
+Prácticas: 
+
+1. Nombrar pre/postcondiciones claramente:	
+Mejora la lectura y mantenimiento
+
+2. Validar antes de ejecutar:
+Evita ejecuciones innecesarias o inválidas
+
+3. Documentar condiciones:
+Aumenta la claridad de uso
+
+4. Usar assert en pruebas, raise en producción:
+Seguridad y flexibilidad
+
+5. Escribir tests que validen contratos:
+Te protege contra futuros cambios involuntarios
+
+
+## Estilo con docstrings (documentación de contrato)
+
+```
+
+def transferir(saldo, monto):
+    """
+    Transfiere un monto del saldo.
+
+    Precondiciones:
+    - saldo ≥ 0
+    - monto > 0
+    - saldo ≥ monto
+
+    Postcondición:
+    - retorna saldo - monto
+
+    """
+    assert saldo >= 0
+    assert monto > 0
+    assert saldo >= monto
+
+    resultado = saldo - monto
+
+    assert resultado >= 0
+    return resultado
+
+```
+
+
+## Funciones que devuelven múltiples valores también pueden tener postcondiciones
+
+```
+def dividir_y_residuo(a, b):
+    assert b != 0
+    cociente = a // b
+    residuo = a % b
+
+    assert a == cociente * b + residuo  # postcondición matemática
+    return cociente, residuo
+
+```
+
+
+## Alternativa avanzada: librerías que ayudan con contratos
+
+icontract: Decoradores para pre/postcondiciones.
+
+typeguard: Valida tipos en tiempo de ejecución.
+
+pydantic: Muy útil para contratos en modelos de datos
+
+```
+from icontract import require, ensure
+
+@require(lambda b: b != 0)
+@ensure(lambda result: result >= 0)
+def dividir(a: int, b: int) -> float:
+    return a / b
+
+```
+
+Ej: Patrón común 
+
+```
+def mi_funcion(x):
+    # Precondiciones
+    assert tipo(x)  # o raise si es producción
+    assert regla(x)
+
+    # Lógica principal
+    resultado = ...
+
+    # Postcondiciones
+    assert resultado cumple algo
+    return resultado
+
+```
+
+
+# Kata 21 - Get the Middle Character
+
+Recibirá una cadena no vacía. 
+
+Su tarea es devolver el/los carácter(es) central(es) de la cadena.
+
+Si la longitud de la cadena es impar, devuelve el carácter del medio.
+Si la longitud de la cadena es par, devuelve los 2 caracteres del medio.
+
+Ejemplos:
+
+"prueba" --> "es"
+"prueba" --> "t"
+"medio" --> "dd"
+"A" --> "A"
+
+ 
+Planteo: 
+
+cadena no vacía: entrada 
+
+devolver chars mid: out 
+
+if len(str) impar (%2 != 0): rtn char mid
+if len(str) par (%2 == 0): rtn chars mid 
+
+chars of str: for x in str
+chars mid: len(str)/2
+
+
+slice, join, 
+
+```
+def midchars(string):
+    long = len(string)
+    mid = long // 2
+    return string[mid-1:mid+1] if long %2 == 0 else string[mid]
+
+```
+
+
+
+# Kata 22 
+
+Disemvowel Trolls
+
+¡Los trolls están atacando tu sección de comentarios!
+
+Una forma común de abordar esta situación es eliminar todas las vocales de los comentarios de los trolls, neutralizando la amenaza.
+
+Su tarea es escribir una función que tome una cadena y devuelva una nueva cadena con todas las vocales eliminadas.
+
+Por ejemplo, la cadena "This website is for losers LOL!" se convertiría en "Ths wbst s fr lsrs LL!".
+
+Nota: para este kata la "y" no se considera una vocal.
+
+
+
+# kata 23 
+
+Opposite number
+
+Muy simple, dado un número (entero / decimal / ambos dependiendo del idioma), encuentra su opuesto (inverso aditivo).
+
+Examples:
+
+1: -1
+14: -14
+-34: 34
+
+```
+def opposite(num):
+    return -(num)
+
+print(opposite(1))
+print(opposite(14))
+print(opposite(-34))
+
+```
+
+
+
+# Kata 24
+
+Shortest Word
+
+Simple, dada una cadena de palabras, devuelve la longitud de la(s) palabra(s) más corta(s).
+
+La cadena nunca estará vacía y no es necesario tener en cuenta diferentes tipos de datos.
+
+
+Planteo: 
+
+diagram
+
+inp: str
+
+calc: 
+```
+str -> list -> order -> return list[0]
+
+```
+
+out: len str short
+
+pscod: 
+
+conver str en list
+tomar len de cada elm de list, guardarlo en nuev arr
+tomar menor num 
+
+methds
+order, sorted, revers, etc
+
+
+
+# Kata 25 
+
+Will you make it?
+
+Estabas acampando con tus amigos lejos de casa, pero al llegar la hora de volver, te das cuenta de que se te está acabando la gasolina y que la gasolinera más cercana está a 80 kilómetros. 
+
+Sabes que, de media, tu coche consume unos 40 kilómetros por litro. Quedan 8 litros.
+
+Considerando estos factores, escribe una función que te diga si es posible llegar a la bomba o no.
+
+La función debe devolver verdadero si es posible y falso si no.
+
+
+Planteo: 
+
+Descomp: 
+
+gasolinera: 
+g-- 80km --> g
+
+gasolina: 
+media consumo: 40km/l
+resto: 8.0l
+
+func: 
+
+calc: 
+
+Caso espec: 
+unidad: consum 40km/l
+total: resto 8.0l
+mult: 40*8 = 320km 
+gas: 80km -> 2.0l
+rtn true
+sobran: 6.0l gas
+
+factores:
+kmGasStation, gasStock, avgCon
+
+caso general: 
+gasStation = kmGasStation <= avgCons*gasStock
+
+diagram
+
+inp: 
+
+calc: 
+
+out: 
+rtn kmGasStation <= avgCons*gasStock 
+
+pscod: 
+
+methds
+
+
+
+# Kata 26 
+
+Invert values
+
+Dado un conjunto de números, devuelve el inverso aditivo de cada uno. 
+
+Cada positivo se convierte en negativo, y los negativos en positivos.
+
+```
+[1, 2, 3, 4, 5] --> [-1, -2, -3, -4, -5]
+[1, -2, 3, -4, 5] --> [-1, 2, -3, 4, -5]
+[] --> []
+
+```
+
+Se puede asumir que todos los valores son enteros. 
+
+No se debe modificar la matriz de entrada.
+
+ls
+copy()
+list(map(lambda e : -e, arrNum))
+
+
+# Yield vs return 
+
+```
+def invert(lst):
+    return [-x for x in lst]
+
+```
+
+La lista completa se rellena antes de que se ejecute la instrucción return.
+
+La solución descrita podría ser más precisa si se usara "yield" en lugar de "return", salvo que el tipo de retorno sería un generador y no una lista. 
+
+Esto significa que, para que esto funcione, se necesita una sentencia que no interrumpa el bucle for.
+
+
+
+# Kata 27 
+
+Escribe una función que tome un array de números y devuelva la suma de estos. 
+Los números pueden ser negativos o no enteros. 
+Si el array no contiene ningún número, debes devolver 0.
+
+Ej:
+
+```
+Entrada: [1, 5.2, 4, 0, -1]
+Salida: 9.2
+
+Aporte: []
+Salida: 0
+
+Entrada: [-2.398]
+Salida: -2.398
+
+```
+
+Suposiciones
+
+Puedes asumir que solo te dan números.
+No se puede asumir el tamaño de la matriz.
+Puedes asumir que obtienes una matriz y si la matriz está vacía, devuelves 0.
+
+Lo que estamos probando
+
+Estamos probando bucles y operaciones matemáticas básicas. 
+Esto es para principiantes que están aprendiendo bucles y operaciones matemáticas.
+Los usuarios avanzados pueden encontrar esto extremadamente fácil y pueden escribirlo fácilmente en una línea.
+
+sum
+ls
+map
+
+```
+return sumLst = lambda lst : sum(lst)
+
+return sum(list)
+
+[e for e in list] -> cnv num
+
+map(lambda e : e, list) -> cnv num
+
+```
+
+
+
+# Kata 28 
+
+sum odd numbers
+
+Dado el triángulo de números impares consecutivos:
+
+             1
+			3 5
+		   7 9 11
+		 13 15 17 19
+		21 23 25 27 29
+...
+
+Calcula la suma de los números en la fila n de este triángulo 
+(comenzando en el índice 1) por ejemplo: 
+(Entrada --> Salida)
+
+1 --> 1
+2 --> 3 + 5 = 8
+
+
+plant: 
+
+alter: 
+cnv arr space start and ends
+sum arr
+
+alter: 
+python rmv spaces 
+num -> list(num)
+
+
+
+# Kata 29 
+
+Remove First and Last Character
+
+```
+return replace.replace
+
+return s[0], s[-1]
+
+return s[1:-2]
+
+s = lambda s : s[1:-2]
+
+```
+
+
+# Kata 30 
+
+Escriba una función que acepte un entero no negativo "n" y una cadena s como parámetros, y
+devuelva una cadena "s" repetida exactamente n veces.
+Ejemplos (entrada -> salida)
+
+6, "i" -> "IIIIII"
+5, "Hola" -> "HolaHolaHolaHolaHola"
+
+
+Planteo
+
+int +, str
+str * int
+
+
+
+# Kata 31 
+
+Simple Multi
+
+Este kata trata de multiplicar un número dado por ocho si es un número par y por nueve en caso contrario.
+
+
+```
+return n*8 if n %2== 0 else n*9
+
+```
+
+
+
+# Kata 32
+
+Implementa una función que suma dos números y devuelve su suma en binario. 
+La conversión puede realizarse antes o después de la suma.
+
+El número binario devuelto debe ser una cadena.
+
+Ejemplos: (Entrada1, Entrada2 --> Salida (explicación)))
+
+1, 1 --> "10" (1 + 1 = 2 en decimal o 10 en binario)
+5, 9 --> "1110" (5 + 9 = 14 en decimal o 1110 en binario)
+
+
+
+# Kata 33 
+
+Transportation on vacation
+
+Tras un trimestre duro en la oficina, decides tomarte unas vacaciones. 
+Así que reservarás un vuelo para ti y tu novia e intentarás dejar atrás todo el lío.
+
+Necesitarás un coche de alquiler para desplazarte durante tus vacaciones. 
+El gerente de la empresa de alquiler de coches te ofrece buenas ofertas.
+
+Cada día de alquiler de coche cuesta $40. 
+Si lo alquilas por 7 días o más, tendrás un descuento de $50 en el total. 
+Por otro lado, si lo alquilas por 3 días o más, tendrás un descuento de $20 en el total.
+
+Escriba un código que proporcione el monto total para diferentes días (d).
+
+
+Planteo: 
+
+auto = 40 (dia)
+descuento = 50 (7d+)
+descuento = 20 (3d+)
+
+x*0.5
+
+total = 40(d)*off
+
+inp:
+d(num)
+
+calc: 
+d*40*0.
+out:
+total
+
+if 1 <= n <= 2: rtn 40 elif: 3 <= n <= 6 rtn 40*0.2: else: 40*0.5
+
+
+# Kata 34
+
+L1: Set Alarm
+
+Escriba una función llamada setAlarm/set_alarm/set-alarm/setalarm (según el lenguaje) que reciba dos parámetros. 
+El primero, "empleado", es verdadero siempre que esté empleado, y el segundo, "vacaciones", es verdadero siempre que esté de vacaciones.
+
+La función debe devolver verdadero si está empleado y no de vacaciones (ya que estas son las circunstancias en las que necesita configurar una alarma). 
+De lo contrario, debe devolver falso. 
+
+Ejemplos:
+
+empleado | vacaciones 
+verdadero | verdadero => falso
+verdadero | falso => ​​verdadero
+falso | verdadero => falso
+falso | falso => ​​falso
+
+
+inp
+empl, vac
+state 
+
+calc: 
+return true if empl is true and vac is false
+return true if empl == true and vac == false else false
+
+out
+
+
+
+# Kata 35
+
+Abbreviate a Two Word Name
+
+Escribe una función para convertir un nombre en iniciales. 
+
+Esta kata acepta estrictamente dos palabras con un espacio entre ellas.
+
+El resultado debe ser dos letras mayúsculas separadas por un punto.
+
+Debería verse así:
+
+Sam Harris => SH
+
+Patrick Feeney => PF
+
+
+split -> arr -> str -> index0 
+
+
+
+# Kata 36 
+
+Escriba una función que elimine los espacios de la cadena y luego devuelva la cadena resultante.
+
+Ejemplos (Entrada -> Salida):
+
+"8 j 8 mBliB8g imjB8B8 jl B" -> "8j8mBliB8gimjB8B8jlB"
+"8 8 Bi fk8h B 8 BB8B BB B888 c hl8 BhB fd" -> "88Bifk8hB8BB8BBBB888chl8BhBfd"
+"8aaaaa dddd r " -> "8aaaaaddddr"
+
+
+s.replace(" ", "")
+
+
+
+ 

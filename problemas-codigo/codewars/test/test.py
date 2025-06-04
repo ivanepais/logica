@@ -195,7 +195,160 @@ def _():
 
 
 
-# kata 19 
+# kata 20 - friends
 
+def Friends(arrStr):
+    return [f for f in arrStr if len(f) == 4] 
+
+def friendS(arrStr):
+    return list(filter(lambda f : len(f) == 4, arrStr))
+
+
+@test.describe("Fixed Tests")
+def fixed_tests():
+    @test.it('Basic Test Cases')
+    def basic_test_cases():
+        test.assert_equals(friend(["Ryan", "Kieran", "Mark",]), ["Ryan", "Mark"])
+        test.assert_equals(friend(["Ryan", "Jimmy", "abc", "d", "Cool Man"]), ["Ryan"])
+        test.assert_equals(friend(["Jimm", "Cari", "aret", "truehdnviegkwgvke", "sixtyiscooooool"]), ["Jimm", "Cari", "aret"])
+        test.assert_equals(friend(["Love", "Your", "Face", "1"]), ["Love", "Your", "Face"])
+        test.assert_equals(friend(["Hell", "Is", "a", "badd", "word"]), ["Hell", "badd", "word"])
+        test.assert_equals(friend(["Issa", "Issac", "Issacs", "ISISS"]), ["Issa"])
+        test.assert_equals(friend(["Robot", "Your", "MOMOMOMO"]), ["Your"])
+        test.assert_equals(friend(["Your", "BUTT"]), ["Your", "BUTT"])
+        test.assert_equals(friend(["Hello", "I", "AM", "Sanjay", "Gupt"]), ["Gupt"])
+        test.assert_equals(friend(["This", "IS", "enough", "TEst", "CaSe"]), ["This", "TEst", "CaSe"])
+        test.assert_equals(friend([]), [])
+
+@test.describe("Random Tests")
+def _():    
+    from random import choice, randint
+    
+    from string import ascii_letters as l
+    abc = l
+    
+    def random_string(friend=False):
+        return "".join(choice(abc) for _ in range(friend and 4 or randint(0, 20)))
+        
+    def random_input():
+        return [random_string(randint(0, 100) % 4 == 0) for _ in range(randint(0, 20))]
+    
+    def solution(l):
+        return [w for w in l if len(w) == 4]
+    
+    for _ in range(100):
+        ri = random_input()
+        expected = solution(ri)
+        @test.it(f"testing for friend({ri})")
+        def test_case():
+            test.assert_equals(friend(ri), expected)
+
+
+
+# kata 21 - pin 
+
+def pin(string):
+    from re import findall
+    l = list(string)
+    filt = list(findall("[0-9]", string))
+
+    if l == filt: 
+        return True if len(l) == 4 or len(l) == 6 else False
+    else:
+        return False
+
+
+from random import randint, choice
+from string import ascii_letters, punctuation, digits
+
+def run_test(pin, expected):
+    @test.it(f"testing validate_pin({pin!r})")
+    def test_case():
+        test.assert_equals(validate_pin(pin), expected)
+
+@test.describe("Fixed Tests")
+def fixed_tests():
+    @test.describe("should return False for pins with length other than 4 or 6")
+    def basic_test_cases():
+        run_test("1", False)
+        run_test("12", False)
+        run_test("123", False)
+        run_test("12345", False)
+        run_test("1234567", False)
+        run_test("-1234", False)
+        run_test("-12345", False)
+        run_test("1.234", False)
+        run_test("00000000", False)
+
+    @test.describe("should return False for pins which contain characters other than digits")
+    def _():
+        run_test("a234", False)
+        run_test(".234", False)
+
+    @test.describe("should return True for valid pins")
+    def _():
+        run_test("1234", True)
+        run_test("0000", True)
+        run_test("1111", True)
+        run_test("123456", True)
+        run_test("098765", True)
+        run_test("000000", True)
+        run_test("123456", True)
+        run_test("090909", True)
+
+    @test.describe("should handle edge cases")
+    def _():
+        tests = [
+            '',
+            '123',
+            '12345',
+            '1234567',
+            '1234567890',
+            '1234x',
+            '123456x',
+            '12.0',
+            '1234.0',
+            '123456.0',
+            '123\n',
+            '1234\n',
+            '09876\n',
+            '098765\n',
+            '-111',
+            '111-',
+            '-44444',
+            '44444-',
+            '+111',
+            '+88888',
+            '+1111',
+            '-2018',
+            '+234567',
+            '-234567',
+            '123/',
+            '456:',
+            '\xbe', # "three quarters" in Python 3, just some byte in Python 2
+            "123.", 
+            "-12."
+        ]
+        for s in tests:
+            run_test(s, False)
+
+@test.describe("should work with random input")
+def random_tests():
+
+    all_chars = ascii_letters + punctuation + digits
+
+    def solution(pin):
+        return len(pin) in (4, 6) and pin.isdigit()
+
+    def rand_valid_pin():
+        length = 4 if randint(0, 1) else 6
+        return "".join(choice(digits) for _ in range(length))
+
+    def rand_pin():
+        return "".join(choice(all_chars) for _ in range(randint(0, 10)))
+
+    for _ in range(40):
+        pin = rand_pin() if randint(0, 1) else rand_valid_pin()
+        run_test(pin, solution(pin))
 
 

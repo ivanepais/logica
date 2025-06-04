@@ -1447,7 +1447,856 @@ solution = str.endswith
 
 
 # kata 19 
+"""
+check square
 
+Given an integral number, determine if it's a square number:
+
+    In mathematics, a square number or perfect square is an integer that is the square of an integer; in other words, it is the product of some integer with itself.
+
+The tests will always use some integral number, so don't worry about that in dynamic typed languages.
+Examples
+
+-1  =>  false
+ 0  =>  true
+ 3  =>  false
+ 4  =>  true
+25  =>  true
+26  =>  false
+
+"""
+
+"""
+import math
+import cmath
+print("el cuadrado es:", math.isqrt(26))
+#5, redondea aunque no sea cuadrado perf
+print("el cuadrado es:", math.isqrt(25))
+#5
+
+s =  True if math.isqrt(26) else False
+r =  True if cmath.sqrt(25) else False
+print(s, r)
+
+
+print("el cuadrado es:", math.sqrt(25))
+print("el cuadrado es:", math.sqrt(26))
+
+#True if type(s) is float else False
+"""
+
+import math
+def isSquare(num):
+    if num >= 0: 
+        s = math.sqrt(num)
+        return s == int(s)
+    
+    return False
+
+
+print("Tipos:")
+"""
+print(True if type(4) == int else False)
+print(True if type(4.5) == int else False)
+"""
+
+"""
+print(4.5 is int)
+print(4 is int)
+"""
+
+"""
+print(math.isqrt(26))
+print(math.sqrt(26))
+print(math.sqrt(25))
+print(cmath.sqrt(25))
+print(cmath.sqrt(25))
+print(cmath.sqrt(25))
+
+"""
+
+"""
+print(isSquare(-1))
+print(isSquare(0))
+print(isSquare(3))
+print(isSquare(4))
+print(isSquare(25))
+print(isSquare(26))
+"""
+
+#import math
+
+def es_cuadrado_perfecto(n):
+    raiz = math.sqrt(n)
+    return raiz == int(raiz)
+
+# Ejemplos de uso:
+print(es_cuadrado_perfecto(16))  # True
+print(es_cuadrado_perfecto(20))  # False
+print(es_cuadrado_perfecto(25))  # True
+print(es_cuadrado_perfecto(1.5))
+
+
+def is_square(n):
+    return n > -1 and math.sqrt(n) % 1 == 0;
+
+
+
+# kata 20
+
+"""
+Friend or Foe
+
+Make a program that filters a list of strings and returns a list with only your friends name in it.
+
+If a name has exactly 4 letters in it, you can be sure that it has to be a friend of yours! Otherwise, you can be sure he's not...
+
+Input = ["Ryan", "Kieran", "Jason", "Yous"]
+Output = ["Ryan", "Yous"]
+
+Input = ["Peter", "Stephen", "Joe"]
+Output = []
+
+Input strings will only contain letters.
+Note: keep the original order of the names in the output
+
+"""
+
+
+def Friends(arrStr):
+    return [f for f in arrStr if len(f) == 4] 
+
+def friendS(arrStr):
+    return list(filter(lambda f : len(f) == 4, arrStr))
+
+"""
+print(Friends(["Ryan", "Kieran", "Jason", "Yous"])) 
+print(friendS(["Ryan", "Kieran", "Jason", "Yous"]))
+"""
+
+
+# kata 21
+
+"""
+Regex
+
+Validate PIN code
+
+ATM machines allow 4 or 6 digit PIN codes and PIN codes cannot contain anything but exactly 4 digits or exactly 6 digits.
+
+If the function is passed a valid PIN string, return true, else return false.
+Examples (Input --> Output)
+
+"1234"   -->  true
+"12345"  -->  false
+"a234"   -->  false
+
+"""
+
+def pin(string):
+    from re import findall
+    l = list(string)
+    filt = list(findall("[0-9]", string))
+
+    if l == filt: 
+        return True if len(l) == 4 or len(l) == 6 else False
+    else:
+        return False 
+
+"""
+print(pin("1234"))
+print(pin("12345"))
+print(pin("a234"))
+"""
+
+def validate_pin(pin):
+    return len(pin) in (4, 6) and pin.isdigit()
+
+def valid_pin(pin):
+    return len(pin) in [4, 6] and pin.isdigit()
+
+def val_pin(pin):
+    return bool(re.fullmatch("\d{4}|\d{6}", pin))
+
+v_pin = lambda pin: len(pin) in (4, 6) and pin.isdigit()
+
+
+
+# Get the Middle Character
+
+"""
+You are going to be given a non-empty string. Your job is to return the middle character(s) of the string.
+
+    If the string's length is odd, return the middle character.
+    If the string's length is even, return the middle 2 characters.
+
+Examples:
+
+"test" --> "es"
+"testing" --> "t"
+"middle" --> "dd"
+"A" --> "A"
+
+"""
+def midchars(string):
+    long = len(string)
+    mid = long // 2
+    return string[mid-1:mid+1] if long %2 == 0 else string[mid]
+
+    """
+    mid = len(string)/2
+    print(mid)
+    
+    for x in string:
+        mid = len(string)/2
+        print(mid)
+    """ 
+
+"""
+print(midchars("test"))
+print(midchars("testing"))
+print(midchars("middle"))
+print(midchars("A"))
+"""             
+
+
+
+# Kata 22
+
+"""
+Disemvowel Trolls
+
+Trolls are attacking your comment section!
+
+A common way to deal with this situation is to remove all of the vowels from the trolls' comments, neutralizing the threat.
+
+Your task is to write a function that takes a string and return a new string with all vowels removed.
+
+For example, the string "This website is for losers LOL!" would become "Ths wbst s fr lsrs LL!".
+
+Note: for this kata y isn't considered a vowel
+"""
+
+"""
+def rmv_vow(string):
+    return ''.join(c for c in string if c not in ("a", "e", "i", "o", "u"))
+
+print(rmv_vow("This website is for losers LOL!"))
+
+
+def rmvVowel(string):
+    return string.replace("a", "").replace("e", "").replace("i", "").replace("o", "").replace("u", "")
+
+print(rmvVowel("This website is for losers LOL!"))
+
+
+def removeVowel(s):
+    return "".join([char for char in s if char not in ["a", "e", "i", "o", "u"]])
+
+print(removeVowel("This website is for losers LOL!"))
+
+"""
+
+def disemvowel(string):
+    return "".join(c for c in string if c.lower() not in "aeiou")
+"""
+toma c, conver lower; prueba subcadena de aeiou
+>>> 'A' in 'aeiou'
+False
+>>> 'A'.lower() in 'aeiou'
+True
+
+"""
+
+"""
+def remove_exclamation_marks(string):
+    new_str = ""
+    for c in string:
+        if c != "!" and c != "¡":
+            new_str += c
+    return new_str
+
+#invierte logica, recorre subcadena aeiou
+#actualiza directamente s 
+
+"""
+
+def disvowel(s):
+    for i in "aeiouAEIOU":
+        s = s.replace(i,'')
+    return s
+
+def disemVowel(string):
+    import re
+    return re.sub(r"[aeiouAEIOU]", "", string)
+
+def disem_vowel(string_):
+    vowels = ["a","e","i","o","u","A","E","I","O","U"]
+    for letter in vowels:
+        string_ = string_.replace(letter,"")
+    return string_
+
+def disvowel(string):
+    a=['a','A','e','E','i','I','o','O','u','U']
+    for x in string:
+        if x in a:
+           string=string.replace(x,'')
+    return string
+
+
+
+# kata 23
+
+"""
+Opposite number
+
+Very simple, given a number (integer / decimal / both depending on the language), find its opposite (additive inverse).
+
+Examples:
+
+1: -1
+14: -14
+-34: 34
+
+"""
+
+def opposite(num):
+    return -num
+
+"""
+print(opposite(1))
+print(opposite(14))
+print(opposite(-34))
+
+"""
+
+
+# kata 24
+
+"""
+Simple, given a string of words, return the length of the shortest word(s).
+
+String will never be empty and you do not need to account for different data types.
+
+"""
+
+def short_w(s):
+    l = s.split(" ")
+    lenl = [len(e) for e in l]
+    return min(lenl) 
+    
+print(short_w("The words of the world"))
+
+def find_short(s):
+    return min(len(x) for x in s.split())
+
+def find_short_w(s):
+    return min(map(len, s.split(' ')))
+
+def f_short(s):
+    s = s.split()
+    l = min(s, key = len) 
+    return len(l)
+
+def find_sh(s):
+    l = map(len, s.split(" "))
+    return min(l)
+
+
+# Kata 25
+
+"""
+Will you make it?
+
+You were camping with your friends far away from home, but when it's time to go back, you realize that your fuel is running out and the nearest pump is 50 miles away! You know that on average, your car runs on about 25 miles per gallon. There are 2 gallons left.
+
+Considering these factors, write a function that tells you if it is possible to get to the pump or not.
+
+Function should return true if it is possible and false if not
+
+"""
+
+def fuel(kmStation, avgConsum, fuelStock):
+    return kmStation <= avgConsum*fuelStock
+
+print(fuel(200, 40, 7))
+
+def zeroFuel(distance_to_pump, mpg, fuel_left):
+    return mpg*fuel_left >= distance_to_pump
+
+
+
+# kata 26
+
+"""
+Invert values
+
+Given a set of numbers, return the additive inverse of each. Each positive becomes negatives, and the negatives become positives.
+
+[1, 2, 3, 4, 5] --> [-1, -2, -3, -4, -5]
+[1, -2, 3, -4, 5] --> [-1, 2, -3, 4, -5]
+[] --> []
+
+You can assume that all values are integers.
+Do not mutate the input array
+
+"""
+
+def inv(arrNum):
+    return list(map(lambda e : -e, arrNum))
+
+#print(inv([1, 2, 3, 4, 5]))
+
+def invN(lst):
+    return [-x for x in lst]
+
+def ivrt(lst):
+    return list(map(int.__neg__, lst))
+
+invertN = lambda lst: [-e for e in lst]
+
+
+
+# kata 27
+
+"""
+
+sum arrays
+
+Write a function that takes an array of numbers and returns the sum of the numbers. The numbers can be negative or non-integer. If the array does not contain any numbers then you should return 0.
+Examples
+
+Input: [1, 5.2, 4, 0, -1]
+Output: 9.2
+
+Input: []
+Output: 0
+
+Input: [-2.398]
+Output: -2.398
+Assumptions
+
+    You can assume that you are only given numbers.
+    You cannot assume the size of the array.
+    You can assume that you do get an array and if the array is empty, return 0.
+
+"""
+
+
+sumLst = lambda lst : sum(lst)
+
+print(sumLst([1, 5.2, 4, 0, -1]))
+print(sumLst([]))
+print(sumLst([-2.398]))
+
+def sumList(lst):
+    return sum(list)
+
+"""      
+def sLst(lst):
+    return [+e for e in lst]
+
+print(sLst([1, 5.2, 4, 0, -1]))
+print(sLst([]))
+print(sLst([-2.398]))
+
+"""
+
+def sList(lst):
+    return (map(lambda e : +e, lst))
+"""
+print(sList([1, 5.2, 4, 0, -1]))
+print(sList([]))
+print(sList([-2.398]))
+
+"""   
+
+def sum_array(a):
+    sum = 0
+    for i in a:
+        sum += i
+    return sum
+
+"""
+since his sum is already declared 0
+it will return 0 if list is empty.
+"""
+
+sumArray = sum
+"""
+función integrada para esto,llamada "sum()"
+le asignamos un nuevo alias.
+"""
+
+
+# kata 28
+
+"""
+Sum of odd numbers
+
+Given the triangle of consecutive odd numbers:
+
+             1
+          3     5
+       7     9    11
+   13    15    17    19
+21    23    25    27    29
+...
+
+Calculate the sum of the numbers in the nth row of this triangle (starting at index 1) e.g.: (Input --> Output)
+
+1 -->  1
+2 --> 3 + 5 = 8
+
+"""
+
+def sumOdd():
+    return n**3
+"""
+suma de los números en la fila n del triángulo
+de números impares consecutivos utilizando
+la fórmula n ** 3
+
+Identificar el primer número de la fila n:
+a_n​=n^2−n+1.
+
+Determinar el número de elementos en la fila n:
+número de elementos igual al número de la fila
+
+Calcular la suma de los números en la fila n:
+n^3
+
+Para n = 1, la suma es 1^3=1.
+Para n = 2, la suma es 2^3=8.
+Para n = 3, la suma es 3^3=27, que es 7+9+11=27.
+
+fórmula:
+calcular la suma de los números en la fila
+S_n​=n^3.
+
+
+"""
+
+
+
+# Kata 29 
+
+"""
+Remove First and Last Character
+
+"""
+
+def rmvfl(s):
+    return s[1:-1]
+
+removeFLC = lambda s : s[1:-1]
+
+"""
+def rmFL(s):
+    return "".join(c for c in s if  c[0] and c[-1])
+"""
+
+"""
+print(rmvfl("hello"))
+print(removeFLC("hello"))
+print(rmFLC("hello"))
+"""
+
+def remove_char(s):
+    s = list(s)
+    s.pop()
+    s.pop(0)
+    return ''.join(s)
+
+def remv_char(s):
+    a = list(s)
+    del a[0]
+    del a[-1]
+    l = ''
+    for i in a:
+        l += i
+    return l
+
+
+
+# Kata 30
+
+"""
+Repeat string
+
+Write a function that accepts a non-negative integer n and a string s as parameters, and returns a string of s repeated exactly n times.
+Examples (input -> output)
+
+6, "I"     -> "IIIIII"
+5, "Hello" -> "HelloHelloHelloHelloHello"
+
+"""
+
+repStr = lambda n, s : s * abs(n)
+"""
+print(repStr(5, "I"))
+print(repStr(5, "Hello"))
+"""
+repStrs = lambda n, s : s * -(-n)
+
+print(repStrs(5, "I"))
+print(repStrs(5, "Hello"))
+
+"""
+repeStr = lambda n, s : s * (-1*-n)
+
+print(repeStr(5, "I"))
+print(repeStr(5, "Hello"))
+
+-1*n err
+
+"""
+
+# kata 31
+
+"""
+Simple multiplication
+
+This kata is about multiplying a given number by eight if it is an even number and by nine otherwise.
+
+"""
+
+eightNineMult = lambda n : n*8 if n%2 == 0 else n*9
+
+print(eightNineMult(1))
+print(eightNineMult(2))
+
+"""
+Si no tenía "== 0", la sentencia if siempre
+devolverá FALSO lo cual es incorrecto.
+Esta respuesta es correcta si el valor de retorno es
+
+return  n * 9 si el número % 2 else n * 8
+
+"""
+
+def simple_multiplication(number) :
+    return number * 9 if number % 2 else number * 8
+
+
+
+# Kata 32
+
+"""
+Binary Addition
+
+Implement a function that adds two numbers together and returns their sum in binary. The conversion can be done before, or after the addition.
+
+The binary number returned should be a string.
+
+Examples:(Input1, Input2 --> Output (explanation)))
+
+1, 1 --> "10" (1 + 1 = 2 in decimal or 10 in binary)
+5, 9 --> "1110" (5 + 9 = 14 in decimal or 1110 in binary)
+
+"""
+
+binAdd = lambda a, b : str(bin((a+b))[2:])
+
+print(binAdd(1, 2))
+print(binAdd(1, 1))
+print(binAdd(5, 9))
+
+def add_binary(a,b):
+    return bin(a+b)[2:]
+
+
+
+# Kata 33
+
+"""
+After a hard quarter in the office you decide to get some rest on a vacation.
+So you will book a flight for you and your girlfriend and try to leave all the mess behind you.
+
+You will need a rental car in order for you to get around in your vacation.
+The manager of the car rental makes you some good offers.
+
+Every day you rent the car costs $40.
+If you rent the car for 7 or more days, you get $50 off your total.
+Alternatively, if you rent the car for 3 or more days, you get $20 off your total.
+
+Write a code that gives out the total amount for different days(d).
+
+"""
+
+def rental_car_cost(d):
+    if d >= 7:
+        return (40*d)*50
+    elif d >= 3:
+        return (40*d)*20
+    elif d <= 2:
+        return 40*d
+    elif d < 1: 
+        return False
+
+print(rental_car_cost(1))
+print(rental_car_cost(4))
+print(rental_car_cost(7))
+print(rental_car_cost(8))
+
+def rental_car(d):
+    result = d * 40
+    if d >= 7:
+        result -= 50
+    elif d >= 3:
+        result -= 20
+    return result
+
+def rent_car_cost(d):
+    if d >= 7: return d * 40 - 50
+    elif d >= 3: return d * 40 - 20
+    return d * 40
+
+def rental_car_cost(d):
+  return d * 40 - (d > 2) * 20 - (d > 6) * 30
+
+"""
+Por ejemplo, (d > 2) puede evaluarse como Verdadero o Falso, que es 1 o 0 en Python
+para que pueda usar ese resultado en el cálculo.
+Técnicamente, creo que es una mala idea mezclar
+tipos como este (es decir, booleano y entero),
+pero Python tiene esta característica donde
+booleano es un subtipo de entero, por lo que
+es perfectamente aceptable
+
+La clave es que en Python (y algunos otros lenguajes)
+True es equivalente a 1 (contiene el valor de 1 en un contexto de cálculo numérico)
+y False a 0.
+
+"""
+
+def ren_car_cost(d):
+    discount = 50 if d > 6 else 20 if d > 2 else 0 
+    return d * 40 - discount
+
+rencar_cost = lambda d: 40*d-[0,20,50][(d>=3)+(d>=7)]
+
+rentalcar_cost = lambda d: d * 40 - (50 if d > 6 else 20 if d > 2 else 0)
+
+
+
+# Kata 34
+
+"""
+L1:Set Alarm
+
+Write a function named setAlarm/set_alarm/set-alarm/setalarm (depending on language) which receives two parameters. The first parameter, employed, is true whenever you are employed and the second parameter, vacation is true whenever you are on vacation.
+
+The function should return true if you are employed and not on vacation (because these are the circumstances under which you need to set an alarm). It should return false otherwise. Examples:
+
+employed | vacation 
+true     | true     => false
+true     | false    => true
+false    | true     => false
+false    | false    => false
+
+"""
+
+setAlarm = lambda e, v : True if e is True and v is False else False
+
+print(setAlarm(True, False))
+print(setAlarm(True, True))
+
+
+def set_alarm(employed, vacation):
+    return employed and not vacation
+
+def set_Alarm(employed, vacation):
+    return employed > vacation
+
+setalarm=lambda *a:a==(1,0)
+
+
+
+# Kata 35
+
+"""
+Abbreviate a Two Word Name
+
+Write a function to convert a name into initials. This kata strictly takes two words with one space in between them.
+
+The output should be two capital letters with a dot separating them.
+
+It should look like this:
+
+Sam Harris => S.H
+
+patrick feeney => P.F
+
+"""
+
+def abbName(fname):
+    l = fname.split(" ")
+    print(l)
+    f = l[0]
+    l = l[1]
+    print(f)
+    print(l)
+    fi = f[0]
+    la = l[0]
+    print(fi)
+    print(la)
+
+    ab = f"{fi}.{la}".upper()
+    return ab
+    
+print(abbName("Sam Harris"))
+print(abbName("patrick feeney"))
+
+def abbN(fname):
+    name = fname.split(" ")
+    first = name[0]
+    last = name[1]
+
+    abbF = first[0]
+    abbL = last[0]
+    return f"{abbF}.{abbL}".upper()
+
+print(abbN("Sam Harris"))
+print(abbN("patrick feeney"))
+
+
+def abbrevName(name):
+    return '.'.join(w[0] for w in name.split()).upper()
+
+def abbNam(name):
+    first, last = name.upper().split(' ')
+    return first[0] + '.' + last[0]
+
+def abbvName(name):
+    names = name.split()
+    return f"{names[0][0]}.{names[1][0]}".upper()
+
+abbrvNa = lambda name: ".".join(e[0].upper() for e in name.split())
+
+
+
+# Kata 35
+
+"""
+Remove String Spaces
+
+Write a function that removes the spaces from the string, then return the resultant string.
+
+Examples (Input -> Output):
+
+"8 j 8   mBliB8g  imjB8B8  jl  B" -> "8j8mBliB8gimjB8B8jlB"
+"8 8 Bi fk8h B 8 BB8B B B  B888 c hl8 BhB fd" -> "88Bifk8hB8BB8BBBB888chl8BhBfd"
+"8aaaaa dddd r     " -> "8aaaaaddddr"
+
+"""
+
+rmvSpaces = lambda s : s.replace(" ", "")
+
+print(rmvSpaces("8aaaaa dddd r     "))
+
+def no_space(x):
+    return "".join(x.split())
 
 
 
