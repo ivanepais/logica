@@ -268,3 +268,54 @@ const eSum10 = arr =>
     arr.slice(i + 1).find(other => val + other === 10)
   );
 
+
+
+// Kata 5 
+
+/*
+
+The Feast of Many Beasts
+
+All of the animals are having a feast! 
+Each animal is bringing one dish. 
+There is just one rule: the dish must start and end with the same letters as the animal's name. 
+For example, the great blue heron is bringing garlic naan and the chickadee is bringing chocolate cake.
+
+Write a function feast that takes the animal's name and dish as arguments and returns true or false to indicate whether the beast is allowed to bring the dish to the feast.
+
+Assume that beast and dish are always lowercase strings, and that each has at least two letters. 
+beast and dish may contain hyphens and spaces, but these will not appear at the beginning or end of the string. 
+They will not contain numerals 
+
+*/
+
+
+function feast(beast, dish) {
+  // input: str
+  // output: boolean	
+  const flett = beast[0];
+  const lastlett = beast[beast.length - 1];
+  return dish.startsWith(flett) && dish.endsWith(lastlett);
+}
+
+function feastBD(beast, dish) {
+	return beast[0] === dish[0] && beast[beast.length - 1] === dish[dish.length - 1]
+}
+
+let feastbd = (a, b) => a[0] + [...a].pop() == b[0] + [...b].pop()
+
+
+
+// Kata 6
+
+/*
+ altERnaTIng cAsE <=> ALTerNAtiNG CaSe
+
+Defina String.prototype.toAlternatingCase (o una función/método similar como to_alternating_case/toAlternatingCase/ToAlternatingCase en el idioma seleccionado; 
+consulte la solución inicial para obtener más detalles) 
+de forma que cada letra minúscula se convierta en mayúscula
+y cada letra mayúscula en minúscula. Por ejemplo:
+
+Como de costumbre, su función/método debe ser puro, es decir, no debe mutar la cadena original.
+
+*/
