@@ -3893,3 +3893,1678 @@ En arrays grandes (por ejemplo, de 100,000 elementos):
 
 
 # kata 5 
+
+The Feast of Many Beasts
+
+¡Todos los animales están de fiesta! 
+Cada animal trae un plato. 
+Solo hay una regla: el plato debe empezar y terminar con las mismas letras que el nombre del animal. 
+Por ejemplo, la garza azul trae naan de ajo y el carbonero trae pastel de chocolate.
+
+Escriba una función de fiesta que tome el nombre del animal y el plato como argumentos y devuelva verdadero o falso para indicar si a la bestia se le permite llevar el plato a la fiesta.
+
+Supongamos que "bestia" y "plato" son siempre cadenas en minúsculas, y que cada una tiene al menos dos letras. 
+"bestia" y "plato" pueden contener guiones y espacios, pero estos no aparecerán al principio ni al final de la cadena. 
+No contendrán numerales.
+
+
+Planteo: 
+
+animal, plato
+
+plato debe empezar y terminar con las mismas letras que el nombre del animal.
+
+Ej: 
+
+great blue heron is bringing garlic naan
+
+the chickadee is bringing chocolate cake
+
+
+crear func feast: animal name y dish params
+
+returns true or false to indicate beast is allowed to bring the dish to the feast.
+
+
+params: 
+
+entrada siempre minus y al menos 2 chars in str
+
+pueden tener guiones y espacios pero no al principio ni final
+
+sin numerales 
+
+
+cod: 
+
+beast, dish
+if beast (starts "_" or " ") and (beast ends "_" or " ") and beast ("#")
+rtn false
+if beast0 and beast(len-1) === dish0 and dish(len-1)
+rtn true
+
+
+methds str: 
+for of "..."
+content()
+some() 
+includes, endsWith, startsWith, match
+search, substring
+
+
+### Lógica booleana: sin if
+
+##### Retornar por t o f la expresión
+
+```
+function feast(beast, dish) {
+  const flett = beast[0];
+  const lastlett = beast[beast.length - 1];
+  return dish.startsWith(flett) && dish.endsWith(lastlett);
+}
+
+```
+
+##### Retornar por t o f la igualdad del primer elemento y la igualdad del segundo 
+
+```
+function feast(beast, dish) {
+	return beast[0] === dish[0] && beast[beast.length - 1] === dish[dish.length - 1]
+}
+
+```
+
+
+Eficiencia: 
+
+Acceso lineal: e1 
+
+
+
+# Kata 6
+
+altERnaTIng cAsE <=> ALTerNAtiNG CaSe
+
+Defina String.prototype.toAlternatingCase (o una función/método similar como to_alternating_case/toAlternatingCase/ToAlternatingCase en el idioma seleccionado; 
+consulte la solución inicial para obtener más detalles) 
+de forma que cada letra minúscula se convierta en mayúscula
+y cada letra mayúscula en minúscula. Por ejemplo:
+
+```
+"hello world".toAlternatingCase() === "HELLO WORLD"
+"HELLO WORLD".toAlternatingCase() === "hello world"
+"hello WORLD".toAlternatingCase() === "HELLO world"
+"HeLLo WoRLD".toAlternatingCase() === "hEllO wOrld"
+"12345".toAlternatingCase()       === "12345"                   // Non-alphabetical characters are unaffected
+"1a2b3c4d5e".toAlternatingCase()  === "1A2B3C4D5E"
+"String.prototype.toAlternatingCase".toAlternatingCase() === "sTRING.PROTOTYPE.TOaLTERNATINGcASE"
+
+```
+
+Como de costumbre, su función/método debe ser puro, es decir, no debe mutar la cadena original.
+
+
+
+Planteo: 
+
+sin mutación
+
+loop: 
+
+if str(e) != str(e).lower 
+-> rtn str.upper
+ else str(e).lower
+
+
+acceso: 
+str(e) to set 
+
+
+pura vs mut: 
+
+pura: ir transformando el input con funciones
+
+str -> some(cond), map(transf)
+
+mut: imperativa 
+
+
+
+# Str Prototype
+
+## String.prototype
+
+Objeto prototipo de todas las cadenas.
+
+Contiene los métodos y propiedades que están disponibles para cualquier string, como:
+
+```
+obj | prop, meth
+str.prop
+str.meth
+str.startsWith
+str.length
+
+```
+
+Ej: str "texto"
+
+```
+"texto".toUpperCase();
+"texto".includes("x");
+"texto".charAt(2);
+
+```
+
+##### "texto" hereda de String.prototype.
+
+Internamente algo como: "hola".toUpperCase():
+
+1. Convierte el string literal "hola" en un objeto String.
+
+(constructor -> instancia/objeto)
+
+2. Busca el método toUpperCase() en String.prototype.
+
+(uso de métodos definidos en objeto superior String)
+
+3. Lo ejecuta y devuelve el resultado.
+
+(newObj.met())
+
+
+##### Prototipo: Es como un modelo base del que todas las cadenas obtienen sus funcionalidades.
+
+Métodos definidos en String.prototype:
+
+| Método           | Qué hace                                 |
+| ---------------- | ---------------------------------------- |
+| `.length`        | Devuelve la longitud del string          |
+| `.toUpperCase()` | Convierte todo a mayúsculas              |
+| `.toLowerCase()` | Convierte todo a minúsculas              |
+| `.includes()`    | Verifica si contiene una subcadena       |
+| `.startsWith()`  | Verifica si comienza con una subcadena   |
+| `.endsWith()`    | Verifica si termina con una subcadena    |
+| `.slice()`       | Extrae parte de la cadena                |
+| `.replace()`     | Reemplaza parte de la cadena             |
+| `.split()`       | Divide la cadena por separadores         |
+| `.trim()`        | Elimina espacios al principio y al final |
+
+
+## Extender String.prototype
+
+Con cuidado se puede agregar propios métodos personalizados:
+
+```
+String.prototype.reverse = function () {
+  return this.split("").reverse().join("");
+};
+
+console.log("hola".reverse()); // "aloh"
+
+```
+
+
+Peligros: 
+
+1. Puede romper compatibilidad con librerías u otros scripts.
+
+2. Puede sobrescribir métodos existentes si no se verifica antes.
+
+3. Se recomienda no modificar prototipos de objetos nativos en producción.
+
+
+Ubicación de String.prototype en la cadena de prototipos: 
+
+```
+"hola".__proto__ === String.prototype; // true
+String.prototype.__proto__ === Object.prototype; // true
+
+```
+
+Cada string tiene su prototipo en String.prototype, que a su vez hereda de Object.prototype.
+
+
+Rs: 
+
+1. String.prototype contiene todos los métodos que puedes usar en strings.
+
+2. Gracias a él, puedes usar métodos como .includes(), .slice(), .replace(), etc.
+
+3. Puedes agregar métodos personalizados, pero con precaución.
+
+4. Es clave en el modelo de herencia prototípica de JavaScript
+
+
+## Crear un str.proto 
+
+Sintaxis:
+
+```
+String.prototype.nombreDelMetodo = function (/* parámetros */) {
+  // `this` hace referencia al string sobre el que se llama
+  return algo;
+};
+
+```
+
+
+Ej: .reverse() 
+
+```
+String.prototype.reverse = function () {
+  return this.split("").reverse().join("");
+};
+
+console.log("hola".reverse()); // "aloh"
+
+```
+
+this es "hola"
+
+.split("") → ```["h", "o", "l", "a"]```
+
+.reverse() → ```["a", "l", "o", "h"]```
+
+.join("") → "aloh"
+
+
+Ej: .isPalindrome()
+
+Comprueba si un string es un palíndromo (si str se lee igual en sentido normal o inverso).
+
+```
+String.prototype.isPalindrome = function () {
+  const clean = this.toLowerCase().replace(/[^a-z0-9]/g, "");
+  return clean === clean.split("").reverse().join("");
+};
+
+console.log("Anita lava la tina".isPalindrome()); // true
+console.log("Hola mundo".isPalindrome());         // false
+
+```
+
+
+Prácticas:
+
+1. Evita sobrescribir métodos existentes:
+
+```
+if (!String.prototype.reverse) {
+  String.prototype.reverse = function () { /* ... */ };
+}
+
+```
+
+2. Usa nombres únicos o poco probables para evitar conflictos.
+
+3. No uses esto en librerías públicas o código compartido, salvo que lo encapsules o documentes bien.
+
+
+Agregar propiedades:
+
+```
+Object.defineProperty(String.prototype, "firstChar", {
+  get: function () {
+    return this[0];
+  }
+});
+
+console.log("hola".firstChar); // "h"
+
+```
+
+Método: String.prototype.miMetodo = function() {}
+
+Getter: Object.defineProperty(..., { get: ... })
+
+No romper compatibilidad global
+
+
+## Explicación add methd y prop a prototype
+
+1. Agregar Método a prototye
+
+```
+if (!String.prototype.reverse) {
+  String.prototype.reverse = function () {
+    // implementación
+  };
+}
+
+```
+
+Verifica si es distinto al que ya existe.
+
+String.prototype es el objeto del cual todas las instancias de strings heredan
+
+##### Si defines algo en String.prototype, lo agregas como método disponible para todas las cadenas de texto.
+
+```
+if (!String.prototype.reverse)
+
+```
+
+Esta línea verifica si ya existe un método llamado reverse en los strings.
+
+! significa "no" → entonces: “si no existe reverse en los strings...”
+
+Esta verificación evita sobrescribir métodos existentes, lo cual es buena práctica.
+
+
+```
+String.prototype.reverse = function () { ... }
+
+```
+
+##### Si no existe, aquí se está creando el método reverse para todas las strings.
+
+##### Dentro de esa función puedes usar this, que representará la cadena específica que llama a .reverse().
+
+```
+if (!String.prototype.reverse) {
+  String.prototype.reverse = function () {
+    return this.split('').reverse().join('');
+  };
+}
+
+console.log("hola".reverse()); // "aloh"
+
+```
+
+1. "hola" es un string → hereda de String.prototype.
+
+2. .reverse() fue añadido por nosotros.
+
+3. this dentro de la función es "hola".
+
+4. Se divide en array: ['h', 'o', 'l', 'a']
+
+5. Se revierte: ['a', 'l', 'o', 'h']
+
+6. Se une: "aloh"
+
+
+Peligros: 
+
+##### Si se implementa en producción puede romper librerías de terceros si agregas métodos con nombres que ya existen o existirán.
+
+
+Mejor alternativa: usar funciones puras:
+
+```
+const reverseString = str => 
+  str.split('').reverse().join('');
+
+```
+
+
+2. Agregar propiedad a prototype: 
+
+```
+Object.defineProperty(String.prototype, "firstChar", {
+  get: function () {
+    return this[0];
+  }
+});
+
+console.log("hola".firstChar); // "h"
+
+```
+
+##### Crea una propiedad computada de solo lectura llamada firstChar para todas las cadenas (String)
+
+Devuelve el primer carácter de la cadena.
+
+
+Código: 
+
+```
+Object.defineProperty(...)
+
+```
+
+Forma avanzada de definir o modificar propiedades de objetos, con opciones detalladas.
+
+Sintaxis general:
+
+```
+Object.defineProperty(obj, propName, descriptor)
+
+```
+
+En el ej: 
+
+1. obj: String.prototype
+
+2. propName: "firstChar"
+
+3. descriptor: ```{ get: function() { return this[0]; } }```
+
+
+```
+String.prototype
+
+```
+
+##### Es el objeto del cual heredan todas las strings. Al agregarle una propiedad, todas las cadenas tienen acceso a ella.
+
+
+```
+get: function () { return this[0]; }
+
+```
+
+Esta es una función getter. 
+
+No es un método, sino una propiedad de acceso.
+
+1. Se llama automáticamente cuando accedes a "hola".firstChar.
+
+2. this dentro de esta función es la cadena sobre la que se accedió ("hola").
+
+3. ```this[0]``` devuelve el primer carácter de la cadena.
+
+
+Ej: 
+
+```
+console.log("hola".firstChar); // "h"
+
+```
+
+"hola" hereda de String.prototype
+
+Al acceder a .firstChar, se activa el getter
+
+Retorna el primer carácter: "h"
+
+
+Get:
+
+1. Se usa como si fuera una propiedad, no una función:
+
+"hola".firstChar en vez de "hola".firstChar()
+
+2. Muy útil para crear propiedades computadas “de solo lectura”.
+
+
+Peligros:
+
+Modificar prototipos nativos (como String.prototype) no se recomienda en código de producción, porque:
+
+1. Puede entrar en conflicto con bibliotecas que también usen esa propiedad.
+
+2. Rompe la compatibilidad futura si el lenguaje añade una propiedad con el mismo nombre
+
+
+
+# Array.prototype
+
+
+
+# Getters y Setter en prototipos 
+
+1. Prototipo:
+
+Cada objeto en JS tiene un vínculo interno a otro objeto (su prototipo). 
+
+Cuando lees o escribes una propiedad, el motor busca primero en el propio objeto y después, si no la encuentra, recorre la cadena de prototipos.
+
+
+2. Accessor property:
+
+Una entrada de la tabla de propiedades cuyo descriptor trae funciones get y/o set en lugar de un valor fijo 
+
+Getter ⇒ se ejecuta cuando lees la propiedad.
+Setter ⇒ se ejecuta cuando asignas la propiedad
+
+
+3. Getter / Setter:
+
+Se definen en el prototipo, de modo que todas las instancias heredan esa lógica. 
+
+Al acceder/asignar la propiedad desde una instancia, se dispara la función con this apuntando a esa instancia.
+
+```
+// lectura                ─► dispara el getter
+valor = obj.prop;
+
+// asignación             ─► dispara el setter
+obj.prop = nuevoValor;
+
+```
+
+El objeto “parece” tener un campo normal, pero en realidad estás llamando código que vive en su prototipo.
+
+
+## Getters y setters existentes
+
+| Prototipo                | Propiedad (accesor)                                        | Getter | Setter | Qué hace                                                                                      |
+| ------------------------ | ---------------------------------------------------------- | ------ | ------ | ----------------------------------------------------------------------------------------------|
+| Map.prototype            | `size`                                                     | ✔️     | —      | Devuelve cuántos pares `clave→valor` hay en el mapa.                                          |
+| Set.prototype            | `size`                                                     | ✔️     | —      | Devuelve la cantidad de valores únicos en el set.                                             |
+| RegExp.prototype         | `flags`, `global`, `ignoreCase`, `unicode`, `dotAll`, etc. | ✔️     | —      | Informan las banderas con que se creó la expresión regular.                                   |
+| Object.prototype         | `__proto__` (legacy)                                       | ✔️     | ✔️     | Lee o cambia el prototipo de un objeto. ```(No usar en código moderno, está desaconsejado)``` |
+| Error.prototype          | `stack` (host-dependent)                                   | ✔️     | ✔️     | Muestra o ajusta la traza de pila.                                                            |
+| TypedArray.prototype     | `byteLength`, `length`                                     | ✔️     | —      | Tamaño de la vista sobre el buffer.                                                           |
+
+
+Propiedades como length en arrays no se implementan con un getter del prototipo.
+
+Son propiedades de datos especiales creadas en cada array por el motor. 
+
+Aun así, leer / escribir arr.length parece un getter/setter porque dispara lógica interna que ajusta el contenido del array.
+
+
+## Uso de métodos y props
+
+1. Búsqueda de la propiedad
+
+obj.prop
+
+	El motor mira si prop existe directamente en obj.
+
+	Si no la encuentra, sube a obj.__proto__ (su prototipo), y así sucesivamente
+
+
+2. Si la entrada encontrada es un accessor
+
+    Leer → se llama la función getter con this === obj.
+
+    Escribir → se llama la función setter con this === obj y el valor asignado.
+
+
+3. Si la entrada es un método (función-dato común)
+
+    No ocurre nada especial hasta que la invocas: obj.metodo().
+
+    La búsqueda es la misma, pero la propiedad contiene una función que tú ejecutas
+
+Ej: 
+
+Map.prototype.size
+
+```
+const m = new Map([["a", 1], ["b", 2]]);
+console.log(m.size); // 2 ← getter en Map.prototype
+
+m.set("c", 3);
+console.log(m.size); // 3 ← el getter se vuelve a ejecutar
+
+```
+
+1. Lectura m.size → el motor sube a Map.prototype, encuentra un accessor con get size() { … } y ejecuta ese código, que mira la ranura interna de m y devuelve el recuento.
+
+2. No hay setter: intentar m.size = 99 simplemente fracasa en strict mode (o no hace nada en no-strict).
+
+
+getter + setter: Object.prototype.__proto__ (legacy):
+
+```
+const obj = {};
+console.log(obj.__proto__ === Object.prototype); // getter
+
+obj.__proto__ = null; // setter: cambia la cadena de prototipos
+
+```
+
+
+Rs: 
+
+1. Getter / Setter = funciones que viven en el descriptor de la propiedad.
+
+2. En prototipos: las heredan todas las instancias; parecen campos normales desde fuera.
+
+3. Existen muchos getters nativos (size en Map/Set, flags en RegExp…). Los setters nativos son menos comunes y casi siempre para casos especiales (__proto__, stack en Error).
+
+4. Al leer / escribir una propiedad, el motor decide si invoca código (accessor) o entrega un valor almacenado (dato
+
+
+# Funcion pura vs Función no pura/con mutación
+
+Es clave para escribir código más predecible y fácil de testear.
+
+Sirve para programación funcional y JavaScript. 
+
+
+## Definición de función pura: 
+
+1. Siempre devuelve el mismo resultado con los mismos argumentos.
+
+2. No tiene efectos secundarios (no modifica nada fuera de su ámbito).
+
+
+Ej: 
+
+```
+const sumar = (a, b) => a + b;
+
+sumar(2, 3); // siempre devuelve 5
+
+```
+
+## Características de las funciones puras y no puras
+
+### Puras: 
+
+##### 1. No modifica variables externas:
+
+No cambia valores fuera de su propio ámbito. 
+
+No toca variables globales, objetos externos ni modifica argumentos por referencia.
+
+
+Impuro (modifica una variable externa):
+
+```
+let contador = 0;
+function incrementar() {
+  contador++; // ❌ modifica una variable externa
+}
+
+```
+
+Puro:
+
+```
+function incrementar(contador) {
+  return contador + 1; // solo usa su input
+}
+
+```
+
+
+##### 2. No cambia el estado de nada:
+
+1. No modifica ningún dato fuera de sí misma
+
+2. No muta variables externas.
+
+3. No cambia objetos, arrays ni estructuras pasadas como referencia.
+
+4. No altera el sistema (nada de escribir archivos, cambiar el DOM, etc.).
+
+
+Impuro (cambia el estado):
+
+```
+let usuario = { nombre: "Ana" };
+
+function renombrar(nuevoNombre) {
+  usuario.nombre = nuevoNombre; // cambia el estado externo
+}
+
+```
+
+puro:
+
+```
+function renombrar(usuario, nuevoNombre) {
+  return { ...usuario, nombre: nuevoNombre }; // ✅ no muta el original
+}
+
+```
+
+Nunca tiene efectos colaterales en el estado del sistema o del programa.
+
+
+##### 3. No accede a nada fuera de su input:
+
+Solo puede usar los datos que se le pasan explícitamente como argumentos
+
+No debe depender de:
+
+1. Variables globales
+
+2. Fecha y hora
+
+3. Estado del navegador o del sistema
+
+4. Bases de datos, APIs, almacenamiento local, etc.
+
+
+Impuro (depende del entorno):
+
+```
+function obtenerEdad() {
+  return new Date().getFullYear() - 1990; // accede al reloj del sistema
+}
+
+```
+
+Puro: 
+
+```
+function obtenerEdad(actual, nacimiento) {
+  return actual - nacimiento; // solo usa sus argumentos
+}
+
+```
+
+Es autosuficiente: todo lo que necesita debe estar en sus parámetros.
+
+
+##### 4. Siempre da el mismo resultado con el mismo input
+
+Determinismo: si le pasas los mismos argumentos, siempre obtendrás el mismo resultado
+
+Impuro: 
+
+```
+function aleatorioHasta(n) {
+  return Math.floor(Math.random() * n); // cambia cada vez
+}
+
+```
+
+Puro: 
+
+```
+function doble(x) {
+  return x * 2; // siempre da el mismo resultado
+}
+
+```
+
+##### 5. Fácil de testear:
+
+Es muy fácil de probar automáticamente:
+
+1. No depende del entorno.
+
+2. No requiere mocks ni preparación compleja.
+
+3. Se puede usar en aislamiento
+
+Testing: 
+
+```
+function sumar(a, b) {
+  return a + b; // ✅ pura
+}
+
+// Test automático
+console.assert(sumar(2, 3) === 5);
+console.assert(sumar(2, 3) === 5); // siempre igual
+
+```
+
+Ventajas: 
+
+1. Predecibles → mismo input → mismo output.
+
+2. Testeables → no necesitas simular estados o entornos.
+
+3. Reutilizables → no dependen de contextos externos.
+
+4. Seguras → no rompen nada al usarse
+
+
+## Función impura
+
+Puede devolver resultados distintos con los mismos argumentos.
+
+Tiene efectos secundarios, como:
+
+1. Modificar variables globales.
+
+2. Leer o escribir en archivos o bases de datos.
+
+3. Modificar el DOM.
+
+4. Usar console.log, Math.random, Date.now, etc.
+
+
+Ej:
+
+```
+let total = 0;
+
+const sumarYGuardar = (a, b) => {
+  total = a + b;
+  return total;
+};
+
+```
+
+Modifica la variable externa total.
+
+No es predecible si total es usado en otras partes
+
+
+Ej: 
+
+```
+const obtenerHora = () => new Date().toLocaleTimeString();
+
+```
+
+Cada vez que la llamas, devuelve un valor diferente → impura.
+
+
+## Efectos secundarios
+
+En muchas aplicaciones necesitas funciones impuras (para leer datos, modificar el DOM, etc.).
+
+##### Lo importante es aislar esos efectos para que no contaminen el resto de la lógica.
+
+
+Ej: 
+
+```
+// Función pura
+const formatearSaludo = nombre => `Hola, ${nombre}`;
+
+// Función impura que usa la pura
+const saludar = nombre => {
+  const mensaje = formatearSaludo(nombre);
+  console.log(mensaje); // efecto secundario
+};
+
+```
+
+##### Su comportamiento puede afectar el estado global del programa.
+
+
+Prácticas: 
+
+##### 1. Usa funciones puras para procesar datos.
+
+##### 2. Usa funciones impuras para comunicarte con el mundo exterior (UI, logs, red, etc.).
+
+##### 3. Siempre que puedas, separa la lógica pura de los efectos secundarios
+
+
+## Métodos de str puros js 
+
+Los strings son inmutables: no se pueden modificar directamente.
+
+Todos los métodos que "parecen" transformar un string en realidad devuelven uno nuevo.
+
+Ninguno de ellos modifica el string original
+
+
+Los strings en JS son inmutables por diseño, así que no existen métodos que muten un string existente. 
+
+##### Sí ocurre con arrays (por ejemplo, .push() o .sort()).
+
+
+
+## Métodos de cadena puros 
+
+1. Los strings son inmutables: no se pueden modificar directamente.
+
+2. Todos los métodos que "parecen" transformar un string en realidad devuelven uno nuevo.
+
+3. Ninguno de ellos modifica el string original
+
+
+| Método                      | Qué hace                              | Retorna nuevo string |
+| --------------------------- | ------------------------------------- | -------------------- |
+| `.slice(start, end)`        | Extrae parte del string               | ✅ Sí                 |
+| `.substring(start, end)`    | Similar a `.slice()`                  | ✅ Sí                 |
+| `.substr(start, length)`    | Obsoleto pero no muta                 | ✅ Sí                 |
+| `.toLowerCase()`            | Convierte a minúsculas                | ✅ Sí                 |
+| `.toUpperCase()`            | Convierte a mayúsculas                | ✅ Sí                 |
+| `.trim()`                   | Elimina espacios laterales            | ✅ Sí                 |
+| `.replace()`                | Reemplaza parte del string            | ✅ Sí                 |
+| `.replaceAll()`             | Reemplaza todas las ocurrencias       | ✅ Sí                 |
+| `.split()`                  | Divide el string y devuelve un array  | ✅ Sí (array nuevo)   |
+| `.concat()`                 | Concatena con otro string             | ✅ Sí                 |
+| `.repeat(n)`                | Repite el string `n` veces            | ✅ Sí                 |
+| `.padStart()` / `.padEnd()` | Añade caracteres al principio o final | ✅ Sí                 |
+| `.normalize()`              | Normaliza caracteres Unicode          | ✅ Sí                 |
+
+
+```
+const original = "  Hola Mundo  ";
+
+const sinEspacios = original.trim();       // "Hola Mundo"
+const enMayusculas = original.toUpperCase(); // "  HOLA MUNDO  "
+
+console.log(original); // "  Hola Mundo  " → el original no cambia
+
+```
+
+Rs:
+
+1. Todos los métodos nativos de strings en JavaScript son puros.
+
+2. Usar métodos de strings es seguro: nunca cambian el valor original.
+
+
+## Métodos de array puros
+
+Los métodos de array pueden afectar o no al estado de un array. 
+
+##### Como los array son objetos mutables, un array original puede cambiar con un método que afecte al original y no crea uno nuevo. 
+
+
+Métodos de array puros:
+
+Devuelven una copia nueva o un resultado sin modificar el array original:
+
+| Método                                           | Qué hace                                   | Retorna              |
+| ------------------------------------------------ | ------------------------------------------ | -------------------- |
+| `.slice()`                                       | Corta una porción                          | Nuevo array          |
+| `.concat()`                                      | Une arrays                                 | Nuevo array          |
+| `.map()`                                         | Transforma elementos                       | Nuevo array          |
+| `.filter()`                                      | Filtra elementos según condición           | Nuevo array          |
+| `.reduce()` / `.reduceRight()`                   | Reduce a un solo valor                     | Resultado (no array) |
+| `.find()` / `.findIndex()` / `.findLast()`       | Busca elementos                            | Valor o índice       |
+| `.every()` / `.some()`                           | Verifican condiciones                      | Booleano             |
+| `.includes()`                                    | Chequea si existe un valor                 | Booleano             |
+| `.indexOf()` / `.lastIndexOf()`                  | Posición de un valor                       | Índice numérico      |
+| `.join()`                                        | Une elementos en un string                 | String               |
+| `.flat()` / `.flatMap()`                         | Aplana arrays                              | Nuevo array          |
+| `.at()`                                          | Accede a posición (soporta negativos)      | Valor                |
+| `.toReversed()` / `.toSorted()` / `.toSpliced()` | (ES2023+) Versión pura de métodos mutables | Nuevo array          |
+
+
+Impuros: 
+
+Modifican directamente el array, cambiando su contenido:
+
+| Método          | Qué hace                             | Efecto   |
+| --------------- | ------------------------------------ | -------- |
+| `.push()`       | Agrega al final                      | Mutación |
+| `.pop()`        | Elimina del final                    | Mutación |
+| `.shift()`      | Elimina del inicio                   | Mutación |
+| `.unshift()`    | Agrega al inicio                     | Mutación |
+| `.reverse()`    | Invierte el array                    | Mutación |
+| `.sort()`       | Ordena elementos                     | Mutación |
+| `.splice()`     | Añade o quita elementos              | Mutación |
+| `.fill()`       | Rellena con un valor                 | Mutación |
+| `.copyWithin()` | Copia parte del array sobre sí mismo | Mutación |
+
+
+Ej: 
+
+```
+const arr = [1, 2, 3];
+
+// Puro
+const nuevo = arr.slice(0, 2); // [1, 2]
+console.log(arr); // [1, 2, 3]
+
+// Impuro
+arr.push(4);
+console.log(arr); // [1, 2, 3, 4] ← fue modificado
+
+```
+
+Métodos puros → ideales para programación funcional, testing, predictibilidad.
+
+Métodos impuros → útiles pero deben usarse con cuidado si trabajas con datos compartidos o inmutabilidad (por ejemplo, en React o Redux)
+
+
+
+## Index y posición en array JS
+
+Son terminos intercambiables pero hay técnicamente hay una pequeña diferencia de contexto. 
+
+| Término      | Qué representa                                                                                     | Base | Ejemplo                                    |
+| ------------ | -------------------------------------------------------------------------------------------------- | ---- | ------------------------------------------ |
+| Índice       | La posición numérica en un array o string, empezando desde 0.                                      | 0    | `array[0]` es el primer elemento           |
+| Posición     | Término más general o natural, a veces se refiere a la ubicación "humana" (empezando desde 1).     | 1    | "El primer carácter está en la posición 1" |
+
+
+Todos los métodos que hablan de "posición" realmente devuelven un índice.
+
+Ej.: .indexOf(), .findIndex() → retornan el índice (basado en 0), aunque el nombre diga "posición" en algunas documentaciones informales.
+
+```
+const letras = ['a', 'b', 'c', 'd'];
+
+console.log(letras.indexOf('c')); // 2 ← índice
+console.log(letras[2]);           // "c" ← acceso por índice
+
+```
+
+"La letra 'c' está en la tercera posición"
+Pero el índice es 2.
+
+
+| Método           | Uso                                | Devuelve        |
+| ---------------- | ---------------------------------- | --------------- |
+| `.indexOf(val)`  | Busca valor exacto                 | Índice (número) |
+| `.findIndex(fn)` | Busca por condición (callback)     | Índice (número) |
+
+
+Rs: 
+
+"índice" → término técnico.
+
+"posición" → término informal o natural (a veces confunde con base 1).
+
+
+```
+const nums = [4, 7, 9, 10];
+
+console.log(nums.indexOf(9)); // 2
+console.log(nums.findIndex(n => n > 8)); // 2 (el 9 cumple)
+
+```
+
+
+# Helpers
+
+Opciones con condicional:
+
+```
+const str = "banana";
+const resultado = str.startsWith("a") || str.startsWith("b");
+console.log(resultado); // true
+ 
+```
+
+
+Corrección con helpers: 
+
+1. 
+
+```
+const str = "banana";
+const letras = ["a", "b"];
+
+const empiezaCon = letras.some(l => str.startsWith(l));
+console.log(empiezaCon); // true
+
+```
+
+```
+const str = "banana";
+const letras = ["x", "y", "a"];
+
+const contiene = letras.some(l => str.includes(l));
+console.log(contiene); // true (porque "a" está en "banana")
+
+```
+
+2. 
+
+```
+const startsWithOneOf = (str, prefixes) => {
+  return prefixes.some(prefix => str.startsWith(prefix));
+};
+
+```
+
+uso: 
+
+```
+console.log(startsWithOneOf("banana", ["a", "b", "c"])); // true (porque empieza con "b")
+console.log(startsWithOneOf("mango", ["a", "b", "c"]));  // false
+console.log(startsWithOneOf("apple", ["ap", "or"]));     // true
+
+```
+
+
+```
+const includesOneOf = (str, substrings) => {
+  return substrings.some(sub => str.includes(sub));
+};
+
+// Ejemplos
+console.log(includesOneOf("banana", ["x", "n", "z"])); // true
+console.log(includesOneOf("kiwi", ["a", "b"]));        // false
+
+```
+
+
+# Planteo 
+
+kiss, dry, yagni, solid 
+función pura (no mutación de estado)
+efectos secuandario(uso de funcion pura)
+eficiencia, estructuras. 
+retornar expresión mat, log, etc. 
+
+lógica:
+1. ¿Qué pasa si...? -> (usa if)
+2. ¿Qué hago para cada...? -> (usa for)
+3. ¿Hasta cuándo sigo...? -> (usa while)
+4. ¿Qué pasa si algo falla...? -> (usa try)
+5. ¿Cómo manejo estructuras externas...? -> (usa with)
+6. ¿Cómo encapsulo esta lógica...? -> (usa funciones)
+
+
+
+# Manipulación de strings
+
+1. métodos inmutables
+
+Los strings en JavaScript son inmutables. 
+
+Por lo tanto, todos los métodos como .slice(), .replace(), .toUpperCase(), etc., devuelven una nueva cadena.
+
+```
+const name = "carlos";
+const capitalized = name.charAt(0).toUpperCase() + name.slice(1); // "Carlos"
+
+```
+
+Siempre guarda el resultado en una nueva variable.
+
+
+2. Evita concatenación con + en bucles 
+
+Concatenar con + en bucles genera muchas copias intermedias → ineficiente.
+
+```
+// Malo: O(n²)
+let result = "";
+for (let i = 0; i < 1000; i++) {
+  result += "x";
+}
+
+// Mejor:
+let result = new Array(1001).join("x"); // 1000 veces "x"
+// o
+result = "x".repeat(1000);
+
+```
+
+
+3. Prefiere template literals (\${...}``) en vez de concatenación
+
+```
+// Menos legible
+const msg = "Hola " + name + ", tienes " + age + " años.";
+
+// Mejor
+const msg = `Hola ${name}, tienes ${age} años.`;
+
+```
+
+
+4. Normaliza espacios, mayúsculas y tildes si necesitas comparar
+
+Para evitar errores por diferencias de formato
+
+```
+// Comparación sin distinción de mayúsculas
+str1.toLowerCase() === str2.toLowerCase();
+
+// Eliminar tildes y acentos
+const normalize = str => str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+```
+
+
+5. Usa expresiones regulares con precaución
+
+Son potentes, pero pueden volverse difíciles de mantener. Siempre comenta si es una expresión compleja.
+
+```
+// Con comentario claro
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Chequea formato básico de email
+
+``` 
+
+
+6. Evita métodos obsoletos o inconsistentes
+
+Evita substr() y substring() si puedes usar .slice().
+
+Usa .startsWith(), .endsWith() y .includes() para claridad y compatibilidad moderna
+
+
+7. Escapa adecuadamente al construir HTML / URLs
+
+Usa encodeURIComponent() para parámetros de URL.
+
+Para HTML, si estás construyendo con strings (no recomendado), escapa caracteres especiales (<, >, ", ', &) para prevenir XSS.
+    
+    
+    
+8. Divide y une cadenas con .split() y .join()
+
+Útil para invertir palabras, remover espacios, etc.
+
+```
+const reversed = "hola mundo".split(" ").reverse().join(" "); // "mundo hola"
+
+```
+
+
+9. Valida tipo antes de manipular
+
+Asegúrate de estar trabajando con strings reales.
+
+```
+function safeTrim(val) {
+  return typeof val === "string" ? val.trim() : "";
+}
+
+```    
+
+
+10. Evita hardcodear separadores o formatos
+
+Crea funciones reutilizables para formateo:
+
+```
+function capitalize(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+}
+
+```
+
+
+11. Nuevas funciones 
+
+.padStart() / .padEnd() → para alinear texto.
+
+.replaceAll() (ES2021) → reemplazos múltiples.
+
+Intl para formateo de fechas, monedas, listas.
+
+
+# Manipulación de arrays
+
+1. Usar métodos declarativos (funcionales) siempre que puedas
+
+Métodos como .map(), .filter(), .reduce(), .some(), .every() son inmutables, más expresivos y encadenables.
+
+```
+// Dado un array de edades, filtra mayores de edad y obtén el doble
+const edades = [12, 19, 25, 16];
+const mayoresDobles = edades.filter(e => e >= 18).map(e => e * 2);
+
+```
+
+
+2. Evitar mutación si no es necesario
+
+Muchos métodos mutan el array (.push(), .pop(), .shift(), .splice(), .sort()), así que ten cuidado si necesitas mantener el original. 
+
+```
+// Mutación
+const arr = [1, 2, 3];
+arr.sort(); // cambia el orden en el original
+
+// Copia antes de mutar si lo necesitas
+const sorted = [...arr].sort();
+
+```
+
+
+3. Alternativas a los bucles clásicos
+
+```
+// Menos expresivo
+for (let i = 0; i < arr.length; i++) { ... }
+
+// Más legible
+arr.forEach(item => { ... });
+
+```
+
+##### Si el rendimiento es crítico (e.g. arrays muy grandes), los bucles clásicos pueden ser más rápidos.
+
+
+4. Accede de forma segura
+
+Antes de acceder a un índice, verifica su existencia
+
+```
+if (arr.length > 0) {
+  const first = arr[0];
+}
+
+```
+
+O usa ?. si es posible:
+
+```
+const first = arr?.[0];
+
+```
+
+
+5. Usar .reduce() para transformar arrays completos 
+
+Ideal para acumulaciones, agrupaciones o transformaciones avanzadas:
+
+```
+// Sumar elementos
+const total = arr.reduce((acc, val) => acc + val, 0);
+
+// Agrupar por propiedad
+const groupBy = (arr, prop) =>
+  arr.reduce((acc, item) => {
+    const key = item[prop];
+    acc[key] = acc[key] || [];
+    acc[key].push(item);
+    return acc;
+  }, {});
+
+```
+
+
+6. Evita usar .map() si no usas el resultado
+
+```
+// Incorrecto
+arr.map(x => console.log(x)); // Usar forEach
+
+// Correcto
+arr.forEach(x => console.log(x));
+
+```
+
+
+7. Para búsquedas, usa .find(), .some(), .every()
+
+```
+const users = [{ id: 1 }, { id: 2 }];
+
+users.find(u => u.id === 2);   // {id: 2}
+users.some(u => u.id === 3);   // false
+users.every(u => u.id > 0);    // true
+
+```
+
+
+8. Cuidado con .indexOf() vs .includes()
+
+.indexOf() devuelve el índice o -1.
+
+.includes() devuelve true o false.
+    
+```
+arr.includes(5);      // más legible
+arr.indexOf(5) !== -1 // menos directo
+
+```    
+
+
+9. Para limpiar arrays: .filter(Boolean)
+
+Elimina falsy (false, null, 0, "", undefined, NaN):
+
+```
+const cleaned = [0, 1, "", "hola", false].filter(Boolean); // [1, "hola"]
+
+```
+
+
+10. Evita usar .splice() sin necesidad
+
+.splice() muta el array; si necesitas quitar elementos sin mutar, usa .slice() o .filter().
+
+```
+// Extraer sin mutar
+const copy = arr.slice(0, 3);
+
+// Remover un elemento por índice sin mutar
+const removed = arr.filter((_, i) => i !== indexToRemove);
+
+```
+
+
+11. spread operator
+
+```
+// Eliminar duplicados
+const unique = [...new Set(arr)];
+
+// Aplanar arrays
+const flat = nestedArray.flat(Infinity); // o .flatMap()
+
+// Revertir sin mutar
+const reversed = [...arr].reverse();
+
+```
+
+
+## forEach vs map 
+
+
+
+# Desestructuración
+
+Permite extraer valores de arrays u objetos y asignarlos a variables de forma concisa.
+
+
+2. Desestructuración de Arrays
+
+#### La posición importa:
+
+```
+const numeros = [10, 20, 30];
+
+// Extrae los primeros dos valores
+const [a, b] = numeros;
+console.log(a); // 10
+console.log(b); // 20
+
+```
+
+Valores omitidos:
+
+```
+const [x, , z] = [1, 2, 3];
+console.log(x); // 1
+console.log(z); // 3
+
+```
+
+Valores por defecto:
+
+```
+const [p, q = 42] = [5];
+console.log(q); // 42
+
+```
+
+
+2. Desestructuración de Objetos
+
+#### El nombre importa, la posición no
+
+```
+const persona = { nombre: "Ana", edad: 28 };
+
+const { nombre, edad } = persona;
+console.log(nombre); // "Ana"
+console.log(edad);   // 28
+
+``` 
+
+Renombrar variables:
+
+```
+const { nombre: n, edad: e } = persona;
+console.log(n); // "Ana"
+
+```
+
+Valores por defecto:
+
+```
+const { ciudad = "Desconocida" } = persona;
+console.log(ciudad); // "Desconocida"
+
+```
+
+
+3. Desestructuración en funciones (parámetros)
+
+Objetos:
+
+```
+function saludar({ nombre, edad }) {
+  console.log(`Hola, ${nombre}. Tienes ${edad} años.`);
+}
+
+saludar({ nombre: "Luis", edad: 30 });
+
+```
+
+
+Arrays:
+
+```
+function mostrar([x, y]) {
+  console.log(x, y);
+}
+
+mostrar([100, 200]); // 100 200
+
+```
+
+
+4. Desestructuración anidada
+
+```
+const usuario = {
+  nombre: "María",
+  direccion: {
+    ciudad: "Lima",
+    pais: "Perú"
+  }
+};
+
+const {
+  direccion: { ciudad, pais }
+} = usuario;
+
+console.log(ciudad); // "Lima"
+
+```
+
+
+5. Usos comunes
+
+Intercambio de variables: 
+
+```
+let a = 1, b = 2;
+[a, b] = [b, a];
+
+```
+
+Extraer valores de response (por ejemplo en APIs):
+
+```
+const response = { status: 200, data: [1, 2, 3] };
+const { status, data } = response;
+
+```
+
+Aportes: 
+
+Código más limpio y legible.
+
+Reducción de repetición de nombres.
+
+Ideal para trabajar con estructuras complejas (como respuestas de API o props en React).
+
+
+
+# Operador spread (...)
+
+"Expande" los elementos de un array, objeto o iterable donde se esperan cero o más elementos o propiedades.
+
+Permite copiar, combinar o expandir los valores de un iterable (como arrays, objetos o incluso strings) en un nuevo contexto.
+
+
+1. Arrays:
+
+Copiar un array
+
+```
+const a = [1, 2, 3];
+const copia = [...a];  // [1, 2, 3]
+
+```
+
+Combinar arrays:
+
+```
+const a = [1, 2];
+const b = [3, 4];
+const combinado = [...a, ...b];  // [1, 2, 3, 4]
+
+```
+
+Usar en funciones:
+
+```
+const numeros = [1, 2, 3];
+console.log(Math.max(...numeros)); // 3
+
+```
+
+
+2. Spread en objetos
+
+Copiar un objeto
+
+```
+const persona = { nombre: "Ana", edad: 30 };
+const copia = { ...persona };  // copia exacta
+
+```
+
+Combinar objetos: 
+
+```
+const a = { x: 1 };
+const b = { y: 2 };
+const combinado = { ...a, ...b }; // { x: 1, y: 2 }
+
+```
+
+Si hay claves duplicadas, el último gana:
+
+```
+const a = { x: 1 };
+const b = { x: 9, y: 2 };
+const resultado = { ...a, ...b }; // { x: 9, y: 2 }
+
+```
+
+
+3. Spread en strings
+
+Un string es un iterable, así que también puede "expandirse":
+
+```
+const palabra = "Hola";
+const letras = [...palabra];  // ['H', 'o', 'l', 'a']
+
+```
+
+
+Diferencias con rest (...)
+
+#### ... se llama spread cuando expande.
+
+#### Se llama rest cuando recoge varios valores en una sola variable.
+
+```
+// Spread: expansión
+const arr = [1, 2, 3];
+const nuevo = [...arr, 4];  // [1, 2, 3, 4]
+
+// Rest: recolección
+const [a, ...resto] = [10, 20, 30];  
+// a = 10, resto = [20, 30]
+
+```
+
+
+Aportes: 
+
+Hace que el código sea más limpio y conciso.
+
+Evita mutaciones.
+
+Facilita operaciones comunes como copiar, fusionar y pasar datos.
+
+
+
