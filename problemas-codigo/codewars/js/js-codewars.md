@@ -2045,6 +2045,7 @@ hello = (val) => "Hello " + val;
 
 ```
 
+
 ## Ternary: 
 
 ```
@@ -2284,6 +2285,15 @@ console.log(dobles); // [2, 4, 6, 8]
 
 3. No tienen arguments, super, ni new.target.
 
+
+```
+const h = () => return "h"; // SyntaxError
+
+const h = () => "h"; // Correcto
+
+const h = () => { return "h"; }; // También correcto
+
+```
 
 
 # Kata 4
@@ -5464,6 +5474,141 @@ Reducción de repetición de nombres.
 Ideal para trabajar con estructuras complejas (como respuestas de API o props en React).
 
 
+## Usos de desestructuración 
+
+1. Arrays:
+
+Extraer valores por posición (i/index): 
+
+```
+const numeros = [10, 20, 30];
+
+const [a, b] = numeros;
+console.log(a); // 10
+console.log(b); // 20
+
+```
+
+Omitir valores:
+
+```
+const [x, , z] = [1, 2, 3];
+console.log(z); // 3
+
+```
+
+Valor por defecto:
+
+```
+const [p, q = 100] = [42];
+console.log(q); // 100
+
+```
+
+
+operador rest:
+
+```
+const [primero, ...resto] = [1, 2, 3, 4];
+console.log(resto); // [2, 3, 4]
+
+```
+
+
+2. Objetos
+
+Extraer propiedades por nombre:
+
+```
+const persona = { nombre: "Ana", edad: 28 };
+
+const { nombre, edad } = persona;
+console.log(nombre); // "Ana"
+
+```
+
+Renombrar variables:
+
+```
+const { nombre: n } = persona;
+console.log(n); // "Ana"
+
+```
+
+Valor por defecto:
+
+```
+const { ciudad = "Desconocida" } = persona;
+console.log(ciudad); // "Desconocida"
+
+```
+
+operador rest:
+
+```
+const { nombre, ...resto } = persona;
+console.log(resto); // { edad: 28 }
+
+```
+
+
+3. funciones:
+
+Desestructurar argumentos de objetos:
+
+```
+function saludar({ nombre, edad }) {
+  console.log(`Hola ${nombre}, tienes ${edad} años.`);
+}
+
+saludar({ nombre: "Luis", edad: 30 });
+
+```
+
+Desestructurar argumentos de arrays:
+
+```
+function mostrar([x, y]) {
+  console.log(x, y);
+}
+
+mostrar([10, 20]); // 10 20
+
+```
+
+
+4. Desestructuración anidada
+
+```
+const usuario = {
+  nombre: "Carlos",
+  direccion: {
+    ciudad: "Madrid",
+    pais: "España"
+  }
+};
+
+const { direccion: { ciudad, pais } } = usuario;
+console.log(ciudad); // "Madrid"
+
+```
+
+
+5. Bucles
+
+```
+const personas = [
+  { nombre: "A", edad: 20 },
+  { nombre: "B", edad: 30 }
+];
+
+for (const { nombre, edad } of personas) {
+  console.log(`${nombre} tiene ${edad} años.`);
+}
+
+```
+
+
 
 # Operador spread (...)
 
@@ -5567,4 +5712,1853 @@ Evita mutaciones.
 Facilita operaciones comunes como copiar, fusionar y pasar datos.
 
 
+## Usos de spread operator 
 
+1. Arrays:
+
+Copiar un array
+
+```
+const original = [1, 2, 3];
+const copia = [...original];
+
+console.log(copia); // [1, 2, 3]
+
+```
+
+Combinar arrays:
+
+```
+const a = [1, 2];
+const b = [3, 4];
+const combinado = [...a, ...b];
+
+console.log(combinado); // [1, 2, 3, 4]
+
+```
+
+Convertir string en array:
+
+```
+const palabra = "hola";
+const letras = [...palabra];
+
+console.log(letras); // ['h', 'o', 'l', 'a']
+
+```
+
+Funciones:
+
+```
+const nums = [1, 2, 3];
+console.log(Math.max(...nums)); // 3
+
+```
+
+
+2. Objetos:
+
+Copiar objeto:
+
+```
+const persona = { nombre: "Ana", edad: 30 };
+const copia = { ...persona };
+
+console.log(copia); // { nombre: "Ana", edad: 30 }
+
+``` 
+
+Combinar objetos:
+
+```
+const contacto = { email: "ana@mail.com" };
+const detalles = { nombre: "Ana", ...contacto };
+
+console.log(detalles); // { nombre: "Ana", email: "ana@mail.com" }
+
+```
+
+Sobrescribir propiedades:
+
+```
+const base = { idioma: "ES", tema: "claro" };
+const preferencia = { ...base, tema: "oscuro" };
+
+console.log(preferencia); // { idioma: "ES", tema: "oscuro" }
+
+```
+
+
+3. operador rest (...)
+
+Spread expande valores.
+Rest recoge valores.
+
+```
+const [primero, ...resto] = [1, 2, 3, 4];
+console.log(primero); // 1
+console.log(resto);   // [2, 3, 4]
+
+```
+
+4. Spread en arrays de objetos (react):
+
+```
+const tareas = [{ id: 1, nombre: "leer" }];
+const nueva = { id: 2, nombre: "escribir" };
+
+const actualizado = [...tareas, nueva];
+console.log(actualizado);
+// [{ id: 1, nombre: "leer" }, { id: 2, nombre: "escribir" }]
+
+```
+
+
+## Planteo: 
+
+if, for in, map, foreahc 
+
+str -> arr .slice("").map(e => !== e.toLowerCase() ? e.toUpperCase()).toString()
+
+
+
+# Kata 7 
+
+Crea una función simple llamada greet que devuelva el más famoso "¡Hola mundo!".
+
+estilo:
+Claro, esto es de lo más fácil.
+Pero ¿cuán ingenioso puedes ser para crear el "hola mundo" más creativo que se te ocurra? 
+¿Qué solución de "hola mundo" te gustaría mostrarles a tus amigos?
+
+
+Planteo: 
+
+func greet -> func h (func e) -> func e -> (func ll)
+func ll (func o) -> func w (func o) -> func w (r)
+func r (func l) -> func d 	
+
+arr h, arr e arr ll, ...
+
+
+
+# Kata 8
+
+Función de los goles de Messi
+
+Messi es un futbolista con goles en tres ligas:
+
+    LaLiga
+    Copa del Rey
+    Campeones
+
+Completa la función para devolver su número total de goles en las tres ligas.
+
+Nota: la entrada siempre será válida.
+
+Por ejemplo:
+
+5, 10, 2 --> 17
+
+
+Planteo: 
+
+inp: 
+//num: goals
+l, c, ch
+
+calc: 
+l + c + ch
+
+out: 
+
+rtn l + c + ch
+
+
+
+# Kata 9 
+
+Pow 2 
+
+Completa la función que toma un entero no negativo n 
+como entrada y devuelve una lista de todas las potencias
+de 2 con el exponente que va de 0 a n (inclusive).
+
+Ej: 
+
+```
+n = 0  ==> [1]        # [2^0]
+n = 1  ==> [1, 2]     # [2^0, 2^1]
+n = 2  ==> [1, 2, 4]  # [2^0, 2^1, 2^2]
+
+```
+
+inp: 
+int >= 0 (cond)
+
+out:
+arr (no)
+pow2 (si)
+exp n (inp)
+e.arr(no)
+
+calc:
+2**n
+
+arr
+map(e => 2**n)
+
+out: 
+if n >= 0 
+ newArray().map(e => 2**n)
+ 
+rtn false
+
+
+# Map (arr)
+
+Crea una nueva matriz con el resultado de llamar a una
+función para cada elemento de la matriz
+
+
+
+# Reduce (arr)
+
+Reducir los valores de una matriz a un único valor 
+(de izquierda a derecha)
+
+
+
+# Fill (arr)
+
+Rellene los elementos de una matriz con un valor estático
+
+```
+let s = new Array(n).fill("x").join("");
+
+```
+
+
+
+# From (arr)
+
+Crea una matriz a partir de un objeto
+
+```
+const powersOfTwo = n => {
+  if (n < 0) return false;
+  return Array.from({ length: n + 1 }, (_, i) => 2 ** i);
+};
+
+console.log(powersOfTwo(5)); // [1, 2, 4, 8, 16, 32]
+
+```
+
+Inmutable, un solo paso
+
+O(n) en tiempo y espacio
+
+
+Sintaxis: 
+
+```
+Array.from({...}, mapFn):
+
+```
+Array.from() crea un array a partir de:
+
+1. un objeto iterable o con .length,
+
+2. y una función de mapeo opcional que transforma cada elemento.
+
+
+```
+{ length: n + 1 }
+
+```
+
+array virtual (no tiene elementos definidos), con una longitud de n + 1.
+
+Ej: si n = 5, es como tener ```[empty × 6]```
+
+
+```
+(_, i) => 2 ** i
+
+```
+
+Función de mapeo aplicada a cada índice i del array:
+
+1. _ es el primer argumento: el valor del elemento (no lo usamos, por eso guion bajo).
+
+2. i es el índice, y justo lo que necesitamos.
+
+3. 2 ** i calcula la potencia de 2 en la posición i.
+
+
+Test: 
+
+Para n = 5, esto construye:
+
+```
+[
+  2**0, // 1
+  2**1, // 2
+  2**2, // 4
+  2**3, // 8
+  2**4, // 16
+  2**5  // 32
+]
+
+```
+
+Resultado final: ```[1, 2, 4, 8, 16, 32]```.
+
+
+```
+const powersOfTwo = n => {
+  if (n < 0) return false;
+  return Array.from({ length: n + 1 }, (_, i) => 2 ** i);
+};
+
+```
+
+
+For clásico vs Array.from: 
+
+Verifica entrada: 
+
+```
+if (n < 0) return false;
+
+```
+
+```
+if (n < 0) return false;
+
+```
+
+
+Crear estructura:
+
+```
+const result = []
+
+```
+
+```
+Array.from({ length: n + 1 }, ...)
+
+```
+
+Iteración de 0 a n:
+
+```
+for (let i = 0; i <= n; i++)
+
+```
+
+```
+Internamente en Array.from (usa índices)
+
+```
+
+Cálculo: 
+
+```
+result.push(2 ** i)
+
+```
+
+```
+(_, i) => 2 ** i
+
+```
+
+Resultado: 
+
+```
+return result
+
+```
+
+```
+return Array.from(...)
+
+```
+
+
+
+# Recursividad en Array
+
+Caso base: 
+
+if n < 0 rtn false
+
+if n == 0 rtn 1
+
+for let i = 0; i =< n; i++
+
+listPowOfTwo = 
+pow = n ** fun(n-i)
+listPowTwo.push(pow )
+
+return listPowOfTwo 
+
+Recursividad: 
+
+
+Div y conq: 
+
+```
+const powersOfTwo = n => {
+  if (n < 0) return false;
+  if (n === 0) return [1];
+  const prev = powersOfTwo(n - 1);
+  return [...prev, 2 ** n];
+};
+
+console.log(powersOfTwo(5)); // [1, 2, 4, 8, 16, 32]
+
+```
+
+
+1. Llamada inicial:
+
+```
+powersOfTwo(3)
+
+```
+
+n = 3, no es menor a 0 ni igual a 0.
+
+Llama recursivamente a: powersOfTwo(2)
+
+
+2. powersOfTwo(2)
+
+n = 2, entra de nuevo.
+
+Llama a: powersOfTwo(1)
+
+
+3. powersOfTwo(1)
+
+n = 1, sigue recursión.
+
+Llama a: powersOfTwo(0)
+
+
+4. powersOfTwo(0)
+
+##### Caso base: Devuelve el valor en la posición
+
+```
+return [1] 
+
+```
+
+
+5. Retorno en powersOfTwo(1)
+
+```
+prev = [1];
+return [...prev, 2 ** 1]  // → [1, 2]
+
+```
+
+
+6. Retorno en powersOfTwo(2)
+
+```
+prev = [1, 2];
+return [...prev, 2 ** 2]  // → [1, 2, 4]
+
+``` 
+
+
+7. Retorno en powersOfTwo(3):
+
+```
+prev = [1, 2, 4];
+return [...prev, 2 ** 3]  // → [1, 2, 4, 8]
+
+```
+
+
+8. Resultado final:
+
+```
+powersOfTwo(3)  → [1, 2, 4, 8]
+
+``` 
+
+
+9. Previene entradas negativas:
+
+```
+if (n < 0) return false;
+
+```
+
+
+10. Caso base. El array más pequeño posible: 2^0
+
+```
+if (n === 0) return [1];
+
+```
+
+Recursión: resuelve el problema para un número más chico.
+
+
+
+11. Construye el array final agregando la nueva potencia al final.
+
+```
+return [...prev, 2 ** n];
+
+```
+
+Tiempo: O(n), porque hace una llamada por nivel.
+
+Espacio: O(n), por la profundidad de la recursión y el array construido.
+
+
+## Memoización
+
+Evitar que la función recalcule los mismos resultados. 
+
+Cuando se llama recursivamente con los mismos valores de n.
+ 
+```
+const powersOfTwo = (() => {
+  const memo = {};
+
+  const helper = n => {
+    if (n < 0) return false;
+    if (n === 0) return [1];
+
+    if (memo[n]) return memo[n];
+
+    const prev = helper(n - 1);
+    const result = [...prev, 2 ** n];
+    memo[n] = result;
+    return result;
+  };
+
+  return helper;
+})();
+
+```
+
+
+1. IIFE (Immediately Invoked Function Expression)
+
+Esto crea un ámbito privado para la variable memo, evitando que esté en el ámbito global.
+
+```
+(() => { ... })()
+
+```
+
+
+2. Tabla de memoización
+
+Objeto para guardar resultados previamente calculados.
+
+```
+const memo = {};
+
+```
+
+
+3. Función auxiliar recursiva
+
+Aquí es donde se hace la lógica recursiva.
+
+Se guarda en `memo[n]` cada resultado.
+
+```
+const helper = n => { ... }
+
+```
+
+
+4. Condiciones
+
+if (n < 0) → devuelve false si n es inválido.
+
+if (n === 0) → devuelve `[1]`, el caso base.
+
+if `(memo[n])` → si ya calculamos n, lo devolvemos sin recalcular.
+
+
+
+5. Construcción del array
+
+Se arma el nuevo resultado a partir del anterior, sin modificarlo.
+
+```
+const result = [...prev, 2 ** n];
+
+```
+
+
+6. Guardado en cache
+
+Evita recalcular esta rama en futuras llamadas.
+
+```
+memo[n] = result;
+
+```
+
+
+##### Devuelve resultado desde cache
+
+```
+powersOfTwo(4) // → [1, 2, 4, 8, 16]
+powersOfTwo(2) // Devuelve resultado desde cache
+
+```
+
+
+## Memoización con map
+
+En lugar de un objeto: era `memo = {}`
+
+```
+const powersOfTwo = (() => {
+  const memo = new Map();
+
+  const helper = n => {
+    if (n < 0) return false;
+    if (n === 0) return [1];
+    if (memo.has(n)) return memo.get(n);
+
+    const prev = helper(n - 1);
+    const result = [...prev, 2 ** n];
+    memo.set(n, result);
+    return result;
+  };
+
+  return helper;
+})();
+
+```
+
+
+## Fib con Memoización 
+
+1. 
+
+```
+const memo = {};
+function fib(n) {
+  if (n in memo) return memo[n];
+  return memo[n] = n <= 1 ? n : fib(n - 1) + fib(n - 2);
+}
+
+```
+
+2. 
+
+```
+const fib = (n, memo = {}) => {
+  if (n in memo) return memo[n];
+  if (n <= 1) return n;
+  return memo[n] = fib(n - 1, memo) + fib(n - 2, memo);
+};
+
+```
+
+
+3. Iterativa: más eficiente
+
+```
+const fib = n => {
+  if (n <= 1) return n;
+
+  let prev = 0, curr = 1;
+  for (let i = 2; i <= n; i++) {
+    [prev, curr] = [curr, prev + curr];
+  }
+  return curr;
+};
+
+```
+
+
+Test: 
+
+```
+console.log(powersOfTwo(4));
+console.log(powersOfTwo(2));
+console.log(powersOfTwo(4)); // Este debe reutilizar todo
+
+```
+
+Salida: 
+
+```
+Calculando para n = 4
+Calculando para n = 3
+Calculando para n = 2
+Calculando para n = 1
+Calculando para n = 0
+[1, 2, 4, 8, 16]
+
+Usando memo para n = 2
+[1, 2, 4]
+
+Usando memo para n = 4
+[1, 2, 4, 8, 16]
+
+```
+
+1. La primera vez que llamás a powersOfTwo(4), se hacen todos los cálculos recursivos desde n = 4 hasta n = 0.
+
+2. La segunda vez que pedís powersOfTwo(2), ya se usó antes, entonces usa el valor guardado en memo.
+
+3. La tercera vez con powersOfTwo(4) no se calcula nada: ¡todo viene del cache
+
+
+
+## Memoización con map y debugg
+
+```
+const powersOfTwo = (() => {
+  const memo = new Map();
+
+  const helper = n => {
+    console.time(`Execution for n = ${n}`);
+
+    if (n < 0) return false;
+    if (n === 0) {
+      console.log("Calculando para n = 0");
+      console.timeEnd(`Execution for n = ${n}`);
+      return [1];
+    }
+
+    if (memo.has(n)) {
+      console.log(`Usando memo para n = ${n}`);
+      console.timeEnd(`Execution for n = ${n}`);
+      return memo.get(n);
+    }
+
+    console.log(`Calculando para n = ${n}`);
+    const prev = helper(n - 1);
+    const result = [...prev, 2 ** n];
+    memo.set(n, result);
+
+    console.timeEnd(`Execution for n = ${n}`);
+    return result;
+  };
+
+  return helper;
+})();
+
+```
+
+```
+console.log(powersOfTwo(20));  // Se calcula todo
+console.log(powersOfTwo(10));  // Usa memo
+console.log(powersOfTwo(20));  // Usa memo
+
+```
+
+Salida: 
+
+```
+Calculando para n = 20
+Calculando para n = 19
+...
+Calculando para n = 0
+Execution for n = 0: 0.028ms
+...
+Execution for n = 20: 0.045ms
+
+Usando memo para n = 10
+Execution for n = 10: 0.007ms
+
+Usando memo para n = 20
+Execution for n = 20: 0.005ms
+
+```
+
+
+Rs: 
+
+1. La primera ejecución realiza todo el trabajo recursivo.
+
+2. Las siguientes se benefician de la memoización y son casi instantáneas.
+
+3. El uso de Map mejora la legibilidad y control sobre la caché.
+
+4. console.time() es muy útil para medir y comparar versiones de una función
+
+
+
+# Reduce (arr)
+
+.reduce():
+
+```
+const powersOfTwoReduce = n => {
+  if (n < 0) return false;
+
+  return Array.from({ length: n + 1 }, (_, i) => i).reduce((acc, i) => {
+    acc.push(2 ** i);
+    return acc;
+  }, []);
+};
+
+```
+
+```
+console.log(powersOfTwoReduce(5)); // [1, 2, 4, 8, 16, 32]
+
+```
+
+
+# Iteración más eficiente que recursividad 
+
+iterativa (con bucle for)
+
+Esta es la forma más eficiente en cuanto a tiempo y memoria. No usa recursión ni funciones de orden superior, solo un bucle.
+
+```
+const powersOfTwoIterative = n => {
+  if (n < 0) return false;
+
+  const result = [];
+  for (let i = 0; i <= n; i++) {
+    result.push(2 ** i);
+  }
+  return result;
+};
+
+```
+
+```
+console.log(powersOfTwoIterative(5)); // [1, 2, 4, 8, 16, 32]
+
+```
+
+## Recursión con memo vs Iteración
+
+1. La versión iterativa es más eficiente en este caso, tanto en tiempo como en espacio.
+
+2. La memoización sería útil si vas a llamar muchas veces a la función con distintos valores y querés reutilizar los resultados previos.
+
+3. Para un uso único y directo (como powersOfTwo(100)), el bucle for gana claramente.
+
+
+La versión recursiva te hace llamar a alguien cada vez que subís un escalón para preguntarle cuántos ya subiste.
+
+La versión con memo te deja una nota en cada escalón con lo que hiciste.
+
+La versión iterativa simplemente contás vos mismo, paso a paso, sin pedir ayuda.
+
+
+| Criterio                         | Recursiva + memoización                | Iterativa (`for`)                |
+| -------------------------------- | -------------------------------------- | -------------------------------- |
+|   Tiempo de ejecución            | Ligeramente mayor por llamadas         | Más rápida: solo un bucle simple |
+|   Uso de memoria (heap/stack)    | Alto: pila de llamadas + caché (`Map`) | Bajo: solo array y contador      |
+|   Complejidad temporal           | `O(n)`                                 | `O(n)`                           |
+|   Complejidad espacial           | `O(n)` (por array + memo)              | `O(n)` (solo array)              |
+|   TCO (Tail Call Optimization)   | No garantizado en JS                   | No aplica (y no lo necesita)     |
+|   Legibilidad / mantenibilidad   | Menor en grandes funciones             | Muy alta                         |
+|   Reusabilidad del memo          | ✔ Sí (útil si se llama muchas veces)   | ✘ No (calcula de cero cada vez)  |
+
+
+
+# Tail recursion optimizada
+
+Algunos motores de JS modernos (como V8 de Chrome) no hacen optimización de tail recursion, pero igual es interesante de estudiar
+
+```
+const powersOfTwoTailRec = (n, acc = [], i = 0) => {
+  if (n < 0) return false;
+  if (i > n) return acc;
+  return powersOfTwoTailRec(n, [...acc, 2 ** i], i + 1);
+};
+
+```
+
+```
+console.log(powersOfTwoTailRec(5)); // [1, 2, 4, 8, 16, 32]
+
+```
+
+Esta versión recursiva no es eficiente para valores grandes porque puede causar desbordamiento de pila si el motor no aplica optimización TCO (Tail Call Optimization).
+
+
+
+# Métodos Strings
+
+## texto
+
+toUpperCase(), toLowerCase()
+
+trim()  Elimina espacios al inicio y al final)
+
+trimStart() / trimEnd()
+
+replace()  Reemplaza la primera coincidencia (puede usar regex).)
+
+replaceAll()  Reemplaza todas las coincidencias.
+
+padStart()	Rellena la cadena al inicio hasta un largo deseado.
+
+padEnd()	Rellena la cadena al final
+
+repeat(n)	Repite la cadena n veces.
+
+concat()	Une dos o más cadenas (menos usado que +).
+
+
+## Búsqueda e inspección
+
+includes()	Verifica si contiene una subcadena
+
+startsWith(), endsWith()
+  
+indexOf()	Devuelve la posición de la primera ocurrencia.
+
+lastIndexOf()	Devuelve la última posición de una ocurrencia.
+
+match()	Devuelve coincidencias usando una expresión regular
+
+search()	Devuelve la posición de la primera coincidencia regex
+
+
+## Extracción
+
+slice(start, end)	Extrae parte de la cadena sin modificarla.
+
+substring(start, end)	Similar a slice pero no acepta negativos.
+
+split(sep)	Divide la cadena en un array usando un separador.
+
+charAt(index)	Devuelve el carácter en una posición
+
+charCodeAt(index)	Devuelve el código Unicode del carácter.
+
+
+## Utils
+
+1. .localeCompare()
+
+Compara dos cadenas alfabéticamente según reglas locales.
+
+```
+console.log("a".localeCompare("b")); // -1 → "a" viene antes que "b"
+console.log("a".localeCompare("a")); //  0 → iguales
+console.log("b".localeCompare("a")); //  1 → "b" viene después
+
+```
+
+Útil para ordenar alfabéticamente con sensibilidad a acentos o idioma.
+
+
+2. .normalize()
+
+Normaliza caracteres Unicode (útil con acentos, tildes, etc.).
+
+```
+const accented = 'é';
+const combined = 'e\u0301'; // e + acento
+console.log(accented === combined); // false
+console.log(accented.normalize() === combined.normalize()); // true
+
+```
+
+Muy útil para comparar cadenas que visualmente parecen iguales pero tienen distinta codificación
+
+
+3. .codePointAt(index)
+
+Devuelve el valor Unicode real del carácter, incluso fuera del plano básico.
+
+```
+console.log("💩".charCodeAt(0));     // 55357 (incorrecto solo)
+console.log("💩".codePointAt(0));    // 128169 ✅ correcto
+
+```
+
+Útil para emojis y caracteres especiales fuera de ASCII.
+
+
+4. .fromCharCode() y .fromCodePoint()
+
+Convierte un número Unicode en carácter.
+
+```
+console.log(String.fromCharCode(97));      // "a"
+console.log(String.fromCodePoint(128169)); // "💩"
+
+```
+
+.fromCharCode no soporta emojis ni altos códigos; usar .fromCodePoint para eso.
+
+
+5. .matchAll()
+
+Devuelve todas las coincidencias con una expresión regular y permite acceder a los grupos capturados.
+
+```
+const str = "foo1 bar2 baz3";
+const regex = /(\w+)(\d)/g;
+
+for (const match of str.matchAll(regex)) {
+  console.log(match[1], match[2]); // foo 1, bar 2, baz 3
+}
+
+```
+
+Mucho más potente que .match() cuando se usan grupos.
+
+
+6. .at()
+
+Accede al carácter de forma más moderna, y permite índices negativos (desde el final).
+
+```
+const str = "hola";
+console.log(str.at(1));   // "o"
+console.log(str.at(-1));  // "a"
+
+```
+
+Es como ```str[str.length - 1]``` pero más legible.
+
+
+7. .anchor() y otros HTML wrappers
+
+Agregan etiquetas HTML (herencia de cuando JS se usaba dentro del navegador directamente con HTML). 
+
+Hoy poco usados
+
+```
+console.log("Google".link("https://google.com"));
+// <a href="https://google.com">Google</a>
+
+```
+
+
+8. .raw (en String.raw)
+
+No es un método de String.prototype pero es útil con plantillas literales:
+
+```
+console.log(String.raw`Línea1\nLínea2`);
+// Output: Línea1\nLínea2  (sin interpretar el \n)
+
+```
+
+
+# Métodos Array
+
+## Iteración y transformación
+
+1. .forEach()
+
+Ejecuta una función por cada elemento (no retorna nada).
+
+```
+[1, 2, 3].forEach(n => console.log(n));
+
+```
+ 
+ 
+ 2. .map()
+
+Crea un nuevo array con los resultados.
+
+```
+const doubled = [1, 2, 3].map(n => n * 2);  // [2, 4, 6]
+
+```
+
+
+3. .filter()
+
+Devuelve un nuevo array con los que cumplen una condición.
+
+```
+const evens = [1, 2, 3, 4].filter(n => n % 2 === 0);  // [2, 4]
+
+``` 
+
+
+4. reduce()
+
+Acumula todos los valores en uno solo. 
+
+```
+const sum = [1, 2, 3].reduce((a, b) => a + b, 0);  // 6
+
+```
+
+
+## Búsqueda
+
+1. .find()
+
+Devuelve el primer elemento que cumple la condición
+
+```
+[1, 2, 3].find(n => n > 1);  // 2
+
+```
+
+
+2. .findIndex()
+
+Índice del primer elemento que cumple la condición.
+
+```
+[1, 2, 3].findIndex(n => n > 1);  // 1
+
+```
+
+
+3. .includes()
+
+Verifica si un valor existe
+
+```
+[1, 2, 3].includes(2);  // true
+
+```
+
+
+4. .some()
+
+¿Al menos uno cumple?
+
+```
+[1, 2, 3].some(n => n > 2);  // true
+
+```
+
+
+5. .every()
+
+¿Todos cumplen?
+
+```
+[1, 2, 3].every(n => n > 0);  // true
+
+```
+
+
+## Modificación/mutación del original
+
+1. .push() / .pop()
+
+Agrega / elimina al final.
+
+```
+let arr = [1, 2];
+arr.push(3);   // [1, 2, 3]
+arr.pop();     // [1, 2]
+
+```
+
+
+2. .shift() / .unshift()
+
+Agrega / elimina al inicio.
+
+```
+let arr = [1, 2];
+arr.unshift(0); // [0, 1, 2]
+arr.shift();    // [1, 2]
+
+```
+
+
+3. .splice()
+
+Agrega o elimina elementos en cualquier posición
+
+```
+let arr = [1, 2, 3];
+arr.splice(1, 1);  // Elimina 1 en índice 1 → [1, 3]
+
+```
+
+
+## Orden y conversión
+
+1. .sort()
+
+Ordena el array (por defecto como string).
+
+```
+[3, 1, 2].sort();          // [1, 2, 3] cuidado con strings
+[3, 1, 2].sort((a, b) => a - b);  // correcto
+
+```
+
+
+2. .reverse()
+
+Invierte el orden.
+
+```
+[1, 2, 3].reverse();  // [3, 2, 1]
+
+``` 
+
+
+3. .join()
+
+Convierte el array en string.
+
+```
+["a", "b", "c"].join("-");  // "a-b-c"
+
+```
+
+
+4. .concat()
+
+Une arrays sin mutar
+
+```
+[1, 2].concat([3, 4]);  // [1, 2, 3, 4]
+
+```
+
+
+5. .slice()
+
+Extrae una parte (no muta). 
+
+
+## Utils
+
+
+1. .flat() / .flatMap()
+
+Aplana arrays anidados. 
+
+```
+[1, [2, [3]]].flat(2);  // [1, 2, 3]
+[1, 2, 3].flatMap(n => [n, n * 2]); // [1, 2, 2, 4, 3, 6]
+
+```
+
+
+2. .at()
+
+Accede con índices negativos
+
+```
+[10, 20, 30].at(-1);  // 30
+
+```
+
+
+3. .from() y .of() (estáticos)
+
+Crea arrays
+
+```
+Array.from("abc");  // ["a", "b", "c"]
+Array.of(1, 2, 3);  // [1, 2, 3]
+
+```
+
+
+4. .fill()
+
+Rellena con un valor desde/hasta un índice 
+
+```
+const arr = new Array(4).fill(0);  // [0, 0, 0, 0]
+arr.fill(7, 1, 3);                 // [0, 7, 7, 0]
+
+```
+
+
+5. copyWithin()
+
+Copia parte del array dentro del mismo array.
+
+```
+const arr = [1, 2, 3, 4, 5];
+arr.copyWithin(0, 3);  // Copia desde el índice 3 al 0 → [4, 5, 3, 4, 5]
+
+```
+
+
+6. .entries()
+
+Devuelve un iterador de pares `[índice, valor]`.
+
+```
+const arr = ["a", "b"];
+for (const [i, v] of arr.entries()) {
+  console.log(i, v);  // 0 "a" y luego 1 "b"
+}
+
+```
+
+
+7. keys() / .values()
+
+Iteradores de índices o valores.
+
+```
+[..."abc".split("").keys()];   // [0, 1, 2]
+[..."abc".split("").values()]; // ["a", "b", "c"]
+
+```
+
+
+8. isArray()
+
+Verifica si algo es un array.
+
+```
+Array.isArray([1, 2]);   // true
+Array.isArray("hola");   // false
+
+```
+
+
+8. findLast(): es2023
+
+Devuelve el último valor que cumple la condición.
+
+```
+[1, 2, 3, 4].findLast(n => n % 2 === 0);  // 4
+
+```
+
+
+9. .findLastIndex()
+
+Índice del último valor que cumple la condición.
+
+```
+[1, 2, 3, 4].findLastIndex(n => n % 2 === 0);  // 3
+
+```
+
+
+10. .toReversed() (moderno, inmutable)
+
+Como .reverse() pero no muta el array original.
+
+```
+const a = [1, 2, 3];
+const b = a.toReversed();  // [3, 2, 1]
+console.log(a);            // [1, 2, 3] (sin cambios)
+
+```
+
+
+11. .toSorted() / .toSpliced()
+
+Versiones inmutables de .sort() y .splice().
+
+```
+[3, 1, 2].toSorted();      // [1, 2, 3]
+[1, 2, 3].toSpliced(1, 1); // [1, 3]
+
+```
+
+
+
+# Kata 10 
+
+Grasshopper - Check for factor
+
+Esta función debe probar si el factor es un factor de base.
+Devuelve verdadero si es un factor o falso si no lo es.
+
+Acerca de los factores:
+Los factores son números que puedes multiplicar entre sí para obtener otro número.
+
+2 y 3 son factores de 6 porque: 2 * 3 = 6
+
+1. Puedes hallar un factor dividiendo números. 
+Si el resto es 0, entonces el número es un factor.
+
+2. Puede utilizar el operador mod (%) en la mayoría de los idiomas para comprobar si hay resto.
+
+Por ejemplo, 2 no es un factor de 7 porque: 7 % 2 = 1
+
+Nota: la base es un número no negativo, el factor es un número positivo
+
+
+Planteo:
+
+Encontrar si el factor es factor base.
+devolver t o f 
+
+a*b=c (factor*factor=producto)
+se multiplican entre si para obtener otro
+
+factor = prod/factor -> resto o
+mod (%) comprueba si hay resto
+2 no es un factor de 7 porque: 7 % 2 = 1
+
+a*b=c (factor*factor=base)
+
+
+func(base, factor) -> rtn base%factor === 0
+
+
+
+# Kata 11
+
+Clock
+
+El reloj muestra h horas, m minutos y s segundos después de la medianoche.
+
+Su tarea es escribir una función que devuelva el tiempo desde la medianoche en milisegundos.
+Ejemplo:
+
+h = 0
+m = 1
+s = 1
+
+resultado = 61000
+
+Restricciones de entrada:
+
+0 <= h <= 23
+0 <= m <= 59
+0 <= s <= 59
+
+
+Planteo
+
+h, m, s
+rtn time ms
+
+if (h < 0 && m < 0 &&  s < 0) rtn false
+if h <= 23 && m <= 59 && s <= 59:
+
+h(2.77778e-7) + (m/6e+4) + (s(10**-3)) 
+
+h*(3600000) + m*(60000) + s*(1000)
+
+
+## Condiciones rango valido
+
+### Fuera de rango (|| or) o dentro (&& and); igual, distinto; mayor o menor
+
+```
+const msPast = (h, m, s) => {
+  if (h < 0 || h > 23 || m < 0 || m > 59 || s < 0 || s > 59) return false;
+  return h * 3600000 + m * 60000 + s * 1000;
+};
+
+```
+
+Validamos si alguno está fuera de rango, usando ||.
+
+Más directo que chequear si están "dentro" con &&, simplifica los límites inválidos
+
+
+### Retornar expresión por t o f 
+
+
+
+# Kata 12 
+
+Find Maximum and Minimum Values of a List
+
+Su tarea consiste en crear dos funciones (máx. y mín., o máximo y mínimo, etc., según el lenguaje) 
+que reciban una lista de enteros como entrada y devuelvan
+el número mayor y el menor de esa lista, respectivamente.
+Cada función devuelve un número.
+
+Ejemplos (Entrada -> Salida)
+
+```
+* [4,6,2,1,9,63,-134,566] -> máximo = 566, mínimo = -134
+* [-52, 56, 30, 29, -54, 0, -110] -> mínimo = -110, máximo = 56
+* [42, 54, 65, 87, 0] -> mín = 0, máx = 87
+* [5] -> mín = 5, máx = 5
+
+```
+
+Notas
+Puedes considerar que no habrá matrices/vectores vacíos
+
+if (arr.length <= 0) rtn false
+Math.min(arr) Math.max(arr)
+
+===, <= o null
+
+
+
+# kata 13
+
+Correct the mistakes of the character recognition software
+
+El software de reconocimiento de caracteres se utiliza ampliamente para digitalizar textos impresos. 
+De esta forma, los textos se pueden editar, buscar y almacenar en un ordenador.
+
+Cuando se digitalizan documentos (especialmente aquellos muy antiguos escritos con una máquina de escribir),
+los programas de reconocimiento de caracteres a menudo cometen errores.
+
+Tu tarea es corregir los errores del texto digitalizado. 
+Solo tienes que corregir los siguientes errores:
+
+S se malinterpreta como 5
+O se malinterpreta como 0
+I se malinterpreta como 1
+
+Los casos de prueba contienen números solo por error
+
+buscar (5, 0, 1) y cambiar(S; O; I) replace("5", "S"), etc
+
+Plateo: 
+
+if 5 in str -> str.replace("5", "S");
+else if 0 in str ->
+else 1 in str ->
+
+alter efic: 
+Juntar métodos .().()
+
+return includes().replace() || includes().replace() || includes().replace()
+
+puede tener 5, 0 y 1 en la misma str
+
+tomar y reemplazar varios valores en str
+
+```
+function correct(string)
+{
+    return string
+    .replaceAll("5", "S")
+    .replaceAll("0", "O")
+    .replaceAll("1", "I");
+}
+
+console.log(correct('L0ND0N'));
+console.log(correct('DUBL1N'));
+console.log(correct('51NGAP0RE'));
+console.log(correct('BUDAPE5T'));
+console.log(correct('PAR15'));
+
+```
+
+
+# Eficiencia: replace, regExp, callback, Objeto literal y clave dinámica
+
+```
+function correct(string) {
+  return string.replace(/[501]/g, c => (
+    { "5": "S", "0": "O", "1": "I" }[c]
+  ));
+}
+
+```
+
+1. Con regExp recorre el string en una sola pasada. 
+2. `/[501]/g` ⇒ Busca cualquier carácter 5, 0 o 1 globalmente.
+3. El segundo argumento de .replace() es una función que recibe el carácter coincidente (c) y devuelve su reemplazo del objeto mapa.
+
+
+## Alternativas no eficientes 
+
+1. .split('').map().join(''):
+
+```
+const correct = str => 
+  str.split('').map(c => ({ "5": "S", "0": "O", "1": "I" }[c] || c)).join('');
+
+```
+
+Usa más operaciones internas (split, map, join)
+
+Es menos eficiente para strings largos
+
+
+2. Usar bucle for:
+
+```
+const correct = str => {
+  const map = { "5": "S", "0": "O", "1": "I" };
+  let result = "";
+  for (let c of str) {
+    result += map[c] || c;
+  }
+  return result;
+};
+
+``` 
+
+Más control
+
+Menos declarativo
+
+Puede ser más lento por concatenaciones de strings (aunque += se optimiza internamente)
+
+
+3. .replaceAll() por cada uno:
+
+```
+const correct = str =>
+  str.replaceAll("5", "S").replaceAll("0", "O").replaceAll("1", "I");
+
+```
+
+Clara y simple
+
+Realiza varias pasadas sobre la cadena (una por cada .replaceAll)
+
+Menos eficiente
+
+
+
+# Romper extensas lineas de código
+
+1. Usar paréntesis para continuar expresiones
+
+Ideal para expresiones matemáticas, lógicas o ternarias:
+
+```
+const total =
+  (price * quantity) +
+  (taxRate * price) -
+  discount;
+
+```
+
+
+2. Romper llamadas encadenadas (method chaining)
+
+Cada método en una nueva línea:
+
+```
+const result = array
+  .filter(x => x > 0)
+  .map(x => x * 2)
+  .reduce((a, b) => a + b, 0);
+
+```
+
+
+3. Romper objetos literales
+
+```
+const user = {
+  name: "bob",
+  age: 26,
+  location: "Budapest",
+  role: "Assistant"
+};
+
+```
+
+
+4. Romper arrays
+
+```
+const nums = [
+  1, 2, 3,
+  4, 5, 6,
+  7, 8, 9
+];
+
+```
+
+
+5. Usar template literals para strings largas
+
+```
+const msg = `Hola,
+este es un mensaje
+que se extiende en varias líneas.`;
+
+```
+
+
+6. Dividir ternarios
+
+```
+const result = value > 10
+  ? "mayor que 10"
+  : "menor o igual a 10";
+
+```
+
+
+7. Funciones con muchos parámetros
+
+```
+function formatDate(
+  day,
+  month,
+  year,
+  locale = "es-AR"
+) {
+  // ...
+}
+
+```
+
+
+8. Funciones flecha con cuerpo largo
+
+```
+const process = (input) => {
+  const trimmed = input.trim();
+  const upper = trimmed.toUpperCase();
+  return upper;
+};
+
+```
+
+
+9. Desestructuración en varias líneas
+
+```
+const {
+  name,
+  age,
+  location,
+  occupation
+} = person;
+
+```
+
+
+
+# Kata 14
+
+List filter 
+
+En este kata, creará una función que toma una lista 
+de números enteros y cadenas no negativos y devuelve 
+una nueva lista con las cadenas filtradas.
+
+```
+filter_list([1,2,'a','b']) == [1,2]
+filter_list([1,'a','b',0,15]) == [1,0,15]
+filter_list([1,2,'aasf','1','123',123]) == [1,2,123]
+
+```
+
+Plateo: 
+
+```
+[...list].typeOf(Number)
+
+```
+func pers typeOf(...)
+
+
+alter: 
+
+rtn arr.filter(e -> e typeof === "number");
+
+
+
+# Kata 15 
+
+Complementary DNA
+
+El ácido desoxirribonucleico (ADN) es una sustancia química que se encuentra en el núcleo de las células y transporta las "instrucciones" para el desarrollo y funcionamiento de los organismos vivos.
+
+En las cadenas de ADN, los símbolos "A" y "T" son complementarios entre sí, como "C" y "G". 
+Su función recibe un lado de la cadena de ADN (excepto en Haskell); debe devolver el otro lado complementario. 
+La cadena de ADN nunca está vacía ni hay ADN en absoluto (excepto en Haskell).
+
+Puede encontrar ejercicios más similares aquí: http://rosalind.info/problems/list-view/ (fuente)
+
+Ejemplo: (entrada --> salida)
+
+"ATTGC" --> "TAACG"
+"GTAT" --> "CATA"
+
+
+Planteo: 
+
+En las cadenas de ADN, los símbolos "A" y "T" 
+son complementarios entre sí, como "C" y "G". 
+
+función recibe un lado de la cadena;
+debe devolver el otro. 
+
+Test/condiciones: las entradas/string siempre será valida. 
+
+
+Soluc: encontrar y cambiar a por t y c por g 
+
+No mutabilidad (replace), eficiencia (regExp). 
+
+```
+function adn(string) {
+  return string.replace(/[ATCG]/g, c => (
+    { "A": "T", "C": "G", "T": "A", "G": "C" }[c]
+  ));
+}
+
+console.log(adn('ATTGC'));
+console.log(adn('GTAT'));
+
+```
+
+
+
+# Kata 16 
+
+Rock Paper Scissors
+
+Piedra, papel o tijera
+
+¡Tienes que devolver el ganador! 
+En caso de empate, ¡devuelve "Empate"!
+
+Ejemplos (Entrada1, Entrada2 --> Salida):
+
+"tijeras", "papel" --> "¡El jugador 1 ganó!"
+"tijeras", "piedra" --> "¡El jugador 2 ganó!"
+"papel", "papel" --> "¡Empate!"
+
+
+Planteo: 
+
+r, p, s 
+
+r > s
+p > r
+s > p 
+r === r
+p === p
+s === s
+
+agrupar info 
+estrucd dat
+control
+operats
+results
+
+inp:
+r, p, s
+
+calc:
+1p, 2p
+
+out:
+
+
+tipo logica:
+inclus &&, exclusiva ||, dist, igul
+
+if (r y s) -> 1win
+if (s y r) -> 2win

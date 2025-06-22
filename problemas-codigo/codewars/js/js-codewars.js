@@ -319,3 +319,480 @@ y cada letra mayúscula en minúscula. Por ejemplo:
 Como de costumbre, su función/método debe ser puro, es decir, no debe mutar la cadena original.
 
 */
+
+/*
+String.prototype.toAlternatingCase = function () {
+  return [...this].map(e => 
+                       e === e.toLowerCase() 
+                       ?
+                       e.toUpperCase() 
+                       : 
+                       e.toLowerCase()
+                      ).join("");
+}  
+
+*/
+
+// Kata 7
+
+/*
+Make a simple function called greet that returns the most-famous "hello world!".
+
+Style Points
+Sure, this is about as easy as it gets. But how clever can you be to create the most creative "hello world" you can think of? What is a "hello world" solution you would want to show your friends?
+
+*/
+
+function greet() {
+	// farming
+	const h = () => "h";
+	const e = () => "e"; 
+	const ll = () => "ll"; 
+	const o = () => "o"; 
+	const w = () => "w"; 
+	const r = () => "r"; 
+	const l = () => "l"; 
+	const d = () => "d";
+	 
+	return `${h()}${e()}${ll()}${o()} 
+	${w()}${o()}${r()}${l()}${d()}`;
+}
+
+console.log(greet()); 
+
+/*
+const greet = () => {
+	const h = e => ${e()}; 
+	const e = ll => ${ll()}; 
+	const ll = o => ${o()}; 
+	const o = w => ${w()}; 
+	const w = r => ${o()}${r()}; 
+	const r = l => ${l()};
+	const l = d => ${d()}; 
+	const d = () => "d";
+}
+*/
+
+
+/*
+String.fromCharCode()
+Convierte los códigos ASCII en caracteres:
+*/
+
+/*
+function greet() {
+  return String.fromCharCode(
+    104, 101, 108, 108, 111, 32, // "hello "
+    119, 111, 114, 108, 100      // "world"
+  );
+}
+
+console.log(greet()); // "hello world"
+
+//String.fromCharCode(104) → "h", 32 es el espacio " ".
+
+*/
+
+
+/*
+arrays + .map()
+Construye las letras en un array y las transforma:
+*/
+
+/*
+function greet() {
+  const codes = [104, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100];
+  return codes.map(c => String.fromCharCode(c)).join('');
+}
+
+console.log(greet()); // "hello world"
+
+*/
+
+
+/*
+Kata 8
+
+Messi
+
+Función de los goles de Messi
+
+Messi es un futbolista con goles en tres ligas:
+
+    LaLiga
+    Copa del Rey
+    Campeones
+
+Completa la función para devolver su número total de goles en las tres ligas.
+
+Nota: la entrada siempre será válida.
+
+Por ejemplo:
+
+5, 10, 2 --> 17
+
+*/
+
+const messiGoals = (l, c, ch) => l + c + ch;  
+
+const goals = (...a) => a.reduce((s, v) => s + v, 0);
+
+const Goals = (...goalsArray) => goalsArray.reduce((a, b) => a + b);
+
+
+
+// Kata 9 
+
+/*
+Pow 2 
+
+Complete the function that takes a non-negative integer n 
+as input, and returns a list of all the powers of 2 with 
+the exponent ranging from 0 to n ( inclusive ).
+
+Eg. 
+
+n = 0  ==> [1]        # [2^0]
+n = 1  ==> [1, 2]     # [2^0, 2^1]
+n = 2  ==> [1, 2, 4]  # [2^0, 2^1, 2^2]
+
+*/
+
+const powersOfTwo = n => {
+  if (n < 0) return false;
+  const result = [];
+  for (let i = 0; i <= n; i++) {
+    result.push(2 ** i);
+  }
+  return result;
+};
+
+console.log(powersOfTwo(5)); // [1, 2, 4, 8, 16, 32]
+
+
+function powOfTwo(n){
+  var result = [];
+  for (var i = 0; i <= n; i++) {
+    result.push(Math.pow(2, i));
+  }
+  return result;
+}
+
+
+function powTwo(n) {
+  return Array.from({length: n + 1}, (v, k) => 2 ** k);
+}
+
+
+function pwTwo(n) {
+  return [...Array(n + 1)].map((_, i) => 2 ** i)
+}
+
+const pwOfTwo = n => [...Array(n + 1)].map((e, i) => Math.pow(2, i));
+
+
+const pOfTwo = n =>
+  [...Array(++n)].map((_, idx) => 2 ** idx);
+  
+ function powersTwo(n){
+  return Array.from({length: n + 1}, (_,i) => 2 ** i);
+}
+
+
+// Kata 10
+
+/*
+This function should test if the factor is a factor of base.
+Return true if it is a factor or false if it is not.
+
+About factors
+Factors are numbers you can multiply together to get another number.
+2 and 3 are factors of 6 because: 2 * 3 = 6
+
+You can find a factor by dividing numbers. If the remainder is 0 then the number is a factor.
+You can use the mod operator (%) in most languages to check for a remainder
+
+For example 2 is not a factor of 7 because: 7 % 2 = 1
+Note: base is a non-negative number, factor is a positive number
+
+*/
+
+const factor = (base, factor) => 
+	base % factor === 0
+	? true
+	: false
+
+function checkForFactor (base, factor) {
+  return base % factor === 0;
+}
+
+/*
+base % factor rtn numb
+base % factor === 0 rtn t o f
+
+*/
+
+
+
+// kata 11 - Clock
+
+/*
+Clock shows h hours, m minutes and s seconds after midnight.
+
+Your task is to write a function which returns the time since midnight in milliseconds.
+Example:
+
+h = 0
+m = 1
+s = 1
+
+result = 61000
+
+Input constraints:
+
+    0 <= h <= 23
+    0 <= m <= 59
+    0 <= s <= 59
+
+Fundamentals
+ 
+*/
+
+
+function past(h, m, s){
+  return ((h*3600)+(m*60)+s)*1000;
+}
+
+const msPast = (h, m, s) => {
+	if (h < 0 && m < 0 && s < 0) return false;
+	if (h <= 23 && m <= 59 && s <= 59)
+		return h*(3600000) + m*(60000) + s*(1000);
+};
+
+function mspast(h, m, s){
+  var hours = h * 60 * 60 * 1000;
+  var minutes = m * 60 * 1000;
+  var seconds = s * 1000;
+  
+  return hours + minutes + seconds;
+}
+
+
+function pastms(h, m, s){
+  const setTime = new Date().setHours(h, m, s);
+  const midnight = new Date().setHours(0, 0, 0);
+  
+  return Math.round(setTime - midnight);
+}
+
+
+// Kata 12 
+
+/*
+Find Maximum and Minimum Values of a List
+Your task is to make two functions ( max and min, or maximum and minimum, etc., depending on the language ) that receive a list of integers as input, and return the largest and lowest number in that list, respectively. Each function returns one number.
+
+Examples (Input -> Output)
+
+* [4,6,2,1,9,63,-134,566]         -> max = 566, min = -134
+* [-52, 56, 30, 29, -54, 0, -110] -> min = -110, max = 56
+* [42, 54, 65, 87, 0]             -> min = 0, max = 87
+* [5]                             -> min = 5, max = 5
+
+Notes
+You may consider that there will not be any empty arrays/vectors
+
+*/
+
+const min = arr => {
+	if (arr.length === 0) return false;
+	return Math.min.apply(null, arr);
+}; 
+
+const max = arr => {
+	if (arr.length <= 0) return false;
+	return Math.max.appy(null, arr);
+}; 
+
+
+const minArr = (list) => Math.min(...list);
+const maxArr = (list) => Math.max(...list);
+
+
+var minList = function(list){
+    list.sort((a, b) => (a - b));
+    return list[0];
+}
+
+var maxList = function(list){
+    list.sort((a, b) => (b - a));
+    return list[0];
+}
+
+
+
+// Kata 13 
+
+/*
+Correct the mistakes of the character recognition software
+
+Character recognition software is widely used to digitise printed texts. Thus the texts can be edited, searched and stored on a computer.
+
+When documents (especially pretty old ones written with a typewriter), are digitised character recognition softwares often make mistakes.
+
+Your task is correct the errors in the digitised text. You only have to handle the following mistakes:
+
+    S is misinterpreted as 5
+    O is misinterpreted as 0
+    I is misinterpreted as 1
+
+The test cases contain numbers only by mistake
+*/
+
+function correct(string)
+{
+    return string
+    .replaceAll("5", "S")
+    .replaceAll("0", "O")
+    .replaceAll("1", "I");
+}
+
+/*
+Aunque funciona es ineficiente porque recorre varias veces la cadena. 
+*/
+
+/*
+console.log(correct('L0ND0N'));
+console.log(correct('DUBL1N'));
+console.log(correct('51NGAP0RE'));
+console.log(correct('BUDAPE5T'));
+console.log(correct('PAR15'));
+*/
+
+function corr(string) {
+  return string.replace(/[501]/g, c => (
+    { "5": "S", "0": "O", "1": "I" }[c]
+  ));
+}
+
+/*
+Eficiencia: 
+1. Con regExp recorre el string en una sola pasada. 
+2. /[501]/g ⇒ Busca cualquier carácter 5, 0 o 1 globalmente.
+3.El segundo argumento de .replace() es una función que recibe el carácter coincidente (c) y devuelve su reemplazo del objeto mapa.
+
+*/
+
+const correctStr = string =>
+  string.replace(/\d/g, val => `OI   S`[val]);
+
+
+
+// Kata 14
+
+/*
+List Filtering
+
+In this kata you will create a function that takes a list of non-negative integers and strings and returns a new list with the strings filtered out.
+Example
+
+filter_list([1,2,'a','b']) == [1,2]
+filter_list([1,'a','b',0,15]) == [1,0,15]
+filter_list([1,2,'aasf','1','123',123]) == [1,2,123]
+
+
+*/
+
+function filter_list(l) {
+  return l.filter(e => typeof e === "number"); 
+}
+
+/*
+console.log(filter_list([1,2,'a','b']));
+console.log(filter_list([1,'a','b',0,15]));
+console.log(filter_list([1,2,'aasf','1','123',123]));
+*/
+
+// Kata 15 
+
+/*
+
+Complementary DNA
+
+Deoxyribonucleic acid (DNA) is a chemical found in the nucleus of cells and carries the "instructions" for the development and functioning of living organisms.
+In DNA strings, symbols "A" and "T" are complements of each other, as "C" and "G". Your function receives one side of the DNA (string, except for Haskell); you need to return the other complementary side. DNA strand is never empty or there is no DNA at all (again, except for Haskell).
+
+Example: (input --> output)
+"ATTGC" --> "TAACG"
+"GTAT" --> "CATA"
+
+*/
+
+
+function adn(string) {
+  return string.replace(/[ATCG]/g, c => (
+    { "A": "T", "C": "G", "T": "A", "G": "C" }[c]
+  ));
+}
+
+//console.log(adn('ATTGC'));
+//console.log(adn('GTAT'));
+
+
+// Error: falta un complemento
+/*
+function adN(string) {
+  return string.replace(/[ATCG]/g, c => (
+    { "A": "T", "C": "G"}[c]
+  ));
+}
+*/
+
+
+
+// Kata 16 
+
+/*
+Rock Paper Scissors!
+
+Let's play! You have to return which player won! In case of a draw return Draw!.
+
+Examples(Input1, Input2 --> Output):
+
+"scissors", "paper" --> "Player 1 won!"
+"scissors", "rock" --> "Player 2 won!"
+"paper", "paper" --> "Draw!"
+
+
+*/
+
+function rps(p1, p2) {
+  // 1) Empate directo
+  if (p1 === p2) return "Draw";
+
+  // 2) Mapa de victorias: cada clave vence al valor
+  const wins = { 
+    r: "s",  // rock vence a scissors
+    p: "r",  // paper vence a rock
+    s: "p"   // scissors vence a paper
+  };
+
+  // 3) Si el valor de p2 coincide con lo que vence p1 → p1 gana
+  return wins[p1] === p2 
+    ? "Player 1 wins" 
+    : "Player 2 wins";
+}
+
+// Tests
+console.log(rps("r", "p")); // Player 2 wins
+console.log(rps("r", "s")); // Player 1 wins
+console.log(rps("r", "r")); // Draw
+
+console.log(rps("p", "r")); // Player 1 wins
+console.log(rps("p", "s")); // Player 2 wins
+console.log(rps("p", "p")); // Draw
+
+console.log(rps("s", "r")); // Player 2 wins
+console.log(rps("s", "p")); // Player 1 wins
+console.log(rps("s", "s")); // Draw
+
