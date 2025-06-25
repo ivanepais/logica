@@ -596,7 +596,15 @@ npm init -y
 
 ```
 
-Bandera y:
+Bandera y: Valores por defecto. --yes a las opciones de configuración
+
+Nombre del paquete
+Versión
+Descripción
+Entrada del punto de entrada (archivo principal)
+Palabras clave
+Autor
+Licencia
 
 
 TypeScript como dependencia de desarrollo:
@@ -1356,7 +1364,7 @@ const p: Point3D = [0, 1, 2];
 
 Propósito: Definir un tipo reutilizable para la firma de funciones.
 
-Ventajas: DRY en la declaración de callbacks y librerías
+### Ventajas: DRY en la declaración de callbacks y librerías
 
 ```
 type Comparator<T> = (a: T, b: T) => number;
@@ -3751,6 +3759,115 @@ implements: cuando una clase debe garantizar que provee la forma (firma) de uno 
 
 
 
+# TS Node, Nodemon y debug
+
+ts-node es un intérprete de TypeScript que puede ejecutar código TypeScript directamente sin necesidad de compilarlo previamente
+
+```
+npm install ts-node --save-dev
+
+npx ts-node archivo.ts.
+
+```
+
+script: 
+
+```
+"scripts": {
+  "dev": "ts-node archivo.ts"
+}
+
+```
+
+
+nodemon
+
+permite ver los cambios en tu código sin tener que reiniciar manualmente el servidor
+
+```
+nodemon index.js
+
+nodemon --exec ts-node archivo.ts
+
+```
+
+reinicie automáticamente el servidor cuando detecte cambios en el código
+
+script en package.json: 
+
+```
+"scripts": {
+  "dev": "nodemon index.js"
+}
+
+```
+
+
+debug: 
+
+```
+node --inspect index.ts
+
+node --inspect-brk  index.ts
+
+```
+
+--inspect habilita la depuración y permite que el depurador se conecte al proceso de Node.js.
+
+-brk habilita la depuración y detiene el proceso de Node.js en el primer punto de interrupción.
+
+
+Conectar el depurador: Una vez que hayas habilitado la depuración, debes conectar un depurador a la sesión de depuración. Puedes utilizar un depurador como Chrome DevTools, Visual Studio Code o Node.js Inspector para conectar a la sesión de depuración.
+
+Depurar el código: Una vez que hayas conectado el depurador, puedes depurar el código utilizando las herramientas de depuración proporcionadas por el depurador. Puedes establecer puntos de interrupción, inspeccionar variables, ejecutar código y más.
+
+
+herramientas debug: 
+
+Chrome DevTools
+
+Visual Studio Code
+
+Node.js Inspector
+
+
+debugger: Es una función que se utiliza para detener el proceso de Node.js en un punto de interrupción.
+
+Punto de interrupción: Es un punto en el código donde el proceso de Node.js se detiene y permite que el depurador inspeccione las variables y el estado del programa.
+
+Establecer un punto de interrupción: Puedes establecer un punto de interrupción en el código utilizando la función debugger o utilizando la herramienta de depuración para establecer un punto de interrupción en una línea específica del código.
+
+
+Firefox:
+
+about:debugging
+
+"Conectar a un proceso de depuración" en la sección "Depuración remota".
+
+URL localhost:9229 (o el puerto que hayas especificado con --inspect) y "Conectar".
+
+terminal, ejecuta node --inspect archivo.ts o js.
+
+La herramienta de depuración de Firefox se conectará al proceso de Node.js y podrás depurar tu código
+
+
+Puntos de interrupción: Puedes establecer puntos de interrupción en tu código para detener la ejecución y inspeccionar las variables.
+
+Inspección de variables: Puedes inspeccionar las variables y expresiones en tu código para ver sus valores.
+
+Ejecución de código: Puedes ejecutar código en la consola de depuración para probar expresiones y funciones.
+
+Depuración de errores: Puedes depurar errores y excepciones en tu código para identificar y solucionar problemas
+
+
+# Scripts de npm: npm run
+
+```
+npm run scriptA
+
+```
+
+
 
 # Planteo
 
@@ -3772,6 +3889,587 @@ control, datos...
 # Ejercicios de Objetos 
 
 ## Básico
+
+### 1. Registro de Usuarios
+
+Objetivo:
+
+Crear una función que reciba un objeto de tipo User 
+y devuelva una cadena con la información formateada del usuario.
+
+1. Define el tipo User
+
+Debe tener las siguientes propiedades:
+
+id: string
+name: string
+age: number
+email (opcional): string
+    
+
+2. Implementá la función
+
+```
+function describeUser(user: User): string {
+  // Tu código aquí
+}
+
+```
+
+La función debe devolver una cadena como:
+
+"Usuario: Ana (ID: u123), Edad: 25, Email: ana@email.com"
+
+O si no tiene email: "Usuario: Ana (ID: u123), Edad: 25"
+
+
+3. Probá la función:
+
+```
+const usuario1 = {
+  id: "u123",
+  name: "Ana",
+  age: 25,
+  email: "ana@email.com"
+};
+
+const usuario2 = {
+  id: "u124",
+  name: "Luis",
+  age: 30
+};
+
+console.log(describeUser(usuario1));
+console.log(describeUser(usuario2));
+
+```
+
+
+Tips:
+
+Usá una interface para definir User.
+
+Aprovechá el operador ? para propiedades opcionales.
+
+Asegurate que TypeScript te avise si te faltan propiedades o las escribís mal.
+
+(Si definís bien los tipos (interface o type), TypeScript te avisa automáticamente cuando algo no encaja.
+Eso te evita errores silenciosos que en JavaScript podrían pasar desapercibidos hasta el tiempo de ejecución.)
+
+
+Planteo: 
+
+methods:
+
+acceso: 
+.propName o `["propName"]` 
+
+o expression: `let age = person[x]`
+
+```
+const person = {
+  firstName: "John",
+  lastName : "Doe",
+  age      :  50
+};
+
+let x = "firstname";
+let y = "age";
+person[x] + " is " + person[y] + " years old."; 
+
+``` 
+out: John is 50 years old.
+
+
+keys y values() func
+
+```
+return `${Object.keys(user)}, ${Object.values(user)}`;
+
+```
+
+loop: 
+
+```
+let text = "";
+for (let x in person) {
+  text += person[x] + " "; // al elem guard le agrega espacio
+};
+
+```
+
+toString()
+entries()
+user.join(" "):
+
+
+```
+function describeUser(user: User): string {
+  let base = `Usuario: ${user.name} (ID: ${user.id}), Edad: ${user.age}`;
+  
+  // Solo agregamos el email si está definido
+  if (user.email) {
+    base += `, Email: ${user.email}`;
+  }
+
+  return base;
+}
+
+```
+
+
+# entries(), map() y join() 
+
+```
+function describeUser(user: User): string {
+  return Object.entries(user)
+    .map(([k, v]) => `${k}: ${v}`)
+    .join(", ");
+}
+
+```
+
+
+1. function describeUser(user: User): string {//...}
+
+describeUser es una función que recibe un parámetro user de tipo User.
+
+Devuelve un string.
+
+
+2. Object.entries(user)
+
+```
+Object.entries(user)
+
+```
+
+Toma el objeto user y lo convierte en un array de pares 
+`[clave, valor]`.
+
+Si user = { id: "u1", name: "Ana", age: 25 }, entonces
+
+```
+Object.entries(user) 
+// → [["id", "u1"], ["name", "Ana"], ["age", 25]]
+
+```
+
+
+3. Desestructuración: asignar valores de un obj a vars
+
+```
+.map(([k, v]) => \${k}: ${v}`)`
+
+```
+
+Recorre cada par `[k, v]` del array.
+
+Desestructura: k queda con el nombre de la propiedad, v con su valor
+
+Para cada par, retorna una cadena formateada "clave: valor".
+
+Con nuestro ejemplo, el resultado de map sería:
+
+```
+["id: u1", "name: Ana", "age: 25"]
+
+```
+
+
+4. .join(", ")
+
+Toma el array de cadenas y las concatena en una sola, separadas por ", ".
+
+Así obtenemos:
+
+```
+"id: u1, name: Ana, age: 25"
+
+```
+
+
+5. Devolución del resultado
+
+Ese string concatenado es el valor que la función retorna.
+
+En return Object.entries(...)…; estamos devolviendo directamente el resultado de toda la cadena de operaciones.
+
+
+
+# Sobre archivo, tipos, interfaces, parámetros, funciones puras y buenas prácticas
+
+Correcciones: 
+
+1. Definir las interfaces en un archivo separado para tipos. 
+
+2. Inmutabilidad de tipos con readonly para las propiedades de las interfaces. 
+
+3. Orden de un objeto
+
+
+# Orden de un objeto: Entero, no entero y symbol 
+
+### Los objetos tiene un orden, entries() puede desordenar el objeto literal escrito en el archivo. 
+
+
+
+# 2. Carrito de Compras
+
+Modelar un Carrito que contenga varios Productos, calcular el total y generar un resumen 
+
+1. Definir las interfaces
+
+Product con:
+
+	id: string
+
+	name: string
+
+	price: number
+
+CartItem con:
+
+	product: Product
+
+	quantity: number
+
+Cart con un arreglo de CartItem:
+
+	items: `CartItem[]`
+
+
+2. Implementar funciones puras
+
+addToCart(cart: Cart, item: CartItem): Cart
+
+	Devuelve un nuevo Cart con item agregado al final de cart.items.
+
+calculateTotal(cart: Cart): number
+
+	Suma price * quantity de cada CartItem y devuelve el total.
+
+cartSummary(cart: Cart): string
+
+	Devuelve una cadena con líneas separadas por \n, cada una en formato:
+
+```
+2× Café – $5.00   // quantity × name – $price
+1× Té – $3.50
+Total: $13.50
+
+```
+
+
+3. Probar tu implementación
+ 
+```
+const coffee: Product = { id: "p1", name: "Café", price: 5.0 };
+const tea:     Product = { id: "p2", name: "Té",   price: 3.5 };
+
+let cart: Cart = { items: [] };
+
+cart = addToCart(cart, { product: coffee, quantity: 2 });
+cart = addToCart(cart, { product: tea,     quantity: 1 });
+
+console.log(calculateTotal(cart));  // 13.5
+console.log(cartSummary(cart));
+
+``` 
+ 
+
+Pistas:
+
+1. Usa inmutabilidad: no mutar el arreglo original, sino crear uno nuevo ([...cart.items, item]).
+
+2. Aprovecha desestructuración para extraer price, name, quantity y facilitar el formateo.
+
+3. Formatea los precios con toFixed(2) para mostrar siempre dos decimales.
+
+
+Planteo: 
+
+1. interfaces
+
+1) interfaz simple
+2) interfaz que toma otra Product 
+3) interfaz que toma un array
+
+2. funciones puras
+
+1) addToCart(cart: Cart, item: CartItem): Cart
+Devuelve un nuevo Cart con item agregado al final de cart.items.
+
+cart.push(item); // muta le array
+return `[...cart].push(item)` // copy arr
+
+errores:
+Type number is no assignable to Cart
+Type Cart must have a `'[Symbol.iterator]()'` method that returns and iterator
+
+
+2) calculateTotal(cart: Cart): number
+Suma price * quantity de cada CartItem y devuelve el total.
+
+cart es un item que toma el array CartItem 
+que tiene product (que tiene Product) y quantity
+
+sumar todos los items del arr
+
+
+3) cartSummary(cart: Cart): string
+Devuelve una cadena con líneas separadas por \n, cada una en formato:
+
+```
+2× Café – $5.00   // quantity × name – $price
+1× Té – $3.50
+Total: $13.50
+
+```
+
+imprimir cada item del arr:
+
+`${cart.items.quantity}x ${cart.items.name} - ${cart.items.} \n Total: ${calculateTotal()}` 
+
+
+## Correcciones: 
+
+1. 
+
+```
+function addToCart(cart: Cart, item: CartItem): Cart {
+  return {
+    // clonamos cualquier otra propiedad de Cart (hoy solo items)
+    ...cart,
+    // items es un nuevo array con los viejos + el nuevo ítem
+    items: [...cart.items, item]
+  };
+}
+```
+
+
+2. 
+
+```
+function calculateTotal(cart: Cart): number {
+  return cart.items.reduce(
+    (sum, item) => sum + item.product.price * item.quantity,
+    0
+  );
+}
+
+```
+
+
+3. 
+
+```
+function cartSummary1(cart: Cart): string {
+  const lines = cart.items.map(item =>
+    `${item.quantity}× ${item.product.name} – $${item.product.price.toFixed(2)}`
+  );
+  lines.push(`Total: $${calculateTotal(cart).toFixed(2)}`);
+  return lines.join("\n");
+}
+
+```
+
+
+
+# 3. Address Book
+
+Crear un pequeño módulo que permita gestionar contactos: añadir, buscar y eliminar.
+
+1. Definir las interfaces
+
+Contact con las propiedades:
+
+	id: string (único)
+
+	name: string
+
+	email: string
+
+	phone?: string (opcional)
+
+
+AddressBook con un arreglo de contactos:
+
+	`contacts: Contact[]`
+
+
+2. Implementar funciones puras
+
+`addContact(book: AddressBook, contact: Contact): AddressBook`
+	Devuelve un nuevo AddressBook con el contact al final, sin duplicar el id.
+
+`findContactByName(book: AddressBook, name: string): Contact[]`
+	Devuelve un array de todos los contactos cuyo name contenga (o coincida) la búsqueda (case-insensitive).
+
+`removeContact(book: AddressBook, id: string): AddressBook`
+	Devuelve un nuevo AddressBook sin el contacto que tenga ese id. 
+
+
+
+3. Probar implementación
+
+```
+const book: AddressBook = { contacts: [] };
+
+const alice = { id: "c1", name: "Alice", email: "alice@example.com" };
+const bob   = { id: "c2", name: "Bob",   email: "bob@example.com", phone: "555-1234" };
+
+let ab = addContact(book, alice);
+ab = addContact(ab, bob);
+
+console.log(findContactByName(ab, "ali")); // debería incluir a Alice
+console.log(findContactByName(ab, "bo"));  // debería incluir a Bob
+
+ab = removeContact(ab, "c1");
+console.log(ab.contacts.map(c => c.name)); // ["Bob"]
+
+```
+
+Consejos
+
+1. Inmutabilidad: Usa spread (...) o métodos como filter para no mutar el array original.
+
+2. Búsqueda case-insensitive: Convierte ambos strings a minúsculas (.toLowerCase()).
+
+3. Control de IDs duplicados: Antes de añadir, puedes verificar con .some() que no exista ya ese id.
+
+4. Tipado estricto: Define claramente las interfaces y anota los tipos de retorno.
+
+
+Planteo: 
+
+Funciones: 
+
+1) 
+`addContact(book: AddressBook, contact: Contact): AddressBook`
+	Devuelve un nuevo AddressBook con el contact al final, sin duplicar el id.
+
+Acceso:
+obj.id; .name etc. 
+obj2.contacts // print arr(?)
+obj2.contacts.for let x of contacts //print all elem de cont
+obj2.contacts.map(e, func) // copy and transform all elem
+
+return new book(AddrB) con contact(Cont):
+book(+contact)
+
+```
+function addContact(book: AddressBook, contact: Contact): AddressBook {
+	return {
+		...book,
+		contacts: [...book.contacts, contacts]
+	}; 
+}
+
+```
+
+
+2) 
+`findContactByName(book: AddressBook, name: string): Contact[]`
+	Devuelve un array de todos los contactos cuyo name contenga (o coincida) la búsqueda (case-insensitive).
+
+
+### Correcciones 
+
+```
+// 1. Definición de tipos
+
+export interface Contact {
+  id: string;
+  name: string;
+  email: string;
+  phone?: string;
+}
+
+export interface AddressBook {
+  contacts: Contact[];
+}
+
+// 2. Función para añadir un contacto
+
+/**
+ * Añade un nuevo Contact al AddressBook.
+ * - Si ya existe un Contact con el mismo id, devuelve el AddressBook sin cambios.
+ */
+export function addContact(
+  book: AddressBook,
+  contact: Contact
+): AddressBook {
+  // Evitar duplicados por id
+  if (book.contacts.some(c => c.id === contact.id)) {
+    return book;
+  }
+  return {
+    ...book,
+    contacts: [...book.contacts, contact],
+  };
+}
+
+// 3. Función para buscar contactos por nombre (case-insensitive)
+
+/**
+ * Devuelve todos los Contact cuyo name incluye la búsqueda.
+ */
+export function findContactByName(
+  book: AddressBook,
+  nameQuery: string
+): Contact[] {
+  const lower = nameQuery.toLowerCase();
+  return book.contacts.filter(c =>
+    c.name.toLowerCase().includes(lower)
+  );
+}
+
+// 4. Función para eliminar un contacto por id
+
+/**
+ * Elimina el Contact con el id indicado.
+ */
+export function removeContact(
+  book: AddressBook,
+  id: string
+): AddressBook {
+  return {
+    ...book,
+    contacts: book.contacts.filter(c => c.id !== id),
+  };
+}
+
+// 5. Ejemplo de uso
+
+let book: AddressBook = { contacts: [] };
+
+const alice: Contact = {
+  id: "c1",
+  name: "Alice Wonderland",
+  email: "alice@example.com",
+};
+
+const bob: Contact = {
+  id: "c2",
+  name: "Bob Builder",
+  email: "bob@example.com",
+  phone: "555-1234",
+};
+
+book = addContact(book, alice);
+book = addContact(book, bob);
+
+// Buscar
+console.log(findContactByName(book, "ali")); // → [ alice ]
+console.log(findContactByName(book, "BO"));  // → [ bob ]
+
+// Eliminar
+book = removeContact(book, "c1");
+console.log(book.contacts.map(c => c.name)); // → ["Bob Builder"]
+
+```
+
 
 ## Intermedio
 
@@ -3813,4 +4511,458 @@ control, datos...
 
 ## Avanzado 
 
+
+
+# Acceso a objetos: anidados, con arrays, etc 
+
+De dos maneras: 
+
+1. Acceso directo por índice
+
+Si sabés exactamente la posición que quieres
+
+```
+const cart: Cart = /* … */;
+
+// Primer ítem del carrito
+const firstItem = cart.items[0];
+
+// Acceder al nombre del producto
+const name1 = firstItem.product.name;
+
+// Acceder al precio
+const price1 = firstItem.product.price;
+
+// Cantidad
+const qty1 = firstItem.quantity;
+
+```
+
+Guardo el primer item, después accedio a product y a name.
+
+Guarda el precio que está en el objeto product. 
+
+Y guarda la cantidad que está en el array items. 
+
+
+2. Recorrer el array con bucles o métodos de array
+
+for…of:
+
+```
+for (const item of cart.items) {
+  console.log(`${item.quantity}× ${item.product.name} — $${item.product.price}`);
+}
+
+```
+
+forEach:
+
+```
+cart.items.forEach(item => {
+  console.log(item.product.name, item.quantity, item.product.price);
+});
+
+```
+
+.map / .filter / .reduce.
+
+```
+// Obtener solo los nombres de los productos
+const names = cart.items.map(item => item.product.name);
+
+// Filtrar ítems con cantidad > 1
+const multiples = cart.items.filter(item => item.quantity > 1);
+
+// Calcular un array de subtotales
+const subtotals = cart.items.map(item => item.product.price * item.quantity);
+
+```
+
+
+3. Desestructuración para “acortar” el acceso
+
+Dentro de un bucle:
+
+```
+for (const { product, quantity } of cart.items) {
+  const { name, price } = product;
+  console.log(quantity, name, price);
+}
+
+```
+
+O directamente en la definción de la función: 
+
+```
+cart.items.forEach(({ product: { name, price }, quantity }) => {
+  console.log(`${quantity}× ${name} — $${price}`);
+});
+
+```
+
+
+4. Acceder al “último” elemento sin índice fijo
+
+```
+const lastItem = cart.items[cart.items.length - 1];
+console.log(lastItem.product.name);
+
+```
+
+
+# Arrow functions
+
+Aprovecha el tipado estático para anotar parámetros, retornos y hasta genéricos
+
+### Inferencia de tipos en la definición (const o let name: tipe): toma el tipo de return.
+
+1. Sintaxis: 
+
+Para dos parametros necesita parentesis, flecha y return.
+
+```
+// Función tradicional
+function suma(a: number, b: number): number {
+  return a + b;
+}
+
+// Arrow function equivalente
+const sumaF = (a: number, b: number): number => {
+  return a + b;
+};
+
+```
+
+Paréntesis con parámetros (a: number, b: number)
+
+Flecha =>
+
+Cuerpo de función entre { … }
+
+Tipo de retorno después de los paréntesis: : number
+
+
+2. Retorno implícito
+
+Si el cuerpo es una sola expresión, podés omitir {} y el return:
+
+```
+const mult = (x: number, y: number): number => x * y;
+
+```
+
+TypeScript infiere el retorno de la expresión.
+
+
+3. Parámetro único sin paréntesis
+
+Cuando sólo hay un parámetro, podés omitir los paréntesis (aunque con tipado a veces los necesitas):
+
+```
+// Con inferencia de tipo (evitando conflictos)
+const doble = (x: number): number => x * 2;
+
+// Si TS ya infiere el tipo, podrías escribir:
+const dobleInf = x => x * 2; // pero pierdes la seguridad de tipos explícitos
+
+```
+
+
+### Si no tipamos la definición, ni los params ni el retorno perdemos la seguridad de tipos. 
+
+### Solo conviene dejar la inferencia a la definición. Tipar los params y el retorno.
+
+
+4. Parámetros opcionales y por defecto 
+
+```
+const saludar = (nombre: string, saludo: string = "Hola"): string =>
+  `${saludo}, ${nombre}!`;
+
+// Uso:
+// saludar("Ana")       → "Hola, Ana!"
+// saludar("Ana", "Ey") → "Ey, Ana!"
+
+```
+
+
+5. Tipar el retorno con void o Promise
+
+```
+const log = (msg: string): void => {
+  console.log(msg);
+};
+
+const fetchData = async (url: string): Promise<string> => {
+  const res = await fetch(url);
+  return res.text();
+};
+
+```
+
+
+6. Genéricos en arrow functions
+
+```
+const identity = <T>(value: T): T => value;
+
+const num = identity<number>(123);   // num: number
+const str = identity<string>("hi");  // str: string
+
+```
+
+Nota: La sintaxis genérica <T> debe ir antes de los paréntesis.
+
+
+7. this léxico
+
+A diferencia de las funciones tradicionales, las arrow functions no tienen su propio this, sino que lo heredan del contexto donde fueron definidas:
+
+```
+class Contador {
+  count = 0;
+  // arrow function -> `this` apunta siempre a la instancia
+  inc = () => {
+    this.count++;
+  };
+}
+
+const c = new Contador();
+setTimeout(c.inc, 1000);     // sigue apuntando a c.count
+
+```
+
+Si hubieras usado un método tradicional, this dentro de inc podría ser undefined en callback.
+
+
+8. Buenas prácticas
+
+Usá arrow functions para callbacks, métodos “inline” y cuando necesites un this léxico.
+
+Anotá siempre los tipos de parámetros y retorno para aprovechar al máximo TS.
+
+Evita funciones flecha demasiado largas; si crecen, mejor transforma en función nombrada
+    
+```
+// 1. Callback típico
+[1, 2, 3].map((n: number): number => n * n);
+
+// 2. Genérico
+const wrap = <T>(v: T): { value: T } => ({ value: v });
+
+// 3. `this` léxico en clase
+class Timer {
+  seconds = 0;
+  start() {
+    setInterval(() => this.seconds++, 1000);
+  }
+}
+
+```
+
+
+
+# Codewars 
+
+# Kata 1. str to numb
+
+Necesitamos una función que pueda transformar una cadena en un número. ¿Qué maneras conoces de lograrlo?
+
+Nota: No te preocupes, todas las entradas serán cadenas y cada cadena es una representación perfectamente válida de un número entero.
+
+
+rtn Number(str);
+rtn +"str";
+rtn +str;  
+
+```
+export const stringToNumber = (str: string): number =>
+  +str; 
+
+```
+
+Test 
+
+```
+import { assert } from "chai";
+
+describe("stringToNumber", function() {
+  it("should work for the examples", function() {
+    assert.strictEqual(stringToNumber("1234"),1234);
+    assert.strictEqual(stringToNumber("605"), 605);
+    assert.strictEqual(stringToNumber("1405"),1405);
+    assert.strictEqual(stringToNumber("-7"),  -7);
+  });
+});
+
+```
+
+
+# Kata 2. Count by X
+
+Crea una función con dos argumentos que devolverá una matriz de los primeros n múltiplos de x.
+
+Supongamos que tanto el número dado como el número de veces a contar serán números positivos mayores que 0.
+
+Devuelve los resultados como una matriz o lista (dependiendo del lenguaje).
+
+Ej:
+
+```
+x = 1, n = 10 --> [1,2,3,4,5,6,7,8,9,10]
+x = 2, n = 5 --> [2,4,6,8,10]
+
+```
+
+rtn arr n múltiplos de x
+
+numb * int = mult
+x * n = arr
+
+recur: 
+n-1
+
+base: 
+1 
+
+```
+rtn [].map((x, n) => x * n)
+// map toma arr exist, opera esos elem: usa e para guard
+
+```
+
+algo como 
+
+```
+rtn [...Array(n - 1)].map((_, i) => 2 ** i)
+
+```
+
+
+Sol: 
+
+1. 
+```
+export const countBy = (x: number, n: number): number[] => Array.from({length: n}, (_, i) => x * (i + 1))
+
+```
+
+2. 
+
+```
+export function countBy(x: number, n: number): number[] {
+  return Array(n).fill(x).map((e,i) => e+e*i);
+}
+```
+
+3. 
+
+```
+export function countBy(x: number, n: number): number[] {
+  const numbers: number[] = []
+  for (let i = 1; i <= n; i++) {
+    numbers.push(i * x)
+  }
+  return numbers
+}
+
+```
+
+Test: 
+
+```
+import { assert } from "chai";
+import { countBy } from "./solution";
+
+describe("Fixed tests", function() {
+  it("countBy(1, 10)", () => assert.deepEqual(countBy(1, 10), [1,2,3,4,5,6,7,8,9,10]));
+  it("countBy(2, 5)", () => assert.deepEqual(countBy(2, 5), [2,4,6,8,10]));
+  it("countBy(3, 7)", () => assert.deepEqual(countBy(3, 7), [3,6,9,12,15,18,21]));
+  it("countBy(50, 5)", () => assert.deepEqual(countBy(50, 5), [50,100,150,200,250]));
+  it("countBy(100, 6)", () => assert.deepEqual(countBy(100, 6), [100,200,300,400,500,600]));
+});
+
+describe("Random tests", function() {
+  const sol = (x: number, n: number): number[] => Array.from({ length: n }, (_, i) => (i + 1) * x);
+  for (let i = 0; i < 100; i++) {
+    const x = Math.floor(Math.random() * 100) + 1;
+    const n = Math.floor(Math.random() * 20) + 1;
+    it(`countBy(${x}, ${n})`, () => assert.deepEqual(countBy(x, n), sol(x, n)));
+  }
+});
+
+```
+
+
+
+# Array de longitud 
+
+Def: 
+
+```
+// Firma de la función
+function multiples(x: number, n: number): number[]
+
+```
+
+Ej: 
+
+```
+multiples(2, 5);  // → [2, 4, 6, 8, 10]
+multiples(3, 3);  // → [3, 6, 9]
+
+```
+
+Cod: 
+
+Devuelve un arr de numb
+
+```
+function multiples(x: number, n: number): number[] {
+  return Array.from({ length: n }, (_, i) => x * (i + 1));
+}
+
+```
+
+1. Array.from({ length: n }) crea un array con n elementos.
+
+2. callback `( _, i ) => x * (i + 1 )` ignora el valor (es undefined) y usa solo el índice i para generar los múltiplos.
+
+3. Usamos i + 1 porque los múltiplos arrancan en 1, no en 0.
+
+| Concepto         | Ejemplo                       |
+| ---------------- | ----------------------------- |
+| `Array.from`     | Crear arrays de longitud fija |
+| `map` implícito  | Transformar cada posición     |
+| `_` (unused var) | Ignorar argumento innecesario |
+| Cierre (`i+1`)   | Evitar empezar desde 0        |
+
+
+### .map() solo funciona sobre arrays ya existentes → por eso usás Array.from() o new Array(n).fill(0)
+
+
+# For clásico: array, operación elem, push result
+
+```
+function multiples(x: number, n: number): number[] {
+  const result: number[] = [];
+  for (let i = 1; i <= n; i++) {
+    result.push(x * i);
+  }
+  return result;
+}
+
+```
+
+
+# Kata 3. School Paperwork
+
+Tus compañeros te pidieron que les copiaras un trabajo. Sabes que hay n compañeros y que el trabajo tiene m páginas.
+
+Tu tarea es calcular cuántas páginas en blanco necesitas. Si n < 0 o m < 0, devuelve 0.
+
+Ej: 
+n= 5, m=5: 25
+n=-5, m=5:  0
 
