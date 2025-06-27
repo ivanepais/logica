@@ -4966,3 +4966,2376 @@ Ej:
 n= 5, m=5: 25
 n=-5, m=5:  0
 
+
+
+# Objetos 
+
+## 1. Intro a Objetos
+
+En la vida real, los objetos son cosas como: casas, autos, personas, animales o cualquier otro tema.
+
+```
+
+Obj: Car 
+
+Props y Methods
+
+car.name = Fiat - car.start()
+car.model = 500 - car.drive()
+car.weight = 850kg - car.brake() 
+car.color = white - car.stop()
+ 
+```
+
+
+Properties:
+
+Un automóvil real tiene propiedades como el peso y el color:
+
+Los objetos car tienen las mismas propiedades, pero los valores difieren 
+
+
+Methods:
+
+Un automóvil real tiene métodos como arrancar y parar:
+
+Los objetos car tienen los mismos métodos, pero éstos se ejecutan en momentos diferentes.
+
+
+Variables:
+
+Contenedores de valores de datos.
+
+Este código asigna un valor simple (Fiat) a una variable llamada auto:
+
+```
+let car = "Fiat"; 
+
+```
+
+
+Objects:
+
+Los objetos también son variables. 
+
+Pero pueden contener muchos valores.
+
+Este código asigna muchos valores (Fiat, 500, blanco) a un objeto llamado car:
+
+```
+const car = {type:"Fiat", model:"500", color:"white"}; 
+
+```
+
+Es común declarar objetos con la palabra clave const.
+
+
+Definir un objeto en JS: 
+
+1. Con Object Literal: 
+
+Es una lista de pares nombre:valor dentro de llaves {}.
+
+```
+{firstName:"John", lastName:"Doe", age:50, eyeColor:"blue"} 
+
+```
+
+Los pares nombre:valor también se denominan pares clave:valor.
+
+Los literales de objeto también se denominan inicializadores de objeto.
+
+
+Ej: 
+
+Crea un objeto JavaScript con 4 propiedades:
+
+```
+// Create an Object
+const person = {firstName:"John", lastName:"Doe", age:50, eyeColor:"blue"};
+
+```
+
+Los espacios y saltos de línea no son importantes. Un inicializador de objeto puede abarcar varias líneas:
+
+```
+const person = {
+  firstName: "John",
+  lastName: "Doe",
+  age: 50,
+  eyeColor: "blue"
+}; 
+
+```
+
+Este ejemplo crea un objeto JavaScript vacío y luego agrega 4 propiedades:
+
+```
+// Create an Object
+const person = {};
+
+// Add Properties
+person.firstName = "John";
+person.lastName = "Doe";
+person.age = 50;
+person.eyeColor = "blue"; 
+
+```
+
+
+2. Con new Keyword
+
+Este ejemplo crea un nuevo objeto JavaScript utilizando new Object() y luego agrega 4 propiedades:
+
+```
+const person = new Object();
+
+// Add Properties
+person.firstName = "John";
+person.lastName = "Doe";
+person.age = 50;
+person.eyeColor = "blue"; 
+
+```
+
+Pero no es necesario utilizar new Object().
+
+Para facilitar la lectura, simplicidad y velocidad de ejecución, utilice el método literal de objeto.
+
+
+3. Con Object Constructor
+
+En JavaScript, un constructor de objetos es un tipo especial de función que se utiliza para crear e inicializar objetos. 
+
+Actúa como modelo para crear múltiples instancias de un tipo de objeto específico, lo que permite una estructura consistente y reutilización.
+
+
+Características:
+
+1. Definición: 
+
+Una función constructora normalmente se nombra con una letra mayúscula inicial (por ejemplo, Persona, Auto) para distinguirla de las funciones regulares.
+
+```
+    function Person(firstName, lastName, age) {
+      this.firstName = firstName;
+      this.lastName = lastName;
+      this.age = age;
+      this.fullName = function() {
+        return this.firstName + " " + this.lastName;
+      };
+    }
+
+```
+
+2. 'this' palabra clave:
+
+Dentro de una función constructora, 'this' hace referencia a la instancia del objeto recién creado. 
+
+Se le asignan propiedades y métodos para que forme parte del objeto.
+
+
+3. new operator: 
+
+Para crear una nueva instancia de objeto desde un constructor, se utiliza el operador `new`. 
+
+Este operador realiza varias acciones:
+
+1. Crea un nuevo objeto vacío:
+2. Establece el contexto de la función constructora en `this` nuevo objeto.
+3. Ejecuta la función constructora, llenando el nuevo objeto con propiedades y métodos. 
+4. Devuelve el objeto recién creado.
+
+```
+let person1 = new Person("John", "Doe", 30);
+let person2 = new Person("Jane", "Smith", 25);
+
+```
+
+Beneficios:
+
+Reutilización: permite crear múltiples objetos con la misma estructura y comportamiento sin repetir código.
+
+Modularidad: encapsula la lógica de creación de objetos dentro de una función dedicada.
+
+Creación dinámica de objetos: permite crear objetos con valores de propiedad variables según los argumentos pasados ​​al constructor.
+
+
+Si bien las funciones constructoras son fundamentales para crear objetos, ES6 introdujo las clases JavaScript, que ofrecen una forma más moderna y sintácticamente más clara de lograr patrones orientados a objetos similares.
+
+Las clases proporcionan, en esencia, una sintaxis más compleja que las funciones constructoras y la herencia basada en prototipos.
+
+
+Propiedades: 
+
+Los valores nombrados, en los objetos JavaScript, se denominan propiedades.
+
+Property - Value:
+
+```
+firstName - John
+lastName - Doe
+age - 50
+eyeColor - blue
+
+```
+
+En otros lenguajes, los objetos escritos como pares de nombre-valor son similares a:
+
+`Associative arrays` en PHP
+`Dictionaries` en Python
+`Hash tables` en C
+`Hash maps` en Java
+`Hashes` en Ruby and Perl
+
+
+Acceso a las propieades: 
+
+dos maneras:
+
+1.  `objectName.propertyName`
+
+2.  `objectName["propertyName"]`
+
+Ej: 
+
+`person.lastName;`
+
+`person["lastName"];`
+
+
+Métodos: 
+
+Son acciones que se pueden realizar sobre los objetos.
+
+Son definiciones de funciones almacenadas como valores de propiedad.
+
+Ej: 
+
+Property - Property Value
+
+```
+firstName - John
+lastName - Doe
+age - 50
+eyeColor - blue
+fullName - function() {return this.firstName + " " + this.lastName;}
+
+```
+
+Código: 
+
+```
+const person = {
+  firstName: "John",
+  lastName : "Doe",
+  id       : 5566,
+  fullName : function() {
+    return this.firstName + " " + this.lastName;
+  }
+}; 
+
+```
+
+`this` ser refiere al objeto `person` 
+
+`this.firstName` significa la propiedad firstName de person.
+
+`this.lastName` significa la propiedad lastName de person.
+
+
+##### En JavaScript, los objetos son los reyes.
+
+##### Si entiendes los objetos, entiendes JavaScript.
+
+1. Los objetos son contenedores de propiedades y métodos.
+
+2. Las propiedades se denominan Valores.
+
+3. Los métodos son funciones almacenadas como propiedades.
+
+4. Las propiedades pueden ser valores primitivos, funciones o incluso otros objetos.
+
+
+##### En JavaScript, casi "todo" es un objeto:
+
+`Objects` son objetos
+`Maths` son objetos
+`Functions` son objetos
+`Dates` son objetos
+`Arrays` son objetos
+`Maps` son objetos
+`Sets` son objetos
+
+
+### Primitivos 
+
+Primitivas de JavaScript
+
+##### Un valor primitivo es un valor que no tiene propiedades ni métodos.
+
+`3.14` es un valor primitivo
+
+`Un tipo de datos primitivo` son datos que tienen un valor primitivo.
+
+JavaScript define 7 tipos de tipos de datos primitivos:
+
+```
+string, number, boolean, null, undefined, symbol, bigint
+
+```
+
+
+### Immutable:
+
+##### Los valores primitivos son inmutables (están hardcodeados y no se pueden cambiar).
+
+Si x = 3,14, puedes cambiar el valor de x, pero no puedes cambiar el valor de 3,14.
+
+Ej: 
+
+Value - Type - Comment
+
+```
+"Hello" - string - "Hello" siempre es "Hello"
+3.14 - number - 3.14 siempre es 3.14
+true - boolean  - true siempre es true
+false - boolean - false siempres es false
+null - null (object) - null siempres es null
+undefined - undefined - undefined siempre es undefined
+
+```
+
+
+### Mutable
+
+##### Los objetos son mutables: se accede a ellos por referencia, no por valor.
+
+Si person es un objeto, la siguiente declaración no creará una copia de persona:
+
+```
+const x = person;
+
+```
+
+##### El objeto x no es una copia de person. El objeto x es person.
+
+##### El objeto x y el objeto person comparten la misma dirección de memoria.
+
+##### Cualquier cambio en x también cambiará la persona:
+
+Ej: 
+
+```
+//Crear un objeto
+const person = {
+  firstName:"John",
+  lastName:"Doe",
+  age:50, eyeColor:"blue"
+}
+
+// Intenta crear una copia
+const x = person;
+
+//Esto cambiará la edad en persona:
+x.age = 10; 
+
+```
+
+
+## 2. Propiedades de los objetos 
+
+##### Un objeto es una colección desordenada de propiedades
+
+Las propiedades son la parte más importante de los objetos de JavaScript.
+
+##### Las propiedades se pueden cambiar, agregar, eliminar y algunas son de solo lectura.
+
+
+### Acceso a la propiedad de un obj
+
+```
+// objectName.property
+let age = person.age; 
+
+//objectName["property"]
+let age = person["age"]; 
+
+//objectName[expression]
+let age = person[x]; 
+
+``` 
+
+Ej: 
+
+```
+person.firstname + " is " + person.age + " years old."; 
+
+person["firstname"] + " is " + person["age"] + " years old."; 
+
+let x = "firstname";
+let y = "age";
+person[x] + " is " + person[y] + " years old."; 
+
+```
+
+
+### Agregar nueva propiedad
+
+Puede agregar nuevas propiedades a un objeto existente simplemente dándole un valor:
+
+```
+person.nationality = "English"; 
+
+```
+
+### Borrar propiedad
+
+La palabra 'delete' elimina una propiedad de un objeto:
+
+```
+const person = {
+  firstName: "John",
+  lastName: "Doe",
+  age: 50,
+  eyeColor: "blue"
+};
+
+delete person.age;
+
+```
+
+o `delete person["age"]` 
+
+```
+
+ const person = {
+  firstName: "John",
+  lastName: "Doe",
+  age: 50,
+  eyeColor: "blue"
+};
+
+delete person["age"]; 
+
+```
+
+Elimina tanto el valor de la propiedad como la propiedad misma.
+
+Después de la eliminación, la propiedad no se puede utilizar hasta que se vuelva a agregar.
+
+
+### Objetos anidados
+
+Los valores de propiedad de un objeto pueden ser otros objetos:
+
+```
+myObj = {
+  name:"John",
+  age:30,
+  myCars: {
+    car1:"Ford",
+    car2:"BMW",
+    car3:"Fiat"
+  }
+} 
+
+```
+
+Ej: 
+
+```
+myObj.myCars.car2; 
+
+```
+BMW 
+
+```
+myObj.myCars["car2"]; 
+
+```
+BMW 
+
+##### Combinación entre acceso por . y expresión. 
+
+```
+myObj["myCars"]["car2"]; 
+
+```
+BMW 
+
+```
+let p1 = "myCars";
+let p2 = "car2";
+myObj[p1][p2]; 
+
+```
+
+##### La expresión puede tomar una variable con un valor válido. 
+
+
+## 3. Object Methods 
+
+##### Son acciones que se pueden realizar sobre objetos.
+
+##### Un método es una definición de función almacenada como un valor de propiedad.
+
+```
+const person = {
+  firstName: "John",
+  lastName: "Doe",
+  id: 5566,
+  fullName: function() {
+    return this.firstName + " " + this.lastName;
+  }
+}; 
+
+```
+
+##### 1. 'this' solo se refiere al objeto person 
+
+##### 2. 'this.firstName' se refiere a la propiedad firstName del objeto person 
+
+
+### Acceso a los métodos de un método
+
+```
+objectName.methodName()
+
+```
+
+##### Si invoca la propiedad fullName con (), se ejecutará como una función:
+
+```
+name = person.fullName();
+
+```
+Out: 
+John Doe
+
+
+##### Si accede a la propiedad fullName sin (), devolverá la definición de función:
+
+```
+name = person.fullName;
+
+```
+
+Out: 
+function() { return this.firstName + " " + this.lastName; }
+
+
+### Agregar métodos a los objetos 
+
+Como propiedad person.name =/= person.fullName =/= person.firstName, aunque pueda hacer lo mismo. 
+
+```
+ person.name = function () {
+  return this.firstName + " " + this.lastName;
+}; 
+
+```
+
+
+### Uso de métodos de JavaScript
+
+Este ejemplo utiliza el método toUpperCase() de JavaScript para convertir un texto a mayúsculas:
+
+```
+person.name = function () {
+  return (this.firstName + " " + this.lastName).toUpperCase();
+}; 
+
+```
+My father is JOHN DOE
+
+```
+// Create an Object
+const person = {
+  firstName: "John",
+  lastName: "Doe",
+  id: 5566,
+};
+
+```
+
+
+## 4. Mostrar Objeto: Displaying 
+
+Al mostrar un objeto JavaScript se mostrará `[object Object]`.
+
+```
+// Create an Object
+const person = {
+  name: "John",
+  age: 30,
+  city: "New York"
+};
+
+document.getElementById("demo").innerHTML = person; 
+
+```
+Out:
+`[object Object]`
+
+
+### Soluciones para mostrar objetos JavaScript
+
+1. Visualización de las propiedades del objeto `por nombre`
+
+Las propiedades de un objeto se pueden mostrar como una cadena:
+
+```
+// Create an Object
+const person = {
+  name: "John",
+  age: 30,
+  city: "New York"
+};
+
+// Display Properties
+document.getElementById("demo").innerHTML =
+person.name + "," + person.age + "," + person.city; 
+
+```
+John, 30, New York
+
+
+2. Visualización de las propiedades de un objeto `en un bucle`
+
+Las propiedades de un objeto se pueden recopilar en un bucle:
+
+```
+const person = {
+  name: "John",
+  age: 30,
+  city: "New York"
+};
+
+// Build a Text
+let text = "";
+for (let x in person) {
+  text += person[x] + " ";
+};
+
+// Display the Text
+document.getElementById("demo").innerHTML = text; 
+
+```
+John 30 New York 
+
+
+##### Debes utilizar `person[x]` en el bucle.
+
+##### `person.x` no funcionará (porque x es la variable del bucle).
+
+
+3. Visualización del objeto `mediante Object.values()`
+
+Object.values() crea una matriz a partir de los valores de propiedad:
+
+```
+// Create an Object
+const person = {
+  name: "John",
+  age: 30,
+  city: "New York"
+};
+
+// Create an Array
+const myArray = Object.values(person);
+
+// Display the Array
+document.getElementById("demo").innerHTML = myArray; 
+
+```
+
+
+4. Object.entries()
+
+##### Simplifica el uso de objetos en bucles: desestructura en varialbes las claves y valores
+
+```
+const fruits = {Bananas:300, Oranges:200, Apples:500};
+
+let text = "";
+for (let [fruit, value] of Object.entries(fruits)) {
+  text += fruit + ": " + value + "<br>";
+} 
+
+```
+
+Bananas: 300
+Oranges: 200
+Apples: 500
+
+
+5. Visualización del objeto `mediante JSON.stringify()`
+
+##### Los objetos de JavaScript se pueden convertir en una cadena con el método JSON JSON.stringify().
+
+JSON.stringify() está incluido en JavaScript y es compatible con todos los navegadores principales.
+
+
+El resultado será una cadena escrita en notación JSON:
+
+{"nombre": "John", "edad": 50", "ciudad": "Nueva York"}
+
+```
+const person = {
+  name: "John",
+  age: 30,
+  city: "New York"
+};
+
+// Stringify Object
+let myString = JSON.stringify(person);
+
+// Display String
+document.getElementById("demo").innerHTML = myString; 
+
+```
+{"name":"John","age":30,"city":"New York"}
+
+
+
+## 5. Object Constructors: funciones constructoras
+
+##### A veces necesitamos crear muchos objetos del mismo tipo.
+
+Para crear un tipo de objeto utilizamos una función constructora de objetos.
+
+Se considera una buena práctica nombrar las funciones constructoras con la primera letra mayúscula.
+
+
+### Object Type Person: Una plantilla para un objeto del mismo tipo
+
+##### Recibe params, this apunta a la prop y no a los params, etc. 
+
+```
+function Person(first, last, age, eye) {
+  this.firstName = first;
+  this.lastName = last;
+  this.age = age;
+  this.eyeColor = eye;
+} 
+
+```
+
+##### En la función constructora, 'this' no tiene valor
+
+##### El valor de this se convertirá en el nuevo objeto cuando se cree un nuevo objeto. 
+
+
+Ahora podemos usar new Person() para crear muchos nuevos objetos Person:
+
+```
+const myFather = new Person("John", "Doe", 50, "blue");
+const myMother = new Person("Sally", "Rally", 48, "green");
+const mySister = new Person("Anna", "Rally", 18, "green");
+
+const mySelf = new Person("Johnny", "Rally", 22, "green");
+
+```
+
+My father is 50. My mother is 48.
+
+```
+// Constructor function for Person objects
+function Person(first, last, age, eye) {
+  this.firstName = first;
+  this.lastName = last;
+  this.age = age;
+  this.eyeColor = eye;
+}
+
+// Create two Person objects
+const myFather = new Person("John", "Doe", 50, "blue");
+const myMother = new Person("Sally", "Rally", 48, "green");
+
+// Display age
+document.getElementById("demo").innerHTML =
+"My father is " + myFather.age + ". My mother is " + myMother.age + "."; 
+
+```
+
+
+### Valores predeterminados de la propiedad
+
+Un valor asignado a una propiedad será un valor predeterminado para todos los objetos creados por el constructor:
+
+```
+ function Person(first, last, age, eyecolor) {
+  this.firstName = first;
+  this.lastName = last;
+  this.age = age;
+  this.eyeColor = eyecolor;
+  this.nationality = "English";
+} 
+
+```
+My father is English. My mother is English
+
+
+### Agregar una propiedad a un objeto
+
+Agregar una propiedad a un objeto creado es fácil:
+
+```
+myFather.nationality = "English"; 
+
+```
+
+##### La nueva propiedad se añadirá a miPadre. No a ningún otro objeto Persona.
+
+
+### Agregar una propiedad a un constructor
+
+##### NO puedes agregar una nueva propiedad a un constructor de objetos:
+
+```
+Person.nationality = "English"; 
+
+```
+
+##### Para agregar una nueva propiedad, debes agregarla al prototipo de la función constructora:
+
+```
+Person.prototype.nationality = "English"; 
+
+```
+
+```
+const myFather = new Person("John", "Doe", 50, "blue");
+myFather.nationality
+
+```
+The nationality of my father is English
+
+
+### Constructor function methods
+
+Una función constructora también puede tener métodos:
+
+```
+ function Person(first, last, age, eyecolor) {
+  this.firstName = first;
+  this.lastName = last;
+  this.age = age;
+  this.eyeColor = eyecolor;
+  this.fullName = function() {
+    return this.firstName + " " + this.lastName;
+  };
+} 
+
+```
+
+```
+const myFather = new Person("John", "Doe", 50, "blue");
+myFather.fullName(); 
+My father is John Doe
+
+```
+
+
+### Agregar un método a un objeto
+
+Agregar un método a un objeto creado es fácil
+
+```
+ myMother.changeName = function (name) {
+  this.lastName = name;
+} 
+
+```
+My mother's last name is Doe
+
+```
+function Person(first, last, age, eye) {
+  this.firstName = first;
+  this.lastName = last;
+  this.age = age;
+  this.eyeColor = eye;
+}
+
+const myMother = new Person("Sally", "Rally", 48, "green");
+
+// Add a Name Method
+myMother.changeName = function (name) {
+  this.lastName = name;
+}
+
+
+// Change Name
+myMother.changeName("Doe");
+
+```
+
+##### El nuevo método se añadirá a miMadre. No a ningún otro objeto Persona.
+
+
+### Agregar un método a un constructor
+
+No se puede agregar un nuevo método a una función constructora de objetos.
+
+Este código producirá un TypeError
+
+```
+ Person.changeName = function (name) {
+  this.lastName = name;
+}
+
+myMother.changeName("Doe"); 
+
+//err:
+ TypeError: myMother.changeName is not a function
+
+```
+
+##### La adición de un nuevo método debe realizarse en el prototipo de la función constructora:
+
+```
+Person.prototype.changeName = function (name) {
+  this.lastName = name;
+}
+
+myMother.changeName("Doe"); 
+
+```
+
+##### La función changeName() asigna el valor de name a la propiedad lastName de la persona, sustituyéndolo por myMother.
+
+
+### Built-in JavaScript Constructors
+
+JavaScript tiene constructores integrados para todos los objetos nativos:
+
+```
+new Object()   // A new Object object
+new Array()    // A new Array object
+new Map()      // A new Map object
+new Set()      // A new Set object
+new Date()     // A new Date object
+new RegExp()   // A new RegExp object
+new Function() // A new Function object
+
+```
+
+El objeto Math() no está en la lista. 
+
+##### Math es un objeto global. La palabra clave `new` no se puede usar en Math.
+
+
+### Usar objetos literales 
+
+```
+Utilice objetos literales {} en lugar de new Object().
+
+Utilice literales de matriz [] en lugar de new Array().
+
+Utilice literales de patrón /()/ en lugar de la nueva RegExp().
+
+Utilice expresiones de función () {} en lugar de new Function().
+
+```
+
+```
+"";           // primitive string
+0;            // primitive number
+false;        // primitive boolean
+
+{};           // object object
+[];           // array object
+/()/          // regexp object
+function(){}; // function
+
+```
+
+
+## 6. Object Reference 
+
+Son uno de los tipos de datos de JavaScript
+
+Se utilizan para almacenar colecciones de clave/valor (nombre/valor).
+
+Un objeto JavaScript es una colección de valores con nombre.
+
+```
+assign() - Copia propiedades de un objeto de origen a un objeto de destino
+constructor - Devuelve la función que creó el prototipo de un objeto.
+create() - Devuelve un objeto creado a partir de un objeto existente
+defineProperties() - Agrega o cambia propiedades 
+defineProperty() - Agrega o cambia una propiedad
+entries() - Devuelve una matriz de pares clave/valor de un objeto
+freeze() - Previene cualquier cambio en un objeto
+fromEntries() - Devuelve un objeto creado a partir de una lista iterable de pares clave/valor
+getOwnPropertyDescriptor() - Devuelve una matriz de las claves de un objeto
+getOwnPropertyDescriptors() - Devuelve una matriz de las claves de un objeto
+getOwnPropertyNames() - Devuelve una matriz de las claves de un objeto
+groupBy() - Agrupa elementos de objeto según los valores de devolución de llamada devueltos 
+isExtensible() - Devuelve verdadero si un objeto es extensible
+isFrozen() - Devuelve verdadero si un objeto está congelado
+isSealed() - Devuelve verdadero si un objeto está sellado
+keys() - Devuelve una matriz de las claves de un objeto
+preventExtensions() - Evita agregar nuevas propiedades a un objeto
+prototype - Le permite agregar propiedades y métodos a objetos JavaScript
+seal() - Evita agregar nuevas propiedades de objetos o eliminar las existentes
+toString() - Convierte un objeto en una cadena y devuelve el resultado.
+valueOf() - Devuelve el valor primitivo de un objeto
+values() - Devuelve una matriz de valores de propiedad de un objeto
+
+```
+
+
+
+## 7. JS Objects
+
+
+### 1. Object definition
+
+Métodos para definir objetos JavaScript
+
+Usando un objeto literal
+Usando new palabra clave
+Usando un constructor de objetos
+Usando Object.assign()
+Usando Object.create()
+Uso de Object.fromEntries()
+
+
+### 2. 
+
+
+
+
+## 8. This 
+
+##### En JavaScript, la palabra clave this se refiere a un objeto.
+
+##### this se refiere a diferentes objetos dependiendo de cómo se utilice:
+
+
+1. En un método de objeto, this se refiere al objeto.
+
+2. Solo this se refiere al objeto global.
+
+3. En una función, this se refiere al objeto global.
+
+4. En una función, en modo estricto, this no está definido.
+
+5. En un evento, this se refiere al elemento que recibió el evento.
+
+6. Métodos como call(), apply() y bind() pueden hacer referencia a cualquier objeto.
+
+
+
+## 9. HTML DOM Objects 
+
+
+
+
+# Prototypes
+
+
+
+
+
+## Obj vs clases vs prototype
+
+
+
+
+# RegExp
+
+##### Una expresión regular es una secuencia de caracteres que forma un patrón de búsqueda.
+
+##### El patrón de búsqueda se puede utilizar para operaciones de búsqueda de texto y reemplazo de texto.
+
+Una expresión regular puede ser un solo carácter o un patrón más complicado.
+
+```
+/pattern/modifiers; 
+
+```
+
+Ej:
+
+```
+/w3schools/i;
+
+```
+
+`/w3schools/i` es una expresión regular.
+
+`w3schools` es un patrón (para ser utilizado en una búsqueda).
+
+`i` es un modificador (modifica la búsqueda para que no distinga entre mayúsculas y minúsculas).
+
+
+## Uso de métodos de cadena
+
+##### En JavaScript, las expresiones regulares se utilizan a menudo con dos métodos de cadena: search() y replace().
+
+El método `search()` utiliza una expresión para buscar una coincidencia y devuelve la posición de la coincidencia.
+
+El método `replace()` devuelve una cadena modificada donde se reemplaza el patrón.
+
+
+## Uso de la búsqueda de cadenas () con una cadena
+
+El método search() busca una cadena con un valor específico y devuelve la posición de la coincidencia:
+
+Ej: 
+
+Utilice una cadena para realizar una búsqueda de "W3schools" en una cadena:
+
+```
+let text = "Visit W3Schools!";
+let n = text.search("W3Schools"); 
+
+```
+n = 6
+
+
+## Uso de la búsqueda de cadenas () con una expresión regular
+
+Ej: 
+
+Utilice una expresión regular para realizar una búsqueda sin distinción entre mayúsculas y minúsculas de "w3schools" en una cadena:
+
+```
+let text = "Visit W3Schools";
+let n = text.search(/w3schools/i); 
+
+```
+
+
+## Uso de String replace() con una cadena
+
+El método replace() reemplaza un valor especificado con otro valor en una cadena:
+
+```
+let text = "Visit Microsoft!";
+let result = text.replace("Microsoft", "W3Schools"); 
+
+```
+result = "Please visit Microsoft!";
+
+
+## Utilice String replace() con una expresión regular
+
+Ej: 
+
+Utilice una expresión regular que no distinga entre mayúsculas y minúsculas para reemplazar Microsoft por W3Schools en una cadena:
+
+```
+let text = "Visit Microsoft!";
+let result = text.replace(/microsoft/i, "W3Schools"); 
+
+```
+Visit W3Schools!
+ 
+
+##### Se pueden utilizar argumentos de expresiones regulares (en lugar de argumentos de cadena) en los métodos anteriores.
+
+##### Las expresiones regulares pueden hacer que su búsqueda sea mucho más potente (sin distinguir entre mayúsculas y minúsculas, por ejemplo).
+ 
+ 
+## Modificadores de expresiones regulares
+
+Se pueden utilizar modificadores para realizar búsquedas más globales que no distingan entre mayúsculas y minúsculas:
+
+```
+i - Realizar coincidencias sin distinción entre mayúsculas y minúsculas
+g - Realizar una coincidencia global (encontrar todos)
+m - Realizar coincidencias multilínea
+d - Realizar coincidencias de inicio y fin (Novedad en ES2022)
+
+```
+
+
+## Patrones de expresiones regulares
+
+Los corchetes se utilizan para encontrar un rango de caracteres:
+
+```
+[abc] - Encuentra cualquiera de los caracteres entre paréntesis.
+[0-9] - Encuentra cualquiera de los dígitos entre los paréntesis.
+(x|y) - Encuentra cualquiera de las alternativas separadas con |
+
+```
+
+
+Los metacaracteres son caracteres con un significado especial:
+
+```
+\d - Encuentra un dígito
+\s - Encontrar un carácter de espacio en blanco
+\b - Busque una coincidencia al principio de una palabra como esta: \bWORD, o al final de una palabra como esta: WORD\b
+\uxxxx - Encuentre el carácter Unicode especificado por el número hexadecimal xxxx
+
+```
+
+Los cuantificadores definen cantidades:
+
+```
+n+ - Coincide con cualquier cadena que contenga al menos un n
+n* - Coincide con cualquier cadena que contenga cero o más ocurrencias de n
+n? - Coincide con cualquier cadena que contenga cero o una ocurrencia de n
+
+```
+
+
+## Uso del objeto RegExp
+
+##### En JavaScript, el objeto RegExp es un objeto de expresión regular con propiedades y métodos predefinidos.
+
+El método test() es un método de expresión RegExp.
+
+Busca un patrón en una cadena y devuelve verdadero o falso, según el resultado.
+
+El siguiente ejemplo busca una cadena con el carácter "e":
+
+```
+const pattern = /e/;
+pattern.test("The best things in life are free!"); 
+
+```
+Dado que hay una "e" en la cadena, la salida del código anterior será:
+
+```
+true 
+
+```
+
+No es necesario introducir primero la expresión regular en una variable. 
+
+Las dos líneas anteriores se pueden acortar a una sola.
+
+```
+/e/.test("The best things in life are free!"); 
+
+```
+
+Usando exec()
+
+El método exec() es un método de expresión RegExp.
+
+Busca una cadena con un patrón específico y devuelve el texto encontrado como un objeto.
+
+Si no se encuentra ninguna coincidencia, devuelve un objeto vacío (nulo).
+
+El siguiente ejemplo busca una cadena con el carácter "e":
+
+```
+/e/.exec("The best things in life are free!"); 
+
+```
+
+```
+<script>
+const obj = /e/.exec("The best things in life are free!");
+document.getElementById("demo").innerHTML =
+"Found " + obj[0] + " in position " + obj.index + " in the text: " + obj.input;
+</script>
+ 
+```
+
+```
+Found e in position 2 in the text: The best things in life are free!
+
+```
+
+
+
+# Practicas
+
+1. tipar, usar `${}`
+
+```
+function greet(name: string): string {
+  return `Hola, ${name}`;
+}
+
+```
+
+Aprovechá la inferencia, pero no dejes los tipos fuera de las firmas públicas.
+
+
+2. Usá interfaces y types para estructurar tus datos
+
+```
+interface User {
+  id: string;
+  name: string;
+  age?: number; // opcional
+}
+
+```
+
+#### Usá interface para contratos de objetos y type para alias flexibles (uniones, funciones, literales, etc.).
+
+
+ 3. Evitá el tipo any
+ 
+ Mal: 
+ 
+ ```
+ let data: any = fetchData();
+ 
+ ```
+ 
+ Mejor: 
+ 
+ ```
+type ApiResponse = { name: string; age: number };
+let data: ApiResponse = fetchData();
+
+```
+
+##### Usá unknown si realmente no sabés el tipo todavía.
+
+
+4. Tipá explícitamente los argumentos y el retorno
+
+```
+function sum(a: number, b: number): number {
+  return a + b;
+}
+
+```
+
+Evitás bugs y obtenés autocompletado y verificación.
+
+
+5. enums, uniones literales o consts para opciones limitadas
+
+Unión literal: 
+
+```
+type Direction = "left" | "right" | "up" | "down";
+
+```
+
+Enum: 
+
+```
+enum Direction {
+  Left = "left",
+  Right = "right",
+}
+
+```
+
+Evitás strings sueltos ("magic strings") que no podés validar.
+
+
+6. Usá modificadores de acceso (public, private, readonly)
+
+```
+class User {
+  constructor(private id: string, public name: string) {}
+}
+
+```
+
+Mejora el encapsulamiento y evita accesos accidentales
+
+
+7. Usá genéricos para estructuras reutilizables
+
+```
+function identity<T>(value: T): T {
+  return value;
+}
+
+```
+
+
+##### Hacé tus funciones/clases más flexibles y seguras sin perder tipos.
+
+
+8. Activá las opciones estrictas en tsconfig.json
+
+```
+{
+  "compilerOptions": {
+    "strict": true
+  }
+}
+
+```
+
+Esto habilita noImplicitAny, strictNullChecks, etc. 
+
+Te obliga a ser explícito y te salva de errores silenciosos.
+
+
+9. Separá tipos y lógica
+
+```
+// types.ts
+export interface Product { id: string; name: string }
+
+// logic.ts
+import { Product } from './types';
+
+```
+
+Mejora el orden del proyecto y facilita testing y mantenimiento.
+
+
+10. funciones puras cuando sea posible
+
+No mutan datos externos
+
+No dependen de estados globales
+
+Son más fáciles de testear y razonar
+    
+     
+Errores comunes a evitar:
+
+| Error                                    | Alternativa                      |
+| ---------------------------------------- | -------------------------------- |
+| Usar `any` por comodidad                 | Usar `unknown` o tipar bien      |
+| Tipar todo como `object`                 | Usar interfaces                  |
+| Dejar la función sin tipo de retorno     | Tipar siempre funciones públicas |
+| Ignorar los errores de compilación de TS | Arreglarlos, no silenciarlos     |
+| No usar `as const` en objetos inmutables | Te perdés inferencia precisa     |
+
+
+RS: 
+
+Tipá todo lo público
+Usá interfaces y types correctamente
+Evitá any
+Activá modo estricto
+##### Pensá en TS como una herramienta para evitar bugs antes de que pasen
+
+
+
+# Magic strings
+
+##### Valores de texto escritos directamente en el código, sin contexto ni validación, que pueden provocar errores difíciles de detectar o mantener.
+
+Es una cadena dura (hardcoded) usada directamente en el código que:
+
+1. No está centralizada
+
+2. No está documentada
+
+3. No está validada por el sistema de tipos
+
+```
+function getDirection(dir: string) {
+  if (dir === "left") {
+    // ...
+  } else if (dir === "right") {
+    // ...
+  }
+}
+
+```
+
+##### "left" y "right" están escritos a mano
+
+##### Si escribís "righht" por error, TypeScript no avisa
+
+Es difícil reutilizar, refactorizar o buscar dónde se usan esos valores
+
+
+### Alternativas a magic strings:
+
+1. Uniones literales (más recomendada en TypeScript):
+
+```
+type Direction = "left" | "right" | "up" | "down";
+
+function getDirection(dir: Direction) {
+  // TS verifica que dir sea una de esas 4
+}
+
+```
+
+##### Ventaja: ahora TypeScript restringe los valores válidos, y el autocompletado funciona.
+
+
+2. Constantes:
+
+```
+const LEFT = "left";
+const RIGHT = "right";
+
+function getDirection(dir: string) {
+  if (dir === LEFT) {
+    // ...
+  }
+}
+
+```
+
+Ventaja: los valores están centralizados y podés refactorizar fácilmente.
+
+
+3. Enum (si vas a tener múltiples opciones relacionadas):
+
+```
+enum Direction {
+  Left = "left",
+  Right = "right",
+  Up = "up",
+  Down = "down"
+}
+
+function getDirection(dir: Direction) {
+  // TS sabe que sólo se aceptan valores del enum
+}
+
+```
+
+Consecuencias: 
+
+| Problema                | Consecuencia                                |
+| ----------------------- | ------------------------------------------- |
+| No hay control de tipos | Se pueden escribir mal                      |
+| Difícil de refactorizar | Cambiar "left" implica buscar manualmente   |
+| No hay autocompletado   | Más propenso a errores humanos              |
+| No es semántico         | ¿Qué significa `"active"` en este contexto? |
+
+
+Evitar magic strings hace que tu código:
+
+Sea más seguro
+
+Más mantenible
+
+Más explícito y legible
+
+
+
+# as const 
+
+##### Es una aserción de tipo literal inmutable que convierte una estructura (como un array u objeto) en una constante tipada de forma más precisa.
+
+
+### Efectos de as const
+
+Marca valores como readonly
+
+Hace que los valores se infieran como literales en lugar de tipos amplios (string, number, etc.)
+
+
+sin as const:
+
+```
+const direction = {
+  up: "UP",
+  down: "DOWN"
+};
+
+```
+
+TypeScript infiere el tipo como:
+
+```
+{
+  up: string;
+  down: string;
+}
+
+```
+
+##### Esto es muy amplio, y cualquier string podría ser asignado en el futuro.
+
+
+Con as const:
+
+```
+const direction = {
+  up: "UP",
+  down: "DOWN"
+} as const;
+
+```
+
+Ahora TypeScript lo infiere como:
+
+```
+{
+  readonly up: "UP";
+  readonly down: "DOWN";
+}
+
+```
+
+Literal exacto e inmutable
+
+
+Beneficios: 
+
+1. Evita magic strings
+
+```
+function move(dir: "UP" | "DOWN") {
+  // ...
+}
+
+move(direction.up); // con as const funciona
+
+```
+
+Sin as const, direction.up es de tipo string, y TypeScript te daría error porque "UP" no es necesariamente "UP" | "DOWN" sin esa precisión.
+
+
+2. Para arrays literales constantes:
+
+```
+const roles = ["admin", "user", "guest"] as const;
+type Role = typeof roles[number]; // "admin" | "user" | "guest"
+
+```
+
+Sin as const, `roles[number]` sería string.
+
+
+Hace que objetos y arrays sean inmutables
+
+Hace que los valores se usen como literal exacto
+
+Es útil en librerías, enums falsos, validaciones y claves de configuración
+
+
+Ej: 
+
+```
+const status = {
+  success: "SUCCESS",
+  error: "ERROR"
+} as const;
+
+type Status = typeof status[keyof typeof status]; // "SUCCESS" | "ERROR"
+
+function showStatus(s: Status) {
+  console.log(s);
+}
+
+showStatus(status.success); // ✅
+showStatus("ERROR");        // ✅
+showStatus("FAIL");         // ❌ Error
+
+```
+
+RS: 
+
+| Sin `as const`               | Con `as const`              |
+| ---------------------------- | --------------------------- |
+| Inferencia amplia (`string`) | Inferencia literal (`"UP"`) |
+| Mutable                      | Inmutable (`readonly`)      |
+| Pérdida de precisión         | Precisión máxima en tipos   |
+| Posibles errores silenciosos | Mejor verificación de tipos |
+
+
+
+# Uniones literales 
+
+Forma segura de restringir el valor de una variable a un conjunto limitado de opciones exactas.
+
+##### Es un tipo personalizado que solo puede ser uno de varios valores específicos (strings, números, booleans…).
+
+```
+type Direction = "left" | "right" | "up" | "down";
+
+function move(dir: Direction) {
+  console.log("Moviendo hacia", dir);
+}
+
+move("left");  // 
+move("down");  // 
+move("back");  // Error: "back" no está en Direction
+
+```
+
+##### Esto es mucho más seguro que usar string como tipo, donde cualquier valor estaría permitido.
+
+
+Con números:
+
+```
+type DieFace = 1 | 2 | 3 | 4 | 5 | 6;
+
+function rollDie(): DieFace {
+  return 3;
+}
+
+```
+
+
+Beneficio: 
+
+1. Reemplazan magic strings de forma segura
+
+2. Permiten autocompletado en editores
+
+3. Son más claras y mantenibles que enums en muchos casos
+
+4. Se pueden combinar con otras herramientas como as const
+
+
+Ej:
+
+```
+type TrafficLight = "red" | "yellow" | "green";
+
+function getNext(light: TrafficLight): TrafficLight {
+  if (light === "red") return "green";
+  if (light === "green") return "yellow";
+  return "red";
+}
+
+```
+
+TypeScript te protege de errores como "blue" o "RED" (mayúsculas incorrectas).
+
+
+### Combinaciones: 
+
+1. objetos y as const
+
+```
+const roles = ["admin", "user", "guest"] as const;
+type Role = typeof roles[number]; // "admin" | "user" | "guest"
+
+```
+
+
+2. type guards
+
+```
+function isDirection(value: string): value is Direction {
+  return ["left", "right", "up", "down"].includes(value);
+}
+
+```
+
+
+Usos: 
+
+| Úsalo para…                       | Ejemplo                              |
+| --------------------------------- | ------------------------------------ |
+| Valores limitados y fijos         | Días de la semana, roles, estados    |
+| Opciones en funciones             | `"light"` \| `"dark"` en un tema     |
+| Validaciones que reemplacen enums | `"success"` \| `"error"` \| `"info"` |
+| Alternativa más liviana a enums   | Más fácil de leer y tree-shakable    |
+
+
+Rs: 
+
+Son una alternativa simple, segura y autocompletable
+
+Reemplazan strings sueltas en parámetros y valores
+
+Se combinan muy bien con type, as const y arrays
+
+Las uniones literales hacen que tus tipos sean más predecibles y tu código más robusto
+
+
+
+# Enums
+
+Enumeraciones: declarar un conjunto de valores con nombre
+
+Se usan cuando querés representar un grupo cerrado de constantes, como días de la semana, roles, estados, etc.
+
+
+Un enum define un tipo personalizado que asocia nombres a valores, y permite que esos nombres sean usados como valores válidos.
+
+enum numérico: 
+
+```
+enum Direction {
+  Up,     // 0
+  Down,   // 1
+  Left,   // 2
+  Right   // 3
+}
+
+let dir: Direction = Direction.Left; // → 2
+console.log(dir); // 2
+
+```
+
+##### Si no se especifica, los valores numéricos comienzan en 0 y se incrementan.
+
+
+Valores personalizados (string enums):
+
+```
+enum Status {
+  Success = "SUCCESS",
+  Error = "ERROR",
+  Loading = "LOADING"
+}
+
+function handleStatus(status: Status) {
+  if (status === Status.Success) {
+    console.log("¡Éxito!");
+  }
+}
+
+```
+
+##### Este tipo de enum string es más seguro, legible y recomendable que el numérico.
+
+
+Beneficios: 
+
+1. Agrupás valores relacionados bajo un mismo nombre
+
+2. Evitás magic strings y errores tipográficos
+
+3. Permitís autocompletado y verificación de tipo
+
+4. Es una alternativa organizada a las uniones literales cuando tenés muchos valores
+
+
+Comportamiento: 
+
+```
+enum Color {
+  Red,
+  Green,
+  Blue
+}
+
+console.log(Color.Red);      // → 0
+console.log(Color[0]);       // → "Red"
+
+```
+
+1. En enums numéricos hay una relación bidireccional: podés acceder por clave o valor.
+
+2. En enums de tipo string, no hay reverso automático
+
+
+Precauciones: 
+
+| Problema                            | Recomendación                              |
+| ----------------------------------- | ------------------------------------------ |
+| Enums numéricos pueden ser confusos | Usá enums de strings en su lugar           |
+| Generan código JS adicional         | Si querés algo más liviano, usá `as const` |
+| No son tree-shakeables              | Para librerías, preferí union types        |
+
+
+Rs: 
+
+enum es ideal para constantes agrupadas con nombre
+
+Preferí string enums por claridad
+
+##### Usá enum cuando necesitás mantener el valor fuera del código (por ejemplo: estados HTTP, tipos de error, etc.)
+
+##### Considerá as const + uniones literales como alternativa más liviana
+
+
+
+
+# Enums vs uniones literales vs as const
+
+##### Son tres formas de representar valores constantes restringidos
+
+1. enum
+
+Tipo especial de estructura en TypeScript para agrupar valores constantes con nombre.
+
+```
+enum Direction {
+  Left = "LEFT",
+  Right = "RIGHT"
+}
+
+function move(dir: Direction) { /*...*/ }
+
+move(Direction.Left); //
+
+```
+
+Ventajas:
+
+Agrupa lógicamente valores relacionados
+
+Mejora legibilidad (Direction.Left)
+
+Autocompletado y seguridad de tipos
+
+
+Desventajas:
+
+Genera código JavaScript extra
+
+No es tree-shakeable (ocupa más espacio en bundlers)
+
+Puede ser menos flexible que otros enfoques modernos
+
+
+2. Uniones literales ("LEFT" | "RIGHT")
+
+Un tipo que representa un conjunto fijo de valores literales posibles. Ideal para reemplazar magic strings.
+
+```
+type Direction = "LEFT" | "RIGHT";
+
+function move(dir: Direction) { /*...*/ }
+
+move("LEFT"); //
+
+```
+
+##### Muy liviano (solo tipo, no genera código JS)
+
+Muy explícito
+
+Funciona muy bien con inferencia de tipos
+
+
+##### No podés acceder a los valores como constantes (Direction.Left no existe)
+
+Si los valores son usados en muchos lugares, puede volverse repetitivo
+
+
+3. as const: Constantes literales inmutables
+
+##### aserción de tipo que convierte un array u objeto en un conjunto de valores literales inmutables (readonly).
+
+```
+const direction = {
+  Left: "LEFT",
+  Right: "RIGHT"
+} as const;
+
+type Direction = typeof direction[keyof typeof direction];
+
+function move(dir: Direction) { /*...*/ }
+
+move(direction.Left);
+
+```
+
+##### Infiere los valores como literales ("LEFT" en lugar de string)
+
+Se puede usar para generar tipos dinámicamente
+
+No genera código adicional
+
+Tree-shakeable, ideal para librerías
+
+
+Comparación: 
+
+| Característica                  | `enum`                            | Unión literal        | `as const`                         |
+| ------------------------------- | --------------------------------- | -------------------- | ---------------------------------- |
+| Genera código JS                | ✅ Sí                              | ❌ No                 | ❌ No                               |
+| Tree-shakeable                  | ❌ No                              | ✅ Sí                 | ✅ Sí                               |
+| Autocompletado y validación     | ✅ Sí                              | ✅ Sí                 | ✅ Sí                               |
+| Fácil de usar                   | ✅ Sí (para principiantes)         | ✅ Sí                 | ⚠️ Un poco más complejo            |
+| Acceso a valores (`obj.key`)    | ✅ (`Enum.Key`)                    | ❌                    | ✅ (`obj.key`)                      |
+| Tipado inferido automáticamente | ⚠️ No                             | ✅ Sí                 | ✅ Sí con `typeof obj[keyof obj]`   |
+| Ideal para...                   | API públicas, lógica centralizada | Validaciones rápidas | Constantes dinámicas reutilizables |
+
+
+Usos: 
+
+| Necesitás...                                         | Usá...                |
+| ---------------------------------------------------- | --------------------- |
+| Agrupar valores con nombre y usarlos como constantes | `enum`                |
+| Validar entradas simples con pocos valores           | unión literal         |
+| Tipar objetos o arrays inmutables como literales     | `as const`            |
+| Crear tipos desde estructuras existentes             | `as const` + `typeof` |
+
+
+enum: útil si venís de lenguajes como Java/C#, pero menos liviano.
+
+Uniones literales: perfectas para validaciones y tipos simples.
+
+as const: poderosa técnica moderna para tener valores y tipos en sincronía, especialmente útil con objetos y arrays.
+
+
+
+# Types guards 
+
+##### Técnicas para ayudar al compilador a refinar el tipo de una variable dentro de una rama condicional. Son clave cuando trabajás con tipos múltiples o estructuras más complejas.
+
+##### Es una condición que reduce o discrimina el tipo de una variable dentro de un bloque específico.
+
+Por ejemplo, si una variable puede ser un string o un number, un type guard nos permite saber con seguridad cuál es, para operar correctamente:
+
+```
+function imprimir(valor: string | number) {
+  if (typeof valor === "string") {
+    // Aquí TypeScript sabe que valor es string
+    console.log(valor.toUpperCase());
+  } else {
+    // Aquí sabe que es number
+    console.log(valor.toFixed(2));
+  }
+}
+
+```
+
+
+1. typeof type guard
+
+Para tipos primitivos (string, number, boolean, symbol, etc.)
+
+```
+if (typeof x === "string") {
+  // x es string aquí
+}
+
+```
+
+
+2. instanceof type guard
+
+Para clases o constructores
+
+```
+if (obj instanceof Date) {
+  // obj es Date
+  obj.getFullYear();
+}
+
+```
+
+
+3. in operator
+
+Para verificar si una propiedad existe (ideal para objetos discriminados)
+
+```
+type Gato = { maulla: () => void };
+type Perro = { ladra: () => void };
+
+function hablar(animal: Gato | Perro) {
+  if ("maulla" in animal) {
+    animal.maulla();
+  } else {
+    animal.ladra();
+  }
+}
+
+```
+
+
+4. Type guard personalizado (función booleana)
+
+Podés crear funciones que validen y restrinjan tipos
+
+```
+function esString(x: unknown): x is string {
+  return typeof x === "string";
+}
+
+function procesar(x: unknown) {
+  if (esString(x)) {
+    // x es string acá
+    console.log(x.toUpperCase());
+  }
+}
+
+```
+
+x is string es una type predicate que le dice a TypeScript: “confía en mí, x es string si esta función devuelve true”.
+
+
+Ej: 
+
+```
+type Circle = { kind: "circle"; radius: number };
+type Square = { kind: "square"; side: number };
+type Shape = Circle | Square;
+
+function area(shape: Shape): number {
+  if (shape.kind === "circle") {
+    return Math.PI * shape.radius ** 2;
+  } else {
+    return shape.side ** 2;
+  }
+}
+
+```
+
+##### Acá shape.kind es una propiedad discriminante y TypeScript aplica un discriminated union automáticamente (forma de type guard implícita).
+
+
+Eliminan errores por tipos incorrectos
+
+Hacen el código más seguro y autocompletable
+
+Permiten usar discriminated unions sin casting
+
+Son fundamentales para trabajar con unknown, any o uniones
+
+
+Sin type guards:
+
+```
+function saludar(x: string | number) {
+  console.log(x.toUpperCase()); //  Error: x podría no ser string
+}
+
+```
+
+Con: 
+
+```
+function saludar(x: string | number) {
+  if (typeof x === "string") {
+    console.log(x.toUpperCase()); // ✅ Seguro
+  }
+}
+
+```
+
+
+
+# Estructuras genéricas 
+
+##### Permiten escribir código reutilizable que funciona con diferentes tipos, sin perder la seguridad de tipo.
+
+Es una función, clase, interfaz o tipo que usa un parámetro de tipo (como T, U, K, etc.) para ser flexible y tipar dinámicamente según el uso.
+
+```
+function identity<T>(value: T): T {
+  return value;
+}
+
+```
+
+T es un tipo genérico.
+
+Al llamar la función, T se infiera automáticamente
+
+
+```
+identity("Hola");  // T es string → devuelve string
+identity(42);      // T es number → devuelve number
+
+```
+
+1. Funciones genéricas
+
+```
+function firstElement<T>(arr: T[]): T {
+  return arr[0];
+}
+
+const first = firstElement(["a", "b", "c"]); // → "a" (string)
+
+```
+
+2. Clases genéricas
+
+```
+class Box<T> {
+  private value: T;
+
+  constructor(value: T) {
+    this.value = value;
+  }
+
+  get(): T {
+    return this.value;
+  }
+}
+
+```
+
+```
+const stringBox = new Box<string>("Hola");
+stringBox.get(); // → "Hola"
+
+```
+
+3. Interfaces genéricas
+
+```
+interface ApiResponse<T> {
+  data: T;
+  status: number;
+}
+
+const userResponse: ApiResponse<{ name: string }> = {
+  data: { name: "Ana" },
+  status: 200
+};
+
+```
+
+4. Tipos genéricos
+
+```
+type Pair<K, V> = {
+  key: K;
+  value: V;
+};
+
+const coord: Pair<string, number> = {
+  key: "x",
+  value: 42
+};
+
+```
+
+
+Utilidad: 
+
+| Problema                                     | Solución con genéricos                       |
+| -------------------------------------------- | -------------------------------------------- |
+| Repetís la misma lógica con distintos tipos  | Usás una única función/clase genérica        |
+| Quieres tipado flexible sin perder seguridad | Definís `T`, `U`, `K`, etc. como comodines   |
+| Querés librerías reutilizables               | Genéricos hacen tu código adaptable y seguro |
+
+
+### Constrain (restringir) un genérico
+
+##### Podés limitar qué tipo puede recibir el genérico:
+
+```
+function getLength<T extends { length: number }>(value: T): number {
+  return value.length;
+}
+
+getLength("hola");        // ✅
+getLength([1, 2, 3]);      // ✅
+getLength(42);            // ❌ number no tiene .length
+
+```
+
+
+## Casos de uso 
+
+1. Funciones utilitarias reutilizables
+
+Problema: Necesitás una función como identity(), first(), last() o merge() que funcione con cualquier tipo.
+    
+```
+function first<T>(arr: T[]): T {
+  return arr[0];
+}
+
+```
+
+La misma lógica sirve para arrays de string, number, boolean, User, etc. 
+
+
+2. Clases de almacenamiento (data containers)
+
+Problema: Necesitás una clase tipo Box, Cache, Queue, Stack, Response, que guarde o maneje datos de distintos tipos
+
+```
+class Storage<T> {
+  private data: T[] = [];
+  add(item: T): void { this.data.push(item); }
+}
+
+```
+
+Reutilizás la misma estructura sin duplicar la lógica para cada tipo de dato.
+
+
+3. APIs y respuestas tipadas
+
+Problema: Tenés muchas funciones/fetch que devuelven distintas formas de ApiResponse.
+    
+```
+interface ApiResponse<T> {
+  data: T;
+  status: number;
+  message?: string;
+}
+
+```
+
+Podés crear respuestas que se adaptan según el tipo de datos que devuelva la API (User, Product, Post, etc.).
+
+
+4. Operaciones sobre objetos clave-valor (mapas o diccionarios)
+
+Problema: Necesitás representar pares clave/valor dinámicos, como configuraciones, opciones o registros
+
+```
+type Dictionary<T> = {
+  [key: string]: T;
+};
+
+const colors: Dictionary<string> = {
+  primary: "#000",
+  secondary: "#fff"
+};
+
+```
+
+Usás el mismo patrón para string, number, objetos complejos, etc.
+
+
+5. Formularios y validación dinámica
+
+Problema: Necesitás una estructura de formulario que soporte cualquier tipo de datos (dinámicos o fijos).
+
+```
+interface FormField<T> {
+  value: T;
+  error?: string;
+  touched: boolean;
+}
+
+type Form<T> = {
+  [K in keyof T]: FormField<T[K]>;
+};
+
+```
+
+Ventaja: Podés crear formularios tipados basados en interfaces reales (User, Product), y tener feedback de errores seguro.
+
+
+6. Componentes UI genéricos (React, etc.)
+
+Problema: Querés un componente que funcione con distintos datos pero siga siendo seguro.
+    
+```
+function List<T>({ items, render }: { items: T[], render: (item: T) => JSX.Element }) {
+  return <ul>{items.map(render)}</ul>;
+}
+
+```
+
+Ventaja: Un solo componente sirve para mostrar usuarios, productos, tareas, etc., y TS valida todo
+
+
+7. Filtros, ordenamientos y búsquedas genéricas
+
+Problema: Necesitás operar sobre listas de cualquier tipo de datos con lógica de comparación, búsqueda o transformación
+    
+```
+function filterBy<T>(arr: T[], predicate: (item: T) => boolean): T[] {
+  return arr.filter(predicate);
+}
+
+```
+
+Podés usar esta función con cualquier tipo de lista, manteniendo el tipo de retorno.
+
+
+Rs:
+
+| Caso teórico                              | Aplicación práctica                       |
+| ----------------------------------------- | ----------------------------------------- |
+| Reutilizar funciones para múltiples tipos | `first`, `merge`, `filterBy`, `mapValues` |
+| Manejar estructuras de datos flexibles    | `Box<T>`, `Storage<T>`, `Cache<T>`        |
+| Tipar respuestas API dinámicas            | `ApiResponse<T>`, `Paginated<T>`          |
+| Validar formularios reutilizables         | `Form<T>`, `FormField<T>`                 |
+| Crear componentes genéricos               | `List<T>`, `Dropdown<T>`, `Table<T>`      |
+
+
+    
