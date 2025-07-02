@@ -7339,3 +7339,170 @@ Rs:
 
 
     
+# Rank up - Codewars 
+
+# 1. string to camel case
+
+Complete el método/función para que convierta 
+las palabras delimitadas por guiones o guiones bajos 
+a mayúsculas y minúsculas.
+
+La primera palabra del resultado debe escribirse 
+en mayúsculas solo si la palabra original también 
+lo estaba (lo que se conoce como mayúsculas y minúsculas,
+también conocido como mayúsculas Pascal). 
+
+Las siguientes palabras siempre deben escribirse 
+en mayúsculas.
+
+Ejemplos
+
+"the-stealth-warrior" se convierte en "theStealthWarrior".
+
+"The_Stealth_Warrior" se convierte en "TheStealthWarrior".
+
+"The_Stealth-Warrior" se convierte en "TheStealthWarrior".
+
+
+Planteo: 
+
+1.
+palabras delimitadas guiones o guiones bajos 
+a mayúsculas y minúsculas. 
+
+2.
+primera palabra escribirse en mayus
+solo si la palabra original también 
+lo estaba
+
+c0 o c.starts === c.upper o ternario truty
+
+
+Alternativas 
+
+```
+c[0] !== c.upper
+? replace, etc
+: ...
+
+o  if if
+
+o if (global) if(anidado) c[0] !== c.upper -
+
+```
+
+```
+function adn(string) {
+  
+  return c[0] !== c.UpperCase()
+  ? string.replace(/[-_]/g, c => (
+    { "-": "", "_": "", "T": "A", "G": "C" }[c]
+  ));
+  : 
+  
+}
+
+```
+
+
+### Eficiencia: 
+
+1. Media: 
+
+```
+function toCamelCase(str: string): string {
+  const words = str.split(/[-_]/);
+  return words[0] + words
+    .slice(1)
+    .map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
+    .join('');
+}
+
+```
+
+
+2. Alta: 
+
+```
+function toCamelCase(str: string): string {
+  let result = '';
+  let capitalize = false;
+
+  for (let i = 0; i < str.length; i++) {
+    const char = str[i];
+    if (char === '-' || char === '_') {
+      capitalize = true;
+    } else {
+      result += capitalize ? char.toUpperCase() : char;
+      capitalize = false;
+    }
+  }
+
+  return result;
+}
+
+```
+
+
+Util solo si sabemos que la primera palabra debe estar en minúscula
+
+```
+function toCamelCase(str: string): string {
+  return str
+    .replace(/[-_](.)/g, (_, c) => c.toUpperCase());
+}
+
+```
+
+```
+toCamelCase("The_Stealth_Warrior"); // ❌ theStealthWarrior (incorrecto)
+
+```
+
+
+# kata 2 - Array.diff
+
+Implemente una función que calcule la diferencia 
+entre dos listas. 
+
+La función debe eliminar todas las ocurrencias 
+de los elementos de la primera lista (a) que estén 
+presentes en la segunda lista (b). 
+
+El orden de los elementos de la primera lista debe
+conservarse en el resultado.
+
+Ejemplos
+
+```
+Si a = [1, 2] y b = [1], el resultado debe ser [2].
+
+Si a = [1, 2, 2, 2, 3] y b = [2], el resultado debe ser [1, 3].
+
+```
+
+Planteo: 
+
+diff listas
+
+dif: sobrante 
+
+eliminar ocurrenc de 1l que esten en 2l
+
+mantener orden 1l
+
+
+set = arr1 + arr2 
+
+alter: 
+every (arr1.e === arr2.e )
+
+`new Set ([])`
+union()
+difference() 
+intersection() 
+
+
+```
+
+```

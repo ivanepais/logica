@@ -114,3 +114,55 @@ interface AddressBook {
 }
 
 
+// Rank up
+
+// Kata 1 - string to camelCase 
+
+function toCamelCase(str: string): string {
+  const words = str.split(/[-_]/);
+  return words[0] + words
+    .slice(1)
+    .map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
+    .join('');
+}
+
+/*
+function camelCase(str:string): string {
+	const words = str.split(/[-_]/);
+	for (let e = 0; <= words.lenght ; i++) {
+		if (e[0] !==  e.UpperCase) {
+			e.UpperCase
+		}
+		
+	}
+}
+*/
+
+function strCamelCase(str: string): string {
+  let result = '';
+  let capitalize = false;
+
+  for (let i = 0; i < str.length; i++) {
+    const char = str[i];
+    if (char === '-' || char === '_') {
+      capitalize = true;
+    } else {
+      result += capitalize ? char.toUpperCase() : char;
+      capitalize = false;
+    }
+  }
+
+  return result;
+}
+
+
+function toStrCamelCase(str: string): string {
+  const words = str.split(/[-_]/);
+  return words[0] + words
+    .slice(1)
+    .map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
+    .join('');
+}
+
+
+
