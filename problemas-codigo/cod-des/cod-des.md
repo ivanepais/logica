@@ -2596,4 +2596,481 @@ saludar(25)  # ❌ mypy lo detecta, pero Python lo ejecuta igual
 # black 
 
 
+# Planteo 
+
+precond: requisitos
+postcond: resultado
+validaciones:
+tipo, rango, formato, longitud, estructura y dominio (lógica)
+
+Primero, escribí en papel o en comentarios:
+¿Qué hace el programa?
+¿Qué entradas tiene?
+¿Qué funciones necesitás?
+¿Qué estructuras de datos convienen?
+
+Piensa siempre en:
+1. ¿Qué pasa si...? -> (usa if)
+2. ¿Qué hago para cada...? -> (usa for)
+3. ¿Hasta cuándo sigo...? -> (usa while)
+4. ¿Qué pasa si algo falla...? -> (usa try)
+5. ¿Cómo manejo estructuras externas...? -> (usa with)
+6. ¿Cómo encapsulo esta lógica...? -> (usa funciones)
+
+
+Preguntas: Por qué usaría tal o cual cosa, dar los motivos y resultados esperados. 
+
+Uso de sintaxis o funciones avanzadas (lambda, map, ls):
+lambda (f linea) 
+map(transf, f y iter obj)
+ls nueva lista a partir de otra (expre/cambio expres/cond/accion; for expres cond) -> true
+
+Combinación de control (Condicionales (if (elif, else), in, range, len), bucles (for, while, ls) y manejo de errores (try, except, finally, err).)
+Combinación de esstructuras (list, dict, tuple, set)
+Características del control y estructuras necesarias. 
+Express, cond, func en var
+
+Reducir las posibilidades:
+Enfocar el problema, encontrar los elem claves
+Retorno de los objetos 
+Del final al inicio
+
+
+
+# Diseño: Actualizar valor provisional
+
+Comienza asignando un valor provisional a una variable (answer), actualizándolo cuando corresponde y luego imprimiendo el valor final de la variable.
+ 
+Observe que comprueba si cada variable es impar exactamente una vez y contiene solo una sentencia de impresión. 
+
+```
+answer = min(x, y, z)
+if x%2 != 0:
+	answer = x
+if y%2 != 0 and y > answer:
+	answer = y
+if z%2 != 0 and z > answer:
+	answer = z
+print(answer)
+
+```
+
+Este código es prácticamente lo mejor que podemos hacer, ya que cualquier programa correcto debe comprobar la imparidad de cada variable y comparar los valores de las variables impares para encontrar el mayor.
+
+
+De lo contrario, susariamos muchos ifs
+
+```
+if x%2 != 0 and y%2 != 0 and z%2 != 0:
+	print(max(x, y, z))
+if x%2 != 0 and y%2 != 0 and z%2 == 0:
+	print(max(x, y))
+if x%2 != 0 and y%2 == 0 and z%2 != 0:
+	print(max(x, z))
+if x%2 == 0 and y%2 != 0 and z%2 != 0:
+	print(max(y, z))
+...
+
+```
+
+##### La mayoría de las tareas computacionales no se pueden realizar mediante programas de ramificación (ifs/control), ni linealmente.
+
+
+# Diseño bucles: while
+
+Considere, por ejemplo, escribir un programa que pregunte el número de X. 
+
+Podría pensar en escribir algo como
+
+```
+num_x = int(input('How many times should I print the letter
+X? '))
+
+to_print = ''
+if num_x == 1:
+	to_print = 'X'
+elif num_x == 2:
+	to_print = 'XX'
+elif num_x == 3:
+	to_print = 'XXX'
+#…
+print(to_print)
+
+```
+
+##### No nos serviría un programa lineal con ramificación, para todos los valores
+
+
+
+# Diseñar algoritmos
+
+## 1. Fundamentos de lógica y estructuras básicas
+
+Comprender estructuras como listas, tuplas, diccionarios.
+
+Dominar for, if, range, enumerate, etc.
+
+Empezar a expresar ideas con claridad
+
+
+Ej: 
+
+Imprimir números pares/impares del 1 al 100.
+
+Contar vocales en una cadena.
+
+Crear un diccionario de frecuencia de caracteres.
+
+
+### Cuándo usar tuplas
+
+Cuando querés proteger datos (por ejemplo, fechas, coordenadas).
+
+Para usar como claves en diccionarios (porque son inmutables
+
+
+## 2. Pensamiento algorítmico básico
+
+##### Aprender sobre divisores, primalidad, sumas acumuladas.
+
+Empezar a pensar en la complejidad (cuántas operaciones hago).
+
+Usar bucles anidados y condiciones más precisas.
+
+
+Ej: 
+
+Verificar si un número es primo.
+
+Calcular suma de primos hasta n.
+
+Detectar números perfectos.
+
+Generar lista de cuadrados sin bucles (comprensión de listas).
+
+
+## Divisible
+
+Un número d es divisor de otro número n si al dividirlo, no queda resto:
+
+```
+n % d == 0
+
+```
+
+"d será divisor de n si su resto da 0"
+
+Ej: 
+
+Divisores de 12: 1, 2, 3, 4, 6, 12
+
+Porque 12 % d == 0 para esos d
+
+
+Ej: 
+
+Todos los divisores de n
+
+```
+n = 12
+for i in range(1, n + 1):
+    if n % i == 0:
+        print(i)
+
+```
+
+range(ini 1, fin 13): de uno hasta trece. 
+Si el resto de n por i da 0, imprimí el divisor. 
+
+En la formula: 
+
+n % d == 0 
+n   i
+imprimi el divisor(i)
+
+##### dividir n por todos los números del 1 al n, y muestra los que son divisores. 
+
+
+## Primalidad
+
+Tiene dos divisores: 1 y él mismo.
+
+##### Verificar si tiene más de 2 div o si el núm div !=2
+
+```
+n = 13
+es_primo = True
+
+for i in range(2, n):
+    if n % i == 0:
+        es_primo = False
+        break
+
+print(f"{n} {'es primo' if es_primo else 'no es primo'}")
+
+```
+
+Si n no tiene divisores entre 2 y n-1, es primo.
+
+Optimización: solo probar hasta √n en lugar de hasta n
+
+
+## Suma acumulada
+
+Vas acumulando valores a medida que recorrés una secuencia.
+
+Ej: sumar los primeros 10 números
+
+```
+total = 0
+for i in range(1, 11):
+    total += i
+print(total)  # → 55
+
+```
+
+Ej: 
+
+Suma primos del 2 al 100
+
+```
+total = 0
+for n in range(2, 101):
+    es_primo = True
+    for i in range(2, int(n ** 0.5) + 1):
+        if n % i == 0:
+            es_primo = False
+            break
+    if es_primo:
+        total += n
+
+print(f"Suma de primos entre 2 y 100: {total}")
+
+```
+
+
+## 3. Algoritmos clásicos y eficiencia
+
+Dominar patrones como marcado, conteo, búsqueda.
+
+Implementar algoritmos clásicos como Criba, Fibonacci, conteo de dígitos.
+
+Analizar eficiencia: O(n), O(n²), O(log n), etc.
+
+
+Ej:
+
+Criba de Eratóstenes
+
+Búsqueda binaria
+
+Conteo de ocurrencias con diccionarios
+
+Simulación de procesos paso a paso (como una máquina de estados simple)
+
+
+### Marcado/Bandera/flagging
+
+Marcás elementos de una estructura (como una lista) para rastrear su estado: por ejemplo, si ya fue visitado, si es válido, si es primo, etc.
+
+```
+is_prime = [True] * (n + 1)
+is_prime[0:2] = [False, False]  # 0 y 1 no son primos
+
+for i in range(2, int(n ** 0.5) + 1):
+    if is_prime[i]:
+        for j in range(i * i, n + 1, i):
+            is_prime[j] = False  # Marcamos como "no primo"
+
+```
+
+Estás "marcando" con False los múltiplos que no son primos.
+
+Esto evita repetir trabajo innecesario más adelante.
+
+
+Otros usos: 
+
+Recorrer grafos sin visitar nodos repetidos.
+
+Evitar duplicados.
+
+Llevar el control de estados ("visitado", "procesado", etc.).
+
+
+### Counting
+
+Acumular cuántas veces algo ocurre, usando una variable, una lista o un diccionario
+
+Ej: 
+
+Contar números pares
+
+```
+pares = 0
+for i in range(1, 101):
+    if i % 2 == 0:
+        pares += 1
+print(pares)
+
+```
+
+
+Ej: 
+
+Conteo de letras con diccionario
+
+```
+texto = "banana"
+conteo = {}
+
+for letra in texto:
+    if letra in conteo:
+        conteo[letra] += 1
+    else:
+        conteo[letra] = 1
+
+print(conteo)  # → {'b': 1, 'a': 3, 'n': 2}
+
+```
+
+Muy usado en problemas de frecuencia, histogramas, validaciones, etc.
+
+
+### Búsqueda (Searching)
+
+Encontrar un elemento específico dentro de una colección.
+
+Hay varios tipos, desde simples hasta avanzados.
+
+
+#### Lineal (On(n))
+
+```
+lista = [10, 20, 30, 40]
+objetivo = 30
+
+for i in lista:
+    if i == objetivo:
+        print("Encontrado")
+        break
+
+```
+
+
+#### Binaria (O(log n)): lista ordenada
+
+```
+lista = [5, 8, 13, 21, 34, 55]
+objetivo = 21
+inicio, fin = 0, len(lista) - 1
+
+while inicio <= fin:
+    medio = (inicio + fin) // 2
+    if lista[medio] == objetivo:
+        print("Encontrado")
+        break
+    elif lista[medio] < objetivo:
+        inicio = medio + 1
+    else:
+        fin = medio - 1
+
+```
+
+Mucho más eficiente, pero requiere lista ordenada
+
+
+4. Abstracción, claridad y estilo profesional
+
+Escribir funciones reutilizables y limpias.
+
+Documentar con docstrings.
+
+Usar nombres claros y estructuras declarativas.
+
+Comprender refactorización
+
+
+Ej: 
+
+Refactorizar funciones duplicadas.
+
+Documentar tus propias funciones con """docstrings""".
+
+Transformar scripts en funciones puras.
+
+Escribir tests simples (con assert o pytest).
+
+
+## 5. Entrenamiento cruzado con desafíos
+
+Aplicar todo lo anterior en problemas nuevos.
+
+Resolver desafíos desde varios ángulos.
+
+Medir progreso en claridad, tiempo y estilo.
+
+Plataformas de ejercicios 
+
+
+# Planteo
+
+precond: requisitos
+postcond: resultado
+validaciones:
+tipo, rango, formato, longitud, estructura y dominio (lógica)
+
+Primero, escribí en papel o en comentarios:
+¿Qué hace el programa?
+¿Qué entradas tiene?
+¿Qué funciones necesitás?
+¿Qué estructuras de datos convienen?
+
+Piensa siempre en:
+1. ¿Qué pasa si...? -> (usa if)
+2. ¿Qué hago para cada...? -> (usa for)
+3. ¿Hasta cuándo sigo...? -> (usa while)
+4. ¿Qué pasa si algo falla...? -> (usa try)
+5. ¿Cómo manejo estructuras externas...? -> (usa with)
+6. ¿Cómo encapsulo esta lógica...? -> (usa funciones)
+
+Preguntas: Por qué usaría tal o cual cosa, dar los motivos y resultados esperados. 
+
+Uso de sintaxis o funciones avanzadas (lambda, map, ls):
+lambda (f linea) 
+map(transf, f y iter obj)
+ls nueva lista a partir de otra (expre/cambio expres/cond/accion; for expres cond) -> true
+
+Combinación de control (Condicionales (if (elif, else), in, range, len), bucles (for, while, ls) y manejo de errores (try, except, finally, err).)
+Combinación de esstructuras (list, dict, tuple, set)
+Características del control y estructuras necesarias. 
+Express, cond, func en var
+
+Reducir las posibilidades:
+Enfocar el problema, encontrar los elem claves
+Retorno de los objetos 
+Del final al inicio
+
+
+1. Entender el problema matemáticamente
+    ¿Qué define un número primo?
+    ¿Cuáles son sus propiedades?
+
+2. Pensar en estructuras de datos eficientes
+    ¿Necesito un arreglo, un diccionario, un conjunto?
+    ¿Qué tipo de acceso necesito (índice, búsqueda, etc.)?
+
+3. Aplicar patrones conocidos
+    ¿Esto se parece a un filtrado?
+    ¿Esto es un marcado de elementos?
+
+4. Refinar con herramientas de Python
+    ¿Puedo usar comprensión de listas?
+    ¿Puedo usar enumerate, zip, slicing, etc.?
+    
+5. Probar, refactorizar y comparar
+    ¿Puedo hacerlo más claro?
+    ¿Es más rápido, más legible?
+
+
 

@@ -491,10 +491,6 @@ radio = 14
 
 ```
 
-El código primero vincula los nombres pi y radio a diferentes objetos de tipo int. 
-
-Luego, vincula el nombre área a un tercer objeto de tipo int.
-
 ##### El código primero vincula los nombres pi y radio a diferentes objetos de tipo int.
 
 Luego vincula el nombre área a un tercer objeto de tipo int.
@@ -1167,3 +1163,1415 @@ else:
 ```
 
 
+### Codificación de caracteres
+
+Durante muchos años, la mayoría de los lenguajes de programación utilizaron un estándar llamado ASCII para la representación interna de caracteres
+
+Este estándar incluía 128 caracteres, suficientes para representar el conjunto habitual de caracteres que aparecen en el texto en inglés, pero no los suficientes para cubrir los caracteres y acentos presentes en todos los idiomas del mundo.
+
+##### El estándar Unicode es un sistema de codificación de caracteres diseñado para facilitar el procesamiento digital y la visualización de textos escritos en todos los idiomas.
+
+Contiene más de 120 000 caracteres, que abarcan 129 escrituras modernas e históricas y múltiples conjuntos de símbolos.
+
+##### El estándar Unicode se puede implementar utilizando diferentes codificaciones internas de caracteres. Puedes indicarle a Python qué codificación usar insertando un comentario con la forma
+
+##### Puedes indicarle a Python qué codificación usar insertando un comentario con la forma
+
+```
+# -*- coding: encoding name -*-
+
+```
+
+Como la primera o segunda línea de su programa. 
+
+Por ejemplo,
+
+```
+# -*- coding: utf-8 -*-
+
+```
+
+Indica a Python que use UTF-8, la codificación de caracteres más utilizada en páginas web.18 Si no tiene dicho comentario en su programa, la mayoría de las implementaciones de Python usarán UTF-8 por defecto.
+
+Al usar UTF-8, puede, si el editor de texto lo permite, introducir directamente código como
+
+```
+print('Mluvíš anglicky?')
+print(' ा आप अं ेज़ी बोलते ह?')
+
+```
+
+Imprimirá
+
+```
+Mluvíš anglicky?
+ा आप अं ेज़ी बोलते ह?
+
+```
+
+Como la mayor parte de la web usa UTF-8, pude cortar la cadena de una página web y pegarla directamente en mi programa. 
+
+
+### While loop
+
+##### Mencionamos que la mayoría de las tareas computacionales no se pueden realizar mediante programas de ramificación. 
+
+Considere, por ejemplo, escribir un programa que pregunte el número de X. 
+
+Podría pensar en escribir algo como
+
+```
+num_x = int(input('How many times should I print the letter
+X? '))
+
+to_print = ''
+if num_x == 1:
+	to_print = 'X'
+elif num_x == 2:
+	to_print = 'XX'
+elif num_x == 3:
+	to_print = 'XXX'
+#…
+print(to_print)
+
+```
+
+##### No nos serviría un programa lineal con ramificación
+
+Pero rápidamente se haría evidente que se necesitarían tantos condicionales como enteros positivos, y hay un número infinito de ellos. 
+
+Lo que se busca es escribir un programa similar a (lo siguiente es pseudocódigo, no Python).
+
+```
+num_x = int(input('How many times should I print the letter
+X? '))
+to_print = ''
+# concatenate X to to_print num_x times
+print(to_print)
+
+```
+
+Cuando queremos que un programa repita la misma operación varias veces, podemos usar la iteración. 
+
+Un mecanismo genérico de iteración (también llamado bucle)
+
+Al igual que una sentencia condicional, comienza con una prueba.
+
+Si la prueba se evalúa como Verdadera, el programa ejecuta el cuerpo del bucle una vez y luego vuelve a evaluar la prueba.
+
+Este proceso se repite hasta que la prueba se evalúa como Falsa, tras lo cual el control pasa al código que sigue a la sentencia de iteración.
+
+```
+	Code
+	  |	
+Loop
+ __	Test (loop body repeat test, if True)
+ |	  | \
+ |	True False
+ |	  |	   |	
+ |	Loop  Out loop
+ -- Body   |
+	(activ)|
+Loop       |  
+       ____
+       |
+     Code
+
+```
+
+Ej:
+
+```
+x = 3
+ans = 0
+num_iterations = 0 
+while (num_iterations < x):
+	ans = ans + x
+	num_iterations = num_iterations + 1
+print(f'{x}*{x} = {ans}')
+
+```
+
+Elevar un entero al cuadrado harcodeado. 
+
+
+El código comienza vinculando la variable x al entero 3. 
+
+Luego, procede a elevar x al cuadrado mediante la suma repetitiva. 
+
+
+##### Valor asociado a cada variable cada vez que se alcanza la prueba al inicio del bucle.  
+
+```
+test	x 	ans 	num_iterations 
+1 		3 	0			0
+2 		3 	3			1
+3 		3   6			2
+4 		3 	9			3
+
+```
+
+Simulación manual del programa 
+
+
+La cuarta vez que se alcanza la prueba, esta se evalúa como Falso y el flujo de control procede a la sentencia print posterior al bucle. 
+
+Para qué valores de x terminará este programa?
+
+Hay tres casos a considerar: x == 0, x > 0 y x < 0.
+
+Supongamos que x == 0. 
+
+El valor inicial de num_iterations también será 0 y el cuerpo del bucle nunca se ejecutará.
+
+Cada vez que se ejecuta el cuerpo del bucle, el valor de num_iterations se incrementa en exactamente 1
+
+Esto significa que, dado que num_iterations comenzó siendo menor que x, después de un número finito de iteraciones del bucle, num_iterations será igual a x.
+
+En este punto, la prueba del bucle se evalúa como Falso y el control procede al código posterior a la sentencia while.
+
+
+##### Supongamos que x < 0. Ocurre algo muy grave. 
+
+##### El control entrará en el bucle y cada iteración alejará num_iterations de x en lugar de acercarla. Por lo tanto, el programa continuará ejecutando el bucle indefinidamente (o hasta que ocurra algo más grave, por ejemplo, un error de desbordamiento). 
+
+
+### Ejercicio
+
+Reemplace el comentario en el siguiente código con un bucle while.
+
+```
+num_x = int(input('How many times should I print the letter
+X? '))
+to_print = ''
+#concatenate X to to_print num_x times
+print(to_print)
+
+```
+
+```
+num_x = int(input('How many times should I print the letter
+X? '))
+to_print = ''
+i = 0 
+while (i < num_x): 
+ to_print = to_print + "x"
+
+print(to_print)
+
+```
+
+
+#### Características del bucle while: 
+
+##### 1. cantidad de iteraciones que necesitamos para entrar/salir (True/False) del bloque (i/iterations)
+
+##### 2. cantidad de iteraciones que necesitamos repetir en el bucle interno/código repetitivo
+
+##### 3. actualizar vars en bucle interno
+
+```
+x = 3
+ans = 0
+num_iterations = 0 
+while (num_iterations < x):
+    ans = ans + x
+    num_iterations = num_iterations + 1
+print(f'{x}*{x} = {ans}')
+
+```
+
+Estado inicial -> i = 0
+
+x = 3
+ans = 0
+num_iterations = 0
+mientras 0 < 3
+    0 + 3
+
+i = 1
+1 < 3 //True
+    3 + 3 //6
+
+i = 2 //True
+2 < 3
+    6 + 3 //9
+
+i = 3
+3 < 3 //False
+
+print(3*3 = 9) //True
+
+
+A veces es conveniente salir de un bucle sin probar su condición. 
+
+##### Ejecutar una sentencia break termina el bucle que la contiene y transfiere el control al código que sigue inmediatamente al bucle. 
+
+Entero positivo que sea divisible por 11 y 12:
+
+```
+#Find a positive integer that is divisible by both 11 and 12
+x = 1
+while True:
+	if x%11 == 0 and x%12 == 0:
+		break
+	x = x + 1
+print(x, 'is divisible by 11 and 12')
+
+```
+
+Out: 132 is divisible by 11 and 12
+
+Si se ejecuta una instrucción break dentro de un bucle anidado (un bucle dentro de otro bucle), la instrucción break terminará el bucle interno.
+
+
+### Ejercicio
+
+Escriba un programa que solicite al usuario ingresar 10 enteros y luego imprima el número impar más grande ingresado. 
+
+Si no se ingresó ningún número impar, debería imprimir un mensaje indicando que sí.
+
+
+### For Loops and Range
+
+##### Los bucles while que hemos usado hasta ahora son muy estilizados y a menudo iteran sobre una secuencia de enteros. 
+
+##### Python proporciona un mecanismo de lenguaje, el bucle for, que puede usarse para simplificar programas que contienen este tipo de iteración. 
+
+```
+for variable in sequence:
+	code block
+
+```
+
+##### La variable que sigue a for se vincula al primer valor de la secuencia y se ejecuta el bloque de código. 
+
+A continuación, se le asigna el segundo valor de la secuencia y el bloque de código se vuelve a ejecutar.
+
+El proceso continúa hasta que se agota la secuencia o se ejecuta una instrucción break dentro del bloque de código. 
+
+```
+total = 0
+for num in (77, 11, 3):
+	total = total + num
+print(total)
+
+```
+
+Imprimirá 91. 
+
+##### La expresión (77, 11, 3) es una tupla.
+
+Por ahora, piense en una tupla como una secuencia de valores.
+
+
+##### La secuencia de valores asociada a la variable se genera comúnmente mediante la función integrada range, que devuelve una serie de enteros
+
+##### La función range toma tres argumentos enteros: inicio, fin y paso. 
+
+Produce la progresión inicio, inicio + paso, inicio + 2*paso, etc.
+
+##### Si paso es positivo, el último elemento es el entero mayor tal que (inicio + i*paso) sea estrictamente menor que fin. 
+
+##### Si paso es negativo, el último elemento es el entero menor tal que (inicio + i*paso) sea mayor que fin.
+
+Por ejemplo:
+
+range(5, 40, 10) genera la secuencia 5, 15, 25, 35, y la expresión
+
+range(40, 5, -10) genera la secuencia 40, 30, 20, 10.
+
+
+##### Si se omite el primer argumento de range, el valor predeterminado es 0.
+
+##### si se omite el último argumento (el tamaño del paso), el valor predeterminado es 1.
+
+Por ejemplo:
+
+range(0, 3) y range(3) generan la secuencia 0, 1, 2. 
+
+##### Los números de la progresión se generan según sea necesario, por lo que incluso expresiones como range(1000000) consumen poca memoria.
+ 
+```
+x = 4
+for i in range(x):
+	print(i)
+
+```
+
+Out: 
+0
+1
+2
+3
+
+
+Para elevar al cuadrado un entero (corregido para que funcione con números negativos). 
+ 
+Observe que, a diferencia de la implementación del bucle while, el número de iteraciones no se controla mediante una prueba explícita, y la variable de índice num_iterations no se incrementa explícitamente.
+
+```
+x = 3
+xans = 0 
+for num_iterations in range(abs(x)):
+	ans = ans + abs(x)
+print(f'{x}*{x} = {ans}')
+
+``` 
+ 
+##### No cambia el valor de num_iterations dentro del cuerpo del bucle for. 
+
+##### Esto es típico, pero no necesario, lo que plantea la pregunta de qué sucede si la variable de índice se modifica dentro del bucle for. 
+
+Considere
+
+```
+for i in range(2):
+	print(i)
+	i = 0
+	print(i)
+
+```
+
+##### ¿Crees que imprimirá 0, 0, 1, 0 y luego se detendrá? 
+
+¿O crees que imprimirá 0 una y otra vez?
+
+La respuesta es 0, 0, 1, 0. 
+
+Antes de la primera iteración del bucle for, se evalúa la función de rango y el primer valor de la secuencia que genera se asigna a la variable de índice, i. 
+
+Al comienzo de cada iteración subsiguiente del bucle, a i se le asigna el siguiente valor de la secuencia. 
+
+Cuando la secuencia se agota, el bucle termina.
+
+El bucle for anterior es equivalente al código
+
+```
+index = 0
+last_index = 1
+while index <= last_index:
+	i = index
+	print(i)
+	i = 0
+	print(i)
+	index = index + 1
+
+```
+
+Por cierto, ten en cuenta que el código con el bucle while es considerablemente más complejo que el bucle for. 
+
+El bucle for es un mecanismo lingüístico conveniente.
+
+Ahora bien, ¿qué opinas? ¿Imprime?
+
+```
+x = 1
+for i in range(x):
+	print(i)
+	x = 4
+
+```
+
+Solo 0, porque los argumentos de la función de rango en la línea con for se evalúan justo antes de la primera iteración del bucle y no se reevalúan para iteraciones posteriores.
+
+Ahora, veamos con qué frecuencia se evalúan los elementos al anidar bucles.
+
+Considere
+
+```
+x = 4
+for j in range(x):
+	for i in range(x):
+		x = 2
+
+```
+
+¿Cuántas veces se ejecuta cada uno de los dos bucles? 
+
+Ya vimos que el rango (x) que controla el bucle externo se evalúa la primera vez que se alcanza y no se reevalúa en cada iteración, por lo que hay cuatro iteraciones del bucle externo. 
+
+Esto implica que el bucle interno se alcanza cuatro veces. 
+
+La primera vez que se alcanza, la variable x = 4, por lo que habrá cuatro iteraciones.
+
+Sin embargo, las siguientes tres veces que se alcanza, x = 2, por lo que habrá dos iteraciones cada vez.
+
+En consecuencia, si se ejecuta
+
+```
+x = 3
+for j in range(x):
+	print('Iteration of outer loop')
+	for i in range(x):
+		print('Iteration of inner loop')
+		x = 2
+
+```
+
+Out: 
+
+Iteration of outer loop
+	Iteration of inner loop
+	Iteration of inner loop
+	Iteration of inner loop
+Iteration of outer loop
+	Iteration of inner loop
+	Iteration of inner loop
+Iteration of outer loop
+	Iteration of inner loop
+	Iteration of inner loop
+
+
+La instrucción for se puede usar junto con el operador in para iterar fácilmente sobre los caracteres de una cadena. 
+
+Por ejemplo:
+
+```
+total = 0
+for c in '12345678':
+	total = total + int(c)
+print(total)
+
+```
+
+Suma los dígitos de la cadena indicada por el literal '12345678' e imprime el total.
+
+
+### i ancla a inicio
+### range(x) ancla a fin
+### Cuando termina de chequear el primer bucle, actualiza el valor del otro (+-?)
+
+
+### Ejercicio
+
+Escribe un programa que imprima la suma de los números primos mayores que 2 y menores que 1000. 
+
+Consejo: probablemente quieras usar un bucle for que sea una prueba de primalidad anidada dentro de un bucle for que itere sobre los enteros impares entre 3 y 999
+
+
+### Style Matters
+
+##### Los buenos programadores siguen convenciones de codificación diseñadas para que los programas sean fáciles de entender, en lugar de amenos de leer.
+
+Por ejemplo, prescribe el uso de cuatro espacios para las sangrías. 
+ 
+¿Por qué cuatro espacios y no tres o cinco? 
+ 
+No hay una razón particularmente buena. 
+ 
+Pero si todos usan el mismo número de espacios, es más fácil leer (y quizás combinar) código escrito por diferentes personas. 
+
+##### En términos más generales, si todos usan el mismo conjunto de convenciones al escribir Python, los lectores pueden concentrarse en comprender la semántica del código en lugar de perder tiempo asimilando decisiones estilísticas.
+ 
+La convención en Python es usar un guion bajo (_) para separarlas. 
+ 
+De nuevo, esta convención es arbitraria. 
+ 
+Algunos programadores prefieren usar lo que se suele llamar camelCase, por ejemplo, numIterations, argumentando que es más rápido de escribir y ocupa menos espacio.
+
+Hemos cubierto prácticamente todo lo necesario sobre Python para empezar a escribir programas interesantes que trabajen con números y cadenas. 
+
+
+
+# Range
+
+##### Internamente va sumando el paso anterior 
+
+##### Progresión inicio, inicio + paso, inicio + 2*paso, etc.
+
+```
+for x in range(5, 40, 10): 
+	print(x)
+
+```
+	
+5 (inicio) = 5 || inicio
+5+(1*10) = 15 || inicio + paso o inicio + 1*paso
+5+(2*10) = 20+5 = 25 || inicio + 2*paso
+5+(3*10) = 30+5 = 35 || inicio + 3*paso -limite- 
+
+
+O
+
+```
+for x in range(1, 10, 2):
+    print(x)
+
+```
+
+1 (inicio)
+1+2 = 3
+3+2 = 5
+5+2 = 7
+7+2 = 9
+9+2 = 11 → se detiene porque ya pasó el límite (10)
+
+##### Cuando el proximo valor supera el fin, se detiene
+
+##### Si el paso es negativo, hace restas 
+
+
+Tupla:
+ 
+```
+total = 0
+for num in (77, 11, 3):
+    print(f'num es: {num}')
+    total = total + num
+    print(f'total es: {total}')
+print(total)
+
+```
+
+1. Estás iterando sobre los valores de la tupla (77, 11, 3).
+
+En la primera vuelta: num = 77
+
+En la segunda vuelta: num = 11
+
+En la tercera vuelta: num = 3
+
+Como la tupla tiene 3 elementos, el cuerpo del bucle se ejecuta 3 veces.
+
+
+2. Cada vez que se entra al for, num cambia al siguiente valor de la tupla.
+
+
+
+Ej: 
+
+```
+x = 4
+for i in range(x):
+    print(i)
+
+```
+
+range(inicio 0, fin x(4), paso 1)
+
+i = 0   # start
+i = 0 + 1 = 1
+i = 1 + 1 = 2
+i = 2 + 1 = 3
+i = 3 + 1 = 4 → se detiene porque 4 no está incluido
+
+
+##### step: Sigue la fórmula de una progresión aritmética:
+
+##### sirve como diferencia fija que se suma en cada paso
+
+```
+x_n = start + n × step
+
+```
+
+donde n es el índice de la iteración (empezando en 0). Veamos:
+
+start = 5
+
+step = 10
+
+
+### start, stop y step
+
+```
+x = 4
+for i in range(x):
+    print(i)
+
+```
+
+Inicio (start):
+Como solo pasás un argumento a range(), Python asume que es el límite superior y fija el inicio en 0.
+Equivale a start = 0.
+
+Fin (stop):
+Es el valor que pasás, en este caso x, así que stop = 4.
+Python generará números desde 0 hasta justo antes de 4.
+
+Paso (step):
+Si no lo especificás, el valor por defecto es 1.
+Equivale a step = 1.
+
+
+### Evaluación de range
+
+##### Antes de la primera iteración del bucle for, se evalúa la función de rango y el primer valor de la secuencia que genera se asigna a la variable de índice, i. 
+Al comienzo de cada iteración subsiguiente del bucle, a i se le asigna el siguiente valor de la secuencia. 
+Cuando la secuencia se agota, el bucle termina
+
+##### Los argumentos de la función de rango en la línea con for se evalúan justo antes de la primera iteración del bucle y no se reevalúan para iteraciones posteriores.
+
+```
+for i in range(2):
+    print(i)
+    i = 0
+    print(i)
+
+```
+
+El bucle interno obtiene el siguiente valor de la secuencia en cada iteración, independientemente de lo que hagas con i dentro del cuerpo
+
+```
+for i in range(2):      # range(2) produce la secuencia [0, 1]
+    print(i)            # ① imprime el valor “oficial” de la iteración
+    i = 0               # ② reasignás la variable local i a 0
+    print(i)            # ③ imprime esa nueva i = 0
+
+```
+
+1. Primera iteración
+
+El iterador de range(2) da i = 0.
+
+print(i) → 0
+
+Luego hacés i = 0 (ya era 0, pero podrías poner otro valor).
+
+print(i) → 0
+
+
+2. Segunda iteración
+
+El bucle vuelve a pedir el siguiente valor al iterador de range.
+
+Ese valor es 1, y Python lo asigna a i, sobreescribiendo lo que hubieras puesto antes.
+
+print(i) → 1
+
+Luego hacés i = 0 de nuevo.
+
+print(i) → 0
+
+
+
+Ej: 
+
+```
+x = 1
+for i in range(x):
+    print(i)
+    x = 4
+
+```
+
+x = 1
+range(0, 1, 1)
+print(i) -> 0 (1 iter, etc) y unica también
+
+x = 4 no tiene efecto, aunque reasignemos 4 a x 
+
+
+1. Evaluación de range(x)
+En el momento en que se inicia el bucle, Python evalúa range(x) con el valor actual de x, que es 1.
+Por tanto, crea internamente un objeto equivalente a range(0, 1, 1), es decir, una secuencia de un solo elemento: `[0]`.
+
+2. Inicio de la iteración
+El bucle pide el primer (y único) elemento de ese range: le asigna i = 0.
+Imprime 0.
+
+3. Dentro del cuerpo del bucle
+Ejecuta x = 4. Esto cambia la variable x en el entorno, pero no modifica el objeto range que ya se creó.
+Hasta aquí, x ya vale 4, pero el bucle no vuelve a reevaluar range(x).
+
+4. Fin de la iteración
+Al terminar el cuerpo, el bucle intenta pedir el siguiente elemento de range.
+Como ese range solo tenía un elemento, no hay más valores, y el bucle termina.
+
+5. Resultado final
+Solo se imprimió 0.
+Aunque x cambió a 4, eso no se refleja en la cantidad de iteraciones, porque el rango ya estaba “congelado” al inicio.
+    
+    
+Ej:
+
+```
+x = 4
+for j in range(x):
+    for i in range(x):
+        x = 2
+
+``` 
+
+j = 0 
+range(0, 4, 1) genera objeto: `[0, 1, 2, 3]`
+i = 0 
+range(0, 4, 1) genera objeto: `[0, 1, 2, 3]`
+
+
+##### El outer usa range(4) fijo: j toma 0, 1, 2 y 3.
+
+##### El inner crea su propio range(x) en cada vuelta de j, con el valor actual de x en ese momento.
+
+##### Cambiar x dentro del inner no altera el iterador que ya se creó; solo afectará a la próxima evaluación de range(x).
+
+
+```
+x = 4
+for j in range(x):          # ⬅️ ① Se evalúa range(4) → [0,1,2,3]
+    for i in range(x):      # ⬅️ ② Entra en el inner: evalúa range(x) con x tal como esté ahora
+        x = 2               # ⬅️ ③ Asigna x = 2 en la primera pasada y después sigue, pero la secuencia ya está fijada
+
+```
+
+| Paso | `j` | Valor de `x` al entrar al inner | `range(x)` inner        | Iteraciones `i` en inner | `x` al salir del inner |
+| ---- | --- | ------------------------------- | ----------------------- | ------------------------ | ---------------------- |
+| 1    | 0   | 4                               | range(0,4) → \[0,1,2,3] | i=0 → x=2; i=1; i=2; i=3 | 2                      |
+| 2    | 1   | 2                               | range(0,2) → \[0,1]     | i=0 → x=2; i=1           | 2                      |
+| 3    | 2   | 2                               | range(0,2) → \[0,1]     | i=0 → x=2; i=1           | 2                      |
+| 4    | 3   | 2                               | range(0,2) → \[0,1]     | i=0 → x=2; i=1           | 2                      |
+
+
+Ej: 
+
+```
+x = 3
+for j in range(x):
+    print('Iteration of outer loop')
+    for i in range(x):
+        print('Iteration of inner loop')
+        x = 2
+```
+
+| Paso | Valor de `j` | Estado de `x` al iniciar la iteración externa | `range(x)` del bucle interno       | Salida producida                                                       | Estado final de `x` |
+| ---- | ------------ | --------------------------------------------- | ---------------------------------- | ---------------------------------------------------------------------- | ------------------- |
+| 1    | 0            | 3                                             | Se evalúa `range(3)` → `[0, 1, 2]` | `Iteration of outer loop` <br> luego 3 veces `Iteration of inner loop` | 2                   |
+| 2    | 1            | 2                                             | Se evalúa `range(2)` → `[0, 1]`    | `Iteration of outer loop` <br> luego 2 veces `Iteration of inner loop` | 2                   |
+| 3    | 2            | 2                                             | Se evalúa `range(2)` → `[0, 1]`    | `Iteration of outer loop` <br> luego 2 veces `Iteration of inner loop` | 2                   |
+
+
+##### Bucle externo ejecuta 3 veces sus instrucciones
+##### Cada iteración tiene que ejecutar una cadena y un bucle interno. 
+##### El bucle interno va a ejecutar sus instrucciones 3-1 0 3-j veces
+
+Iteration of outer loop
+	Iteration of inner loop
+	Iteration of inner loop
+	Iteration of inner loop
+Iteration of outer loop
+	Iteration of inner loop
+	Iteration of inner loop
+Iteration of outer loop
+	Iteration of inner loop
+	Iteration of inner loop
+
+1. externo
+
+```
+x = 3
+for j in range(x):  # aquí Python evalúa range(3) → [0,1,2] UNA sola vez
+    …
+
+```
+
+Aunque dentro cambies x, el bucle externo ya tiene fijada la lista de valores `[0,1,2]`.
+
+Por eso imprime siempre tres “Iteration of outer loop”, independientemente de lo que pase con x adentro.
+
+
+2. interno 
+
+```
+for i in range(x):  # en cada iteración del outer, vuelve a evaluar range(x)
+    x = 2
+
+```
+
+Al entrar al for i in … Python toma el valor actual de x y crea ahí mismo el nuevo objeto range.
+
+Dentro del cuerpo haces x = 2, pero el range ya está creado y sigue su curso con la longitud que le tocó.
+
+Sólo cuando vuelvas a entrar al for i in range(x) en la siguiente iteración de j, se usará ese x = 2 recién asignado para crear un nuevo range(2).
+
+
+Un for evalúa su range(...) justo antes de empezar ese bucle y no lo vuelve a cambiar a mitad de iteraciones.
+
+##### Cambiar la variable (x = 2) dentro solo afecta a las siguientes evaluaciones de range(x), no a la que ya está en marcha.
+
+##### 1. Primera ejecución: imprime outer y tres inner
+##### 2. Segunda: vuelve a evaluar el valor de x
+##### 3. ahora es 2, imprime outer y el interno evalua x que es 2
+##### 4. Ejecuta 2 veces las instrucciones de i, etc. 
+##### 5. por eso imprime dos veces el texto de inner las ultimas dos vueltas que quedan?
+
+```
+h = 3
+for j in range(h):
+    print('Iteration of outer loop')
+    for i in range(h):
+        print('Iteration of inner loop')
+        h = 4
+```
+
+Out:
+
+Iteration of outer loop:
+  Iteration of inner loop
+  Iteration of inner loop
+  Iteration of inner loop
+  Iteration of inner loop
+
+
+
+
+Ej:
+
+```
+tot = 0
+for c in '12345678':
+    tot = tot + int(c)
+print(tot)
+
+```
+
+| Paso | `c` (carácter)     | `int(c)` | `total` antes | `total = total + int(c)` → `total` después | Salida en consola |
+| ---- | ------------------ | -------- | ------------- | ------------------------------------------ | ----------------- |
+| 1    | `'1'`              | 1        | 0             | 0 + 1 = 1                                  | *(ninguna aún)*   |
+| 2    | `'2'`              | 2        | 1             | 1 + 2 = 3                                  | *(ninguna aún)*   |
+| 3    | `'3'`              | 3        | 3             | 3 + 3 = 6                                  | *(ninguna aún)*   |
+| 4    | `'4'`              | 4        | 6             | 6 + 4 = 10                                 | *(ninguna aún)*   |
+| 5    | `'5'`              | 5        | 10            | 10 + 5 = 15                                | *(ninguna aún)*   |
+| 6    | `'6'`              | 6        | 15            | 15 + 6 = 21                                | *(ninguna aún)*   |
+| 7    | `'7'`              | 7        | 21            | 21 + 7 = 28                                | *(ninguna aún)*   |
+| 8    | `'8'`              | 8        | 28            | 28 + 8 = 36                                | *(ninguna aún)*   |
+| —    | **Fin del bucle**  |          |               |                                            |                   |
+| —    | **`print(total)`** |          | `total = 36`  |                                            | **36**            |
+
+
+
+inicializa total = 0.
+El bucle for c in '12345678': recorre cada carácter de la cadena.
+
+En cada iteración:
+Convertimos el carácter c a entero con int(c).
+Sumamos ese valor a total.
+
+Al salir del bucle, total vale 36.
+Finalmente, print(total) muestra 36 en la consola
+
+
+# Objetos, asignación e inmutabilidad
+
+```
+pi = 3
+radio = 11
+area = pi * (radio**2)
+radio = 14
+
+```
+
+Las variables son nombres (etiquetas) que apuntan a objetos en memoria, y los objetos numéricos (como los int) son inmutables
+
+Un objeto 3 (referenciado por pi).
+
+Un objeto 363 (referenciado por area).
+
+##### Un objeto 11 —ya sin nombres apuntándolo, listo para recogerse por el recolector si no hay más referencias—.
+
+Un objeto 14 (referenciado por radio).
+
+
+1. Asignar (radio = 11) crea o reutiliza un objeto y liga el nombre radio a ese objeto.
+
+2. Reasignar (radio = 14) no “cambia” el objeto anterior, sino que desvincula el nombre y lo liga a un nuevo objeto.
+
+3. Los objetos inmutables (enteros, tuplas, cadenas…) permanecen intactos: no hay “espacio reservado” que cambie su valor, sólo se re-ligan nombres
+
+
+
+# Planteo 
+
+precond: requisitos
+postcond: resultado
+validaciones:
+tipo, rango, formato, longitud, estructura y dominio (lógica)
+
+Primero, escribí en papel o en comentarios:
+¿Qué hace el programa?
+¿Qué entradas tiene?
+¿Qué funciones necesitás?
+¿Qué estructuras de datos convienen?
+
+Piensa siempre en:
+1. ¿Qué pasa si...? -> (usa if)
+2. ¿Qué hago para cada...? -> (usa for)
+3. ¿Hasta cuándo sigo...? -> (usa while)
+4. ¿Qué pasa si algo falla...? -> (usa try)
+5. ¿Cómo manejo estructuras externas...? -> (usa with)
+6. ¿Cómo encapsulo esta lógica...? -> (usa funciones)
+
+Preguntas: Por qué usaría tal o cual cosa, dar los motivos y resultados esperados. 
+
+Uso de sintaxis o funciones avanzadas (lambda, map, ls):
+lambda (f linea) 
+map(transf, f y iter obj)
+ls nueva lista a partir de otra (expre/cambio expres/cond/accion; for expres cond) -> true
+
+Combinación de control (Condicionales (if (elif, else), in, range, len), bucles (for, while, ls) y manejo de errores (try, except, finally, err).)
+Combinación de esstructuras (list, dict, tuple, set)
+Características del control y estructuras necesarias. 
+Express, cond, func en var
+
+Reducir las posibilidades:
+Enfocar el problema, encontrar los elem claves
+Retorno de los objetos 
+Del final al inicio
+
+
+1. Entender el problema matemáticamente
+    ¿Qué define un número primo?
+    ¿Cuáles son sus propiedades?
+
+2. Pensar en estructuras de datos eficientes
+    ¿Necesito un arreglo, un diccionario, un conjunto?
+    ¿Qué tipo de acceso necesito (índice, búsqueda, etc.)?
+
+3. Aplicar patrones conocidos
+    ¿Esto se parece a un filtrado?
+    ¿Esto es un marcado de elementos?
+
+4. Refinar con herramientas de Python
+    ¿Puedo usar comprensión de listas?
+    ¿Puedo usar enumerate, zip, slicing, etc.?
+    
+5. Probar, refactorizar y comparar
+    ¿Puedo hacerlo más claro?
+    ¿Es más rápido, más legible?
+
+
+
+## Ejercicio
+
+Programa que imprima la suma de los números primos mayores que 2 y menores que 100. 
+
+Sugerencia: probablemente quieras usar un bucle for que sea una prueba de primalidad anidada dentro de un bucle for que itere sobre los enteros impares entre 3 y 999.
+
+
+Planteo:
+
+print suma num primos mayores 2 y menores que 100
+
+Descomposición:
+
+num prim:  
+num entero mayor 1 solo con dos divisores positivos:
+1 y si mismo 
+No puede ser dividido de manera exacta por otro 
+entero que no sea 1 y si mismo
+
+verificar si solo tiene dos divisores: 1 y el propio número
+
+Ej: 2 es primo porque solo es divisible por 1 y
+ 
+mayores 2 y menores 100 
+
+
+### Primes 2-100
+
+##### Verificamos que no sea divisible por ningún número entre 2 y n - 1 (o incluso más eficientemente, hasta √n).
+
+Usamos un bucle for divisor in range(2, sqrt(n) + 1) para verificar si n tiene divisores distintos de 1 y de sí mismo.
+
+Si encontramos un divisor, marcamos is_prime = False y salimos del bucle.
+
+Al final, si is_prime sigue siendo True, lo imprimimos.
+
+```
+def print_primes_between_2_and_100():
+    for n in range(2, 100):
+        is_prime = True
+        for divisor in range(2, int(n ** 0.5) + 1):
+            if n % divisor == 0:
+                is_prime = False
+                break
+        if is_prime:
+            print(n)
+
+```
+
+##### Verificamos: es primo si no tiene divisores (enteros positivos) excepto 1 y sí mismo. 
+
+
+1. for n in range(2, 100):
+genera los números 2, 3, 4, ..., 99
+
+La variable n tomará esos valores uno por uno.
+
+
+2. Bandera para saber si n es primo
+
+```
+is_prime = True
+
+```
+
+Se asume al comienzo que n es primo, y si se encuentra un divisor, se marcará como falso.
+
+
+3. Bucle interno: intenta dividir n por números entre 2 y √n
+
+Porque si n tiene un divisor mayor que √n, ya habrá tenido otro menor.
+
+Así reducimos trabajo sin perder exactitud.
+
+Por ejemplo:
+
+Si n = 7, √7 ≈ 2.64, se convierte en int(2.64) + 1 = 3
+
+Entonces range(2, 3) → solo prueba el divisor 2.
+
+
+4. Verificamos si n es divisible
+
+Si n es divisible por cualquier divisor, no es primo.
+
+Marcamos is_prime = False y rompemos el bucle: no hace falta seguir probando.
+
+
+5. Si es primo, lo imprimimos
+
+```
+if is_prime:
+    print(n)
+
+```
+
+Si ningún divisor funcionó, is_prime sigue siendo True, así que el número se imprime.
+
+
+6. Ej: n = 7
+
+is_prime = True
+
+divisor in range(2, 3) → solo se prueba divisor = 2
+
+7 % 2 = 1 → no divisible → is_prime sigue True
+
+Se imprime: 7
+
+
+### Sum primes 2-100
+
+```
+def sum_prime_two_hundred():
+    total = 0
+    for n in range(2, 100):
+        is_prime = True
+        for divisor in range(2, int(n ** 0.5) + 1):
+            if n % divisor == 0:
+                is_prime = False
+                break
+        if is_prime:
+            print(n)         # opcional: muestra cada número primo
+            total += n
+    return total
+
+```
+
+
+### Eficiencia 
+
+```
+for n in range(2, N):
+    for divisor in range(2, int(n ** 0.5) + 1):
+        if n % divisor == 0:
+            # no es primo
+
+```
+
+El bucle externo recorre N - 2 números (de 2 a N-1).
+
+Para cada número n, el bucle interno va desde 2 hasta √n.
+
+En el peor caso (cuando n es primo y se revisan todos sus divisores), hacés O(√n) operaciones por número.
+
+Complejidad aprox: 
+
+```
+n
+∑	O(√n)≈O(N⋅√N)
+n=2
+```
+
+N = 100
+
+Esto implica aproximadamente ∑n=2, 100n≈666 operaciones.
+
+Muy rápido en práctica. Ejecuta en milisegundos o menos.
+
+
+N = 10^6 (1 millón)
+
+El rendimiento ya no es trivial: se convierte en aproximadamente 10^6⋅10^3=10^9 operaciones.
+
+Aún ejecutable en una computadora moderna, pero lento si lo hacés frecuentemente.
+    
+    
+
+### Criba de Eratóstenes: eficiente
+
+Mucho más eficiente si querés encontrar todos los primos hasta N:
+
+Tiempo: O(N log log N)
+
+Espacio: O(N)
+
+```
+def sieve_primes_up_to(N):
+    is_prime = [True] * (N + 1)
+    is_prime[0:2] = [False, False]
+
+    for i in range(2, int(N ** 0.5) + 1):
+        if is_prime[i]:
+            for j in range(i * i, N + 1, i):
+                is_prime[j] = False
+
+    primes = [i for i, prime in enumerate(is_prime) if prime]
+    return primes
+
+```
+
+##### Calcula y devuelve una lista de todos los números primos entre 2 y N, usando una tabla de booleanos.
+
+1. Crear una lista de booleanos
+
+```
+is_prime = [True] * (N + 1)
+
+```
+
+Crea una lista de longitud N + 1, donde cada posición representa un número:
+
+`is_prime[0]` representa el número 0
+
+`is_prime[1]` representa el número 1
+
+...
+
+`is_prime[N]` representa el número N
+
+
+Inicialmente todos los valores son True, asumiendo que todos son primos (ya veremos que no).
+
+
+2. Marcar 0 y 1 como no primos
+
+```
+is_prime[0:2] = [False, False]
+
+```
+
+Sabemos que 0 y 1 no son primos, así que los marcamos como False.
+
+
+3. Bucle principal: eliminar múltiplos
+
+```
+for i in range(2, int(N ** 0.5) + 1):
+
+```
+Iteramos desde 2 hasta √N.
+
+¿Por qué hasta √N?
+
+Porque si un número n tiene un divisor mayor que √n, también tiene uno menor.
+
+Así ahorramos trabajo sin omitir ningún compuesto.
+
+
+4. Si i es primo, tachar sus múltiplos
+
+```
+if is_prime[i]:
+    for j in range(i * i, N + 1, i):
+        is_prime[j] = False
+
+```
+
+Si i aún está marcado como primo (True), entonces tachamos sus múltiplos.
+
+Empezamos desde i * i:
+Porque los múltiplos menores ya fueron tachados por primos anteriores.
+
+Vamos de i * i a N, avanzando de i en i
+
+Ejemplo: si i = 3, tachamos 9, 12, 15, 18, ....
+
+
+5. Construir la lista final de primos
+
+```
+primes = [i for i, prime in enumerate(is_prime) if prime]
+
+```
+
+Recorremos la lista is_prime, y por cada True, guardamos el índice i, que representa un número primo.
+
+
+6. Devolver la lista de primos
+
+```
+return primes
+
+``` 
+
+
+7. Ej: sieve_primes_up_to(10)
+
+is_prime final:
+
+```
+[F, F, T, T, F, T, F, T, F, F, F]
+ 0  1  2  3  4  5  6  7  8  9 10
+
+```
+
+Devuelve: `[2, 3, 5, 7]`
+
+Complejidad
+Tiempo: O(N log log N)
+Espacio: O(N)
+
+Muy eficiente para N grandes (hasta decenas o centenas de millones)
+
+
+### Fuerza bruta 
+
+```
+def is_prime(n):
+    if n < 2:
+        return False
+    for i in range(2, n):
+        if n % i == 0:
+            return False
+    return True
+
+```
+
+O(n) por número
+
+Muy lento: revisa todos los divisores posibles.
+
+Práctico sólo hasta n ≈ 10^3.
+
+
+### Fuerza bruta optimizada: hasta √n
+
+```
+def is_prime(n):
+    if n < 2:
+        return False
+    for i in range(2, int(n ** 0.5) + 1):
+        if n % i == 0:
+            return False
+    return True
+
+```
+
+
+### Usos en eficiencia
+
+1. Eratóstenes: 
+
+Imprimir todos los primos hasta 100, 1000, 1 millón
+
+
+2. Verificar primo: Fuerza bruta optimizada
+
+
+3. Criba segmentada o Miller-Rabin: Rendimiento extremo con muy grandes
+
+
+
+# Diseñar algoritmos
+
+## 1. Fundamentos de lógica y estructuras básicas
+
+Comprender estructuras como listas, tuplas, diccionarios.
+
+Dominar for, if, range, enumerate, etc.
+
+Empezar a expresar ideas con claridad
+
+
+Ej: 
+
+Imprimir números pares/impares del 1 al 100.
+
+Contar vocales en una cadena.
+
+Crear un diccionario de frecuencia de caracteres.
+
+
+## 2. Pensamiento algorítmico básico
+
+##### Aprender sobre divisores, primalidad, sumas acumuladas.
+
+Empezar a pensar en la complejidad (cuántas operaciones hago).
+
+Usar bucles anidados y condiciones más precisas.
+
+
+Ej: 
+
+Verificar si un número es primo.
+
+Calcular suma de primos hasta n.
+
+Detectar números perfectos.
+
+Generar lista de cuadrados sin bucles (comprensión de listas).
+
+
+## 3. Algoritmos clásicos y eficiencia
+
+Dominar patrones como marcado, conteo, búsqueda.
+
+Implementar algoritmos clásicos como Criba, Fibonacci, conteo de dígitos.
+
+Analizar eficiencia: O(n), O(n²), O(log n), etc.
+
+
+Ej:
+
+Criba de Eratóstenes
+
+Búsqueda binaria
+
+Conteo de ocurrencias con diccionarios
+
+Simulación de procesos paso a paso (como una máquina de estados simple)
+
+
+4. Abstracción, claridad y estilo profesional
+
+Escribir funciones reutilizables y limpias.
+
+Documentar con docstrings.
+
+Usar nombres claros y estructuras declarativas.
+
+Comprender refactorización
+
+
+Ej: 
+
+Refactorizar funciones duplicadas.
+
+Documentar tus propias funciones con """docstrings""".
+
+Transformar scripts en funciones puras.
+
+Escribir tests simples (con assert o pytest).
+
+
+## 5. Entrenamiento cruzado con desafíos
+
+Aplicar todo lo anterior en problemas nuevos.
+
+Resolver desafíos desde varios ángulos.
+
+Medir progreso en claridad, tiempo y estilo.
+
+Plataformas de ejercicios 
