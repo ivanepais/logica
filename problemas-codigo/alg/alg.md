@@ -3230,6 +3230,295 @@ Como solución inicial antes de optimizar.
 Para validar otros algoritmos (como "fuerza bruta vs solución optimizada").
 
 
+### Claves
+
+1. 
+
+```
+def buscar_fuerza_bruta(arr, objetivo):
+    for elemento in arr:
+        if elemento == objetivo:
+            return True
+    return False
+    
+```
+
+if elemento == objetivo: return True
+
+
+1. Objetivo 
+
+Determinar si un elemento (objetivo) está dentro de una lista (arr)
+
+Probando uno por uno hasta encontrarlo o terminar la lista
+
+
+for para recorrer todos los elementos del arreglo.
+
+En cada vuelta, elemento toma el valor actual del índice correspondiente.
+
+Si arr = `[4, 2, 9]`, las iteraciones serán:
+
+1ª: elemento = 4, 2ª: elemento = 2, 3ª: elemento = 9
+
+
+2. Comparar con el objetivo: 
+
+if elemento == objetivo: return True
+
+##### En cada iteración, compara el elemento actual con el objetivo.
+
+Si son iguales, se detiene inmediatamente y retorna True.
+
+
+3. Si termina sin encontrarlo
+
+return False
+
+
+Si el bucle terminó sin encontrar coincidencia (dado que se le pasa un obj como param), el elemento no está en la lista.
+
+Por lo tanto, retorna False
+
+
+Ej: 
+
+```
+buscar_fuerza_bruta([5, 8, 2, 9], 2)
+
+```
+
+¿5 == 2? No
+
+¿8 == 2? No
+
+¿2 == 2? Si → retorna True
+
+
+```
+buscar_fuerza_bruta([5, 8, 2, 9], 7)
+
+```
+
+¿5 == 7? No
+
+¿8 == 7? No
+
+¿2 == 7? No
+
+¿9 == 7? No → Finaliza el bucle → retorna False
+
+
+Complejidad temporal: 
+
+1. En el peor caso (cuando el elemento está al final o no está):
+O(n)
+donde n es el tamaño de la lista.
+
+2. En el mejor caso (primer elemento coincide):
+O(1)
+
+
+Características: 
+
+No utiliza ninguna estrategia avanzada o estructura optimizada (como búsqueda binaria, hash, etc).
+
+Simplemente prueba todas las opciones disponibles una a una
+
+
+### Fuerza bruta simple: Busqueda Lineal
+
+```
+def buscar_fuerza_bruta(arr, objetivo):
+    for elemento in arr:
+        if elemento == objetivo:
+            return True
+    return False
+
+```
+
+Simple
+
+Ineficiente en listas largas
+
+Tiempo: O(n)
+
+
+### Fuerza bruta avanzada: Problema del Viajante (TSP)
+
+Un viajante debe visitar varias ciudades exactamente una vez y regresar al punto de partida.
+
+La fuerza bruta genera todas las permutaciones posibles del recorrido y elige el más corto
+
+
+Versión minima: 
+
+```
+from itertools import permutations
+
+def tsp_fuerza_bruta(ciudades, distancias):
+    min_dist = float('inf')
+    mejor_ruta = None
+    for ruta in permutations(ciudades):
+        total = 0
+        for i in range(len(ruta) - 1):
+            total += distancias[ruta[i]][ruta[i + 1]]
+        total += distancias[ruta[-1]][ruta[0]]  # volver al inicio
+        if total < min_dist:
+            min_dist = total
+            mejor_ruta = ruta
+    return mejor_ruta, min_dist
+
+```
+
+Ej: 
+
+```
+ciudades = ['A', 'B', 'C']
+distancias = {
+    'A': {'A': 0, 'B': 5, 'C': 9},
+    'B': {'A': 5, 'B': 0, 'C': 3},
+    'C': {'A': 9, 'B': 3, 'C': 0},
+}
+
+tsp_fuerza_bruta(ciudades, distancias)
+
+```
+
+Encuentra la solución óptima
+
+Tiempo explosivo: O(n!) (factorial)
+
+Solo viable para n pequeño (n ≤ 10)
+
+Solo educativo / con pocas ciudades
+
+
+### Claves
+
+1. itertools y permutations
+
+Importa la función permutations, que genera todas las formas posibles de reordenar las ciudades (es decir, todas las rutas posibles sin repetir ciudades).
+
+
+2. def tsp_fuerza_bruta(ciudades, distancias):
+
+Recibe:
+
+ciudades: lista de nombres o etiquetas de ciudades
+
+distancias: diccionario que contiene las distancias entre pares de ciudades
+
+
+3. Inicialización de variables
+
+```
+min_dist = float('inf')
+mejor_ruta = None
+
+```
+
+min_dist comienza con infinito (lo más grande posible) para luego ir comparando y encontrando la menor.
+
+mejor_ruta se usará para guardar la ruta más corta encontrada
+
+
+4. Generar todas las rutas posibles
+
+```
+for ruta in permutations(ciudades):
+
+```
+
+Genera todas las permutaciones posibles de la lista de ciudades.
+
+Cada ruta es una tupla como ('A', 'B', 'C'), ('A', 'C', 'B'), etc.
+
+Si hay n ciudades, hay n! rutas posibles.
+
+
+5. Calcular la distancia total de una ruta
+
+```
+total = 0
+for i in range(len(ruta) - 1):
+    total += distancias[ruta[i]][ruta[i + 1]]
+
+```
+
+Suma las distancias entre cada ciudad consecutiva.
+
+Por ejemplo, para ('A', 'C', 'B'):
+
+A → C, luego C → B
+    
+
+6. Volver a la ciudad de origen
+
+```
+total += distancias[ruta[-1]][ruta[0]]  # volver al inicio
+
+```    
+
+Suma la distancia para regresar desde la última ciudad a la primera.
+
+Así se completa el circuito cerrado.
+
+
+7. Comparar y guardar la mejor ruta
+
+```
+if total < min_dist:
+    min_dist = total
+    mejor_ruta = ruta
+
+```
+
+Si la distancia total calculada es menor que la mínima actual, se actualiza la mejor ruta.
+
+
+8. Devolver resultado
+
+```
+return mejor_ruta, min_dist
+
+```
+
+Devuelve la ruta más corta encontrada y su distancia total.
+
+```
+ciudades = ['A', 'B', 'C']
+distancias = {
+    'A': {'A': 0, 'B': 1, 'C': 4},
+    'B': {'A': 1, 'B': 0, 'C': 2},
+    'C': {'A': 4, 'B': 2, 'C': 0},
+}
+
+print(tsp_fuerza_bruta(ciudades, distancias))
+
+```
+
+Rutas probadas:
+
+    A → B → C → A
+
+    A → C → B → A
+
+    B → A → C → B
+
+    ...
+
+Y el algoritmo devuelve la mejor ruta (como tupla) y la distancia total.
+
+
+Complejidad:
+
+Tiempo: O(n!), donde n es el número de ciudades.
+
+Crece muy rápido con el número de ciudades → poco práctico para n > 10.
+
+
+
 ## 2. Recursion
 
 Una función se llama a sí misma para resolver subproblemas más pequeños de un problema más grande. 
@@ -3284,25 +3573,6 @@ Con los casos base:
 F(0)=0, F(1)=1
 
 
-
-## 3. Divide y Conquista 
-
-Paradigma de diseño de algoritmos que consiste en dividir un problema en subproblemas más pequeños y resolverlos de forma independiente. 
-
-Los resultados de estos subproblemas se combinan para obtener la solución del problema original
-
-1. Dividir:
-Dividir el problema en subproblemas más pequeños del mismo tipo. 
-La división se detiene cuando los subproblemas son lo suficientemente simples para resolverse directamente.
-
-2. Conquistar:
-Resolver cada subproblema de forma recursiva. 
-Si los subproblemas son lo suficientemente simples, resolverlos directamente (caso base).
-
-3. Combinar:
-Combinar las soluciones de los subproblemas para formar la solución del problema original.
-
-
 ```
 def fibonacci(n):
     if n == 0:  # Caso base
@@ -3334,7 +3604,237 @@ Costo en memoria: Cada llamada recursiva ocupa espacio en la pila (stack), lo qu
 Inneficiencia sin optimización: Sin técnicas como la memoización, algunas soluciones recursivas (ej., Fibonacci) recalculan subproblemas repetidamente, lo que es ineficiente.
 
 
-Ejemplo optimizado con memoización:
+### Claves
+
+##### Los casos bases y sus returns
+
+Factorial: 
+
+El factorial de un número n, denotado n!, es el producto de todos los enteros positivos desde 1 hasta n.
+
+Definción matemática: 
+
+0! = 1 (caso base)
+
+n! = n × (n−1)! si n > 0
+
+
+Ej: 
+
+3! = 3 × 2 × 1 = 6
+
+5! = 5 × 4 × 3 × 2 × 1 = 120
+
+
+Recursión: 
+
+Función que se llama a sí misma.
+
+Este tipo de funciones necesita:
+
+Un caso base para detenerse.
+
+Una llamada recursiva que acerque a ese caso base.
+
+
+Ej: factorial(3)
+
+Llamada principal:
+
+```
+factorial(3)
+→ 3 * factorial(2)
+
+```
+
+Siguiente llamada:
+
+```
+factorial(2)
+→ 2 * factorial(1)
+
+```
+
+Siguiente:
+
+```
+factorial(1)
+→ 1 * factorial(0)
+
+```
+
+Caso base:
+
+```
+factorial(0)
+→ return 1
+
+```
+
+Reemplazamos hacia arriba:
+
+factorial(1) = 1 * 1 = 1
+factorial(2) = 2 * 1 = 2
+factorial(3) = 3 * 2 = 6
+    
+Resultado final: factorial(3) = 6
+    
+
+Visualización en pila: 
+
+##### La recursión se comporta como una pila (stack): Primero baja hasta el caso base, luego resuelve hacia arriba.
+
+```
+factorial(3)
+→ 3 * factorial(2)
+        → 2 * factorial(1)
+                → 1 * factorial(0)
+                        → 1  ← caso base
+                ← 1
+        ← 2
+← 6
+
+```
+
+
+Si no hay caso base: Sin if n == 0: return 1
+
+La función nunca se detendría
+→ Python lanzaría un RecursionError: maximum recursion depth exceeded
+
+
+Complejidad:
+
+Tiempo: O(n)
+Espacio: O(n) (por las llamadas acumuladas en la pila)
+
+
+### Claves serie de fibonacci: 
+
+##### Calcula el n-ésimo número de la secuencia de Fibonacci usando recursión
+
+Secuencia de Fibonacci:
+
+Es una sucesión de números donde:
+
+```
+F(0) = 0
+F(1) = 1
+F(n) = F(n-1) + F(n-2)  para n ≥ 2
+
+```
+
+Los primeros términos:
+
+```
+0, 1, 1, 2, 3, 5, 8, 13, ...
+
+```
+
+Código:
+
+```
+def fibonacci(n):
+    if n == 0:         # Caso base 1
+        return 0
+    elif n == 1:       # Caso base 2
+        return 1
+    else:
+        return fibonacci(n - 1) + fibonacci(n - 2)  # Llamadas recursivas
+
+```
+
+##### Se llama a sí misma dos veces cuando n > 1.
+
+##### combinando los resultados de fibonacci(n-1) y fibonacci(n-2).
+
+
+### Paso a paso: fibonacci(4)
+
+Expandir la ejecución de fibonacci(4):
+
+```
+fibonacci(4)
+= fibonacci(3) + fibonacci(2)
+
+```
+
+Expandimos cada uno: 
+
+fibonacci(3)
+
+```
+fibonacci(3)
+= fibonacci(2) + fibonacci(1)
+
+```
+
+fibonacci(2):
+
+```
+fibonacci(2)
+= fibonacci(1) + fibonacci(0)
+→ fibonacci(1) = 1 (caso base)
+→ fibonacci(0) = 0 (caso base)
+→ fibonacci(2) = 1 + 0 = 1
+
+```
+
+Resultado: 
+
+```
+fibonacci(3) = fibonacci(2) + fibonacci(1)
+             = 1 + 1 = 2
+
+```
+
+
+fibonacci(2):
+
+```
+fibonacci(2) = 1
+
+```
+
+
+Resultado final:
+
+```
+fibonacci(4) = fibonacci(3) + fibonacci(2)
+             = 2 + 1 = 3
+
+```
+
+
+### Visualización como árbol de llamadas:
+
+```
+           fibonacci(4)
+           /          \
+    fibonacci(3)     fibonacci(2)
+     /       \         /      \
+fibonacci(2) fibonacci(1) fibonacci(1) fibonacci(0)
+  /     \
+f(1)   f(0)
+
+```
+
+Fibonacci 4, llama dos veces a fibonacci, etc
+
+##### Cada nodo se evalúa recursivamente, a menudo repitiendo cálculos (por ejemplo, fibonacci(2) aparece 2 veces, fibonacci(1) 3 veces, etc).
+
+##### Ineficiencia por recomputación
+
+Muchos cálculos repetidos.
+
+Complejidad exponencial:
+
+Tiempo: O(2ⁿ)
+
+Espacio: O(n) (profundidad de la pila)
+
+
+### Ejemplo optimizado con memoización:
 
 En el problema de Fibonacci, podemos evitar cálculos redundantes almacenando resultados intermedios.
 
@@ -3359,6 +3859,470 @@ Estructuras de datos: Recorridos de árboles (preorden, inorden, postorden).
 Algoritmos de búsqueda: Búsqueda binaria, Backtracking (como resolver laberintos o el problema de las N-reinas).
 Ordenación: Quick Sort, Merge Sort
 
+
+### Claves memoización
+
+##### Optimizar la recursión almacenando resultados ya calculados.
+
+##### Guarda los resultados de llamadas previas en una memoria auxiliar (diccionario) para evitar recomputar lo mismo una y otra vez.
+
+El diccionario memo actúa como cache.
+
+
+### Paso a paso: fibonacci_memo(5)
+
+1. n = 5, no está en memo:
+
+no es 0 ni 1 → va al else
+
+
+2. Calcula:
+
+```
+fibonacci_memo(5 - 1, memo) + fibonacci_memo(5 - 2, memo)
+→ fibonacci_memo(4, memo) + fibonacci_memo(3, memo)
+
+```
+
+3. Sigue expandiendo recursivamente:
+
+```
+fibonacci(4) = fibonacci(3) + fibonacci(2)
+fibonacci(3) = fibonacci(2) + fibonacci(1)
+fibonacci(2) = fibonacci(1) + fibonacci(0)
+
+```
+
+
+4. Llega a los casos base fibonacci(1) = 1, fibonacci(0) = 0 → retorna esos valores.
+
+
+5. A medida que las llamadas retornan, se almacenan en memo:
+
+```
+memo[2] = 1
+memo[3] = 2
+memo[4] = 3
+memo[5] = 5
+
+```
+
+
+6. Ya no se recalculan llamadas repetidas porque se usan directamente desde memo.
+
+
+### Código memoización y diccionario
+
+##### 1. Devolver valor accediendo al diccionario
+
+```
+if n in memo:
+	return memo[n]
+
+```
+
+Si ya calculamos `fibonacci(n)` antes, devolvemos el valor **guardado**.
+
+
+2. Casos bases
+
+```
+if n == 0:
+    return 0
+elif n == 1:
+    return 1
+
+```
+
+
+##### 3. Actualizar diccionario
+
+```
+memo[n] = fibonacci_memo(n - 1, memo) + fibonacci_memo(n - 2, memo)
+return memo[n]
+
+```
+
+Calculamos la suma recursiva y la **guardamos en `memo`** para usos futuros.
+
+
+Complejidad:
+
+Tiempo: O(n) → porque cada valor de `n` se calcula solo una vez
+
+Espacio: O(n) → por el diccionario y la pila de llamadas
+
+
+Memo: `memo={}`
+
+El uso de `memo={}` como argumento por defecto **puede tener efectos secundarios** porque los diccionarios mutables se **comparten entre llamadas**.
+
+
+Resultado para fibonacci_memo(5):
+
+```
+fibonacci_memo(0) → 0
+fibonacci_memo(1) → 1
+fibonacci_memo(2) → 1
+fibonacci_memo(3) → 2
+fibonacci_memo(4) → 3
+fibonacci_memo(5) → 5
+
+```
+
+
+### Versión más segura de memo: 
+
+```
+def fibonacci_memo(n, memo=None):
+    if memo is None:
+        memo = {}  # Inicializa un diccionario vacío solo en la primera llamada
+
+    if n in memo:  # Si ya está calculado, devolver el valor guardado
+        return memo[n]
+    
+    if n == 0:
+        return 0
+    elif n == 1:
+        return 1
+    else:
+        # Guardar y devolver el resultado, reutilizando subresultados
+        memo[n] = fibonacci_memo(n - 1, memo) + fibonacci_memo(n - 2, memo)
+        return memo[n]
+
+```
+
+
+##### memo=Nome es seguro
+
+##### Cuando usás un valor mutable como memo={} en la definición de la función, ese mismo diccionario se conserva entre múltiples llamadas a la función
+
+##### Puede causar errores sutiles si la función se usa más de una vez en un programa.
+
+##### Se crea un nuevo diccionario limpio en cada llamada:
+
+```
+print(fibonacci_memo(5))   # 5
+print(fibonacci_memo(10))  # 55
+
+```
+
+##### Ver el diccionario memo al final: casos bases devuelven memo[0] = 0, etc
+
+```
+def fibonacci_memo(n, memo=None):
+    if memo is None:
+        memo = {}
+
+    if n in memo:
+        return memo[n]
+    
+    if n == 0:
+        memo[0] = 0
+    elif n == 1:
+        memo[1] = 1
+    else:
+        memo[n] = fibonacci_memo(n - 1, memo) + fibonacci_memo(n - 2, memo)
+    
+    return memo[n]
+
+# Mostrar memo
+memo = {}
+resultado = fibonacci_memo(6, memo)
+print("Resultado:", resultado)
+print("Memo:", memo)
+
+
+```
+
+##### Desventaja de retornar valores sin guardar: 
+
+```
+if n == 0:
+    return 0
+elif n == 1:
+    return 1
+```
+
+Si luego inspeccionás memo, verás que falta 0 y 1.
+
+Puede causar inconsistencia si esperás que todos los n evaluados estén en memo.
+
+Ideal si los casos base no necesitan ser memorizados explícitamente (la ganancia de rendimiento es nula, porque esos casos ya son triviales).
+
+
+##### Desventajas de retornar memo en caso base
+
+```
+if n == 0:
+    memo[0] = 0
+elif n == 1:
+    memo[1] = 1
+```
+
+Puede parecer innecesario si solo se usa para retornar (sin reutilizar).
+
+
+útil si:
+
+Más adelante vas a inspeccionar el diccionario.
+
+Querés reutilizar memo en otras funciones o recorridos.
+
+Querés tener consistencia en que todo valor calculado esté guardado.
+    
+
+##### Usos de los accesos
+
+```
+memo = {}
+fibonacci_memo(5, memo)
+print(memo)
+
+```
+
+En guardar: `memo[]`
+memo = {2:1, 3:2, 4:3, 5:5, 0:0, 1:1}
+
+Sin guardar: `return value`
+memo = {2:1, 3:2, 4:3, 5:5}
+
+Si estás enseñando, analizando o depurando, Opción 1 es mejor.
+
+Si estás optimizando código real, Opción 2 es suficiente y más clara.
+
+
+Inseguro:
+
+```
+def fibonacci_memo(n, memo={}):
+    if n in memo:  # Consultar en memoria
+        return memo[n]
+    ...
+    else:
+        memo[n] = fibonacci_memo(n - 1, memo) + fibonacci_memo(n - 2, memo)
+        return memo[n]
+
+``` 
+
+Seguro: 
+
+```
+def fibonacci_memo(n, memo=None):
+    if memo is None:
+        memo = {}  # Inicializa un diccionario vacío solo en la primera llamada
+
+    if n in memo:  # Si ya está calculado, devolver el valor guardado
+        return memo[n]
+    ...
+    else:
+        # Guardar y devolver el resultado, reutilizando subresultados
+        memo[n] = fibonacci_memo(n - 1, memo) + fibonacci_memo(n - 2, memo)
+        return memo[n]
+```
+
+
+### Devolver seríe de fibonacci 
+
+Versión híbrida:
+
+segura (memo=None)
+
+Incluya los casos base (0 y 1) en el memo
+
+Devuelva toda la serie hasta n (en lugar de solo fibonacci(n))
+
+Mantenga buena claridad de código
+
+```
+def fibonacci_serie(n, memo=None):
+    if memo is None:
+        memo = {}
+
+    # Casos base: guardar y retornar
+    if n == 0:
+        memo[0] = 0
+        return [0]
+    elif n == 1:
+        memo[0] = 0
+        memo[1] = 1
+        return [0, 1]
+
+    # Llamadas recursivas si faltan elementos
+    if n - 1 not in memo:
+        fibonacci_serie(n - 1, memo)
+    if n - 2 not in memo:
+        fibonacci_serie(n - 2, memo)
+
+    # Guardar el valor actual si no está
+    if n not in memo:
+        memo[n] = memo[n - 1] + memo[n - 2]
+
+    # Devolver la lista de valores desde 0 hasta n
+    return [memo[i] for i in range(n + 1)]
+
+```
+
+Ej:
+
+```
+print(fibonacci_serie(7))
+
+```
+
+Out: `[0, 1, 1, 2, 3, 5, 8, 13]`
+
+
+Características: 
+
+Calcula fibonacci(n) usando memoización
+
+Se asegura de guardar los valores base (0 y 1) en el diccionario
+
+Devuelve una lista con la serie completa desde f(0) hasta f(n)
+
+Evita recalcular valores innecesarios gracias al diccionario memo
+
+
+Ventajas: 
+
+Funciona para valores grandes sin explotar la recursión
+
+Te da toda la secuencia, útil para análisis, gráficos o aprendizaje
+
+Ideal para construir versiones tabuladas más adelante
+
+
+### Memoización con functools y lru_cache
+
+Gracias a @lru_cache, evita repetir cálculos guardando resultados previamente computados en una cache interna automática.
+
+```
+from functools import lru_cache
+
+@lru_cache(maxsize=None)
+def fibonacci(n):
+    if n == 0:
+        return 0
+    elif n == 1:
+        return 1
+    return fibonacci(n - 1) + fibonacci(n - 2)
+
+```
+
+Esto reduce el tiempo a O(n)
+(almacena los resultados ya calculados para evitar repetir trabajo)
+
+
+lru_cache = Least Recently Used cache
+
+Es un decorador que guarda los resultados de llamadas anteriores a la función.
+
+Si se llama con el mismo argumento, no vuelve a ejecutar la función: devuelve el valor directamente desde la cache.
+
+
+maxsize=None:
+
+Significa que no hay límite de cuántos resultados puede guardar.
+
+La cache nunca se limpia mientras se ejecuta el programa
+
+Ej:
+
+fibonacci(5)
+
+```
+fibonacci(5)
+→ fibonacci(4) + fibonacci(3)
+
+```
+
+Expande recursivamente:
+
+```
+fibonacci(4) = fibonacci(3) + fibonacci(2)
+fibonacci(3) = fibonacci(2) + fibonacci(1)
+fibonacci(2) = fibonacci(1) + fibonacci(0)
+
+```
+
+```
+fibonacci(1) → 1
+fibonacci(0) → 0
+
+```
+
+Resultados guardados en cache
+
+A medida que se resuelven, se almacenan automáticamente en la LRU cache:
+
+```
+fibonacci(0) → 0  # guardado
+fibonacci(1) → 1  # guardado
+fibonacci(2) → 1  # se calcula y guarda
+fibonacci(3) → 2  # se calcula y guarda
+fibonacci(4) → 3  # ...
+fibonacci(5) → 5
+
+```
+
+Si luego se llama fibonacci(3) otra vez, no se ejecuta de nuevo: se lee desde la cache.
+
+
+Resultado final: 
+
+```
+fibonacci(5) = 5
+
+```
+
+##### Automatiza la memoización (no hace falta gestionar un diccionario)
+
+Ocupa menos código, más claro y limpio
+
+Muy eficiente: tiempo O(n) y evita recomputaciones
+
+Ideal para problemas recursivos donde se repiten muchas llamadas con los mismos argumentos
+
+
+Consideraciones: 
+
+Funciona solo con funciones puras (sin efectos secundarios) y argumentos hashables.
+
+Si usás argumentos como listas o diccionarios, lru_cache lanzará un error (TypeError: unhashable type).
+
+
+Ver el contenido de la cache:
+
+```
+fibonacci.cache_info()
+
+```
+
+Ej:
+
+```
+fibonacci(10)
+print(fibonacci.cache_info())
+
+``` 
+
+Out:
+
+```
+CacheInfo(hits=8, misses=11, maxsize=None, currsize=11)
+
+``` 
+
+Rs:
+
+| Aspecto              | Valor                      |
+| -------------------- | -------------------------- |
+| Tipo de optimización | Memoización automática     |
+| Decorador usado      | `@lru_cache`               |
+| Tiempo de ejecución  | O(n)                       |
+| Memoria              | O(n)                       |
+| Uso recomendado      | Funciones recursivas puras |
 
 
 ## 3. Divide y Conquista
@@ -3437,6 +4401,139 @@ Combina y ordena recursivamente: ([3,8],[2,9],[1,7],[4,5]), luego ([2,3,8,9]) y 
 Combina las dos mitades finales para obtener ([1,2,3,4,5,7,8,9]).
 
 
+### Claves 
+
+Algoritmo de ordenamiento: 
+
+Divide el arreglo en mitades recursivamente.
+
+Ordena cada mitad.
+
+Combina las mitades ordenadas en un solo arreglo ordenado.
+
+
+Complejidad:
+
+| Caso       | Complejidad                  |
+| ---------- | ---------------------------- |
+| Mejor caso | O(n log n)                   |
+| Peor caso  | O(n log n)                   |
+| Estable    | Sí                           |
+| In-place   | No (usa espacio adicional)   |
+
+
+1. Con `merge_sort([4, 2, 5, 1])`
+
+mid = 2
+
+Se divide en:
+
+left = merge_sort([4, 2])
+
+right = merge_sort([5, 1])
+
+
+2. `merge_sort([4, 2])`:
+
+mid = 1
+
+Se divide en:
+
+left = merge_sort([4]) → [4] caso base
+
+right = merge_sort([2]) → [2] caso base
+
+→ se llama a merge([4], [2])
+
+
+3. merge([4], [2]):
+
+Compara:
+
+2 < 4 → agrega 2
+
+luego agrega 4
+
+Resultado: [2, 4]
+
+
+4. merge_sort([5, 1])
+
+mid = 1
+
+Se divide en:
+
+left = merge_sort([5]) → [5]
+
+right = merge_sort([1]) → [1]
+
+→ se llama a merge([5], [1])
+
+
+5. merge([5], [1])
+
+Compara:
+
+1 < 5 → agrega 1
+
+luego agrega 5
+
+Resultado: [1, 5]
+
+    
+6. Combina resultados finales
+
+→ merge([2, 4], [1, 5])
+
+Compara:
+
+1 < 2 → agrega 1
+
+2 < 5 → agrega 2
+
+4 < 5 → agrega 4
+
+luego agrega 5
+
+Resultado: [1, 2, 4, 5]
+
+
+Resultado final:
+
+```
+merge_sort([4, 2, 5, 1]) → [1, 2, 4, 5]
+
+```
+
+
+Rs Visual:
+
+```
+
+            [4, 2, 5, 1]
+           /            \
+       [4, 2]          [5, 1]
+       /    \          /    \
+     [4]   [2]       [5]    [1]
+       \   /          \    /
+      [2, 4]          [1, 5]
+           \         /
+         [1, 2, 4, 5]
+
+```
+
+
+merge():
+
+Combina dos listas ordenadas en una sola lista también ordenada:
+
+1. Se usan dos punteros i y j para recorrer left y right.
+
+2. Se comparan elementos y se agregan en orden al resultado.
+
+3. Si sobran elementos en alguno de los arrays, se agregan al final.
+
+
 Ejemplo: Búsqueda binaria
 
 La búsqueda binaria utiliza Divide y Conquista para encontrar un elemento en un array ordenado.
@@ -3497,6 +4594,155 @@ Otros algoritmos que usan Divide y Conquista:
 Quick Sort: Divide el array seleccionando un pivote y particiona los elementos menores y mayores.
 Algoritmo de Strassen: Multiplicación de matrices.
 Problema de las N-reinas: Resolver problemas de backtracking complejos
+
+
+### Claves
+
+Busca un elemento en un arreglo ordenado.
+
+Dado un array ordenado, busca un valor reduciendo el espacio de búsqueda a la mitad en cada paso.
+
+Si el valor está presente, devuelve su índice.
+
+Si no, devuelve -1.
+
+
+Complejidad:
+
+| Caso     | Tiempo                        |
+| -------- | ----------------------------- |
+| Mejor    | O(1)                          |
+| Promedio | O(log n)                      |
+| Peor     | O(log n)                      |
+| Espacio  | O(log n) recursivo (por pila) |
+
+
+Uso:
+
+```
+arr = [1, 3, 5, 7, 9, 11]
+target = 5
+binary_search(arr, 5, 0, 5)
+
+```
+
+1. 1:
+
+low = 0, high = 5
+
+mid = (0 + 5) // 2 = 2
+
+arr[mid] = 5
+
+¡Es igual a target! → devuelve 2
+    
+
+Si no lo encuentra
+
+Supón que target = 8
+
+```
+binary_search(arr, 8, 0, 5)
+
+```
+
+1. 
+
+low = 0, high = 5
+
+mid = 2 → arr[2] = 5
+
+5 < 8 → buscar en derecha → binary_search(arr, 8, 3, 5)
+
+
+2. 
+
+low = 3, high = 5
+
+mid = 4 → arr[4] = 9
+
+9 > 8 → buscar en izquierda → binary_search(arr, 8, 3, 3)
+
+
+3.     
+
+mid = 3 → arr[3] = 7
+
+7 < 8 → buscar en derecha → binary_search(arr, 8, 4, 3)
+
+
+4. 
+
+low = 4, high = 3 → low > high
+
+Devuelve -1 → no se encontró
+
+
+Código:
+
+```
+def binary_search(arr, target, low, high):
+
+```
+
+busca target en `arr[low:high+1]`.
+
+
+```
+if low > high:
+	return -1
+
+```
+
+Condición base: el rango se vació → no está el target.
+
+
+```
+mid = (low + high) // 2
+
+```
+
+Calcula el índice medio del rango.
+
+
+```
+if arr[mid] == target:
+	return mid
+
+```
+
+
+Si el valor medio es el buscado, lo devuelve.
+
+
+```
+elif arr[mid] > target:
+	return binary_search(arr, target, low, mid - 1)
+
+```
+
+Si el valor medio es mayor que el target, busca en la mitad izquierda.
+
+
+```
+else:
+        return binary_search(arr, target, mid + 1, high)
+
+```
+
+Si el valor medio es menor que el target, busca en la mitad derecha.
+
+
+Rs visual:
+
+```
+
+Buscar 5 en [1, 3, 5, 7, 9, 11]
+
+low = 0, high = 5 → mid = 2 → arr[2] = 5 → ¡Encontrado!
+
+```
+
 
 
 ## 4. Dynamic Programming
@@ -3632,6 +4878,295 @@ Identificar la recurrencia: Es necesario descomponer el problema en subproblemas
 Diseño de la tabla DP: Requiere decidir qué dimensiones y valores almacenar.
 Consumo de memoria: Algunos problemas pueden requerir grandes tablas
 
+
+#### Claves 
+
+##### cálculo del n-ésimo número de Fibonacci
+
+##### con DP iterativa/tabulación (es decir, de abajo hacia arriba).
+
+```
+def fibonacci_dp(n):
+    if n == 0:
+        return 0
+    elif n == 1:
+        return 1
+
+    dp = [0] * (n + 1)  # Tabla para guardar soluciones subproblemas
+    dp[0] = 0
+    dp[1] = 1
+
+    for i in range(2, n + 1):  # Construir desde abajo hacia arriba
+        dp[i] = dp[i - 1] + dp[i - 2]
+
+    return dp[n]
+
+```
+
+Divide un problema en subproblemas más pequeños, resuelve cada uno una sola vez, y almacena sus resultados. 
+
+Se usa cuando el problema tiene:
+
+1. Subproblemas superpuestos (se repiten).
+
+2. Estructura óptima de subproblemas (la solución óptima se puede construir a partir de soluciones óptimas de los subproblemas).
+
+
+```
+def fibonacci_dp(n)
+
+```
+
+Define una función llamada fibonacci_dp que toma un parámetro entero n.
+
+Objetivo: devolver el n-ésimo número de la secuencia de Fibonacci.
+
+
+```
+dp = [0] * (n + 1)
+
+```
+
+Crea una lista (array) llamada dp con n+1 elementos, todos inicializados a 0.
+
+Esta lista servirá como una tabla de memoización: en la posición i se guardará F(i) (el i-ésimo número de Fibonacci).
+
+
+```
+dp[0] = 0
+
+```
+Guarda el valor de F(0) (que es 0) en la tabla.
+
+
+```
+dp[1] = 1
+
+```
+
+Guarda el valor de F(1) (que es 1) en la tabla.    
+
+
+```
+for i in range(2, n + 1):
+
+``` 
+Bucle que va desde i = 2 hasta i = n.
+
+Se construyen los valores F(2) hasta F(n) de forma iterativa, aprovechando los valores anteriores guardados en dp.
+
+
+```
+dp[i] = dp[i - 1] + dp[i - 2]
+
+```
+
+Fórmula de Fibonacci: F(i) = F(i-1) + F(i-2)
+
+Toma los dos valores anteriores de la tabla (dp[i-1] y dp[i-2]), los suma, y guarda el resultado en dp[i].
+
+
+```
+return dp[n]
+
+```
+
+Una vez finalizado el bucle, devuelve el resultado final almacenado en dp[n], que es el n-ésimo número Fibonacci.
+
+
+Visual para n = 5:
+
+Iteraciones: 
+
+```
+dp = [0, 1, _, _, _, _]
+
+i = 2 → dp[2] = 1 + 0 = 1 → [0, 1, 1, _, _, _]
+i = 3 → dp[3] = 1 + 1 = 2 → [0, 1, 1, 2, _, _]
+i = 4 → dp[4] = 2 + 1 = 3 → [0, 1, 1, 2, 3, _]
+i = 5 → dp[5] = 3 + 2 = 5 → [0, 1, 1, 2, 3, 5]
+
+```
+
+
+Resultado:
+
+```
+return dp[5]  # → 5
+
+```
+
+fibonacci_dp(5)
+
+Queremos calcular:
+
+```
+F(0) = 0
+F(1) = 1
+F(2) = F(1) + F(0) = 1 + 0 = 1
+F(3) = F(2) + F(1) = 1 + 1 = 2
+F(4) = F(3) + F(2) = 2 + 1 = 3
+F(5) = F(4) + F(3) = 3 + 2 = 5
+
+```
+
+1. Inicialización
+
+```
+dp = [0, 1, 0, 0, 0, 0]
+
+```
+
+
+2. Iteración
+
+```
+i = 2 → dp[2] = dp[1] + dp[0] = 1 + 0 = 1
+
+i = 3 → dp[3] = dp[2] + dp[1] = 1 + 1 = 2
+
+i = 4 → dp[4] = dp[3] + dp[2] = 2 + 1 = 3
+
+i = 5 → dp[5] = dp[4] + dp[3] = 3 + 2 = 5
+
+```
+
+Resultado final
+
+```
+dp = [0, 1, 1, 2, 3, 5]
+
+```
+
+
+3. Devuelve `dp[5]`:
+
+```
+return 5
+
+```
+
+
+Enfoque DP vs recursión pura:
+
+| Recurso             | Recursión simple       | DP (Tabulación) |
+| ------------------- | ---------------------- | --------------- |
+| Llamadas recursivas | Muchas (exponencial)   | Ninguna         |
+| Complejidad         | Exponencial (`O(2^n)`) | Lineal (`O(n)`) |
+| Uso de memoria      | Profundidad recursiva  | `O(n)` tabla    |
+| Velocidad           | Lento                  | Rápido          |
+
+
+#### Versión eficiente: usando variables
+
+##### Con optimización de espacio, también conocida como bottom-up con espacio constante.
+
+```
+def fibonacci_eficiente(n):
+    if n == 0:
+        return 0
+    elif n == 1:
+        return 1
+
+    anterior, actual = 0, 1
+
+    for _ in range(2, n + 1):
+        siguiente = anterior + actual
+        anterior, actual = actual, siguiente
+
+    return actual
+
+```
+
+
+1. 
+
+```
+anterior, actual = 0, 1
+
+```
+Inicializa dos variables:
+
+anterior → valor de F(n-2)
+
+actual → valor de F(n-1)
+
+Representan los dos últimos números de la secuencia.
+
+
+2. 
+
+```
+for _ in range(2, n + 1):
+
+```
+
+Recorre desde 2 hasta n.
+
+No necesitamos el índice, por eso usamos `_`.
+
+
+3. 
+
+```
+siguiente = anterior + actual
+
+```
+
+Calcula el nuevo valor Fibonacci como la suma de los dos anteriores.
+    
+
+4. 
+
+```
+anterior, actual = actual, siguiente
+
+```
+
+Actualiza los valores:
+
+anterior pasa a tener el valor viejo de actual
+
+actual toma el nuevo valor siguiente
+
+
+5. 
+
+```
+return actual
+
+```
+
+Devuelve el valor final, que es el n-ésimo número de Fibonacci.
+
+
+List vs var:
+
+| Versión         | Espacio | Tiempo |
+| --------------- | ------: | -----: |
+| Con lista (DP)  |    O(n) |   O(n) |
+| Con 2 variables |    O(1) |   O(n) |
+
+Ambas tienen el mismo tiempo, pero esta versión usa solo espacio constante
+
+
+### Cambio de moneda: DP
+
+Algoritmo recomendado para cualquier conjunto de monedas:
+
+```
+def cambio_minimo_dp(cantidad, monedas):
+    dp = [float('inf')] * (cantidad + 1)
+    dp[0] = 0  # Cero monedas para cantidad cero
+
+    for i in range(1, cantidad + 1):
+        for moneda in monedas:
+            if i - moneda >= 0:
+                dp[i] = min(dp[i], dp[i - moneda] + 1)
+
+    return dp[cantidad] if dp[cantidad] != float('inf') else -1
+
+```
 
 ## 5. Greedy Algorithms
 
@@ -3779,6 +5314,231 @@ Ordenar: (120,30),(100,20),(60,10).
 Seleccionar completamente (100,20) y (60,10), y 2/3 de (120,30).
 
 Resultado: 240
+
+
+
+### Claves
+
+##### Elegí lo mejor en el momento, sin preocuparte por el futuro.
+
+Cambio de moneda (greedy):
+
+Objetivo: 
+
+Dado un monto, encontrar el mínimo número de monedas necesarias para dar el cambio, usando monedas de denominaciones específicas.
+
+```
+def cambio_greedy(cantidad, monedas):
+    resultado = []
+    monedas.sort(reverse=True)  # Ordenar de mayor a menor
+
+    for moneda in monedas:
+        while cantidad >= moneda:
+            cantidad -= moneda
+            resultado.append(moneda)
+
+    return resultado
+
+```
+
+
+Ej: 
+
+```
+cambio_greedy(36, [25, 10, 5, 1])
+
+```
+
+1. 
+
+```
+def cambio_greedy(cantidad, monedas)
+
+```
+
+Define una función que toma:
+
+cantidad: el monto que queremos devolver (ej. 36).
+
+monedas: una lista de denominaciones disponibles (ej. [25, 10, 5, 1]).
+
+
+2. 
+
+```
+resultado = []
+
+```
+
+Creamos una lista vacía para ir agregando las monedas seleccionadas.
+
+
+3. 
+
+```
+monedas.sort(reverse=True)
+
+```
+
+Ordenamos las monedas de mayor a menor → [25, 10, 5, 1].
+
+Esto es importante porque Greedy elige la moneda más grande posible primero.
+
+
+4. 
+
+```
+for moneda in monedas:
+
+```
+
+Recorremos cada moneda desde la mayor a la menor
+
+
+5. 
+
+```
+while cantidad >= moneda:
+
+```
+
+Mientras podamos usar esa moneda (porque es menor o igual al dinero que nos falta), la usamos:
+
+
+6. Dentro del while:
+
+`cantidad -= moneda`: restamos el valor de la moneda al total que queda.
+
+`resultado.append(moneda)`: guardamos la moneda en la lista de resultado
+
+
+
+Ej:
+
+cantidad = 36
+
+| Moneda | cantidad ≥ moneda | cantidad -= moneda | resultado    |
+| ------ | ----------------- | ------------------ | ------------ |
+| 25     | 36 ≥ 25           | 36 - 25 = 11       | \[25]        |
+| 10     | 11 ≥ 10           | 11 - 10 = 1        | \[25, 10]    |
+| 5      | 1 < 5             | no entra           | \[25, 10]    |
+| 1      | 1 ≥ 1             | 1 - 1 = 0          | \[25, 10, 1] |
+
+
+Devuelve
+
+```
+[25, 10, 1]
+
+```
+
+##### Este algoritmo solo funciona bien con sistemas de monedas "canónicas" como el de EE.UU. o el de muchos países.
+
+##### Puede fallar si las monedas no son proporcionales. 
+
+Ejemplo:
+
+```
+cambio_greedy(6, [4, 3, 1])  # Devuelve [4, 1, 1]
+# Pero la mejor solución es [3, 3] (menos monedas)
+
+```
+
+### Usos de greedy
+
+Cuando el sistema no es canónico, el algoritmo más adecuado ya no es greedy, sino programación dinámica o búsqueda exhaustiva.
+
+El sistema de monedas es canónico (es decir, que greedy da la solución óptima).
+
+Esto es cierto, por ejemplo, para:
+
+Monedas de EE.UU.: [25, 10, 5, 1]
+
+Monedas tipo binaria: [8, 4, 2, 1]
+
+Se puede demostrar que la estrategia greedy satisface las propiedades de optimalidad
+
+
+### Falla en casos no canónicos
+
+##### Porque elige localmente lo mejor, sin considerar que eso puede impedir combinaciones futuras mejores
+
+```
+cambio_greedy(6, [4, 3, 1])  → elige 4 primero
+# Pero después necesita 2 → usa dos de 1
+# Total: 3 monedas [4, 1, 1]
+# Óptimo real: [3, 3] → solo 2 monedas
+
+```
+
+Rs:
+
+| Tipo de sistema     | Algoritmo recomendado          |
+| ------------------- | ------------------------------ |
+| Monedas canónicas   | Greedy (rápido y óptimo)       |
+| Monedas arbitrarias | Programación dinámica (óptimo) |
+
+
+### Algoritmo Actividad máxima sin superposición (Activity Selection)
+
+Supón que tenemos las siguientes actividades:
+
+| Actividad | Inicio | Fin |
+| --------- | ------ | --- |
+| A         | 1      | 4   |
+| B         | 3      | 5   |
+| C         | 0      | 6   |
+| D         | 5      | 7   |
+| E         | 8      | 9   |
+| F         | 5      | 9   |
+
+
+Estrategia Greedy:
+
+Ordenar las actividades por su tiempo de fin más temprano.
+
+Seleccionar la primera actividad.
+
+Luego, por cada actividad, si su inicio es mayor o igual al final de la última seleccionada, agregarla
+
+
+```
+def seleccionar_actividades(actividades):
+    # Ordenar por tiempo de finalización
+    actividades.sort(key=lambda x: x[1])
+    resultado = []
+    fin_anterior = 0
+
+    for inicio, fin in actividades:
+        if inicio >= fin_anterior:
+            resultado.append((inicio, fin))
+            fin_anterior = fin
+    return resultado
+
+```
+
+
+Uso:
+
+```
+actividades = [(1, 4), (3, 5), (0, 6), (5, 7), (8, 9), (5, 9)]
+print(seleccionar_actividades(actividades))
+
+```
+
+Salida esperada: `[(1, 4), (5, 7), (8, 9)]`
+→ Tres actividades que no se superponen
+
+
+Aplicaciones reales:
+
+Planificación de salas (salones, quirófanos, salas de reunión)
+
+Asignación de recursos limitados a eventos no solapados
+
+Compiladores (planificación de tareas no conflictivas)
+
+Sistemas operativos (planificación de procesos)
 
 
 ## 6. Backtracking
@@ -3964,3 +5724,222 @@ def find_empty(board):
 ```
 
 
+### Encontrar todas las combinaciones de un conjunto que sumen un valor objetivo.
+
+Dado un conjunto de números y un objetivo, encontrar todas las combinaciones posibles que sumen exactamente ese objetivo.
+
+Cada número puede ser usado una sola vez.
+
+```
+nums = [2, 3, 6, 7]
+target = 7
+
+```
+
+Combinaciones que suman 7:
+
+`[7]`
+
+`[2, 2, 3]` (si permitimos usar los números más de una vez)
+
+
+Para un ejemplo más simple, vamos a permitir usar cada número una sola vez.
+
+Ej:
+
+```
+def combinaciones(nums, target):
+    resultado = []
+
+    def backtrack(start, camino, suma_actual):
+        if suma_actual == target:
+            resultado.append(list(camino))
+            return
+        if suma_actual > target:
+            return
+
+        for i in range(start, len(nums)):
+            camino.append(nums[i])
+            backtrack(i + 1, camino, suma_actual + nums[i])
+            camino.pop()
+
+    backtrack(0, [], 0)
+    return resultado
+
+```
+
+Para 
+
+```
+nums = [2, 3, 6, 7]
+target = 7
+
+```
+
+1. `combinaciones(nums, target)`
+
+Crea lista resultado para almacenar las combinaciones válidas.
+
+→ Llama a la función interna backtrack.
+
+
+2. `backtrack(start, camino, suma_actual)`
+
+start: índice desde el cual se exploran los números (para evitar repetir combinaciones)
+
+camino: la combinación actual en construcción.
+
+suma_actual: suma parcial de los elementos del camino.
+
+
+3. Caso base
+
+Si suma_actual == target, guarda la combinación.
+
+Si suma_actual > target, no sigas explorando (poda del árbol de búsqueda)
+
+
+4. Iteración:
+
+Recorre los números desde start hasta el final.
+
+Por cada número:
+
+Lo agrega al camino.
+
+Llama recursivamente para el próximo índice.
+
+Luego lo quita (pop) → esto es backtracking
+
+
+Resultado:
+
+```
+combinaciones([2, 3, 6, 7], 7)
+# Posible salida: [[7]]
+
+```
+
+Si permitimos repetidos (backtrack(i, ...) en vez de i + 1), podemos obtener más combinaciones como [2, 2, 3].
+
+
+### Claves de Backtracking
+
+Explorar todas las opciones posibles
+
+Retroceder cuando ya no vale la pena seguir (sumaste de más, por ejemplo)
+
+Mantener el estado actual (camino, suma, etc.) y restaurarlo al retroceder
+
+
+# Visual Ds
+
+
+
+# Visual Algoritmos 
+
+# Algoritmos
+
+## Fuerza Bruta
+
+### 
+
+
+## Recursión
+
+###
+
+###
+
+
+## Divide y Conquista
+
+### Simple
+
+### Avanzado
+
+
+## Dynamic Programming
+
+### Simple
+
+### Avanzado
+
+
+# Planteo
+
+precond: requisitos
+postcond: resultado
+validaciones:
+tipo, rango, formato, longitud, estructura y dominio (lógica)
+
+Primero, escribí en papel o en comentarios:
+¿Qué hace el programa?
+¿Qué entradas tiene?
+¿Qué funciones necesitás?
+¿Qué estructuras de datos convienen?
+
+Piensa siempre en:
+1. ¿Qué pasa si...? -> (usa if)
+2. ¿Qué hago para cada...? -> (usa for)
+3. ¿Hasta cuándo sigo...? -> (usa while)
+4. ¿Qué pasa si algo falla...? -> (usa try)
+5. ¿Cómo manejo estructuras externas...? -> (usa with)
+6. ¿Cómo encapsulo esta lógica...? -> (usa funciones)
+
+Preguntas: Por qué usaría tal o cual cosa, dar los motivos y resultados esperados. 
+
+Uso de sintaxis o funciones avanzadas (lambda, map, ls):
+lambda (f linea) 
+map(transf, f y iter obj)
+ls nueva lista a partir de otra (expre/cambio expres/cond/accion; for expres cond) -> true
+
+Combinación de control (Condicionales (if (elif, else), in, range, len), bucles (for, while, ls) y manejo de errores (try, except, finally, err).)
+Combinación de esstructuras (list, dict, tuple, set)
+Características del control y estructuras necesarias. 
+Express, cond, func en var
+
+Reducir las posibilidades:
+Enfocar el problema, encontrar los elem claves
+Retorno de los objetos 
+Del final al inicio
+
+
+1. Entender el problema matemáticamente
+    ¿Qué define un número primo?
+    ¿Cuáles son sus propiedades?
+
+2. Pensar en estructuras de datos eficientes
+    ¿Necesito un arreglo, un diccionario, un conjunto?
+    ¿Qué tipo de acceso necesito (índice, búsqueda, etc.)?
+
+3. Aplicar patrones conocidos
+    ¿Esto se parece a un filtrado?
+    ¿Esto es un marcado de elementos?
+
+4. Refinar con herramientas de Python
+    ¿Puedo usar comprensión de listas?
+    ¿Puedo usar enumerate, zip, slicing, etc.?
+    
+5. Probar, refactorizar y comparar
+    ¿Puedo hacerlo más claro?
+    ¿Es más rápido, más legible?
+
+
+Estrategia
+
+Evalúa las características del problema:
+¿Es necesario explorar todas las soluciones? → Fuerza bruta.
+¿Se puede dividir en partes más pequeñas? → Divide y conquista.
+¿Hay subproblemas repetidos? → Programación dinámica.
+¿Es suficiente una solución parcial óptima? → Algoritmos voraces.
+¿Hay decisiones con retroceso? → Backtracking.
+
+Estructuras de datos eficientes: 
+Importancia de elegir la estructura de datos adecuada para el problema en cuestión, ya que esto puede afectar drásticamente el rendimiento de su algoritmo. 
+
+Matrices y Listas: Excelentes para datos secuenciales, pero ineficientes para operaciones de búsqueda (a menos que estén ordenados).
+Tablas hash (Diccionarios/Mapas): Eficientes para búsquedas, inserciones y eliminaciones.
+Pilas y colas: Útiles para problemas que requieren operaciones LIFO (último en entrar, primero en salir) o FIFO (primero en entrar, primero en salir).
+Árboles: En particular, árboles de búsqueda binaria para una búsqueda, inserción y eliminación eficientes.
+Gráficos: Para representar datos interconectados (como redes sociales u hojas de ruta).

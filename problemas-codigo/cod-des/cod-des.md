@@ -3073,4 +3073,22 @@ Del final al inicio
     ¿Es más rápido, más legible?
 
 
+Estrategia
+
+Evalúa las características del problema:
+¿Es necesario explorar todas las soluciones? → Fuerza bruta.
+¿Se puede dividir en partes más pequeñas? → Divide y conquista.
+¿Hay subproblemas repetidos? → Programación dinámica.
+¿Es suficiente una solución parcial óptima? → Algoritmos voraces.
+¿Hay decisiones con retroceso? → Backtracking.
+
+Estructuras de datos eficientes: 
+Importancia de elegir la estructura de datos adecuada para el problema en cuestión, ya que esto puede afectar drásticamente el rendimiento de su algoritmo. 
+
+Matrices y Listas: Excelentes para datos secuenciales, pero ineficientes para operaciones de búsqueda (a menos que estén ordenados).
+Tablas hash (Diccionarios/Mapas): Eficientes para búsquedas, inserciones y eliminaciones.
+Pilas y colas: Útiles para problemas que requieren operaciones LIFO (último en entrar, primero en salir) o FIFO (primero en entrar, primero en salir).
+Árboles: En particular, árboles de búsqueda binaria para una búsqueda, inserción y eliminación eficientes.
+Gráficos: Para representar datos interconectados (como redes sociales u hojas de ruta).
+
 

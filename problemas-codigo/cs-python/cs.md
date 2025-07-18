@@ -2575,3 +2575,241 @@ Resolver desafíos desde varios ángulos.
 Medir progreso en claridad, tiempo y estilo.
 
 Plataformas de ejercicios 
+
+
+
+# 2. Programas numéricos
+ 
+Combinar las instrucciones para escribir programas sencillos y algunas técnicas algorítmicas.
+
+
+## Enumeración exhaustiva
+
+El código imprime la raíz cúbica de un entero, si existe. 
+
+Si la entrada no es un cubo perfecto, imprime un mensaje indicando que no es igual. 
+
+El operador != significa que no es igual.
+
+```
+x = int(input('Enter an integer: '))
+ans = 0 
+while ans**3 < abs(x):
+	ans = ans + 1
+if ans**3 != abs(x):
+	print('x, is not a perfect cube')
+else: 
+	if x < 0:
+		ans = -ans
+	print('Cube root of', x, 'is', ans )
+	
+```
+
+Usamos enumeración exhaustiva para encontrar la raíz cúbica
+
+El código primero intenta establecer la variable ans en la raíz cúbica del valor absoluto de x. 
+
+Si lo consigue, establece ans en -ans si x es negativo. La parte más pesada de este código se realiza en el
+
+
+La parte más pesada de este código se realiza en el bucle while. 
+
+##### Siempre que un programa contiene un bucle, es importante comprender qué hace que el programa finalmente salga de él.
+
+##### ¿Para qué valores de x terminará este bucle while? La respuesta es "todos los enteros". 
+
+1. El valor de la expresión ans**3 empieza en 0 y aumenta con cada repetición del bucle.
+
+2. Cuando alcanza o supera abs(x), el bucle termina.
+
+3. Dado que abs(x) siempre es positivo, solo hay un número finito de iteraciones antes de que el bucle deba terminar.
+
+
+##### Este argumento se basa en el concepto de función decreciente.
+
+Tiene las siguientes propiedades:
+
+1. Mapea un conjunto de variables de programa a un entero.
+
+2. Al entrar en el bucle, su valor es no negativo.
+
+##### 3. Cuando su valor es ≤ 0, el bucle termina.
+
+4. Su valor disminuye con cada ciclo.
+
+
+##### ¿Cuál es la función decrementadora del bucle while? Es abs(x) - ans**3.
+
+Ahora, insertemos algunos errores y veamos qué sucede. Primero, intente comentar la sentencia ans = 0. El intérprete de Python imprime el mensaje de error.
+
+```
+NameError: name 'ans' is not defined
+
+```
+
+Porque el intérprete intenta encontrar el valor al que ans está enlazado antes de que se haya enlazado a nada. 
+
+Ahora, restaure la inicialización de ans, reemplace la sentencia ans = ans + 1 por ans = ans e intente encontrar la raíz cúbica de 8. 
+
+Si se cansa de esperar, introduzca "control c" (mantenga presionadas las teclas Ctrl y c simultáneamente).
+
+Modifica el código por:
+
+```
+print('Value of the decrementing function abs(x) - ans**3
+is', abs(x) - ans**3)
+
+``` 
+
+al inicio del bucle e intenta ejecutarlo de nuevo. Esta vez se imprimirá
+
+
+```
+Value of the decrementing function abs(x) - ans**3 is 8
+
+```
+
+Una y otra vez.
+
+
+El programa se habría ejecutado indefinidamente porque el cuerpo del bucle ya no reduce la distancia entre ans**3 y abs(x). 
+
+##### Al enfrentarse a un programa que parece no terminar, los programadores experimentados suelen insertar sentencias de impresión, como la que se muestra aquí, para comprobar si la función decrementadora se está decrementando.
+
+##### La técnica algorítmica utilizada en este programa es una variante del método de conjetura y comprobación llamada enumeración exhaustiva. 
+
+##### Enumeramos todas las posibilidades hasta llegar a la respuesta correcta o agotar el espacio de posibilidades.
+
+A primera vista, esto puede parecer una forma increíblemente estúpida de resolver un problema. 
+
+Sin embargo, sorprendentemente, los algoritmos de enumeración exhaustiva suelen ser la forma más práctica de resolver un problema.
+ 
+Suelen ser fáciles de implementar y de entender. Y, en muchos casos, se ejecutan lo suficientemente rápido para cualquier propósito práctico
+
+
+Elimine o comente la sentencia de impresión que insertó para la depuración y vuelva a insertar la sentencia ans = ans + 1
+
+Ahora intente hallar la raíz cúbica de 1957816251. 
+
+El programa finalizará casi instantáneamente. 
+
+Ahora, intente 7406961012236344616.
+
+##### Como puede ver, incluso si se requieren millones de intentos, el tiempo de ejecución no suele ser un problema. 
+
+Las computadoras modernas son increíblemente rápidas. 
+
+Se tarda menos de un nanosegundo (una milmillonésima de segundo) en ejecutar una instrucción. 
+
+Es difícil apreciar lo rápido que es.
+
+Para ponerlo en perspectiva, la luz tarda poco más de un nanosegundo en recorrer 0,3 metros
+
+
+Solo por diversión, intente ejecutar el código.
+
+```
+max_val = int(input('Enter a postive integer: '))
+i = 0
+while i < max_val:
+	i = i + 1
+	print(i)
+	
+```
+
+Vea qué tan grande debe ser el entero que debe ingresar antes de que haya una pausa perceptible antes de que se imprima el resultado.
+
+Otro ejemplo de enumeración exhaustiva: comprobar si un entero es primo y devolver el divisor más pequeño si no lo es. 
+
+Un número primo es un entero mayor que 1 que solo es divisible por sí mismo y por 1. Por ejemplo, 2, 3, 5 y 111.119 son primos, y 4, 6, 8 y 62.710.561 no lo son.
+
+La forma más sencilla de averiguar si un entero x mayor que 3 es primo es dividir x entre cada entero entre 2 y x-1.
+
+Si el resto de cualquiera de esas divisiones es 0, x no es primo; de lo contrario, x sí lo es.
+
+Primero solicita al usuario que introduzca un entero, convierte la cadena devuelta en un entero y asigna ese entero a la variable x.
+
+A continuación, establece las condiciones iniciales para una enumeración exhaustiva inicializando `guest` en 2 y la variable `minimum_divisor` en `Ninguno`, lo que indica que, hasta que se demuestre lo contrario, el código asume que x es primo.
+
+
+La enumeración exhaustiva se realiza dentro de un bucle `for`. 
+
+El bucle termina cuando se han probado todos los divisores enteros posibles de x o se ha descubierto un entero que sea divisor de x.
+
+Tras salir del bucle, el código comprueba el valor de smallest_divisor e imprime el texto correspondiente. 
+
+El truco de inicializar una variable antes de entrar en un bucle y luego comprobar si ese valor ha cambiado al salir es común.
+
+```
+# Test if an int > 2 is prime. If not, print smallest divisor 
+x = int(input('Enter an integer greater that 2: '))
+smallest_divisor = 0 
+for guess in range(2, x)
+	if x%guess == 0:
+		smallest_divisor = guess
+		break
+if smallest_divisor != None:
+	print('Smallest divisor of', x, 'is' , smallest_divisor)
+else
+	print(x, 'is a prime number')
+
+```
+
+Utilizando la enumeración exhaustiva para probar la primalidad
+
+
+### Ejercicio
+
+Modifique el código de la Figura 3-2 para que devuelva el divisor mayor en lugar del menor.
+
+Sugerencia: si y*z = x e y es el divisor menor de x, z es el divisor mayor de x.
+
+
+El código de la Figura 3-2 funciona, pero es innecesariamente ineficiente
+
+Por ejemplo, no es necesario comprobar los números pares mayores que 2, ya que si un entero es divisible por cualquier número par, es divisible por 2. 
+
+El código de la Figura 3-3 aprovecha este hecho comprobando primero si x es un número par.
+ 
+De lo contrario, utiliza un bucle para comprobar si x es divisible por cualquier número impar.
+ 
+##### Es ligeramente más complejo y considerablemente más rápido, ya que se comprueba la mitad de los números dentro del bucle.
+
+```
+# Test if an int > 2 is prime. If not, print smallest divisor 
+x = int(input('Enter an integer greater that 2: '))
+smallest_divisor = 0 
+if x%2 == 0:
+	smallest_divisor = 2
+else:
+	for guess in range(3, x, 2):
+		if x%guess == 0:
+			smallest_divisor = guess
+			break
+if smallest_divisor != None:
+	print('Smallest divisor of', x, 'is' , smallest_divisor)
+else
+	print(x, 'is a prime number')
+
+```
+
+
+### Ejercicio:
+
+Escriba un programa que solicite al usuario que introduzca un entero e imprima dos enteros, root y pwr, de modo que 1 < pwr < 6 y root**pwr sea igual al entero introducido por el usuario. 
+
+Si no existe dicho par de enteros, debería imprimir un mensaje indicando tal efecto.
+
+
+### Ejercicio:
+
+Escribe un programa que imprima la suma de los números primos mayores que 2 y menores que 1000.
+ 
+Sugerencia: probablemente quieras tener un bucle que sea una prueba de primalidad anidada dentro de un bucle que itere sobre los enteros impares entre 3 y 999.
+
+
+## Soluciones aproximadas y Bisection Search
+
+
+
+
