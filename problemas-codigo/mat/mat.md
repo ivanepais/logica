@@ -6,7 +6,8 @@
 
 Fundamentales y muy comunes
 
-## Números naturales, enteros, racionales
+
+## 1. Números naturales, enteros, racionales
 
 
 ### Números naturales
@@ -363,6 +364,1538 @@ Rs:
 | Empieza en 0              | Porque 0 es múltiplo de cualquier número                          |
 | Paso n                    | Porque cada término se genera con kxn, keN                       |
 | Muy usado                 | Para divisibilidad, iteraciones por paso fijo, filtros, etc.      |
+
+    
+
+### Números enteros 
+
+Se denotan con Z (del alemán Zahlen, que significa “números”).
+
+Z = {…,−3,−2,−1,0,1,2,3,…}
+
+El conjunto incluye: 
+
+Números negativos: −1,−2,−3,…−1,−2,−3,…
+
+El cero: 00
+
+Números positivos: 1,2,3,…1,2,3,…
+
+
+Relación de los enteros con otros conjuntos:
+
+1. N c Z: Los naturales están dentro de los enteros
+
+2. Z c Q: Todo entero es también un número racional
+
+
+Propiedades: 
+
+1. Cerradura
+
+a+b ∈ Z
+a-b ∈ Z
+axb ∈ Z
+
+No están cerrados bajo división:
+
+Ej: 3/2 = 1.5 ∈/ Z
+
+
+2. Existencia de neutros y opuestos
+
+Neutro aditivo: 0, porque a+0=a
+
+Opuesto de a: el número −a, porque a+(−a) = 0
+
+
+3. Simetría
+
+Por cada a ∈ Z, existe −a ∈ Z
+
+
+4. Orden total
+
+Podés comparar dos enteros con <, >, <=, >=
+
+
+5. Distancia (valor absoluto):
+
+El valor absoluto de un entero mide su distancia al 0:
+
+|x| = x si x >= 0; -x si < 0 
+
+
+Utilidad: 
+
+Matemáticas: 
+
+1. Permiten restar cualquier par de naturales.
+
+2. Se usan en álgebra, ecuaciones, series, etc.
+
+3. Son base para estructuras más complejas como los números racionales, congruencias y enteros módulo n.
+
+
+Programación:
+
+1. Índices negativos:
+
+Python, por ejemplo, permite acceder desde el final de una lista:
+ 
+ ```
+arr = [10, 20, 30]
+print(arr[-1])  # → 30
+
+```
+
+
+2. Desplazamientos, coordenadas y movimientos:
+
+```
+x = 0
+x -= 1  # Mover hacia la izquierda
+
+```
+
+
+3. Contadores hacia atrás (bucle decreciente):
+
+```
+for i in range(5, -1, -1):
+    print(i)
+
+```
+
+
+4. Diferencias y deltas:
+
+Calcular cuánto subió o bajó algo
+
+```
+delta = actual - anterior
+
+```
+
+
+5. Manejo de errores o estados con enteros negativos:
+
+```
+def buscar_elemento(lista, x):
+    if x in lista:
+        return lista.index(x)
+    return -1  # señal de "no encontrado"
+
+```
+
+
+5. Matemática modular, divisores, congruencias:
+
+```
+if (a - b) % n == 0:
+    print("a ≡ b (mod n)")
+
+```
+
+
+Visualización en la recta numérica:
+
+```
+… -3  -2  -1   0   1   2   3   …
+  ←  — — — — — — — — — — —   →
+
+```
+
+Permite representar cambios hacia la izquierda (negativos) o derecha (positivos), esencial en física, algoritmos y lógica de estados.
+
+
+Rs: 
+
+| Propiedad       | Descripción                                                     |
+| --------------- | --------------------------------------------------------------- |
+| Conjunto        | Z = {...,-2, -1, 0, 1, 2,...}$                					|
+| Incluye         | Naturales + 0 + negativos                                       |
+| Operaciones     | Cerrado para suma, resta, multiplicación                        |
+| Aplicaciones    | Índices, diferenciales, estados, control de flujo, congruencias |
+| Características | Tienen opuestos, orden, valor absoluto                          |
+
+
+#### Enteros en código 
+
+
+1. Funciones integradas
+
+| Función          | Uso                            | Ejemplo        | Resultado                   |
+| ---------------- | ------------------------------ | -------------- | --------------------------- |
+| `abs(x)`         | Valor absoluto                 | `abs(-7)`      | `7`                         |
+| `pow(a, b)`      | Potencia a^b                   | `pow(2, 3)`    | `8`                         |
+| `pow(a, b, mod)` | Potencia módulo                | `pow(2, 3, 5)` | `3` (porque  8 \mod 5 = 3 ) |
+| `divmod(a, b)`   | Retorna `(a // b, a % b)`      | `divmod(7, 3)` | `(2, 1)`                    |
+| `int(x)`         | Convierte a entero             | `int("42")`    | `42`                        |
+| `round(x)`       | Redondea al entero más cercano | `round(4.6)`   | `5`                         |
+
+
+2. Operadores matemáticos
+
+| Operador | Significado     | Ejemplo  | Resultado |
+| -------- | --------------- | -------- | --------- |
+| `+`      | Suma            | `3 + 5`  | `8`       |
+| `-`      | Resta           | `7 - 2`  | `5`       |
+| `*`      | Multiplicación  | `4 * 3`  | `12`      |
+| `**`     | Potencia        | `2 ** 4` | `16`      |
+| `//`     | División entera | `7 // 3` | `2`       |
+| `%`      | Módulo (resto)  | `7 % 3`  | `1`       |
+
+##### Módulo -> Resto ()%)
+##### // y % siempre devuelven enteros si ambos operandos lo son.
+
+
+3. Operaciones con signo y divisibilidad
+
+Módulo con signo:
+
+```
+print(7 % 3)   # 1
+print(-7 % 3)  # 2  ← el resultado es siempre ≥ 0 si el divisor es positivo
+
+```
+
+útil en:
+
+Posiciones circulares
+
+Congruencias
+
+Manejo de ciclos
+
+
+4. Funciones matemáticas del módulo math
+
+Con `import math`
+
+```
+| Función             | Descripción                     | Ejemplo             | Resultado |
+| ------------------- | ------------------------------- | ------------------- | --------- |
+| `math.gcd(a, b)`    | Máximo común divisor            | `math.gcd(12, 8)`   | `4`       |
+| `math.lcm(a, b)`    | Mínimo común múltiplo (Py 3.9+) | `math.lcm(4, 6)`    | `12`      |
+| `math.isqrt(n)`     | Raíz entera                     | `math.isqrt(10)`    | `3`       |
+| `math.factorial(n)` | n!   factorial                  | `math.factorial(5)` | `120`     |
+
+```
+
+
+5. Conversión entre bases
+
+```
+bin(10)     # '0b1010' → binario
+oct(10)     # '0o12'   → octal
+hex(10)     # '0xa'    → hexadecimal
+int('1010', 2)  # → 10 (binario a decimal)
+
+```
+
+útil para:
+
+Manipulación de bits
+
+Criptografía
+
+Algoritmos de compresión
+    
+
+6. Funciones útiles de control
+
+		| Expresión      | Propósito                                    |
+		| -------------- | -------------------------------------------- |
+##### 	| `x % 2 == 0`   | ¿Es par?                                     |
+##### 	| `x % n == 0`   | ¿Es múltiplo de `n`?                         |
+##### 	| `x // n`       | ¿Cuántos bloques de tamaño `n` caben en `x`? |
+##### 	| `divmod(x, n)` | Obtener a la vez cociente y resto            |
+
+
+7. Ejemplos
+
+1. Verificar paridad:
+
+```
+def es_par(n):
+    return n % 2 == 0
+
+```
+
+
+2. Redondeo personalizado:
+
+```
+def redondear_a_mas_cercano(x, base):
+    return base * round(x / base)
+
+print(redondear_a_mas_cercano(23, 5))  # → 25
+
+```
+
+
+3. Separar cociente y resto:
+
+```
+horas, minutos = divmod(130, 60)
+print(horas, "horas", minutos, "minutos")  # → 2 horas 10 minutos
+
+```
+
+
+Rs:  
+
+| Categoría              | Funciones clave                            |
+| ---------------------- | ------------------------------------------ |
+| **Valor absoluto**     | `abs(x)`                                   |
+| **División & módulo**  | `//`, `%`, `divmod()`                      |
+| **Potencias**          | `**`, `pow()`                              |
+| **Redondeos**          | `round()`, `int()`                         |
+| **Conversión de base** | `bin()`, `int(..., base)`                  |
+| **Factores y raíz**    | `math.gcd()`, `math.lcm()`, `math.isqrt()` |
+| **Factorial**          | `math.factorial()`                         |
+
+
+### Números racionales 
+
+Son aquellos que pueden expresarse como el cociente de dos enteros
+
+
+#### División: 
+
+Operación aritmética donde se descompone una cifra.
+
+Busca el valor denominado cociente, que representa la cantidad de veces que aparece un número (llamado dividendo) en otro (conocido como divisor),
+
+```
+dividendo | divisor
+resto		cociente
+
+```
+
+Verificación:
+
+```
+85 | 9
+4	9 
+
+9 x 9 (cociente)
+r: 81
++	4
+r: 85
+
+```
+
+
+#### Cociente
+
+Resultado tras dividir un número por otro. 
+
+##### Cantidad de veces que el divisor está contenido en el dividendo. 
+
+
+#### Resto
+
+Número que se le resta al dividendo para que sea igual a un determinado número de veces el divisor.
+
+```
+Resto = Dividendo - (Divisor x Cociente)
+
+```
+
+
+#### Tipos de división 
+
+1. Exacta: resto 0
+
+2. Inexacta: !0
+
+El divisor no aparece contenido una cantidad de veces exacta en el dividendo, sino que queda un resto.
+
+
+#### División entera y resto en python
+
+```
+a // b
+```
+
+Resulta el cociente.
+
+```
+a % b
+```
+
+Resulta el resto 
+
+
+#### Racionales
+
+Cociente de dos enteros
+
+```
+a/b donde a ∈ >, b ∈ Z ∖ {0}
+
+```
+
+Cualquier número que puede escribirse como fracción, con numerador y denominador enteros (y el denominador distinto de cero).
+
+##### Restricción denominador (b) distinto de 0.
+
+
+Ej: 
+
+| Expresión                     | Tipo                    |
+| ----------------------------- | ----------------------- |
+| `1/2`, `-3/4`, `7`, `0`       | Racionales              |
+| `5` → se puede ver como `5/1` | También racional        |
+| `0.333... = 1/3`              | Racional periódico      |
+| `0.25 = 1/4`                  | Racional decimal finito |
+
+
+Propieadades:
+
+1. Clausura: 
+
+Si sumás, restás, multiplicás o dividís (≠0) dos racionales, el resultado es racional
+
+
+2. Densidad:
+
+Entre dos racionales siempre hay otro racional. 
+
+Por ejemplo: entre 1/3 y 1/2, está 2/5.
+
+
+3. Identidad aditiva y multiplicativa:
+
+0 es el neutro aditivo, 1 es el neutro multiplicativo.
+
+
+4. No incluye raíces irracionales
+
+√2, π, e no son racionales.
+
+
+5. Equivalencia de fracciones
+
+1/2, 2/4, 3/6 representan el mismo número racional
+
+
+Útilidad:
+
+1. Cálculo preciso:
+
+Evitan errores de redondeo en representaciones decimales.
+
+
+2. Geometría y proporciones:
+
+Muchas razones, pendientes y escalas se expresan como racionales.
+
+
+3. Finanzas:
+
+Cálculos exactos con tasas, proporciones, porcentajes
+
+
+4. Algoritmos:
+
+En programación simbólica, álgebra computacional, y cuando se requiere precisión exacta
+
+
+En python: 
+
+1. Decimales o floats:
+
+```
+x = 0.75
+
+```
+
+##### Precisión limitada
+
+```
+print(0.1 + 0.2)  # 0.30000000000000004
+
+```
+
+
+2. Módulo fractions (precisión exacta)
+
+```
+from fractions import Fraction
+
+a = Fraction(1, 3)
+b = Fraction(2, 5)
+c = a + b
+print(c)  # 11/15
+
+```
+
+##### Fraction reduce automáticamente y mantiene precisión exacta
+
+```
+Fraction(2, 4) == Fraction(1, 2)  # True
+
+```
+
+
+Racionales en Python
+
+| Operación         | Código                                   | Resultado  |
+| ----------------- | ---------------------------------------- | ---------- |
+| Suma              | `Fraction(1, 3) + Fraction(1, 6)`        | `1/2`      |
+| Resta             | `Fraction(2, 3) - Fraction(1, 2)`        | `1/6`      |
+| Multiplicación    | `Fraction(3, 4) * Fraction(2, 3)`        | `1/2`      |
+| División          | `Fraction(1, 2) / Fraction(1, 4)`        | `2`        |
+| Convertir decimal | `Fraction('0.25')`                       | `1/4`      |
+| Aproximar float   | `Fraction(0.333).limit_denominator(100)` | `333/1000` |
+
+
+Casos prácticos: 
+
+1. Comparar precisión
+
+```
+print(1/3 + 1/3 + 1/3)  # 0.999999...
+print(Fraction(1,3) * 3)  # 1
+
+```
+
+
+2. Cálculo exacto de razones
+
+```
+def ratio(a, b):
+    return Fraction(a, b)
+
+print(ratio(3, 7))  # 3/7
+
+```
+
+
+Rs:
+
+| Categoría             | Detalles                                          |
+| --------------------- | ------------------------------------------------- |
+| Representación        | `Fraction(a, b)`                                  |
+| Precisión             | Exacta                                            |
+| Comparación con float | `Fraction('0.1') == 1/10`                         |
+| Aplicaciones clave    | Finanzas, álgebra, geometría, algoritmos precisos |
+
+ 
+#### Tipos de racionales 
+
+Los números racionales tienen una representación decimal que termina o se repite cíclicamente
+
+
+1. Decimales finitos (terminantes)
+
+Tiene decimal finito si su expansión decimal termina después de un número finito de cifras
+
+1/4 = 0.25 
+
+##### Una fracción a/b​ tiene decimal finito si y solo si el denominador reducido (luego de simplificar) tiene como factores solo 2 y/o 5.
+
+| Fracción | Decimal | ¿Termina? |
+| -------- | ------- | --------- |
+| 1/2      | 0.5     | ✅ Sí     |
+| 3/4      | 0.75    | ✅ Sí     |
+| 1/5      | 0.2     | ✅ Sí     |
+| 7/8      | 0.875   | ✅ Sí     |
+
+
+1/3, 2/7, 1/6 no terminan
+
+
+2. Decimales infinitos periódicos
+
+Si su parte decimal se repite infinitamente en un patrón cíclico.
+	    -  
+1/3 = 0.3, 
+        ------   
+2/7 = 0.285714
+
+
+1. La parte que se repite como patrón indefinido está marcada
+
+2. Algunos tienen una parte inicial no periódica → llamados mixtos
+         -
+1/6 = 0.16
+
+Ocurre cuando el denominador tiene otros factores además de 2 y 5.
+
+| Fracción | Decimal           | ¿Periódico?                       |
+| -------- | ----------------- | --------------------------------- |
+| 1/3      | 0.333...          | ✅ Sí                              |
+| 2/7      | 0.285714285714... | ✅ Sí                              |
+| 1/11     | 0.090909...       | ✅ Sí                              |
+| 1/6      | 0.1666...         | ✅ Mixto (1 no se repite, luego 6) |
+
+
+Comparación:
+
+| Propiedad             | Decimal Finito                        | Decimal Periódico                               |
+| --------------------- | ------------------------------------- | ----------------------------------------------- |
+| Termina               | ✅ Sí                                  | ❌ No                                            |
+| Se repite             | ❌ No                                  | ✅ Sí (exactamente)                              |
+| Fracciones implicadas | Denominadores con solo factores 2 o 5 | Denominadores con otros primos (3, 7, 11, etc.) |
+| Conversión a fracción | Siempre posible                       | Siempre posible                                 |
+| Cantidad total        | Infinita                              | Infinita                                        |
+
+
+#### Decimales finitos, periodico y periodico mixtos en python
+
+```
+from fractions import Fraction
+
+print(float(Fraction(1, 4)))  # 0.25 → finito
+print(float(Fraction(1, 3)))  # 0.3333333333333333 → periódico
+
+```
+
+##### Python no muestra periódicos exactos, solo una aproximación de punto flotante
+
+Para precisión simbólica:
+
+```
+f = Fraction(1, 3)
+print(f)  # 1/3
+
+```
+
+
+Detección práctica (factores del denominador):
+
+```
+from fractions import Fraction
+
+def es_decimal_finito(f):
+    denom = Fraction(f).denominator
+    while denom % 2 == 0:
+        denom //= 2
+    while denom % 5 == 0:
+        denom //= 5
+    return denom == 1
+
+print(es_decimal_finito(Fraction(3, 4)))  # True
+print(es_decimal_finito(Fraction(2, 7)))  # False
+
+```
+
+
+Útilidad:
+
+| Aplicación               | Importancia                                                                     |
+| ------------------------ | ------------------------------------------------------------------------------- |
+| Finanzas                 | Evita errores al representar montos (ej. dividir una cuenta en partes iguales). |
+| Algoritmos               | Saber si un número racional se puede representar exactamente en base 10.        |
+| Matemática escolar       | Base para fracciones equivalentes, simplificación y conversiones.               |
+| Aritmética computacional | Influye en representación, redondeo y precisión.                                |
+
+
+Rs: 
+
+| Tipo de racional  | Patrón decimal | Denominadores típicos     | Representación           |
+| ----------------- | -------------- | ------------------------- | ------------------------ |
+| Decimal finito    | Termina        | Solo factores 2 y 5       | Ej: 0.125 = 1/8          |
+| Decimal periódico | Se repite      | Otros primos involucrados | Ej: 0.\overline{3} = 1/3 |
+
+
+### Números Irracionales
+
+Es un número real que no puede escribirse como una fracción exacta de dos enteros.
+
+Su expansión decimal es infinita y no periódica.
+
+```
+No existen a, b ∈ Z, b =/= 0 tales que x = a/b
+``` 
+
+1. π: 3.14159…
+
+Relación circunferencia/diámetro
+
+
+2. e: 2.71828…
+
+Base del logaritmo natural
+
+
+3. √2: 1.41421…
+
+Diagonal de un cuadrado de lado 1
+
+
+4. √3: 1.73205…
+
+Altura de un triángulo equilátero de lado 2
+
+
+5. ϕ (phi): 1.61803…
+
+Número áureo
+
+
+Propiedades: 
+
+1. No se puede escribir como fracción exacta
+
+Ninguna combinación de enteros lo logra
+
+
+2. Decimal no termina ni se repite
+
+A diferencia de los racionales
+
+
+3. Resultado de ciertas raíces
+
+Como √2, √5, √7
+
+
+4. Hay infinitos irracionales entre cualquier par de racionales
+
+Como entre 1.1 y 1.2
+
+
+##### 5. No se puede representar exactamente en computadoras
+
+Siempre se redondean (punto flotante) 
+
+
+Relación con otras clases numéricas:
+
+```
+N c Z c Q c R = Q u I 
+
+```
+
+Los irracionales II son la parte de los números reales que no está en los racionales
+
+
+Obtener número irracional:
+
+1. Si su decimal nunca termina y nunca se repite (visual o por análisis).
+
+2. Si al calcular raíces cuadradas o logaritmos, el resultado no se puede expresar como fracción.
+
+3. Si es una constante matemática conocida como irracional.
+
+```
+import math
+
+print(math.sqrt(2))      # 1.4142135623730951
+print(math.pi)           # 3.141592653589793
+print(math.e)            # 2.718281828459045
+
+```
+
+
+Útilidad:
+
+| Aplicación                    | Utilidad                                                                              |
+| ----------------------------- | ------------------------------------------------------------------------------------- |
+| Geometría Euclídea        	| Raíces cuadradas: longitudes, diagonales, distancias                                  |
+| Física e ingeniería       	| Constantes como $\pi, e, \sqrt{2}$ están en casi todo: ondas, probabilidades, energía |
+| Cálculo numérico          	| Optimización, integrales, exponenciales                                               |
+| Estética y diseño         	| El número áureo $\phi$                                                                |
+| Criptografía y algoritmos 	| Algunas irracionalidades permiten secuencias impredecibles                            |
+
+
+Diferencias:
+
+| Comparación                     | Racional          | Irracional                   |
+| ------------------------------- | ----------------- | ---------------------------- |
+| Forma fraccionaria              | Sí: a/b 		  | No                           |
+| Decimal termina o se repite     | Sí                | No                           |
+| Representación exacta en código | Posible           | No (solo aproximación)       |
+| Cardinalidad                    | Contable          | Incontable (más "numerosos") |
+
+
+Ej: 
+
+```
+import math
+
+x = math.sqrt(2)
+print(f"√2 ≈ {x:.20f}")
+
+```
+
+Out: √2 ≈ 1.41421356237309514547
+
+Se sigue extendiendo sin repetir.
+
+
+El descubrimiento de que 2 no era racional conmocionó a los pitagóricos.
+
+##### Se considera uno de los primeros choques entre intuición geométrica y formalismo algebraico.
+
+Según leyendas, Hipaso fue castigado por revelar esto.
+
+ 
+Rs:
+
+| Atributo              | Números Irracionales                       |
+| --------------------- | ------------------------------------------ |
+| Fracción posible      | No                                         |
+| Decimal               | Infinito no periódico                      |
+| Ejemplos típicos      | $\pi, e, \sqrt{2}$                         |
+| Uso                   | Matemática avanzada, ciencias, computación |
+| Representación exacta | No (solo aproximación en computadoras)     |
+
+
+#### Limitación fundamental de las computadoras
+
+Cuando trabajan con números reales (especialmente irracionales).
+
+##### Un irracional como √2, π o e tiene infinitos decimales no periódicos.
+
+##### Una computadora solo puede almacenar una cantidad finita de bits para representar números
+
+Por eso no puede guardar todos los decimales, solo una aproximación.
+
+
+Representación en computadoras: 
+
+Usan un estándar llamado IEEE 754 (para punto flotante).
+
+Los números en punto flotante se representan como:
+
+```
+número = signo x mantisa x 2^exponente
+```
+
+1. 32 bits: float → ~7 dígitos decimales de precisión
+
+2. 64 bits: double → ~15-17 dígitos de precisión
+
+Pero más allá de eso, el número se redondea (se trunca o aproxima).
+
+```
+import math
+print(math.sqrt(2))  # Resultado
+
+```
+
+1.4142135623730951
+
+
+```
+
+x = math.sqrt(2)
+print(f"√2 ≈ {x:.20f}")
+
+```
+
+1.41421356237309514547
+
+
+En realidad:
+
+√2 = 1.414213562373095048801688724209...
+
+El valor mostrado está truncado a 17 cifras.
+
+Lo mismo sucede con π, e, φ, etc.
+
+
+Precisión: 
+
+##### Para representar infinita información decimal necesitarías memoria infinita — y eso es imposible
+
+incluso algunos números racionales simples como 1/3 no pueden representarse exactamente en binario:
+
+```
+print(1/3)  # Muestra 0.3333333333333333
+
+```
+
+En binario:
+
+##### 1/3 = 0.01010101010101… (infinito periódico) → también debe ser truncado.
+
+
+Consecuencias prácticas:
+
+1. Errores de redondeo:
+
+```
+print(0.1 + 0.2 == 0.3)  # FALSO
+
+```
+
+Porque:
+
+```
+print(0.1 + 0.2)  # 0.30000000000000004
+
+```
+
+
+2. Comparaciones inexactas: nunca compares números flotantes con ==.
+
+Mejor:
+
+```
+abs(x - y) < 1e-9
+
+```
+
+
+3. Acumulación de error: 
+
+En algoritmos que hacen miles de cálculos, los pequeños errores se suman.
+
+
+4. Limita precisión matemática: 
+
+No puedes usar Python (ni ninguna computadora estándar) para demostrar propiedades que requieran precisión infinita
+
+
+Cuando se requiera más precisión:
+
+| Requisito                          | Solución en Python                       |
+| ---------------------------------- | ---------------------------------------- |
+| Más dígitos (precisión arbitraria) | `decimal.Decimal` o `fractions.Fraction` |
+| Raíces exactas / símbolos          | Librerías simbólicas como `sympy`        |
+
+
+Con decimal:
+
+```
+from decimal import Decimal, getcontext
+
+getcontext().prec = 50  # Hasta 50 cifras decimales
+x = Decimal(2).sqrt()
+print(x)
+
+```
+
+1.41421356237309504880168872420969807856967187537694
+
+
+#### Valor limite 32 y 64 bits
+
+No depende de la RAM, sino de: 
+
+1. Cantidad de bits asignados a representar el número
+
+2. Formato estándar IEEE 754, que define:
+
+Signo (1 bit)
+
+Exponente (8 bits para 32-bit, 11 bits para 64-bit)
+
+Mantisa o significando (23 bits para 32-bit, 52 bits para 64-bit)
+
+
+Límites en IEEE 754 (estándar de punto flotante):
+
+| Tipo    | Nombre técnico    | Rango aproximado | Precisión decimal |
+| ------- | ----------------- | ---------------- | ----------------- |
+| 32 bits | `float` (C/Java)  | ±3.4 × 10³⁸      | \~7 dígitos       |
+| 64 bits | `double` (Python) | ±1.8 × 10³⁰⁸     | \~16-17 dígitos   |
+
+Si vas más allá de esos valores, ocurre overflow: se representa como inf.
+
+
+Python: 
+
+Usa internamente 64 bits (IEEE 754 double) para sus float.
+
+```
+print(1.79e308)  # OK, aún dentro del rango
+print(1.8e308)   # Overflow → inf
+
+```
+
+Out: 
+1.79e+308
+inf
+
+
+Limite de RAM 
+
+Si usás una librería como decimal (que permite más precisión decimal), el límite ya no es el hardware, sino:
+
+1. Tu memoria RAM
+
+2. Tiempo de cómputo
+
+
+```
+from decimal import Decimal, getcontext
+getcontext().prec = 1000000  # 1 millón de cifras decimales
+
+x = Decimal(2).sqrt()  # √2 con 1 millón de cifras
+
+```
+
+Puede ralentizar o bloquear el sistema si no tenés suficiente RAM o CPU disponible, pero no explota en el sentido de overflow.
+
+
+Rs:
+
+| Formato           | Bits       | Rango numérico       | Precisión            | Comentarios                   |
+| ----------------- | ---------- | -------------------- | -------------------- | ----------------------------- |
+| `float`           | 32         | ±3.4 × 10³⁸          | \~7 decimales        | Muy limitado                  |
+| `double`          | 64         | ±1.8 × 10³⁰⁸         | \~16-17 decimales    | Lo que usa Python por defecto |
+| `decimal.Decimal` | Arbitrario | Depende de RAM y CPU | Precisión controlada | Ideal para ciencia o finanzas |
+
+
+#### Consumo de memoria 
+
+##### Uso de memoria (x) vs Precisión decimal con decimal.Decimal (x)
+
+en bytes vs cifras decimales de precisión
+
+5000 vs 10000 -> / O(n), O(n^2)...
+
+50000 vs 50000
+
+(0.005) mb
+(0.05)
+
+
+Comportamiento: 
+
+A bajas precisiones (10, 100), el uso de memoria es bajo.
+
+A medida que exigís más precisión (como 50,000 cifras decimales), el uso crece rápidamente.
+
+La relación es aproximadamente lineal, pero cada cifra adicional también implica más costo de cómputo.
+
+
+Python puede manejar altas precisiones arbitrarias, pero el costo en RAM y tiempo se vuelve significativo.
+
+Si hacés cálculos científicos con muchos dígitos (cripto, finanzas, física de alta precisión), este tipo de información es clave para balancear exactitud y eficiencia.
+
+
+#### Precisión infinita en Matemáticas
+
+##### Se refiere a trabajar con valores exactos, sin redondeos, truncamientos ni errores de representación
+
+Sino que los números se representan y manipulan de manera simbólica o exacta, sin perder exactitud.
+
+Ej: 
+
+1. El número 1/3​ se mantiene como fracción, no como 0.3333...
+
+2. √2 se deja expresado como raíz cuadrada, no como 1.4142...
+
+3. π, e, ln(2) se tratan como símbolos exactos, no como aproximaciones
+
+
+Lograr precisión infinita
+
+1. Representaciones simbólicas (no numéricas)
+
+Los objetos matemáticos se mantienen en forma abstracta o algebraica:
+
+| Número         | Representación precisa | Comentario             |
+| -------------- | ---------------------- | ---------------------- |
+| 22/7 			 | fracción               | exacta, no decimal     |
+| √5   			 | símbolo radical        | exacto, no racional    |
+| π   	         | constante              | tratada simbólicamente |
+| ln(3)          | logaritmo              | exacto, no evaluado    |
+
+
+2. Usan estructuras como:
+
+Fracciones racionales: a/b​
+
+Números algebraicos: raíces de polinomios
+
+Sistemas de álgebra computacional: como Mathematica, SymPy, Maple
+
+
+Necesidad de precisión matemática:
+
+Para una exactitud completa
+
+1. Demostraciones formales:
+
+No podés depender de redondeos para demostrar un teorema
+
+
+2. Álgebra simbólica / simplificación:
+
+Como resolver x^2 - 2 = 0 => x = +-√2
+
+
+3. Cálculos con fracciones:
+
+1/3 + 1/6 = 1/2, sin Convertir a decimal
+
+
+4. Geometría exacta:
+
+Medidas que involucran raíces, como diagonales en polígonos regulares
+
+
+5. Teoría de números, criptografía, álgebra abstracta:
+
+Donde cada bit de precisión puede afectar la validez
+
+
+Programación:
+
+La mayoría de los lenguajes usan precisión finita (floats). 
+
+Pero hay alternativas:
+
+Python tiene:
+
+1. fractions.Fraction → trabaja con racionales exactos
+
+2. decimal.Decimal → alta precisión decimal controlada
+
+3. sympy → algebra simbólica como un matemático
+
+```
+from fractions import Fraction
+
+a = Fraction(1, 3)
+b = Fraction(1, 6)
+print(a + b)  # Resultado exacto: 1/2
+
+```
+ 
+La precisión infinita no implica infinitos recursos, sino trabajar con representaciones exactas y no aproximadas.
+
+Es esencial en la matemática pura, y muy útil en campos como simbología computacional, criptografía o teoría de números.
+
+En la práctica computacional, la precisión infinita se emula con librerías que operan con fracciones, radicales, expresiones simbólicas o enteros arbitrarios
+
+
+#### No precisión infinita 
+
+1. En Matemáticas:
+
+Cuando trabajamos con modelos aproximados del mundo real, la precisión infinita no es útil ni necesaria porque:
+
+Los datos del mundo real ya son imprecisos (mediciones, sensores, estadísticas).
+
+El objetivo es una respuesta útil y razonable, no exacta.
+
+
+Ej: 
+
+Ingeniería (longitudes, cargas)
+
+Física numérica (simulaciones)
+
+Estadística (medias, varianzas)
+
+Economía (modelos predictivos)
+
+
+2. Programación Numérica
+
+La mayoría del software no necesita representar números simbólicamente. 
+
+En cambio, se usa precisión finita (floats o doubles) por estas razones:
+
+| Ventaja            | Por qué es suficiente                             |
+| ------------------ | ------------------------------------------------- |
+| Rapidez            | Operaciones en hardware son rápidas y optimizadas |
+| Eficiencia         | Consume menos memoria y tiempo                    |
+| Error controlado   | En muchos algoritmos, se puede tolerar error ≤ ε  |
+| Redondeo aceptable | En gráficos, ML, estadísticas: 1.00001 ≈ 1        |
+
+```
+x = 1.0
+y = 3.0
+print(x / y)  # → 0.3333333333333333 (suficientemente preciso)
+
+```
+
+
+Dónde la precisión infinita es innecesaria o contraproducente
+
+| Situación                  | Por qué evitarla                                  |
+| -------------------------- | ------------------------------------------------- |
+| Gráficos o visualizaciones | Un pixel no necesita 50 cifras de π               |
+| Machine Learning           | Modelos toleran e incluso requieren ruido         |
+| Juegos / Simulaciones      | Se privilegia fluidez y aproximación visual       |
+| Big Data                   | Costo de cómputo se dispara con exactitud extrema |
+| Sistemas embebidos         | Tienen memoria y CPU limitados                    |
+
+
+Usos: 
+
+Usás precisión finita cuando:
+
+1. Hay tolerancia aceptable al error (por ejemplo, 0.001)
+
+2. Estás optimizando velocidad o memoria
+
+3. Estás en una etapa exploratoria (prototipo, análisis)
+
+
+Y elegís precisión infinita cuando:
+
+1. Se requiere exactitud matemática
+
+2. Los resultados alimentan otra prueba simbólica
+
+3. Hay riesgo de acumulación de error en pasos sucesivos
+
+
+Estrategia:
+
+Define el dominio del problema: ¿es físico, abstracto, lógico?
+
+Mide la tolerancia al error: ¿cuánto importa una diferencia de 0.00001?
+
+Evalúa el costo: ¿vale la pena gastar 100x más tiempo por 5 cifras más?
+
+
+#### Intuición vs Formalismo
+
+Intuición:
+
+Capacidad humana de razonar, visualizar o anticipar propiedades matemáticas sin necesariamente formalizarlas de inmediato.
+
+
+Es geometría visual, sentido numérico, lógica natural.
+
+Los griegos antiguos confiaban mucho en la intuición (por ejemplo, el teorema de Pitágoras era visible).
+
+"La intuición guía, pero no prueba."
+
+
+Formalismo: 
+
+Marco moderno y riguroso de las matemáticas: sistemas axiomáticos, pruebas lógicas, definiciones exactas.
+
+
+Aparece con Dedekind, Cantor, Hilbert y el desarrollo de los números reales, teoría de conjuntos, etc.
+
+Toda noción informal es reemplazada por una construcción lógica.
+
+La precisión formal prueba, pero no siempre guía.
+
+
+intuición vs. precisión infinita
+
+| Ejemplo                                          | Choque                                                                                             |
+| ------------------------------------------------ | -------------------------------------------------------------------------------------------------- |
+| √2 no racional                           		   | Los pitagóricos colapsan al descubrirlo (rompe su intuición)                                       |
+| Infinitésimos                                    | Útiles intuitivamente en cálculo, pero no tenían base rigurosa (hasta que surgió el análisis real) |
+| Paradojas del infinito (Cantor)                  | Chocan con la intuición finita humana                                                              |
+| Geometría no euclidiana                          | Contra la "única geometría posible" que intuía Euclides                                            |
+| Funciones discontinuas                           | Existían pero eran “patológicas” para la intuición del siglo XIX                                   |
+| Inteligencia artificial simbólica vs estadística | Un reflejo moderno del mismo dilema                                                                |
+
+
+Actualidad: 
+
+| Intuición matemática                      | Precisión infinita               |
+| ----------------------------------------- | -------------------------------- |
+| Genera conjeturas, ideas, visualizaciones | Las valida o refuta              |
+| Inspira descubrimientos                   | Estructura conocimiento riguroso |
+| Ayuda a enseñar y comunicar               | Fundamenta la verdad matemática  |
+
+
+Matemáticos como Terence Tao, Cédric Villani o Maryam Mirzakhani combinan ambos enfoques.
+
+En investigación: se intuye, se formaliza, se demuestra.
+
+En enseñanza: primero la intuición, luego el rigor.
+
+
+#### Descubrimientos impulsados por intuición matemática
+
+Fueron guiados por imaginación, visualización o experimentación informal antes de existir una teoría formal detrás
+
+| Descubrimiento                              | Intuición detrás                                                          |
+| ------------------------------------------- | ------------------------------------------------------------------------- |
+| Geometría de Euclides (≈ 300 a.C.)      	  | Espacio como lo percibimos: rectas, puntos, triángulos                    |
+| Teorema de Pitágoras                 		  | Relación visual entre lados de triángulos rectángulos                     |
+| Cálculo infinitesimal (Newton, Leibniz) 	  | Movimiento y cambio continuo: áreas, velocidades                          |
+| Números complejos                           | Raíz de -1 parecía absurda, pero 'funcionaba' en soluciones de ecuaciones |
+| Cintas de Möbius y superficies          	  | Intuiciones topológicas que desafiaban la geometría ordinaria             |
+| Fractales y geometría caótica          	  | Visualización antes que definición formal (Mandelbrot)                    |
+| Teoría de grafos (Euler)                	  | Caminos en puentes de Königsberg: problema visual-resolutivo              |
+| Conjetura de Goldbach                   	  | Simple observación empírica sobre suma de primos                          |
+| Números primos gemelos                 	  | Basada en patrones observados, aún sin demostración formal                |
+
+En muchos casos, la intuición encontró algo valioso antes de que pudiera probarse.
+
+
+#### Descubrimientos impulsados
+
+Estos avances solo fueron posibles gracias a una estructura lógica precisa, muchas veces en contra de la intuición.
+
+| Descubrimiento                                        | Por qué fue formalismo puro                                             |
+| ----------------------------------------------------- | ----------------------------------------------------------------------- |
+|   Teoría de conjuntos (Cantor)                        | Infinito tratado con precisión y jerarquías                             |
+|   Números reales (Dedekind, Weierstrass)              | Se definieron con cortes, sucesiones, sin depender de intuición         |
+|   Teorema de Gödel (incompletitud)                    | Límite de la lógica misma; prueba puramente formal                      |
+|   Construcción axiomática de los números              | Desde 0 → naturales → enteros → racionales → reales → complejos         |
+|   Axiomas de Zermelo-Fraenkel (ZF, ZFC)               | Base para toda matemática moderna, evitando paradojas                   |
+|   Topología general                                   | Espacios sin necesidad de coordenadas ni medida                         |
+|   Teoremas de existencia (como el de Banach-Tarski)   | Contraintuitivos, pero formalmente válidos                              |
+|   Teoremas de la computabilidad (Turing, Church)      | Qué puede o no puede hacer una máquina matemática                       |
+|   Demostraciones asistidas por computadoras         	| Cierre formal de conjeturas largamente intuidas (ej. 4 colores, Kepler) |
+
+Sin precisión formal, muchos de estos no solo serían imposibles de probar: ni siquiera serían comprensibles
+
+
+| Intuición matemática         | Formalismo matemático           |
+| ---------------------------- | ------------------------------- |
+| Descubre, explora, visualiza | Define, prueba, garantiza       |
+| Puede errar, pero inspira    | Puede ser árido, pero es sólido |
+| Ideal para hipótesis         | Ideal para teoremas             |
+
+
+Ej: 
+
+Conjetura de Fermat:
+
+Intuición: Fermat la escribe en 1637 como una observación "intuitiva".
+
+Formalismo: Tarda más de 350 años en probarse, finalmente con herramientas de aritmética algebraica, curvas elípticas y teoría de Galois (Wiles, 1994).
+
+
+### Números Reales
+
+
+
+### Números Complejos
+
+
+
+#### Redondeo 
+
+##### Su uso indebido puede llevar a errores acumulativos, resultados engañosos o pérdidas de precisión críticas.
+
+1. Recomendado: 
+
+Al presentar resultados al usuario:
+
+En informes, gráficos o visualizaciones.
+
+Para mejorar la legibilidad o comunicación
+
+```
+round(3.1415926535, 2)  # → 3.14
+
+```
+
+Solo importa una precisión visual.
+
+
+En cálculos financieros con unidades monetarias:
+
+Representar valores en centavos o una moneda fija.
+
+```
+round(total_amount, 2)
+
+```
+
+Una operación como 23.555 + 10.005 en dólares no puede exceder 2 decimales.
+
+
+Comparar valores con tolerancia
+
+Cuando dos números no necesitan coincidencia exacta, sino una aproximación aceptable.
+    
+```
+abs(a - b) < 1e-9  # tolerancia de error
+
+``` 
+    
+
+Para evitar ruido numérico:
+
+En datos experimentales o sensores con mucha fluctuación.
+
+Redondear puede limpiar el dato sin afectar su significado práctico.
+
+
+
+En límites de almacenamiento o impresión
+
+Como en dispositivos con poca memoria o interfaces de usuario limitadas.
+
+
+2. No redondear
+
+Durante cálculos intermedios
+
+Nunca redondees en medio de una operación larga
+
+```
+result = round(a + b, 2) * c  # error acumulado
+
+```
+
+Redondear solo al final del cálculo para mantener la precisión.
+
+
+En algoritmos numéricos sensibles:
+
+Como en integración numérica, simulaciones físicas, machine learning, etc.
+
+Pequeños errores acumulados pueden llevar a resultados muy alejados del correcto.
+
+
+Al almacenar datos científicos o de sensores:
+
+El redondeo puede hacer que pierdas información significativa para análisis futuros
+    
+
+Cuando se requiere exactitud estructural:
+
+Ejemplo: coordenadas de vértices, fechas, claves, identificadores únicos.
+
+Redondear puede hacer que dos cosas distintas parezcan iguales, o viceversa.
+
+
+En comparaciones lógicas o condiciones críticas
+
+`if round(a, 2) == round(b, 2)`: puede fallar por redondeos distintos.
+
+Mejor: `abs(a - b) < tolerancia`
+    
+    
+En práctica:
+
+| Situación                      | ¿Redondear? | Notas                          |
+| ------------------------------ | ----------- | ------------------------------ |
+| Visualizar al usuario          | ✅           | Usa `round()` o `format()`     |
+| Guardar en base de datos       | ❌           | Guarda con precisión total     |
+| Cálculos financieros           | ✅           | Fija a 2 decimales             |
+| Comparaciones                  | ⚠️          | Usa tolerancia, no `==`        |
+| Calcular físicas o científicas | ❌           | Mantén precisión máxima        |
+| Mostrar porcentajes o tasas    | ✅           | 1 o 2 decimales según contexto |
+
+
+Redondear es una herramienta para la presentación, no para el cálculo.
+
+Aplica al final del proceso, no durante.
+
+
+#### Precisión infinita en la práctica
+
+Precisión arbitraria en programación
+
+Capacidad de representar números sin límite fijo de dígitos, más allá del estándar de 32 o 64 bits
+
+
+En matemáticas:
+
+Se trabaja idealmente con infinitos decimales: π, e, √2, fracciones exactas, etc.
+
+El número nunca se trunca
+
+
+Programación:
+
+Usás tipos como Decimal o Fraction en Python, o BigInteger en Java, para evitar pérdidas de precisión.
+
+El número crece dinámicamente en memoria según lo necesites.
+
+
+1. Recomendable:
+
+álgebra simbólica o exacta:
+
+Ej: resolver ecuaciones, derivar, simplificar fracciones, trabajar con números racionales exactos.
+
+```
+from fractions import Fraction
+x = Fraction(1, 3) + Fraction(1, 6)  # resultado exacto: 1/2
+
+```
+
+
+Cálculos financieros o contables sensibles
+
+Para evitar errores de redondeo acumulativo.
+
+```
+from decimal import Decimal
+x = Decimal('0.10') + Decimal('0.20')  # 0.30 exacto
+
+```
+
+
+Pruebas matemáticas formales:
+
+Cuando el objetivo es demostrar o verificar teoremas con software (ej: Lean, Coq).
+
+
+criptografía o teoría de números:
+
+Se usan enteros enormes (miles de bits), imposibles con enteros estándar.
+
+
+En algoritmos donde los errores de redondeo destruyen la solución
+
+Ej: cálculo de determinantes pequeños, interpolación polinómica, etc.
+
+
+Simulaciones de alta precisión científica
+
+Como física cuántica o modelos astronómicos a gran escala.
+
+
+2. No recomendable:
+
+En procesamiento numérico general o machine learning:
+
+Requiere muchísima más memoria y tiempo.
+
+Los errores son aceptables dentro de un margen (flotante es suficiente).
+
+
+Videojuegos, simulaciones visuales o gráficos
+
+Precisión flotante (32 o 64 bits) es más que suficiente.
+
+Prioridad: rendimiento en GPU, no exactitud extrema.
+
+
+Estadísticas y análisis de datos
+
+Se trabaja con aproximaciones y tendencias.
+
+La precisión infinita no cambia la conclusión estadística
+    
+
+Dispositivos con recursos limitados (IoT, móviles)
+
+El uso de Decimal o BigInt es muy costoso computacionalmente
+    
+
+Cuando el número de cifras significativas ya excede la tolerancia del problema
+
+Si medís la temperatura con 2 decimales, ¿de qué sirve calcular con 30?
+
+
+En practica:
+
+Usá precisión infinita cuando el resultado intermedio afecta el resultado final de forma crítica o exacta.
+
+Evitala cuando el resultado final puede tolerar errores minúsculos o la velocidad sea prioridad.
+    
+    
+| Escenario                      | ¿Precisión infinita? | Justificación                  |
+| ------------------------------ | -------------------- | ------------------------------ |
+| Álgebra simbólica              | ✅                    | Requiere exactitud             |
+| Cálculo financiero delicado    | ✅                    | Evita errores acumulativos     |
+| Entrenamiento de modelos ML    | ❌                    | El error numérico es tolerable |
+| Juego 3D                       | ❌                    | Se prioriza rendimiento        |
+| Verificación formal matemática | ✅                    | No se admite error             |
+| Operaciones bancarias comunes  | ⚠️ Opcional          | Depende del lenguaje y el caso |
+| Gráficos o UI de usuario       | ❌                    | No influye en experiencia      |
 
     
 
