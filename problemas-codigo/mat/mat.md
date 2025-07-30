@@ -5252,6 +5252,8 @@ print(lcm(4, 6))  # Output: 12
 
 ```
 
+
+
 ## RS Cociente, par, impar, multiplo, divisor, primo, mcd (max div) y mcm (min multiplo), consecutivo, raíz cuadrada, potencia/expon; tipos num o conjunt
 
 1. mcd(60, 48) = producto de primos comunes con el menor exponente: 2^2*3 = 12, mayor que divide a todos, resto 0. 
@@ -5456,9 +5458,9 @@ Ej:
 
 7 → 1 dígito
 
-4747 → 2 dígitos
+47 → 2 dígitos
 
-10351035 → 4 dígitos
+1035 → 4 dígitos
 
 
 Props:
@@ -5550,7 +5552,7 @@ Lo mismo vale para 3.
 Si S(n) es la suma de los dígitos de n, entonces:
 
 ```
-n ≡ S(n) mod9
+n ≡ S(n) mod 9
 
 ```
 
