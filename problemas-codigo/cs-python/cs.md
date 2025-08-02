@@ -2801,6 +2801,350 @@ Escriba un programa que solicite al usuario que introduzca un entero e imprima d
 Si no existe dicho par de enteros, debería imprimir un mensaje indicando tal efecto.
 
 
+1. 
+
+```
+def pwr_input():
+    a = int(input("Introduce un número entero: "))
+    encontrado = False
+
+    for pwr in range(2, 6):  # pwr desde 2 hasta 5
+        root = 0
+        while root ** pwr < abs(a):  # usar abs en caso de negativos
+            if root ** pwr == abs(a):
+                if a < 0 and pwr % 2 == 0:
+                    break  # no hay raíz par de número negativo en enteros reales
+            if a < 0:
+                root = -root  # corregimos el signo
+            print(f"root = {root}, pwr = {pwr}")
+            encontrado = True
+            break
+        root += 1
+
+    if not encontrado:
+        print("No existen potencia y raíz enteras que satisfagan la condición.")
+
+```
+
+1. User introduce entero pos o neg
+
+Se guarda en la variable a.
+
+
+2. encontrado = False
+
+Variable bandera que se usará para indicar si se encontró un par (root, pwr) válido.
+
+Se inicializa en False.
+
+
+3. `for pwr in range(2, 6):`
+
+Bucle que itera sobre los posibles valores de la potencia pwr.
+
+El rango range(2, 6) recorre los valores 2, 3, 4, 5.
+
+Estos son los valores permitidos según la condición 1 < pwr < 6.
+
+
+4. `root = 0`
+
+Para cada valor de pwr, empezamos a probar posibles valores de root desde 0.
+
+
+5. `while root ** pwr < abs(a)`:
+
+Mientras la potencia de root sea menor que abs(a), seguimos intentando.
+
+Usamos abs(a) (valor absoluto de a) porque no podemos elevar a potencia par un número negativo con enteros reales.
+
+ejemplo: (-3)**2 == 9, pero no hay un número real tal que x**2 == -9
+
+
+6. `if root ** pwr == abs(a)`:
+
+Si encontramos un root tal que su potencia pwr es exactamente igual a abs(a), puede ser solución.
+
+
+7. 
+
+```
+if a < 0 and pwr % 2 == 0:
+	break
+```
+
+Si a era negativo y pwr es par, entonces no hay solución con enteros reales.
+
+Ejemplo: no existe entero x tal que x**2 = -9. 
+
+Por eso salimos del bucle con break
+
+
+8. 
+
+```
+if a < 0:
+	root = -root
+```
+
+Si a es negativo y pwr es impar, la solución existe con root negativo.
+
+Corregimos el signo para reflejar eso.
+
+Ejemplo: si abs(a) = 27 y pwr = 3, root = 3; entonces a = -27 implica root = -3
+
+
+9. 
+
+```
+print(f"root = {root}, pwr = {pwr}")
+encontrado = True
+break
+```
+
+Imprimimos el par encontrado.
+
+Marcamos que sí se encontró una solución.
+
+Salimos del bucle while con break, ya que no necesitamos buscar más raíces para este pwr.
+
+
+10. 
+
+```
+root += 1
+```
+
+Incrementamos root en 1 para seguir probando el siguiente candidato.
+
+
+11. 
+
+```
+if not encontrado:
+    print("No existen potencia y raíz enteras que satisfagan la condición.")
+```
+
+Si después de probar todos los pwr y todos los posibles root no se encontró ningún par válido, lo informamos.
+
+
+Ej: 
+
+Introduce un número entero: 27
+
+root = 3, pwr = 3
+
+
+Introduce un número entero: -16
+
+No existen potencia y raíz enteras que satisfagan la condición.
+
+
+2. Optimizada
+
+```
+a = int(input("Introduce un número entero: "))
+
+for pwr in range(2, 6):
+    root = round(abs(a) ** (1 / pwr))
+    if root ** pwr == abs(a):
+        if a < 0 and pwr % 2 == 0:
+            continue  # raíz par de número negativo no es válida
+        root = -root if a < 0 else root
+        print(f"root = {root}, pwr = {pwr}")
+        break
+else:
+    print("No existen potencia y raíz enteras que satisfagan la condición.")
+
+```
+
+
+1. Bucle sobre pwr
+
+```
+for pwr in range(2, 6):
+```
+
+Recorremos las potencias desde 2 hasta 5 (range(2, 6)).
+
+Esto cumple con la condición: 1 < pwr < 6.
+
+
+2. Cálculo de la raíz candidata
+
+```
+root = round(abs(a) ** (1 / pwr))
+```
+
+Calculamos la raíz pwr-ésima de |a| (valor absoluto de a) usando potencias fraccionarias.
+
+Usamos round() para redondear al entero más cercano, porque una raíz n-ésima de un número debe ser un entero para que root ** pwr == a.
+
+Por ejemplo, si a = 27 y pwr = 3, entonces abs(a)**(1/3) = 3.0 → root = 3.
+
+
+4. Verificación exacta
+
+`if root ** pwr == abs(a)`
+
+Verificamos que al elevar root a la pwr, se obtiene exactamente abs(a).
+
+Esto es necesario porque la operación ** (1/pwr) puede tener errores de redondeo, y no siempre produce un resultado exacto (por ejemplo, 8**(1/3) puede dar 1.999999999 en vez de 2.0).
+
+
+5. Rechazo de raíces pares de negativos
+
+```
+if a < 0 and pwr % 2 == 0:
+    continue
+
+```
+
+Si el número original a es negativo y la potencia pwr es par, entonces no existe un root real que cumpla la condición.
+
+Por ejemplo: (-4) ** 2 = 16, pero no existe un x entero tal que x ** 2 == -16.
+
+En esos casos, descartamos esa combinación de pwr.
+
+
+6. Corrección de signo
+
+```
+root = -root if a < 0 else root
+```
+
+Si a es negativo y pwr es impar, podemos tomar -root como la raíz válida.
+
+Ejemplo: (-3) ** 3 = -27
+
+Así, ajustamos el signo del root.
+
+
+7. Mostrar resultado y salir del bucle
+
+```
+print(f"root = {root}, pwr = {pwr}")
+break
+```
+
+Si encontramos un par (root, pwr) válido, lo imprimimos.
+
+Salimos del bucle porque ya no necesitamos seguir buscando.
+
+
+8. Caso en que no se encuentra ningún par
+
+```
+else:
+    print("No existen potencia y raíz enteras que satisfagan la condición.")
+```
+
+Este else está ligado al for.
+
+Solo se ejecuta si ninguna iteración del for encontró solución (es decir, no se hizo break).
+
+Imprimimos un mensaje indicando que no existe un par válido.
+
+
+Ej: 
+
+Introduce un número entero: 81
+
+root = 3, pwr = 4
+
+
+Introduce un número entero: -27
+
+root = -3, pwr = 3
+
+
+Introduce un número entero: -16
+
+No existen potencia y raíz enteras que satisfagan la condición.
+
+
+Alters: 
+
+3. math.isclose para tolerar errores de redondeo
+
+con potencias fraccionarias como x ** (1/pwr), pueden aparecer errores flotantes (por ejemplo, 64**(1/3) puede dar 3.999999... en vez de 4.0). 
+
+Para evitar fallos falsos, podés usar math.isclose:
+
+```
+import math
+
+a = int(input("Introduce un número entero: "))
+
+for pwr in range(2, 6):
+    root = round(abs(a) ** (1 / pwr))
+    if math.isclose(root ** pwr, abs(a), rel_tol=1e-9):
+        if a < 0 and pwr % 2 == 0:
+            continue
+        root = -root if a < 0 else root
+        print(f"root = {root}, pwr = {pwr}")
+        break
+else:
+    print("No existen potencia y raíz enteras que satisfagan la condición.")
+
+```
+
+
+4. Evitar operaciones con flotantes (cálculo 100% con enteros)
+
+evita flotantes totalmente y usa fuerza bruta controlada (muy rápida para rangos pequeños):
+
+```
+a = int(input("Introduce un número entero: "))
+limite = abs(a)
+
+for pwr in range(2, 6):
+    for root in range(1, limite + 1):
+        potencia = root ** pwr
+        if potencia == limite:
+            if a < 0 and pwr % 2 == 0:
+                break
+            root = -root if a < 0 else root
+            print(f"root = {root}, pwr = {pwr}")
+            exit()
+        if potencia > limite:
+            break
+print("No existen potencia y raíz enteras que satisfagan la condición.")
+
+```
+
+Precisión total sin errores de redondeo.
+
+Muy rápido para |a| < 10^6
+
+
+5. Sympy 
+
+```
+from sympy import integer_nthroot
+
+a = int(input("Introduce un número entero: "))
+
+for pwr in range(2, 6):
+    root, exact = integer_nthroot(abs(a), pwr)
+    if exact:
+        if a < 0 and pwr % 2 == 0:
+            continue
+        root = -root if a < 0 else root
+        print(f"root = {root}, pwr = {pwr}")
+        break
+else:
+    print("No existen potencia y raíz enteras que satisfagan la condición.")
+
+```
+
+integer_nthroot(n, k) devuelve (r, True) si r ** k == n.
+
+Más rápido y confiable que potencias flotantes.
+
+Evita todos los errores numéricos.
+
+
 ### Ejercicio:
 
 Escribe un programa que imprima la suma de los números primos mayores que 2 y menores que 1000.
@@ -2808,8 +3152,504 @@ Escribe un programa que imprima la suma de los números primos mayores que 2 y m
 Sugerencia: probablemente quieras tener un bucle que sea una prueba de primalidad anidada dentro de un bucle que itere sobre los enteros impares entre 3 y 999.
 
 
+1. 
+
+```
+sum_primes = 0
+for i in range(3, 1000, 2):  # impares desde 3 hasta 999
+    es_primo = True
+    for j in range(3, int(i**0.5) + 1, 2):  # divisores impares desde 3 hasta raíz de i
+        if i % j == 0:
+            es_primo = False
+            break
+    if es_primo:
+        sum_primes += i
+
+print(sum_primes)
+
+```
+
+Suma de los números primos entre 3 y 999.
+
+1. `sum_primes = 0`:
+
+Inicializa un acumulador (sum_primes) en 0 para guardar la suma total de primos encontrados.
+
+
+2. `for i in range(3, 1000, 2)`:
+
+Recorre los números impares desde 3 hasta 999.
+
+range(3, 1000, 2) significa:
+
+empieza en 3,
+
+llega hasta 999 (excluye 1000),
+
+de dos en dos (solo impares).
+
+¿Por qué solo impares? 
+
+Porque todos los números pares mayores que 2 no pueden ser primos.
+
+
+3. `es_primo = True`:
+
+Se asume inicialmente que el número i es primo.
+
+Esta variable es una bandera que se pondrá en False si encontramos un divisor de i.
+
+
+4. `for j in range(3, int(i**0.5) + 1, 2)`:
+
+Este segundo bucle busca posibles divisores de i.
+
+j toma valores impares desde 3 hasta √i (redondeado hacia arriba).
+
+¿Por qué hasta √i? Porque si i no tiene divisores hasta su raíz cuadrada, no los tendrá más adelante.
+
+¿Por qué solo impares? Porque ya descartamos los pares.
+
+
+5. 
+
+```
+if i % j == 0:
+	es_primo = False
+	break
+```
+
+Si i es divisible por j (el resto da 0), entonces no es primo.
+
+Se pone es_primo = False y se sale del bucle con break
+
+
+6. 
+
+```
+if es_primo:
+	sum_primes += i
+```
+
+Después de comprobar todos los posibles divisores:
+
+Si no se encontró ninguno (es_primo sigue en True), entonces i es primo.
+
+Se suma i al acumulador sum_primes
+
+
+7. `print(sum_primes)`
+
+
+Imprime la suma total de los primos encontrados. 
+
+Este método es eficiente para rangos pequeños como del 3 al 999.
+
+Evita divisiones innecesarias (por ejemplo, ni revisa si un número es divisible por 2).    
+
+
+Alter:
+
+2. 
+
+No mejora el rendimiento, pero organiza el código
+
+```
+def es_primo(n):
+    if n < 2:
+        return False
+    if n == 2:
+        return True
+    if n % 2 == 0:
+        return False
+    for i in range(3, int(n ** 0.5) + 1, 2):
+        if n % i == 0:
+            return False
+    return True
+
+sum_primes = sum(i for i in range(3, 1000, 2) if es_primo(i))
+print(sum_primes)
+
+```
+
+
+3. Criba de Eratóstenes
+
+Eficiente si quisieras encontrar todos los primos hasta un número grande (como 1 millón). 
+
+Para hasta 1000, es solo marginalmente más rápido, pero muy elegante
+
+```
+def criba(n):
+    primos = [True] * n
+    primos[0:2] = [False, False]
+    for i in range(2, int(n**0.5) + 1):
+        if primos[i]:
+            for j in range(i*i, n, i):
+                primos[j] = False
+    return [i for i in range(3, n) if primos[i]]
+
+print(sum(criba(1000)))
+
+```
+
+Este método marca múltiplos de cada número como no primos.
+
+Luego solo suma los primos mayores que 2 (i in range(3, n)).
+
+
+4. sympy para listas de primos (si puedes usar librerías externas)
+
+Entorno con sympy instalado (como Jupyter o scripts personales):
+
+```
+from sympy import primerange
+
+print(sum(primerange(3, 1000)))  # solo suma primos entre 3 y 999
+
+```
+
+primerange(a, b) da todos los primos en `[a, b)` eficientemente.
+
+Muy rápido y legible, pero depende de una librería externa.
+
+
 ## Soluciones aproximadas y Bisection Search
 
+Imagina que alguien te pide escribir un programa que imprima la raíz cuadrada de cualquier número no negativo
+
+Probablemente deberías empezar diciendo que necesitas un enunciado del problema más preciso
+
+Por ejemplo, ¿qué debería hacer el programa si se le pide que encuentre la raíz cuadrada de 2?
+
+La raíz cuadrada de 2 no es un número racional
+
+Esto significa que no hay forma de representar con precisión su valor como una cadena finita de dígitos (o como un número de coma flotante), por lo que el problema, tal como se planteó inicialmente, no puede resolverse.
+
+##### Lo que un programa puede hacer es encontrar una aproximación a la raíz cuadrada; es decir, una solución lo suficientemente cercana a la raíz cuadrada real como para ser útil. 
+
+Volveremos a este tema con bastante detalle más adelante en el libro. 
+ 
+##### Pero por ahora, pensemos en "suficientemente cercana" como una solución que se encuentra dentro de una constante:
+
+Llamémosla `épsilon`, de la solución real.
 
 
+#### Código de aprox raíz cuadrada de x.
+
+```
+epsilon = 0.01
+step = epsilon**2
+num_guesses = 0
+ans = 0.0
+while abs(ans**2 - x) >= epsilon and ans <= x:
+	ans += step
+	num_guesses += 1
+print('number of guesses =', num_guesses)
+if abs(ans**2 - x) >= epsilon:
+	print('Falied on square root of', x)
+else: 
+	print(ans, 'is close to square root of', x)
+
+```
+
+##### Usamos una enumeración exhaustiva. 
+
+no tiene nada en común con la forma de hallar raíces cuadradas con un lápiz que quizás hayas aprendido en la secundaria. 
+
+A menudo, la mejor manera de de resolver un problema con una computadora es muy diferente a cómo se abordaría el problema a mano.
+
+Si x es 25, el código imprimirá
+
+```
+number of guesses = 49990
+4.999000000001688 is close to square root of 25
+```
+
+¿Qué crees que ocurrirá si fijamos x = 0,25? ¿Encontrará una raíz cercana a 0,5? No. Lamentablemente, informará
+
+```
+number of guesses = 2501
+Failed on square root of 0.25
+```
+
+##### La enumeración exhaustiva es una técnica de búsqueda que solo funciona si el conjunto de valores buscados incluye la respuesta.
+
+En este caso, enumeramos los valores entre 0 y el valor de x.
+
+Cuando x está entre 0 y 1, la raíz cuadrada de x no se encuentra en este intervalo. 
+
+Una forma de solucionar esto es cambiar el segundo operando de y en la primera línea del bucle while para obtener
+
+```
+while abs(ans**2 - x) >= epsilon and ans*ans <= x:
+```
+
+Cuando ejecutamos nuestro código después de este cambio, informa que
+
+```
+0.48989999999996237 is close to square root of 0.25
+```
+
+##### Ahora, pensemos en cuánto tardará el programa en ejecutarse. 
+
+El número de iteraciones depende de qué tan cerca esté la respuesta de nuestro punto de partida, 0, y del tamaño de los pasos. 
+
+##### En términos generales, el programa ejecutará el bucle while como máximo x veces por paso. 
+
+Probemos el código con un valor mayor, por ejemplo, x = 123456. Se ejecutará durante un tiempo considerable y luego imprimirá.
+
+```
+number of guesses = 3513631
+Failed on square root of 123456
+```
+
+
+# 10. Clases y programación orientada a objetos
+
+##### Para organizar programas en torno a abstracciones de datos.
+
+Las clases se pueden usar de muchas maneras diferentes.
+
+Hacemos uso en el contexto de la programación orientada a objetos.
+
+##### La clave de OOP es considerar los objetos como conjuntos de datos y los métodos que operan sobre ellos.
+
+Las ideas que subyacen a la programación orientada a objetos tienen alrededor de 50 años de antigüedad y han sido ampliamente aceptadas y practicadas durante los últimos 30 años aproximadamente.
+
+##### A mediados de la década de 1970, se empezaron a escribir artículos que explicaban los beneficios de este enfoque de programación. 
+
+Casi al mismo tiempo, los lenguajes de programación SmallTalk (en Xerox PARC) y CLU (en el MIT) proporcionaron apoyo lingüístico a estas ideas. 
+
+##### Pero no fue hasta la llegada de C++ y Java que la programación orientada a objetos realmente despegó en la práctica. 
+
+##### En la Sección 2.2.1 dijimos: «Los objetos son los elementos fundamentales que manipulan los programas Python. 
+
+##### Cada objeto tiene un tipo que define las acciones que los programas pueden realizar con él».
+
+Desde el Capítulo 2, nos hemos basado en tipos predefinidos como float y str, y los métodos asociados a ellos.
+
+Pero, al igual que los diseñadores de un lenguaje de programación solo pueden incorporar una pequeña fracción de las funciones útiles, también pueden incorporar una pequeña fracción de los tipos útiles.
+
+##### Hemos visto un mecanismo que permite a los programadores definir nuevas funciones; ahora veremos un mecanismo que permite a los programadores definir nuevos tipos.
+
+
+## 10.1 Abstract Data Types y Classes
+
+El concepto de un tipo de dato abstracto es bastante simple.
+
+##### Un tipo de dato abstracto es un conjunto de objetos y las operaciones que se realizan sobre ellos. 
+
+Estos se enlazan para que los programadores puedan pasar un objeto de una parte del programa a otra, proporcionando así acceso no solo a los atributos de datos del objeto, sino también a las operaciones que facilitan su manipulación.
+
+##### Las especificaciones de estas operaciones definen una interfaz entre el tipo de dato abstracto y el resto del programa.
+
+##### La interfaz define el comportamiento de las operaciones: qué hacen, pero no cómo lo hacen.
+
+##### Por lo tanto, la interfaz proporciona una barrera de abstracción que aísla el resto del programa de las estructuras de datos, los algoritmos y el código necesarios para la realización de la abstracción del tipo.
+
+##### La programación consiste en gestionar la complejidad de forma que facilite el cambio. 
+
+##### Existen dos mecanismos eficaces para lograrlo: la descomposición y la abstracción.
+
+##### La descomposición crea estructura en un programa, mientras que la abstracción suprime los detalles. 
+
+##### La clave está en suprimir los detalles apropiados.
+
+Aquí es donde la abstracción de datos da en el blanco.
+
+Podemos crear tipos específicos de dominio que proporcionen una abstracción conveniente
+
+Idealmente, estos tipos capturan conceptos que serán relevantes durante la vida útil de un programa.
+
+##### Si comenzamos el proceso de programación ideando tipos que serán relevantes meses e incluso décadas después, tenemos una gran ventaja en el mantenimiento de ese software.
+
+Hemos utilizado tipos de datos abstractos (sin llamarlos así) a lo largo de este libro.
+
+Hemos escrito programas utilizando enteros, listas, números de punto flotante, cadenas y diccionarios sin pensar en cómo podrían implementarse. 
+
+Parafraseando al Molière's Bourgeois Gentilhomme, “Por mi culpa, había más decentes páginas que utilizábamos TAD, sin que nos sacáramos”.
+
+En Python, implementamos abstracciones de datos mediante clases. 
+
+Cada definición de clase comienza con la palabra reservada clase seguida de
+
+
+#### Código definición de una clase
+
+```
+class Toy(object):
+	def __init__(self):
+		self._elems = []
+	def add(self, new_elems):
+		"""new_elems is a list"""
+		self._elems += new_elems
+	def size(self):
+		return len(self._elems)
+```
+
+La primera línea indica que Toy es una subclase de object.
+
+Por ahora, ignoremos qué significa ser una subclase. Lo abordaremos en breve.
+
+##### Una definición de clase crea un objeto de tipo type y asocia con ese objeto de clase un conjunto de objetos llamados atributos.
+
+##### En este ejemplo, los tres atributos asociados con la clase son __init__, add y size. 
+
+##### Cada uno es de tipo function. 
+
+Por consiguiente, el código:
+
+```
+print(type(Toy))
+print(type(Toy.__init__), type(Toy.add), type(Toy.size))
+```
+
+Out:
+
+```
+<class ‘type'>
+<class 'function'> <class 'function'> <class 'function'>
+```
+
+##### Python tiene varios nombres de funciones especiales que empiezan y terminan con dos guiones bajos. 
+
+##### El primero que analizaremos es __init__.
+
+Cada vez que se instancia una clase, se realiza una llamada a la función __init__ definida en esa clase. 
+
+Cuando la línea de código:
+
+```
+s = Toy()
+```
+
+se ejecuta, el intérprete creará una nueva instancia de tipo Toy,
+
+Luego llamará a `Toy.__init__` con el objeto recién creado como parámetro real, 
+
+enlazado al parámetro formal `self`.
+
+##### Al invocarse, `Toy.__init__` crea el objeto de lista `_elems`, que pasa a formar parte de la instancia recién creada de tipo Toy.
+
+La lista se crea utilizando la notación `[]`, ya conocida, que es simplemente una abreviatura de list().
+
+##### La lista `_elems` se denomina atributo de datos de la instancia de Toy. 
+ 
+El código:
+
+```
+t1 = Toy()
+print(type(t1))
+print(type(t1.add))
+t2 = Toy()
+print(t1 is t2) #test for object identity
+```
+ 
+Out:
+
+```
+<class '__main__.Toy'>
+<class 'method'>
+False
+```
+
+##### Observe que t1.add es de tipo método, mientras que Toy.add es de tipo función.
+
+Dado que t1.add es un método, podemos invocarlo (y a t1.size) mediante la notación de punto.
+
+Una clase no debe confundirse con sus instancias, al igual que un objeto de tipo lista no debe confundirse con el tipo lista.
+
+Los atributos pueden asociarse con una clase en sí o con sus instancias:
+
+1. Los atributos de clase se definen en una definición de clase.
+
+Toy.size es un atributo de la clase Toy. 
+
+Cuando se instancia la clase, por ejemplo, mediante la instrucción t = Toy(), se crean los atributos de instancia, por ejemplo, t.size. 
+
+2. Aunque t.size está inicialmente ligado (binding) a la función de tamaño definida en la clase Toy, dicha ligadura puede modificarse durante un cálculo
+
+##### Se podría (¡pero definitivamente no se debería!) modificar la ligadura ejecutando t.size = 3.
+
+##### Cuando los atributos de datos están asociados a una clase, los llamamos variables de clase.
+
+##### Cuando están asociados a una instancia, los llamamos variables de instancia. 
+
+Por ejemplo, `_elems` es una variable de instancia porque, para cada instancia de la clase Toy, `_elems` está ligado a una lista diferente. 
+ 
+Hasta ahora, no hemos visto una variable de clase.
+ 
+En el código: 
+
+```
+t1 = Toy()
+t2 = Toy()
+t1.add([3, 4])
+t2.add([4])
+print(t1.size() + t2.size())
+``` 
+
+Dado que cada instancia de Toy es un objeto diferente, cada instancia de tipo Toy tendrá un atributo `_elems` diferente.
+
+Por lo tanto, el código imprime 3.
+
+A primera vista, parece haber alguna inconsistencia en este código.
+
+Parece que cada método se llama con un argumento menos.
+
+##### Por ejemplo, add tiene dos parámetros formales, pero parece que lo llamamos con un solo parámetro real.
+
+```
+def add(self, new_elems):
+	"""new_elems is a list"""
+	self._elems += new_elems
+```
+
+Esto se debe al uso de la notación de punto para invocar un método asociado a una instancia de una clase. 
+
+El objeto asociado a la expresión que precede al punto se pasa implícitamente como primer parámetro del método. 
+
+Seguimos la convención de usar "self" como nombre del parámetro formal al que se enlaza este parámetro real. 
+
+##### Otra convención común es comenzar el nombre de los atributos de datos con un guion bajo. 
+
+usamos el `_` inicial para indicar que el atributo es privado para la clase, es decir, no se debe acceder directamente fuera de ella.
+
+
+Veremos una definición de clase que proporciona una implementación sencilla de una abstracción de conjunto de enteros llamada `Int_set`.
+
+(Dado que Python tiene un conjunto de tipos integrado, esta implementación es innecesaria e innecesariamente complicada. 
+
+Sin embargo, es útil desde el punto de vista pedagógico).
+
+
+#### Código de la estructura de datos Int_set
+
+```
+Class Int_set(object):
+	"""An int set is a set of integers"""
+	#Information about the implementation (not the abstraction):
+	  #Value of a set is represented by a list of ints, self._vals.
+	  #Each int in a set occurs in self.vals exactly once.
+	
+	def __init__(self):
+		"""Create an empty set of integers"""
+		self._vals = []
+	
+	def insert(self, e):
+		"""Assumes e is an integer and inserts e into self"""
+		if e not in self._vals:
+			self._vals.append(e)
+	
+	def 
+```
+
+
+#### RS Clases
+
+```
+//att
+
+```
 
