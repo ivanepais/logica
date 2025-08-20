@@ -315,6 +315,16 @@ Pilas y colas: Útiles para problemas que requieren operaciones LIFO (último en
 Gráficos: Para representar datos interconectados (como redes sociales u hojas de ruta).
 
 
+
+Errores del interprete/compilador: 
+
+
+
+Optimización 
+
+1. Bucle for: evitar chequear condición especial en cada paso
+
+
 Etapas: 
 
 1. Inicial: partes necesarias

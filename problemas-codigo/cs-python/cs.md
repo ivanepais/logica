@@ -3642,8 +3642,376 @@ Class Int_set(object):
 		if e not in self._vals:
 			self._vals.append(e)
 	
-	def 
+	def member(self, e):
+		"""Assumes e is an integer and remove e from self
+		Returns True if e is in self, and False otherwise"""
+		return e in self._vals
+	
+	def remove(self, e):
+		"""Assumes e is an integer and removes e from self
+		Raices ValueError if e is not in self"""
+		try:
+			self._vals.remove(e)
+		except:
+			raise ValueError(str(e) + 'not found')
+		
+	def get_members(self):
+		"""Returns a list containing the elements of self._
+		Nothing can be assumed about the order of the elements"""
+		return  self._vals[:]
+	
+	def __str__(self):
+		"""Returns a string representation of self"""
+		if self._vals == []:
+			return '{}'
+		self._vals.sort()
+		result = ''
+		for e in self._vals:
+			result = result + str(e) + ','
+		return f'{{{result[:1]}}}'
+```		
+
+La docstring al pricipio de la definición de la clase describe la abstracción proporcionada por la clase, no información sobre su implementación. 
+
+Al contrario, los comentarios debajo de la cadena de documentación contienen información sobre la implementación.
+
+Esta información está dirigida a los programadores que deseen modificar la implementación o crear subclases de la clase.
+
+No a los programadores que deseen utilizar la abstracción.
+
+Los métodos asociados a una instancia de una clase pueden invocarse mediante la notación de puntos. 
+
 ```
+s = Int_set()
+s.insert(3)
+print(s.member(3))
+```
+
+Crea una nueva instancia de Int_set, inserta el entero 3 en ese Int_set y luego imprime True.
+
+##### La abstracción de datos logra la independencia de la representación.
+
+Considere la implementación de un tipo abstracto como si tuviera varios componentes:
+
+1. Implementaciones de los métodos del tipo
+
+2. Estructuras de datos que, en conjunto, codifican los valores del tipo
+
+3. Convenciones sobre cómo las implementaciones de los métodos deben usar las estructuras de datos; una convención clave se captura mediante el invariante de representación
+
+##### El invariante de representación define qué valores de los atributos de datos corresponden a representaciones válidas de instancias de clase
+
+El invariante de representación para Int_set es que vals no contiene duplicados. 
+
+La implementación de `__init__` se encarga de establecer el invariante (que se cumple para la lista vacía), y los demás métodos se encargan de mantenerlo. 
+
+##### Por eso, insert añade e solo si no está ya en self.vals.
+
+La implementación de remove aprovecha la suposición de que el invariante de representación se cumple al introducir remove. 
+
+Llama a list.remove solo una vez, ya que el invariante de representación garantiza que haya como máximo una ocurrencia de e en self.vals.
+
+##### El último método definido en la clase, __str__, es otro de esos métodos __ especiales.
+
+El método `__str__` de una clase se invoca cuando un programa convierte una instancia de esa clase en una cadena llamando a str. 
+
+Por lo tanto, al usar el comando de impresión, se invoca la función __str__ asociada al objeto que se va a imprimir. 
+
+```
+s = Int_set()
+s.insert(3)
+s.insert(4)
+print(str(s))
+print('The value of s is', s)
+```
+
+Out:
+
+```
+{3,4}
+The value of s is {3,4}
+```
+
+##### (Si no se definiera ningún método `__str__`, ejecutar print(s) provocaría que se imprimiera algo como <__main__.Int_set object at 0x1663510>).
+
+
+### Ejercicio
+
+Agregue un método que cumpla con la siguiente especificación a la clase Int_set.
+
+```
+def union(self, other):
+	"""other es un Int_set
+		muta self para que contenga exactamente 
+	los elementos en self
+		más los elementos en other.
+```
+
+
+## 10.1.1 Magic Methods and Hashable Types
+
+Uno de los objetivos de diseño de Python era permitir a los programadores usar clases para definir nuevos tipos tan fáciles de usar como los tipos integrados de Python. 
+
+##### El uso de métodos mágicos para proporcionar definiciones específicas de clase de funciones integradas como str y len desempeña un papel importante para lograr este objetivo.
+
+Los métodos mágicos también pueden usarse para proporcionar definiciones específicas de clase para operadores infijos como == y +. 
+
+Los nombres de los métodos disponibles para operadores infijos son
+
+```
++: __add__	*: __mul__	/: __truediv__
+-: __sub__	//: __floordiv__	%: __mod__
+**: __pow__	|: __or__	<: __lt__
+<<: __lshift__	∧: __xor__	>: __gt__
+>>: __rshsift__	==: __eq__	<=: __le__
+&: __and__	!=: __ne__	>=: __ge__
+```
+
+##### Puedes asociar cualquier implementación que desees con estos operadores.
+
+##### Si quisieras, podrías implementar + como resta, < como exponenciación, etc. 
+
+Sin embargo, te recomendamos que evites la posibilidad de ser imaginativo y te ciñas a implementaciones coherentes con los significados convencionales de estos operadores.
+
+En el código:
+
+Definición:
+
+```
+class Toy(object):
+    def __init__(self):
+        self._elems = []
+
+    def add(self, new_elems):
+        """new_elems is a list"""
+        self._elems += new_elems
+    #def size(self):
+        #return len(self._elems)
+
+    """size -> __len__"""
+    def __len__(self):
+        return len(self._elems)
+
+    def __add__(self._elems):
+        new_toy = Toy()
+        new_toy._elems = self._elems + other._elems
+        return new_toy
+
+    def __eq__(sefl, other):
+        return self._elems == other._elems
+
+    def __str__(self):
+        return str(self._elems)
+
+    def __has__(self):
+        return id(self)
+```
+
+Uso:
+
+```
+t1 = Toy()
+t2 = Toy()
+t1.add([1, 2])
+t2.add([3, 4])
+t3 = t1 + t2
+print('The value of t3 is', t3)
+print('The length of te is', len(t3))
+d = {t1: 'A', t2: '8'}
+print('The value', d[t1], 'is associated with the key t1 in d.')
+
+``` 
+
+##### Podemos usar instancias de Toy como claves de diccionario porque definimos una función `__hash__` para la clase. 
+
+##### Si hubiéramos definido una función `__eq__` y no una función `__hash__`, el código habría generado el mensaje de error "unhashable type: ‘Toy'" al intentar crear un diccionario usando t1 y t2 como claves. 
+
+Cuando se proporciona un `__hash__` definido por el usuario, se debe garantizar que el valor hash de un objeto sea constante durante su vida útil.
+
+Todas las instancias de clases definidas por el usuario que no definen explícitamente `__eq__` usan la identidad del objeto para == y son hashables. 
+
+##### Si no se proporciona ningún método `__hash__`, el valor hash del objeto se deriva de la identidad del objeto
+
+
+### Ejercicio: 
+
+Reemplace el método de unión que agregó a Int_set por un método que permita a los clientes de Int_set usar el operador + para indicar la unión del conjunto.
+
+
+## 10.1.2 Designing Programs Using Abstract Data Types
+
+Los tipos de datos abstractos son fundamentales. 
+
+##### Conducen a una forma diferente de pensar en la organización de programas extensos.
+
+##### Cuando pensamos en el mundo, nos basamos en abstracciones. 
+
+En el mundo de las finanzas, hablamos de acciones y bonos. 
+
+En el mundo de la biología, hablamos de proteínas y residuos.
+
+##### Al intentar comprender conceptos como estos, reunimos mentalmente algunos de los datos y características relevantes de este tipo de objetos en un solo paquete intelectual. 
+
+Por ejemplo, pensamos en los bonos como si tuvieran una tasa de interés, una fecha de vencimiento y un precio como atributos de datos. 
+
+También pensamos en los bonos como si tuvieran operaciones como "fijar precio" y "calcular rendimiento al vencimiento".
+
+##### Los tipos de datos abstractos nos permiten incorporar este tipo de organización en el diseño de programas.
+
+##### La abstracción de datos anima a los diseñadores de programas a centrarse en la centralidad de los objetos de datos en lugar de las funciones.
+
+##### Pensar en un programa más como una colección de tipos que como una colección de funciones conduce a un principio de organización profundamente diferente.
+
+Entre otras cosas, nos anima a pensar en la programación como un proceso de combinación de fragmentos relativamente grandes, ya que las abstracciones de datos suelen abarcar más funcionalidad que las funciones individuales.
+
+##### Esto, a su vez, nos lleva a pensar en la esencia de la programación como un proceso no de escribir líneas de código individuales, sino de componer abstracciones.
+
+La disponibilidad de abstracciones reutilizables no solo reduce el tiempo de desarrollo, sino que suele generar programas más fiables, ya que el software maduro suele ser más fiable que el nuevo.
+
+Durante muchos años, las únicas bibliotecas de programas de uso común eran las estadísticas o científicas. 
+
+Sin embargo, hoy en día existe una gran variedad de bibliotecas de programas disponibles (especialmente para Python), a menudo basadas en un amplio conjunto de abstracciones de datos, como veremos más adelante
+
+
+## 10.1.3 Using Classes to Keep Track of Students and Faculty
+
+Como ejemplo de uso de clases, imagina que estás diseñando un programa para llevar un registro de todos los estudiantes y profesores de una universidad.
+
+##### Es posible escribir un programa así sin usar abstracción de datos.
+
+##### Cada estudiante tendría apellido, nombre, dirección, año, calificaciones, etc. Todos estos datos podrían almacenarse en una combinación de listas y diccionarios. 
+
+Llevar un registro del profesorado y el personal requeriría estructuras de datos similares y diferentes, por ejemplo, estructuras de datos para registrar aspectos como el historial salarial.
+
+##### Antes de apresurarnos a diseñar un montón de estructuras de datos, pensemos en algunas abstracciones que podrían resultar útiles. 
+
+Existe alguna abstracción que cubra los atributos comunes de estudiantes, profesores y personal? 
+
+Algunos argumentarían que todos son humanos.
+
+
+Clase Persona: 
+
+Clase que incorpora dos atributos comunes (nombre y fecha de nacimiento) de los humanos.
+
+Utiliza el módulo datetime de la biblioteca estándar de Python, que proporciona muchos métodos prácticos para crear y manipular fechas.
+
+El siguiente código utiliza Persona y fecha y hora.
+
+```
+class Person(object):
+    def __init__(self, name):
+        """Assumes name a string. Create a person"""
+        self._name = name
+        try:
+            last_blank = name.rindex('')
+            self._last_name = name[last_blank+1:]
+        except:
+            self.birthday = None
+
+    def get_name(self):
+        """Returns self's full name"""
+        return self._last_name
+
+    def get_last_name(self):
+        """Assumes birthdate is of type datetime.date
+            Sets self's birthday to birthdate"""
+        self._birthday = birthdate
+
+    def get_age(self):
+        """Returns self's current age in days"""
+        if self._birthday == None:
+            raise ValueError
+        return (datetime.date.today() - self._birthday).days 
+
+    def __lt__(self, other):
+        """Assume other a Person
+            Returns True if self precedes other in alphabetical
+            order, and Dalse otherwise. Comparison is based on last 
+            names, but if these are the same full names are compared."""
+        if self._last_name == other._last_name:
+            return self._name < other._name
+        return self._last_name < other._last_name
+
+    def __str__(self):
+        """Returns self's name"""
+        return self._name	
+```
+
+El siguiente código utiliza Persona y fecha y hora.
+
+```
+me = Person('Michael Guttag')
+him = Person('Barack Hussein Obama')
+her = Person('Madonna')
+print(him.get_last_name())
+him.set_birthday(datetime.date(1961, 8, 4))
+her.set_birthday(datetime.date(1958, 8, 16))
+print(him.get_name(), 'is', him.get_age(), ‘days old')
+```
+
+Tenga en cuenta que siempre que se instancia Person, se proporciona un argumento a la función `__init__`.
+
+##### En general, al instanciar una clase, debemos consultar la especificación de la función __init__ de esa clase para saber qué argumentos proporcionar y qué propiedades deben tener.
+
+Al ejecutar el código anterior, se crean tres instancias de la clase Person.
+
+Podemos acceder a la información sobre estas instancias mediante los métodos asociados.
+
+Por ejemplo, him.get_last_name() devuelve 'Obama'.
+
+La expresión him._last_name también devolverá 'Obama';
+
+##### sin embargo, por razones que se explican más adelante en este capítulo, escribir expresiones que accedan directamente a variables de instancia se considera inadecuado y debe evitarse. 
+
+De igual manera, no existe una forma adecuada para que un usuario de la abstracción Person extraiga la fecha de nacimiento de una persona, a pesar de que la implementación contiene un atributo con ese valor. 
+
+(Por supuesto, sería fácil añadir un método get_birthday a la clase). 
+
+Sin embargo, existe una forma de extraer información que depende del cumpleaños de la persona, como se ilustra en la última sentencia print del código anterior.
+
+La clase Person proporciona una definición específica de Person para otro método con nombre especial, `__lt__`. 
+
+Este método sobrecarga el operador <. 
+
+El método `Person__lt__` se llama siempre que el primer argumento del operador < sea de tipo Person. 
+
+El método `__lt__` de la clase Person se implementa utilizando el operador binario < de tipo str.
+
+La expresión self._name < other._name es la abreviatura de self._name.__lt__(other._name).
+
+Dado que self._name es de tipo str, este método `__lt__` es el asociado con el tipo str.
+ 
+Además de proporcionar la comodidad sintáctica de escribir expresiones infijas que usan <, esta sobrecarga proporciona acceso automático a cualquier método polimórfico definido con `__lt__`. 
+
+El método integrado sort es uno de estos métodos.
+
+Por ejemplo, si p_list es una lista compuesta por elementos de tipo Persona, la llamada p_list.sort() ordenará esa lista utilizando el método `__lt__` definido en la clase Persona. 
+ 
+Por lo tanto, el código:
+
+```
+pList = [me, him, her]
+for p in pList:
+	print(p)
+pList.sort()
+for p in pList:
+	print(p)
+```
+
+Imprime:
+
+```
+Michael Guttag
+Barack Hussein Obama
+Madonna
+Michael Guttag
+Madonna
+Barack Hussein Obama
+```
+
+
+
 
 
 #### RS Clases
