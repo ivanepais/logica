@@ -707,9 +707,7 @@ De grafos → nodos y relaciones (redes sociales, biología).
 Aquí:
 
 Features: edad, peso, glucosa.
-
 Label: diagnóstico.
-
 Dataset completo: colección de registros similares.
 
 ##### Un dataset es materia prima organizada que permite extraer información, entrenar modelos de AI, analizar fenómenos o tomar decisiones.
