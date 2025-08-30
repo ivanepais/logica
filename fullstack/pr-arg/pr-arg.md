@@ -8762,7 +8762,6 @@ HTML:
 <div class="color amarillo" data-color="amarillo"><!-- --></div>
 <div class="color azul" data-color="azul"><!-- --></div>
 <div class="color verde" data-color="verde"><!-- --></div>
-
 ```
 
 JS: 
@@ -8877,6 +8876,2201 @@ function reiniciar(usuarioPerdio = false) {
 
 ```
 
+
+
+# Tailwind CSS, package.json, npm (node package manager) instalar librerias, utilidades
+
+## Tailwind
+
+Usa clases unitarias para aplicar estilo a los elementos
+
+
+## Compartir código base/source code
+
+### npm
+
+Registro de paquetes
+
+```
+npm install packageX
+```
+
+packageX tiene que estar registrado en `NPM Register`
+
+Registra la información del paquete y lo hace disponible para que se puede instalar y usar el código con npm 
+
+
+npm resuelve el problema para compartir código reutilizable, agiliza el desarrollo de software para no tener que escribir código desde 0. 
+
+Antes un código o algoritmo que resolvia un problema estaba contenido en una carpeta local llamada vendor que creaba el desarrollador de la funcionalidad. 
+
+Esta carpeta de se iba pasando localmente entre desarrolladores y se subía a la web. 
+
+Desventajas: si la funcion debe actualizarse porque tenia algun bug o agregaba una funcionalidad, el creador o los demás desarrolladores tenían que reescribir el archivo, pasárselo o subirlo a la web. 
+
+Introducir una nueva versión, el código de la librería cambia y puede romper el código que está usando esa funcionalidad. 
+
+
+### Antes de usar npm: instalar node js
+
+### npm init: en la carpeta raíz o principal del proyecto
+
+```
+npm init
+```
+
+Primero nos hace escribir un archivo llamado `package.json`
+
+#### archivo .json: Lista las dependencias de proyecto en tiempo de desarrollo y ejecución
+
+Describe el nombre del paquete. 
+
+nombre, version, descripción, entry point
+
+comando para testing, repo git, keywords
+
+author, license
+
+
+Ej: 
+
+package.json
+
+```
+{
+	"name":"simon-dice",
+	"version": "1.0.0", 
+	"description": "Un juego de simon dice", 
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "",
+	"license": "ISC"
+}
+```
+
+### Campos importantes de json: main, scripts
+
+main: archivo principal 
+
+scripts test: cómo se testea 
+
+
+##### El archivo .json podría describir un libreria abierta que sería publicada en NPM Register
+
+Puede representar un problema de seguridad: se recomienda instalar paquetes reconocidos como seguros, confiables, etc
+
+En los que se sabe el autor y el contenido
+
+
+### Script test
+
+En el directorio dónde está el json: 
+
+```
+npm run nombreScript
+```
+
+Como: 
+
+```
+npm run test
+```
+Salida: 
+
+Error: no test specified
+
+
+Va a ejecutar el mensaje que tiene este comando en json
+
+```
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+```
+
+
+### Instalar un server 
+
+Hasta ahora estamos abriendo el archivo en el navegador para depurar el programa
+
+Para empezar a usar un servidor http para servir los archivos de desarrollo y tengamos más funcionalidades a la hora del desarrollo
+
+##### El protocolo file:///home no soporta funcionalidad avanzadas como lo haría HTTP con llamadas a las apis por razones de seguridad
+
+```
+npm i -g http-server
+```
+
+i: install shortcut
+
+-g: instalación global
+
+
+Uso de http-server: 
+
+En la raíz
+
+```
+http-server .
+```
+
+. significa carpeta altual: para ejecutarse 
+
+Nos provee un local host para nuestra maquina
+
+Y otro para compartir a través de la misma red ethernet o wifi
+
+Para que otra persona o disposibivo acceda a nuestra app en desarrollo
+
+En la consola, mientras tengamos el server abierto; nos muestra los request/pedidos que vamos o el navegador va haciendo
+
+
+## npm install: package-lock.json
+
+Instalar nuestro package.json
+
+En la raíz
+
+```
+npm install
+```
+
+Revisa el `package.json` para verificar sus dependencias  
+
+Genera `package-lock.json` guarda las versiones especificas de las dependencias de este proyecto
+
+Además crear una carpeta `node_modules` para guardar todas las dependencias en un solo lugar
+
+##### node_modules es la clave sobre como función el mundo moderno de la programación: los paquetes que instalas dependen de otros para funcionar, esto se puede ver en cada package.json de cada libreria/utilidad/dependencia se llaman devDependencies
+
+ 
+### Instalar localmente tailwind css: sin usar -g
+
+```
+npm install tailwind @tailwindcss/cli
+```
+
+En package.json nos agrego una nueva key "dependencies"
+
+```
+"dependencies": {
+	"@tailwindcss/cli": "^4.1.8",
+	"tailwindcss": "^4.1.8"
+}
+```
+
+En package-lock.json: 
+
+```
+"name": simon-dice", 
+"version": "1.0.0", 
+"lockfileVersion": 3,
+"requires": true, 
+"packages": {
+	"": {
+		"name": "simon-dice", 
+		"version": "1.0.0",
+		...
+	},
+	"node_modules/@ampproject/remapping"
+}
+```
+
+"node_modules/@ampproject/remapping"
+"node_modules/@issacs/fs-minipass"
+
+Son más paquetes como tailwindcss
+
+Estan en `registry.npm`
+
+
+##### npm termina creando graph o map de dependencias que marca las dependencias de cada una y todas a la vez
+
+##### Además de depender de otras librerias, dependen de ciertas versiones especificas 
+
+##### Cuando dos paquetes/librerias dependen de una misma libreria, npm aplica la resolución de dependencias: toma la minima version del paqueta para los dos
+
+##### Las versiones de la resolución de dependencia se encuentra en package-lock.json
+
+
+## Archivos se deben restrear o subir a git/github
+
+### Ej: la carpeta node_modules nunca la tenemos que incluir: no hace falta compartirlo con npm install lo obtenemos
+
+
+### archivo .gitignore
+
+Tipos de archivos o carpetas que queremos ignorar
+
+Proyecto: 
+
+carpeta raíz simon-dice
+
+```
+node_modules
+.gitignore
+index.html
+main.js
+package-lock.json
+package.json
+```
+
+#### Ej: ignorar capeta node_modules
+
+En .gitignore
+
+```
+node_modules/
+```
+
+#### Chequear gitignore con git status
+
+untracked files:
+
+```
+.gitignore
+package-lock.json
+package.json
+```
+
+##### Si borramos la linea node_modules/ del .gitignore vuelve aparecer en untracked files del git status
+
+```
+.gitignore
+node_modules/
+package-lock.json
+package.json
+```
+
+##### Podemos borrar la carpeta node_modules y volverla a instalar con el comando npm install
+
+
+## Instalaciones de dependencias locales
+
+### npm devDependencies
+
+#### Instalar http-server como una dependencia de desarrollo: solo la utilizaremos cuando desarrollamos, pero no cuando pongamos un funcionamiento nuestra app
+
+```
+npm i --save-dev http-server
+```
+
+### deployDependencies
+
+#### tailwindcss si es una dependencia que usará constantemente nuestra app en producción, en nuestro código fuente escribimos/utilizamos taildwind
+
+```
+npm i tailwind @tailwindcss/cli
+```
+
+
+## Agregar scrips al package.json: npm run
+
+### start: para lanzar del servidor de desarrollo que tiene la app
+
+```
+"scripts": {
+	"start": "http-server .",
+	"test": "echo..."
+},
+```
+
+"http-server ." para la carpeta actual
+
+```
+npm run start
+```
+
+Abre el server con las dos direcciones y puertos: local y compartido
+
+
+## Tailwind CSS
+
+### Instalación: se puede usar en distintos entornos como Vite, PostCSS, Tailwind CLI, etc
+
+#### Tailwind CLI
+
+```
+npm i tailwind @tailwindcss/cli
+```
+
+Importar clases de tailwind: 
+
+Escribir en nuestro archivo principal 
+
+```
+@import "tailwindcss"; 
+```
+
+Ejecutar npx con input y output
+
+#### watch: al modificar el input, reescribe el output, nos muestra por la terminal lo que estamos compilando
+
+```
+npx @tailwindcss/cli -i ./src/input.css -o ./src/output.css --watch
+```
+
+Uso de CSS:
+
+```
+<!doctype html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="./output.css" rel="stylesheet">
+</head>
+<body>
+  <h1 class="text-3xl font-bold underline">
+    Hello world!
+  </h1>
+</body>
+</html>
+```
+
+
+### Crear main.css
+
+o index.css en la raíz
+
+```
+@import "tailwindcss";
+```
+
+### Correr tailwind en la terminal 
+
+```
+npx @tailwindcss/cli -i ./input.css -o ./output.css --watch
+```
+
+##### En la raíz nos crea output.css que contiene todas las reglas base de tailwind, podemos agregar más reglas en nuestro index.css (que es nuestro input)
+
+Ej: 
+
+Si teníamos una regla como
+
+```
+.color {
+	width: 100px;
+	height: 100px; 
+	opacity: 0.5;
+	transition: opacity 0.5s;
+}
+
+.rojo {
+	background-color: red;
+}
+
+.amarillo {
+	background-color: yellow;
+}
+
+.azul {
+	background-color: blue;
+}
+
+.verde {
+	background-color: green;
+}
+```
+
+#### linkear en html nuestro archivo output.css
+
+```
+<head>
+	<link href="./output.css" rel="stylesheet">
+</head>
+```
+
+
+### Reset CSS y funcionamiento de los navegadores
+
+Las reglas que vienen en el output.css son formas de dar un estilo uniforme para todos los navegadores
+
+Dado que el navegador tiene un motor que interpreta el código html, css, js y lo muestra en la ventana
+
+Cada equipo de desarrollo de los navegadores interpretaron de distinta forma ciertas reglas de css 
+
+Entonces hay cosas que se ven de forma distinta en los navegadores
+
+##### Es una practica común resetear/sobreescribir esos estilos o comportamientos conflictivos
+
+
+## Código de Tailwind 
+
+### Las librerias tienen una guia de estilo de codificación: estas formas estan pensadas para evitar conflictos 
+
+Es como los desarrolladores creen que debe usarse la librería 
+
+CSS sin tailwind se base en modificar la caja de los elementos HTML. 
+
+##### La filosofia de tailwind es que el código estilo sea expresivo: que el código refleje lo que se vea en la ventana del navegador
+
+Usando `utility clases`
+
+```
+<div class="mx-auto flex max-w-sm items-center gap-x-4 rounded-xl bg-white p-6 shadow-lg outline outline-black/5 dark:bg-slate-800 dark:shadow-none dark:-outline-offset-1 dark:outline-white/10">
+  <img class="size-12 shrink-0" src="/img/logo.svg" alt="Logo de ChitChat" />
+  <div>
+    <div class="text-xl font-medium text-black dark:text-white">ChitChat</div>
+    <p class="text-gray-500 dark:text-gray-400">¡Tienes un mensaje nuevo!</p>
+  </div>
+</div>
+```
+
+Dimensiones: 
+
+sm: small
+lg: large
+xl: extra large
+
+
+## Sección layout/diseño en tailwind: poner los elementos uno al lado de otro (fila)
+
+Necesitamos un div que englobe a los div de colores
+
+HTML: 
+
+```
+<p id="estado"><!-- --></p>
+<p>Ronda<span id="ronda">0</span></p>
+<button id="comenzar">Comenzar</button>
+
+<div class="columns-2">
+	<div class="color rojo" data-color="rojo"><!-- --></div>
+	<div class="color amarillo" data-color="amarillo"><!-- --></div>
+	<div class="color azul" data-color="azul"><!-- --></div>
+	<div class="color verde" data-color="verde"><!-- --></div>
+</div>
+```
+
+### Llenar el espacio
+
+```
+<p id="estado"><!-- --></p>
+<p>Ronda<span id="ronda">0</span></p>
+<button id="comenzar">Comenzar</button>
+
+<div class="columns-2 gap-0">
+	<div class="color rojo" data-color="rojo">&nbsp;</div>
+	<div class="color amarillo" data-color="amarillo">&nbsp;</div>
+	<div class="color azul" data-color="azul">&nbsp;</div>
+	<div class="color verde" data-color="verde">&nbsp;</div>
+</div>
+```
+
+`&nbsp;` non breaking space
+
+en index.css
+
+```
+.color {
+	height: 300px;
+}
+```
+
+
+### Estilo a los botones con Tailwind: en la seleccion components -> ui blocks -> live preview
+
+##### Inspeccionar los botones del sitio y copiar las clases
+
+```
+<div class="pb-2">
+	<p id="estado"><!-- --></p>
+	<p>Ronda<span id="ronda">0</span></p>
+	<button id="comenzar" class="rounded-sm">Comenzar</button>
+</div>
+```
+
+pb padding 
+
+
+### Estilo al body: margin (espacio hacia afuera) y padding (espacio hacia adentro)
+
+```
+<body class="p-8 m-8">
+	<div class="pb-2">
+		<p id="estado"><!-- --></p>
+		<p>Ronda<span id="ronda">0</span></p>
+		<button id="comenzar" class="rounded-sm">Comenzar</button>
+	</div>
+
+	<div class="columns-2 gap-0">
+		<div class="color rojo" data-color="rojo">&nbsp;</div>
+		<div class="color amarillo" data-color="amarillo">&nbsp;</div>
+		<div class="color azul" data-color="azul">&nbsp;</div>
+		<div class="color verde" data-color="verde">&nbsp;</div>
+	</div>
+</body>
+```
+
+### Separar los controles con otro div
+
+```
+<p id="estado"><!-- --></p>
+<p>Ronda<span id="ronda">0</span></p>
+<button id="comenzar" class="rounded-sm">Comenzar</button>
+```
+
+
+## Script css en package.json 
+
+```
+"scripts": {
+	"css": "npx @tailwindcss/css -i ./index.css -o ./output.css --watch",
+	"start": "http-server .",
+	"test": "echo"
+}
+```
+
+
+### npx, ejecuta los paquetes: si no tenemos el paquete, lo descarga y lo ejecuta 
+
+
+
+# Memotest, animaciones, testing
+
+## Mecanismo
+
+Tiene n cantidad de cartas
+
+Tenemos que encontrar el par
+
+Si son iguales, salen del juego 
+
+Si son distintas, quedan
+
+
+Layout
+
+```
+					Memotest
+					
+pares encontrados	Turnos		Reiniciar
+
+carta 1 	carta 2 	carta 3 	carta 4
+
+//...
+
+```
+
+
+## Código del memotest: Html tailwind css y js
+
+HTML 
+
+```
+<body bg-gradient-to-r from-purple class="flex justify-center items-center">
+	<div>
+		<h1>Memotest</h1>
+		
+		<div class="flex justify-between items-center ab-6">
+			<div>
+				Pares encontrados <span id="pares-encontrados">0</span>
+			</div>
+			<div class="text-xl">
+				Turnos <span id="turnos"></span>
+			</div>
+			<button id="reiniciar">
+				Reiniciar
+			</button>
+		</div>
+		
+		<div id="tablero" class="grid grid-cols-4 gap-4"></div>
+	</div>
+</body>
+```
+
+
+CSS: 
+
+##### En CSS tenemos las clases de tailwind y las que agregamos como desarrolladores a nuestro main css
+
+### cdn: content delivery network
+
+Sirve el contenido desde el cache local del navegador, cachea urls
+
+Como en los navegadores, recuerdan/guarda el contenido de la url y la sirve desde la memoria, sin descargarla de nuevo
+
+Si hay 100 sitios que usan `src="https://cdn.tailwindcss.com"`
+
+Si esta guardado en el cache ni siquiera va a esta dirección a buscar la dependencia
+
+Si esta dirección deja de estar en servicio, nuestra app se queda sin estilo. 
+
+Deberíamos tener un backup
+
+```
+.carta {
+	transition: transform 0.2s;
+	position: relative; 
+}
+
+.carta.girada {
+	transform: rotateY(180deg);
+}
+
+.carta.girada carta-interna {
+	backface-visibility: visible;
+}
+
+.carta-interna {
+	width: 100%; 
+	height: 100%;
+	position: absolute;
+	backface-visibility: hidden;
+	display: flex;
+	align-items: center;
+	justify-content: center; 
+	border-radius: 8px;
+}
+
+.frente-carta {
+	background-color: light-blue;
+	color: white;
+	transform: rotateY(0deg);
+}
+
+.dorso-carta {
+	background-color: light-pink;
+	color: white;
+	transform: rotateY(180deg);
+}
+```
+
+
+JS: 
+
+```
+const $tablero = document.querySelector('#tablero');
+const $reiniciar = document.querySelector('#reiniciar');
+const $paresEncontrados = document.querySelector('.paresEncontrados');
+const $turnos = document.querySelector('#turnos');
+
+//emojis
+const emojis = [apple, pear, banana, orange]; 
+let cartas = []; //guardará cartas/elm html creadas
+let $cartasVisisbles = []; //guardará las cartas volteadas
+let paresEncontrados = []; //guardará los match
+let turnos = 0; //contador
+let esTableroBloqueado = flase; 
+
+function inicializar() {
+	items = [...emojis, ...emojis];
+	mezclar(items);
+	$tablero.innerHTML = '';
+	$cartasVisibles = [];
+	paresEncontrados = 0;
+	turnos = 0;
+	lockboard = false; 
+	actualizarEstado(); 
+	crearCartas(items);
+}
+
+function mezclar(items) {
+	for (let i = items.length -1; i > 0; i--) {
+		const j = Math.floor(Math.rondom() * (i + 1));
+		let temp = items[i];
+		items[i] = items[j];
+		items[j] = temp;
+		
+	}
+	
+}
+
+function crearCartas(cartas) {
+	cartas.forEach((emoji, index) => {
+		const $carta = document.createElement('div');
+		$carta.classList.add(
+			'carta',
+			'shadow-md',
+			'aspect-square',
+			'cursor-pointer',
+			'text-3xl',
+			'font-bold'
+		);
+		$carta.dataset.index = index;
+		$carta.dataset.emoji = emoji;
+		
+		const $cartaInterna = document.createElement('div');
+		$cartaInterna.classList.add('carta-interna');
+		
+		const $frenteCarta = document.createElement('div');
+		$frenteCarta.classList.add('frente-carta', 'carta-interna');
+		$frenteCarta.textContent = '?';
+		
+		const $dorsoCarta = document.createElement('div');
+		$dorsoCarta.classList.add('dorso-carta', 'carta-interna');
+		$dorsoCarta.textContent = emoji;
+		
+		$cartaInterna.appendChild($frenteCarta);
+		$cartaInterna.appendChild($dorsoCarta);
+		$carta.appendChild($cartaInterna);
+		
+		$carta.addEventListener('click', () => mostrarCarta($carta));
+		$tablero.appendChild($carta);
+	});
+}
+
+function mostrarCarta($carta){
+	if (esTableroBloqueado) {
+		return false;
+	}
+	
+	if ($carta === $cartasVisibles[0]) {
+		return;
+	}
+	
+	$carta.classList.add('girada');
+	$cartasVisibles.push($carta);
+	
+	if ($cartasVisibles.length === 2) {
+		turnos++;
+		actualizarEstado();
+		esTableroBloqueado = true;
+		const [cartaUno, cartaDos] = $cartasVisibles;
+		if (verificarPar(cartaUno.dataset.emoji, cartaDos.dataset.emoji)) {
+			deshabilitarCartas($cartasVisibles);
+			paresEncontrados++;
+		} else {
+			ocultarCartas($cartasVisibles);
+		}
+	}
+}
+
+function verificarPar(primerItem, segundoItem) {
+	return primerItem == segundItem;
+}
+
+function deshabilitarCartas($cartas) {
+	$cartas.forEach($carta => {
+		$carta.removeEventListener('click', () => mostrarCarta(card));
+	});
+	
+	actualizarEstado();
+	reiniciarTablero();
+	
+	if (paresEncontrados === emojis.length) {
+		setTimeout(() => alert('Ganaste!'), 500);
+	}
+}
+
+function ocultarCartas($cartas) {
+	setTimeout(() => {
+		$cartas.forEach($carta => $carta.classList.remove('girada'));
+		reiniciarTablero();
+	}, 1000);
+}
+
+function reiniciarTablero() {
+	$cartasVisibles = []; 
+	esTableroBloqueado = false;
+}
+
+function actualizarEstado() {
+	$paresEncontrados.textContent = paresEncontrados; 
+	$turnos.textContent = turnos;
+}
+
+$reiniciar.addEventListener('click', inicializar);
+
+inicializar();
+```
+
+
+## spread operator ... (copiar/reemplazar)
+
+`items = [...emojis, ...emojis];`
+
+Necesitamos pares
+
+Ej: 
+
+Si tenemos
+
+```
+const a = [1, 2];
+const b = [...a]; // copiar a
+```
+
+Si solo ponemos: 
+
+```
+const b = [a];
+```
+
+Nos crea un array anidado
+
+solo queremos los valores
+
+Se complica el acceso. 
+
+Deberiamos hacer algo como:
+
+```
+b[0][0];
+```
+
+Se transforma en "b todos los valores que hay dentro de a"
+
+b nos queda como un array simple
+
+
+### Duplicación de los valores de un array con spread operator: las posiciones/index/items se duplican
+
+```
+b = [...a, ...a];
+```
+
+Crea un array que tiene todos los items de a y otra vez todos los items de a
+
+```
+0: 1
+1: 2
+2: 1
+3: 2
+```
+
+Por más que parezca que tiene dos posiciones por la forma de su código:
+
+Dado que solo hay una coma
+
+```
+b = [...a, ...a]
+```
+
+En realidad toma todas posiciones que tiene a y a y las guarda/suma/acumula
+
+
+## inicializar() y mezclar(items): se usa para reiniciar las posiciones dónde aparecen los elementos, evitando la repetición de las posiciones/juego
+
+Cada vez que se carge la página o el juego, esos items tienen que estar mezclados
+
+mezclar() se base en el algoritmo de fisher-yates
+
+recorre los items desde la posición más alta
+
+i como contador y j elige una posición random 
+
+reemplaza los elementos de las posiciones i, j
+
+Introducimos la variable temporal dado que no podemos hacer: 
+
+```
+items[i] = items[j];
+items[j] = items[i]; // dado que i sería j
+```
+
+temp guarda el valor de i: 
+
+```
+let temp = items[i];
+items[i] = items[j];
+items[j] = temp;
+```
+
+o más eficiente: 
+
+Definimos los valores en una sola declaración
+
+```
+[items[i], items[j]] = [[items[j], items[i]]
+```
+
+Crea un array con dos valores
+
+Tiene dos items en j y dos items en i
+
+Si tenemos dos emojis: j va a ser un valor entre 0 y 1
+
+items en i va a ser un valor entre 0 y 1
+
+Crea un array con algunos de esos emojis 
+
+
+### Desestructurar array 
+
+```
+[items[i], items[j]] = [items[j], items[i]]
+```
+
+Decimos que abc es igual a array de 1, 2, 3: 
+
+Se asignan uno a uno 
+
+```
+[a, b, c] = [1, 2, 3]
+```
+
+a -> 1
+b -> 2
+c -> 3
+
+Entonces: 
+
+`[items[i], items[j]] = [items[j], items[i]]`
+
+El valor de `items[j]` se lo agrega a `items[i]`
+
+`items[i]` se lo asigna a `items[j]`
+
+
+Como necesitamos un par, asignamos a esas posiciones los valores que estaban en los elementos de la izquierda
+
+Ej: Si tenemos a
+
+```
+a = ['hola', 'mundo'];
+```
+
+Desestructuramos el array a: 
+
+```
+[a[0], a[1]] = ['hello', 'world'];
+```
+
+El array a fue modificado: 
+
+```
+0: hello
+1: world
+```
+
+
+## Refactorizar código: Siguiendo los principios SOLID, tenemos varias funciones que hacen muchas cosas además de su funcionalidad principal
+
+
+## Testing: 
+
+Como introducción: 
+
+En una carpeta test
+
+Archivos: test.js, test.html e index.js
+
+
+En la principal:
+
+index.html
+
+package.json
+
+
+En test.html, bindearlo a test.js
+
+```
+<body>
+	<script src="index.js"></script>
+	<script src="test.js"></script>
+</body>
+```
+
+Si en el index.js tenemos una función que calcula el salario anual: 
+
+```
+function calcularSalarioAnual(salarioMensual) {
+	return salarioMensual * 12;
+}
+```
+
+En nuestro test.js
+
+Podemos escribir una función que testee calcularSalarioAnual()
+
+```
+function probarCalcularSalarioAnualConExito() {
+	
+}
+```
+
+
+### Pirámide de testing
+
+```			(manual test)
+		End to End Test
+	Integration Test
+Unit Test
+```
+
+#### Unit Test: testean funcionalidades, clases aisladas que no tiene interdependencia
+
+#### Integration Test: si tenemos una api y queremos testear cuando llega una request/solicitud y que funcione dado que va pasando por distintas capas de la app
+
+#### End to End Test: prueba full stack (backend y frontend) simulando ser el usuario, interactuando con todos los elementos de la app
+
+Si hay elementos que el usuario no puede ver ni interactuar, el test falla.
+
+#### manual test: testear cada elemento, funcionalidad manualmente; existen test plan y requerimientos de calidad que hay que seguir. 
+
+
+### Testear casos positivos
+
+#### assertions condiciones: con los assert debemos especificar el resultado esperado, como segundo argumento podemos especificar un mensaje. 
+
+##### Los argumentos son una evaluación condicional y un mensaje cuando falla el test
+
+##### Un buen mensaje debe describir lo que esperaba y lo que se obtuvo cuando dio el fallo
+
+```
+function probarCalcularSalarioAnualConExito() {
+	const salarioMensual 100;
+	const salarioAnual = calcularSalarioAnual(100);
+	
+	console.assert(salarioAnual === 1200, 'La condicion fallo, esperaba 1200, pero dio', salarioAnual);
+}
+```
+
+#### El salario no puede dar negativo, hacemos una prueba para eso; si nos da un numero negativo, debemos corregir la función
+
+test.js: 
+
+```
+function probarCalcularSalarioAnualConExito() {
+	const salarioMensual = 100;
+	const salarioAnual = calcularSalarioAnual(salarioMensual);
+	
+	console.assert(salarioAnual === 1200, 'La condicion fallo, esperaba 1200, pero dio', salarioAnual);
+}
+
+probarCalcularSalarioAnualConExito();
+
+function probarCalcularSalarioAnualConNegativosDebeDarCero() {
+	const salarioMensual = -100;
+	const salarioAnual = calcularSalarioAnual(salarioMensual);
+	
+	console.assert(salarioAnual === 0, 'La condicion fallo, esperaba 0, pero dio', salarioAnual);
+}
+
+probarCalcularSalarioAnualConNegativosDebeDarCero();
+```
+
+index.js: 
+
+```
+function calcularSalarioAnual(salarioMensual) {
+	if (salarioMensual <= 0) {
+		return 0;
+	}
+	return salarioMensual * 12;
+}
+```
+
+
+### TDD (Test Diven Development): desarrollar en base a pruebas para hacer robusta la lógica de negocio
+
+Mediante los fallos vamos arreglando las funcionalidades
+
+
+## This en arrow functions: toma el contexto del padre
+
+
+
+# DevOps y SDLC
+
+### DevOps: Conjunto de practicas que tiene como objetivo hacer más rápido el ciclo de vida del desarrollo de software y proporcionar una entrega continua de alta calidad. 
+
+### SDLC (Software Development Lifecycle): Es un proceso que afecta al ciclo de vide del desarrollo de software para entregar aplicaciones a tiempo, dentro del presupuesto y según las necesidades del cliente. 
+
+
+## DevOps: De FTP a hoy
+
+## Reliability
+
+## Scalability
+
+## Security
+
+
+Software Engineering: 
+
+Mejores prácticas para un equipo de ingenieria de software
+
+
+SDLC: Software Development Life Cycle
+
+##### Tiene como componentes del ciclo: 
+
+##### Reliability: La fiabilidad ayuda a reducir errores y garantizar un rendimiento constante
+
+##### Scalability: La escalabilidad afronta el crecimiento de manera eficaz
+
+##### Security: La seguridad ayuda a proteger los datos de su empresa y de sus clientes
+
+```
+			1. Define el ámbito
+						
+5. Mantenimiento y observación		2. Arquitectura y Diseño
+						
+						
+4. integración y testing			3. Desarrollo
+```
+
+
+1. Define el ámbito
+
+Analiza los requerimientos de los usuarios/cliente
+Entender que es lo que quieren
+Convertirlo en algo tangible 
+Alinear los requisitos y obtener un resultado
+
+
+2. Arquitectura y Diseño
+
+Diseño de la solución en si
+A partir de que alineamos los requerimientos y sabemos cuál es la solución que deseamos dar: pensar la arquitectura de esta solución
+Se definen los servicios, los modulos y la estructura de la base de datos
+
+
+3. Desarrollo
+
+Implementación de la arquitectura y diseño en código
+El programa ya estará dividido en tickets que los desarrolladores van tomando y realizando
+
+
+4. Integración y testing
+
+Se hace en paralelo con desarrollo del código
+Nos da luz a los problemas que pueda tener el código
+
+
+5. Mantenimiento y observación
+
+Después de poner el software en producción/funcionamiento
+Debemos asegurarnos de que siga funcionando 24/7
+Debemos llegar un logging/registro de eventos por los que pasa el sistema
+Debemos tener alertas cuando el software deja de funcionar.
+Debemos notar los errores antes que los usuarios y arreglarlos
+
+
+Volvemos a 1: 
+
+Una vez que terminamos con el mantenimiento pueden surgir otros requerimientos de los usuarios/clientes
+
+Realizamos los cambios en la arquitectura, desarrollo, pruebas y mantenimiento.
+
+
+### SDLC: Waterfall/Agile
+
+#### Waterfall: forma más intuitiva de llevar a cabo un proyecto. Estimás todo al principio, obtenés un presupuesto y lo haces
+
+Pero tiene menos probabilidades de salir bien que aigle (49% vs 64% de agile).
+
+
+#### Agile: hace un delivery de valor en pequeños incrementos, dándote la oportunidad de ver progreso y hacer cambios de forma frecuente. 
+
+agilemanifesto.org
+
+
+En Waterfall/cascada primero terminamos un paso y luego pasamos al siguiente.
+
+Planificación, realización y prueba de funcionamiento. 
+
+##### 1. Problema: el valor del proyecto viene al final, hasta que no este 100% terminado no lo podemos entregar al usuario/cliente para usarlo
+
+##### 2. Tiene una medida que es el salto de fe (leap of faith): conforme pasa el tiempo no vemos el funcionamiento del software hasta el final
+
+##### 3. Curva de riesgo: a medida que avanza el proyecto, el último dia, cuando debemos poner en funcionamiento el proyecto el riesgo alcanza un valor muy alto: Si no funciona debemos volver a iterar sobre el ciclo del software o puede que el cliente rechaze el producto completamente
+
+##### 4. Esto da a una serie de conflictos con el cliente/usuario sobre los requerimientos y funcionamientos, interpretaciones sobre lo que se debia hacer, discusiones económicas, etc. 
+
+
+##### En Agile no se trata de la rapidez/tiempo, se trata de poder maniobrar a tiempo ante los cambios, poder adaptarse a ellos de forma eficiente sin demasiados conflictos 
+
+Esto no significa que vamos a terminar más rapido un proyecto
+
+##### 1. Curva de riesgo: empieza alta, pero a medida que vamos cumpliendo con los objetivos/requerimientos, el riesgo va bajando dado que vamos a ir entregando iteraciones del proyecto al cliente
+
+##### 2. En las iteraciones del producto, el cliente nos va a dar feedback sobre el funcionamiento de cada version. El riesgo de terminarlo es nulo porque se desarrolla y se llega al final solo con la aprobación del cliente
+
+##### 3. Los errores son baratos: el desarrollo y la versión del producto se hace en pocas semanas. Si el cliente rechaza totalmente la nueva iteración, solo se pierde esas semanas 
+
+##### 4. En cada versión el software es completo y funcional (no se rompe). Abarcará algunas funcionalidades necesarias.
+
+##### 5. El contrato no se renegocia, si surge un necesidad en el medio, se desarrolla en unas semanas. El dinero está cubierto. 
+ 
+ 
+#### Agile Manifesto
+
+1. Individuos e interacciones por encima de procesos y herramientas
+
+2. Software funcional por encima de documentación exhaustiva
+
+3. Colaboración con el cliente por encima de negociación de contratos
+
+4. Respuesta al cambio por encima de seguimiento de un plan
+
+5. Es decir, si bien los elementos de la derecha tienen valor, valoramos más los de la izquierda.
+
+
+## FTP a hoy
+
+Deployment/Producción, poner en funcionamiento el sistema
+
+Se usaba un FTP (File Transfer Protocol) que transfiere archivos a servidores remotos.
+
+Ej: Filezilla servidor/cliente ftp 
+
+El servidor de ftp depende de un usuario y password que funciona/escucha en un puerto particular
+
+Al conectarnos podemos subir archivos al servidor
+
+Por lo general, en el servidor hay un servidor web que escucha en el puerto 80, rastreando todos los archivos en la carpeta `http://www.`
+
+Al poner los archivos ahí, podemos entrar al sitio `http://www.webX.com`, apuntará a la dirección de ip del servidor web
+
+Al servidor web le llega una request/solicitud/petición de recurso a webX y por default sirve el archivo index.html
+
+Por lo general, los servidores estan configurados para servir los archivos index por default
+
+Como desarrollador si queríamos modificar index.html, se tiene que bajar del servidor, se modifica y se vuelve a subir
+
+
+En un IDE como Dreamviewer teníamos cuatro ventanas: una para desarrollar/escribir código, otra para vista previa, otra para los recursos/assets/archivos y otra ventana para configurar/conectar el servidor ftp para subir y bajar archivos al sitio web
+
+Además no habia repo online, se copiaba y pegaba los archivos manualmente o se usaba SVN
+
+Conectabamos el sitio con todos sus recursos al servidor ftp. 
+
+
+### Deploy con ftp
+
+Se editaba el archivo local, se guardaba y se subía al servidor ftp. 
+
+No habia, commits, push, etc. 
+
+Cuando el servidor ftp corria el archivo, interpretaba el código.
+
+
+### Flujo avanzado con un servidor ftp
+
+O un flujo de trabajo más depurada: como el servidor ftp es una carpeta en un servidor remoto, a esta carpeta se la puede renombrar y ponerle versiones
+
+Lo que estaba en el root/raíz del proyecto era la versión actual 
+
+Lo demás era renombrado como v1, v2, v3, etc. 
+
+Cuando se quería revertir el proyecto por bugs o porque se rompian funcionalidades
+
+Se copiaba la carpeta de la última versión que reemplazaba a la carpeta raíz
+
+Este flujo más avanzado podía tener varios servidor con un balanceador de carga (comparte los recursos entre varios máquinas)
+
+Evitaba que al borrar los archivos no se tenga que volver a subir todo manualmente al servidor ftp
+
+Los commits/cambios de los archivos se subían a un servidor SVN
+
+Se bajaba el comprimido del proyecto y un encargado lo descomprimia y lo subía al servidor ftp
+
+Generalmente era un equipo de deploy o lo hacía la persona que desarrollaba el sitio por su cuenta. 
+
+
+## Deploy en la actualidad: ci/cd pipelines
+
+### continuous integration y continuous deployment
+
+### Con herramientas como vercel, netlify que usan el código fuente desde github/similares para deployment, nos sirve una url funcionando
+
+
+### Mejores Práctias
+
+#### Reliability/Fiabilidad
+
+1. Testing automatizado: A medida que tu sistema crece, testear de forma manual no es escalable
+
+O fiable, te podes olvidar. 
+
+Precisas un testeo automatizado y repetible. 
+
+Ej: Mas funcionalidades, complejidad, casos de uso
+
+Ej: Además de testear las nuevas funcionalidad, hay que testear no estas no hayan roto las otras existentes
+
+Ej: Todos los casos de uso lo debería hacer un sistema/máquina
+
+
+2. Despliegue e infraestructura automatizada: poder desplegar (deploy) códiog e ingra a ambientes separados de test y producción que sean repetibles.
+
+"Trata a tus servidores como ganado, no como mascotas"
+
+Ej: Cuando un servidor deja de funcionar, el proyecto en funcionamiento pasa a otro servidor
+
+Ej: Si se tienen servidores de testing y les pasa algo y dejan de funcionar, al no usar infraestructura como código (código que define la infraestructura) se depende de acordarse o de la documentación cada una de las configuraciones de esos servidores que dejaron de funcionar para que funcionen igual a los que se rompieron
+
+Ej: En un servidor cloud (AWS, Azure, G cloud) se puede replicar una app dentro de una misma región, al querer usar otra región del planeta, se tiene que recrear la misma infraestructura para la nueva región (configurar propiedades una por una) pueden surgir errores en la configuración, son errores deficiles de debuggear, hay que volver a revisar los settings
+
+##### Al definir los settings/infra como código podemos replicar la infraestructura para cualquier región
+
+
+3. Observabilidad: Una vez que el software está en producción, debemos tener Logging, Monitoreo y Alertas
+
+Para saber de los errores antes que los clientes
+
+Ej: Tenemos que registrar errores y eventos que suceden, incluso para testear la falta de eventos
+
+Ej: Al loggear ordenes de compra cada vez que sucedia una, el logg describía la orden con número, nombre y demás detalles
+
+Eso se sumaba a un monitor y alerta para ver que si no había una orden de compra en una hora, el sistema tiraba un alerta para avisar que algo estaba mal
+
+##### Es raro que no haya una compra un una empresa grande que factura millones
+
+El monitoreo chequeaba a menos frecuencia, un minuto, cinco minutos; registraba las compras de la última hora, manda una alerta
+
+Las alertas tiene distintas instancias: en la primera podría mandarse a un canal de slack o email a los desarrolladores
+
+Los desarrolladores estaban en llamada, el sistema llama a un jefe; si no atendía llamaba a otro y otros para que arreglen el problema
+
+
+##### Rs Reliability: Asegurarse de que los sistemas funcionen de forma consistente y sin errores
+
+
+#### Automated Testing
+
+1. Pruebas manuales: forma por default de testear cambios
+
+
+2. E2E test: end to end, testear la app como si fueses un humano de forma automática
+
+
+3. Integration test y Unit test: testear reglas de negocio de forma independiente (no interconectadas)
+
+Son los cimientos
+
+Como prácticas de código limpio, dividimos lo que es el dominio de una app de la parte periferica
+
+En una api tenemos una entidad que existe más allá de la propia api
+
+Debemos recolectar los datos de esta entidad 
+
+La lógica de una funcionalidad puede estar aislada de dónde traemos los datos a la app
+
+La lógica de negocio/funcionalidad no depende de la UI, tampoco depende de la base de datos, ni de una api
+
+No depende de nada todo esto debe estar testeado con unit test al cien por ciento
+
+las pruebas unitarias son pruebas de cobertura al 100% para la parte del dominio
+
+Al salir de la parte del dominio  
+
+
+Clean Architecture
+
+```
+(web, dispositivos, db, external interfaces, UI(Controladores, Gateways, Presenters (Casos de uso (Entidades))))
+```
+
+1. Las entidades reflejan las `Enterprice Business Rules`
+
+##### Lógica de negocio, comportamiento de las entidades
+
+##### Las entidades se testean con pruebas unitarias, el resto de las capas se testea con pruebas de integración
+
+
+2. Los casos de uso son `Application Business Rules`
+
+##### Funcionalidades que debe abarcar el sistema
+
+
+3. Los controladores, gateways y presenters son `Interface adapters`
+
+##### Funciones que reciben información de objetos, eventualmente se las pasará a la entidad
+
+
+4. Los devices, web, db, external interfaces, ui son `Frameworks and drivers`
+
+
+Flujo de control: 
+
+```
+Presenter  ->  Use case (output port)<>
+	|			|
+	flow   <-  Use case (interactor)
+	|			|
+Controller ->  Use case (input port)<>			
+		
+```
+
+
+### Pruebas de integración: Se testea como se integran varios componentes juntos
+
+Ej: en una api, si tenemos un controlador (recibe info para pasarsela a la entidad)
+ 
+Por ejemplo en `pokeapi`
+
+Request/solicitud/pedido de:
+
+```
+https://pokeapi.co/api/v2/pokemon/ditto
+```
+
+Mostrará toda la info de ditto:
+
+Como:
+
+```
+abilities: [] 2 items
+	0: {} 3 keys
+		ability: {} 2 keys
+			name: "limber"
+			url: "https://pokeapi.co/api/v2/ability/7/"
+			is_hidden: false
+	1: {} 3 keys
+		ability: {} 2 keys
+			name: "imposter"
+			url: "https://pokeapi.co/api/v2/ability/158/"
+			is_hidden: true
+		
+```
+
+Nos muestra los ataques y más
+
+En la prueba de integración: 
+
+Cuando nos llegue un request al controlador (el que resuelve las peticiones web)
+
+Queremos probar que devuelva un pokemon
+
+Testeamos los datos de entrada y salida
+
+Cómo se van a buscar esos datos no importa
+
+La busqueda de datos se resuelve cuando hacemos el setup de las pruebas
+
+Cuando tenemos una DB, en general no se quiere testear los métodos de la db, como select, insert (eso está probado, lo hacen los desarrolladores de la db)
+
+En la db se prueba si los comandos que enviamos son los adecuados o no
+
+Si la forma de traer los datos que estamos utilizando son los adecuados
+
+Ej: en la prueba de integración, consultamos cuantos pokemones hay (si los estamos guardando en una db)
+
+Si hay 0, después simulamos una petición para crear un pokemon con ciertos datos
+
+Testeamos que la respuesta a esa solicitud sea el pokemon nuevo y su id, al ser el primer creado (habia 0)
+
+Ahora a volver a simular/testear al consulta de cuantos pokemon hay
+
+Debería decir 1 
+
+##### En esta fase nos damos cuenta de que no nos importa como se están creando los pokemones, ni como se buscan, ni si hay una db; nos importa la respuesta a la solicitud de crear podemon y mostrar la cantidad
+
+Lo unico que queremos es testear que la info que nos mandan en una input
+
+Revisar que nuestro sistema de el output esperado/correcto
+
+
+#### DB: setup
+
+Ej: mysql
+
+Hay dos formas de testear el acceso a la db sin realmente testearlo
+
+Usarla sin testear si está funcionando o no
+
+Al hacer el setup de los test: 
+
+1. Usar ORM (Object Relational Mappper,): en vez de ejecutar queries/consultas de sql, directamente ejecutamos instrucciones expresivas como 'find_one_by_id'
+
+Podemos configurar el ORM cuando hacemos el setup de las pruebas
+
+En vez de usar mysql (necesita servidor), usemos sqlite
+
+sqlite puede correr en memoria, al correr los test; creamos la db en memoria
+
+Al terminar los test esto se borra
+
+##### Esto hace que las pruebas sean repetibles
+
+Si fuera una db real, al crear el primer pokemon; a menos que nos acordemos de borrarlo
+
+Los siguientes test van a estar inconclusos/inestables
+
+##### La clave de los test es que tengan un estado predeterminado/conocido: la db arranca vacía, al ejecutar el query nos debería dar 0
+
+##### Al hacer el setup de la db para los test, usamos sqlite porque se va a crear todo de cero, dando como resultado en estado conocido/predeterminado
+
+
+Puede pasar que al usar ORM y abstraernos de usar sql 
+
+##### Podemos perder performance, dado que el ORM funciona para que podamos usar cualquier tipo de db pero hay veces que necesitamos hacer el query puro dado que es más optimo en uso de memoria que usar el ORM
+
+
+SQL tiene varíos dialectos como lenguajes como mysql/postgresql/microsoftsql, etc
+
+##### EJ: las queries para hacer determinada cosa puede cambiar, no funcionarán entre un motor de DB y otro distinto
+
+##### Al usar uno de estos estamos atados, entonces, en el setup de los test no podríamos correr sqlite: los queries no van a funcionar
+
+
+##### En este caso: queremos tener lo mejor de los dos mundos, una db que se cree de 0 cada vez: usando docker
+
+Al crear el setup de las pruebas, primero levantamos el comando del test, levantamos una instancia de docker con una db que corra en memoria (sqlite), nos conectamos a esa db de prueba, le cargamos lo que necesitamos, hacemos todas las pruebas, al terninar cerramos la instancia de docker
+
+La proxima vez que hagamos otra prueba fuerte, levantamos la instancia de docker 
+
+
+##### Cuando tenemos ci/cd pipelines (github actions) podemos correr las pruebas cada vez que haya un pr para ver si pasa las pruebas y se combina con el código de producción o no. 
+
+
+### E2E
+
+cipress, playright para cargar páginas y le decimos interactue con ella de forma automatizada
+
+Hará click a los botones, forms, submit, cambios en la url, etc. 
+
+Simula al ser humano, si hay un elemento ui que no deja interactuar con la web, va a fallar la prueba E2E
+ 
+ 
+La diferencia E2E y las pruebas unitarias es que en las unitarias se intenta que las pruebas sean completamente aisladas, que corran de forma separada
+
+Las unitarias se ejecutan muy rapidos, las de integracion corren a mediana velocidad y las pruebas E2E se ejecutan muy lentamente
+
+Dado que las pruebas estan interconectadas entre si, va de un botón a completar un form y a enviarlo, etc
+
+Es un test enorme que contiene todas las cosas que queremos testear
+
+
+### Automated Infrastructure: infraestructura automática
+
+1. Proceso de un solo clic para entregar la nueva versión de su software a sus clientes: CI/CD (Integración Continua/Implementación Continua)
+
+2. Asegúrese de que el proceso de envío de nuevo código incluya comprobaciones para evitar la filtración de errores a sus clientes.
+
+3. Entorno independiente (replicable): servidores como ganado, prescindibles.
+
+
+Si hay demasiados pasos para poner en producción software tarde o temprano tendremos problemas
+
+Si esto se hace de forma manual, en algún momento la persona/equipo que lo hace se va a equivocar
+
+Por eso es indispensable CI/CD:
+
+Flujo hacia deploy: 
+
+Ej en github actions:
+
+```
+Code -> is code quality ok? -> Does it complile? -> Are test passing -> Deploy to test
+```
+
+1. Cada vez que hay un codigo nuevo, chequeamos que sea bueno de calidad
+
+Podemos chequear la calidad del código con herramientas como `SonarCube` (open source platform)
+
+Tienen analizadores estáticos dado que no corren el código fuente solo lo analizan. 
+
+Podemos configurar las variables de los analisis, que nos dejen comentarios en el repo en la nube de git
+
+Con esto se ahorra presupuesto en personal (tech lead) que revisa el código
+
+
+2. Chequea que compile, hay que arreglar los errores
+
+
+3. Despues de compilar, tiene que pasar los test
+
+Primero se corren los más baratos (unit test) 
+
+Después los de integración y al final E2E
+
+Cuando alguno de estos da error ni siquiere llega a correr los demás
+
+
+4. Si pasan todas las capas de test, lo deployamos a test
+
+Este es el flujo de CI/CD
+
+
+### Error pushear los pr directamente a Main
+
+##### Esto puede deberse a problemas con replicar el ambiente de test
+
+Acá es dónde tener infra automatizada con CI/CD ayuda
+
+Las herramientas como: 
+
+Pulumi, terraform, aws cloud development kit
+
+
+##### Pulumi es la más pulidad de todas, escribis en lenguajes conocidos como python, ts, js, etc
+
+Creas un nuevo bucket de s3
+
+Si corremos pulumi app, nos muestra que lo creamos
+
+Listamos con código los componentes que queremos crear
+
+Al ejecutar pulumi app, compara lo nuevo y lo que tenemos en producción en aws, azure, digital ocean, oracle, etc
+
+Tenemos que chequear la diferencia, chequeamos si está ok lo creará
+
+
+### Flujo con Pulumi
+
+#### Simple
+
+Con pulumi app creamos la infra 
+
+pulumi está organizado por stacks: 
+
+1. Producción
+
+2. Staging
+
+
+switch entre los stacks, corremos pulumi app para que nos cree exactamente la misma app en otro stack
+
+Nos permite crear la misma infra en producción y test 
+
+Solamente con ejecutar pulumi app dos veces y cambiando de stack
+
+##### El dia que queremos combiar la config, lo hacemos, corremos pulumi app en el stack de staging y luego en el de producción
+
+Nos da la diff, updatea y si nos parece correcto, lo cambia. 
+
+
+Terminal: 
+
+Cuando corremos:
+
+```
+$ pulumi app
+```
+
+Tiene outputs 
+
+como el nombre bucket creado
+
+cual es la url del bucket 
+
+Eso lo podemos definir en el código
+
+Le pedimos que lo agrege como un output
+
+#### Pulumi y Github Actions: podemos crear todo un CI/CD Pipeline que corra `$ pulumi app`, hará el update, una vez hecho, muestra el output en pulumi, vemos la url; podemos testearla que ande. Cuando mergeamos a main, hacemos lo mismo pero en la infra/bucket de producción
+
+
+Lo otro que podemos hacer es no solamente podemos tener ambientes de prueba y producción
+
+#### Podemos tener blue green deployment
+
+Hay varias formas de implementarlo pero esencialmente
+
+Si usamos azure con sus slots
+
+En app services podemos tener el slot de producción, staging
+
+Podemos tener un slot green y un slot blue
+
+Directamente podemos tener dos aplicaciones distintas
+
+La app blue, y la green 
+
+Le podemos poner un load balance (compartir recursos en varias máquinas)
+
+Elige dónde mandar el trafico y acá aparecen varias formas de configurarlo
+
+Por geolocalización, mandar el trafico al que está más cerca
+
+O mandarlo a uno y después a otro. 
+
+Y más formas de hacer el load balancing
+
+
+Otra de las cosas que nos permite hacer es modificar el peso de dónde mandamos el trafico
+
+Llevarlo 100% al blue o al green o 50 y 50
+
+
+Si queremos lanzar una versión nueva a producción
+
+Y revisar si funciona antes de que les llegue al cliente
+
+En el CI/CD pipeline en la configuración dónde hacemos el release 
+
+Decimos que tenemos dos sistemas que construimos blue y green
+
+Dos apps que hacen exactamente lo mismo
+
+Decimos que mandamos todo el trafico a green o blue (a uno solo)
+
+Y aprovechamos el otro para deployar código nuevo
+
+Así tenemos en el sitio: 
+
+El usuario entra, cae en el load balancing
+
+Va a elegir si lo manda al blue o al green
+
+Podemos entrar directamente a alguno de estos dos
+
+Podemos apuntar a cada uno de los servidores
+
+##### Si sabemos que siempre vamos a deployar las versiones nuevas a blue, entramos a blue.sitiox.com; nos fijamos en producción, ejecutamos las cosas criticas, que todo funcione y continuamos con el proceso de deployment 
+
+##### En el medio podemos poner un manual check: ej, una orden para deployar en blue y que espere media hora hasta que alguien revise y aprete el botón continuar; si nadie lo hace volver hacia atras; al código viejo y dejar el trafico 50 y 50
+
+##### Cuando sale todo bien, al continuar lo que hace es mandar el 100% del trafico que antes apuntaba al código viejo, lo apuntamos al código nuevo; deployamos en green que era el código viejo, ahora ambas tiene el código nuevo y el último paso podemos volver a tener 50 y 50
+
+##### Son estrategias para hacer release de código sin que se rompa el código que funciona
+
+##### Es una inversión que vale la pena y queda siempre
+
+
+```			(Manual Test)
+		E2E Test(UI test)
+	Integration Test
+Unit Test
+```
+
+
+## Observability
+
+1. Una vez que estás en producción (o en test), querés saber cómo están operando tus sistemas. 
+
+Para esto se usa Logging, Monitoring y Alerting. 
+
+2. Es importante encontrar errores antes que tus clientes. 
+
+Cada cloud provider tiene sus propias herramientas, y hay algunas que son agnósticas (DataDog, Sentry, NewRelic)
+  
+
+Estas herramientas nos proveen de datos, gráficos de usos, monitoreo de visitas
+
+Se usan para agrandar o disminuir los servidores
+
+Podemos proyectar la medida de ellos, según algún evento
+
+Escaladas en potencias (vertical) o en cantidad (horizontal)
+
+##### Estos sistemas nos permiten ver qué es lo que esta pasando con los usuarios, la web y sacar conclusiones de ello
+
+
+Para encontrar los errores tendremos un panel que rastrea los errores, con nombre, motivo, hora
+
+La cantidad de usuarios afectados por esos errores
+
+Estos errores son un reflejo de lo que sucede en el código fuente 
+
+SyntaxError, TypeError, ReferenceError, Error, N+1 API Call, etc
+
+
+
+## Escalabilidad: Manejar la demanda de forma eficiente
+
+1. Cloud: Cómo escalar, horizontal y vertical
+
+2. Optimización de uso de base de datos 
+
+	1. Separar en base de datos transaccional y analítica
+	
+	2. Caching: Guardar información que no cambie frecuentemente en medios de almacenamiento más rapido
+
+
+##### Cuando la app empieza a crecer en usuario tiene que crecer en infraestructura
+
+Nuestro sistemas necesitan más recursos
+
+### Cuando queremos escalar en cloud
+
+##### 1. Vertical: Máquinas más grandes
+
+##### 2. Horizontal:  Más maquinas
+
+
+Ej al tener dos app (blue y green) y un load balancer
+
+sería escalar de forma vertical 
+
+Por lo general en los sistemas empieza a fallar la db
+
+Hay algunas formas de manejarlo
+
+1. Separar un debe en transaccional y analítica (tienen funciones distintas)
+
+2. Caching: Es la parte de queues/colas para operaciones asíncronas
+
+Entramos en sistemas distribuidos que son complejos y solo para casos/servicios muy especificos/ empresas muy grandes
+
+
+### Cloud
+
+1. Proveedores en la nube (cloud providers) hacen que sea facíl agregar recursos a medida que los precisás
+
+No se compra hard, es un servicio PAYG (Pay as you go)
+
+Pagás lo que usas
+
+
+2. IssS, PaaS 
+
+	1. Infrastructure as a Service: manejas el sistema entero pero no el hard)
+	2. Platform as a Service: Deployás tu software, el proveedor se encarga de los backups, parches de seguridad, etc. 
+	3. Software as a Service: aplicaciones listas para ser usadas por el usuario final, completamente manejadas por el proveedor (ej, Algolia para búsquedas)
+	
+
+Los proveedores en la nube como AWS, Azure, G gloud, Oracle, etc
+
+Hacen que se fácil agregar recursos a medida que los necesitas
+
+Al contrario de comprar un hardware/servidor de 5000usd 
+
+Si no te va bien lo tenes que vender y si te va bien tenes que comprar otro más
+
+Gastos en la conexión de internet, centro de datos, ubicación, etc
+
+
+Los proveedores en la nueve tiene estas máquinas super costosas 
+
+Te dejan usar una máquina virtual (parte del poder del servidor)
+
+##### A partir de un plan básico, cuando se necesita más máquina; configuras el cliente para eso, pagas y el servidor es más grande
+
+##### También podemos configurar más máquinas virtuales y tecnológica como un load balancer
+
+Pagás a medida que los necesitas
+
+
+### Tipos de cloud provider
+
+IaaS, PaaS, SaaS
+
+#### IaaS: es la compra de una máquina virtual, no el manejo de hard; esta en un data center que provee backups, mantenimiento, seguridad cosas de las que no tenemos que preocuparnos (las pagamos con el servicio)
+
+##### Te toca encargarte del sistema operativo, su seguridad, el software que instalas
+
+
+#### PaaS: ej, en AWS está AppRunner, Netlify, Vercel se usan para deployar; le pasas el gitHub/repo/proyecto/docker, etc 
+
+##### Este proveedor se encarga del backup, los parches de seguridad, no sabes cuál es el sistema operativo que corren, las aplicaciones que usan
+
+##### Solo te proveen una url para tu proyecto
+
+
+### Cloud: Horizontal vs Vertical 
+
+#### Vertical: Máquinas más grandes. Pagas el 100% lo uses o no. 
+
+#### Horizontal: Más máquinas. Setup más complejo pero permite tener costos más (solo agregás más máquinas si la capacidad de CPU es 80% o más y reducila cuando llega al 60% o menos). Precisa un load balancer
+
+##### Por esto es más importante escribir código que no esté atado a una única instancia, para poder escalar (no escribe el disco duro ni depender de sesiones existentes en memoria)
+
+
+#### Compra del plan: ej, 8 cpu, 16 gb de memoria; cuando en este plan el cpu este al 80% podemos aumentar otra máquina o si está al 60 eliminar este plan extra
+
+##### Permite lidiar con la demanda que va creciendo de a poco da tiempo a escalar, pero si por algún motivo tenemos llegan 800 mil request de un segundo a otro no hay nada que pueda escalar tan rapido. Hay que poner un limite o un script que acepte solicitudes más grandes, más chicas
+
+Podes comprar en servicio de un CPU más grande con más memoria, etc
+
+
+### Vertical: 
+
+Compra del hard fisico. Pagás 100% lo uses o no
+
+
+### Saas: usamos un software como usuario final, ej Algolia para busqueas, debemos cargarle todos los recursos que se puedan buscar, un motor de busqueda que lo usamos como si fuera una API
+
+
+### Cloud IaaS, escalabilidad horizontal y Pulumi: servidores en diferentes partes del mundo
+
+Al tener un cloud y pulumi no tenemos que crear un servidor de cero
+ 
+Con Pulumi replicamos los servidores
+
+Lo mismo con los ámbientes de prueba para los desarrolladores dado que no trabajan 24/7, configurar los dias y horarios que trabajan
+
+Si hay cientos de desarrolladores, los ambientes serán decenas
+
+Si haríamos todo esto local/horizontal tendriamos que tener personal y gastar energia para algunas de estas operaciones de mantenimiento
+
+
+
+### Optimizar la DB: dado que lo primero que puede fallar es la db
+
+1. Problema: 
+
+"Sistema lento", o los analistas no pueden obtener los reportes "pesados" en las horas laborales o tardan demasiado - cuando ocurren estos reportes, los usuarios finales "sufren" la lentitud del sistema
+
+
+2. Se puede arreglar con: Optimizando índices y revisando queries (simple)
+
+
+3. Se puede arreglas con: Caching y Queues (colas)
+
+##### Microservicios/Sistemas distribuidos: Puede ser complicado de implemetar, la única forma de escalar millones de clientes
+
+
+4. Se puede arreglas: Separando las bases de datos transaccionales y análiticas 
+
+
+#### Sucede cuando la función análitica está compitiendo con la función operacional
+
+Soluciones: 
+
+1. Revisando indices para ver que sean los adecuados
+
+##### Ej: Podemos hacer en cada columna a la que accedamos de forma frecuente le ppodemos poner un indice para que sea más fácil encontrarlo. Así no tenemos que revisar toda la DB para encontrar lo que buscamos
+
+Podemos tener un indice por tipo de negocio: ej, numero de tel por restaurant, supermercado, etc
+
+##### Al hacer esta organización ocupa espacio, tiempo al ingresar un registro nuevo para ubicarlo dónde corresponde al indice. Hace que sea rapido para leer pero para escribir es lento
+
+
+2. Caching - Queues: complicado de escalar, pero es la única si tenemos millones de clientes
+
+
+3. Separando db en transaccional y análitica
+
+
+### Caching - Queues
+
+1. Buen candidato: información que no se escribe/updatea de forma frecuente pero se lee mucho
+
+2. Ejemplos: Caching de archivos (imágenes y documentos), información de productos, resultados de búsqueda
+ 
+```
+Cache
+|
+App <-> DB
+```
+
+#### Flujo Cache - App - DB
+
+Primero verificamos que tenga la información que queremos transmitir
+
+Si no la tiene, la buscamos a la base de datos y despues la guardamos en el cache para que ya la tenga y no tenga que volver a la db
+
+
+#### Candidatos para caching: información que se repite 
+
+Dar de alta un producto, lo podríamos hacer cada semana; una vez por mes o maximo una vez por día. 
+
+Durante el dia ese producto lo consultaron cientos de veces le damos cientos de veces la misma información
+
+Como está en el cache no fuimos cientos de veces a la db
+
+Este tipo de información que se repite podemos guardarla en el cache
+
+
+Herramientas como Redis que es una base de datos en memoria 
+
+Es un key:value store, en un producto; un key puede ser el ID o el SKU o un elemento que ayuda a identificar el producto
+
+Y el valor puede ser un objeto json con toda la info que se necesita para mostrarlo en el frontend
+
+
+Tambien podemos hacer caching de assets como archivos, documentos, imagenes
+
+Resultados de busqueda; cosas que no tienen nada que ver con la info en DB
+
+Para los assets se usa un CDN (Content Delivery Network)
+
+
+#### Queues (colas): ej RabbitMQ (Broker)
+
+Es un sistema/servidor de colas
+
+```
+				Producer
+				
+Exchange 	Direct     Topic 		Fanout
+			|            |				|
+		 (binding key)  (Routing pattern)
+Bindings                 |              |
+		 (pdf process)   |              |
+			|	 (eu.de.)/\ (us.#)     /|\
+Queues 		q1 		q2 		q3 		q4  q5 q6
+	
+				Consumer
+```
+
+#### Fanout: pregunta de entrevista
+
+Ej: Cuando compramos un producto, hay un par de cosas que tienen que pasar 
+
+##### Facturar el pago, pagar, mandar un email de confirmación, shipping, mandar la orden shipping al warehouse, descontar stock, informe al sistema de finanzas, mandar info a google analitics para trackear que se hizo la orden
+
+##### Esto demuestra que al menos hay como 5 cosas para hacer, si lo hacemos en el momento del checkout, lo unico que se hace de forma asincrona es el pago/cobro
+
+##### Lo demás puede esperar, no hacemos todas las llamadas a las apis porque el cliente esperaría mucho para terminar de procesar el pago, se perdería la venta
+
+##### Queremos que este proceso critico termine rapido, lo demas se trata por separado
+
+
+#### Hacemos un sistema de cola en el que tenemos un message queue
+
+Ponemos un mensaje, tenemos el producer (sistema que hace el checkout), el producer pone un mensaje que dice que la orden ha creado y su id
+
+Podemos hacer que esto vaya a un queue en particular
+
+Ej: Flujo 1: exchange direct -> binding key, fileX process -> queue 1
+
+O podemos hacer routing key: Flujo 2: exchange Topic -> binding routing pattern eu.de.etc -> queue 1
+
+En el flujo dos las ordenes tiene su ruta: las canceladas va a la cola 2, las aceptadas/creadas a la 3 (en el gráfico)
+
+Acá se empieza a acumular los mensajes
+
+
+##### En fanout: flujo 3: exchange Fanout -> queue 4, 5 6
+
+Al crearse la orden, entonces, puede que cada sistema tenga su propia cola
+
+Ya no haría falta producir cientos de mensajes, una para cada sistema
+
+Tenemos el mensaje de que se creo la orden
+
+Todas las colas interesadas en ese mensaje lo recibian
+
+Del otro lado tenemos al Consumer, podemos tener cientos en paralelo
+
+Se van consumiendo todos los mensajes y van procesando la orden
+
+En el sistema de stock procesaba las ordenes, descontaba 
+
+Al sobrevender, el sistema de stock le manda al sistema de vista de producto que ya no había stock y este lo mostraba en la web
+
+##### Esto forma parte de sistemas distribuidos: complejos pero es la única forma de llegar a millones de clientes
+
+Al contrario de un sistema monolitico en los que tenemos muchas cosas, funciona o no funciona
+
+El distribuido si deja de funcionar un sistema se comunica con el otro que si sigue
+
+
+### Analytical vs Transactional DBs
+
+1. Opción: Implementar una read-only replica (Simple)
+
+2. Opción: Implementar ELT (Extract, Transform, Load)
+
+Es complejo, requiere data engineering y poner la data en Snowflake u otra DWH similar
+
+```
+				ELT
+
+Data Sources 										Transform
+  Email CRM	 -> Extract -> Load -> data warehouse
+  Backend DB
+```
+
+Al tener problemas con la DB podemos separar la DB en transaccional y analitica
+
+Una forma es implementar una `read-only replica`
+
+Tomamos una DBl, creamos una replica read-only
+
+No se podrá escribir, a medida que se va escribiendo en la DB principal
+
+Se va replicando en la DB de read-only 
+
+Los analistas usarán la read-only replica 
+
+Los clientes operacionales usarán la master/main
+
+Es una forma simple de solucionar los problemas de la DB
+
+Tiene su limite cuando escala demasiado el sistema
+
+
+Cuando tenemos millones de clientes necesitamos una `Data Platform`
+
+Se necesita ingenieria de datos dónde tenemos un `data warehouse`
+
+Esto tendrá todos los `Data sources` se cargan esos datos
+
+Los datos se cargan mediante `script`, podemos usar herramientas como 'Apache Airflow'
+
+El data warehouse puede ser una herramienta com 'Snowflake'
+
+O 'ClickHouse' que es open source
+
+
+##### Con esto podemos crear vista que tiene toda la info que necesitan los analistas, ya no necesitarán hacer queries/consultas gigantes que tardan mucho en correr; directamente hacen una consulta como select from sales/ventas para obtener las ventas de la última semana, dias, mes, etc
+
+
+## Security: Proteger los datos de los clientes y de la empresa
+
+1. Entender la postura de seguridad: Lo más seguro es no tener datos
+
+2. Es un "arms race". Para implementar todas las herramientas de seguridad que existen hoy. Se pueden gastar millones
+
+3. E incluso así... 
+
+El 74% de los "data Breaches" necesitaron de un elemento humano, como por ejemplo caer ante un `phising`
+
+El 95% de los errores de ciberseguridad son debido a errores humanos
+ 
+ 
+##### Lo más seguro es no tener datos, pero una empresa necesita datos de consumidores para funcionar, entonces, hay que resguardarlos
+
+##### Tampoco se guardan datos porque si, si se guardan datos porque si, al menos se guardan datos de identificado, analiticos; no quién los hizo que esa persona no puede ser trackeada
+
+##### Según los paises las multas por perder documentos de identidad de los clientes pueden resultar en millones de dolares o nada
+
+##### Al implementar la mejor tecnología (miles de dolares), los hackers la revierten; después sale otra herramienta costosa para evitar lo anterior y así el ciclo
+
+##### Las herramientas más potentes pueden costar 3-5 millones usd al año (20000 - 30000 usd al mes) dependiendo del volumnen de clientes, esto es el costo de lo mejor
+
+##### Se trata de adecuar a lo que precisamos, al no guardar datos sensibles
+
+##### Ej: una herramiento com `Sentinel One` para protener cada endpoint sale 1000 usd, si recien empezas tal vez no necesitas ese nivel de seguridad
+
+##### Tal vez a las empresas les interesa más tu perfil de usuario para publicidad o algún producto que tus datos personales (?)
+
+##### Se trata de entender hasta dónde y siempre es una cuestion de riesgo/tolerancia tal escenario
+
+##### Aunque se gasten millones por año, dos datos se filtran por errores humanos en el 70% de los casos
+
+##### Es más efectivo apelar al error humano por parte de los hackers
+
+##### Si RH no está entrenado, enfocado en la seguridad, que tiene que cuidar a los clientes, etc
+
+
+### Cosas y herramientas que deberías usar ya mismo como usuario informatico
+
+##### 1. Usar un password manager (Bitwarden), nunca un txt plano
+ 
+##### 2. Usar MFA/2FA cuando sea posible (aunque tengan nuestro usuario y contraseña de mail, nos va a llegar un código al telefono para autenticar)
+
+##### 3. Para trabajar como proveedores (como AWS), creá una admin account (como admin@, info@midominio) que no sea de uso diario (sería el dueño de todo), en el día a día usar la cuenta personal  (así tenés que loguearte de forma conciente). Si acceden a nuestra cuenta personal, si no tienen la cuenta de admin, no pueden complicarlos con la factura/biling, seguridad, etc
+
+##### 4. Curso básico de phising y ciberseguridad (Ni siquiera contestar ni abrir mail dado que lo tienen trackeado si sabrán que existimos)
+
+##### 5. Como deb, familiarizate con `https://owasp.org/Top10/` (top de prácticas maliciosas para estar al tanto). Si estamos haciendo una app que tiene distintos roles (Logeado y user premium, etc) o incluso una app que tiene un solo rol (loggeado y no loggeado). Broken Access Control significa que el usuario se logeo y redirecciono al usuario a una página la que le permite su rol; pero si el usuario malicioso sabe cuál es la otra página (en vez de usuario/1; pone usuario/2 al no tener un control interno implementado a nivel de API del backend) para evitar que el usuario logeado use un recurso que no le corresponde. Si el único chequeo que haces es si está logeado o no, mostras información de otros usuario. 
+
+##### Es un error de código en el sistema, el usuario malicioso se logea y puede acceder a los ID de otros usuario
+
+##### Se recomienda un ID interno y un ID externo, Id externo es un GUID/UUID. En vez de tener `misitio.com/user/1`, tenemos `misitio.com/user/09876234-24ae-6548-a6542b046382. Así el usuario malicioso no puede ir a /user/1 a /user/2, /user/3 etc. No tendría nada para modificar
+
+
+
+## Memo: tiene como finalidad proponer herramientas o cambios en el desarrollo de código
+
+### Sumario Ejecutivo: 
+
+##### Con datos planteamos el problema y ofrecemos una solución, cómo implementarlo, tiempo y costo económico
+
+Ej: Se ha notado 30 errores de cara al cliente porque hicimos los pr directo a main 
+
+Para resolverlo podríamos implementar Pulumi, tardaríamos dos semanas en hacerlo, la cantidad de errores bajaría a 90% 
+
+Dar explicación de lo que es la herramienta, cómo lo harías, costo, etc. 
+
+
+### Pulumi es pago, pero es gratis si lo hostear usando su código libre
+
+En esta versión libre no dispone de concurrencia, dado que no se cambian muchas partes de la app a la vez
+
+
+### Herramientas para Frontend y Backend
+
+DataDog (muy cara, pero el mejor), NewRelic, Sentry (más simple de implementar y más económico)
+
+AWS y Azure tiene sus erramientas
+
+
+### Usar el que puedan económicamente, lo recomendable es no quedarse sin alguna de estas herramientas, dado que cuando algo falla no sabrán porqué
 
 
 
