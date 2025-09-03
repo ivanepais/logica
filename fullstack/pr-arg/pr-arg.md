@@ -11044,7 +11044,6 @@ El 95% de los errores de ciberseguridad son debido a errores humanos
 ##### Se recomienda un ID interno y un ID externo, Id externo es un GUID/UUID. En vez de tener `misitio.com/user/1`, tenemos `misitio.com/user/09876234-24ae-6548-a6542b046382. Así el usuario malicioso no puede ir a /user/1 a /user/2, /user/3 etc. No tendría nada para modificar
 
 
-
 ## Memo: tiene como finalidad proponer herramientas o cambios en el desarrollo de código
 
 ### Sumario Ejecutivo: 
@@ -11127,5 +11126,12 @@ Es un array de objetos que será recorrido, analizado por las funciones puras y 
 
 ## Clases 
 
+
+
+# React
+
+
+
+# Backend
 
 
