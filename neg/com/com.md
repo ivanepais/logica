@@ -37,6 +37,21 @@ Escucha activa y preguntas.
 Tareas prácticas: micro-ensayos diarios, grabar 2–3 presentaciones cortas por semana, análisis de conversaciones.
 
 
+## Principios de comunicación: emisor, mensaje, canal, ruido, feedback.
+
+## Escritura clara: estructura, párrafo, tono, precisión.
+
+
+## Presentación oral: preparación, estructura (inicio-cuerpo-cierre), manejo de nervios.
+
+
+## Comunicación no verbal: postura, mirada, gestos, proxemia.
+
+
+## Escucha activa y preguntas
+
+
+
 # N2. formatos y herramientas
 
 Storytelling y narrativa aplicadas a presentaciones y contenidos.
