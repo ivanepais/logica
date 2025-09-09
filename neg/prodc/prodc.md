@@ -572,6 +572,3 @@ Entregables: documento de 8–12 páginas, Excel/Google Sheets con cálculos, mo
 
 
 
-
-
-
