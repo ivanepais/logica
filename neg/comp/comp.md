@@ -1,4 +1,4 @@
-# Competencia
+# Competencia/Competitividad
 
 
 # Innovación, Eficiencia, Riesgo, Audacia, Adaptación, Lentitud, Errores historicos

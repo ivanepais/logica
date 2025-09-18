@@ -454,7 +454,7 @@ La empresa está haciendo M&A frecuente y necesita integrar/gestionar múltiples
 
 #### Ejemplos 
 
-Históricos: General Motors, DuPont, Sears (casos clásicos que ilustran la adopción de M-form).
+##### Históricos: General Motors, DuPont, Sears (casos clásicos que ilustran la adopción de M-form).
 
 ##### Modernos: grandes corporaciones diversificadas suelen operar una versión del M-form (p. ej. conglomerados industriales, compañías de consumo con divisiones por categoría)
 
@@ -1175,29 +1175,1930 @@ Capacitar managers en cómo leer y aplicar una RACI.
 
 # Michael E. Porter — Competitive Strategy (1980)
 
+## 1. Tesis central
+
+##### La rentabilidad de una industria no es aleatoria: viene determinada por su estructura (fuerzas competitivas) y por la posición que una empresa ocupa dentro de esa estructura
+
+##### La estrategia consiste en elegir y sostener una posición rentable frente a esas fuerzas.
+
+
+## 2. Five Forces (las cinco fuerzas de la competencia)
+
+##### Marco diagnóstico para entender la intensidad competitiva y la rentabilidad estructural de una industria:
+
+### 1. Rivalidad entre competidores existentes
+
+##### Elementos: número y tamaño de competidores, tasa de crecimiento del mercado, costes fijos/almacenamiento, diferenciación, costes de salida.
+
+##### Impacto: alta rivalidad reduce precios y márgenes.
+
+
+### 2. Amenaza de nuevos entrantes
+
+##### Barreras de entrada: economías de escala, diferencias de costo, acceso a canales, diferenciación de producto, capital requerido, políticas regulatorias.
+
+##### Alto riesgo de entrada presiona márgenes
+
+
+### 3. Poder de negociación de los proveedores
+
+##### ¿Pueden los proveedores subir precios o reducir calidad? 
+
+##### Depende de concentración, sustitutos, coste de cambio, importancia del insumo.
+
+
+### 4. Poder de negociación de los compradores
+
+##### Clientes fuertes pueden presionar precios/condiciones si compran en volumen, el producto es estándar o tienen información perfecta.
+
+
+### 5. Amenaza de productos sustitutos
+
+##### Soluciones alternativas (distintas tecnologías o ofertas) que limitan el precio que la industria puede cobrar.
+
+
+##### Five Forces te dice qué tan atractivo es competir en esa industria y qué presiones enfrentarás.
+
+
+## 3. Posicionamiento competitivo: las tres estrategias genéricas
+
+##### Permiten lograr ventaja sostenible. Importante: mezclarlas de manera incoherente puede causar “stuck in the middle”.
+
+### 1. Liderazgo en costes (Cost Leadership)
+
+##### Ser el productor de menor coste en el sector. Requiere escala, procesos eficientes, economías de experiencia, tecnología superior en coste.
+
+##### Riesgo: competidores igualan costes; pérdida de diferenciación.
+
+ 
+### 2. Diferenciación (Differentiation)
+
+##### Ofrecer algo percibido como único (calidad, marca, servicio, tecnología) que permita cobrar un premium.
+
+##### Riesgo: imitación, cambio en preferencias.
+
+
+### 3. Enfoque (Focus / Niche)
+
+#### Concentrarse en un segmento de mercado estrecho (geográfico, por tipo de cliente, por producto) y aplicar liderazgo en coste o diferenciación dentro de ese nicho.
+
+
+## 4. Posicionamiento vs. recursos
+
+##### Posicionamiento: elegir un lugar en la industria (qué actividades realizar y cómo) para crear una combinación única de valor.
+
+##### Porter enfatiza la configuración de actividades (no solo las actividades individuales): la ventaja viene de un conjunto coherente de actividades que se refuerzan entre sí (fit).
+
+
+## 5. Cadena de valor (Value Chain)
+
+##### Divide la empresa en actividades primarias (logística, operaciones, marketing & ventas, servicio) y de apoyo (infraestructura, RRHH, tecnología, compras).
+
+##### Objetivo: identificar dónde se crea valor y dónde hay potencial para reducir costes o diferenciarse.
+
+##### Enlaza con la estrategia porque permite ver qué actividades deben priorizarse, externalizarse o integrarse.
+
+
+## 6. Otros conceptos
+
+##### Estructura de la industria: entender cómo se generan rentas económicas en la industria (no solo análisis interno).
+
+##### Barreras de movilidad / grupos estratégicos: dentro de una industria hay grupos de empresas con estrategias/posiciones similares; moverse entre grupos puede ser difícil.
+
+##### Sostenibilidad de la ventaja: depende de barreras a la imitación y coste para competidores de replicar tu posición
+
+##### Política competitiva: acciones para influir en las fuerzas (p. ej. elevar barreras de entrada, crear lealtad de clientes
+
+
+## 7. Aplicación
+
+##### 1. Mapea la industria: identifica competidores, tamaños, cuotas, crecimiento.
+
+##### 2. Haz un Five Forces: evalúa intensidad y fuentes de presión.
+
+##### 3. Identifica grupos estratégicos: quién compite de forma similar y qué movilidad existe.
+
+##### 4. Analiza tu cadena de valor: identifica actividades donde puedas reducir coste o aumentar diferenciación.
+
+##### 5. Escoge tu posición: liderazgo en costes, diferenciación o enfoque (coherente con recursos y mercado).
+
+##### 6. Diseña la configuración de actividades (fit): cómo tus procesos, estructura y políticas se refuerzan mutuamente.
+
+##### 7. Monitorea y protege: mide KPIs, vigila entrantes y sustitutos, eleva barreras cuando sea posible.
+
+
+## 8. Ejemplos
+
+##### Aerolíneas tradicionales: alta rivalidad, bajos márgenes → competir por costes (low-cost carriers) o nichos premium.
+
+##### Industria del lujo: poder de precios por diferenciación; barreras de entrada por marca y know-how.
+
+##### Software SaaS: efectos de red y costes marginales bajos; sustitutos y dinámicas de plataforma cambian el análisis tradicional.
+
+
+## 9. 
+
+## 9. Críticas y extensiones importantes
+
+Dinamismo y cambio tecnológico: Five Forces es estático; en industrias digitales y rápidas se requieren marcos dinámicos (capacidad de adaptación, ecosistemas).
+
+Resource-Based View (RBV): Porter enfatiza la estructura industrial; RBV argue que recursos y capacidades internas también determinan ventaja sostenible. Hoy ambos se complementan.
+
+Complementors / Plataformas: algunos proponen considerar complementadores (empresas que añaden valor a tu producto) como una “sexta fuerza”.
+
+Estrategia basada en ecosistemas: en plataformas y redes, la interdependencia con otros actores modifica el análisis tradicional.
+
+
+## 10. Rs
+
+##### 1. Analiza la estructura de la industria (Five Forces) para entender la rentabilidad potencial.
+
+##### 2. Elige una posicion coherente (coste, diferenciación, o enfoque) y diseña actividades que encajen (fit).
+
+##### 3. Usa la cadena de valor para encontrar palancas de coste o diferenciación y protege la ventaja vía barreras y control de recursos críticos.
+
+
 
 # Michael E. Porter — Competitive Adventage
 
+## 1. Tesis central
+
+##### La ventaja competitiva de una empresa surge de la capacidad de realizar actividades (y combinarlas)
+
+##### De modo que se cree más valor para el cliente (o el mismo valor a menor coste) que los rivales
+
+##### La ventaja competitiva es actividad-centrada: no basta con recursos aislados; importa cómo se organizan las actividades y sus interrelaciones.
+
+
+## 2. Cadena de valor (Value Chain)
+
+Herramienta central. 
+
+##### Descompone la empresa en actividades primarias y de apoyo para identificar dónde se crea valor y dónde hay potencial para reducir costes o diferenciarse.
+
+##### Actividades primarias: logística interna, operaciones, logística externa, marketing y ventas, servicio.
+
+##### Actividades de apoyo: infraestructura de la empresa, gestión de recursos humanos, desarrollo tecnológico, compras.
+
+##### Margen = Valor total percibido por el cliente − Coste total de realizar las actividades.
+
+
+##### Objetivo: optimizar la cadena para aumentar el margen, por dos vías:
+
+##### aumentar el valor percibido (diferenciación)
+
+##### reducir el coste de las actividades (liderazgo en costes)
+
+
+## 3. Cost drivers (qué mueve el coste en cada actividad) 
+
+##### Detalla los drivers de coste que pueden variar entre empresas y actividades, y que permiten entender cómo bajar costes de forma sostenida:
+
+##### Economías de escala
+
+##### Economías de alcance / alcance de actividades
+
+##### Curva de aprendizaje / experiencia
+
+##### Capacidad de utilización (fixed cost spread)
+
+##### Tamaño y alcance de la planta (configuración de activos)
+
+##### Tecnología y automatización
+
+##### Diseño del producto (simplicidad reduce coste)
+
+##### Política de compras / relaciones con proveedores
+
+##### Localización y costes logísticos
+
+##### Incentivos/contratos laborales y costes de personal
+
+##### Mapear los drivers relevantes por actividad para ver dónde hay potencial de ahorro y si esos ahorros son imitables.
+
+
+## 4. Differentiation drivers (qué aumenta valor percibido)
+
+##### Palancas que aumentan el valor que el cliente reconoce:
+
+##### Características del producto (funcionalidad, calidad)
+
+##### Red de servicios y soporte (rapidez, accesibilidad)
+
+##### Marca y reputación
+
+##### Canales y distribución (comodidad, cobertura)
+
+##### Complementarios / ecosystem (ecosistema de productos/servicios que aumentan utilidad)
+
+##### Diseño y experiencia de uso
+
+##### Relación con el cliente (personalización, CRM)
+
+##### Identificar cuáles son relevantes en tu industria y en qué actividades se construyen.
+
+
+## 5. Fit (encaje) entre actividades
+
+##### La ventaja real proviene del “fit” entre actividades, no sólo de hacerlo bien en cada actividad. Tipos de fit:
+
+##### Fit simple: alineación entre actividades adyacentes (p. ej. diseño y fabricación).
+
+##### Fit de cadena: actividades a lo largo de la cadena se refuerzan mutuamente.
+
+##### Fit sistémico: múltiples actividades crean sistemas únicos difíciles de imitar.
+
+##### El fit crea costos de imitación: un competidor que copie una actividad sin el resto del sistema obtiene poca ganancia.
+
+
+## 6. Sistema de valor / value system
+
+##### Extiende el análisis hacia afuera: la cadena de valor de la empresa encaja dentro del sistema de valor de la industria (proveedores, distribuidores, clientes finales).
+
+Evaluar el sistema permite detectar:
+
+fuentes de ventaja en proveedores o canales
+
+oportunidades para reconfigurar relaciones (alianzas, integración vertical u horizontal)
+
+puntos donde los complementarios aumentan valor
+
+
+## 7. Análisis competitivo y benchmarking
+
+##### Recomienda comparar actividades con rivales
+
+##### identificar diferencias de coste y sus causas
+
+##### descubrir ventajas de diferenciación basadas en actividades concretas
+
+##### priorizar acciones que aumenten margen o valor
+
+##### Herramientas prácticas: activity-based accounting, mapas de actividades, tablas de drivers por actividad.
+
+
+## 8. Implementación estratégica
+
+##### 1. Desagrega la empresa en actividades (cadena de valor).
+
+##### 2. Identifica costes y drivers en cada actividad (activity-based costing ayuda).
+
+##### 3. Determina fuentes de valor para el cliente y dónde se generan en la cadena.
+
+##### 4. Busca oportunidades de mejora: recorte de costes, aumento de valor, o realineamiento de actividades.
+
+##### 5. Diseña la configuración de actividades (fit) que soporte la estrategia elegida (coste o diferenciación).
+
+##### 6. Protege la ventaja mediante barreras a la imitación (combinación única de actividades, relaciones con proveedores, derechos, cultura).
+
+##### 7. Monitorea y adapta: medir impacto, revisar drivers y respuesta de competidores.
+
+
+## 9. Ejemplos
+
+##### IKEA: diseño del producto (flat-pack) + logística + tiendas + experiencia de montaje → fit que reduce costes y mantiene diferenciación.
+
+##### Toyota: sistema de producción (lean), relaciones con proveedores, ingeniería → fit que reduce costes y mejora calidad.
+
+##### Apple (ejemplificando drivers de diferenciación): diseño, marca, retail/servicio, integración hardware+software → fit sistémico.
+
+
+## 10. Críticas y límites
+
+##### Enfoque de actividades puede ser estático: en industrias digitales la dinámica de plataformas/efectos de red requiere matices (aunque el enfoque sigue siendo útil).
+
+##### Requiere datos finos: activity-based costing y análisis por actividad pueden ser costosos de implementar.
+
+##### Visión centrada en empresa: debe complementarse con análisis de ecosistemas y capacidades dinámicas (RBV y teoría evolutiva).
+
+##### No garantiza ejecución: identificar ventaja no es lo mismo que reorganizar con éxito la operación.
+
+
+## 11. Herramientas
+
+##### Plantilla de Value Chain (mapa de actividades).
+
+##### Matriz drivers de coste / drivers de diferenciación por actividad.
+
+##### Benchmarking de actividades vs 2–3 competidores.
+
+##### Activity-based costing para asignar costes a actividades.
+
+##### Mapa de fit (diagrama que muestra cómo actividades se refuerzan entre sí).
+
+
+## 12. Checklist Competitive Advantage
+
+##### 1. Cuáles son las actividades primarias y de apoyo que más afectan al coste y al valor?
+
+##### 2. ¿Qué drivers de coste dominan en cada actividad?
+
+##### 3. ¿Qué drivers de diferenciación son críticos para nuestros clientes?
+
+##### 4. ¿Cómo interactúan nuestras actividades (fit)? ¿Son replicables por competidores?
+
+##### 5. ¿Dónde en el sistema de valor (proveedores/canales/complementarios) podemos ganar ventaja?
+
+##### 6. ¿Qué mediciones y cambios organizativos necesitamos para ejecutar la estrategia?
+
+
 
 # Jay Barney — escritos sobre RBV (1991)
+
+## 1. RBV (Resource-Based View)
+
+##### Sostiene que la fuente primaria de ventaja competitiva sostenida de una empresa son sus recursos y capacidades internos, siempre que esos recursos sean: Valiosos, Raros, Difíciles de Imitar y la organización esté Organizada para explotarlos
+
+##### Si se cumplen esas condiciones, la empresa puede generar rentas económicas sostenibles.
+
+Complementa —no sustituye— el análisis de la industria tipo Porter: ambos enfoques son útiles.
+
+
+## 2. Recursos y capacidades
+
+### Recursos: activos controlados por la firma que permiten diseñar e implementar estrategias (p. ej. marca, tecnología, patentes, red de distribuidores, capital).
+
+##### Tangible: plantas, equipo, cash.
+
+##### Intangible: marca, know-how, cultura, relaciones.
+
+##### Humanos: habilidades, experiencia de equipos clave.
+
+
+### Capacidades: rutinas y procesos para coordinar recursos y convertirlos en outputs (p. ej. procesos de innovación, gestión de la cadena, servicio al cliente).
+
+
+## 3. Test VRIO (las cuatro condiciones)
+
+##### Para que un recurso proporcione ventaja sostenida debe pasar las cuatro pruebas:
+
+##### 1. V — Valuable (Valioso): el recurso debe permitir explotar oportunidades o neutralizar amenazas; debe mejorar eficiencia o efectividad (aumentar ingresos o reducir costes).
+
+##### 2. R — Rare (Raro): no debe estar ampliamente disponible entre competidores; la rareza genera escasez relativa.
+
+##### 3. I — Inimitable (Difícil de imitar): competidores no pueden copiarlo fácilmente. Las razones incluyen:
+
+##### Path dependence (dependencia histórica): se formó por una historia única (p. ej. marca construida por décadas).
+
+##### Causal ambiguity: no está claro qué exactamente genera la ventaja (difícil de replicar porque no saben qué copiar).
+
+##### Social complexity: implicaciones sociales/culturales/relacionales (redes, cultura, confianza) difíciles de reproducir.
+
+##### Legal protections (patentes, contratos), aunque eso suele dar ventaja temporal.
+
+##### 4. O — Organized (Organizada): la empresa debe tener estructuras, sistemas y procesos para explotar y capturar el valor del recurso (governance, incentivos, reporting, estructura organizativa).
+
+##### Si falla en V → no ventaja; si pasa V pero no R → ventaja competitiva no sostenida (común); si pasa V+R pero es imitable → ventaja temporal; si pasa V+R+I pero no está organizada → no captura la renta.
+
+
+## 4. Mecanismos que sostienen la inimitabilidad
+
+Historia única / path dependence (ej.: trayectoria de una marca).
+
+Ambigüedad causal (no se sabe qué exactamente replicar: procesos complejos, interacciones).
+
+Complejidad social (cultura, redes, relaciones con clientes/proveedores).
+
+##### Costes de imitacion altos (necesidad de inversiones masivas, know-how especializado).
+
+##### Derechos legales (patentes, marcas — útiles pero finitos).
+
+
+## 5. Resultado esperado
+
+Si una firma tiene recursos VRIO, puede obtener ventaja competitiva sostenida (superior rendimiento financiero persistente).
+
+Si los recursos no son raros o son fáciles de imitar, la ventaja será temporal o inexistente.
+
+
+## 6. Relación con otros enfoques
+
+##### Enfoque exterior → qué hace atractiva una industria. RBV: enfoque interior → por qué algunas firmas obtienen rendimiento superior en esa industria. Complementarios.
+
+##### Dynamic capabilities (Teece, Pisano, Shuen): crítica a RBV por su estaticidad; propone que la habilidad de renovar recursos/capacidades (learning, reconfiguration) es clave en entornos cambiantes.
+
+
+## 7. Ejemplos
+
+##### Marca Coca-Cola: intangible, valioso, raro, protegido por historia y redes, socialmente complejo → ventaja sostenida.
+
+##### Sistema de producción Toyota (lean + cultura): capacidades únicas con causal ambiguity y social complexity → difícil de imitar
+
+##### Patente tecnológica: puede ser valiosa y rara, pero imitabilidad depende de alcance legal y know-how; ventaja puede ser temporal.
+
+
+## 8. Aplicar RBV
+
+##### 1. Inventario de recursos: listar recursos tangibles, intangibles y capacidades.
+
+##### 2. VRIO analysis: para cada recurso, responder: ¿V? ¿R? ¿I? ¿O?
+
+##### 3. Priorizar: enfocar inversión y protección en recursos que pasen VRIO o puedan volverse VRIO.
+
+##### 4. Diseñar organización: procesos, incentivos y estructura para explotar recursos (la “O” del VRIO).
+
+##### 5. Proteger & difundir: crear barreras (secretos, cultura, contratos) y desarrollar complementariedades que aumenten el fit.
+
+##### 6. Medir y monitorizar: KPIs ligados a la contribución del recurso (p. ej. cuota de mercado por marca, productividad de procesos).
+
+##### 7. Plan de renovación: desarrollar dynamic capabilities para actualizar recursos cuando cambian mercados.
+
+
+## 9. Checklist evaluar recursos
+
+##### ¿Este recurso aumenta ingresos o reduce costes de forma clara? (V)
+
+##### ¿Cuántos competidores poseen un recurso similar? (R)
+
+##### ¿Podrían copiarlo en 6–12 meses con suficiente inversión? ¿Qué les faltaría? (I)
+
+##### ¿Tenemos procesos, incentivos y sistemas para capturar la ventaja que el recurso ofrece? (O)
+
+
+## 10. Limitaciones y críticas
+
+##### Riesgo de tautología: “las empresas con ventaja la tienen porque tienen recursos valiosos”; la aplicación exige operacionalizar qué es “valioso”.
+
+##### Dificultad empírica: medir recursos intangibles y su contribución es complejo.
+
+##### Estático frente a entornos dinámicos: RBV necesita complementarse con dynamic capabilities para explicar éxito en mercados cambiantes.
+
+##### Endogeneidad: recursos pueden ser efecto, no causa, del rendimiento (empresas exitosas adquieren recursos).
+
+
+## 11. Implicaciones
+
+##### Prioriza identificar y proteger recursos difícilmente replicables (marca, cultura, know-how).
+
+##### Invierte en organización (sistemas, incentivos) para capturar valor.
+
+##### No ignores el entorno: combina RBV con análisis de industria y capacidades dinámicas.
+
+##### Diseña rutas de aprendizaje y acumulación de recursos (path creation) — la ventaja se construye, no solo se descubre
+
 
 
 # W. Chan Kim & Renée Mauborgne — Blue Ocean Strategy (2005)
 
 
+## Tesis 
+
+##### En lugar de competir en mercados sangrientos y saturados (red oceans) donde la competencia se come los márgenes
+
+##### las empresas deben crear espacios de mercado nuevos e incontestados (blue oceans) mediante innovación en valor — a la vez mayor valor para el cliente y costes más bajos.
+
+
+## 1. Red Oceans vs Blue Oceans
+
+##### Red Ocean: mercados existentes, reglas conocidas, competencia intensa; lucha por cuota.
+
+##### Blue Ocean: mercados creados por la empresa; la competencia es irrelevante porque se ofrece una propuesta distinta.
+
+
+## 2. Value Innovation (Innovación de valor)
+
+##### No es solo innovación tecnológica ni solo reducción de costes; es la combinación simultánea de aumentar el valor percibido por el cliente y reducir los costes para la empresa
+
+El objetivo es desplazar la curva de valor de la industria.
+
+
+## 3. Strategy Canvas (Lienzo de estrategia)
+
+##### Herramienta visual que compara los factores competitivos clave de una industria y muestra el perfil de valor de los competidores vs tu propuesta
+
+##### Permite ver oportunidades para cambiar la curva (qué cortar, bajar, subir, crear).
+
+
+## 4. ERRC Grid — Four Actions Framework
+
+##### Framework operativo para reconfigurar la propuesta:
+
+##### E (Eliminate): ¿Qué factores que la industria da por sentados se deben eliminar?
+
+##### R (Reduce): ¿Qué factores deben reducirse por debajo del estándar de la industria?
+	
+##### R (Raise): ¿Qué factores deben elevarse por encima del estándar?
+	
+##### C (Create): ¿Qué factores deben crearse que la industria nunca ha ofrecido?
+
+
+## 5. Six Paths Framework (seis caminos para buscar océanos azules)
+
+##### Explora oportunidades fuera de la competencia directa mirando:
+
+##### 1. Industrias alternativas (qué demandan los clientes).
+
+##### 2. Grupos estratégicos dentro de una industria.
+
+##### 3. Buyer groups (decisores, usuarios, compradores).
+
+##### 4. Complementos (productos/servicios que acompañan la oferta).
+
+##### 5. Orientación funcional-emocional (reformular la proposición).
+
+##### 6. Tendencias externas a través del tiempo (cambios que crearán nuevas demandas).
+
+
+## 6. Buyer Utility Map & Commercial Sequence
+
+##### Buyer Utility Map: identifica dónde el cliente obtiene utilidad (por ejemplo: compra, entrega, uso, mantenimiento).
+
+##### Secuencia comercial para una idea blue ocean:
+
+##### 1. ¿La propuesta ofrece utilidad excepcional al comprador?
+
+##### 2. ¿El precio es atractivo para el mercado objetivo?
+
+##### 3. ¿El coste permite el margen esperado?
+
+##### 4. ¿Existen barreras de adopción y cómo superarlas?
+
+
+## 7. Tipping Point Leadership y Fair Process (ejecución)
+
+##### Tipping Point Leadership: concentrar recursos en pocos “puntos de impacto” para desencadenar cambio rápido.
+
+##### Fair Process: asegurar compromiso y adopción mediante procesos justos (engagement, explicaciones, oportunidades de voz) — clave para ejecutar estrategias que rompen el statu quo.
+
+
+## Diseñar una Blue Ocean
+
+##### 1. Define el lienzo estratégico actual (strategy canvas).
+
+##### 2. Aplica los seis caminos para identificar espacios no explotados.
+
+##### 3. Usa el ERRC para reconfigurar la oferta.
+
+##### 4. Prueba la Buyer Utility Map y valida la secuencia comercial (utilidad → precio → coste → adopción).
+
+##### 5. Diseña el modelo de captura de valor (cómo monetizas) y la estructura de costes.
+
+##### 6. Prepara la ejecución: identifica puntos de palanca (tipping points) y aplica fair process.
+
+##### 7. Lanza un piloto/experimento, mide y escala.
+
+
+## Ejemplos
+
+##### Cirque du Soleil: eliminó animales (Eliminate), redujo el componente tradicional de circo (Reduce), elevó experiencia teatral y calidad artística (Raise), creó una oferta híbrida entre teatro y circo (Create). 
+
+##### Resultado: mercado nuevo entre teatro y circo.
+
+
+##### Nintendo Wii: se centró en accesibilidad y experiencia familiar (crear nuevo buyer group), no en competir por gráficos con PS/Xbox (redujo énfasis técnico).
+
+
+## Métricas y señales de éxito
+
+##### Crecimiento de demanda donde antes no existía (nuevos clientes).
+
+##### Alta disposición a pagar por elementos recién creados (prueba de valor).
+
+##### Reducción de costes estructurales por diseño (si hay value innovation real).
+
+##### Bajos índices de canibalización interna o migración controlada desde productos existentes.
+
+
+## Limitaciones y críticas prácticas
+
+##### No garantiza escala ni sostenibilidad: un océano azul puede atraer imitadores; hay que proteger la propuesta (fit, cadena de actividades, IP, ecosistema).
+
+##### Riesgo de overpromising: crear algo nuevo no significa automáticamente que haya mercado suficiente. Validación temprana es crucial.
+
+##### Aplicabilidad sectorial: más fácil en sectores con espacio para reconfigurar la propuesta; puede ser más desafiante en mercados hiper-regulados o muy fragmentados.
+
+##### sustituye al análisis competitivo tradicional: conviene combinar con RBV, Porter, y análisis financiero.
+
+
+## Plantillas
+
+##### Strategy Canvas (ejes: factores competitivos vs nivel de oferta) — para mapear tu industria.
+
+##### ERRC Grid — lista de preguntas a responder y acciones concretas.
+
+##### Buyer Utility Map — checklist para identificar dónde crear valor.
+
+##### Sequence test — 4 checks (utilidad, precio, coste, adopción).
+
+##### Checklist de ejecución (tipping points + fair process) — para plan de lanzamiento.
+
+
+## Práctica
+
+##### Empieza con un lienzo de estrategia simple (5–7 factores) y compara 3 competidores.
+
+##### Haz sesiones de brainstorm ERRC con equipos mixtos (producto, ventas, finanzas).
+
+##### Valida hipótesis con experimentos rápidos (landing pages, MVPs, pilotos B2B).
+
+##### Diseña la estructura de costes simultáneamente (si no, pierdes la “value innovation” real).
+
+##### Planifica la protección: fit de actividades, barreras relacionales, acuerdos con complementarios.
+
+
+
+## Blue Oceans 
+
+##### Mercados nuevos e incontestados donde la competencia es irrelevante porque la empresa crea una propuesta de valor distinta que abre demanda nueva
+
+##### A diferencia de los red oceans —mercados existentes con competencia feroz—, un blue ocean busca crear espacio de mercado en vez de pelear por cuota.
+
+
+### Características
+
+Crea demanda nueva, muchas veces atrayendo no-clientes.
+
+Combina mayor valor para el cliente con costes más bajos (value innovation).
+
+Cambia la curva de valor de la industria (ofrece o elimina factores clave).
+
+Suele ser difícil de replicar inmediatamente si existe un buen encaje de actividades (fit).
+
+##### No es necesariamente tecnología disruptiva; puede salir de reconfigurar ofertas, procesos o modelos de negocio.
+
+
+### Identificar oportunidades de Blue Ocean
+
+##### Buscar no-clientes y por qué no compran.
+
+##### Reexaminar supuestos de la industria: ¿qué factores damos por sentados?
+
+##### Explorar seis caminos: industrias alternativas, grupos estratégicos, buyer groups, complementos, orientación funcional vs emocional, tendencias externas.
+
+##### Hacer un Strategy Canvas: comparar factores actuales y detectar dónde se puede cortar, bajar, subir o crear.
+ 
+
+### Diseñar Blue ocean
+
+Strategy Canvas — visualiza la curva de valor actual y la posible nueva curva.
+
+ERRC Grid (Eliminate, Reduce, Raise, Create) — guía operacional para reconfigurar la oferta.
+
+Buyer Utility Map + Commercial Sequence — valida utilidad, precio, coste y adopción antes de escalar.
+
+Tipping Point Leadership + Fair Process — técnicas para ejecutar cambios y lograr adopción interna
+
+
+### Ej: 
+
+Airbnb (ejemplo moderno): creó mercado nuevo al combinar plataformas digitales + oferta de alojamientos no profesionales.
+
+
+### Riesgos y límites
+
+Un blue ocean sin protección ni fit puede atraer imitadores y volverse rojo rápidamente.
+
+Puede fallar si no existe demanda suficiente o si la propuesta no se comercializa correctamente.
+
+Requiere alinear costos y precio: aumentar valor sin control de costes anula la idea de value innovation.
+
+
+### Señales de que una idea puede ser Blue Ocean
+
+##### Resuelve una fricción grande que hace que muchos no usen la oferta actual.
+
+##### Cambia radicalmente lo que el cliente valora (ej.: conveniencia vs características técnicas).
+
+##### Permite reducir o eliminar actividades costosas consideradas estándar.
+
+##### Tiene un path to scale viable (modelo de negocio monetizable y canal de adopción).
+
+
+### Check hipótesis Blue Ocean
+
+##### ¿Ofrece utilidad clara y diferencial para no-clientes?
+
+##### ¿El precio proyectado es atractivo para un mercado objetivo amplio?
+
+##### ¿Los costes permiten márgenes razonables (value innovation)?
+
+##### ¿Existen barreras de adopción y un plan para superarlas?
+
+##### ¿Hay encaje entre actividades que haga la ventaja difícil de copiar?
+
+
+## Value Innovation
+
+En vez de elegir entre bajar costes o aumentar atributos
+
+##### La idea es lograr ambas cosas al mismo tiempo: crear mayor valor para el cliente mientras se reducen los costes para la empresa
+
+##### El resultado: una nueva curva de valor que abre demanda y vuelve irrelevante la competenci
+
+##### Diseñar la oferta y la cadena de actividades de manera que incrementes el valor percibido por el cliente y disminuyas los costes mediante una reconfiguración deliberada de qué factores se eliminan, reducen, elevan o crean.
+
+
+### Elementos
+
+#### 1. Doble objetivo: 
+
+Aumentar utilidad/valor (diferenciación real para clientes y/o no-clientes).
+
+Reducir coste estructural (rediseñar actividades para eliminar gastos innecesarios).
+
+
+#### 2. No es sólo producto, es sistema de actividades
+
+##### La ventaja viene del encaje entre actividades: diseño, producción, distribución, servicio, marketing, y hasta relaciones con complementarios
+
+
+#### 3. Herramientas operativas principales
+
+##### ERRC (Eliminate-Reduce-Raise-Create): decide qué eliminar, reducir, elevar y crear respecto al estándar de la industria.
+
+Strategy Canvas: visualiza la curva de valor actual y la nueva curva propuesta.
+
+Buyer Utility Map + Commercial Sequence: valida que la propuesta entrega utilidad en puntos críticos y que el precio/coste/adopción cierran.
+
+Tipping Point Leadership + Fair Process: tácticas para ejecutar cambios disruptivos y lograr aceptación interna.
+
+
+#### Diseñar Value Innovation
+
+1. Mapea la curva de valor actual (strategy canvas): lista factores clave que los competidores ofrecen y el nivel de cada uno.
+
+2. Identifica no-clientes y fricciones que impiden uso/compras.
+
+3. Aplica ERRC:
+
+Eliminar: ¿qué factores que la industria da por sentado pueden suprimirse?
+
+Reducir: ¿qué factores pueden reducirse por debajo del estándar sin perder valor?
+
+Elevar: ¿qué factores deben aumentarse por encima del estándar?
+
+Crear: ¿qué factores nuevos pueden aportar valor y no existen hoy?
+
+4. Rediseña actividades para que el nuevo perfil sea eficiente en costes (revisión de procesos, sourcing, tecnología, escala).
+
+5. Testea la utilidad con Buyer Utility Map y asegura: utilidad → precio atractivo → coste viable → aceptación.
+
+6. Implementa piloto y usa Tipping Point Leadership para concentrar recursos donde más impacto haya.
+
+7. Escala y protege la propuesta vía fit, acuerdos con complementarios, cultura y barreras.
+
+
+### Ejemplos
+
+Cirque du Soleil: eliminó animales y estrellas circenses costosas (↓ costos), elevó la experiencia artística y creó un espectáculo premium dirigido a adultos (↑ valor).
+
+Nintendo Wii: redujo foco en potencia gráfica (↓ coste), creó experiencia accesible para nuevos públicos y elevó el valor social/experiencial (↑ valor).
+
+IKEA: diseño modular + self-service + logística optimizada (↓ coste) + buen diseño asequible (↑ valor).
+
+
+### Señales de que una idea puede ser Value Innovation
+
+Resuelve una fricción crítica que hace que muchos no compren.
+
+Permite eliminar o simplificar procesos caros sin sacrificar la propuesta central.
+
+Crea nuevo valor percibido (comodidad, estatus, tiempo, experiencia) que clientes pagarían.
+
+El precio proyectado es atractivo y el coste permite margen.
+
+
+### Métricas prácticas para evaluar
+
+Delta en Willingness-to-Pay promedio por cliente.
+
+Reducción % en coste unitario / coste de servicio.
+
+##### Net new customers (clientes nuevos, no canibalizados).
+
+Payback del cambio (meses).
+
+Índice de adopción / churn en piloto.
+
+
+### Riesgos y errores comunes
+
+##### Separar valor y coste: subir valor sin controlar costes rompe la propuesta.
+
+##### Crear sin mercado: un factor novedoso que nadie valora.
+
+##### Falta de fit operacional: cambiar una actividad sin alinear el resto; resultado imitable o ineficiente.
+
+##### Ejecución lenta: los imitadores pueden capturar oportunidades si no hay velocidad ni protección.
+
+
+### Checklist
+
+¿Hemos definido claramente qué factores eliminar/reducir/elevar/crear?
+
+¿La nueva curva de valor atrae a no-clientes / amplia demanda?
+
+¿El modelo de costes soporta la combinación valor/precio?
+
+¿Tenemos capacidades/organización para ejecutar el nuevo sistema (fit)?
+
+¿Hicimos un piloto con métricas de utilidad, adopción y coste?
+
+¿Plan de protección (fit, acuerdos, cultura) para dificultar la imitación?
+
+
+## Strategy Canvas
+
+##### Muestra en un solo gráfico la curva de valor de los competidores de una industria (qué factores ofrecen y en qué intensidad)
+
+##### Permite diseñar y visualizar una nueva curva para tu propuesta (dónde cortar, reducir, elevar o crear).
+
+##### Es, en esencia, un mapa rápido de prioridades competitivas y oportunidades de desplazamiento estratégico.
+
+
+### Componentes 
+
+##### 1. Eje horizontal (x): factores competitivos clave de la industria (p. ej. precio, calidad del producto, variedad, servicio, conveniencia).
+
+##### 2. Eje vertical (y): nivel ofrecido para cada factor (escala numérica — por ejemplo 0–10 — consistente para todos los actores).
+
+##### 3. Líneas / curvas: una por cada competidor relevante y una para tu propuesta (actual o proyectada).
+
+##### 4. Insight: los puntos altos indican énfasis; los valles, áreas ignoradas. La comparación revela huecos para innovar.
+
+
+### Construcción Strategy Canvas
+
+1. Define el alcance: industria/segmento y 3–5 competidores representativos.
+
+2. Lista factores clave: 5–9 factores que los clientes usan para elegir (usa investigación, entrevistas o experiencia).
+
+3. Estandariza la escala: decide la escala vertical (ej. 0–10) y aplícala uniformemente.
+
+##### 4. Evalúa cada competidor en cada factor (datos, percepción, mystery shopping). Asigna valores.
+
+5. Dibuja las curvas: traza líneas conectando los valores por competidor.
+
+6. Diseña tu curva alternativa aplicando ERRC (Eliminate, Reduce, Raise, Create).
+
+7. Interpreta: busca factores que puedas eliminar/reducir (coste), otros que elevar/crear (valor), y verifica viabilidad costo/precio.
+
+
+### Permite ver e interpretar
+
+##### Dónde se compite actualmente (factores elevados por todos).
+
+##### Dónde hay sobre-inversión (posibles candidatos a reducir).
+
+##### Zonas ignoradas con potencial para crear valor.
+
+##### Diferenciación real: una curva distinta indica propuesta única.
+
+##### Riesgos de imitación: si tu curva es fácil de replicar (cambiar sólo un factor), la ventaja será débil.
+
+
+### Ejemplo práctico - valores hipotéticos
+
+| Factor competitivo        | Competidor A | Competidor B | Competidor C | Propuesta (Blue Ocean) |
+| ------------------------- | :----------: | :----------: | :----------: | :--------------------: |
+| Calidad del café          |       7      |       8      |       6      |            6           |
+| Precio                    |       6      |       5      |       7      |            8           |
+| Rapidez de servicio       |       6      |       7      |       5      |            9           |
+| Ambiente / diseño         |       5      |       6      |       8      |            9           |
+| Variedad de productos     |       6      |       7      |       6      |            4           |
+| Conveniencia (ubicación)  |       8      |       6      |       7      |            9           |
+| Experiencia digital (app) |       3      |       4      |       2      |            9           |
+
+
+#### Interpretación del estado del mercado de cafe
+
+##### La propuesta Blue Ocean prioriza rapidez, ambiente, conveniencia y experiencia digital; reduce variedad (simplifica catálogo) y mantiene calidad aceptable
+
+##### Aplicando ERRC: Eliminar productos de baja rotación, Reducir costes de menú, Elevar experiencia digital y ambiente, Crear servicio express + app de fidelidad
+
+##### Resultado: atraer no-clientes que buscan conveniencia y experiencia.
+
+
+### Buenas prácticas
+
+##### Empieza con pocos factores (5–8) para claridad; puedes ampliar luego.
+
+##### Usa datos cuando sea posible (encuestas, precios, tiempos) en vez de solo intuición.
+
+##### Combina con ERRC: cada diferencia en la curva debe traducirse en acciones (qué eliminar/reducir/elevar/crear).
+
+##### Valida con clientes/no-clientes antes de escalar (buyer utility + pricing tests).
+
+##### Mide coste vs willingness-to-pay: una curva más alta en valor debe poder monetizarse sin destruir margen.
+
+
+### Evitar errores
+
+##### Incluir factores irrelevantes o demasiado técnicos.
+
+##### Mezclar escalas o no estandarizar (perjudica comparación).
+
+##### Diseñar una “curva” bonita sin plan de ejecución ni control de costes.
+
+##### Copiar un competidor líder sin entender el fit entre actividades.
+
+
+### Herramientas
+
+Rápido / low-fi: Excel / Google Sheets (gráfica de líneas).
+
+Visual / colaborativo: Miro, Mural, Figma.
+
+Presentación: PowerPoint / Google Slides (limpia la curva y añade anotaciones).
+
+Plantilla práctica: una hoja con factores en columnas y filas por competidor; grafica línea para cada uno
+ 
+
+## ERRC (Eliminate — Reduce — Raise — Create)
+
+##### Herramienta operativa del Blue Ocean Strategy para reconfigurar la propuesta de valor de una industria
+
+##### Su propósito es forzar preguntas radicales sobre qué mantener y qué cambiar para lograr value innovation (más valor para el cliente y menor coste para la empresa).
+
+
+### Preguntas ERRC
+
+#### Eliminate (Eliminar)
+##### — ¿Qué factores que la industria daba por sentados deberían dejar de existir?
+##### — Objetivo: recortar actividades/costos que no añaden valor real para clientes ni ayudan a diferenciar.
+
+#### Reduce (Reducir)
+##### — ¿Qué factores deben reducirse por debajo del estándar de la industria?
+##### — Objetivo: bajar inversión en áreas sobrevaloradas o sobredimensionadas que incrementan costes sin elevar la percepción de valor en la misma medida.
+
+#### Raise (Elevar)
+##### — ¿Qué factores deben aumentarse por encima del estándar?
+##### — Objetivo: fortalecer atributos que realmente importan al cliente y que los competidores descuidan.
+
+#### Create (Crear)
+##### — ¿Qué factores nunca ofrecidos por la industria deberían crearse?
+##### — Objetivo: introducir elementos nuevos que abran demanda y atraigan no-clientes.
+
+
+### Uso de ERRC
+
+##### 1. Define el scope (segmento/industria/producto). Limita para ser concreto.
+
+##### 2. Lista los factores competitivos actuales (5–9) que definen la oferta estándar.
+
+##### 3. Reúne equipo multidisciplinar (producto, ventas, ops, finanzas, cliente-servicio). 60–90 min.
+
+##### 4. Rellenar la cuadrícula ERRC: para cada factor, decidir si eliminar, reducir, elevar o crear (puede aplicarse más de una acción a distintos factores).
+
+5. Priorizar ideas: criterio = impacto en utilidad del cliente * y * impacto en coste.
+
+6. Validar con clientes/no-clientes (entrevistas rápidas, surveys, tests de precio).
+
+7. Prototipar/piloto pequeña escala y medir (ver métricas abajo).
+
+8. Iterar y perfilar curva de valor (Strategy Canvas) con las decisiones ERRC.
+
+
+### Ej ERRC
+
+| Factor de la industria                             | ERRC decisión | Razonamiento                                        |
+| -------------------------------------------------- | ------------: | --------------------------------------------------- |
+| Animales en escena                                 |  **Eliminar** | Alto coste/ética y no valor para público adulto.    |
+| Actores tradicionales (payasos)                    |   **Reducir** | Mantener algunos elementos humorísticos, no centro. |
+| Producción artística y dramaturgia                 |    **Elevar** | Elevar calidad teatral y musical (diferenciador).   |
+| Experiencia para público adulto (temas, escenario) |     **Crear** | Crear propuesta híbrida teatro-circo para adultos.  |
+
+##### Resultado: menor coste operativo por animales/estrellas y mayor willingness-to-pay por la experiencia nueva
+
+
+### Plantilla ERRC
+ 
+1. Factor X — Eliminar (✓ / ✗) — Comentario
+
+2. Factor Y — Reducir (✓ / ✗) — Comentario
+
+3. Factor Z — Elevar (✓ / ✗) — Comentario
+
+4. Factor W — Crear (✓ / ✗) — Comentario
+
+(O lleva esto a una tabla Excel con columnas: Factor | Acción (E/R/R/C) | Descripción | Impacto cliente (1–5) | Delta coste estimado (+/−) | Prioridad)
+
+
+### Criterios para priorizar (impacto y factibilidad)
+
+##### Impacto en la utilidad del cliente (¿incrementa WTP?).
+
+##### Delta de coste (¿reduce costes o los aumenta? cuánto).
+
+##### Velocidad de implementación (plazos).
+
+##### Riesgo de adopción (cultural, regulatorio).
+
+##### Dificultad de imitación (fit, relaciones, IP).
+
+Prioriza las acciones con alto impacto en utilidad y reducción de coste (ideal), o alto impacto en utilidad y factibles a corto plazo.
+
+
+### Métricas validar solución ERRC
+
+##### Willingness-to-Pay (WTP) estimada vs precio objetivo.
+
+#####  Coste unitario antes/después (Δ coste %) — confirmar value innovation.
+
+##### Clientes nuevos (no-clientes convertidos) y % de crecimiento de demanda incremental.
+
+Tasa de adopción en piloto y churn.
+
+##### Payback del cambio (meses a recuperar inversión).
+
+##### NPS / satisfacción relacionada con factores elevados/creados.
+
+
+## Evitar errores
+
+##### Fallar en evaluar costes: elevar valor sin controlar coste destruye la idea. → Mitigar con análisis de coste por actividad.
+
+##### Crear algo que nadie valora: innovar sin cliente = fracaso. → Mitigar con entrevistas a no-clientes y tests
+
+##### Eliminar elementos estratégicos por intuición (p. ej. eliminar soporte crítico). → Validar con datos y pruebas pequeñas
+
+##### No alinear operaciones: cambios aislados sin ajustar procesos rompen el fit. → Plan operativo antes del rollout.
+
+
+### Buenas prácticas
+
+##### Haz ERRC con un equipo multidisciplinar (evita sesgos funcionales).
+
+##### Traduce cada acción ERRC en cambios operativos concretos (quién, cómo, cuánto).
+
+##### Usa ERRC como filtro y luego construye el Strategy Canvas para visualizar la nueva curva.
+
+##### Combina ERRC con Buyer Utility Map y la secuencia comercial (utilidad → precio → coste → adopción).
+
+
+
+## Six Paths
+
+##### Es una guía para salir del “red ocean” reconceptualizando el mercado
+
+##### En vez de competir en las mismas dimensiones, exploras seis ángulos distintos para encontrar espacios de mercado no explotados.
+
+##### Son seis maneras sistemáticas de romper las fronteras convencionales de una industria para descubrir oportunidades de blue ocean
+
+##### Para cada camino hay preguntas concretas que debes hacer y ejemplos típicos.
+
+
+#### 1. Mirar industrias alternativas
+
+##### Pregunta: ¿Qué soluciones alternativas usan los clientes para cumplir la misma función básica?
+
+##### Idea: A menudo los clientes eligen entre industrias alternativas por la misma necesidad.
+
+##### Cinemas vs streaming. Un servicio que combine «experiencia social + comodidad en casa» puede captar no-clientes de ambas.
+
+
+#### 2. Mirar grupos estratégicos dentro de la industria
+
+##### Pregunta: ¿Qué suposiciones separan a los grupos (low-cost vs premium) y cuáles se pueden quebrar?
+
+##### Idea: Moverse entre grupos o mezclar atributos puede abrir nuevos segmentos.
+
+##### Ejemplo: Un hotel que combina precio accesible (grupo low-cost) con elementos de experiencia premium.
+
+
+#### 3. Mirar la cadena de compradores (buyer groups)
+
+##### Pregunta: ¿Quién decide la compra, quién usa y quién influye? ¿Podemos redirigir el enfoque hacia otro comprador?
+
+##### Idea: Reorientar la oferta al verdadero creador de valor (no siempre el comprador) crea nuevas oportunidades.
+
+##### Ejemplo: En salud, vender servicios pensando más en el paciente (usuario) que en el comprador institucional.
+
+
+#### 4. Mirar productos o servicios complementarios
+
+##### Pregunta: ¿Qué pasa antes, durante y después de usar el producto? ¿Qué complementos generan o destruyen valor?
+
+##### Idea: Rediseñar la experiencia completa (no solo el producto principal) para capturar demanda no satisfecha.
+
+##### Ejemplo: Servicios de entrega + montaje + garantía para electrodomésticos que reducen fricción posventa.
+
+
+#### 5. Mirar la orientación funcional-emocional de la industria
+
+##### Pregunta: ¿La industria compite en lo funcional (precio, eficiencia) o en lo emocional (status, experiencia)? ¿Podemos revertirlo o fusionarlo?
+
+##### Idea: Cambiar el eje (hacer más emocional a algo funcional, o viceversa) puede atraer nuevos clientes.
+
+##### Ejemplo: Automóviles que combinan fiabilidad funcional con diseño emocional accesible (p. ej. marcas que democratizan el estatus).
+
+
+#### 6. Mirar a lo que ocurre a lo largo del tiempo (tendencias externas)
+
+##### Pregunta: ¿Qué macro-tendencias afectan la industria (demográficas, tecnológicas, regulatorias, sociales)? ¿Cómo crear oferta que aproveche esas tendencias?
+
+##### Idea: Anticipar o acelerar la adopción de tendencias para crear mercados emergentes.
+
+##### Ejemplo: Plataformas que usan la digitalización y economía colaborativa antes que el resto del sector.
+
+
+### Aplicar Six Paths
+
+##### 1. Definir el scope: industria/segmento y problema a resolver (10 min).
+
+##### 2. Mapear el estado actual: lista factores clave + competidores (15 min).
+
+##### 3. Dividir equipo en 6 grupos, uno por camino — cada grupo responde las preguntas clave y genera 3–5 ideas (30–40 min).
+
+##### 4. Compartir ideas y agrupar por sinergias/temas (15 min).
+
+##### 5. Seleccionar 2–3 ideas prometedoras y aplicar ERRC + Strategy Canvas preliminar (20–25 min).
+
+##### 6. Priorizar por impacto en utilidad del cliente, coste y factibilidad; diseñar siguiente experimento/piloto.
+
+
+### Herramientas
+
+Ficha por camino: pregunta clave, evidencia, 3 ideas, 1 hipótesis de valor, riesgo principal.
+
+Buyer Utility Map para validar ideas que pasan ERRC.
+
+Strategy Canvas para visualizar cómo se desplazaría la curva de valor.
+
+Matriz de priorización (Impacto utilidad × Delta coste × Tiempo a implementar).
+
+
+### Evitar errores
+
+##### Buscar solo una idea superficial en cada camino en vez de explorar causas y fricciones reales → usar entrevistas a no-clientes y datos.
+
+##### No traducir la idea en actividades operativas (fit) → siempre mapear qué actividades cambian y su impacto en costes.
+
+##### Ignorar la secuencia comercial: utilidad → precio → coste → adopción → probar con pilotos.
+
+##### Pensar que es solo innovación de producto; muchas ideas son innovación de modelo de negocio o experiencia.
+
+
+### Indicadores de que una oportunidad hallada por Six Paths es prometedora
+
+##### Atrae a no-clientes y amplía la demanda.
+
+##### Mejora la utilidad percibida en un punto clave del Buyer Utility Map.
+
+##### Tiene potencial de coste para permitir value innovation (ERRC).
+
+##### Existe ruta de adopción (canal, regulación, comportamiento) clara
+
+
+## Buyer Utility Map (Mapa de Utilidad para el Comprador)
+
+##### Identificar dónde exactamente una oferta puede entregar utilidad al cliente
+
+##### En qué fase de su experiencia y mediante qué palancas se crea verdadero valor
+
+
+### Estructura
+
+##### Mapa es una matriz con dos dimensiones
+
+#### Ejes horizontales = Etapas del ciclo de experiencia del comprador (desde antes de comprar hasta después de descartar):
+
+##### 1. Compra (decisión / evaluación)
+##### 2. Entrega (recepción / logística)
+##### 3. Uso (experiencia durante uso)
+##### 4. Complementarios (productos/servicios que acompañan)
+##### 5. Mantenimiento (soporte, reparación)
+##### 6. Eliminación / reemplazo (fin de vida, reciclaje)
+
+
+#### Ejes verticales = Palancas de utilidad (cómo agregas valor):
+
+##### 1. Productividad (ahorra tiempo / mejora output)
+##### 2. Simplicidad (menos pasos, menos complejidad)
+##### 3. Conveniencia (más accesible, donde/como el cliente lo quiere)
+##### 4. Reducción de riesgo (menos incertidumbre, mayor seguridad)
+##### 5. Placer / Imagen (emoción, estatus, experiencia)
+##### 6. Sostenibilidad / ambiental (impacto ecológico percibido)
+
+
+### Uso matriz Buyer Utility Map
+
+##### 1. Define el cliente objetivo / segmento y el alcance del producto/servicio.
+
+##### 2. Dibuja la matriz (6 columnas × 6 filas).
+
+##### 3. Rellena celdas con problemas/fricciones detectadas o ideas para aumentar utilidad: entrevistas a clientes/no-clientes, análisis de complaints, datos de soporte.
+
+##### 4. Prioriza las celdas que combinan alta importancia para el cliente + baja oferta actual por la industria.
+
+##### 5. Conecta las ideas con ERRC y Strategy Canvas: ¿qué eliminar/reducir/elevar/crear para explotar esa celda?
+
+##### 6. Valida con experimentos (tests de precio, MVP, pilotos) usando métricas (WTP, adopción, tiempo ahorrado, NPS).
+
+
+### Ej - Producto: smartphone — ideas hipotéticas
+
+| Palanca \ Etapa |                                      Compra |                       Entrega |                                Uso |                    Complementarios |               Mantenimiento |                          Eliminación |
+| --------------- | ------------------------------------------: | ----------------------------: | ---------------------------------: | ---------------------------------: | --------------------------: | -----------------------------------: |
+| Productividad   | Comparador online con perfiles recomendados |            Envío el mismo día | Setup automático de apps y cuentas |   Integración con ecosistema hogar | Soporte remoto para backups | Programa de trade-in con valor claro |
+| Simplicidad     |          Paquetes preconfigurados según uso | Empaque minimal y guía rápida | UI simplificada para no-tech users | Bundle con accesorio plug-and-play | Actualizaciones automáticas |              Recogida para reciclaje |
+
+Celda (Uso × Simplicidad) → Setup automático de apps y cuentas: reduce tiempo y frustración de primer uso → alta utilidad para no-tech users (posible blue ocean si competidores no lo ofrecen).
+
+
+### Interpretacion del mapa
+
+##### Zonas vacías: celdas con alto potencial donde la industria entrega poco.
+
+##### Prioridades de impacto: cuáles mejoras crearán mayor utilidad (y por tanto mayor willingness-to-pay).
+
+##### Riesgos/Costes: algunas celdas requieren inversión (p. ej. logística inversa), otras cambios de modelo (suscripción vs venta).
+
+##### Opportunidades de non-customers: identificar qué fase/palanca impide que grupos distintos compren
+
+
+### Métricas validar mapa
+
+Willingness-to-Pay (WTP) por la mejora propuesta.
+
+Tasa de adopción en piloto (%, tiempo).
+
+Ahorro de tiempo / productividad (minutos/hora por uso).
+
+Reducción de tickets de soporte (nº/mes).
+
+Incremento NPS / satisfacción.
+
+% de clientes nuevos (no-clientes) atraídos.
+
+
+### Conectar con ERRC y Strategy Canvas
+
+##### Una celda valiosa del Buyer Utility Map te indica dónde aumentar utilidad → tradúcelo con ERRC (¿qué eliminar/reducir/elevar/crear?) para diseñar la nueva curva de valor.
+
+##### Luego representa en el Strategy Canvas cómo esa decisión mueve tu perfil frente a competidores.
+
+
+## Commercial Sequence
+
+##### Prueba en 4 pasos para validar si una idea de Blue Ocean (o cualquier nueva oferta) tiene sentido comercial antes de escalarla
+
+##### Sirve para evitar el error de “inventar algo novedoso” que nadie compra o que sale caro de producir.
+
+##### Los cuatro pasos deben cumplirse en orden: Utilidad → Precio → Coste → Adopción.
+
+
+### Orden e importancia
+
+#### 1. Buyer utility (¿ofrece utilidad excepcional?)
+
+##### Pregunta clave: ¿La propuesta resuelve una fricción real y ofrece utilidad superior a clientes (o no-clientes)?
+
+##### Qué evaluar: beneficio concreto y medible para el comprador en alguna etapa de su experiencia (usar el Buyer Utility Map).
+
+##### Evidencia: encuestas, entrevistas con no-clientes, tests de concepto, métricas de tiempo ahorrado, reducción de riesgo, o mejora en satisfacción.
+
+##### Métricas: aumento esperado en willingness-to-pay (WTP), % reducción de tiempo, NPS proyectado.
+
+
+#### 2. Precio (¿es atractivo para el mercado objetivo?)
+
+##### Pregunta clave: ¿Podemos fijar un precio que sea percibido como razonable/atractivo por un amplio segmento objetivo?
+
+##### Evaluar: sensibilidad al precio del cliente objetivo; posicionamiento (¿premium o masivo?) y referencia de precios en la categoría.
+
+##### Regla práctica: el precio debe expresar valor superior pero permitir ampliar demanda (no solo servir a nichos elitistas).
+
+##### Métricas: precio objetivo vs precios competidores; % clientes que pagarían ese precio en surveys
+
+
+#### 3. Cost (¿podemos conseguir un coste que permita margen?)
+
+##### Pregunta clave: ¿El precio objetivo cubre el coste previsto y deja margen razonable?
+
+##### Qué evaluar: estructura de costes por actividad (activity-based costing), economías de escala, posibles reducciones vía ERRC.
+
+##### Si coste > precio objetivo → iterar la oferta (reducir features, cambiar procesos, subir precio si mercado lo permite).
+
+##### Métricas: coste unitario proyectado, margen bruto, payback.
+
+
+#### 4. Adoption (¿podemos superar barreras de adopción?)
+
+##### Pregunta clave: ¿Hay obstáculos de adopción (tecnológicos, legales, culturales, operativos) y tenemos plan para mitigarlos?
+
+##### Qué evaluar: fricciones de comportamiento, costes de cambio, canal de distribución, formación, credenciales necesarias, incentivos.
+
+##### Herramientas: pilotos, partnerships, modelos de pricing (trial, subsidio inicial), campañas educativas, fair process interno.
+
+##### Métricas: tasa de conversión en piloto, churn inicial, tiempo a breakeven por cliente
+
+
+### Flujo de trabajo recomendado
+
+##### 1. Mapea la utilidad: usa Buyer Utility Map para identificar la celda de mayor impacto.
+
+##### 2. Formula precio objetivo: basado en WTP y estrategia (penetración o premium). Realiza tests de precio (van Westendorp / experiments).
+
+##### 3. Modela costes: desglose por actividad; aplica ERRC para ajustar actividades que reducen coste.
+
+##### 4. Lista barreras de adopción y diseña soluciones concretas (partners, subsidios, pilotos).
+
+##### 5. Piloto mínimo viable que pruebe las 4 dimensiones y recopile métricas.
+
+##### 6. Itera según resultados y decide escala o pivote.
+
+
+### Ej - Cirque du Soleil
+
+##### 1. Utilidad: experiencia teatral distinta al circo tradicional (atraer adultos) → alta utilidad para un nuevo público.
+
+##### 2. Precio: cobró entradas premium vs circos tradicionales → mercado dispuesto a pagar más.
+
+##### 3. Coste: eliminar animales y estrellas caras redujo costos; inversión en talento teatral reconfiguró coste — el margin resultó positivo.
+
+##### 4. Adoption: marketing dirigido a nuevos segmentos + alianzas con teatros y festivales superaron barreras de percepción.
+
+
+### Checklist 
+
+#### Buyer utility:
+
+##### ¿Cuál es la fricción cliente más dolorosa que resolvemos?
+
+##### ¿Podemos medir el beneficio (minutos ahorrados, $$ ahorrados, menor riesgo)?
+
+
+#### Precio
+
+##### ¿Qué precio máximo aceptable indican pruebas/encuestas?
+
+##### ¿Qué estrategia de fijación usamos (penetración, premium, freemium)?
+
+
+#### Coste
+
+##### ¿Coste unitario estimado < precio objetivo?
+
+##### ¿Qué actividades puedo eliminar/reducir (ERRC) para bajar coste?
+
+
+#### Adoption:
+
+##### ¿Cuáles son las 3 barreras principales de adopción?
+
+##### ¿Plan (piloto/partner/subsidio/educación) para superarlas?
+
+
+### Evitar errores
+
+##### Probar precio antes de validar utilidad real: primero utilidad (si no hay utilidad, precio da igual).
+
+##### Ignorar costes operativos ocultos: modelar por actividad, no por agregados.
+
+##### Subestimar barreras culturales o regulatorias: mapear adopción con stakeholders tempranos.
+
+##### No pilotar: lanzar a escala sin tests robustos es riesgo alto.
+
+
+### Plantilla
+
+##### Idea / hipótesis
+
+##### Buyer Utility (qué fricción resolve + métrica)
+
+##### Precio objetivo (justificación WTP / benchmark)
+
+##### Coste unitario proyectado (desglose 3-4 items)
+
+##### Margen bruto esperado
+
+##### Principales barreras de adopción (3)
+
+##### Estrategia de mitigación (por barrera)
+
+##### KPI piloto (1–3 métricas)
+
+
+## Tipping Point Leadership
+
+##### Producir cambios estratégicos rápidos y a gran escala dentro de organizaciones que, por inercias, resistencia o recursos limitados, suelen tardar años en transformar lo necesario
+
+##### La idea central: no necesitas cambiar todo ni convencer a todos; hay puntos (tipping points) y actores con influencia desproporcionada cuyo cambio produce un efecto cascada
+
+##### Actuando de forma concentrada sobre esos puntos obtienes un “efecto palanca” que acelera la adopción y reduce resistencia.
+
+
+### Funcionamiento
+
+Las organizaciones no se mueven linealmente: pequeños cambios en lugares clave (personas, procesos, recursos) pueden desencadenar transformaciones grandes.
+
+Identificar disproportionate influencers (líderes de opinión, procesos críticos, hotspots de clientes) permite focalizar recursos limitados donde generan mayor impacto.
+
+##### Atiende de forma explícita los cuatro obstáculos que frenan el cambio, y propone tácticas concretas para superarlos
+
+
+### Cuatro obstáculos (hurdles)
+
+#### 1. Hurdle cognitivo (no saben / no entienden)
+
+##### Problema: la gente no percibe la urgencia ni la lógica del cambio.
+
+##### Soluciones: comunicar claridad radical sobre la necesidad; mostrar bright spots (casos concretos y visibles donde la idea ya funciona); usar datos y ejemplos simples.
+
+
+#### 2. Hurdle de recursos (no hay recursos suficientes)
+
+##### Problema: se pide transformación pero no se reasignan recursos.
+
+##### Soluciones: concentrar recursos en pocas iniciativas clave (no repartirlos). Priorizar “pivots” pequeños que desbloquean más efectos (ej. un equipo, un presupuesto piloto).
+
+
+#### 3. Hurdle motivacional (gente no está motivada)
+
+##### Problema: los empleados no adoptan porque no ven beneficios, riesgo, o recompensa.
+
+##### Soluciones: crear incentivos visibles; generar victorias tempranas que aumenten orgullo y emulación; diseñar roles que muestren mejoras tangibles al personal.
+
+
+#### 4. Hurdle político (oposición de poderosos)
+
+##### Problema: stakeholders con poder pueden bloquear cambios.
+
+##### Soluciones: neutralizar, cooptar o aislar a opositores; construir coaliciones de influencia; usar la fair process para reducir resistencia (participación, explicación, oportunidad de réplica).
+
+
+### Principios de acción para aplicar Tipping Point Leadership
+
+#### 1. Identifica los puntos de palanca
+##### Personas: líderes de opinión, managers con redes influyentes.
+##### Procesos: ciclos que determinan ritmo (revisiones de performance, capital allocation).
+##### Clientes/mercados: segmentos que generan efecto demostración
+
+#### 2. Concéntrate — no disperses recursos
+##### Asigna tiempo, capital y talento a unas pocas iniciativas que puedan abrir el camino (pilotos estratégicos con visibilidad).
+
+#### 3. Busca y expone bright spots
+##### Localiza ejemplos internos o externos donde la idea ya funciona y úsalo como evidencia y motivador.
+
+#### 4. Genera victorias tempranas y visibles
+##### Diseña entregables de alto impacto y corta duración para crear momentum.
+
+#### 5. Moviliza influencers y forma coaliciones
+##### Recluta aliados en todos los niveles —no solo en la cúpula— para crear presión social y legitimidad.
+
+#### 6. Gestiona política con transparencia y equidad
+##### Usa procesos justos (fair process): involucra, explica y escucha; eso reduce resentimiento y aumenta compromiso.
+
+
+### Playbook operativo
+
+1. Diagnóstico rápido (72 h): mapea stakeholders, procesos críticos y “cuellos” de decisión.
+
+2. Selecciona 2–3 tipping points: elige actores/procesos con alta influencia y alta vulnerabilidad a cambio.
+
+3. Diseña intervención concentrada: piloto con objetivo medible (KPI), recursos dedicados y sponsor claro.
+
+4. Recluta influencers: identifica 3 líderes informales y consigue su compromiso público para el piloto.
+
+5. Ejecuta y comunica: lanza el piloto, documenta resultados y comunica victorias internas (bright spots).
+
+6. Escala por imitación: usa evidencia del piloto para persuadir otras unidades y reasignar recursos; institucionaliza cambios (policies, KPIs, incentivos).
+
+
+
+## Fair Process
+
+##### La idea simple y poderosa de que las personas aceptan y se comprometen con decisiones difíciles si creen que el proceso para tomarlas fue justo, aunque el resultado no les favorezca
+
+##### No basta con “ser correctos”: hay que involucrar, explicar y permitir voz.
+
+##### Eso genera compromiso, reduce resistencia y mejora la ejecución.
+
+
+### Las tres prácticas
+
+#### 1. Engage (Involucrar / dar voz)
+
+##### Invitar a las personas relevantes a aportar información, opiniones y objeciones antes de la decisión final.
+
+##### No significa delegar la decisión; significa recoger input real y considerar seriamente lo aportado.
+
+
+#### 2. Explain (Explicar / transparencia en la lógica)
+
+##### Comunicar claramente por qué se tomó la decisión y cómo los datos y criterios la justifican.
+
+##### Explicar cómo se usó (o por qué se desestimó) el input recibido.
+
+
+#### 3. Expectations clarity (Claridad en expectativas y consecuencias)
+
+##### Dejar claro qué cambios se esperan de cada rol, cuáles son los próximos pasos, y qué criterios de evaluación se usarán.
+
+##### Si hay incertidumbre o condiciones (p. ej. revisiones futuras), decirlo explícitamente.
+
+##### Estas tres prácticas se complementan con follow-through: cumplir lo prometido y aplicar consecuencias coherentes
+
+
+## Importancia
+
+##### Aumenta la disposición a comprometerse — la gente “compra” la implementación aunque no le guste el resultado.
+
+##### Reduce resistencia activa (bloqueos, sabotaje) y resistencia pasiva (baja ejecución).
+
+##### Mejora la calidad de la decisión al incorporar información práctica y evitar sorpresas.
+
+##### Fortalece la legitimidad del liderazgo y la confianza organizacional.
+
+
+### Implementación
+
+##### 1. Mapa de stakeholders (24–48 h): quién tiene información crítica, quiénes serán afectados, quiénes influyen.
+
+##### 2. Diseño del engagement: decidir formato (entrevistas uno-a-uno, focus group, encuesta estructurada) y preguntas clave.
+
+##### 3. Recolectar input: recopilar evidencias, objeciones y alternativas; documentar quién dijo qué.
+
+##### 4. Tomar decisión: el equipo directivo decide, usando el input como insumo explícito.
+
+##### 5. Comunicar la decisión: explicar la lógica, cómo se usó el input y los pasos siguientes. Usar lenguaje claro y ejemplos.
+
+##### 6. Definir expectativas: responsabilidades, KPIs, plazos y quién revisará el progreso.
+
+##### 7. Follow-through y retroalimentación: ejecutar, medir, reportar avances y volver a recopilar feedback en hitos.
+
+
+### Ej
+
+1. 
+```
+Para involucrar: “Queremos recoger tu perspectiva porque conoces X; ¿qué tres riesgos ves y qué alternativas propondrías?”
+```
+
+2. 
+```
+Para explicar la decisión: “Decidimos A después de evaluar X, Y y Z. 
+Tomamos en cuenta la propuesta B pero la descartamos por estas razones: …”
+```
+
+3. 
+```
+Para clarificar expectativas: “A partir de hoy, esperamos que [acción concreta] ocurra en 30 días. 
+Mediremos con [KPI]. Si no funciona, revisaremos en la próxima cadencia.”
+```
+
+
+### Uso
+
+##### Cambio organizacional / reestructuración: entrevistar mandos medios y clientes internos; explicar por qué se eligió estructura X y qué apoyo recibirán quienes cambian de rol.
+
+##### Asignación de recursos / proyectos: abrir convocatoria de ideas, explicar criterios de priorización y publicar por qué se aprobó cada proyecto.
+
+##### Decisiones de desempeño y promoción: dar feedback previo, documentar criterios y explicar la decisión final con ejemplos concretos.
+
+
+### Medir Fair Process
+
+##### Percepción de justicia (encuesta breve post-decision: % que considera el proceso justo).
+
+##### Nivel de compromiso de ejecución (% de hitos cumplidos a tiempo).
+
+##### Nº de resistencias formales (emails de queja, apelaciones) o solicitudes de revisión.
+
+##### Turnover voluntario en las áreas afectadas (comparado con baseline).
+
+##### Tiempo hasta estabilización (cuánto tarda la unidad en operar normalmente tras la decisión).
+
+
+### Evitar errores
+
+#### Simulación de participación (tokenism): pedir opiniones y luego ignorarlas → genera más resentimiento. 
+##### Solución: documentar y explicar por qué se incorporó o no cada aporte.
+
+#### Falta de follow-through: prometer revisiones o recursos y no cumplir → erosiona la confianza. 
+##### Solución: calendarios públicos y responsables asignados.
+
+#### Sobrecarga de consultas: preguntar a demasiadas personas sin procesar el input → paralización. 
+##### Solución: limitar alcance y usar técnicas de síntesis (resumen ejecutivo de inputs).
+
+#### Comunicación técnica incomprensible: usar jerga que nadie entiende → produce desconfianza. 
+##### Solución: comunicar con ejemplos y consecuencias prácticas.
+
+
+### Checklist (antes de anunciar una decisión)
+
+##### ¿Quiénes fueron consultados y cómo se documentó su input?
+
+##### ¿Está clara y simple la lógica que usamos para decidir? ¿Podemos explicarla en 3 frases?
+
+##### ¿Qué esperan de cada stakeholder y cómo lo mediremos?
+
+##### ¿Hay un plan de seguimiento público (fechas, responsables)?
+
+##### ¿Hicimos espacio para que la gente exprese dudas y dimos respuesta pública a las más relevantes?
+
+
+## Ej 2
+
+1. Empresa X decide cerrar una planta. Aplicando Fair Process:
+
+2. Entrevistan a líderes de planta, sindicatos, clientes internos (input).
+
+3. Evalúan datos: coste, demanda, alternativas; toman decisión.
+
+4. Comunican: por qué cerrar, por qué se eligió esa planta, qué recursos de recolocación y compensación habrá.
+
+5. Definen expectativas: calendario de cierre, responsables de recolocación, métricas de transición.
+
+6. Ejecutan y reportan avances; ajustan donde sea necesario.
+
+Resultado esperado: aunque algunos pierdan su empleo, la percepción de justicia y el grado de cooperación serán mayores que si la decisión se hubiera anunciado sin proceso.
+
+
+## Follow-through
+
+##### Etapa crítica que viene después de decidir una estrategia
+
+##### Consiste en asegurar que las decisiones se conviertan en acciones sostenidas y en resultados reales
+
+##### Para Kim & Mauborgne, tomar decisiones correctas y usar Fair Process o Tipping Point Leadership no basta: sin seguimiento, gobernanza y refuerzo, incluso las mejores estrategias se diluyen o fracasan.
+
+
+### Definición
+
+##### Las decisiones se traduzcan en tareas concretas
+
+##### Haya responsables claros y recursos asignados
+
+##### Exista medición continua del progreso
+
+##### Se realicen ajustes rápidos si algo falla
+
+##### Los cambios se institucionalicen (procesos, incentivos, cultura).
+
+##### Pasar de “decisión” → “implementación sostenida” → “rutina/resultado”.
+
+
+### Componentes
+
+#### 1. Asignación clara de ownership
+##### Para cada iniciativa: un Accountable (A) que responde del resultado + responsables (R) para actividades concretas
+
+#### 2. KPIs y targets concretos
+##### Métricas que midan output y outcome, no solo actividad. (ej. % adopción, TTM, incremento de ingresos, reducción de costes). 
+
+#### 3. Cadencia de gobernanza
+##### Rutina de revisiones (daily standups operativos, weekly tactical, monthly exec, quarterly strategy).
+
+#### 4. Transparencia y reporting
+##### Dashboards visibles, RAG status (verde/amarillo/rojo), issues log y decisiones registradas.
+
+#### 5. Recursos & presupuestos asegurados
+##### Fondos, personas y herramientas reservadas (no “pedidas a demanda”).
+
+#### 6. Mecanismos de corrección rápida
+##### Escalación predefinida, experimentos A/B, pivotes rápidos con límites temporales.
+
+#### 7. Incentivos y consecuencias
+##### Vincular parte de la retribución o evaluación al logro de metas; reconocer y escalar éxitos.
+
+#### 8. Institutionalización
+##### Actualizar SOPs, job descriptions, sistemas, policies y formación para que el cambio quede integrado.
+
+#### 9. Feedback loop y aprendizaje
+##### Post-mortems, lecciones aprendidas y adaptación contínua (kaizen).
+
+
+### Playbook
+
+##### 1. Desglosa la iniciativa en entregables (MVP → fases) y define owner por entregable.
+
+##### 2. Define 3 KPIs por iniciativa: 1 lead (actividad), 1 lag (resultado) y 1 de salud (adopción/uso).
+
+##### 3. Establece la cadencia: daily (si operación crítica), weekly tactical, monthly exec. Agrega calendario público.
+
+##### 4. Crea un dashboard simple (1 página) con RAG, owners y blockers; actualízalo antes de cada reunión.
+
+##### 5. Asigna recursos bloqueados por periodo (personas FTE, presupuesto, herramientas) y publica un plan de uso.
+
+##### 6. Revisa, documenta y decide en cada cadencia: mantener, acelerar, pivotar o cancelar. Registra la decisión y razón.
+
+
+### Cadencia sugerida
+
+##### Daily: equipo operativo (sólo si ejecución crítica).
+
+##### Weekly (tactical): owners presentan progreso, blockers y requests. (30–60 min)
+
+##### Monthly (management): revisión de KPIs, reasignación de recursos (1–2 h)
+
+##### Quarterly (strategy): revalidar alineamiento estratégico, capital allocation y lecciones aprendidas.
+
+##### Ajusta frecuencias según riesgo/impacto.
+
+
+### Plantilla
+
+##### Iniciativa / Proyecto:
+##### Objetivo (SMART):
+##### Owner (A):
+##### Responsables (R):
+##### KPIs (lead / lag / salud):
+##### Cadencia de seguimiento: (weekly/monthly/quarterly)
+##### Recursos asignados: (FTE, $)
+##### Entregables y hitos (fechas):
+##### Mecanismo de escalación: (quién, cuándo)
+##### Riesgos principales y mitigaciones:
+##### Cómo se institucionalizará: (SOPs, JD, training)
+##### Fecha de revisión/decisión:
+
+
+### Métricas
+
+% hitos entregados on-time
+% KPIs alcanzados vs target (por iniciativa)
+Time-to-resolution de blockers (avg días)
+Adopción: % usuarios activos / % clientes nuevos por iniciativa
+% presupuesto ejecutado vs plan
+N° de mejoras institucionalizadas (SOPs / roles actualizados)
+
+
+### Evitar errores
+
+##### Sin ownership claro: asigna A único por entregable.
+
+##### KPIs irrelevantes: evita medir actividad vacía; usa outcomes.
+
+##### Cadencia excesiva o inexistente: balancea — demasiado meeting killing, pocas reuniones = invisibilidad.
+
+##### Reportes sin acción: cada dashboard debe llevar decisiones (no sólo datos).
+
+##### No institucionalizar: piloto exitoso que “muere” porque nadie cambió procesos o contratos.
+
+
+### Ej piloto de producto
+
+Iniciativa: Piloto de entrega express 2h en ciudad X.
+
+Owner: Head Ops (A).
+
+KPIs: lead = % pedidos entregados <2h; lag = incremento neto de orders mensuales; salud = CSAT post-delivery.
+
+Cadencia: Daily ops (primeros 14 días), weekly tactical, monthly exec.
+
+Recursos: 3 FTE riders, $20k en pruebas marketing.
+
+Escalación: si tasa <90% entrega en 2h por 2 semanas → revisión técnica y posible pause.
+
+Institutionalización: si pilot pasa KPIs 3 meses, SOP para rollout + presupuesto anual incluido.
+
+
+### Fair Process y Tipping Point Leadership
+
+##### Fair Process facilita el follow-through: si la gente percibe el proceso como justo, la ejecución encontrará menos fricción.
+
+##### Tipping Point Leadership ayuda a elegir dónde concentrar follow-through (qué pilotos, qué “bright spots” priorizar).
+
+##### El follow-through es la operación que convierte el cambio (liderado por tipping points y legitimado por fair process) en rutina.
+
+
+## Matriz de priorización
+
+##### Herramienta para decidir qué ejecutar primero cuando tienes varias ideas/iniciativas.
+
+##### Te da un criterio objetivo (o semi-objetivo) para ordenar iniciativas según impacto esperado, coste, factibilidad y/o alineamiento estratégico —y así evitar decidir sólo por intuición o el ruido político.
+
+
+### 1. Tipos más usados/comunes
+
+#### 2×2 Impacto vs Esfuerzo (o Impacto vs Coste): simple y rápido; clasifica en Quick Wins / Major Projects / Fill-ins / Time Sinks.
+
+#### RICE (Reach, Impact, Confidence, Effort): especialmente útil en producto.
+
+#### ICE (Impact, Confidence, Ease): versión más ligera que RICE
+
+#### Weighted Scoring (puntuación ponderada): flexible, reproducible y recomendable para decisiones estratégicas (permite múltiples criterios con pesos). 
+
+##### Para proyectos que buscan value innovation (Blue Ocean), el enfoque ponderado suele ser el más apropiado porque puedes priorizar específicamente Buyer Utility, Delta coste, Feasibility, Speed, etc.
+
+
+### 2. Método weighted scoring
+
+##### 1. Define los criterios (4–7 máximo). Ejemplos útiles:
+Impacto (ganancia esperada en ingresos o strategic value).
+Buyer Utility (cuánto mejora la utilidad del cliente / atrae no-clientes).
+Delta coste (si reduce coste o cuánto requiere inversión).
+Factibilidad / Riesgo técnico-operativo.
+Velocidad de implementación.
+Alineamiento estratégico.
+
+##### 2. Asigna pesos a cada criterio que reflejen su importancia relativa (la suma = 1.0 ó 100%).
+Ejemplo: Impacto 0.35, Buyer Utility 0.20, Delta coste 0.15, Feasibilidad 0.15, Velocidad 0.10, Alineamiento 0.05.
+
+##### 3. Define escala de scoring (por ejemplo 1–10, donde 10 = mejor).
+Aclara qué significa cada punto (ej.: Feasibilidad 10 = probado internamente; 1 = imposible hoy).
+
+##### 4. Puntúa cada iniciativa en cada criterio (ideal: en workshop con 3–5 evaluadores y tomar promedio para reducir sesgo).
+
+##### 5. Multiplica cada puntaje por el peso del criterio y suma para obtener la puntuación total de la iniciativa.
+
+##### 6. Ordena e interpreta: prioriza por score descendente; usar umbrales (por ejemplo >7 = ejecutar, 5–7 = pilotar, <5 = descartar o revisar).
+
+##### 7. Revisar y validar: comprobar con Commercial Sequence (Buyer Utility → Price → Cost → Adoption) para iniciativas top.
+
+
+### 3. Plantilla de criterios
+
+Criterios sugeridos y un peso ejemplo:
+
+Impacto (0.35) — valor financiero / estratégico.
+
+Buyer Utility (0.20) — cuánto aumenta utilidad o convierte no-clientes.
+
+Delta coste (0.15) — potencial de reducción o coste requerido.
+
+Factibilidad (0.15) — técnica/operativa/recursos y riesgo.
+
+Velocidad (0.10) — tiempo hasta resultado.
+
+Alineamiento estratégico (0.05) — encaje con visión/cartera.
+
+Escala: 1–10 (10 = excelente).
+
+
+### 4. Ej
+
+Pesos usados (ejemplo):
+Impacto 0.35, Buyer Utility 0.20, Delta coste 0.15, Feasibilidad 0.15, Velocidad 0.10, Alineamiento 0.05.
+Puntajes (1–10) por iniciativa (promedios de workshop):
+
+A: Impacto 9, BuyerUtility 8, CostDelta 3, Feasibilidad 7, Velocidad 6, Alineamiento 8
+B: Impacto 6, BuyerUtility 7, CostDelta 8, Feasibilidad 9, Velocidad 8, Alineamiento 6
+C: Impacto 8, BuyerUtility 9, CostDelta 4, Feasibilidad 5, Velocidad 4, Alineamiento 9
+
+Cálculo (suma ponderada):
+A = 9·0.35 + 8·0.20 + 3·0.15 + 7·0.15 + 6·0.10 + 8·0.05 = 7.25
+B = 6·0.35 + 7·0.20 + 8·0.15 + 9·0.15 + 8·0.10 + 6·0.05 = 7.15
+C = 8·0.35 + 9·0.20 + 4·0.15 + 5·0.15 + 4·0.10 + 9·0.05 = 6.80
+
+Resultado / Prioridad: A (7.25) > B (7.15) > C (6.80).
+Interpretación: A y B están cercanas; A tiene mayor impacto/alineamiento, B es más barato y rápido; C alta utilidad para cliente pero requiere más trabajo
+
+
+### 5. Prácticas
+
+Limita criterios a los 4–7 más relevantes. Muchos criterios crean ruido.
+
+Pondera con cuidado: usa consenso entre sponsors. Si diferencias grandes, haz sensitivity analysis (ver si rankings cambian con otros pesos).
+
+Promedios y paneles: puntuar con 3–5 evaluadores y usar promedio reduce sesgo individual.
+
+##### Combinar con Commercial Sequence: antes de aprobar presupuesto, exige check de utilidad → precio → coste → adopción.
+
+Revisa frecuentemente: prioridades cambian con nueva información o contexto.
+
+Documenta supuestos: cada puntaje debería tener nota breve (por qué 7 y no 5).
+
+
+#### 6. Evitar errores
+
+Decidir por “ruido político”: ocultar sesgos con scoring y promedios.
+
+Weights arbitrarios: acordar pesos en comité y probar sensibilidad.
+
+Usar sólo impacto financiero: puedes perder ideas que atraen nuevos clientes (Buyer Utility).
+
+No validar factibilidad: puntuar factibilidad sin datos empíricos es arriesgado — pide mínimo piloto.
+
+No iterar: una matriz no es ley; revísala después de pilotos.
+
+
+#### 7. Plantilla
+
+| Iniciativa | Impacto (0.35) | BuyerUtility (0.20) | DeltaCost (0.15) | Factibilidad (0.15) | Velocidad (0.10) | Alineamiento (0.05) | Score |
+| ---------- | -------------: | ------------------: | ---------------: | ------------------: | ---------------: | ------------------: | ----: |
+| A          |              9 |                   8 |                3 |                   7 |                6 |                   8 |  7.25 |
+| B          |              6 |                   7 |                8 |                   9 |                8 |                   6 |  7.15 |
+| C          |              8 |                   9 |                4 |                   5 |                4 |                   9 |  6.80 |
+
+```
+(usa la fórmula: Score = Σ(puntaje_i × peso_i)).
+```
+
+
+
 # Richard Rumelt — Good Strategy / Bad Strategy (2011)
+
 
 
 # A.G. Lafley & Roger Martin — Playing to Win (2013)
 
 
+
 # John Doerr — Measure What Matters
+
 
 
 # Dixit & Nalebuff — The Art of Strategy
 
 
+
 # Peter Schwartz — The Art of the Long View
+
+
+
+# Teece, Pisano, Shuen — Dynamic capabilities
 
 
 
