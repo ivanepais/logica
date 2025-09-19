@@ -3080,15 +3080,381 @@ No iterar: una matriz no es ley; revísala después de pilotos.
 
 # Richard Rumelt — Good Strategy / Bad Strategy (2011)
 
+##### Qué es una buena estrategia, qué la obstaculiza, y cómo construir una de verdad.
+
+
+## 1. Tesis 
+
+##### Una buena estrategia no es un listado de ambiciones ni un conjunto de metas
+
+##### Es una respuesta coherente y focalizada a un problema crítico
+
+##### Requiere un diagnóstico claro, una política guía para abordar ese diagnóstico y un conjunto de acciones coherentes que implementen la política
+
+Rumelt resume esto como el kernel de la estrategia:
+
+##### Diagnóstico → Guiding Policy → Coherent Actions.
+
+
+## 2. “kernel” (núcleo) de la buena estrategia
+
+#### 1. Diagnóstico
+
+##### Identifica y explica la naturaleza del desafío o la oportunidad. No es un inventario superficial: busca la causa raíz que limita el rendimiento.
+
+Ejemplo: “La rotación de clientes se debe al onboarding deficiente y tiempos de entrega inconsistentes”, no “mejorar satisfacción”.
+
+
+#### 2. Guiding Policy (política guía)
+
+##### Un enfoque o enfoque general que define cómo se responderá al diagnóstico
+
+##### Es una regla general que guía decisiones concretas (p. ej. “priorizar inversión en automatización del fulfillment y simplificación del onboarding”).
+
+##### No es un plan de acción paso a paso, sino la dirección estratégica.
+
+
+#### 3. Coherent Actions (acciones coherentes)
+
+##### Conjunto de medidas alineadas con la política guía: asignación de recursos, cambios organizativos, iniciativas con prioridad y secuencia.
+
+##### Coherencia = las acciones se refuerzan entre sí y generan palanca (leverage).
+
+
+## 3. Señales de Bad Strategy
+
+##### Rumelt identifica patrones comunes que no son estrategia:
+
+#### 1. Fluff: lenguaje grandilocuente y vago (vision statements llenos de clichés) sin decisiones reales.
+
+#### 2. Falta de diagnóstico: no se define el problema real; se listan metas generales.
+
+#### 3. Mistaking goals for strategy: confundir objetivos (ej.: “ser líder de mercado”) con la estrategia para alcanzarlos. 
+
+#### 4. Bad strategic objectives: objetivos contradictorios o imposibles sin recursos/plan.
+
+#### 5. Política de “alcanzar todo”: intentar múltiples frentes sin foco → dilución de recursos.
+
+
+## 4. Conceptos operativos clave (herramientas mentales)
+
+##### Leverage (apalancamiento): buscar palancas donde una acción relativamente pequeña produzca efecto grande (p.ej. cambiar un proceso crítico que desencadena mejoras en toda la cadena).
+ 
+##### Proximate objectives (objetivos próximos/alcanzables): metas realistas y concretas que acercan al objetivo mayor; evita fijar metas inalcanzables.
+
+##### Chain-link systems: sistemas interdependientes donde el rendimiento depende de todas las partes; identificar y reforzar el eslabón más débil.
+
+##### Design: la estrategia es un acto de diseño —combinar recursos y acciones de forma intencional— no solo azar o planeamiento top-down.
+ 
+##### Using advantage: explotar ventajas existentes (recursos únicos, posicionamiento) antes de perseguir nuevas que requieren mucho costo.
+
+
+## 5. Fuentes de poder estratégico (cómo ganar)
+
+##### Rumelt describe varias fuentes prácticas de ventaja:
+
+##### Posición favorable en la industria (cuello de botella, control de canal).
+
+##### Recursos únicos (capacidad específica, know-how, activos tangibles/intangibles poco imitables).
+
+##### Estructuras o procesos que generan eficiencia o velocidad.
+
+##### Capacidad para imponer costos a rivales (p. ej. control de un insumo clave).
+
+##### Cambio de reglas del juego: forzar a los competidores a actuar a tu ritmo o en tu terreno.
+
+
+## Diseñar buena estrategia
+
+#### 1. Diagnóstico
+
+##### Recolecta evidencias (datos operativos, clientes, finanzas).
+
+##### Formular el problema en 1–2 frases que expliquen la causa raíz.
+
+
+#### 2. Formular la política guía
+
+##### Decide el enfoque general (p. ej. “relocalizar producción + diferenciar servicio en 3 segmentos”).
+
+##### Debe ser suficientemente concreta para guiar elecciones y suficientemente flexible para operar.
+
+
+#### 3. Definir acciones coherentes
+
+##### Lista 5–8 iniciativas prioritarias que refuercen la política (quién, qué, cuándo, recursos).
+
+##### Identifica palancas (leverage) y proximate objectives con plazos.
+
+
+#### 4. Asignar recursos & ownership
+
+##### Recursos comprometidos (personas, dinero, tiempo), owners (A/R) y KPIs vinculados.
+
+
+#### 5. Piloto / medir / ajustar
+
+##### Implementa pilas pequeñas con métricas tempranas; aprende y escala.
+
+
+#### 6. Institutionalizar
+
+##### Cambiar procesos, incentivos y estructuras para sostener la estrategia (follow-through).
+
+
+## 7. Checklist diagnóstico buena o mala estrategia
+
+¿Hay un diagnóstico claro del problema? (sí/no)
+
+¿La política guía responde directamente al diagnóstico?
+
+¿Las acciones propuestas son coherentes entre sí y con la política?
+
+¿Se identifican palancas concretas que produzcan leverage?
+
+¿Existen objetivos próximos y medibles?
+
+¿Se han asignado recursos y responsables?
+
+¿Hay una rutina de seguimiento y aprendizaje?
+
+Si respondes “no” a varias, hay riesgo de Bad Strategy.
+
+
+## 8. Ejemplos (tipo, no fechas ni datos sensibles)
+
+Mala estrategia típica: documento con 10 objetivos, 20 iniciativas y sin priorización; lenguaje vago; no hay diagnóstico ni trade-offs.
+
+Buena estrategia típica: una empresa identifica un cuello de botella en la cadena de suministro → política guía: “reducir variabilidad del lead time mediante contratos locales y automatización en 12 meses” → acciones coherentes: renegociar 3 contratos, invertir en 2 líneas automatizadas, crear equipo de control de demanda, KPI = lead time medio < X días en 9 meses.
+
+
+### 9. Práctica
+
+##### Evita la lista de deseos: prioriza ruthlessly (rechaza iniciativas que no encajan).
+
+##### No confundas plan operativo con estrategia: las tareas diarias no son estrategia si no se alinean con la política guía.
+
+##### Busca evidencia en el diagnóstico: anécdotas no bastan.
+
+##### Diseña para la implementación: cada acción debe tener owner, recursos y fecha.
+
+##### No temas a los trade-offs: tomar decisiones explícitas (lo que haces y lo que no haces) es parte de la estrategia.
+
+
+## 10. Plantilla - kernel
+
+Diagnóstico (1–2 frases):
+
+Policy / Guiding Policy (1–2 frases):
+
+Coherent Actions (5 ítems):
+1. 
+2. 
+3. 
+4. 
+5. 
+
+Proximate objectives (plazos):
+
+Owner / Recursos comprometidos:
+
+KPIs clave:
+
+##### Usa esto para convertir cualquier declaración ambiciosa en una estrategia accionable.
+
 
 
 # A.G. Lafley & Roger Martin — Playing to Win (2013)
+
+##### Presenta la estrategia como un conjunto de elecciones concretas y coordinadas cuyo propósito es ganar en un contexto competitivo
+
+## Tesis 
+
+##### La estrategia es sobre elecciones: para ganar debes responder cinco preguntas interdependientes y diseñar acciones coherentes en torno a esas respuestas
+
+##### No es una lista de aspiraciones vagamente formuladas; es elegir dónde jugar y cómo ganar.
+
+
+## El marco: las cinco elecciones (el núcleo)
+
 
 
 
 # John Doerr — Measure What Matters
 
+##### Populariza los OKR (Objectives and Key Results) como un sistema simple y poderoso para enfocarse, alinear y medir progreso
 
+Fue inspirado en Andy Grove (Intel) y llevado a escala en empresas como Google
+
+Doerr explica la teoría, muestra casos y ofrece prácticas para implementar OKRs bien
+
+
+## 1. OKR
+
+##### Objective (O) — Objetivo: declaración cualitativa, inspiradora y temporal (“qué” queremos lograr).
+
+##### Key Results (KR) — Resultados clave: 2–5 métricas cuantificables que indican si el objetivo se consiguió (“cómo” medimos el progreso).
+
+Formato habitual:
+
+Objective: Mejorar la satisfacción del cliente en productos móviles.
+
+KR1: Aumentar NPS de 25 a 40.
+
+KR2: Reducir tiempo medio de respuesta de soporte de 24h a 6h.
+
+KR3: Conseguir 80% de clientes con onboarding completado en 7 días.
+
+
+## 2. Propósitos y ventajas
+
+##### Enfoque: reduce la proliferación de prioridades.
+
+##### Alineamiento: conecta objetivos de la empresa → equipo → individuo.
+
+##### Medición clara: evita vaguedades; obliga a metas cuantificables.
+
+##### Transparencia: al ser públicos, facilitan coordinación y responsabilidad.
+
+##### Ambición: fomenta objetivos ambiciosos (moonshots) y ejecución disciplinada.
+
+
+## 3. Tipos de OKRs
+
+##### Committed OKRs: metas realistas que la organización se compromete a alcanzar.
+
+##### Aspirational / Moonshot OKRs: metas ambiciosas; si alcanza ~70% es un éxito.
+
+##### Company / Team / Individual: niveles anidados para alineamiento vertical/horizontal
+
+
+## 4. Buenos OKRs
+
+1. Objetivo claro y motivador (1 frase).
+
+2. 2–5 Key Results cuantificables (números/porcentajes/valores).
+
+3. Evitar KRs que describan tareas (no “lanzar campaña”), medir impacto (sí “Aumentar leads calificados de 200 a 600”).
+
+4. Preferir métricas de outcome sobre output (ventas, conversión, NPS, retención).
+
+5. Mantener OKRs trimestrales (cadencia común) y revisarlos frecuentemente.
+
+6. Limitar el número de OKRs por persona/equipo (p. ej. 3–5 objetivos top).
+
+
+## 5. Scoring / Calificación
+
+Escala típica: 0.0 – 1.0 (o 0–100%).
+
+Regla práctica de Doerr: para OKRs aspiracionales, ~0.6–0.7 es buena (lograr 100% indica que quizá no era aspiracional).
+
+Ejemplo de cálculo (promedio simple de KRs):
+KR1 = 0.8, KR2 = 0.6, KR3 = 0.7.
+Paso 1: 0.8 + 0.6 = 1.4.
+Paso 2: 1.4 + 0.7 = 2.1.
+Paso 3: 2.1 / 3 = 0.7 → Score del Objective = 0.7 (70%).
+
+
+## 6. CFRs — complemento humano (Conversations, Feedback, Recognition)
+
+##### Doerr enfatiza que OKRs no bastan solos: pueden romperse sin cultura. Por eso propone CFRs:
+
+#### Conversations: check-ins regulares (entre managers y equipos) para ajustar.
+
+#### Feedback: datos y conversaciones continuas para aprender.
+
+#### Recognition: celebrar logros; reconocer esfuerzo.
+
+#### Estos elementos hacen que OKRs sean vivibles y no solo un cuadro de mando.
+
+
+## 7. Cadencia y gobernanza
+
+##### Ciclo típico: OKRs anuales de empresa → OKRs trimestrales de equipos → OKRs individuales (alineados).
+
+##### Revisiones: weekly check-ins (operativo), monthly reviews (táctico), quarterly grading + retro.
+
+##### Transparencia: OKRs de empresa y equipos suelen ser públicos dentro de la organización.
+
+
+## 8. Ejemplos
+
+Ejemplo — Company OKR (Tech SaaS)
+
+O: Alcanzar liderazgo en retención de clientes SMB.
+KR1: Reducir churn anual neto de 8% a 4%.
+KR2: Incrementar NPS de 28 a 45.
+KR3: Aumentar tasa de activación (30 días) de 45% a 70%.
+
+Ejemplo — Equipo Producto
+
+O: Mejorar la experiencia de onboarding.
+KR1: Aumentar % usuarios que completan onboarding en 7 días de 40% a 75%.
+KR2: Reducir tiempo medio de setup de 12 min a 4 min.
+KR3: Elevar CSAT post-onboarding de 3.6 a 4.5.
+
+
+## 9. Buenas prácticas de implementación
+
+##### No atarlos a compensación directamente (puede matar la ambición).
+
+##### Empieza con pocos OKRs y escala.
+
+##### Entrena managers y equipos en escritura y scoring.
+
+Usa ejemplos reales de la compañía para enseñar.
+
+Fomenta transparencia pero respeta privacidad cuando aplique.
+
+Combina moonshots + committed OKRs para balancear ambición y delivery.
+
+Automatiza reporting con dashboards pero mantén conversaciones humanas
+
+
+## 10. Errores y limitaciones
+
+##### KRs vagas o no medibles.
+
+##### Demasiados OKRs → dispersión.
+
+##### Usarlos como única herramienta de gestión (sin CFR).
+
+##### Vincular OKRs estrictamente a salario → gaming y conservadurismo.
+
+##### Falta de revisión o follow-through → se vuelven papel muerto.
+
+##### Confundir tareas con resultados.
+
+
+## 11. Checklist evaluar un OKR
+
+¿El Objective inspira y es claro?
+
+¿Cada KR es numérico y verificable?
+
+¿Los KRs son outcomes, no tareas?
+
+¿Hay 2–5 KRs por Objective?
+
+¿Se puede medir semanalmente o mensualmente?
+
+¿El OKR está alineado con niveles superiores?
+
+
+## 12. Plantilla
+
+```
+Objective (1 frase motivadora)
+
+KR1: [métrica] de X → Y (plazo)
+
+KR2: [métrica] de A → B (plazo)
+
+KR3: [métrica] de M → N (plazo)
+
+Cadencia: trimestral / responsable: [Nombre] / Score final: [0.0–1.0] 
+```
 
 # Dixit & Nalebuff — The Art of Strategy
 
