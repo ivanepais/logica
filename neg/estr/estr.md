@@ -3277,6 +3277,166 @@ KPIs clave:
 
 ## El marco: las cinco elecciones (el núcleo)
 
+### 1. Winning aspiration (Aspiración de ganar)
+
+##### ¿Cuál es el propósito de la organización en términos de victoria? 
+
+##### No es simplemente “hacer dinero”: es la ambición estratégica (qué significa “ganar” para nosotros).
+
+
+### 2. Where to play (Dónde competir)
+
+##### ¿En qué mercados, segmentos, canales, geografía, categorías o clientes vamos a competir? 
+
+Definir el campo de juego con precisión.
+
+
+### 3. How to win (Cómo ganar)
+
+##### Qué ventaja competitiva ofreceremos en ese campo para ganar?
+
+##### Es la propuesta de valor y el posicionamiento —por ejemplo, costo, diferenciación, servicio, experiencia— pero articulado en términos prácticos.
+
+
+### 4. Core capabilities (Capacidades clave)
+
+##### ¿Qué capacidades organizativas y recursos necesitamos para sostener la forma de ganar?
+
+##### Aquí se define qué hacer excepcionalmente bien (operaciones, innovación, relaciones, distribución, etc.).
+
+
+### 5. Management systems (Sistemas de gestión)
+
+##### Qué estructuras, procesos, incentivos y sistemas (financieros, RH, IT, gobernanza) se requieren para construir, desplegar y proteger las capacidades y asegurar ejecución?
+
+
+##### Estas cinco elecciones forman una cascade: la aspiración guía dónde jugar; dónde jugar determina cómo ganar; cómo ganar requiere capacidades; las capacidades exigen sistemas de gestión. Todo debe encajar.
+
+
+## Principios operativos
+
+### Estrategia = Elecciones + Coherencia. No puedes “todo para todos”; elegir implica renunciar.
+
+### Probar y aprender (iteración): las elecciones deben traducirse en experimentos medibles
+
+### Foco en ventajas sostenibles: capacidades difíciles de replicar (fit entre actividades).
+
+### Desagregar por unidades: cada SBU o equipo debe responder las cinco preguntas para su ámbito.
+
+### Alineamiento vertical y horizontal: las elecciones deben reflejarse desde la sede hasta la ejecución.
+
+
+## Diseñar una estrategia con el marco
+
+### 1. Define la Winning Aspiration (1–2 frases). Ej.: “Ganar en la categoría X ofreciendo conveniencia premium a clientes urbanos.”
+
+### 2. Delimita Where to Play (segmentos y criterios: cliente, geografía, canal, occasion). Sé específico.
+
+### 3. Formula How to Win en términos operativos (qué promesa concreta y qué evidencia entregas al cliente).
+
+### 4. Lista Core Capabilities necesarias (3–5 capacidades críticas), evalúa brecha actual vs requerida.
+
+### 5. Diseña Management Systems (KPIs, procesos, budget, governance, talento) que construyan y sostengan las capacidades.
+
+### 6. Prioriza inversiones y pilotos: asigna recursos a capacidades con mayor leverage y lanza pruebas con métricas claras.
+
+### 7. Revisa la cascade: asegúrate de que cada elección apoya a la anterior y no genera contradicciones.
+
+### 8 .Itera: medir resultados, aprender y ajustar dónde/jugar o cómo/ganar según evidencia.
+
+
+## Ej
+
+##### Winning aspiration: Ser la opción preferida para familias con hijos pequeños que buscan alimentación saludable y rápida.
+
+##### Where to play: Restaurantes de comida rápida en zonas residenciales y centros comerciales, horario mediodía y merienda.
+
+##### How to win: Menú saludable y rápido + experiencia kid-friendly + precios accesibles via optimización de procesos.
+
+##### Core capabilities: Cadena de suministro fresca y ágil; procesos de cocina estandarizados; experiencia en diseño de locales.
+
+##### Management systems: KPIs de tiempo de servicio, % ingredientes frescos, satisfacción familiar; entrenamiento estandarizado; capex para kitchens.
+
+
+## Herramientas y artefactos a usar
+
+#### Strategy Choice Cascade (one-pager): documento que muestra las cinco elecciones y las implicaciones.
+
+#### Gap analysis (capacidades actuales vs requeridas).
+
+#### Pilots / MVPs para Where-to-play × How-to-win.
+
+#### KPIs alineados: métricas por elección (p. ej. share en segmento, margin, time-to-market, ROIC).
+
+#### RACI / governance para management systems.
+
+
+## Evaluación y priorización
+
+¿La aspiración es específica y accionable?
+
+¿Where-to-play está claramente acotado con criterios?
+
+¿How-to-win es diferencial y defendible?
+
+¿Las capacidades identificadas son de hecho críticas y difíciles de imitar?
+
+¿Los sistemas de gestión permiten construir y mantener esas capacidades?
+
+¿Hay trade-offs explícitos (qué no haremos)?
+
+¿Se han definido proximate objectives y pilotos medibles?
+
+
+## Fortalezas del enfoque
+
+##### Muy práctico y operativo; obliga a tomar decisiones.
+
+##### Facilita la comunicación y despliegue organizativo (desde HQ hasta unidades).
+
+##### Enfatiza capacidades y sistemas, no solo posicionamiento teórico.
+
+##### Útil para cascadas estratégicas (corporativo → SBU → equipos).
+
+
+
+## Límites y críticas
+
+Requiere disciplina para renunciar: organizaciones indecisas pueden diluir el enfoque.
+
+Si se aplica de forma dogmática, puede subestimar dinamismo externo (necesita revisión frecuente).
+
+##### Exige buen diagnóstico inicial: malas elecciones conducen a inversión desperdiciada.
+
+##### No reemplaza análisis financiero y de industria; debe integrarse con herramientas como Porter, RBV, VRIO, y análisis de mercado.
+
+
+## Evitar errores
+
+#### Where-to-play demasiado amplio → define criterios y testea segmentos.
+
+#### How-to-win vago → convertir en hipótesis accionables (propuestas de valor medibles).
+
+#### Lista de capacidades genéricas → identificar comportamientos/artefactos concretos (procesos, talentos, tecnología).
+
+#### Sistemas sin ownership → asigna responsables y recursos claros.
+
+#### No pilotar → siempre validar con datos antes de escalar.
+
+
+## Plantilla (Strategy Choice Cascade)
+
+Winning Aspiration ?
+
+Where to Play (criterios y segmentos ?
+
+How to Win (propuesta concreta) ?
+
+Core Capabilities (3–5): 1 ?, 2 ?, 3 ?, 4 ?, 5 ?, 
+
+Management Systems (KPIs, procesos, owners): ?
+
+Top 3 iniciativas / pilotos (owners & timeline): 1 ?, 2 ?, 3 ?
 
 
 
@@ -3456,15 +3616,478 @@ KR3: [métrica] de M → N (plazo)
 Cadencia: trimestral / responsable: [Nombre] / Score final: [0.0–1.0] 
 ```
 
+
+
 # Dixit & Nalebuff — The Art of Strategy
+
+##### Introducción práctica a la teoría de juegos pensada para managers y personas que toman decisiones en entornos estratégicos
+
+
+## 1. Tesis
+
+##### La teoría de juegos estudia situaciones en las que el resultado que consigues depende no sólo de tus decisiones sino de las decisiones de otros.
+
+##### Enseña a modelar esas situaciones, anticipar reacciones y diseñar estrategias (compromisos, incentivos, señales) para mejorar resultados.
+
+
+## 2. Elementos básicos de cualquier juego
+
+#### 1. Jugadores: quién toma decisiones (empresas, consumidores, reguladores).
+
+#### 2. Estrategias: las opciones disponibles para cada jugador.
+
+#### 3. Pagos (payoffs): resultado para cada jugador en función de la combinación de estrategias (beneficio, utilidad, payoff).
+
+#### 4. Información: qué sabe cada jugador cuando decide (simultáneo vs secuencial; información completa vs incompleta).
+
+#### 5. Reglas/estructura: si las decisiones son simultáneas o secuenciales, repetidas o de una sola vez.
+
+
+## 3. Conceptos fundamentales e interpretación
+
+#### 1. Dominant strategy (estrategia dominante): una estrategia que es mejor para un jugador sin importar lo que haga el rival. Si existe, simplifica mucho la decisión.
+
+#### 2. Nash Equilibrium (equilibrio de Nash): un perfil de estrategias donde nadie mejora cambiando unilateralmente su estrategia. No siempre es único ni óptimo colectivamente.
+
+#### 3. Dominated strategies: estrategias que siempre son peores que otra; descartarlas ayuda a simplificar análisis.
+
+#### 4. Mixed strategies: cuando no existe estrategia pura dominante/equilibrio puro, los jugadores aleatorizan (usar probabilidades) — útil para modelar imprevisibilidad (p. ej. precios, publicidad).
+
+#### 5. Extensive form / backward induction: en juegos secuenciales (movimientos uno tras otro), se analiza hacia atrás para encontrar la solución racional (subgame-perfect equilibrium).
+
+#### 6. Credible commitment: comprometerse a una acción futura puede cambiar el juego (ej.: una firma anuncia políticas de precios y las hace creíbles).
+
+#### 7. Signaling y screening (información incompleta):
+
+##### Signaling: cuando un actor con más información envía señales (p. ej. gastar en I+D para mostrar capacidad).
+
+##### Screening: cuando el menos informado diseña mecanismos para inducir a los demás a revelar su tipo (p. ej. contratos, tests).
+
+#### 8. Threats and promises: no todas las amenazas son creíbles; la credibilidad depende de costos y de la estructura del juego
+
+#### 9. Focal points (puntos focales): soluciones que la gente tiende a elegir por convención o saliencia cuando falta coordinación.
+
+#### 10. Repeated games & cooperation: cuando el juego se repite, el castigo/reciprocidad puede sostener cooperación (p. ej. “tit-for-tat”).
+
+#### 11. Bayesian games / incomplete information: modelan incertidumbre sobre tipos (habilidad, calidad, intención) y usan creencias/prioris.
+
+#### 12. Zero-sum vs non-zero-sum: en suma cero, lo que uno gana el otro lo pierde; en no suma cero hay posibilidad de creación mutua de valor (negociación, alianzas).
+
+
+## 4. Ejemplos
+
+### 1. Fijación de precios: elegir precio alto vs bajo depende de si competidor baja precio (Prisoner’s Dilemma / Cournot/Bertrand según modelo).
+
+### 2. Entrada / deterrence: invertir en capacidad o hacer compromisos para aumentar coste de entrada para rivales.
+
+### 3. Negociación salarial: usar señales (otras ofertas), diseñar concesiones secuenciale
+
+### 4. Subastas: elegir el tipo de subasta o la estrategia de puja depende de información sobre competidores.
+
+### 5. Lanzamiento de producto: decidir simultáneamente con competidores o esperar; compromiso público puede alterar respuesta rival.
+
+### 6. Estrategias en plataformas: diseñar precios y reglas para atraer dos lados (efectos de red) requiere modelar interdependencias.
+
+
+## 5. Modelar problema estratégico
+
+#### 1. Define jugadores relevantes (quién influye en el resultado).
+
+#### 2. Lista las estrategias plausibles para cada jugador (ser exhaustivo pero práctico).
+
+#### 3. Determina la secuencia y la información (simultáneo o secuencial; ¿qué se sabe cuando se decide?).
+
+#### 4. Asigna payoffs relativos (ordinalmente basta: quién prefiere qué).
+
+#### 5. Busca dominancias y elimina estrategias dominadas.
+
+#### 6. Analiza equilibrios (Nash / subgame-perfect) y evalúa su plausibilidad.
+
+#### 7. Considera compromisos, señales y repetición: ¿qué puede cambiar las preferencias o la credibilidad?
+
+#### 8. Extrae implicaciones accionables: cambios en reglas, timing, comunicación, incentivos.
+
+#### 9. Prueba sensibilidad: ¿pequeñas variaciones en supuestos cambian la recomendación?
+
+#### 10. Valida con datos o experimentos (si es posible).
+
+
+## 6. Reglas heurísticas
+
+#### 1. Piensa un movimiento adelante: pregúntate “si yo hago X, ¿cómo reacciona el otro?”
+
+#### 2. Valora la credibilidad: una amenaza no creíble no cambia el comportamiento.
+
+#### 3. Preferir compromisos difíciles de revertir si te ayudan (ej.: contratos, inversiones irreversibles).
+
+#### 4. Buscar señales de calidad o intención cuando existe asimetría de información.
+
+#### 5. Si el juego se repite, considera la dinámica de reputación: el corto plazo vs largo plazo cambia estrategia.
+
+#### 6. Cuando coordinar es valioso, crea focal points claros (reglas simples, estándares).
+
+#### 7. No ignores el “payoff social”: equilibrio individual racional puede ser ineficiente colectivamente (usa incentivos para alinear).
+
+
+## 7. Errores al aplicar teoría de juegos
+
+##### Modelar mal la información o los jugadores relevantes (omitir stakeholders clave).
+
+##### Confundir equilibria teóricos con comportamiento real — usar intuición y evidencia para calibrar.
+
+##### Olvidar costos de compromiso (prometer es fácil, hacer que sea creíble puede costar).
+
+##### Simplificar en exceso payoffs (usar ordinales es OK, pero asegúrate de rangos relativos).
+
+##### No probar sensibilidad: pequeñas variaciones en supuestos pueden cambiar el equilibrio.
+
+
+## 8. Ejemplo: dilema del prisionero
+
+#### Dos jugadores, cooperar o traicionar. Cooperar mutuo produce mejor resultado conjunto, pero traicionar es la mejor acción individual si el otro coopera.
+
+#### Lección: en interacciones únicas, la racionalidad puede llevar a resultados subóptimos; en juegos repetidos, la posibilidad de castigo/reciprocidad puede sostener cooperación.
+
+
+## 9. Herramientas/plantillas
+
+Dibujar un juego (jugadores, estrategias, payoffs) y encontrar dominancias/Nash.
+
+Credibilidad para amenazas/promesas (coste de revertir, observabilidad, timing).
+
+Ej: payoff matrix y analizo equilibrios (dime sector/decisión).
 
 
 
 # Peter Schwartz — The Art of the Long View
 
+##### Enseña planificación por escenarios como método para pensar y tomar decisiones en entornos inciertos
+
+##### En vez de predecir un único “futuro correcto”, construyes varios futuros plausibles y contrastantes para revelar riesgos, oportunidades y decisiones robustas hoy.
+
+
+## Componentes y conceptos clave
+
+### 1. Escenarios (scenarios)
+
+##### Historias plausibles y coherentes sobre cómo podría evolucionar el mundo/sector en el largo plazo
+
+##### No son predicciones ni planes de acción, sino herramientas de pensamiento que amplían la imaginación estratégica.
+
+
+### 2. Incógnitas críticas / fuerzas motrices (drivers)
+
+##### Factores que empujan el futuro: tecnológicos, económicos, políticos, sociales, ambientales. Se separan en:
+
+Seguros (tendencias claras) y
+
+Críticos e inciertos (aquellos que generan escenarios distintos).
+
+
+### 3. Ejes / dimensiones (axes)
+
+##### Dos (o más) incertidumbres críticas se usan para formar ejes que definen el espacio de escenarios (p. ej. “alto vs bajo control regulatorio” × “rápida vs lenta innovación”).
+
+##### Cruces generan escenarios contrastantes.
+
+
+### 4. Construcción narrativa (storytelling)
+
+##### Cada escenario se convierte en una historia rica: quiénes son los actores, qué eventos clave ocurrieron, cómo reaccionaron mercados y políticas, y cuál es la vida cotidiana en ese futuro
+
+##### Las buenas historias son creíbles y vívidas.
+
+
+### 5. Señales (signposts) y métricas
+
+##### Indicadores observables que te dicen en qué dirección se mueve el mundo (p. ej. una ley clave, adopción masiva de X, ruptura tecnológica).
+
+##### Sirven para vigilancia y para actualizar decisiones.
+
+
+### 6. Backcasting (plan desde el futuro)
+
+##### Partir de un escenario deseado/evitable y trabajar hacia atrás para identificar qué pasos son necesarios hoy para lograr o evitar ese futuro.
+
+
+### 7. Estrategias robustas vs opcionales
+
+#### Robustas: funcionan razonablemente bien en varios escenarios.
+
+#### Opcionales / flexibles: inversiones/opciones reales que se pueden activar si ocurre un escenario (real options).
+
+
+### 8. Stress-test / wind tunneling
+
+##### Probar estrategias actuales contra cada escenario: identificar dónde fallan y qué ajustes las fortalecerían.
+
+
+## Proceso para crear escenarios
+
+#### 1. Definir propósito y alcance (¿qué decisión quiero informar? horizonte temporal 5–30 años).
+
+#### 2. Recolectar info y listar drivers (tendencias, fuerzas, stakeholders).
+
+#### 3. Identificar incertidumbres críticas (filtrar drivers por impacto × incertidumbre).
+
+#### 4. Elegir ejes (2 incertidumbres claves para formar la matriz de escenarios).
+
+#### 5. Desarrollar 3–4 escenarios contrastantes (cada uno con narrativa, hitos y actores).
+
+#### 6. Identificar signposts / indicadores tempranos para cada escenario.
+
+#### 7. Probar estrategias (wind-tunnel): ver qué sobrevive, qué falla.
+
+#### 8. Diseñar respuestas/acciones: acciones robustas + opciones condicionales + señales de activación.
+
+#### 9. Monitoreo y revisión: seguir signposts y actualizar escenarios/decisiones.
+ 
+
+## Tipos de escenarios
+
+#### Escenario de continuidad: la tendencia actual continúa.
+
+#### Escenario de disrupción: un choque o tecnología cambia reglas.
+
+#### Escenario de transformación: cambio gradual pero profundo (cultura/regulación).
+
+#### Escenario sorpresa / worst-case: baja probabilidad pero alto impacto (useful para resilience).
+
+
+
+## Herramientas y artefactos
+
+##### Matriz de 2×2 (ejes de incertidumbre).
+
+##### Fichas de escenario (1–2 páginas: título, narrativa, timeline, implicaciones).
+
+##### Signpost dashboard (lista de 6–12 indicadores con thresholds).
+
+##### Wind-tunnel template (estrategia vs escenarios → RAG + acciones).
+
+##### Backcasting map (hitos hacia atrás desde un escenario objetivo).
+
+
+## Buenas prácticas: lecciones de Schwartz
+
+#### Imagina futuros plausibles, no fantásticos. Credibilidad importa.
+
+#### Involucra diversidad: distintas disciplinas y voces (no solo directivos).
+
+#### Historias ricas venden el escenario a la organización; los números no bastan.
+
+#### Céntrate en decisiones: los escenarios existen para mejorar decisiones actuales.
+
+#### Combina pensamiento estratégico con vigilancia real (signposts).
+
+#### Aprovecha escenarios para comunicación (alinear stakeholders sobre riesgos y opciones).
+
+
+## Evitar errores
+
+#### Hacer escenarios que replican deseos o sesgos: evita projections sesgadas; usar datos y contrafactuales.
+
+#### Crear demasiados escenarios superficiales: mejor 3–4 bien trabajados.
+
+#### No conectar escenarios con decisiones concretas: cada escenario debe responder a “¿qué haríamos diferente hoy?”
+
+#### Ignorar señales tempranas: sin signposts, los escenarios son sólo ejercicios intelectuales.
+
+
+
+## Ej mini-scenario para sector retail a 10 años
+
+#### 1. Drivers: digitalización, regulación laboral, consumo sostenible, costos logísticos, preferencias de experiencia.
+
+#### 2. Dos incertidumbres críticas elegidas: velocidad de adopción digital (alta / baja) × costos logísticos (altos / bajos).
+
+#### 3. Escenarios (4):
+
+##### 1. Alta digitalización + bajos costos logísticos → “E-commerce dominante y omnicanal barato” (scale lidera).
+
+##### 2. Alta digitalización + altos costos logísticos → “Digital premium & local fulfillment” (servicio y proximidad).
+
+##### 3. Baja digitalización + bajos costos logísticos → “Retail físico eficiente” (experiencia in-store).
+
+##### 4. Baja digitalización + altos costos logísticos → “Fragmentación territorial” (mercados locales cerrados; resiliencia local). 
+
+#### 4. Signposts: % ventas online, tarifas de entrega promedio, inversión en micro-fulfillment, cambios regulatorios en e-logistics.
+
+#### 6. Estrategia robusta sugerida: invertir en flexibilidad logística (capacidad modular), partnerships locales, y capacidades de experiencia omnicanal que funcionen en 3 de 4 escenarios; mantener opciones de expansión rápida si baja el coste logístico.
+
 
 
 # Teece, Pisano, Shuen — Dynamic capabilities
+
+##### Las capacidades dinámicas explican por qué algunas empresas pueden renovar y reconfigurar sus recursos y rutinas para mantener ventaja competitiva en entornos cambiantes. 
+
+##### Mientras la RBV se enfoca en recursos valiosos y raros, las capacidades dinámicas explican cómo las empresas adquieren, combinan, protegen y reconfiguran recursos cuando el contexto cambia.
+
+
+## Concepto
+
+##### Las capacidades dinámicas son la habilidad de la empresa para detectar cambios en el entorno (sensing), capturar oportunidades (seizing) y reconfigurar recursos y organización (transforming) de manera continua y rentable.
+
+
+## Sensing — Seizing — Transforming: Las funciones centrales
+
+### 1. Sensing (detectar oportunidades y amenazas)
+
+##### Actividades: vigilancia de mercado, investigación tecnológica, interacción con clientes, análisis de tendencias, experimentos.
+
+##### Resultado: identificar oportunidades emergentes, señales débiles y cambios en la demanda o tecnología.
+
+
+### 2. Seizing (aprovechar oportunidades)
+
+##### Actividades: diseñar modelos de negocio, formular propuestas de valor, desarrollar business cases, asegurar recursos, alianzas, contratar talento.
+
+##### Resultado: convertir una oportunidad en una oferta viable o mover la empresa hacia un nuevo campo competitivo.
+
+
+### 3. Transforming (reconfigurar y recombinar recursos)
+
+##### Actividades: reestructuración organizativa, reallocación de capital, procesos de integración post-M&A, cierre de negocios obsoletos, formación y cambio cultural.
+
+##### Resultado: adaptar la arquitectura de recursos y rutinas para sostener la nueva estrategia.
+
+
+## Microfundamentos (composición práctica)
+
+#### 1. Procesos y rutinas (learning-by-doing, experimentos, benchmarking).
+
+#### 2. Sistemas de gobernanza (metodologías de inversión, comité de innovación, criterios de capital allocation).
+
+#### 3. Estructuras organizativas flexibles (squads, centros de excelencia, unidades autónomas).
+
+#### 4. Recursos humanos y liderazgo (capacidad de liderazgo para tomar decisiones bajo incertidumbre, talento adaptable).
+
+#### 5. Relaciones externas (alianzas, ecosistemas, redes de conocimiento).
+
+#### 6. Sistemas de información (datos y analytics para detectar señales y medir impacto).
+
+
+## Importancia: implicación estratégica
+
+#### En industrias rápidas/tecnológicas o con cambios regulatorios, las capacidades dinámicas determinan la superioridad competitiva más que activos estáticos.
+
+#### Permiten aprovechar cambios (p. ej. nuevas tecnologías) y evitar quedar obsoleto (creative destruction).
+
+#### Explican por qué dos empresas con recursos similares pueden tener resultados muy distintos: una puede reconfigurarse mejor.
+
+
+## Ejemplos
+
+### 1. Empresa A (buena dinámica): detecta shift hacia consumo móvil (sensing), reasigna inversión a app y partnerships (seizing), reorganiza unidades de producto y cambia KPIs a retención (transforming) → crece.
+
+### 2. Empresa B (débil dinámica): reconoce la tendencia tarde, no reasigna capital ni cambia incentivos, mantiene estructura rígida → pierde cuota.
+
+
+## Desarrollar capacidades
+
+#### 1. Crear capacidad de sensing sistemática
+
+##### Establece radar: customer labs, scouting tech, research partnerships.
+
+##### Dedica tiempo y presupuesto (no sólo “cuando hay tiempo”).
+
+
+#### 2. Instituir procesos rápidos de decisión (seizing)
+
+##### Templates de business case cortos, Investment Committee con plazos rápidos, pilotos financiados.
+
+##### Autoridad clara para aprobar experimentos y proyectos estratégicos.
+
+
+#### 3. Diseñar mecanismos de transformación
+
+##### Mecanismos de reallocación de capital (funds to scale winners).
+
+##### Arquitectura organizativa flexible (pods, SBUs, shared-services).
+
+##### Programas de reskilling y movilidad interna.
+
+
+#### 4. Medir y aprender
+
+##### KPIs: time-to-market, % ingresos de productos <3 años, % de capital reallocado, velocidad de decisión, tasa de éxito de pilotos.
+
+##### Post-mortems y loops de feedback.
+
+
+#### 5. Fomentar cultura & liderazgo que tolere experimentación
+
+Incentivos que premien aprendizaje y velocidad, no sólo eficiencia histórica.
+
+Celebrar “smart failures” y documentar lecciones.
+
+
+#### 6. Construir redes externas
+
+##### Alianzas con startups, universidades y proveedores estratégicos para acelerar aprendizaje.
+
+
+## Indicadores operativos/medir
+
+% del revenue proveniente de productos/líneas < X años.
+
+Tasa de conversión de pilotos a rollouts.
+
+Tiempo medio desde idea hasta primer cliente (time-to-first-customer).
+
+Porcentaje de presupuesto re-asignado anualmente a nuevas iniciativas.
+
+Número de partnerships activos en áreas emergentes.
+
+NPS interno sobre procesos de innovación (satisfaction de equipos que proponen cambios).
+
+
+## Errores al intentar construir dynamic capabilities
+
+#### 1. Confundir iniciativas ad-hoc con capacidades: un hack no es una rutina. Hay que institucionalizar procesos repetibles.
+
+#### 2. No alinear incentivos: si KPIs premian sólo eficiencia histórica, nadie arriesga capital en transformación.
+
+#### 3. Subestimar costos organizativos de transformación: reorganizar exige tiempo, comunicación, y a veces sacrificios a corto plazo
+
+#### 4. Centralizar decisiones excesivamente: lentitud mata oportunidades; necesita equilibrio entre HQ y unidades.
+
+#### 5. Ignorar aprendizaje externo: protección excesiva de know-how interno puede bloquear la absorción de ideas externas.
+
+
+## RBV y Dynamic Capabilities vs Operational Capabilities
+
+#### Operational capabilities: ejecutar eficientemente el negocio actual (producción, ventas, soporte).
+
+#### Dynamic capabilities: cambiar la propia forma de operar y la configuración de recursos para el futuro.
+
+#### Ambos son necesarios: operaciones sostienen la rentabilidad hoy; capabilities dinámicas garantizan relevancia mañana.
+
+
+## Checklist diagnosticar nivel de capacidades dinámicas
+
+#### Tenemos procesos formales para detectar señales de mercado/tecnología?
+
+#### Existe un mecanismo rápido y financiado para probar ideas (pilotos con timelines claros)?
+
+#### Los criterios de capital allocation permiten mover fondos hacia nuevas iniciativas?
+
+#### Los KPIs y recompensas premian aprendizaje y experimentación?
+
+#### Podemos reorganizar recursos y gente en 3–6 meses cuando una oportunidad lo requiere?
+
+#### Tenemos alianzas externas activas para acelerar aprendizaje?
+Si respondes “no” a varias, hay brecha que trabajar.
+
+
+## Sugerencia práctica (acciones de alto impacto)
+
+#### 1. Radar semanal: crea un “brief de sensing” semanal (3–4 señales) para exec.
+
+#### 2. Fast fund: establece un fondo pequeño (p. ej. 1–3% del Opex) para pilotos con aprobación en 2 semanas.
+
+#### 3. Swap roles: programa rotaciones cortas (3–9 meses) entre producto/ops/estrategia para difundir capacidades y experiencia.
+
 
 
 

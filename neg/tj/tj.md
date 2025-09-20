@@ -1,0 +1,12 @@
+# Teoría de juegos
+
+
+
+
+#
+
+
+#
+
+
+# Estrategia 
