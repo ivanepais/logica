@@ -4131,6 +4131,867 @@ Ejercicios: análisis crítico de 2 estrategias públicas (empresa A y B): ¿hay
 Entregable: 1 página: “diagnóstico estratégico” de una empresa elegida.
 
 
+## Fundamentos del pensamiento estratégico
+
+##### Capacidad de definir objetivos importantes a largo plazo y diseñar decisiones, recursos y tácticas coherentes para alcanzarlos en un entorno incierto
+
+##### Combina análisis del entorno, elección deliberada (trade-offs), y aprendizaje iterativo
+
+
+### 1. Componentes esenciales
+
+#### Propósito claro: saber qué se quiere lograr (objetivo significativo, no vaguedades tipo “crecer”).
+ 
+#### Análisis del entorno: entender fuerzas externas (competidores, clientes, tecnología, regulaciones).
+
+#### Diagnóstico: identificar el problema clave que impide alcanzar el objetivo (no confundir síntomas con causa).
+
+#### Opciones y trade-offs: generar alternativas y elegir — la estrategia real exige renunciar a cosas.
+
+#### Capacidades y recursos: alinear lo que puedes hacer (core capabilities) con la opción elegida.
+
+#### Cohesión entre decisiones: cada acción debe reforzar las otras (consistencia interna).
+
+#### Métricas y aprendizaje: elegir indicadores relevantes y adaptar rápidamente según resultados
+
+
+### 2. Mental models: formas de pensar
+
+#### Primeros principios: descomponer problemas hasta sus fundamentos.
+
+#### Pensamiento de segundo orden: siempre preguntar “¿y después qué pasa?” ante cualquier acción.
+
+#### Opcionalidad: preferir decisiones que dejan abiertas buenas opciones futuras.
+
+#### Análisis de escenarios: preparar planes para varios futuros plausibles (no solo el “más probable”).
+
+#### Inversión / invertir la pregunta: “¿qué haría el rival para impedirnos?” o “¿qué pasaría si fracasamos?”
+
+#### Asimetrías de costos/beneficios: buscar movimientos donde la ganancia potencial supera con creces el riesgo.
+
+
+### 3. Frameworks prácticos (cuando usar)
+
+#### SWOT: rápido diagnóstico (Fortalezas, Debilidades, Oportunidades, Amenazas).
+
+#### Porter — Five Forces: entender estructura competitiva de una industria.
+
+#### PESTEL: factores Políticos, Económicos, Sociales, Tecnológicos, Ecológicos, Legales.
+
+#### VRIO / recursos: ¿recursos son Valiosos, Raros, Inimitables y Organizables?
+
+#### Canva estratégico (Where to play / How to win): elegir terreno de juego y ventaja competitiva.
+
+#### Mapa de stakeholders: quién tiene influencia/interés y cómo gestionarlo.
+
+##### Usa el framework que aporte la perspectiva que te falte: diagnóstico, entorno o capacidades.
+
+
+### 4. Proceso práctico
+
+#### 1. Definir objetivo: específico y con horizonte temporal.
+
+#### 2. Diagnóstico: ¿por qué no se logra hoy? identificar restricciones críticas.
+
+#### 3. Analizar entorno: clientes, competidores, tecnología, regulaciones, economía.
+
+#### 4. Generar alternativas: 3–5 opciones estratégicas contrastadas.
+
+#### 5. Evaluar trade-offs: recursos necesarios, riesgos, escalabilidad, tiempo.
+
+#### 6. Elegir y priorizar: una opción principal + plan de experimentos.
+
+#### 7. Desplegar capacidades: alinear personas, procesos y recursos.
+
+#### 8. Medir, aprender, pivotar: indicadores clave, revisiones periódicas, ajuste.
+
+
+### 5. Errores y sesgos a evitar
+
+#### Confundir táctica con estrategia: muchas acciones no suman si no sirven al objetivo estratégico.
+
+#### Buscar soluciones “todo en uno”: ignorar trade-offs y querer abarcarlo todo.
+
+#### Anclaje y exceso de optimismo: sobrevalorar información inicial o el status quo.
+
+#### Miopía de corto plazo: sacrificar ventaja sostenible por resultados instantáneos.
+
+#### No validar hipótesis: actuar sin tests rápidos que comprueben supuestos críticos.
+
+
+### 6. Señales de buena estrategia
+
+##### Decisiones coherentes que refuerzan la ventaja.
+
+##### Recursos invertidos donde generan mayor diferencia.
+
+##### Claridad en lo que no vas a hacer (límites explícitos).
+
+##### Progresos medibles hacia un objetivo material.
+
+##### Capacidad de adaptación ante evidencia nueva.
+
+
+### 7. Ejercicio diario
+
+##### Tomar una decisión real (ej. lanzar una nueva característica) y escribir: objetivo, diagnóstico, 3 opciones, trade-offs, métricas.
+
+##### Hacer un “premortem”: imaginar que la estrategia fracasó, listar por qué.
+
+##### Mapear 5 stakeholders clave y qué quieren/temen; diseñar una táctica para cada uno.
+
+##### Crear 2 escenarios (optimista y pesimista) y definir qué gatillaría pasar de uno a otro.
+
+
+### 8. Checklist antes de ejecutar
+
+#### Cuál es el objetivo y en cuánto tiempo?
+
+##### ¿Cuál es el diagnóstico que explica el problema principal?
+
+##### ¿Qué hipótesis críticas estamos asumiendo? ¿Cómo las vamos a probar?
+
+##### ¿Qué capacidades necesitamos (y cuáles nos faltan)?
+
+##### ¿Cómo mediremos el progreso? ¿Cuándo revisamos la estrategia?
+
+
+### Ejemplo
+
+##### Objetivo: conseguir 10k usuarios activos en 12 meses
+
+##### Diagnóstico: producto actual satisface a early adopters, pero falla en retención por onboarding confuso.
+
+##### Opciones: (A) mejorar onboarding y retención; (B) pivotar a nicho pro; (C) marketing masivo.
+
+##### Trade-offs: A requiere inversión en UX y pruebas, B redirige desarrollo, C gasta mucho en adquisición.
+
+##### Decisión: elegir A (costo medio, impacto alto en LTV), medir cohortes, si retención no sube en 3 meses pasar a B.
+
+
+### 10. Recursos
+
+Good Strategy / Bad Strategy — Richard Rumelt (diagnóstico y coherencia).
+
+Playing to Win — A.G. Lafley & Roger Martin (Where to play / How to win).
+
+Porter — Competitive Strategy (estructura de industrias).
+
+Artículos sobre diseño organizacional y capacidades dinámicas.
+
+
+## Estrategia
+
+Plan coherente de acciones y decisiones diseñado para alcanzar objetivos importantes en un entorno con recursos limitados e incertidumbre
+
+Implica elegir hacia dónde jugar (qué perseguir) y, crucialmente, qué dejar de lado — la estrategia es tanto inclusión como exclusión.
+
+
+### Elementos
+
+Objetivo: qué quieres lograr (claro, medible y con horizonte temporal).
+
+Diagnóstico: entender la situación actual y los obstáculos principales.
+
+Opciones (posibles caminos): alternativas viables para avanzar.
+
+Ventaja competitiva: razón por la cual tu opción funcionará mejor (puede ser costo, diferenciación, red, datos, regulación, etc.).
+
+Coherencia: las acciones y recursos deben reforzarse entre sí.
+
+Capacidades: lo que la organización o persona puede realmente ejecutar y escalar.
+
+Métricas y aprendizaje: cómo medir el progreso y ajustar la estrategia.
+
+
+### Niveles de estrategia
+
+#### 1. Estrategia corporativa: decide en qué negocios competir, adquisiciones, asignación de capital entre unidades.
+
+#### 2. Estrategia de negocio (o competitiva): cómo ganar en un mercado o segmento específico (ej.: liderazgo en costos, diferenciación).
+
+#### 3. Estrategia funcional/operativa: tácticas en marketing, operaciones, RRHH, I+D que apoyan la estrategia de negocio.
+
+
+### Tipos de estrategias
+
+#### Estrategia de liderazgo en costos: competir ofreciendo precios más bajos mediante eficiencias.
+
+#### Estrategia de diferenciación: ofrecer algo único percibido como valioso (marca, calidad, features).
+
+#### Estrategia de nicho (focus): concentrarse en un segmento o segmento de clientes específico.
+
+#### Estrategia de innovación/disrupción: cambiar reglas del juego con un nuevo modelo o tecnología.
+
+#### Estrategia defensiva: proteger posición ante amenazas (patentes, contratos, barreras de entrada
+
+
+### Ciclo de formulación (pasos)
+
+##### 1. Clarificar propósito y metas.
+
+##### 2. Diagnóstico del entorno (clientes, competidores, tendencias, regulaciones).
+
+##### 3. Identificar capacidades internas (fortalezas y brechas).
+
+##### 4. Generar y comparar opciones (evaluar trade-offs).
+
+##### 5. Elegir la estrategia (decisión explícita con prioridades).
+
+##### 6. Desplegar (alinear estructura, recursos y KPIs).
+
+##### 7. Monitorear y adaptar (medir, aprender, pivotar cuando sea necesario).
+
+
+### Frameworks
+
+SWOT (Fortalezas/Debilidades/Oportunidades/Amenazas).
+
+Porter — Five Forces (estructura competitiva).
+
+PESTEL (macro-factores políticos, económicos, sociales, tecnológicos, ecológicos, legales).
+
+VRIO (recursos Valiosos, Raros, Inimitables, Organizables).
+
+Where to Play / How to Win (Canva estratégico) — elegir campo y forma de ganar.
+
+
+### Señales de una buena estrategia
+
+Prioridades claras y explícitas.
+
+Coherencia entre decisiones (no acciones dispersas).
+
+Recursos asignados donde generan ventaja.
+
+Definición clara de lo que no se hará.
+
+Medición y aprendizaje incorporados.
+
+
+### Errores
+
+#### Confundir estrategia con lista de proyectos o tácticas.
+
+#### Intentar “ganarlo todo” sin trade-offs.
+
+#### No adaptar frente a nueva evidencia.
+
+#### Basarse en deseos en vez de diagnósticos (wishful thinking).
+
+#### Falta de compromiso organizacional para ejecutar.
+
+
+### Ejemplos
+
+#### Empresa SaaS: estrategia de crecimiento = enfocarse en retención (mejor onboarding, soporte proactivo) en vez de gastar solo en adquisición.
+
+#### Startup hardware: estrategia = nicho médico donde las certificaciones crean barreras de entrada y márgenes mayores.
+
+#### Carrera profesional: estrategia = especializarse en una habilidad técnica + redes en una industria objetivo para acceder a roles senior.
+
+
+### Checklist evaluar una estrategia
+
+##### Cuál es el objetivo y plazo?
+
+##### ¿Cuál es el diagnóstico que justifica esta estrategia?
+
+##### ¿Qué ventaja competitiva se articula?
+
+##### ¿Qué se prioriza y qué se abandona?
+
+##### ¿Qué capacidades faltan y cómo se obtienen?
+
+##### ¿Qué métricas usarás y cuándo revisarás?
+
+
+## Táctica
+
+##### Acciones concretas y de corto plazo que ejecutas para avanzar en una estrategia
+
+##### Si la estrategia responde “¿a dónde vamos y por qué?”
+
+##### La táctica responde “¿qué haremos esta semana/mes para movernos hacia allá y cómo lo medimos?”.
+
+
+### Estrategia vs táctica
+
+#### Horizonte: estrategia = largo plazo; táctica = corto-medio plazo.
+
+#### Nivel: estrategia = dirección y prioridades; táctica = ejecución concreta.
+
+#### Flexibilidad: tácticas cambian rápido según resultados; estrategia cambia menos y por razones más estructurales.
+
+#### Ejemplo: estrategia = “ser líder en retención”; táctica = “implementar onboarding guiado y campaña de e-mail en 4 semanas”.
+
+
+### Componentes de una buena táctica
+
+#### 1. Objetivo claro y limitado (qué cambio esperar y en cuánto tiempo).
+
+#### 2. Indicador(s) de éxito (KPI cuantificable).
+
+#### 3. Responsable/s (quién ejecuta).
+
+#### 4. Recursos necesarios (personas, presupuesto, herramientas).
+
+#### 5. Pasos/cronograma (qué se hace y cuándo).
+
+#### 6. Dependencias y riesgos (qué puede impedirla).
+
+#### 7. Plan de validación / aprendizaje (cómo se medirá y qué hará si falla).
+
+
+### Diseño de táctica
+
+#### 1. Alinea con la estrategia: confirma que la táctica contribuye a la prioridad estratégica.
+
+#### 2. Define resultado esperado: por ejemplo “+15% retención 30-day en 60 días”.
+
+#### 3. Lista actividades clave y ordénalas por impacto/rapidez.
+
+#### 4. Asigna responsables y plazos cortos (sprints).
+
+#### 5. Prepara métricas y dashboard simple para seguimiento diario/semanal.
+
+#### 6. Ejecuta experimentos pequeños (minimizar costo y maximizar aprendizaje).
+
+#### 7. Revisa y ajusta al final de cada ciclo (retrospectiva + decisión: escalar, pivotar o parar).
+
+
+### Plantilla
+
+Título:
+
+##### Objetivo (SMART): ?
+
+##### KPI principal: ?
+
+##### Responsable: ?
+
+##### Plazo: ?
+
+##### Principales actividades (3–6 bullets): ?
+
+##### Recursos: ?
+
+##### Riesgos/mitigaciones: ?
+
+##### Criterios para seguir/escala/parar: ?
+
+
+### Ejemplos
+
+##### Ventas: táctica = “Enviar secuencia de 5 e-mails personalizados a 200 leads calientes en 2 semanas”; KPI = tasa respuesta >10%.
+
+##### Producto: táctica = “A/B test de nuevo onboarding (flow A vs flow B) en 1k usuarios”; KPI = incremento en activación.
+
+##### Marketing: táctica = “campaña de performance en redes para retargeting usuarios que visitaron pricing”; KPI = CAC < X.
+
+##### Carrera personal: táctica = “hacer 3 presentaciones en meetups del sector en 3 meses”; KPI = +5 conexiones relevantes / mes.
+
+
+### Buenas prácticas
+
+#### Prioriza tácticas por impacto estimado vs esfuerzo.
+
+#### Mantén ciclos cortos (1–4 semanas) para aprendizaje rápido.
+
+#### Documenta supuestos y métricas antes de empezar (evita ex post rationalization).
+
+#### Usa experimentos: asume que la táctica es una hipótesis a validar.
+
+#### Cierra el loop: ejecutar → medir → decidir (escalar/pivotar/parar).
+
+
+### Errores
+
+##### Ejecutar tácticas desconectadas de la estrategia.
+
+##### No definir métricas claras (se mide poco o mal).
+
+##### Multiplicar iniciativas pequeñas que dispersan recursos.
+
+##### No asignar responsables claros.
+
+##### Parar el seguimiento después del lanzamiento.
+
+
+## Operaciones
+
+##### Conjunto de procesos, recursos y prácticas que permiten a una organización entregar valor de forma fiable, eficiente y repetible
+
+##### Mientras la estrategia responde qué y por qué, y las tácticas qué hacer ahora, las operaciones responden cómo lo hacemos día a día para sostener la ejecución.
+
+
+### Objetivos
+
+#### Entrega fiable: cumplir con promesas a clientes (calidad, tiempo, cantidad).
+
+#### Eficiencia: minimizar costos y desperdicios manteniendo calidad.
+
+#### Escalabilidad: poder crecer sin perder desempeño.
+
+#### Resiliencia: recuperarse rápido ante fallos o variaciones de demanda.
+
+#### Medición y mejora continua: aprender y optimizar procesos.
+
+
+### Componentes
+
+#### Procesos y SOPs: procedimientos documentados (operational playbooks).
+
+#### People / Organización: roles claros, RACI y competencias.
+
+#### Tecnología y herramientas: ERP, CRM, sistemas de control, pipelines CI/CD, monitorización.
+
+#### Supply chain / logística: aprovisionamiento, inventario, distribución.
+
+#### Calidad: controles, testing, QA, inspección y métricas de satisfacción.
+
+#### Capacidad y planificación: forecasting, planificación de capacidad, dimensionamiento de equipo.
+
+#### Gobernanza y compliance: SLAs, políticas de seguridad, cumplimiento legal.
+
+#### Incidentes y continuidad: runbooks, gestión de incidentes, DR/BCP (disaster recovery / business continuity).
+
+
+### Procesos operativos (por tipo de negocio)
+
+#### Manufactura: planificación de producción, control de calidad, mantenimiento de planta.
+
+#### Retail / e-commerce: gestión inventario, fulfillment, devoluciones.
+
+#### SaaS / IT: despliegues, monitorización, incident response, gestión de releases.
+
+#### Servicios profesionales: asignación de recursos, facturación, control de proyectos
+
+
+### Frameworks y prácticas
+
+#### Lean (eliminar desperdicio) y Six Sigma (reducción de variabilidad).
+
+#### ITIL para servicios TI (incidentes, problemas, cambios).
+
+#### Kaizen: mejora continua incremental.
+
+#### Kanban / Sprints para flujo de trabajo y visibilidad.
+
+#### SOPs + runbooks para repeatability y respuesta ante incidentes.
+
+
+### Métricas
+
+##### Fiabilidad / entrega: On-time delivery %, SLA compliance.
+
+##### Eficiencia: Cost per unit, OEE (Overall Equipment Effectiveness).
+
+##### Calidad: Defect rate, NPS / CSAT, churn (SaaS).
+
+##### Velocidad: Lead time, Cycle time, MTTR (Mean Time To Repair).
+
+##### Utilización: % capacidad usada, % tiempo productivo.
+
+##### Inventario: Days of Inventory, Stockouts.
+
+
+### Diseño y gobernanza operacional
+
+##### ¿Tenemos procesos documentados para las tareas críticas?
+
+##### ¿Qué SLAs / KPIs estamos midiendo y con qué frecuencia?
+
+##### ¿Quién es responsable de cada proceso? (RACI claro)
+
+##### ¿Tenemos automatización donde el costo/beneficio lo justifica?
+
+##### ¿Cómo hacemos forecast de demanda y plan de capacidad?
+
+##### ¿Qué runbooks existen para incidentes críticos? ¿se prueban?
+
+##### ¿Cómo incorporamos feedback del cliente para mejorar operaciones?
+
+##### ¿Cuál es el plan para escalar (personas, infra, proveedores)?
+
+
+### Errores
+
+##### Operar a base de “conocimiento tribal” sin documentar.
+
+##### Ignorar cuellos de botella: optimizar partes no críticas.
+
+##### No medir lo que importa (KPIs irrelevantes o mal definidos).
+
+##### Sobrecargar equipos sin plan de capacidad.
+
+##### Falta de automatización en tareas repetitivas que consumen tiempo.
+
+##### No tener playbooks para incidentes críticos o dependencias de un solo proveedor/persona
+
+
+### Buenas prácticas
+
+##### Documenta SOPs para lo crítico y mantenlos vivos (revisión periódica).
+
+##### Prioriza automatizar procesos de alto volumen o propensos a error.
+
+##### Usa indicadores accionables (pocos + buenos) y revisiones cortas (daily/weekly).
+
+##### Ejecuta postmortems sin culpas tras incidentes y transforma hallazgos en cambios reales.
+
+##### Balancea eficiencia y resiliencia (no sacrifiques todo por costo).
+
+##### Integra operaciones con producto/ventas para que los cambios tácticos no rompan ejecución
+
+
+### Ejercicio
+
+1. Elige un proceso crítico (p. ej. onboarding de usuario, fulfillment, despliegue).
+
+2. Escribe sus pasos en 8–12 bullets.
+
+3. Identifica 3 riesgos (cuellos, dependencias, calidad) y 2 métricas para monitorearlo.
+
+4. Propón 2 mejoras rápidas (automatizar, checklist, runbook) y priorízalas.
+
+
+## Visión
+
+##### Imagen clara y inspiradora de un futuro deseado: describe hacia dónde quiere llegar una organización, equipo o persona en un horizonte temporal amplio
+
+##### No dice cómo se va a llegar (eso es estrategia/táctica), sino qué mundo queremos ver cuando la misión y la estrategia hayan tenido éxito.
+
+
+### Propósito
+
+#### Orientar decisiones estratégicas: ayuda a elegir prioridades y trade-offs.
+
+#### Motivar e inspirar: crea energía y sentido de propósito.
+
+#### Alinear a la organización: sincroniza esfuerzos y cultura.
+
+#### Comunicar externamente: muestra ambición y posición aspiracional al mercado y stakeholders.
+
+
+### Características
+
+#### Inspiradora: conmueve y atrae.
+
+#### Clara y fácil de recordar: una frase o párrafo corto.
+
+#### Ambiciosa pero creíble: stretch goal alcanzable con esfuerzo.
+
+#### Orientada al impacto: habla del cambio que se generará (no de actividades).
+
+#### Temporalmente situada (opcional): indica un horizonte (p. ej. “para 2030”).
+
+#### Alineada con valores y misión.
+
+
+### Visión vs. Misión vs. Estrategia
+
+#### Misión = qué hacemos hoy y para quién (propósito operativo).
+
+#### Visión = cómo sería el mundo si cumplimos la misión (futuro deseado).
+
+#### Estrategia = las decisiones y caminos que escogemos para alcanzar la visión.
+
+
+### Plantilla
+
+1-línea:
+
+```
+Para [quién / mercado], [organización/yo] será [impacto aspiracional] para [año / horizonte].
+```
+
+Evita describir tácticas en la visión. Ejemplo extendido si quieres más color:
+
+```
+Para las pequeñas empresas, X será la plataforma que les permita acceder a mercados globales y generar ingresos estables para 2030.
+```
+
+
+### Ejemplos
+
+Empresa (ejemplo): “Crear un mundo donde cada persona tenga acceso intuitivo y seguro a su historial de salud digital, mejorando la calidad de vida de 100 millones de usuarios para 2030.”
+
+Personal/carrera: “Ser referente en liderazgo de producto en educación digital, ayudando a miles de estudiantes a adquirir habilidades laborales relevantes para 2027.”
+
+
+### Proceso
+
+#### 1. Reúne: propósito, principales stakeholders y impacto deseado.
+
+#### 2. Pregunta clave: “¿Qué cambio concreto queremos que exista dentro de X años?”
+
+#### 3. Escribe 3–5 versiones breves.
+
+#### 4. Filtra por claridad + inspiracionalidad + plausibilidad.
+
+#### 5. Testea con 5 personas (internas/externas): ¿la entienden? ¿les mueve?
+
+#### 6. Ajusta y comunica ampliamente.
+
+
+### Mala Visión
+
+##### Es vaga y genérica (ej.: “ser líderes globales” sin qué ni para quién).
+
+##### Es táctica (describe productos, metas operativas o KPIs).
+
+##### Es imposible de recordar o demasiado larga.
+
+##### No conecta con la realidad ni con las capacidades mínimas
+
+
+### Usar la Visión
+
+##### Convertirla en un “norte” para la estrategia (What to win).
+
+##### Hacerla visible (one-pager, onboarding, presentaciones).
+
+##### Derivar objetivos (OKR / metas) alineadas con la visión.
+
+##### Revisarla cada 2–5 años (si el mundo cambió, la visión puede evolucionar).
+
+
+### Ejercicio
+
+##### 1. Escribe en una línea: 
+
+```
+“Para [quién], [yo/empresa] será [impacto] para [año]”.
+```
+
+##### 2. Si quedan dudas, responde: 
+
+```
+“¿Cómo sabré que la visión se está cumpliendo?” (3 señales medibles).
+```
+
+
+
+
+## Capacidades de pensamiento estratégico.
+
+##### Conjunto de habilidades cognitivas, metodológicas y comportamentales que permiten a una persona (o equipo) identificar objetivos relevantes a largo plazo, diagnosticar problemas complejos, generar opciones coherentes, elegir trade-offs adecuados y adaptar la acción cuando el entorno cambia
+
+##### Son las capacidades necesarias para pensar claramente sobre el futuro y diseñar decisiones que lo construyan.
+
+
+### Capacidades centrales
+
+#### 1. Visión sistémica / pensamiento de sistemas — ver interdependencias, bucles causa-efecto y efectos secundarios
+
+#### 2. Análisis crítico y diagnóstico — separar síntomas de causas, priorizar problemas reales.
+
+#### 3. Formulación de hipótesis & pensamiento basado en evidencia — convertir suposiciones en hipótesis testables.
+
+#### 4. Escenarios y pensamiento prospectivo — construir futuros plausibles y preparar respuestas.
+
+#### 5. Gestión de la incertidumbre y decisión bajo riesgo — tomar decisiones útiles cuando la información es incompleta.
+
+#### 6. Opcionalidad y diseño de experimentos — crear opciones que preserven flexibilidad y aprender rápido.
+
+#### 7. Mapeo de stakeholders e influencia — entender motivaciones externas y movilizar apoyo.
+
+#### 8. Priorización y trade-offs — elegir qué ganar y qué sacrificar conscientemente.
+
+#### 9. Comunicación estratégica (storytelling) — articular la lógica estratégica para alinear y convencer.
+
+#### 10. Capacidad de ejecución estratégica — traducir la elección estratégica en capacidades operativas (alinear recursos, procesos y métricas).
+
+
+### Práctica
+
+##### Un manager que antes de proponer una inversión hace un diagnóstico que identifica la verdadera palanca de crecimiento (p. ej. churn), en vez de proponer “más marketing”.
+
+##### Un equipo que diseña 3 escenarios (optimista / base / adverso) y define señales tempranas para cada uno.
+
+##### Un fundador que plantea hipótesis claras para su producto y lanza experimentos de bajo costo para validarlas.
+
+##### Un director que comunica la estrategia con una narrativa simple: problema → decisión → por qué ganamos → indicadores.
+
+
+### Competencias medibles
+
+#### Novato: identifica problemas superficiales; confunde tácticas con estrategia; pocas pruebas.
+
+#### Intermedio: hace diagnósticos razonables, propone opciones y define KPIs; necesita apoyo en escenarios complejos.
+
+#### Avanzado: diseña estrategias coherentes, prioriza trade-offs y crea experimentos.
+
+#### Experto: piensa en sistemas sociales/económicos, guía a la organización en cambios estructurales y enseña a otros.
+
+
+### Desarrollar capacidades
+
+#### Leer/aprender texto/recursos sobre estrategia
+
+#### Tener Objetivos, Diagnosticos, trade-offs, métricas, opciones, premortem, cambios
+
+#### Recibir feedback; diseñar y ejecutar experimentos para validar Hipótesis críticas
+
+
+### Ejercicios
+
+#### Premortem: imagina que tu proyecto fracasó; lista 5 causas y cambia la estrategia para mitigarlas.
+
+#### Mapa causal: dibuja las principales variables que afectan tu objetivo y cómo interactúan.
+
+#### 3 hipótesis: escribe 3 supuestos críticos para tu estrategia; para cada uno, plan de validación rápido.
+
+#### Escenarios & señales: define 2 futuros plausibles y 3 señales que indicarían que uno u otro se está materializando.
+
+
+### Señales buen pensamiento estratégico
+
+##### Hace preguntas que revelan hipótesis ocultas.
+
+##### Prioriza pocas cosas con razones explícitas.
+
+##### Traduce estrategia a experimentos medibles.
+
+##### Comunica decisiones en términos de trade-offs y consecuencias.
+
+##### Cambia de rumbo cuando la evidencia lo exige, sin perder coherencia.
+
+
+### Evaluar en entrevistas o retroalimentación
+
+##### Pide: “Descríbeme una decisión estratégica que tomaste y cómo llegaste a ella.”
+
+##### Evalúa: uso de diagnóstico, alternativas consideradas, trade-offs identificados, métricas usadas, resultados y aprendizajes.
+
+##### Complementa con un ejercicio breve (caso de 20–30 min) para ver el proceso.
+
+
+## Storytelling
+
+##### Contar historias con intención
+
+##### Usar una secuencia estructurada de hechos, emociones y significado para comunicar una idea, persuadir, alinear a un equipo o hacer memorable un mensaje.
+
+##### En contexto profesional sirve para vender una visión, justificar una decisión estratégica, convencer a clientes o motivar equipos.
+
+
+### Importancia
+
+#### Las historias conectan mejor que datos aislados: ayudan a la gente a comprender, recordar y actuar.
+
+#### Permiten presentar información compleja de forma coherente (problema → consecuencia → solución).
+
+#### Facilitan la toma de decisiones: alinean motivos, riesgos y beneficios en una narrativa clara.
+
+
+### Elementos para una buena historia
+
+#### 1. Protagonista (quién): persona, cliente, equipo u organización.
+
+#### 2. Contexto (dónde / cuándo): situación inicial que hace comprensible el problema.
+
+#### 3. Tensión / conflicto (qué va mal): el obstáculo o necesidad que impulsa la historia.
+
+#### 4. Decisión / acción (qué se hace): la intervención o la opción estratégica tomada.
+
+#### 5. Resultado / impacto (qué cambia): consecuencias medibles o cualitativas.
+
+#### 6. Llamado a la acción (qué quieres que haga la audiencia).
+
+
+### Estructuras
+
+#### ABT (And — But — Therefore)
+And: contexto (qué es).
+But: problema/contraste (qué falla).
+Therefore: solución y llamado a la acción.
+(Muy efectiva para pitches cortos.)
+
+#### STAR (Situation, Task, Action, Result) — ideal para ejemplos personales o entrevistas.
+
+#### Hero’s Journey (simplificado) — útil para historias de cambio/transformación (cliente como héroe, producto como mentor).
+
+#### Monroe’s Motivated Sequence — captar atención, establecer necesidad, satisfacerla, visualizar resultados, llamar a la acción (ideal en presentaciones persuasivas).
+
+
+### Lenguaje y recursos narrativos
+
+#### Concretar: cifras concretas, anécdotas breves, ejemplos reales.
+
+#### Mostrar, no sólo decir: usar escenas y detalles (ej.: “el usuario tardaba 7 minutos en completar el registro”) en vez de abstractos.
+
+#### Contraste: antes vs después; riesgo vs oportunidad.
+
+#### Simplicidad: una idea central por historia.
+
+#### Emoción y propósito: conectar racional + emocional (datos + impacto humano).
+
+#### Visuales: un diagrama simple o imagen que ilustre el conflicto o el resultado
+
+
+### Prácticas para presentaciones y pitch
+
+#### Empieza con hook (pregunta, cifra sorprendente, mini-anécdota).
+
+#### Mantén la narrativa lineal: conflicto → decisión → resultado.
+
+#### Usa evidencia para la afirmación central (1–2 datos clave).
+
+#### Cierra con llamado claro (qué quieres de la audiencia: recursos, aprobación, feedback).
+
+#### Adapta el detalle al público: ejecutivos necesitan impacto y trade-offs; técnicos, supuestos y datos.
+
+
+### Errores
+
+##### Contar demasiadas ideas a la vez (ruido).
+
+##### Ser vag@ o demasiado genéric@ (“mejorar la experiencia” sin mostrar cómo).
+
+##### Olvidar el público: usar jergas irrelevantes o datos sin contexto.
+
+##### Basar todo en emoción sin evidencia o viceversa.
+
+##### No tener claro el objetivo de la historia (informar vs persuadir vs motivar).
+
+
+### Plantilla
+
+##### 1. Hook (1 línea): dato o pregunta que capta atención.
+
+##### 2. Contexto (1–2 frases): quién y qué situación.
+
+##### 3. Problema/contraste (1 frase): por qué importa.
+
+##### 4. Acción/solución (1–2 frases): qué propusiste o harás.
+
+##### 5. Resultado esperado / evidencia (1 frase): impacto cuantificable o señal.
+
+##### 6. CTA (1 frase): qué quieres de la audiencia.
+
+
+#### Ej
+
+##### Ejemplo rápido (lanzamiento de producto):
+##### Hook: “Cada mes perdemos 20% de usuarios en los primeros 7 días.”
+##### Contexto: “Nuestros nuevos usuarios no entienden el valor en su primer uso.”
+##### Problema: “Sin corrección, CAC subirá y LTV bajará.”
+##### Acción: “Implementamos onboarding guiado + checklist en 4 semanas.”
+##### Resultado: “Esperamos reducir churn inicial al 12% y mejorar LTV un 18%.”
+##### CTA: “Necesito 30k para pruebas y 2 recursos UX/desarrollador 6 semanas.”
+
+
+### Ejercicios
+
+##### Transformar una diapositiva llena de bullets en ABT de 3 frases.
+
+##### Escribir el STAR de una decisión estratégica que tomaste.
+
+##### Hacer un pitch de 60s con la mini-plantilla y contárselo a alguien; pedir feedback sobre claridad y emoción.
+
+
 
 # 2. Análisis externo e interno
 
