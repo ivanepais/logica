@@ -11135,3 +11135,891 @@ Es un array de objetos que será recorrido, analizado por las funciones puras y 
 # Backend
 
 
+
+# JQuery, apis, promises
+
+
+## JQuery: presente en apps legacy
+
+```
+npm init
+
+npm i jquery
+```
+
+##### Incluir jQuery en html: orden 1 acceso a jquery y después al archivo escrito en jquery
+
+```
+<script type="text/javascript" src="node_modules/jquery/dist/jquery.min.js"></script>
+<script src="proj-jquery.js"></script>
+
+```
+
+HTML: 
+
+```
+<h1>Ejemplo jQuery<h1>
+<ul id="lista">
+	<li>1</li>
+	<li>2</li>
+	<li>3</li>
+	<li>4</li>
+	<li>5</li>
+</ul>
+<div> id="resultado">Cargando...</div>"
+
+<script type="text/javascript" src="node_modules/jquery/dist/jquery.min.js"></script>
+<script src="proj-jquery.js"></script>
+```
+
+##### http-server -c-1: cache que recuerda lo último que sirvió
+
+Con `http-server -c-1` le decimos que no tenga cache, c de cache y -1 
+
+
+##### Archivo js: al trabajar con librerias o framework podemos buscar los @types, son 
+
+Typescript surgió para evitar los errores de js, tomamos los @types de TS
+
+En la consola: 
+
+```
+npm i --save-dev @types/jquery
+```
+
+En el archivo proj-jquery.js:
+
+```
+/// <reference types="jquery" />
+```
+
+##### Podemos usar referencias según las instaladas como jquery, sizzle (permite usar selectores de css más simples)
+
+### Seleccionar elementos con js vs jQuery
+```
+//const $header = document.querySelector('h1'); para js
+
+const header = $('h1');
+```
+
+### Modificar texto con jQuery
+
+```
+$header.text('Clase 12!');
+```
+
+##### console.log con jQuery: si lo ejecutamos sin ningún param nos va a devolver el valor. Si le pasamos el param, va a setearlo
+
+```
+console.log($header.text());
+``` 
+
+en la consola va a mostrar el string 'Clase 12!'
+
+
+### Seleccionar todos los elementos con jQuery 
+
+Con js nos daba una especie de array: Nodelist
+```
+const $elementos = document.querySelectorAll('#list li');
+```
+
+Con jQuery: 
+```
+const $elementos = $('#list li');
+```
+
+#### sizzle libreria/motor que nos permite usar estos selectores simples
+
+
+### La esencia de los elementos html con jQuery: cambia lo vemos en la consola al llamar a cada elemento usando js y jQuery
+
+En consola 
+
+Usando jQuery:
+```
+$('h1');
+```
+rtn: `k.fn.init [h1, prevObject: k.fn.init(1)]`
+
+tiene un arr con h1 y un objeto (clave valor)
+
+Es un objeto de jQuery que envuelve al elemento h1
+
+Es más o menos un array si comprobamos: 
+
+```
+$('h1')[0]; 
+```
+rtn `<h1>Clase 12!</h1>`
+
+```
+document.querySelector('h1');
+```
+rtn `<h1>Clase 12!</h1>`
+Nos devuelve el elemento real llamado h1
+
+
+##### jQuery reemplaza document.querySelector
+
+Reemplaza al NodeList para jQuery
+
+```
+$('h1')
+```
+
+##### console.table: muestra una tabla con los elementos que hay los objetos
+
+```
+console.table({ header: $header.length, $elementos.length})
+```
+
+### Funcionalidades de jQuery
+
+En el html: 
+
+```
+<h1>Ejemplo jQuery<h1>
+<ul id="lista">
+	<li>1</li>
+	<li>2</li>
+	<li>3</li>
+	<li>4</li>
+	<li>5</li>
+</ul>
+<div> id="resultado">Cargando...</div>"
+```
+
+En el archivo proj-jquery.js:
+
+```
+const header = $('h1');
+$header.text('Clase 12!');
+
+//console.log($header.text());
+
+const $elementos = $('#list li');
+```
+
+Si con js hacemos selectorAll en usando un selector especifico
+```
+document.querySelectorAll('#list li');
+```
+rtn `NodeList(5) [li, li, li, li, li]`
+
+Si queremos poner un click a cada elemento no podemos hacer: 
+```
+document.querySelectorAll('#list li').onclick();
+```
+rtn `undefined`
+
+##### NodeList de js no tiene el método onclick, ni eventos, etc
+
+Tenemos que: 
+
+```
+document.querySelectorAll('#list li').forEach((li) => li.onclick = function(){
+	console.log('click');
+	//alert();
+});
+```
+
+Ahora cada vez que le hacemos un click a cada elemento nos registra el str 'click' en la consola
+
+
+### Clicks con jquery
+
+```
+$elementos.click(() => {
+	console.log('click');
+});
+```
+
+$elementos es un objeto de jquery que envuelve a una lista de li
+
+##### jQuery hace internamente el forEach
+
+Tambien podemos hacer 5 clicks juntos/a todos los elementos
+
+```
+$elementos.click();
+```
+
+En el html: 
+
+```
+<h1>Ejemplo jQuery<h1>
+<ul id="lista">
+	<li>1</li>
+	<li>2</li>
+	<li>3</li>
+	<li>4</li>
+	<li>5</li>
+</ul>
+<div> id="resultado">Cargando...</div>"
+```
+
+En el archivo proj-jquery.js:
+
+```
+const header = $('h1');
+$header.text('Clase 12!');
+
+//console.log($header.text());
+
+const $elementos = $('#list li');
+```
+
+
+### Arrow function: función corta/usada en linea/interna
+
+##### this: Referencia al elemento/contexto actual
+
+##### This en una función tradicional
+```
+$elementos.click(function() {
+	console.log(this); //li, el evento click pertenece al li, this es el li clickead/actual
+	console.log($(this).text()); // convierte el HTMLElement(this) en un jQuery<HTMLElement>
+});
+```
+
+##### This en arrow: no tienen this propio, tienen el this del elemento padre
+```
+$elementos.click(() => {
+	console.log(this); //windows
+});
+```
+
+##### This en consola: 
+
+```
+this
+```
+rtn `Window {parent: Window, opener: null, top: Window, length: 0, frames Window, ...}`
+
+##### Si con la función arrow con this hacemos click a cada elemento, en la consola nos va a imprimir el objeto Window
+
+##### Con la función tradicional con this, al hacer click nos va a devolver cada elemento html
+```
+$elementos.click(function() {
+	console.log(this); //li, el evento click pertenece al li, this es el li clickead/actual
+	console.log($(this).text()); // convierte el HTMLElement(this) en un jQuery<HTMLElement>
+});
+```
+rtn `<li></li>`
+rtn `<li></li>`
+rtn `<li></li>`
+...
+
+Dependiendo de a qué elemento le hagamos click. 
+
+
+### Funtion, jQuery y this 
+
+En el html: 
+
+```
+<h1>Ejemplo jQuery<h1>
+<ul id="lista">
+	<li>1</li>
+	<li>2</li>
+	<li>3</li>
+	<li>4</li>
+	<li>5</li>
+</ul>
+<div> id="resultado">Cargando...</div>"
+```
+
+En el archivo proj-jquery.js:
+
+```
+const header = $('h1');
+$header.text('Clase 12!');
+
+//console.log($header.text());
+
+const $elementos = $('#list li');
+
+$elementos.click(function() {
+	console.log(this); //li, el evento click pertenece al li, this es el li clickead/actual
+	console.log($(this).text()); // convierte el HTMLElement(this) en un jQuery<HTMLElement>
+});
+```
+
+##### con el signo $ envolvemos elementos que ya tenemos guardados en una variable, se transforma en un objeto de jQuery
+
+En consola: 
+
+```
+$elementos.click(function() {
+	console.log(this); //li HTMLElement
+	console.log($(this)); //jQuery<li>
+	console.log($(this)[0]); //jQuery<li[0]>
+});
+```
+rtn 
+
+```
+`Object` // obj de HTML
+	`<li>_</li` //elemento de HTML
+`k.fn.init [li]` //arr-elementos de jQuery
+	`<li>_</li` //elemento jQuery[0]
+```
+
+
+### Uso de $(this) para las funciones de jQuery
+
+```
+$elementos.click(function() {
+	console.log($(this).text()); 
+});
+
+```
+Retorna el string/contenido que hay en el elemento clickeado: hay un 1 str
+
+
+###### Afectar a un solo elemento de la lista: convertir elemeto html en jquery
+
+```
+$elementos[2].click() //elem html
+
+$($elementos[2]).click() //elem jquery
+```
+
+
+## Data Driven
+
+##### Basarse en los datos para hacer ciertas afirmaciones, decisiones. Buscar datos
+
+##### Ej: Google Trends, Developer Survey para cada región 
+
+##### jQuery vs React vs Vue vs Angular
+
+
+## Chaining jQuery: nos va devolviendo el mismo objeto afectado por las funciones que le pasemos
+
+Tomamos el objeto jquery h1
+```
+$('h1');
+```
+
+Podemos encadenar funciones
+```
+$('h1').addClass('rojo').addClass('muy-grande');
+```
+
+```
+$elementos
+	.addClass('rojo')
+	.addClass('muy-grande')
+	.css({ fontWeight: 'bold'' });
+```
+
+En js: 
+
+```
+document.querySelectorAll('li').forEach((li) => {
+	li.classList.add('rojo');
+	li.classList.add('muy-grande');
+	li.style.fontWeight = 'bold';
+});
+```
+
+
+### Lograr encadenado de jQuery con JS Puro
+
+##### Tienen que devolverse a si mismos
+
+```
+const miObjeto = {
+	decirHola() {
+		console.log('hola');
+		return this;
+	},
+	decirChau() {
+		console.log('chau');
+		return this; 
+	}
+}
+
+miObjeto
+	.decirHola()
+	.decirChau()
+	.decirHola();
+```
+
+
+## Promesa
+
+##### Asegurar que algo va a pasar en el futuro
+
+##### Tiene dos estados: pendiente o terminada
+
+##### Pendiente: no sabemos el resultado de la promesa
+
+##### Una promesa pendiente tiene dos estados futuros: Cumplida o No cumplida 
+
+##### En el transcurso de si se cumple o no la promesa, tenemos que seguir
+
+##### Necesitamos promesas porque hay operaciones que tardan en ejecutarse
+
+##### Ej: ir a buscar datos a un sitio web externo propio o ajeno
+
+##### No es lógico bloquear al usuario mientras esperamos que se cumpla  o no la promesa
+
+##### Y recien cuando tengamos o no los datos, avisamos por si o por no. Cuando será en el futuro, lo que está asegurado es el aviso
+
+##### Se necesita una conexión, el navegador tiene que ir a la web, hacer un request
+
+##### El request puede fallar o tardar en responder por eso debe estár en una promesa que es una función asíncrona
+
+
+### Promesa en código real
+
+#### Uso de fetch API del navegador se basa en una promesa
+
+```
+fetch("https://api.exchangeratesapi.io/latest")
+	.then(respuesta => respuesta.json())
+	.then(respuesta => {
+		$("#resultado").text($("#resultado").text() + JSON.stringify(respuesta));
+	})
+	.catch(error => console.error("FALLO", error));
+
+console.log("Esto pasa antes que la respuesta de fetch!");
+```
+
+### fetch: devuelve una promesa, la promesa es objeto (futuro)
+
+Busca, atrae o entrega algo
+
+##### La promesa que devuelve fetch tiene un metodo `then` (luego/después/entonces) para hacer una acción/algo
+
+##### Una vez que then hace algo, va a ejecutar la función que tiene dentro
+
+##### Traducción del código: respuesta (param) => respuesta.json() (modificar/hacer algo con ese param) que llama a json()
+
+##### Se puede encadenar o concatenar con otro then que también va a devolver algo
+
+Sin arrow function: 
+
+```
+.then(function(respuesta) { 
+	return.respuesta.json(); 
+});
+```
+
+##### El último then que concatenamos va a ser el resultado de respuesta.json()
+
+##### Si en vez de respuesta.json hubiesemos puesto 'return 1' el último then va a devolver algo más con ese 1
+
+##### then siempre toma un param y el param está definido por la función anterior
+
+
+#### .catch al no poder resolver la promesa, toma un param error, lo manipula y mostrará ese param error
+
+
+
+### AJAX: Asynchronous Javascript and XML
+
+##### Con AJAX, jQuery envolvio XMLHttpRequest de JS
+
+Web APIs
+
+```
+$.ajax({
+	method: 'GET', 
+	url: 'https://api.exchangeratesapi.io/latest',
+	success: respuesta = {
+		console.log('respuesta de exchangeratesapi.io', respuesta);
+		$('#resultado').text(JSON.stringify(respuesta));
+	}
+	//async: false //al comentar la linea, nada se ejecuta hasta que esta llamada termine
+});
+
+console.log('Esto pasa antes que AJAX');
+```
+
+### XML: antes de usar json con async se usaba xml para transferir datos
+
+Es un lenguaje de etiqueta para definir objetos:
+
+JSON: 
+
+```
+{nombre: Bob, apellido: Smith}
+``` 
+
+XML: 
+
+```
+<persona><nombre>Bob</nombre><apellido>Smith</apellido></persona>
+```
+
+##### Toma el elemento del html con jQuery y reemplaza su contenido con la respuesta de la promesa
+
+`$('#resultado').text(JSON.stringify(respuesta));`
+
+##### La asincronia desplaza una tarea que lleva tiempo y sigue ejecutando lo siguiente
+
+##### ajax() async: false/true modificamos el comportamiento de la sincronia/asincronia
+
+
+### Usando las respuesta de la promesa: actualizar web dinamicamente usando los datos de las respuesta de las promesas
+
+##### respuesta.json() es un objeto podemos acceder a sus clave-valor y mostrarlas
+
+```
+fetch("https://api.exchangeratesapi.io/latest")
+	.then(respuesta => respuesta.json())
+	.then(respuestaJSON => {
+		$("h1").text(`Cambios del dia ${respuestaJASON.date"} en base ${respuestaJSON.base}`;
+	})
+	.catch(error => console.error("FALLO", error));
+
+console.log("Esto pasa antes que la respuesta de fetch!");
+```
+
+
+### Usando/mostrando cada elemento del objeto de respuesta
+
+```
+fetch("https://api.exchangeratesapi.io/latest")
+	.then(respuesta => respuesta.json())
+	.then(respuestaJSON => {
+		$("h1").text(`Cambios del dia ${respuestaJASON.date"} en base ${respuestaJSON.base}`;
+		
+		Object.keys(respuestaJSON.rates).forEach(moneda => {
+			$('ul').append($(`<li>$(moneda): $(respuestaJSON.rates[moneda])</li>`))
+		});
+	})
+	.catch(error => console.error("FALLO", error));
+
+console.log("Esto pasa antes que la respuesta de fetch!");
+```
+
+
+##### Con jQuery podemos crear elementos dinamicamente
+
+```
+$('ul').append($(`<li>$(moneda): $(respuestaJSON.rates[moneda])</li>`))
+```
+
+
+### Implementación de Promesa 
+
+##### Debemos devolver una promesa de que vamos a responderle
+
+##### Debemos implementar una función para el caso respuesta y otra para el error
+
+##### return new Promise toma una función como primer param y esa función a su vez toma dos param y cada uno de esos param es una función, un event handler 
+
+##### La función debe saber resolver la promesa (resolve) o para rechazarla (reject) si no la puede cumplir
+
+```
+function verificarMayorDeEdad(edadUsuario) {
+	return new Promise(function(resolve, reject) {
+		console.log('Verificando proceso que lleva mucho tiempo...');
+	
+		setTimeout(function() {
+			if (edadUsuario >= 18) {
+				resolve('La edad era 18');
+			} else {
+				reject('La edad era falsa');
+			}
+		}, 5000);
+	});
+};
+
+const edad = 18;
+verificarMayorDeEdad(edad)
+	.then(mensaje => console.log(mensaje))
+	.catch(error => console.error(error));
+```
+
+##### Las promesas no usan setTimeout solo lo usamos para simular proceso largo
+
+##### Después de los 5s nos llega la respuesta, simulamos la acción 
+
+##### Ahí es dónde usamos la función resolve y reject 
+
+##### verificarMayorDeEdad(edad) no devuelve un booleano, va a devolver una promesa
+
+##### Al no indicarle una acción en resolve y reject, al llamar verificarMayorDeEdad(18) no le estamos pasando ningún param a resolve y reject, lo haremos con .then ahí le pasamos una función con un param mensaje y la acción manipulando ese param (esto es resolve de new Promise)
+
+##### al usar .catch es como si le estuvieramos pasando el reject 
+
+##### Dado que un param es una variable local/vacía y este puede ser cualquier cosa, en este caso será una función 
+
+##### Si ejecutamos la función que devuelve una nueva promesa sin el then y catch no podremos ejecutar reject y resolve
+
+##### Ahí es cuando participa el desarrollador no de JS que creó la interfaz promise, sino el desarrollador cualquiera de alto nivel, usando then y catch
+
+##### Este último desarrollador solo va a usar param de la función e implementar las funciones resolve y reject con then y catch, las respuestas las implementa el desarrollador de promise y el desarrollador último solo las captura
+
+
+### Uso de fetch
+
+##### El desarrollador cuando está frente a un objeto/interfaz que devuelve una promesa como lo es fetch
+
+##### Usa .then que toma un param y este se usa/ manipula en una función (arrow generalmente)
+
+##### Después podemos hacer algo con la respuesta del then anterior usando otro them
+
+##### Como buena práctica debemos atratar el error ahí tambien le pasamos una función arrow que toma un param
+
+#### Las promesas son usadas para cargar más info sin bloquear al usuario, no para mostrar error 404, etc.
+
+
+## APIs
+
+##### Interfaz de programación de aplicaciones, es un conjunto de subrutinas, funciones y procedimientos (o métodos en la programamción orientada a objetos) que ofrece ofrece cierta biblioteca para ser utilizada por otro software como una capa de abstracción 
+
+##### Las APIs se consideran como contratos, con documentación que representa un acuerdo entre partes
+
+##### De ahí la importancia de que nuestro código sea semántico (expresiones bien formadas, significativas, descriptivas, declarativas)
+
+##### Tipos de APIs: Web APIs de los más comunes como HTTP, REST vs RPC, uso de CRUD
+
+
+##### Por lo general se refiere mucho a Webs de API como exchangeratesapi.io
+
+##### Las Web APIs se usan para separar/desacoplar el front (presentación/visualización) del back (lógica de negocio)
+
+##### Es un servicio abstracto que provee funcionalidades, datos de una forma simple, rapida
+
+##### La url de exchangeratesapi.io devuelve un objeto con la moneda y el tipo de cambio actual
+
+##### Al consumidor de la api no le preocupa ni le importa como fue construida
+
+##### Al consumidor de la api solo se tiene que preocupar de la visualización de estos datos o otras veces implementar una función fácil, simple, etc.
+
+
+##### También hay APIs que son más funcionales como jQuery que documenta como se usan sus funcionalidades. 
+
+##### Se tienen que implementar como dice su documentación/contrato
+
+##### Todo código abstracto/agnostico bien implementado puede ser una librería/API
+
+##### El desarrollador de la api se encarga de la implementación y el consumidor solo tiene que saber los requisitos del contrato, no le tiene importa como está implementado
+
+##### Las apis son una forma de ocultar detalles de implementación para reducir complejidad al desarrollar o exponerla para otros desarrolladores
+
+##### Las web apis son todavía más simples/abstractas, solo hacemos una petición/solicitud/request a una dirección web para tener info o funcionalidades
+
+##### Estas apis web exponen muchas direcciones, incluso podemos cambiarlas para obtener datos más precisos
+
+
+### HTTP: todo en la web son tranferencias http
+
+Ej: web localhost
+
+Si revisamos network en localhost
+
+Hubo: 
+
+```
+Request URL: http://localhost:8080/
+Request Method: GET
+Status Code: 200 ok
+Remote Address: 123.0.0.1:0000
+Referrer Policy: no-referer-when-downgrade
+```
+
+GET se usa para traer/acceder a info
+
+POST se usa para crear un registro, por ej en un form
+
+
+###### Cargar index.html es un request/get http, lo mismo para el main.css
+
+Si vamos al main.css en network lo vemos
+
+Lo mismo con el main.js y el archivo jquery.js
+
+
+##### El código usa las apis del navegador o a las apis de tercero
+
+Se puede ver en network sobre el objeto 
+
+en la pestaña initiator =/= headers vemos de qué linea sale la llamada/código
+
+##### A traves de HTTP se puede devolver xml, json, txt plano; pero una api debe ser consistente
+
+
+### Estructura de una API web
+
+##### Hay varios como REST, RPC, etc
+
+El más usado es RESTful api
+
+##### Rest es un estilo de arquitectura, una forma de organizar la api
+
+#### Componentes
+
+##### Tenemos una base: https://pokeapi.co/api/v2/, esta base tiene un nombre, una referencia sección que describe que es una api y una version
+
+##### Al desarrollar api (trabajo de backend) para api publica o privada
+
+##### Al consumir api (trabajo de frontend) para diseñar como se muestra la info
+
+##### Al cambiar la estructra de respuesta, rompemos apps de terceros o propias que usan estas apis
+
+##### Si como desarrolladores nde api cambiamos las respuestas, debemos cambiar la versión para no romper apps 
+
+##### En las RESTful apis todo esta pensado y hecho alrededor de recursos: son como entidades 
+
+##### Ej: https://pokeapi.co/api/v2/pokemon es un recurso
+
+##### Si queremos la lista de pokemones usamos GET https://pokeapi.co/api/v2/pokemon
+
+```
+count: 164
+next: 'https://pokeapi.co/api/v2/pokemon/...'
+previous: null
+results: [] 20 items
+	0: {} 2 keys
+		name: "bulbasaur"
+		url: "https://pokeapi.co/api/v2/pokemon/1/"
+```
+
+La url 'https://pokeapi.co/api/v2/pokemon/' tiene 164 objetos
+
+La proxima url/page es 'https://pokeapi.co/api/v2/pokemon/...'
+
+results es un array, cada result/elemento de result es un objeto 
+
+Tiene dos llaves, nombre pokemon y url
+
+Al ir a la url de un pokemon en especifico nos muestra otra cosa
+
+
+### Métodos/verbos exclusivos de RESTful
+
+##### Todos los HTTP Request tienen un Header y Body 
+
+#### GET: obtener recurso
+
+Ej: pokeapi.com/pokemon -> lista de todos los pokes
+
+Ej: pokeapi.com/pokemon/1 -> primer poke
+
+##### En el GET el Body está vacío
+
+
+#### POST: crear recurso
+
+Ej: post a pokeapi.com/pokemon
+
+##### En el POST el Body tiene contenido, si el intercambio de info se hace por json, al hacer un post a una url. Hay que leer la documentación para ver como codear el objeto nuevo
+
+```
+body: {nombre: "nuevoPoke", height: 5, weight: 100}
+```
+
+##### Tendrá una respuesta con el nuevo id creado, dado que no tiene sentido que al hacer post tengamos que determinarlo, se pueden pisar, causar errores, etc
+
+```
+response => pokeapi.com/pokemon/1000
+{ide: 1000, nombre: "nuevoPoke", height: 5, weight: 100}
+```
+
+
+
+#### PUT: modificar/pisar/reemplazar un recurso completo, mandamos toda la entidad
+
+PUT - pokeapi.com/pokemon/1
+
+Para cambiar el objeto
+
+
+#### PATCH: actualizar/modificar/pisar una parte
+
+PATCH - pokeapi.com/pokemon/1
+{nombre: 'pokeNew'}
+
+
+#### DELETE: eliminar recurso
+
+DELETE - pokeapi.com/pokemon/1
+
+##### El body de DELETE estará vacío dado que no mandamos info
+
+##### La respuesta sera como: response: {success: true}
+
+
+En ajax de jQuery: 
+
+```
+$.ajax({
+	method: "GET", 
+})
+```
+
+Con data especificamos el body
+
+```
+$.ajax({
+	method: "PATCH", 
+	data: {
+		nombre: "bulbasaur""
+	}
+})
+```
+
+Especificamos la url del recurso para actualizar esa parte de la entidad
+
+```
+$.ajax({
+	method: "PATCH", 
+	data: {
+		nombre: "bulbasaur"
+	}, 
+	url: "https://pokeapi.co/pokemon/1"
+})
+```
+
+Para borrar no hace falta body
+
+```
+$.ajax({
+	method: "DELETE", 
+	url: "https://pokeapi.co/pokemon/1"
+	success: response => {
+		//
+	}
+})
+
+```
+
+Fetch: primer param url, el segundo config
+
+Enviando datos JSON
+```
+fetch(url, {
+	method: 'Post', 
+	body: JSON.stringify(data), 
+	headers: {
+		'Content-Type: 'application/json'
+	}
+}).then(res => res.json())
+.catch(error => console.error('Error', error))
+.then(response => console.log('Success', response));
+```
+
+Ej: 
+
+```
+fetch("https://pokeapi.co/pokemon", {
+	method: "POST"
+	body: JSON.stringify({nombre: "pokemon1", etc}), 
+	headers: {
+		'Authorization': 'token=....'
+	}
+})
+	.then(response => response.json())
+	.then(responseJSON => {
+		//...
+	})
+	.catch(error => console.error("FALLO", error));
+```
