@@ -12023,3 +12023,9 @@ fetch("https://pokeapi.co/pokemon", {
 	})
 	.catch(error => console.error("FALLO", error));
 ```
+
+
+
+# Async & Await
+
+
