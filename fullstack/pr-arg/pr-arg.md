@@ -12025,7 +12025,1581 @@ fetch("https://pokeapi.co/pokemon", {
 ```
 
 
+## Constructor Promesa
 
-# Async & Await
+##### Tiene tres estados: pending, fulfilled y rejected;
+
+##### Eventualmente dependiendo de ciertas cuestiones que no controlamos, una promesa (accion/hecho/cosa futura) puede salir bien o mal
+
+##### Si sale bien sucede una accion y se sale mal otra accion/consecuencia distinta
+
+##### Cuando tenemos una promesa, podemos definir dos funciones que se van a ejecutar cuando salga bien o mal 
+
+##### Resolve y Reject se utilizan para determinar el resultado de la promesa 
+
+##### En algún momento determinante nos tocará invocar a resolve y reject
+
+##### Para hacer que la promesa se resuelva la invocamos/usamos tambien
+
+##### Promise tiene métodos .then() (para ejecutar resolve) y .catch() (para reject) cuando la usamos
+
+##### .then() y .catch() son métodos que se encadenan a la promesa, no necesitan llaves en la promesa, por dentro usan params con funciones flecha/cortas regularmente
+
+Sintax: 
+
+```
+const myPromise = new Promise((resolve, reject) => {
+	if(condition here) {
+		resolve('Promise was fulfilled');
+	} else {
+		reject('Promise was rejected');
+	}
+});
+```
+
+Ej: 
+
+```
+const makeServerRequest = new Promise((resolve, reject) => {
+	let responseFromServer;
+	
+	if(responseFromServer) {
+		resolve('we got the data');
+	} else {
+		reject('Data not received'')
+	}
+});
+```
+
+#### Encadenar then directamente: el param del then va a guardar la respuesta de resolve o reject
+
+Sintax: 
+
+```
+myPromise.then(result => {
+	
+});
+```
+
+Ej: 
+
+```
+const makeServerRequest = new Promise((resolve, reject) => {
+	let responseFromServer = true;
+	
+	if(responseFromServer) {
+		resolve('we got the data');
+	} else {
+		reject('Data not received'')
+	}
+}).then(result => console.log(result);
+```
 
 
+#### then devuelve otro then que puede se concatenado para transformar la respuesta del server o lo que sea
+
+##### Vamos a tener como param lo que devuelva la promise
+
+```
+const makeServerRequest = new Promise((resolve, reject) => {
+	let responseFromServer = true;
+	
+	if(responseFromServer) {
+		resolve('we got the data');
+	} else {
+		reject('Data not received'')
+	}
+})
+
+makeServerRequest.then(result => {
+	console.log(result);	
+	return 'data'
+}).then(param => console.log(param));
+```
+param vale 'data'
+
+Podemos volver a encadenarlas y seguir transformado el resultado de la promesa
+
+
+#### usando catch
+
+```
+const makeServerRequest = new Promise((resolve, reject) => {
+	let responseFromServer = false;
+	
+	if(responseFromServer) {
+		resolve('we got the data');
+	} else {
+		reject('Data not received'')
+	}
+})
+
+makeServerRequest.then(result => {
+	console.log(result);	
+}).catch(error => console.log(error));
+```
+
+
+Ej: 
+
+```
+function hacerRequestQueFallaAveces() {
+	return new Promise((resolve, reject) -> {
+		const estoVaAPasar = Math.random() > 0.5;
+		
+		if(estoVaAPasar) {
+			resolve();
+		} else {
+			reject();
+		}
+	});
+}
+
+hacerRequestQueFallaAveces()
+	.then(() => console.log('Salio todo bien'));
+	.catch(() => console.log('Salio todo mal'));
+```
+
+
+
+## Rest params, destructuración
+
+##### operador spread para n cantidad de variables, parametros con una cantidad variable sin necesidad de definirlos todos
+
+##### Los param variables se almacenan en un array al que se puede acceder más tarde
+
+##### El param rest elimina la necesidad de comprobar el array args y nos perminte aplicar map(), filter() y reduce() en el array de params
+
+```
+function howMany(...args) {
+	return 'You have passed ' + args.length + ' arguments.';
+}
+console.log(howMany(0, 1, 3)); 
+console.log(howMany("string", null, [1, 2, 3], {}));
+```
+
+en consola: 
+You have passed 3 arguments
+You have passed 4 arguments
+
+
+
+De:
+
+```
+const sum = (x, y z) => {
+	const args = [x, y z];
+	return args.reduce((a, b) => a + b, 0); 
+}
+
+```
+
+A: 
+
+```
+const sum = (...nums) => {
+	return args.reduce((a, b) => a + b, 0); 
+};
+```
+
+Ej2: 
+
+```
+const numeroMaximo = (...nums) => {
+	return Math.max(...nums)
+};
+
+console.log(numeroMaximo(1, 2, 3, 4, 5, 2));
+```
+
+
+#### Error en operador de propagación 
+
+No valido: 
+
+```
+const spreaded = ...arrr;
+```
+
+valido: 
+
+```
+const spreaded = [...arrr];
+
+```
+
+
+#### Tipo de dato objeto no son identicos, pueden parecer a la vista iguales
+
+```
+const arr1 = [];
+const arr2 = [];
+
+console.log(arr1 === arr2) //false
+```
+ 
+ 
+#### Error con spread operator: nos es un copia deep (de contenido), estamos copiando las referencias del original y eso puede traer problemas en cadena
+
+
+### Copia profunda de un array
+
+```
+const arr1 = [];
+const arr2 = JSON.parse(JSON.stringify(arr1))
+```
+
+
+## Desestructuración 
+
+
+### Ej: extraer valroes de objetos
+
+##### Asigna valores directamente desde un objeto
+
+En ES5: 
+
+```
+const user { name: 'John Dow', age: 34 };
+
+const name = user.name;
+const age = user.age;
+```
+
+En ES6: 
+
+```
+const user { name: 'John Dow', age: 34 };
+
+const { name, age } = user;
+```
+
+##### Las variables name y age toman los valores del objeto user
+
+##### Puede traer tantos o pocos valores  del objeto como se desee
+
+
+Ej2: 
+
+```
+const persona = {
+	hobbies: {
+		tarde: ['stream'] 
+	}
+}
+```
+
+#### acceso: desestructuración anidada
+
+```
+const { hobbies: { tarde: [hobbiesDeLaTarde]}} = persona
+```
+
+Ej 3: 
+
+```
+const { hobbies: aahaah } = persona;
+
+console.log(aahaah);
+```
+
+##### aahaah retorna objeto tarde de persona: 
+
+```
+ { tarde: ['stream'] }
+```
+
+
+## Desestructuración en arrays
+
+#### Operador propagación vs desestructuracion 
+
+##### spread desempaca todos los contenidos de un arra en una lista separada por comas, no puedes elegir qué elementos deseas asignar como variables
+
+```
+const [a, b] = [1, 2, 3, 4, 5, 6];
+console.log(a, b); 
+```
+retorna: a=1, b=2
+
+#### Acceso y asignación en el indice deseado
+
+```
+const [a, b,,, c] = [1, 2, 3, 4, 5, 6];
+console.log(a, b, c);
+```
+a=1, b=2, c=5
+
+
+#### Asignación por destructuración 
+
+```
+let a = 8, b = 6
+
+[a, b] = [b, a]
+```
+
+`[a, b]` es desestructuración, nuevas vars
+
+`[b, a]` es un nuevo arr con los valores que hayen b y a
+
+
+Ej 2: 
+
+```
+const [a, b, ...arr] = [1, 2, 3, 4, 5, 7];
+console.log(a, b); 
+console.log(arr);
+```
+
+#### Combinar spread, destructuring y función 
+
+```
+const source = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+function removoFirstTwo(list) {
+	const [a, b, ...arr] = list;
+	return arr 
+}
+```
+
+o 
+
+```
+const [,, ...arr] = list;
+```
+
+
+### Desestructuración para objeto como param
+
+##### En algunos casos, se puede desestructurar (asignar a vars valores de un objeto o arr directamente) el objeto en un propio argumento de función 
+
+```
+const profileUpdate = (profileData) => {
+	const { name, age, nationaliti, location } = profileData;
+};
+```
+
+Esto desestructura efectivamente el objeto enviado a la función. 
+
+Esto también se puede hacer en el lugar: 
+
+```
+const profileUpdate = ({ name, age, nationality, location }) = {
+	
+};
+```
+
+Cuando profileData es pasado a la función anterior, los valores son desestructurados desde el parámetro de la función para su uso dentro de la función
+
+Ej:
+
+```
+const stats = {
+	max: 56.78, 
+	standard_deviation: 4,34,
+	median: 34.54, 
+	mode: 23.87, 
+	min: -0.75, 
+	average: 35.85
+}
+```
+
+De:
+
+```
+const half = (stats) => {
+	(stats.max + stats.min) / 2.0;
+};
+```
+
+A: 
+
+```
+const half = ( {min, max } ) => {
+	(max + min) / 2.0;
+};
+```
+
+
+## Literales de string y destructuring
+
+Ejercicio representar en cadena los siguientes elementos
+
+Deben tener el valor correspondiente para cada uno
+
+```
+[
+	'<li class="text-warning">no-var</li>',
+	'<li class="text-warning">var-on-top</li>',
+	'<li class="text-warning">linebreak</li>' 
+]
+```
+
+En: 
+
+```
+const result = {
+	success: ['max-length', 'no-and', 'prefer-arrow-functions']
+	failure: ['no-var', 'var-on-top', 'linebreak'],
+	success: ['no-extra-semi', 'no-dup-keys']
+};
+
+function makeList(arr) {
+	const failureItems = arr.map(item => `<li class="text-warning">${items}</li>`)[];	
+	return failureItems;
+}
+
+const failuresList = makeList(result.failure);
+```
+
+
+# Adm npm 
+
+##### Cuando se comparte la app, al hacer npm install hace que los desarrolladores tengan todas las dependencias por igual las dev y las de producción 
+
+### Carpeta node_modules 
+
+##### Vamos a encontrar las librerias que instalamos y las que son dependencias de otras para funcionar 
+
+##### Cada libreria de npm viene con un bin donde esta el binario ejecutable
+
+##### Node modules tiene su propia carpeta bin para incluir todos estos binarios 
+
+##### Podemos ejecutar este binario referenciando a la carpeta ./node_modules/.bin/eslint por ejemplo
+
+##### La terminal nos a mostrar las distintas funcionalidadas a las que podemos acceder poniendo comandos en ella
+
+##### Si queremos ejecutar este binario tenemos que agregar a la ruta anterior --init como: ./node_modules/.bin/eslint --init
+
+##### Nos va a preguntar lo que queremos hacer
+
+##### eslint tiene chequeo de sintax, busqueda de problemas y formateo de código podemos hacer todo esto junto, dependiendo de las reglas del proyecto
+
+##### Al seleccionar la última opción nos va a preguntar el tipo de modulos que queremos usar como JS modules(inport/export) o CommonJS (require/exports) o podemos elegir ninguno
+
+##### Después nos va a preguntar el framework como: React, Vue.js o ninguno
+
+##### Después nos va a preguntar dónde va a correr el código: en el navegador o en node
+
+##### Después nos va a preguntar el estilo de código que queremos que nos formatee automaticamente: una opción es elegir un estilo popular; otra opción es responder cuestionario de estilo para formateo o analizar los archivos js ya creados para definirle reglas en base a eso
+
+##### Si elegimos un estilo popular podemos acceder al empresasa como: aribnb, google o uno standard
+
+##### Nos va a preguntar el formato del archivo como: js, yaml o json 
+
+##### Va a instalar dependencias en el json como en los demás dependencias
+
+##### Una vez que instalamos/iniciamos eslint o cualqueir paquete npm vamos a instalarlo en el editor de código tambien
+
+
+### Extensión de Vscode: en settings y en formatter podemos elegir el formateador como emmet, eslint, etc 
+
+##### En la pestaña code -> preferences -> online services settings aca buscamos los plugins/paquetes npm
+
+##### al buscar eslint nos sale sus opciones
+
+##### Ahora al buscar formatter podemos elegir el formateador del ide
+
+##### Al Seleccionar un formatter y correr el comando de formatear va a correr la opción seleccionada
+
+
+### settings.json de VScode
+
+##### En sttings.json es un archivo para config vscode (no el plugin)
+
+##### Podemos hacer que VScode use un plugin en una situación como: usar eslint solo para archivos js
+
+La ruta se ve como: 
+
+```
+Users -> userName -> Library -> Application Support -> Code -> User -> settings.json
+```
+
+```
+"[javascript]": {
+	"editor.defaultFormatter": "dbaumer.vscode-eslint"
+},
+```
+
+
+
+# App casa de cambio 
+ 
+## Uso de Foreign exchange rates
+
+##### Al pasarle params, en base a estos, nos devuelve los cambios para ciertas monedas
+
+##### Si no le pasamos nada, por default es EUR y la fecha es latest/day/dia actual
+
+##### Si copiamos su url principal nos tira un json en un html en el navegador
+
+
+## La idea es darle una intefaz/hacer una app a esta api
+
+## Funcionalidades: elegir fecha y base/moneda y mostrará esa base en relación con las otras monedas
+
+### Flujo de la app:
+ 
+Primero: 
+
+#### función inicializar() todo el código: tiene otras funciones como obtenerMonedas() es espera una promesa y dentro tenemos otra funcion como mostrarListadoMonedas y fuera de estas tenemos a configurarInputFecha()
+
+Va a obtenerMonedas() para mostrar la lista de monedas que la api ofrece 
+
+##### Es una promesa, usa then nos va a devolver monedas (plural, una lista/array)
+
+A mostrarListadoMonedas() le pasamos esta array/lista que es lo que espera
+
+##### Para la intefaz usamos configurarInputFecha() 
+
+La app muestra el listado de monedas de la api y configurar la fecha esta dos funcionalidades que interactuamos en el front
+
+La fecha max solo puede ser el dia de hoy, impide que elijamos una fecha futura 
+
+
+Segundo: 
+
+ConfigurarInputFecha()
+
+Toma el elemento con id fecha
+
+el código `const today = (new Date()).toISOString().split('T')[0];`
+
+crea un nuevo obj fecha/date
+
+el atributo max necesita una fecha que este
+
+```
+max="YYYY-MM-DD"
+```
+
+new Date tiene toISOString() va a devolver una fecha mejor formateada
+
+Con YYYY-MM-DD le agrega tiempo:
+
+```
+"2020-02-08T22:29:27.2002""
+``` 
+
+Despues hacemos un split en el T para separa el tiempo
+
+Nos devuelve un array con dos posiciones:
+
+```
+["2020-02-08", "22:30:22.0432"]
+```
+
+Después de eso tomamos la posición 0 que es la que nos sirve
+
+##### $fecha.setAtrribute('max', today) pasamos la variable dinamica today evita harcoder max
+
+Después si cambiamos el input fecha lamamos a una función 
+
+##### $fecha.addEventListener('change', actualizar)
+
+
+Tercero: 
+
+La función obtenerMonedas() llama a obtenerCambios que es una promesa
+
+Su param rresultado es un objeto le sacamos los keys y le concatenamos el string ('EUR')
+
+Esto lo vemos mejor en la el navegador accediendo a la url 
+
+Tenemos un objeto rates con la key/base eur y la fecha
+
+```
+rates
+	asd
+	asd
+	asd
+	...
+```
+
+##### Le agregamos 'EUR' así la respuesta de la api viene incluida con ese cambio así lo muestra siempre
+
+Entonces obtenerMonedas llama a obtenerCambios y al resutado le sacamos los keys y le agregamos eur
+
+
+##### La funcion obtenerCambios por default la base va a ser eur y la fecha va a ser latest; usamos esa funcionalidad de las funciones de js que nos permite hardcodear un param
+
+Emulamos esta funcionalidad de la api
+
+Usamos fetch para hacer solicitudes de http, usamos la base url
+
+##### Obtenemos esta url de la api
+
+##### La r de respuesta saca el objeto json y después saca el objeto rates
+
+
+Cuarto: 
+
+Función mostrarListadoMonedas
+
+Crea un div, le pone una clase
+
+por cada moneda le va agregando el elemento a 
+
+Al elemento a le agregamos la clase list-group-item
+
+A cada item le agrega un eventListener y el cuerpo es toda la funcion 
+
+
+Quinto: 
+
+función actualizar()
+
+Muestra el cartel
+
+##### obtiene los cambios en base a las monedas seleccionadas y la fecha seleccionada, una vez que hayamos obtenidos esos cambios, vamos a mostrarlos
+
+##### Despues llama a la función anterior obtenerCambios() que es el corazón de la app que se conecta con al api
+
+
+Sexto: 
+
+el cartel cambia el elemento #cambio tbody
+
+
+Septimo: 
+
+obtenerMonedaSeleccionada()
+
+##### toma el item activo y si lo hay va a tomar lo que tiene en su dataset.base; si no hay un item activo devuelve undefined
+
+##### Al retornar undefined va a caer el el valor por default: la base es eur y la fecha default
+
+
+Octavo: 
+
+obtenerFechaSeleccionada()
+
+Toma el valor del elemento #fecha, después devuelve este valor seleccionado que esta en la constante fechaSeleccionada o devuelve undefined
+
+##### Si no hay nada seleccionada el .value da un str vacío
+
+##### Si hay un string vacío se pasa a fetch
+
+En: 
+
+```
+return fetch(`${BASE_URL}/${fecha}?base=${base}`)
+```
+
+forzamos a la función a que use su valor por defecto
+
+
+### Dataset
+
+##### HTML agrego los data Attribute son atributos que queremos usar nosotros que al navegador no tiene que aplicarle ninguna función como en href para aplicar referencia a un recurso van en estos data atributtes
+
+##### Nosotros definimos data-base al hacer click ya sabemos que base es el beneficio es evitar tener una variable global para guardar la ultima base/moneda al cual le hicieron click para reducir la cantidad de cosas globales o asunciones que podríamos hacer en la función 
+
+##### Solo asumimos que va a existir el atributo data-base
+
+Cuando creamos el elemento a, seteamos en: 
+
+##### base es el param dinamico que se va a setear en estos elementos
+
+```
+$item.textContent = base;
+$item.dataset.base = base; //crea data-base
+```
+
+Si hicieramos algo como: 
+
+```
+$item.dataset.hola = 'hola'; // será: data-hola="hola"
+
+```
+
+Alternativa antigua: 
+
+```
+$item.setAttribute('data-base', base);
+
+//equivalente a:
+
+$item.dataset.base = base;
+```
+
+Mostrar/obtener el valor
+
+```
+console.log($item.dataset.base)
+console.log($item.getAttribute('data-base'));
+```
+
+Cuando queremos obtener la moneda seleccionada 
+
+tomamos el item que tenga '.list-group-item.active'
+
+Si existe nos devuelve el dataset `return $activeItem.dataset.base`
+
+Para no depender de variables globales
+
+
+Noveno: 
+
+obtenerCambios nos da todos los rates (objeto con keys en moneda y value en tasa de cambio)
+
+mostrarCambios() sabe en base a una lista de cambios/rates
+
+sabe popularlos/llenarlos y mostrarlos
+
+Agarra tbody
+
+habiamos usado una tabla
+
+Después los borra
+
+Por cada cambio que haya va a agarrar las keys 
+
+Sería: 
+
+```
+{CAD: 1.123, ARS: 1.123}
+```
+
+Despues ordenamos
+
+```
+[CAD, ARS].sort()
+
+// pasa a.
+
+[ARS, CAD]
+
+```
+
+Por cada ARS, CAD por ej
+
+Lo vamos a llamar moneda 
+
+```
+.forEach((moneda) => {
+	const $fila = document.createElement('tr');
+	const $moneda = document.createElement('td');
+	const $cambio = document.createElement('td');
+});
+```
+
+Crea una fila
+
+crea una columna
+
+Editamos el valor de la celda de la moneda
+
+```
+$moneda.textContent = moneda; 
+$moneda.textContent = cambio[moneda];
+```
+
+Y lo agregamos con los elementos creados
+
+
+ JS
+ ```
+ 
+ function obtenerCambios(base = 'EUR', fecha = 'latest') {
+	const BASE_URL = 'https://api.exchangesratesapi.io';
+	return fetch(`${BASE_URL}/${fecha}?base=${base}`) 
+	.then((r) => r.json())
+	.then((r) => r.rates);
+ }
+ 
+ function obtenerMonedas() {
+	 return obtenerCambios().then((resultado) => Object.keys(resultado).concant('EUR'));
+ }
+ 
+function mostrarCambios(cambios) {
+	const $cambios = document.querySelector('#cambio tbody');
+	$cambios.innerHTML = '';
+	
+	Object.keys(cambios).sort().forEach((moneda) => {
+		const $fila = document.createElement('tr');
+		const $moneda = document.createElement('td');
+		const $cambio = document.createElementi('td');
+		$moneda.textContent = moneda; 
+		$cambio.textContent = cambios(moneda);
+		$fila.appendChild($moneda);
+		$fila.appendChild($cambio);
+		$cambios.appendChild($fila);
+	});
+ }
+ 
+function obtenerMonedaSeleccionada() {
+	const $activeItem = document.querySelector('.list-group-item.active').dataset.base;
+	if ($activeItem) {
+		return $activeItem.dataset.base;
+	}
+	
+	return undefined;
+}
+
+function obtenerFechaSeleccionada() {
+	const fechaSeleccionada = document.querySelector('#fecha').value;
+	return fechaSeleccionada || undefined;
+}
+
+function mostrarCartelActualización() {
+	document.querySelector('#cambio tbody').innerHTML = 'Cargando...'
+}
+
+function actualizar() {
+	mostrarCartelActualización();
+	obtenerCambios(obtenerMonedaSeleccionada(), obtenerFechaSeleccionada())
+		.then((cambios) => {
+			mostrarCambios(cambios);
+		});
+}
+
+function mostrarListadoMonedas(monedas) {
+	const $lista = document.createElement('div'); 
+	$lista.className = 'list-group';
+	
+	monedas.sort().forEach((base) => {
+		const $item = document.createElement('a');
+		$item.href = '#';
+		$item.classList.add('list-group-item', 'list-group-item-action');
+		$item.textContent = base;
+		$item.dataset.base = base;
+		$item.addEventListener('click', () => {
+			const $itemActivo = document.querySelector('.list-group-item.active');
+			if ($itemActivo) {
+				$itemActivo.classList.remove('active');
+			}
+			$item.classList.add('active');
+			actualizar();
+		});
+		$lista.appendChild($item);
+	});
+	
+	document.querySelector('#monedas').appendChild($lista);
+}
+
+function configurarInputFecha() {
+	const $fecha = document.querySelector('#fecha');
+	// formato YYYY-MM-DD
+	const today = (new Date()).toISOString().split('T')[0];
+	$fecha.setAttribute('max', today);
+	$fecha.addEventListener('change', actualizar);
+}
+
+function inicializar() {
+	obtenerMonedas().then((monedas) => {
+		mostrarListadoMonedas(monedas);
+	)};
+	
+	configurarInputFecha();
+}
+
+inicializar();
+```
+
+
+HTML 
+
+```
+<body>
+	<h1>Casa de Cambio</h1>
+	<div id="app">
+		<div class="form-group row">
+			<label for="example-date-input" class="col-2 col-form-label"
+			<div class="col-10">
+				<input class="form-control" type="date" id="fecha" max="2020-02-08">
+			</div>
+		</div>
+		<div class="row"></div>
+	</div>
+	<script src="src/index.js"></script>
+</body>
+```
+
+
+
+# Organizar una app en modulos
+
+Como tenemos: 
+
+```
+<script src="src/index.js"></script>
+```
+
+
+### 1. Forma tradicional: asumir que todo el código existe de forma global
+
+##### Teniamos que cargar los scripts de forma ordenada:
+
+```
+<script src="jquery.js"></script>
+<script src="jquery.popup.js"></script>
+<script src="index.js"></script>
+<script src="src/index.js"></script>
+```
+
+Podemos hacer: 
+
+```
+<script src="src/index.js" type="module"></script> 
+```
+
+
+## Se introdujo ESM: EcmaScript Modules
+
+
+### Modulos para NodeJS o para el Navegador (js)
+
+##### Hay varias formas de cargar codigo 
+
+##### Si asumimos que por cargar en el html los archivos de scripts y no importamos las funcionalidades es un error, estaríamos asumiendo que todos los scripts existen de forma global
+
+
+### 2. CommonJS o CJS - Node Modules
+
+En node para pedir/solicitar/incluir un modulo 
+
+##### Tenemos que usar `requiere('fileName.js')`
+
+
+### 3. Js moderno - Browser - ESM - ECMAScript Modules
+
+##### Hacemos 'import $ from 'jquery.js'
+
+##### Acá solo tenemos que poner el entry point: archivo principal desde el cual vamos a cargar todas las demás dependencias
+
+##### Después tenemos que agregar type="module"
+
+```
+<script src="src/index.js" type="module"></script> 
+```
+
+##### Al hacer type="module" podemos acceder a la sintaxis import { obtenerMonedas, obtenerCambio } from './cambios.js'
+
+##### En vez de cargar todo globalmente
+
+##### Ahora en cada archivo especificamos exactamente que archivo/funcionalidades necesitamos
+
+
+Por ejemplo:
+
+### Estructura proyecto
+
+```
+casa-de-cambio
+	src
+		cambios.js
+		exchange.js
+		exchange.test.js
+		index.js // entry point para todas las depend/files.js
+		ui.js
+	.gitignore
+	index.html
+	package-lock.json
+	package.json
+	README.md
+```
+
+
+## Proyecto modular
+
+Ej: 
+
+index.html:
+
+```
+<body>
+	...
+	<script src="src/index.js" type="module"></script> 
+</body>
+```
+
+index.js
+
+```
+import { obtenerMonedas, obtenerCambios } from './cambios.js';
+import {
+	configurarInputFecha, 
+	mostrarCambios, 
+	mostrarListadoMonedas,
+	obtenerFechaSeleccionada,
+	obtenerMOnedaSeleccionada,
+	mostrarCartelActualización,
+} from './ui.js';
+
+async function actualizar() {
+	mostrarCartelActualizacion();
+	const cambios = await obtenerCambios(obtenerMonedaSeleccionada(), obtenerFechaSeleccionada());
+	mostrarCambios(cambios);
+}
+
+async function inicializar() {
+	mostrarListadoMonedas(await obtenerMonedas(), actualizar);
+	configurarInputFecha(actualizar);
+}
+
+inicializar();
+```
+
+
+### Separar app logicamente
+
+##### En raiz './cambios.js' están las funcionalidades que se conectan o traen datos desde la api
+
+##### En raiz './ui.js' estan las funcionalidades que interactúan con el navegador
+
+Ej: 
+
+#### Estructura de modulos: export e import
+
+sintaxis: 
+
+```
+export function() {}
+```
+
+
+##### Las exportaciones: 'publicar' o exponer funcionalidades 
+
+##### palabra clave export antes no estaba
+
+Al definir un archivo como: 
+
+./ui.js
+
+```
+export function mostrarCambio
+```
+
+##### Tenemos que definir qué cosas son privadas al mismo modulo para que nadie más use; que no se use en otro lugar
+
+##### Y tenemos que definir cuales son las que están disponibles/ofrecidas a la gente que ese el modulo para interacutar con este mismo 
+
+##### Una definición de API: definir cómo se puede interactuar con el modulo/código de uno/desarrollado
+
+Por ejemplo: 
+
+Tenemos ./ui.js
+
+Todas las funciones que interactuan con el navegador (generadoras, transformadoras)
+
+##### Como tiene export antes de function, definimos que puedan ser utilizable por cualquiera que este consumiendo el modulo
+
+##### Si la función no tuviese export, sería una implementación privada
+
+##### No podríamos importarla desde el entry point
+
+##### Podemos exportar todo tipo de objetos, menos let dado que es mutable, si const
+
+
+##### Las importaciones: consumir funcionalidades de los módulos
+
+sintaxis: 
+
+```
+import { function1, function2 } from ./utils.js
+```
+
+##### ./ archivo local desde la raíz
+
+##### acceder a node_modules: como import {} from 'jquery';
+ 
+Va a .users/userName/node_molules -> @types -> jquery
+
+
+### Actividad de los modulos desde herramientas desarrollador
+
+##### En network al seleccionar un archivo, tenemos las llamadas/solicitudes a los archivos 
+
+Ej: 
+
+index.js
+
+##### En la pestaña initiator
+
+```
+Request initiator chain 
+
+http://127.0.0.1:8082/
+	http://127.0.0.1:8082/src/index.js
+		http://127.0.0.1:8082/src/cambios.js
+			http://127.0.0.1:8082/src/exchange.js
+		http://127.0.0.1:8082/src/ui.js
+```
+
+##### En header 
+
+General 
+
+```
+Request URL: http://127.0.0.1:8082/src/index.js
+Request Method: GET
+Status Code: 200 ok 
+...
+```
+
+##### Response: nos muestra el archivo index.js que es lo que cargamos como module en index.html
+
+##### Va a leer las funcionalidades expuestas con export desde los distintos archivos
+
+```
+import {} ... cambios.js
+import {} ... ui.js
+
+async ...
+```
+
+Lo primero que va a leer es cambio.js
+
+despues ui
+
+##### Si un archivo que usamos como import a su vez importa otro lo va a cargar
+
+
+##### Beneficio: hacer visible las dependencias de nuestro código/archivo y con las dependencias que usan ellos mismos. El navegador es capaz de traer los archivos por separado
+
+
+### Otra forma de distribuir código Mimifiación: bundle/app.js, junta todos los archivos.js
+
+```
+<script src="jquery.js"></script>
+<script src="cambio.js"></script>
+<script src="src/index.js.js"></script>
+```
+
+Pasa a ser solo bundle.js que junta los demás archivos
+
+```
+<script src="bundle.js"></script>
+```
+
+##### Problema de bundle/app.js: sobrecargar funcionalidades que no necesitamos para un página en particular que esta viendo el usuario
+
+##### El sentido de la modularidad moderna es cargar solo que necesita el usuario para el contenido que esta usando/viendo en el momento
+
+
+
+### Sintaxis universal import (*): cuando necesitamos todas las funcionalidades del modulo usamos la importación universal, no ahorra escribir de a uno si necesitamos muchas funciones
+
+##### Importa todo lo que el archivo expone/exporta y además lo guarda en un objeto
+
+```
+import * as obj from ...
+
+```
+
+Ej: 
+
+```
+import * as exchange from './exchange.js';
+```
+
+El navegador, por nosotros; internamente crea un objeto llamada exchange 
+
+```
+const exchange = {
+	obtenerMonedas,
+	obtenerCambios
+}
+```
+
+Ej: 
+
+```
+export function exchange.obtenerCambios(base = 'EUR', fecha = 'latest') {
+	const BASE_URL = 'https://api.exchangeratesapi.io';
+	return fetch(`${BASE_URL}/${fecha}?base=${base}`)
+		.then((r) => r.json())
+		.them((r) => r.rates);
+}
+```
+
+
+### Otra forma de evitar el conflicto: import as cambios de nombre
+
+Ej: 
+
+```
+import { obtenerCambios as obtenerCambios2 }
+```
+
+##### Cuando quisieramos usar esas funciones debemos invocar al objeto.function100
+
+### Si definimos una constante global y además no esta exportada, los demás archivos no tienen forma de accederla y fallará el programa además evita el conflicto de funciones que tengan el mismo nombre
+
+```
+const BASE_URL = 'https://api.exchangeratesapi.io';
+
+export function obtenerCambios(base = 'EUR', fecha = 'latest') {
+	return fetch(`${BASE_URL}/${fecha}?base=${base}`)
+		.then((r) => r.json())
+		.them((r) => r.rates);
+}
+```
+
+
+## Organización de archivos
+
+### Principio SOLID
+
+#### 1. Single Responsibility Principle
+
+##### Un pedazo de código solo tiene que tener una unica razón por la cual cambiar
+
+O más fácil una tarea por función 
+
+Ej app cambios: 
+
+##### Modulo index.js: controla a app o la setea con actualizar(), inicializar() y para eso usa muchas importaciones
+
+##### En inicializar() toma la lista de monedas en base obtener las monedas y a una vez obtenido las monedas; en mostrarListadoMonedas tenemos un callback de selección de moneda, cada vez que se seleccione una moneda se va a ejecutar la función actualizar
+
+##### No la llama actualizar(), la pasa como un callback
+
+##### Se invierte la dependencia: mostrarListadoMonedas no tiene que saber que hacer cuando le hacen click a una moneda, sino que delega esa responsabilidad
+
+##### La función mostrarListadoMonedas pide monedad y callbackSeleccionMoneda -función que se llama a si misma en algún momento- que es la que va a ejecutar una vez que se seleccione una moneda
+
+```
+export function mostrarListadoMonedas(monedas, callbackSeleccionMoneda) {
+	
+}
+```
+
+##### El callback como param evita tener que modificar codigo interno para tener que solo modificar este param, lo hace intercambiable
+
+##### Anteriormente llamabamos a actualizar dentro del código
+
+```
+export function mostrarListadoMonedas(monedas) {
+	//...
+	actualizar();
+}
+```
+
+##### Al invertir esta dependencia la función nos pide que nosotros le digamos que hacer en este callback, solo lo va a llamar
+
+
+
+### División de código 
+
+##### En index.js llama a muchas funciones que las trae de otros modulos y cada modulo se encarga de una tarea en particular. Solo tiene funciones que interactuan con la api/servidor
+
+##### El modulo ui.js se encarga de interactuar con el navegador, todas las funciones que hacen eso están ahí y agiliza, ahorra tiempo a los desarrolladores que tengan que hacer algo con la ui
+
+##### En alto nivel y a simple vista, las expresiones del código describen que hace a simple vista; aunque los detalles internos sean más complejos.
+
+
+
+# Async & Await: otra forma de escribir promesas
+
+##### Hace más facil el trabajo con promesas
+
+Archivos: 
+
+./index.js
+
+index.js
+
+```
+import { obtenerMonedas, obtenerCambios } from './cambios.js';
+import {
+	configurarInputFecha, 
+	mostrarCambios, 
+	mostrarListadoMonedas,
+	obtenerFechaSeleccionada,
+	obtenerMOnedaSeleccionada,
+	mostrarCartelActualización,
+} from './ui.js';
+
+async function actualizar() {
+	mostrarCartelActualizacion();
+	const cambios = await obtenerCambios(obtenerMonedaSeleccionada(), obtenerFechaSeleccionada());
+	mostrarCambios(cambios);
+}
+
+async function inicializar() {
+	mostrarListadoMonedas(await obtenerMonedas(), actualizar);
+	configurarInputFecha(actualizar);
+}
+
+inicializar();
+```
+
+
+./cambios.js
+
+```
+import = as exchange from './exchange.js';
+
+export async function obtenerCambios(base = 'Eur', fecha = 'latest') {
+	const llaveCache `cambio_$(base)_$(fecha)`;
+	const baseCache = localStorage.getItem(llaveCache);
+	if (baseCache) {
+		return JSON.parse(baseCache);
+	}
+	
+	const cambios = await exchange.obtenerCambios(base, fecha);
+	localStorage.setItem(llaveCache, JSON.stringify(cambios));
+	
+	return cambios;
+}
+
+export async function obtenerMonedas() {
+	const llaveCache = 'monedas';
+}
+
+```
+
+
+./exchange.js
+
+```
+export function obtenerCambios(base = 'EUR', fecha = 'latest') {
+	const BASE_URL = 'https://api.exchangeratesapi.io';
+	return fetch(`${BASE_URL}/${fecha}?base=${base}`)
+		.then((r) => r.json())
+		.them((r) => r.rates);
+}
+
+export function obtenerMonedas() {
+	return obtenerCambios().then((r) => Object.keys(r).concat('EUR'));
+}
+```
+
+
+## function Async Await vs Promesas, then, catch
+
+Async Await
+
+```
+async function inicializar() {
+	mostrarListadoMonedas(await obtenerMonedas(), actualizar);
+	configurarInputFecha(actualizar);
+}
+```
+
+Promesas
+
+```
+function inicializar() {
+	obtenerMonedas().then((monedas) => {
+		mostrarListadoMonedas(monedas);
+	});
+	
+	configurarInputFecha();
+}
+```
+
+##### Antes de las promesas, habia callbacks
+
+Como: 
+
+```
+setTiemout(function(){
+	
+}, 100)
+```
+
+##### Habia que hacer las cosas secuencialmente
+
+// llamar al servidor de exchange
+// tomar la moneda con el peor cambio y consultar a otro servidor acerca de todos los usuario de ese país
+// mandar email a esos usuario avisandoles que su moneda está devaluada 
+
+```
+llamarAlServidor(functio(){
+	const monedaPeorCambio = agarrarLaMonedaPeorCambio
+	llamarAServidorDeUsuario(monedaPeorCambio, function() {
+		mandarEmailALosUsuario(() => {
+			alert('Se han cumplido todas las tareas');
+		});
+	}); 
+});
+```
+
+##### Se llega al callback hell: por más que esté escrito y se lea secuencialmente esta pasando en distinto momento
+
+```
+llamarAlServidor(functio(){
+	const monedaPeorCambio = agarrarLaMonedaPeorCambio
+	llamarAServidorDeUsuario(monedaPeorCambio, function() {
+		mandarEmailALosUsuario(() => {
+			alert('Se han cumplido todas las tareas');
+		});
+		//instruccion
+	}); 
+	
+	//instruccion
+});
+```
+
+##### Mientras intenta llamar a los servidores, siguen las demás intrucciones
+
+
+##### Solucionar callback hell con promesas
+
+```
+llamarAlServidor.then(() => {
+	//...codigo cuando se cumple la promesa
+	llamarServidorUsuario();
+}).then(() => {
+	//código cuando se cumple ...
+	mandarEmailALosUsuarios();
+}).then(() => {
+	//código cuando se cumple ...
+	mostrarAlert('Se ha cumplido todas las tareas');
+});
+```
+
+
+### Con async await
+
+##### Son promesas más elegantes
+
+##### Primero hay que definir una función como async
+
+##### Dentro de la definición podremos usar el await
+
+```
+async function procedimiento() {
+	await llamarAlServidor();
+	await llamarAServidorUsuarios(); 
+	await mandarEmailALosUsuario(); 
+	alert(); 
+}
+```
+
+##### Al llegar al await la función espera 
+
+##### Si ponemos una instruccion dentro de async entre los await no se van a ejecutar hasta que await no este terminado pero fuera de esta función el código se sigue ejecutando de forma asíncrona
+
+```
+async function procedimiento() {
+	await llamarAlServidor();
+	console.log(1);
+	await llamarAServidorUsuarios(); 
+	await mandarEmailALosUsuario(); 
+	alert(); 
+}
+```
+
+
+### Ej
+
+Promesas
+
+```
+function inicializar() {
+	obtenerMonedas().then((monedas) => {
+		mostrarListadoMonedas(monedas);
+	});
+	
+	configurarInputFecha();
+}
+```
+
+##### obtenerMonedas() nos va a devolver una promesa con el resultado que son las monedas, cuando eso suceda se mostrará el listado de monedas
+
+##### Entonces, el código fuera de la promesa sigue funcionando; cuando este listo la promesa se ejecuta su código interno
+
+
+Con Async Await podríamos hacer
+
+```
+async function inicializar() {
+	configurarInputFecha();
+	const monedas = await obtenerMonedas(); //cuando se cumpla pasa a mostraMonedas
+	mostrarListadoMonedas(monedas);
+}
+```
+
+##### Como las async await son promesas a su resultado le podemos encadenar then() y catch()
+
+##### Y dentro de otra función async podemos usar await inicialiar(); para usar ese resultado
+
+
+##### Entonces, cuando se resolvía la promesa como obtenerMoneda(), se resuelve ejecuta su callback interno mostrarListadoMonedas
+
+##### El param de la promesa; en async es lo que se obtiene de await
+
+Promesa
+
+```
+obtenerMonedas().then((moneda) => {
+	mostrarListadoMonedas(monedas);
+});
+```
+
+await
+```
+async function inicializar() {
+	const monedas = await obtenerMonedas();
+	mostrarListadoMonedas(monedas);
+}
+
+```
+
+##### Entonces, inicializar() espera a obtenerMonedas() y una vez que las tiene llama a mostrarListadoMonedas con el resultado de esa operación 
+
+```
+async function inicializar() {
+	configurarInputFecha(actualizar);
+	mostrarListadoMonedas(await obtenerMonedas(), actualizar);
+}
+```
+
+```
+async function actualizar() {
+	mostrarCartelActualización();
+	const cambios = await obtenerCambios(obtenerMonedaSeleccionada(), obtenerFechaSeleccionada());
+	mostrarCambios(cambios);
+}
+```
+
+Al actualizar mostramos el cartel de actualización 
+
+Esparamos a obtener moneda seleccionada y fecha seleccionada
+
+Esperamos a obtener el resutlado de lo anterior: obtenerCambios que se guardará en cambios
+ 
+Después podemos llamar a la funcion mostrarCambios con esos cambios
+
+
+## Usar async await con fetch
+
+```
+export async function obtenerCambios(base = 'EUR', fecha = 'latest') {
+	const respuesta = await fetch(`${BASE_URL}/${fecha}?base=${base}`);
+	const json = await respuesta.json();
+	return json.rates;
+}
+```
+
+
+### El module exchange.js es lo que se llama un servicio que se conecta con las apis, solamente que se encarge de hablar con las apis; cuando necesitamos cambiar algo de la comunicación/servicio vamos acá
+
+
+
+# Caching
+
+##### Para ahorrar request/solicitudes de datos a los API para evitar los rates limits de las consultas a las Apis
+
+##### Si la información que pedimos es la misma la guardamos en el cache
+
+##### Se puede usar localStorage
+
+##### Con localStorage guardamos la respuesta del servidor 
+
+##### Si existen estos datos localmente, no volvemos al servidor 
+
+##### Cómo el código debe ser defensivo debemos considerar la posibilidad de que localStorage este lleno que daría una falla
+
+
+
+# Jest 
+
+##### Marca en el ide con rojo las funciones, los if, las declaraciones no testeadas
+
+##### Además hace un recuento de la cobertura en pruebas de las functiones, if, etc
