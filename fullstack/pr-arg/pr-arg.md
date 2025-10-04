@@ -13582,7 +13582,639 @@ export async function obtenerCambios(base = 'EUR', fecha = 'latest') {
 
 
 
-# Caching
+# Pokedex
+
+## Patrones 
+
+Una forma: 
+
+##### Todos los lugares en dónde tengamos que reemplazar texto por algo que una api le ponemos un id como en: 
+
+```
+<div class="container">
+	<div class="row">
+		<p>hay <strong id="total-pokemones">...</strong> pokemones en la pokedex</p>
+	</div>
+</div>
+```
+
+Le agregamos los tres puntos para indicar que esta cargando
+
+##### tomamos solamente el id="total-pokemones" dentro con js vamos a cambiar el textContent para ponerle la cantidad de pokemones que hay
+
+
+### Pagination en bootstrap: Después del titulo h1 Pokedex y de la cantidad de pokemones
+
+##### Seguir esos patrones de la documentación
+
+Pusimos un flex-wrap para que el paginador no siga de largo por todo el ancho de la ventana
+
+```
+<div class="container">
+	<nav aria-label="page navigation example">
+		<ul class="pagination flex-wrap" id="paginador">
+			<!-- -->
+		</ul>
+	</nav>
+</div>
+```
+
+
+### Indice: indice lateral derecho que va a mostrar los nombre de los pokes
+
+```
+<div class="row">
+	<div class="col-4">
+		<div class="list-group" id="indice">
+			<p>Cargando...</p>
+			<!-- -->
+		</div>
+	</div>
+```	
+
+
+### Pokemones: main de la página/visualización con las cartas/contenedores, imagenes, etc
+
+##### Con el id="ayuda" es un texto que vamos modificando
+
+##### Lo mismo con los otros id como pokemon-imagen, pokemon-id, et
+
+##### Todo lo relacionado con pokemon
+
+```
+<div class="col" id="pokemon">
+	<p id="ayuda"> Selecciona un pokemon para la información</p>
+
+	<div class="card" id="pokemon-contenedor">
+		<div class="card-body">
+			<h3 class="card-title"><strong id="pokemon-nombre">...</strong>
+			<strong id="pokemon-id">...</strong>
+			</h3>
+			
+			<img class="card-img" id="pokemon-imagen" src="" alt="imagen de pokemon">
+			
+			<div id="tipos-contenedor">
+				<strong>Tipos</strong>
+				<div id="tipos">
+					<!-- -->
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+```
+
+
+## HTML pokeapi
+
+```
+<body>
+	<div class="container">
+		<h1>Pokedex</h1>
+	</div>
+	
+	<div class="container">
+		<div class="row">
+			<p>hay <strong id="total-pokemones">pokemones</p>
+		</div>
+		
+		<div class="container">
+			<nav aria-label="page navigation example">
+				<ul class="pagination flex-wrap" id="paginador">
+					<!-- -->
+				</ul>
+			</nav>
+		</div>
+		
+		<div class="row">
+			<div class="col-4">
+				<div class="list-group" id="indice">
+					<p>Cargando...</p>
+					<!-- -->
+				</div>
+			</div>
+			
+			<div class="col" id="pokemon">
+				<p id="ayuda"> Selecciona un pokemon para la información</p>
+			
+				<div class="card" id="pokemon-contenedor">
+					<div class="card-body">
+						<h3 class="card-title"><strong id="pokemon-nombre">...</strong>
+						<strong id="pokemon-id">...</strong>
+						</h3>
+						
+						<img class="card-img" id="pokemon-imagen" src="" alt="imagen de pokemon">
+						
+						<div id="tipos-contenedor">
+							<strong>Tipos</strong>
+							<div id="tipos">
+								<!-- -->
+							</div>
+						</div>
+						
+						<div id="habilidades-contenedor">
+							<strong>Habilidades</strong>
+							<div id="habilidades">
+								<!-- -->
+							</div>
+						</div>
+						
+						<div id="movimientos-contenedor">
+							<strong>Movimientos</strong>
+							<table class="table"">
+								<!-- -->
+							</div>
+						</div>
+					</div>
+					
+				</div>
+			</div>
+		</div>
+		
+		
+	</div>
+	
+	
+</body>
+```
+
+
+## Modulos de la poke api
+
+##### Como trabajaremos con ESM, definimos que es de tipo module
+
+html:
+
+```
+<script type="module" src="src/index.js"></script>
+```
+
+### Estructura proyecto:
+
+```
+pokedex
+	src
+		_tests_
+		servicios
+		storage
+		ui
+		utilidades
+		index.css
+		index.js
+		pokedex.js
+	babel.config.js
+	index.html
+	jest.config.js
+	package-lock.json
+	package.json
+	README.md
+```
+
+
+En ./src/index.js
+
+llama a inicializar que viene del archivo pokedex.js
+
+```
+import inicializar from './pokedex.js';
+
+inicializar();
+```
+
+Esta en pokedex.js
+
+```
+export default function inicializar() {
+	return cambiarPagina(1)
+		.catch((e) => console.error(e));
+}
+```
+
+#### Inicializar cambia a la primera pagina y si hay error mostrar error en consola
+
+
+### Funcion cambiarPagina(pagina)
+
+##### Define y asigna 20 pokes por página, define otras vars sin asignación
+
+##### A las paginas cambiarPagina(pagina) le podemos pasar distintos tipos: puede ser un numero y si no asumimos que es una url
+
+##### Si el tipo de la pagina coincide con lo que pide tipeof
+
+Si le pasamos 1 -> number -> true
+
+##### Cuando es un numero calcula el offset para cargar los pokes: cuantos pokes por pagina hay y lo multiplicamos por la pagina actual (pagina) -1. Correginos cuando la pagina sea 1, para que nos de 0; a offset sea 0, para que empieze por el principio
+
+Por ejemplo, la llamada de inicializar cae en el primer caso: cuando pagina es number
+
+```
+export default function inicializar() {
+	return cambiarPagina(1)
+		.catch((e) => console.error(e));
+}
+```
+
+La pagina actual dara 1. 
+
+Siguido de eso:
+
+LLama a la función actualizarTextoIndicePokemon('Cargando...') con ese string como param
+
+
+##### Como todo lo anterior es una async function va a esperar (respuesta = await cargarPokemones(offset, limit); espera a que carge los pokemones, que es una funcion que toma offset y limite
+
+##### Seguido hacemos object destructuring: 
+
+```
+const { a, b } = {a:1, b:2}
+```
+
+al preguntar por a, nos da 1, y al preguntar por b nos da 2
+
+##### Una vez obtenido la respuesta hacemos destructuring para asignar a un objeto/clave el valor que le corresponde de la respuesta pero además cambia el nombre de ese objeto key
+
+##### Como respuesta viene como respuesta.count; nombre ingles de la api: queremos que se pase a llamar respuesta.totalPokemones; así como los demás
+
+##### Seguido de eso estos valores los vamos a pasar a las funciones siguientes
+
+##### Mostramos el total de pokemones, el listado de ellos y el paginador 
+
+
+### Archivo ./src/pokedex.js: logica de la pokedex
+
+##### Configuramos que es todo lo que tiene que hacer la app 
+
+##### Apenas carga la pokedex, cargamos a primer página/pokemon
+
+##### Determinamos qué pokemones van a cargar, antes cambiamos el texto 
+
+##### Despues de la respuesta mostramos el total de pokes, etc
+
+```
+import { actualizarTextoAyuda, mostrarTotalPokemones } from './ui/general';
+import { actualizarTextoIndicePokemones, mostrarListadoPokemones } from './ui/listado';
+import mostrarPaginador from './ui/paginador.js';
+import mostrarPokemon from './ui/pokemon.js';
+import obtenerParametrosDeURL from './utilidades/utilidades.js';
+
+async function cambiarPagina(pagina) {
+	const POKEMONES_POR_PAGINA = 20;
+	let paginaActula; 
+	let offset;
+	let limit = POKEMONES_POR_PAGINA
+
+	if (typeof pagina == "number") {
+		offset = POKEMONES_POR_PAGINA * (pagina - 1);
+		paginaActual = pagina;
+	} else {
+		const parametros = obtenerParametrosDeURL(pagina);
+		offset = parametros.offset;
+		limit = parametros.limit;
+		paginaActual = Math.ceil(parametros.offset / parametros.limit) + 1;		
+	}
+	
+	actualizarTextIndicePokemones('Cargando...');
+	
+	const respuesta = await cargarPokemones(offset, limit);
+	
+	const {
+		count: totalPokemones,
+		results: pokemones, 
+		next: urlSiguiente,
+		previous: urlAnterior,
+	} = respuesta;
+	
+	mostrarTotalPokemones(totalPokemones);
+	MostrarListadoPokemones(pokemones, async (nombre) => {
+		actualizarTextoAyuda('Cargando...');
+		mostrarPokemon(await cargarPokemon(nombre));
+	});
+	
+	mostrarPaginador(totalPokemones, paginaActual, ulrSiguiente, urlAnterior, cambiarPagina);
+}
+
+export default function inicializar() {
+	return cambiarPagina(1)
+		.catch((e) => console.error(e));
+}
+```
+
+
+### Estructura de la app: servicios (comunicación con api/DB), lógica (negocio/funcionalidades) y ui (generadores elementos html/renderizado) y utilidades (funciones puras)
+
+
+
+### Función actualizarTextIndicePokemones('Cargando...');
+
+##### Viene de ./ui/listado.js
+
+
+#### archivo .src/ui/listado.js
+
+Toma un elemento y con el string que recibe le cambia el contenido por ese param/argum
+
+```
+export function actualizarTextoIndicePokemones(texto) {
+	const $indice = document.querySelector('#indice');
+	$indice.textContent = texto;
+}
+
+export function mostrarListadoPokemones(pokemones, pokemonSeleccionadoCallback = () => {}) {
+	const $indice = document.querySelector('#indice');
+	$indice.innerHTML = '';
+	
+	pokemones.forEach((pokemon) => {
+		const { name: nombre } = pokemon;
+		const $link = document.createElement('a');
+		$link.className = 'list-group-itme list-grout-item-action';
+		$link.setAttribute('href', '#');
+		$link.textContent = nombre;
+		$link.onclick = () => pokemonSeleccionadoCallback(nombre);
+		$indice.appendChild($link);
+	});
+}
+```
+
+
+##### Esto se engancha con el html que tenia el id="indice"
+
+```
+<div class="list-group" id="indice">
+	<p>Cargando...</p>
+	<!-- -->
+</div>
+```
+
+
+#### Siguiendo con lo que hace el archivo ./src/pokedex.js
+
+##### Cuando alguien cambia de pagina tenemos que cambiar los pokes, lo hacemos con la función que está en respuesta await
+
+
+### cargarPokemones(offset, limit) viene de ./servicios/pokemon.js
+
+```
+export async function cargarPokemones(offset = 0, limite = LIMITE_POKEMONES) {
+	try {
+		return cargarPokemonesDeLocalStorage(offset, limite);
+	} catch(e) {
+		const pokemones = await cargarPokemonesDeAPI(offset, limite);
+		guardarPokemones(offset, limite, pokemones);
+		return pokemones;
+	}
+}
+```
+
+##### Tiene un try catch e intenta cargar primero los pokes de localStorage, si eso le da un error, entonces carga los pokemones de la api
+
+##### try catch usado como if else
+
+
+### archivo ./servicios/pokemon.js
+
+```
+import { cargarpokemon as cargarPokemonDeAPI, cargarPokemones as cargarPokemonesDeAPI} from '../api/pokemon.js'
+
+import {
+	cargarPokemon as cargarPokemonDeLocalStorage,
+	cargarPokemones as cargarPokmenesDeLocalStorage,
+	guardarPokemon,
+	guardarPokemones,
+} form '.../storage/pokmon.js';
+
+export const LIMITE_POKEMONES = 20;
+
+export async function cargarPokemon(id) {
+	if (id === undefined) {
+		throw new Error('Se necesita un identificador para gargar un pokemon');
+	}
+	
+	try {
+		retunr cararPokemonDeLocalStorage(id);
+	} catch(e) {
+		const pokemon = await cargarPokemonDeApi(id);
+		guardarPokemon(id, pokemon);
+		return pokemon;
+	}
+}
+
+export async function cargarPokemones(offset = 0, limite = LIMITE_POKEMONES) {
+	try {
+		return cargarPokemonesDeLocalStorage(offset, limite);
+	} catch(e) {
+		const pokemones = await cargarPokemonesDeAPI(offset, limite);
+		guardarPokemones(offset, limite, pokemones);
+		return pokemones;
+	}
+}
+```
+
+
+### Una vez destrusestructurada (asignación de valores) la respuesta y cambiada/guardada en otra constante vamos a mostrarTotalPokemones(totalPokemones)
+
+### mostrarTotalPokemones(totalPokemones) viene de general.js que está en ui
+
+##### Tomal el param y su valor se lo pasa al elemento 'total-pokemones' es el elemento strong que está después del titulo
+
+### Archivo .src/ui/general.js
+
+```
+export function actualizarTextoAyuda(texto) {
+	const $ayuda = document.querySelector('#ayuda');
+	$ayuda.textContent = texto;
+}
+
+export function mostrarTotalPokemones(totalPokemones) {
+	document.querySelector('#total-pokemones').textContent = totalPokemones;
+}
+```
+
+
+### Función mostrarListadoPokemones(pokemones, async)
+
+##### Viene de ./src/ui/listado.js
+
+##### Toma una lista de pokemones, tambien toma un callback para invertir la responsabilidad (significa que delega a otra función para que no se tenga que modificar esta misma en el futuro) esa responsabilidad dependen del que llama. Entonces el que llama implementa la función 
+ 
+##### Como son param, tienen que usarle, manipularse dentro de esta función original como lo vemos en el cuerpo de código 
+
+```
+export function mostrarListadoPokemones(pokemones, pokemonSeleccionadoCallback = () => {}) {
+	const $indice = document.querySelector('#indice');
+	$indice.innerHTML = '';
+	
+	pokemones.forEach((pokemon) => {
+		const { name: nombre } = pokemon;
+		const $link = document.createElement('a');
+		$link.className = 'list-group-itme list-grout-item-action';
+		$link.setAttribute('href', '#');
+		$link.textContent = nombre;
+		$link.onclick = () => pokemonSeleccionadoCallback(nombre);
+		$indice.appendChild($link);
+	});
+}
+```
+
+##### Entonces el que llama implementa la función así:
+
+##### Pasa el param/argum/valor pokemones (lista/plural) y pasa la función que en este caso es una async
+
+##### Es la que se ejecuta cuando le hacen click a cada pokemon como estaba previsto en la función original
+
+```
+mostrarListadoPokemones(pokemones, async (nombre) => {
+	actualizarTextoAyuda('Cargando...');
+	mostrarPokemon(await cargarPokemon(nombre));
+});
+
+```
+
+##### La función original toma el indice (barra lateral con los pokes en la web/ui), lo borra; entonces, por cada poke ejecuta una función como venimos diciendo
+
+##### Hace una desestructuración al objeto pokemon: toma la key del objeto pokemon y la pasa a llamar nombre
+
+##### pokemon.name existe entonces, lo renombre: pokemon.nombre
+
+```
+const { name: nombre } = pokemon 
+```
+
+##### Después la función original crea un elemento a y le pone un clase de bootstrap 'list-group'
+
+##### Setea el atributo href a que sea un numeral por que es obligatorio para los elem a
+
+##### setea el nombre del poke con text content
+
+##### Finalmente viene la parte de la función que invierte dependencia que además espera nombre como param
+
+##### Otra curiosidad de la inversión de dependencia es que el que define el param/argum es el que va a usar/llamar a la func original
+
+##### Cada vez que le hagan click al poke, actualizará el texto
+
+##### Después llama a la funcion mostrarPokemon y como param le pasa el resultado del await -promesa- (cargarPokemon(nombre))
+
+##### cargarPokemon esta en servicios que tenia el try catch com if else
+
+
+### Función mostrarPaginador(totalPokemones, paginaActual, urlSiguiente, urlAnterior, cambiarPagina);
+
+#### Viene de .src/ui/paginador.js
+
+##### Define 20 pokes por pagina, toma el elemento con el id="paginador"", lo borra 
+
+##### Divide la cantidad de pokemones por la cantidad que entran por paginas
+
+##### Por bootstrap se crea la función crearItemPaginador(texto, url = 'a') porque necesita esos patrones
+
+##### Usa esa función para el elem paginaAnterior; si hay urlAnterior que es uno de los valores de respuesta le quita la clase disabled; si no la hay le agrega esa clase
+
+##### Se puede ver que el botón Anterior de la web queda activado/desactivado; al final se agrega $paginaAnterior a $paginador
+
+##### Para cada pagina, usa el bloque for: empieza en cero, corrigue el num pagina, crea el item con el numero de pagina usando crearItemPaginador; después con un if sigue los patrones de bootstrap
+
+##### Después sigue le bloque de la pagina siguiente: usa el mismo patrón que la pagina anterior
+
+##### Tenemos otra inversion de dependencia para el paginador: La función nos permite que le digamos que hacer cuando haya un click 
+
+##### Cada vez que le hacen click al paginador, vamos a llamar a manejarCambioPagina que recibe el element event (apunta al elemento actual -click-) y el callbackPaginaSeleccionada
+
+```
+export default function mostrarPaginador(
+	totalPokemones, 
+	paginaActual, 
+	urlSiguiente,
+	callbackPaginaSeleccionada = () => {},
+) {}
+```
+
+##### ManejarCambioPagina previene el click, desestructura el objeto e, lo guarda en target (a dónde va a apuntar), va a ser el botón en si 
+
+##### Usa el atributo dataset.pagina de $link 
+
+##### Evitará event bubbling
+
+
+
+### Archivo .src/ui/paginador.js
+
+```
+function crearItemPaginador(texto, url = '#') {
+	const $item = document.createElement('li');
+	const $link = document.createElement('a');
+	$item.className = 'page-item';
+	$link.className = 'page-link';
+	$link.textContent = texto;
+	$link.href = url;
+	$link.dataset.pagina = texto;
+	
+	$item.appendChild($link);
+	
+	return $item;
+}
+
+export function manejarCambioPagina(e, callbackPaginaSeleccionada = () => {}) {
+	e.preventDefault();
+	const { target } = e;
+	const href = target.getAttribute('href');
+	let numeroPagina;
+	const { pagina } = target.dataset;
+	if (href === '#') {
+		numeroPagina = Number(pagina);
+		callbackPaginaSeleccionada(numeroPagina);
+	} else {
+		callbackPaginaSeleccionada(href);
+	}
+}
+
+export default function mostrarPaginador(
+	totalPokemones, 
+	paginaActual, 
+	urlSiguiente,
+	callbackPaginaSeleccionada = () => {},
+) {
+	const POKEMONES_POR_PAGINA = 20;
+	const $paginador = document.querySelector('#paginador');
+	$paginador.innerHTML = '';
+	
+	const totalPaginas = Match.ceil(totalPokemones / POKEMONES_POR_PAGINA);
+	
+	const $paginaAnterior = crearItemPaginador('Anterior', urlAnterior);
+
+	if (urlAnterior) {
+		$paginaAnterior.classList.remove('disabled');
+	} else {
+		$paginaAnterior.classList.add('disabled');
+	}
+	$paginador.appendChild($paginaAnterior);
+	
+	for (let i = 0; i = totalPaginas; i += 1) {
+		const numeroPagina = 1 + 1;
+		const $pagina = crearItemPaginador(numeroPagina);
+		if (i === (paginaActual = 1)) {
+			$pagina.classList.add('active');
+		}
+		$paginador.appendChild($pagina);
+	}
+	
+	const $paginaSiguiente = crearItemPaginador('Siguiente, urlSiguiente');
+	if (urlSiguiente) {
+		$paginaSiguiente.classList.remove('disabled');
+	} else {
+		$paginaSiguiente.classList.add('disabled');
+	}
+	$paginador.appendChild($paginaSiguiente);
+	
+	$paginador.onclick = (e) => {
+		manejarCambioPagina(e, callbackPaginaSeleccionada);
+	};
+}
+```
+
+# clase 16 - 30-32m
+
+
+
+# Caching: clase 16 - 42m
 
 ##### Para ahorrar request/solicitudes de datos a los API para evitar los rates limits de las consultas a las Apis
 
@@ -13597,9 +14229,1143 @@ export async function obtenerCambios(base = 'EUR', fecha = 'latest') {
 ##### Cómo el código debe ser defensivo debemos considerar la posibilidad de que localStorage este lleno que daría una falla
 
 
+## Archivos pokemon.js: en servicios, en localStorage y el de la carpeta api
+
+##### Hay funciones que se llaman cargarPokemon y cargarPokemones, cuando se las importa hay que cambiar su nombre
+
+
+## Archivo ./src/api/pokemon.js
+
+```
+export const BASE_URL = 'https://pokeapit.co/api/v2/pokemon';
+export const LIMITE_POKEMONES = 20;
+
+export async function cargarpokemon(id) {
+	if (id === undefined) {
+		throw new Error('Se necesita un identificador para carar un pokemon');
+	}
+	
+	return (await fetch(`${BASE_URL}${id}`)).json();
+}
+
+export async function cargarPokemones(offset = 0, limite = LIMITE_POKEMONES) {
+	return (await fetch(`${BASE_URL}?offset=${offset}$limite=${limite}`)).json();
+}
+```
+
+
+## LocalStorage
+
+### Archivo ./src/storage/pokemon.js
+
+```
+export const LIMITE_POKEMONES = 20;
+
+function obtenerKeyPokemon(id) {
+	return `pokemon_${id}`;
+}
+
+function obtenerKeyPokemones(offset, limite) {
+	return `pokemones_${offset}_${limite}`;
+}
+
+export function cargarPokemon(id) {
+	if (id === undefined) {
+		throw new Error('Se necesita un identificador para cargar un pokemon');
+	}
+	
+	const pokemon = JSON.parse(localStorage.getItem(obtenerKeyPokemon(id)));
+	if (pokemon == null) {
+		throw new Error(`Pokemon con id ${id} no encontrado`);
+	}
+	
+	return pokemon;
+}
+
+export function cargarPokemones(offset = 0, limite = LIMITE_POKEMONES) {
+	const pokemones = JSON.parse(localStorage.getItem(obtenerKeyPokemones(offset, limite)));
+	if (pokemones === null) {
+		throw new Error(`Listado de pokemones con offset ${offset} y limite ${limite} no encontrado`);
+	}
+	
+	return pokemones;
+}
+
+export function guardarPokemon(id, pokemon) {
+	if (id === undefined || typeof pokemon !== 'object') {
+		throw new Error('Se necesita un identificador y un pokemon para guardar en localStorage');
+	}
+	
+	localStorage.setItem(obtenerKeyPokemon(id), JSON.stringify(pokemon));
+}
+
+export function guardarPokemones(offset, limite, pokemones) {
+	if (offset === undefined || limite === undefined || typeof pokemones !== 'object') {
+		throw new Error('Se necesita offset, limite y pokemon');
+	}
+	
+	localStorage.setItem(obtenerKeyPokemones(offset, limite), JSON.stringify(pokemones));
+}
+```
+
+##### En el inspector y en la pestaña application, hay varios apartados al costado derecho como application, storage, cache, background services
+
+##### Entramos en storage -> localStorage nos va a mostrar una vista de keys y valores en la pantalla central
+
+##### En la consola, si ponemos el localStorage: podemos acceder a metodos para guardar items nuevos y extraer/objtener/llamar a los que ya tenemos
+
+##### Introducimos sus metodos como localStorage.setItem() siempre toma un string, no puede guardar objetos; toma una clave y valor en string
+
+```
+localStorage.setItem('pepe', 'hola')
+```
+
+##### Va a agregar un key (pepe) con su valor (hola)
+
+##### Si queremos traer un item tenemos que acceder a localStorate.getItem('pepe') le tenemos que pasar una key
+
+
+```
+localStorage.getItem('pepe')
+
+```
+Devuelve su valor 'hola'
+
+
+## Guardar JSON en localStorage
+
+##### Como localStorage solo guarda strings, para guardar y obtener json tenemos que expresar los objetos json como texto
+
+### JSON to Strings para localStorage
+
+#### JSON.stringify()
+
+##### JSON es un objeto global del navegador y stringify() convierte cualquier objeto/expresion a string de JSON
+
+```
+localStorage.setItem('pepe', 'hola')
+localStorage.getItem('pepe')
+localStorage.setItem('pepe', JSON.stringify({a:1, b:2}))
+```
+
+##### En el ejemplo le pasamos un objeto a JSON.stringify para que lo convierta
+
+##### Como resultado guardará un string con toda la info del objeto en la key pepe
+
+##### Ahora la respuesta al objeto guardado será un string
+
+##### Lo siguiente es pasar la respuesta tipo string con formato objeto a objeto
+
+```
+localStorage.setItem('pepe', JSON.stringify({a:1, b:2}))
+```
+```
+JSON.parse(localStorae.getItem('pepe'))
+```
+respuesta: string con formato objeto "{"a":1, "b":2}"
+
+
+##### JSON.parse() convertir string en objeto, debemos pasarle la key en forma de string
+
+```
+JSON.parse(localStorae.getItem('pepe'))
+```
+{a: 1, b: 2}
+
+
+##### Podemos llamar/obtener sus keys dado que es un objeto
+
+```
+JSON.parse(localStorae.getItem('pepe')).a
+JSON.parse(localStorae.getItem('pepe')).b
+```
+
+##### También podemos desestructurarlos
+
+```
+const {a,b} = JSON.parse(localStorage.getItem('pepe'))
+
+a // 1
+b // 2
+```
+
+##### Las funciones obtenerKeyPokemon y obtenerKeyPokemones construyen los keys dado que tiene que ser unicos
+
+##### Debemos guardar cada pokemon en un key unico y el listado/pagina que vamos cargando en un key unico también
+
+```
+function obtenerKeyPokemon(id) {
+	return `pokemon_${id}`;
+}
+
+function obtenerKeyPokemones(offset, limite) {
+	return `pokemones_${offset}_${limite}`;
+}
+```
+
+La primera toma un id y va a devolver un key con pokemon con ese id
+
+La segunda toma un offset y un limite y construye key con esos params
+
+
+## Try catch y param e (excepción/error)
+
+##### param e excepción/error por más que no lo usemos, lo necesitamos va a ser la excepción o el error que tiró lo que había dentro del try 
+
+##### Si al para e le hacemos un console.error(e) podemos ver que error tiró, es la excepción que causo el código que habia dentro del try
+
+En ./src/servicios/pokemon.js
+```
+export async function cargarPokemon(id) {
+	if (id === undefined) {
+		throw new Error('Se necesita un identificador para cargar un pokemon');
+	}
+	
+	try {
+		return cargarPokemonDeLocalStorage(id);
+	} catch (e) {
+		const pokemon = await cargarPokemonDeApi(id);
+		guardarPokemon(id, pokemon);
+		return pokemon;
+	}
+}
+```
+
+```
+export async function cargarPokemones(offset = 0, limite = LIMITE_POKEMONES) {
+	try {
+		return cargarPokemonesDeLocalStorage(offset, limite);
+	} catch (e) {
+		const pokemones = await cargarPokemonDeApi(offset, limite);
+		guardarPokemones(offset, limite, pokemones);
+		return pokemones;
+	}
+	
+}
+```
+
+##### En archivo ./src/localstorage/pokemon.js
+
+Exportamos varias funciones como cargarPokemon y cargarPokemones
+
+##### cargarPokemones toma dos variables, offset y limite que son las variables que usa para obtener las key
+
+##### Todo el string se convirtio en un objeto json con JSON.parse()
+
+##### Chequea si pokemones es null, tira error que debe manejarse con try catch
+
+##### Dado que hacer un localStorage.getItem('lkasdf') de algo que no existe es null
+
+##### Entonces tiramos un error, si pasa eso la función no sigue con el programa si la excepción no es capturada/manejada con try cathc
+
+```
+export function cargarPokemon(id) {
+	if (id === undefined) {
+		throw new Error('Se necesita un identificador para cargar un pokemón');
+	}
+	
+	const pokemon = JSON.parse(localStorage.getItem(obtenerKeyPokemon(id)));
+	if (pokemon === null) {
+		throw new Error(`Pokemon con id ${id} no encontrado`)
+	}
+	
+	return pokemon;
+}
+
+export function cargarPokemones(offset = 0, limite = LIMITE_POKEMONES) {
+	const pokemones = JSON.parse(localStorage.getItem(obtenerKeyPokemones(offset, limite)));
+	if (pokemones === null) {
+		throw new Error(`Listado de pokemones con offset ${offset} y limite ${limite} no encontrado`);
+	}
+	
+	return pokemones;
+}
+```
+
+
+##### Si usamos cargarPokemones que es la función que tira el error, el que la usa debe llamar a try catch
+
+##### Try catch es responsabilidad del que usa la función que lanza throw new Error
+
+
+### Uso de una función que tiene throw error / lanza excepción
+
+##### En archivo ./src/servicios/pokemon.js
+
+##### Como cargarPokemones original fue renombrado por conflictos de nombres, queda como cargarPokemonDeLocalStorage(id)
+
+Sintax: 
+
+```
+try {
+	cargarPokemones(abc);
+} catch (e) {
+	return console.error(e);
+}
+```
+
+
+Real: 
+
+```
+import {
+	cargarPokemon as cargarPokemonDeLocalStorage
+	cargarPokemones as cargarPokemonesDeLocalStorage
+}
+
+export const LIMITE_POKEMONES = 20;
+
+export async function cargarPokemon(id){
+	if (id === undefined) {
+		throw new Error('Se necesita un identificador para cargar un pokemón');
+	}
+	
+	try {
+		return cargarPokemonDeLocalStorage(id);
+	} catch (e) {
+		const pokemon = await cargarPokemonApi(id);
+		guardarPokemon(id, pokemon);
+		return pokemon;
+	}
+}
+
+export async function cargarPokemon(offset = 0, limite = LIMITE_POKEMONES) {
+	try {
+		return cargarPokemonesDeLocalStorage(offset, limite);
+	} catch (e) {
+		const pokemones = await cararPokemonesDeApi(offset, limite);
+		guardarPokemones(offset, limite, pokemones);
+		return pokemones;
+	}
+}
+```
+
+
+##### Ej simular exceptción: caso cuando hay una excepcion y no hay nadie para manejarla
+
+```
+throw new Error('hola');
+```
+out: Uncaught Error: hola
+
+
+##### Patrón throw error, try-catch: no intentar atrapar todas las excepciones y si no hacemos que el error se vea es más dificil de darnos cuenta que tenemos un error al nadie poder verlo
+
+##### CargarPokemones tira una excepción lógica cuando pokemon === null cuando no está en localStorage
+
+
+### Uso de función que usa try catch como flujo de ejecución
+
+##### Si no pasa al try (retorna dato guardado localmente) pasa al catch (nuevo dato/llamada api)
+
+```
+export async function cargarPokemones(offset = 0, limite = LIMITE_POKEMONES) {
+	try {
+		return cargaPokemonDeLocalStorage(offset, limite);
+	} catch (e) {
+		const pokemones = await cararPokemonesDeAPI(offset, limite);
+		guardarPokemones(offset, limite, pokemones);
+		return pokemones;
+	}
+}
+```
+
+##### Como veiamos en la original si no es null retorna rapidamente pokemones:
+
+```
+export function cargarPokemones(offset = 0, limite = LIMITE_POKEMONES) {
+	const pokemones = JSON.parse(localStorage.getItem(obtenerKeyPokemones(offset, limite)));
+	if (pokemones === null) {
+		throw new Error(`Listado de pokemones con offset ${offset} y limite ${limite}`);
+	}
+	
+	return pokemones;
+}
+```
+
+## Ver info en la var pokemones: localStorage, llamada api, requests
+
+##### cargarPokemones() está representado en la ui que es la lista de la derecha y el click está en el paginador
+
+##### En las herramientas dev -> network -> response -> columna name -> total request -> dirección https del request
+
+##### Cuando no hay request que viene lo está cargando de localStorage, vemos lo que carga en response
+
+##### Podemos abrir la respuesta clickeando en new tab los obj/archivos en name a la derecha
+
+##### Es el llamado a la api de pokemon, resultado info que da la api, esto que nos devolvio es la respuesta
+
+##### Cuando no hay nada en localStorage, va a guardar el poke/info/data/obj pasandole los params
+
+```
+export async function cargarPokemones(offset = 0, limite = LIMITE_POKEMONES) {
+	try {
+		return cargaPokemonDeLocalStorage(offset, limite);
+	} catch (e) {
+		const pokemones = await cargarPokemonesDeAPI(offset, limite);
+		guardarPokemones(offset, limite, pokemones);
+		return pokemones;
+	}
+}
+```
+
+En ./src/storage/pokemon.js 
+
+##### La función guardarPokemones si no es nada va a tirar un error y si hay algo va a ir al localStorage, obtiene el key de los pokes con la función y le hace un JSON.stringify para convertir todo el objeto en string
+
+```
+export function guardarPokemones(offset, limite, pokemones) {
+	if (offset === undefined || limite === undefined || typeof pokemones !== 'object') {
+		throw new Error('Se necesita offset, limite y pokemones');
+	}
+	
+	localStorage.setItem(obtenerKeyPokemones(offset, limite), JSON.stringify(pokemones));
+}
+```
+
+
+## paquete npm run all
+
+##### Tiene dos funciones: run p y run s
+
+##### run parallel y run serialize: varios comandos uno tras otro y los dos en paralelo
+
+##### Nos permitirá correr comandos de npm en uno solo
+
+```
+npm i --save-dev npm-run-all
+```
+
+##### ./package.json tenemos scripts:
+
+```
+"scripts": {
+	"test:ui": "run-p serve test:cypress",
+	"test:ui:dev": "run-p serve test:cypress:dev",
+	""test:cypress":"cypress run"
+	"test:cypress:dev":"cypress open"
+	"serve:" "http-server -c-1"
+}
+```
+
+##### Si queremos usar cypress siempre tenemos que usar http server (plugin server dev) y después correr cypress
+
+##### Si quisieramos correr cypress sin http server no funcionará 
+
+### Flujo: http server, cypress y npm run all:
+
+
+### npm run corre scripts usando alias usando la key del objeto scripts del package.json
+
+```
+npm run serve 
+npm run test:cypress:dev
+```
+
+##### Para ahorrarnos tantos comandos, usamos varios en uno
+
+### sintaxis de npm run all: al comando run-p le pasa la key del otro comando que necesitamos
+
+```
+"scripts": {
+	"test:ui": "run-p serve test:cypress",
+	"test:ui:dev": "run-p serve test:cypress:dev",
+	""test:cypress":"cypress run"
+	"test:cypress:dev":"cypress open"
+	"serve:" "http-server -c-1"
+}
+```
+
+##### El comando test:ui:dev corre estos dos juntos para ahorrarnos de escribir dos comandos
+
+```
+"test:ui:dev": "run-p serve test:cypress:dev",
+```
+
+```
+npm run test:ui:dev
+```
+
+
+## Tipos de cypress
+
+##### En archivo cypress/pokedex.spec.js
+
+##### Así podemos usar describe para anotar lo que hacen los test o usar cy.methds
+
+```
+<reference types="Cypress" />
+
+describe('Pokedex', () => {
+	let fetchPolyFill;
+	
+	before(() => {
+		cy.request(polyfillUrl)
+		.then((response) => {
+			fetchPolyFill = response.body
+		});
+		
+		cy.server();
+		cy.route('https://pokeapi.co/api/v2/pokemon/?offset=0&limit=20', 'fixture-listado-pagina-1')
+		.es('obtenerPrimeraPagina');
+		
+		cy.visit('https://127.0.0.1:8080', {
+			onBeforeLoad(contentWindow) {
+				// eslint-disable-next-lie no-param-reassing
+				delete contentWindow.fetch;
+				contentWindow.eval(fechPolyfill);
+			}
+		});
+	});
+});
+```
+
+##### cypress puede hacer mock, interceptar http requests 
+
+##### Cuando estamos testeando contra una api, si esta api no funciona nuestras pruebas pueden fallar no por nuestra culpa
+
+##### Una solución es interceptar los http request/ dirección para obtener recurso, no irá directamente a la api, la intercepta y devolverá lo que el desarrollador ordene como respuesta
+
+
+### Ej: mock, interceptar http request para evitar errores de api
+
+```
+it('Carga un pokemon cuando se lo selecciona del indice', () => {
+	const CANTIDAD_MOVIMIENTOS = 78; 
+	cosnt CANTIDAD_TIPOS = 2;
+	
+	cy.server();
+	cy.route('https://pokeapi.co/api/v2/pokemon/bulbasaur', 'fixture:bulbasaur')
+
+	cy.get('#ayuda')
+		.es('ayuda')
+		.should('hate.test, 'Seleccioná un pokemon para ver la info');
+	
+	cy. get('#indice .list-group-item:first')
+		.click();
+	
+	cy.get('#ayuda')
+});
+```
+
+#### cy.server(): comando a correr para empezar a mockear rutas
+
+#### cy.route(): le decimos que cuando hay alguien que se quiere conectar a la direccion de la api para obtener un recurso especifico
+
+##### su segundo param para que el desarrollador le diga que debe devolver fixture de esa ruta especifica
+
+##### Si vamos a la documentación de cypress de fixtures, en network request hasta fixture 
+
+##### En la config del programa cypress: settings -> configuration -> objeto json: fixturesFolders: "cypress/fixture" lo va a ir a buscar en nuestra misma carpeta del proyecto
+
+##### Alias en cypress: .as('obtenerBulbasaur')
+
+
+#### Rs cy.server y cy.route: le ordenamos que mockee la ruta y cuando alguien (usuario-consumidor de la api/web) quiere el recurso especifico en tal ruta; le ordenamos que devuelva el fixture será lo que realmente devolvería la api web disponible normalmente
+
+##### Ademas como tenemos los archivos de respuesta copiado localmente y si lo modificamos, en la interfaz y lo que intercepta cypress aparecerá esa modificación
+
+##### Asi evitamos testear sistemas que no son nuestro y que pueden fallar.
+
+##### En resumen necesitamos las respuesta para mockear
+
+
+### Corregir js fech en cypress: no soporta fetch dado que es nuevo clase 16 1:10h
+
+##### Como fetch es nuevo tenemos que hacer un polyFill
+
+##### Este archivo crea la función fetch en el navegador
+
+##### cy.request(polyFill) va a buscar la url cuando responda la guardamos en fetchPolyFill
+
+##### Después cy.visit(url etc) ordenamos borrará el fetch original y evaluará (eval ejecuta js) el string que hay en fetchPolyFill que es la url especifica 
+
+##### eval creará un objeto unfetch reemplazamo uno por otro: que usa por dentro el objeto xmlhttprequest que es el que cypress puede usar (en nav viejo) para interceptar los network request   
+
+```
+<reference types="Cypress" />
+
+describe('Pokedex', () => {
+	let fetchPolyFill;
+	
+	before(() => {
+		cy.request(polyfillUrl)
+		.then((response) => {
+			fetchPolyFill = response.body
+		});
+		
+		cy.server();
+		cy.route('https://pokeapi.co/api/v2/pokemon/?offset=0&limit=20', 'fixture-listado-pagina-1')
+		.es('obtenerPrimeraPagina');
+		
+		cy.visit('https://127.0.0.1:8080', {
+			onBeforeLoad(contentWindow) {
+				// eslint-disable-next-lie no-param-reassing
+				delete contentWindow.fetch;
+				contentWindow.eval(fechPolyfill);
+			}
+		});
+	});
+});
+```
+
 
 # Jest 
 
 ##### Marca en el ide con rojo las funciones, los if, las declaraciones no testeadas
 
 ##### Además hace un recuento de la cobertura en pruebas de las functiones, if, etc
+
+##### Framework de testing creado por facebook/meta
+
+##### Sirve para testear vanillaJS, react, vue, node, angular, etc
+
+```
+npm install --save-dev jest
+```
+
+##### Conflicto modulo js (Moderno ESM) es la que viene en el browser (import), node (backend/desk) tiene CJM (require)
+
+##### en archivo ./src/index.js tiene la sintaxis ESM que corre en browser que es import
+
+```
+import inicializar from './pokedex.js'
+
+inicializar();
+```
+
+##### Como jest se ejecuta localmente en node (npm etc), necesita correr sobre node 
+
+##### Aunque después corremos la app sobre un browser 
+
+##### Las pruebas de jest que escribimos están corriendo sobre node/pc local
+
+##### Node no hace import (ESM), los hace con require (CJS)
+
+
+### Ej test jest en archivo ./src/_test_/index.spec.js
+
+```
+import inicializar from '../pokedex.js';
+import '../index.js';
+
+jest.mock('../pokemon.js', () => jest.fn());
+
+	test('inicializa pokedex,js, () => {
+	expect(inicializar)
+		.toHaveBeenCalledTimes(1);
+});
+```
+
+
+##### Tradicionalmente lo podriamos hacer con require (CJS)
+
+```
+require('../index.js');
+
+
+import inicializar from '../pokedex.js';
+import '../index.js';
+
+jest.mock('../pokemon.js', () => jest.fn());
+
+	test('inicializa pokedex,js, () => {
+	expect(inicializar)
+		.toHaveBeenCalledTimes(1);
+});
+```
+
+
+##### Cuando son pruebas del browser usamos ESM: conflicto con jest que no entiende la sintaxis import
+
+##### Usamos babel: transpilar js nuevo en viejo 
+
+```
+const x = 1; 
+
+pasa a var x = 1; 
+```
+
+##### Babel: presets, targets para ciertas versiones de js o node 
+
+
+### Instalar babel jest preset-env solo via yarm o npm (?)
+
+Después de:
+
+```
+jest --init
+```
+
+via yarm, necesita dependencias 
+
+```
+yarm add --dev babel-jest @babel/core @babel/preset-env
+```
+
+npm
+
+```
+npm install --save-dev @babel/preset-env
+```
+
+
+##### Uso de babel preset-env
+
+### Al final pegar el archivo ./babel.config.js
+
+```
+module.exports = {
+	presets: [
+		[
+			'@babel/preset-env',
+			{
+				targets: {
+					node: 'current'
+				},
+			},
+		],
+	],
+}
+```
+
+##### Al usar @babel/preset-env carga un muchas polyfills/transformaciones necesarias para transpilar código moderno a antiguo
+
+##### El target a transformar se define en targets: { node: '...' }
+
+##### node: 'current' es la versión de node instalada, al leer el archivo index.js con import lo transforma de ESM a CJS lo cambia a require
+
+##### La clave es preset-env que matchea/convierte ESM/CJS
+
+##### Flujo de jest: run -> file.js - babel - file.js (old practices) o (js adaptado a NodeJS) logrado con el target node
+
+##### Al final corre los test sobre js optimizado/funconal para node
+
+
+### Mas config sobre babel
+
+#### Uso de Browserlist
+
+En package.json podemos targetear la versión del browser 
+
+##### Con las opciones como navegador con ">0.25%" de uso o "no dead"
+
+```
+"browserlist": "> 0.25%, not dead" 
+```
+
+O "last 2 versions"
+
+
+#### Api web browserl.ist
+
+```
+> 10%
+```
+
+##### Ej: da como respuesta chrome android 38%, chrome desk 14%
+
+
+### kangax: tabla de compatibilidad 
+
+
+## Uso de jest: después de instalar y configurar babel 
+
+### Pruebas initarias 
+
+#### Ej: ./src/utilidades/utilidades.js
+
+```
+exports default function obtenerParametrosDeUrl(url) {
+	let offset;
+	let limit; 
+	try {
+		offset = /offset=([0-9]+)/pi.exact(url).pop();
+		limit = /limit=([0-9]+)/pi.exact(url).pop();
+	} catch (e) {
+		offset = undefined;
+		limit = undefined;
+	}
+	
+	return { offset, limit };
+}
+```
+
+##### Si el url pasado se cumple en try, debería devolver un objeto
+
+#### Archivo test en: ./src/__test__/utilidades.spec.js
+
+```
+import obtenerParametrosDeURL from '../utilidades.js';
+
+/// <reference type="jest" />
+
+describe('utilidades', () => {
+	it('Debería obtener los parametros de la url', () => {
+	expect(obtenerParametrosDeURL('http://asd.com?offset=1&limit=1'))
+		.toEqual({
+			offset: '1',
+			limit: '1',
+		});
+	});
+	
+	it('debería obtener los parametros por default de la url', () => {
+	expect(obtenerParametroDeURL('http://asd.com'))	
+		.toEqual({
+			offset: undefined,
+			limit: undefined,
+		});
+	});
+	
+	it('deberia obtener los parametro en cualquier orden', () => {
+	expect(obtenerParametrosdeURL('http://asd.com'))
+		.toEqual({
+			offset: undefined,
+			limit: undefined,
+		});
+	});
+	
+});
+```
+
+
+##### Test 1: expect(obtenerParametrosDeURL('http://asd.com?offset=1&limit=1'))
+
+##### Si llamamos a la funcion obtener param de url con offset 1 y limit 1, si esto es parte de la url 
+
+##### Con toEqual esperamos que lo que nos devuelva sea un objeto que este definido como offset: '1', limit: '1'
+
+
+### Patrón de diseño de test recomendado por jest: dentro de la carpeta/archivo de funcionalidad o lo que sea que queremos testear; creamos una carpeta __tests__ y copiamos el mismo nombre de archivo agregandole file.spec.js o con la palabra file.test.js
+
+```
+pokedex
+	src
+		utilidades
+			utilidades.js
+			__test__
+				utilidades.spec.js
+```
+
+
+#### Estructura archivo de pruebas en jest
+
+##### Primero /// <reference type="jest" /> toma los tipos de jest 
+
+##### Para eso instalamos los tipos de jest para tener autocompletado
+
+##### Como jest usa el mismo engine (Mocka) que cypress podemos llamar a describe o test
+
+
+### describe() o test() se encarga de todas las pruebas para esa función/modulo/archivo
+
+```
+test('utilidades', () => {
+	it('Debería obtener los parametros de la url', () => {
+	expect(obtenerParametrosDeURL('http://asd.com?offset=1&limit=1'))
+		.toEqual({
+			offset: '1',
+			limit: '1',
+		});
+	});
+});
+```
+
+##### it() contiene la descripción de la prueba  (toma un string y una función para testear la funcionalidad usando expect y .toEqual)
+
+ 
+### Metodos de expect
+
+##### Descriptivamente: "espero que sea igual a" son funciones de la api, matches respectivamente: ir a matchers -> expect api.doc en la documentación 
+
+##### Expresividad/intui de los métodos: Cuando queremos que algo sea igual usamo .toEqual(value)
+
+##### Cuando queremos que contenga algo particular usamos .toContain(item)
+
+##### Si queremos testear que algo se undefined, usamos toBeUndefined(), toBeNaN(), etc 
+
+
+##### Testear params por default
+
+##### Cuando no le pasamos nada, debería comportarse como dice nuestra función: ser igual o devolver offset: undefined y limit: undefined
+
+##### Es el manejo de error del catch
+
+```
+it('debería obtener los parametros por default de la url', () => {
+expect(obtenerParametroDeURL('http://asd.com'))	
+	.toEqual({
+		offset: undefined,
+		limit: undefined,
+	});
+});
+```
+
+
+```
+exports default function obtenerParametrosDeUrl(url) {
+	let offset;
+	let limit; 
+	try {
+		offset = /offset=([0-9]+)/pi.exact(url).pop();
+		limit = /limit=([0-9]+)/pi.exact(url).pop();
+	} catch (e) {
+		offset = undefined;
+		limit = undefined;
+	}
+	
+	return { offset, limit };
+}
+```
+
+
+## Correr pruebas
+
+### Después de crear las pruebas
+
+##### Script para correr pruebas de jest
+
+```
+"script": {
+	"test:dev": "jest --watch""
+}
+```
+
+```
+npm run test:dev
+```
+
+##### Esto va a correr todas las pruebas de jest: lo vemos en la consola el nombre del archivo y el resultado 
+
+##### Con jest con las pruebas corriendo si modificamos el archivo original en el mismo momento las corre de nuevo automaticamente
+
+
+### Correr un archivo de prueba individual: leemos watch usage: press w ot show more
+
+#### w tiene más comandos/opciones/banderas, etc 
+
+##### w p para filtro regex: utilidades.spec
+
+##### Si modificamos el archivo original de esta prueba vemos que corre solo el archivo de prueba 
+
+
+### Plug in VScode: jest Togle Coverage Overlay
+
+##### Muestra la cobertura sobre cada linea de código, if else o try catch (branches), functions, etc
+
+##### Las lineas que no tenemos testeadas no la muestra en rojo 
+
+
+### Script para jest --collect-coverage: tabla sobre cobertura para todos los archivos
+
+```
+"scripts": {
+	"test": "jest --collect-coverage"
+}
+```
+
+
+### Jest config:
+
+##### Archivo ./jest.config.js
+
+```
+module.exports = {
+	verbose: true,
+	rootDir: 'src',
+	coverageDirectory: '../coverage',
+	testPathIgnorePatterns: ['/node_modules', '*fixture.js']
+	coveragePathIgnorePatterns: ['/node_modules', '*fixture.js']
+};
+```
+
+##### verborragico, ruta raíz para todos los archivos/codigo esta en la carpeta src
+
+##### coverageDirectory: '../coverage' carpeta antes de src que guarda todo la info del coverage 
+
+##### En un array ignora modules y fixtures para test y coverage
+
+
+### Carpeta coverage de jest: 
+
+#### Subcarpeta lcov-report 
+
+##### Archivo index.html: podemos abrir con un server este index, posicionandones en su carpeta
+
+
+#### 100% de coverage no significa que este libre de bugs si las pruebas estan mal hechas
+
+
+## Practicas para test
+
+#### No testear funciones privadas, solo testear la api expuesta (funciones publicas que la gente use) de cada modulo
+
+#### Testeamos las funciones privadas a traves de la ejecución de las funciones publicas 
+
+#### Evitar test debiles o "flaky": no llamar a la api web o funciones que escriben db
+
+
+## Mocks y test stubs: No testear función original sino otra
+
+Ej: 
+
+
+### Archivo ./src/api/pokemon.js
+
+```
+export const BASE_URL = 'https://pokeapi.co/api/v2/pokemon/';
+export const LIMITE_POKEMONES = 20; 
+
+export async function cargarPokemon(id) {
+	if (id === undefined) {
+		throw new Error('Se necesita un identificador para carar un pokemon');
+	}
+	return (await fetch(`${BASE_URL}${id}`)).json();
+}
+
+export async function cargarPokemones(offset = 0, limite = LIMITE_POKEMONES) {
+	return (await fetch(`${BASE_URL}?offset=${offset}&limit=${limite}`)).json();
+}
+```
+
+
+#### cargarPokemon tiene que testear dos cosas: si no le pasamos un id nos tiene que tirar un error y si llamamos a fetch si nos da una respuesta después llamamos json()
+
+##### No testeamos que vaya a la api web, solo tenemos que asegurarnos que llame a fetch y a lo que devuelva fetch que llame a json 
+
+##### test de params, test por partes
+
+
+#### En su archivo de test tenemos: ./src/api/__test__pokemon.spect.js 
+
+```
+import { BASE_URL, cargarPokemon, cargarPokemones, LIMITE_POKEMONES } from '../pokemon.js'
+
+beforeEach(() => {
+	global.fetch = jest.fn()
+});
+
+test('carga 1 pokemon', () => {
+	global.fetch.mockImplementationOnce(() => new Promise((resolve) => {
+		const jsonPromise = new Promise((r) => {
+			r({});
+		});
+		resolve({ json: () => jsonPromise });
+	})); 
+
+	cargarPokemon('bulbasaur');
+	expect(global.fetch)
+		.toHaveBeenCalledTimes(1);
+		
+	expect(global.fetch)
+		.toHaveBeenCalledWith(`${BASE_URL}bulbasaur`);
+});
+```
+
+##### Primero cargamos las funciones 
+
+#### Jest: antes de cada funcion ejecutar (beforeEach) una función de prueba (jest.fn())
+
+#### objeto global en node: no hay objeto ventana 
+
+##### global.fetch será reemplazado por jest.fn()
+
+##### Al llamar al fetch del browser llamará al fetch de node/jest
+
+##### Dado que todos los objetos del navegador pertenecen a window y todos los objetos de node pertenecen a global
+
+##### Antes de ejecutar cada test va a ejecutar la función global
+
+
+##### test(probamos 1 poke)
+
+```
+test('carga 1 pokemon', () => {
+	global.fetch.mockImplementationOnce(() => new Promise((resolve) => {
+		const jsonPromise = new Promise((r) => {
+			r({});
+		});
+		resolve({ json: () => jsonPromise });
+	})); 
+
+```
+
+##### Vamos a mockear la implementación de fetch una unica vez
+
+global.fetch.mockImplementationOnce
+
+##### Cuando llamamos a fetch queremos que no haga lo que hace fetch por defecto ahora va a ser lo que le especificamos en el test
+
+mockImplementationOnce(() => new Promise((resolve) => {
+		const jsonPromise = new Promise((r) => {
+			r({});
+		});
+		resolve({ json: () => jsonPromise });
+
+##### Ejecutamos una arrow, sin param, va a devolver una promesa (como fetch)
+
+##### la promesa resolve, esta puede tomar dos params: la función que se ejecuta cuando se resuelva la promesa correctamente y el segundo param es la función a ejecutar cuando la promesa no se ejecuta correctamente
+
+##### La nueva promesa va a representar el .json() que era una promesa; entonces estamos mockeando la promesa json()
+
+##### Con ese promesa json, la resolvemos inmediatamente
+
+##### Despues de haber creado la promesa, resolvemos la promesa del test mock
+
+##### resolvemos la promesa del test mock: va a tener una propiedad json que va a devolver una promesa que es su jsonPromise del test
+
+##### Con el motivo de que fetch original da un resultado y a ese resultado se encadena un json QUE ES UNA PROMESA, después solemos encadenar otro then que es el resultado string json
+
+```
+fetch('http://asd.com').then(r => r.json()).then(r => {//...});
+```
+
+##### Mockeamos este proceso de una forma dummy/prueba
+
+##### Rs: El test se puede expresar como: "cuando llamamos a fetch, nos va a devolver una promesa que va a devolver una promesa de json y la promesa de json lo unico que va a hacer es devolver un objeto vacío"
+
+##### El resultado de fetch original va a ser un objeto vacío que definimos en el mock (r({});)
+
+##### Seguido llamamos a cargarPokemon nos debería volver el objeto vacío (r({}))
+
+```
+	cargarPokemon('bulbasaur');
+	expect(global.fetch)
+		.toHaveBeenCalledTimes(1);
+		
+	expect(global.fetch)
+		.toHaveBeenCalledWith(`${BASE_URL}bulbasaur`);
+});
+```
+
+##### No testemaos el objeto vacío que definimos anteriormente en el test 
+
+##### El valor está en global.fetch = jest.fn(), al redefinirlo como jest.fn() tenemos a sus métodos
+
+##### expect(global.fetch).toHaveBeenCalledTimes(1); estamos diciendo que esperamos que la función global.fetch se haya cargado al menos una vez 
+
+##### y esperamos que global.fetch se haya cargado con el param url base con el id del poke: .toHaveBeenCalledWith(`${BASE_URL}bulbasaur`);
+
+
+#### Rs: testear funciones que no queremos que se ejecuten pero que si hayan sido llamadas
+
+
+### ui test: testear el DOM
+
+
+### Más practicas test: 100% coverage ui
+
+### Unit test: cuanto más complejo es testear el código, menos limpio es: la facilidad de testear algo es un buen indice de la mantenibilidad y calidad
+
+### Si nos cuesta testearlo porque tenemos miles de dependencias para empezar a mockear miles de funciones por romper el principio de responsabilidad unica: funciones dónde la lógica está por todos lados en vez de estar concentrada en un solo lugar
+
+
+
+
+# React 
+
+
+
+# OOP - Backend
+
+
