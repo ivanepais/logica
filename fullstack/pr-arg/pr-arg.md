@@ -15364,8 +15364,4343 @@ fetch('http://asd.com').then(r => r.json()).then(r => {//...});
 
 # React 
 
+## React: Librería JS para renderizar interfaz de usuario en el navegador, tiene una facilidad para escalar con respecto a otras bibliotecas como jquery. Es más facil saber que está pasando en cada lugar en una app grande con react. Se basa en la sintaxis JSX (JS + HTML)
+
+## React DOM: Cuando usamos react (jsx) para interactuar con el navegador/web. 
+
+Dado que también existe React Native para usar React/JSX para hacer apps mobiles de manera similar a como se hacen apps web
+
+
+### Repo: node y npm init
+
+#### Instalar dependencias como React y React DOM, babel, babel-cli, babel-preset-react-app y http-server
+
+#### Crear un index.html e importar los modulos de react
+
+#### Estructura proyecto:
+
+```
+lib
+node_modules
+src
+
+.gitignore
+.index.html
+package.lock.json
+package.json
+styles.css
+```
+
+##### Archivo index.html del root
+
+```
+<body>
+	<div id="react-app"></div>
+	<script src="node_modules/react/umd/react.development.js" crossorign></script>
+	<script src="node_modules/react-dom/umd/react.development.js" crossorign></script>
+	<script src="src/sinJSX.js"></script>
+	<!-- <script src="lib/conJSX.js"></script> -->
+	<!-- <script src="lib/eventHandler.js"></script> -->
+	<!-- <script src="lib/index.js"></script> -->
+</body>
+```
+
+##### script json para npm run
+
+```
+"scripts": {
+	"compiler": "babel --watch src --out-dir lib --presets react-app/prod"
+	"server": "http-server -c-1"
+},
+``` 
+
+### Elementos de los archivos html y react 
+
+`<div id="react-app"></div>`
+
+
+### Archivo src/sinJSX.js
+
+```
+const nombre = 'Bob';
+
+const elemento = React.createElement('div, null, 'hola', nombre);
+
+const app = document.getElementById('react-app');
+
+ReactDOM.render(elemento, app);
+```
+
+#### Tenemos objeto React.methods y objeto ReactDOM.methods 
+
+#### React.createElement: describe un elemento de html (tenemos un div, le podemos pasar atributos, strings, params). Pueden tener hijos si el elemento puede
+
+Ej: 
+
+```
+const elemento = React.createElement('input', {type: "number"}, 'hola', nombre);
+```
+
+Pero como input no va a tener queda como: 
+
+```
+const elemento = React.createElement('input', {type: "number"});
+```
+
+En html el equivalente sería:
+
+```
+<input type-"number" />
+```
+
+
+##### Vemos que se renderizará un input en la ventana
+
+
+
+#### Ej 2: sin jsx y elemento con hijos 
+
+```
+const elemento = React.createElement('div, null, 'hola', nombre);
+```
+
+##### Tenemos un div sin atributos (null) con un string hola de contenido y renderiza el contenido de la var nombre
+
+Renderizará hola Bob
+
+
+#### Forma en que lo renderizará: se encarga ReactDOM.render(elemento, app)
+
+##### Con esta función estamos renderizando la var elemento y la var app que apunta al elemento div del body del archivo root html con el id "react-app"
+
+##### Archivo src/sinJSX.js
+
+```
+const nombre = 'Bob';
+
+const elemento = React.createElement('div, null, 'hola', nombre);
+
+const app = document.getElementById('react-app');
+
+ReactDOM.render(elemento, app);
+```
+
+##### Archivo index.html del root
+
+```
+<body>
+	<div id="react-app"></div>
+	<script src="node_modules/react/umd/react.development.js" crossorign></script>
+	<script src="node_modules/react-dom/umd/react.development.js" crossorign></script>
+	<script src="src/sinJSX.js"></script>
+	<!-- <script src="lib/conJSX.js"></script> -->
+	<!-- <script src="lib/eventHandler.js"></script> -->
+	<!-- <script src="lib/index.js"></script> -->
+</body>
+```
+
+##### RS react sin jsx: hola mundo: creamos un elemento en una variable/objeto con todo lo que necesita: el elemento html, su contenido, su atributo y las vars que lee/renderiza/muestra
+
+##### Este metodo de hacer react sin jsx no es el más comodo del mundo, por eso fue reemplazado
+
+
+### React con JSX (javascript que puede crear elementos html)
+
+#### Archivo lib/conJSX.js
+
+```
+const nombre = 'Bob';
+
+const elemento = <div>Hola {nombre}</div>;
+
+const app = document.getElementById('react-app');
+
+ReactDOM.render(elemento, app);
+```
+
+Archivo index.html del root
+
+```
+<body>
+	<div id="react-app"></div>
+	<script src="node_modules/react/umd/react.development.js" crossorign></script>
+	<script src="node_modules/react-dom/umd/react.development.js" crossorign></script>
+	<script src="src/sinJSX.js"></script>
+	<script src="lib/conJSX.js"></script>
+	<!-- <script src="lib/eventHandler.js"></script> -->
+	<!-- <script src="lib/index.js"></script> -->
+</body>
+```
+
+##### Esta nueva sintaxis jsx corre en un transpilador/compilador Babel: toma el js y lo transforma 
+
+```
+const elemento = <div>Hola {nombre}</div>;
+```
+
+#### En la carpeta lib están los archivos compilados
+
+##### Archivo compilado lib/conJSX.js
+
+```
+var nombre = 'Bob';
+
+var elemento = React.createElement {
+	'div', 
+	null, 
+	'hola ',
+	nombre
+}; 
+
+var app = document.getElementById('react-app');
+
+ReactDOM.render(elemento, app);
+```
+
+
+Es el mismo código que habiamos creado sin usar jsx
+
+```
+var nombre = 'Bob';
+
+var elemento = React.createElement('div', null, 'hola ', nombre); 
+
+var app = document.getElementById('react-app');
+
+ReactDOM.render(elemento, app);
+```
+
+##### Pero utiiza las var para tener compatibilidad con navegadores antiguos
+
+
+Archivo src/sinJSX.js
+
+```
+const nombre = 'Bob';
+
+const elemento = React.createElement('div, null, 'hola', nombre);
+
+const app = document.getElementById('react-app');
+
+ReactDOM.render(elemento, app);
+```
+
+##### Rs: A través de Babel podemos hacer las cosas más simples
+
+
+#### Comando script para que Babel compile react: npm run compiler
+
+```
+"scripts": {
+	"compiler": "babel --watch src --out-dir lib --presets react-app/prod"
+	"server": "http-server -c-1"
+},
+``` 
+
+##### Le estamos diciendo que compile src (todo el código) --out-dir lib la manda a esta carpeta lib y --presets react-app/prod (presets necesita que le digan qué es lo que va a compilar babel en este caso jsx react etc)
+
+##### Una vez ejectuado babel tiene la capacidad de recompilarse/autocompilarse con estas librerias instaladas: es una recomendación de la documentación react para hacerlo de la manera más pura sin frameworks que vienen cargado de muchas dependencias
+
+
+### HTML y la carpeta de compilados lib: como incluimos los archivos en script html, la app va a venir de esos archivos
+
+Archivo index.html del root
+
+```
+<body>
+	<div id="react-app"></div>
+	<script src="node_modules/react/umd/react.development.js" crossorign></script>
+	<script src="node_modules/react-dom/umd/react.development.js" crossorign></script>
+	<script src="src/sinJSX.js"></script>
+	<script src="lib/conJSX.js"></script>
+	<!-- <script src="lib/eventHandler.js"></script> -->
+	<!-- <script src="lib/index.js"></script> -->
+</body>
+```
+
+
+## Características de jsx
+
+Cuando vemos llaves ejecuta js puro: 
+
+Archivo lib/conJSX.js
+
+```
+const nombre = 'Bob';
+
+const elemento = <div>Hola {nombre}</div>;
+
+const app = document.getElementById('react-app');
+
+ReactDOM.render(elemento, app);
+```
+
+##### Lo de afuera de las llaves será siempre texto
+
+```
+const elemento = <div>Hola {5*17}</div>;
+```
+
+##### En jsx si un elemento no tiene hijo podemos usar la etiqueta solo de apertura con barra antes de cierre < />
+
+```
+const elemento = <input />;
+```
+
+en html puro: 
+
+```
+<input> <input/>;
+```
+
+
+##### jsx y los atributos: se formatean de misma forma pero hay propiedades que tiene nombres diferentes por conflictos con los nombre de js, así jsx evita pisar nombres como el atributo class pasa a ser className y los for pasan a htmlFor
+
+```
+const elemento = <input type="number" />;
+```
+
+##### jsx y las propiedades: todas las propiedades que usen kabeb-case pasan a camelCase como atributos como read-only pasa a readOnly
+
+```
+const elemento = <input readOnly />;
+```
+
+##### jsx y combinar atributos con js con llaves:
+
+```
+const elemento = <input readOnly={true} />;
+```
+
+```
+const elemento = <input onChange={(event) => {console.log(event)}} />;
+```
+
+```
+const elemento = { 
+	<input 
+		onChange={(event) => {console.log(event.target.value);		
+		}} 
+	/>
+}
+```
+
+##### Al escribir en el input se va disparando el evento
+
+##### JSX vs jQuery: mantiene todo el estado de la app en un solo lugar, todo el código que necesita el elemento esta ahí, definimos el código una sola vez y es una unica fuente que se va a renderizar
+
+
+#### JSX - Elemento y Componente:  un elemento tiene un estado definido y nunca cambia, un componente es un grupo de elemento que puede cambiar estados
+
+
+## Componentes JSX: nombre en PascalCase
+
+##### Cuando react compila jsx a código js, se fija en la primera letra para detectar si es un componente o un elemento html: si es en minus es html o mayus componente
+
+### Archivo lib/index.js: import con type="module" ESM standar: objetivo importar componente
+
+```
+<!-- <script src="lib/eventHandler.js"></script> -->
+<script src="lib/index.js"></script> -->
+```
+
+### Importar componente: index.js para renderizarlo
+
+#### src/index.js
+
+```
+import { Welcome } from '/components/Welcome.js';
+
+ReactDOM.render(<Welcome nombre="Bob") />, document.getElementById('react-app'));
+```
+
+### Archivo componente ./components/Welcome.js
+
+##### Tenemos que usar la palabar export para que se pueda exportar
+
+```
+export function Welcome(props) {
+	return <div>Bienvenido {props.nombre}</div>;
+}
+``` 
+
+##### export default cuando solo hay una función en el archivo y se quiera exportar
+
+##### Son funciones que devuelven elementos en este caso Welcome devolverá 	return <div>Bienvenido {props.nombre}</div>;
+
+src/index.js
+
+```
+import { Welcome } from '/components/Welcome.js';
+
+ReactDOM.render(<Welcome nombre="Bob") />, document.getElementById('react-app'));
+```
+
+#### Al renderizar un componente tiene la misma forma que un elemento html o elemento jsx
+
+##### Al tiempo que lo renderizamos le pasamos el valor que toma como param
+
+```
+export function Welcome(props) {
+	return <div>Bienvenido {props.nombre}</div>;
+}
+ReactDOM.render(<Welcome nombre="Bob") />, document.getElementById('react-app'));
+```
+
+### Props en react moderno 
+
+```
+export function Welcome( {name} ) {
+	return <div>Bienvenido {name}</div>;
+}
+
+<Welcome name="Bob"
+
+/>;
+```
+
+##### Atributos de componentes son los llamados props
+
+```
+import { Welcome } from '/components/Welcome.js';
+
+ReactDOM.render(<Welcome nombre="Bob") />, document.getElementById('react-app'));
+```
+
+##### props es un objeto que guarda todos los params/atrib/props que le pasamos al componente
+
+```
+export function Welcome(props) { 
+	return (
+		<div>
+			Bienvenido {props.nombre} {props.apellido}
+		</div>;
+	);
+}	
+
+ReactDOM.render(<Welcome nombre="Bob" apellido="Smith") />, document.getElementById('react-app'));
+```
+
+##### Es una forma de actulizar el estado de una app
+
+
+## Componentes avanzado: espera una clase css adiciona, un evento y children (contenido dentro del elemento)
+
+### Ej button: 
+
+#### Archivo src/components/Button.js
+
+##### Definición y props (atributos/estado) del componente
+
+Espera una clase css adiciona y un evento para hacerlo más dinamico
+
+```
+export function Button(props) {
+	return (
+		<button className={'button' + (props.className || '')} onClick={props.onClick}
+			{props.children}
+		</button>
+	);
+}
+```
+
+
+#### Archivo src/index.js
+
+##### import y llamada al componente 
+
+En principio solo le pasamos lo que tiene que hacer en la prop onClick
+
+```
+import { Button } from './components/Buttons.js';
+
+ReactDOM.render(
+	<Button onclick={event => alert(event.target.innerText)}>Hacé click!</Button>, document.getElementById('react-app')
+);
+```
+
+Mostrará un botón para hacer click y al hacerlo mostrará el contenido texto del elemento
+
+
+#### Si tenemos un estilo definido con una clase distinta como espera una clase adicional le agregamos esta y se le pasará al componente
+
+```
+.button-blue {
+	background: lightblue;
+}
+```
+
+```
+import { Button } from './components/Buttons.js';
+
+ReactDOM.render(
+	<Button 
+		className="button-blue" 
+		"onclick={event => alert(event.target.innerText)}>
+		Hacé click!
+	/>, 
+	document.getElementById('react-app')
+);
+```
+
+
+### {props.children} se refiere a lo que está dentro del componente
+
+#### Tiene origen en el atributo children="Hacé click!"
+
+```
+import { Button } from './components/Buttons.js';
+
+ReactDOM.render(
+	<Button 
+		className="button-blue"
+		onclick={event => alert(event.target.innerText)}>
+		children="Hacé click!"
+	/>, 
+	document.getElementById('react-app')
+);
+```
+
+De forma actual: va dentro de contenido el componente
+
+```
+import { Button } from './components/Buttons.js';
+
+ReactDOM.render(
+	<Button 
+		className="button-blue" 
+		"onclick={event => alert(event.target.innerText)}>
+		Hacé click!
+	/>, 
+	document.getElementById('react-app')
+);
+```
+
+
+## Componente con objeto: componentes anidados, objetos, arrays, mapeos; componente principal y secundario
+
+### Patrones como generación de una lista de componentes
+
+### Definición en ./src/components/Page.js
+
+#### Caracteristicas: guardamos props en constante, 
+
+```
+function Article(props) {
+	const contenido = props.contenido;
+	
+	return (
+		<article className="article">
+			<header className="article-header">{contenido.titulo}</header>
+			<p className="article-body">{contenido.cuerpo}</p>
+		</article>
+	);
+}
+
+function Articles(props) {
+	const cantidadDeArticulos = props.articulos.length;
+	
+	return (
+		<React.Fragment>
+			<ul className="articles-list">
+				{props.articulos.map(articulo => (
+					<li key={articulo.titulo} className="articles-list-item">
+						<Article contenido={articulo} />
+					</li>
+				))}
+			</ul>
+			
+			<div className="articles-total">
+				Artículos totales: {cantidadDeArticulos === 0 ? 'Ninguno' : cantidadArticulos}
+			</div>
+		</React.Fragment>
+	);
+}
+
+export function Page(props) {
+	return (
+		<div className="main-page">
+			<h1>{props.titulo}</h1>
+			<Articles articulos={props.articulos} />
+		</div>
+	);
+}
+```
+
+
+### Uso/llamada al componente en ./src/index.js
+
+## Renderización de componentes sobre componentes: nucleo esencial para escalar apps en react 
+
+### Page es el componente principal que llama a otro que a su vez debemos pasarle sus props esperados
+
+##### Definimos un objeto completo dentro de la llamada al componente
+
+##### Por ahora solo llamamos a Page, de todos los componentes que hay en Page.js
+
+```
+export function Page(props) {
+	return (
+		<div className="main-page">
+			<h1>{props.titulo}</h1>
+			<Articles articulos={props.articulos} />
+		</div>
+	);
+}
+```
+
+```
+import { Page } from './components/Page.js';
+
+ReactDOM.render(
+	<Page
+		titulo="Mi diario"
+		articulos={[
+			{ titulo: 'Día uno', cuerpo: 'Hoy vi una ardilla.' },
+			{ titulo: 'Día dos', cuerpo: 'Hoy vi otra ardilla, pero capaz sea la misma.' }
+		]}
+	/>,
+	document.getElementById('react-app')
+);
+```
+
+##### El componente principal Page toma una prop llamada props.titulo para el elemento h1 como está en su definición de componente
+
+```
+titulo='Mi diario''
+```
+
+##### Después Page toma el componente Articles y en el propo de él 'articulos' le pasa una propiedad llamada props.articulos
+
+##### Es un array con varios objetos que tiene dos key: titulo y cuerpo
+
+```
+articulos=[{
+	{ titulo: 'Dia uno', cuerpo: 'hoy...' },
+	{ titulo: 'Dia dos' cuerpo: 'hoy...' }
+}]
+```
+
+##### Paga se encarga de armar todo lo que va alrededor de los articulos
+
+##### Cada articulo o los articulos se van a renderizar en otro componente para dividir el código en beneficio de la mantenibilidad al hacer modificaciones
+
+##### Estos componentes proporcionan otra ventaja sobre jQuery que hace mutaciones sobre elementos html pero pierde mantenibilidad y accesibilidad al hacer modificaciones, es dificil de rastrear el código
+
+##### En React cada elemento está contenido en un componente especifico, siempre que lo usemos bien 
+
+
+### Componente encargado de la renderización de multiples elementos: Articles
+
+##### Tiene una única prop que es articulo (props.articulos) a la que le pasa la propiedad length para convertirla en un valor/numero/cantidad/algo contable
+
+```
+function Articles(props) {
+	const cantidadDeArticulos = props.articulos.length;
+	
+	return (
+		<React.Fragment>
+			<ul className="articles-list">
+				{props.articulos.map(articulo => (
+					<li key={articulo.titulo} className="articles-list-item">
+						<Article contenido={articulo} />
+					</li>
+				))}
+			</ul>
+			
+			<div className="articles-total">
+				Artículos totales: {cantidadDeArticulos === 0 ? 'Ninguno' : cantidadArticulos}
+			</div>
+		</React.Fragment>
+	);
+}
+```
+
+##### Volvemos al array (indice-acceso) de objetos (key-value) con dos key
+
+```
+articulos=[{
+	{ titulo: 'Dia uno', cuerpo: 'hoy...' },
+	{ titulo: 'Dia dos' cuerpo: 'hoy...' }
+}]
+```
+
+##### Problemas sin React.Fragment (contenedor de elementos): devolver varios elementos sin fragmen o contenedor div o contenedor vacío dado que al compilar JS no puede devolver dos elementos/objeto, solo hay un return de uno solo y si compila (raro) nos devolvería solo el primer elemento
+
+##### Elegir contendor fragment, div o contendor vacío: depende del contexto, estilo de código, consistencia/practica: a un div le podes agregar una clase y a React.Fragment y a un elemento vacío no se puede
+
+##### Article renderiza un ul con li y un div. Dentro del ul la idea es ir renderizando todos los articulos 
+
+##### Metodo map(): es un metodo de array/iterable (necesita un array) que necesita una función dentro para aplicar transformaciónes a cada elemento del array que lo usa
+
+##### Una gran ventaja de map() es que no muta/modifica la función original, devuelve o crea un nuevo array
+
+```
+a = [1, 2, 3]
+
+a.map((elem) => elem + 1); 
+```
+
+##### Es un práctica para no modificar/mutar las propieades de un componente
+
+
+##### Alternativa a map() en react: crear un array nuevo o copia profunda
+
+```
+function Articles(props) {
+	const cantidadDeArticulos = props.articulos.length;
+	
+	let articulosMutables = props.articulos.slice(0)
+	
+	return ();
+}
+```
+
+##### Para crear una lista necesitamos pasarle map() como children: es la sintaxis {props.articulos.map()}
+
+```
+<ul className="articles-list">
+	{props.articulos.map(articulo => (
+		<li key={articulo.titulo} className="articles-list-item">
+			<Article contenido={articulo} />
+		</li>
+	))}
+</ul>
+```
+
+##### Transformamos cada articulo que recibe, cada elemento del array que le pasan; que tiene un objeto con un titulo y cuerpo de key
+
+##### Este objeto interno pasa a tranformarse en un li
+
+```
+<li key={articulo.titulo} className="articles-list-item">
+	<Article contenido={articulo} />
+</li>
+```
+
+##### El atributo key={articulo.titulo} se usa para que los elementos de un array tengan referencia
+
+##### Dentro de li como children element va el componente Article que recibe una prop 'articulo'
+
+##### ul recibe el array de elementos props.articulos.map(//...), 
+
+##### Al componente interno Article recibe en su prop contenido todo el articulo (recibe un solo elemento/objeto del array)
+
+```
+function Article(props) {
+	const contenido = props.contenido;
+	
+	return (
+		<article className="article">
+			<header className="article-header">{contenido.titulo}</header>
+			<p className="article-body">{contenido.cuerpo}</p>
+		</article>
+	);
+}
+```
+
+
+##### article es el param local de map
+
+```
+props.articulos.map(articulo => ());
+```
+
+```
+<li key={articulo.titulo} className="articles-list-item">
+	<Article contenido={articulo} />
+</li>
+```
+
+##### El componente Article renderiza el elemento article que contiene otros elementos como header y p
+
+##### El contenido son los valores del objeto titulo va en el header y cuerpo va en el p
+
+
+### Atributo key para los elementos de un array: string o number
+
+##### Cada vez que renderizamos un array de elementos tenemos que darle una key a cada uno
+
+##### React necesita identificar cada elemento del array con una palabra o numero
+
+##### Si usamos un param index como key tendriamos un problema para una lista ordenada, si se cambia el orden; React lo toma como que los elementos sigan siendo los mismos con distinto contenido; actualizará unos elementos y otros no. Termina siendo complicado para debuggear
+
+```
+<ul className="articles-list">
+	{props.articulos.map((articulo, index) => (
+		<li key={index} className="articles-list-item">
+			<Article contenido={articulo} />
+		</li>
+	))}
+</ul>
+```
+
+##### Las keys no son globales pero tienen que ser unicas en todos los elementos del array, no pueden haber dos elementos con una key, pero si estamos haciendo dos arrays en lugares diferentes puede tener la misma key
+
+##### Rs key: es una etiqueta para que React sepa cuál es el elemento
+
+
+### Contador de Articles: el último div contiene
+
+##### El contenido del div será condicional si no hay articulos muestra Ninguno y si hay, muestra la const cantidadArticulos
+
+```
+<div className="articles-total">
+	Artículos totales: {cantidadDeArticulos === 0 ? 'Ninguno' : cantidadArticulos}
+</div>
+```
+
+
+### If else en React: babel no podría complilar un if else tradicional a menos que hagamos algunos trucos
+
+##### React necesita una expresión que devuelva un tipo de dato
+
+
+## Hook: useState
+
+##### Hasta ahora todos los componente escritos son bastante estáticos con algunos detalles dinámicos como el contenido de las props, incluso el evento de click. El documento/sitio es mayoritariamente estático.
+
+##### Los componentes son mutables, quedan de la misma forma pese a que le pasamos props que cambian/renderizan algo de contenido
+
+##### Para interactuar con el documento, React nos provee de Hooks para que nuestros componentes puden cambiar su estado
+
+
+### Hook: función que permite interactuar con las funcionalidades especiales de un componente de React. Existen mas de 10, pero solo unos pocos se usan.
+
+### Use state: el más usado, define un valor dentro de un componente, este valor puede cambiar. Solo podemos cambiar este valor usando la función setState().
+
+
+## Componente con el hook useState
+
+#### Archivo ./index.js: entry point
+
+```
+import { likeButton } from './components/LikeButton.js';
+
+ReactDom.render(<LikeButton />, document.getElementByID('react-app'));
+```
+
+#### Archivo ./src/components/LikeButton.js
+
+##### Primero importa el Componente Button
+
+##### Tiene como props className, onclick y children (para el contenido dentro del elem/btn)
+
+```
+export function Button(props) {
+	return (
+		<button className={'button' + (props.className || '')} onClick={props.onClick}
+			{props.children}
+	|	</button>
+	);
+}
+```
+
+
+### Definición y uso de componente reactivo
+
+##### Primero el componente reactivo define un hook con var meGusta y función useMeGusta
+
+##### Al mismo tiempo setea como false la var meGusta a través de setMeGusta
+
+##### Espera props pero no están definidas 
+
+##### Después usa el componente Button define los props que espera este componente
+
+##### En onClick setea con setMeGusta el valor contrario a lo que hay actualmente en la var meGusta
+
+##### Como estabá en false pasa a true. O al estado de este en el momento; siempre debe ser lo contrario
+
+##### En la prop className pregunta por lo que hay en la var meGusta, si es true setea la clase button-blue y si es false setea button-white
+
+##### En la prop children pregunta por lo que hay en la var meGusta, si es true muestra un string Le diste me gusta', si es falso muestra 'Dale me gusta'
+
+##### El setter y la var está muy relacionada visualmente/contenido con prop children, es el contenido que se ve en la superficie, sirve para debuggear y con el click que es el que genera todo al final
+
+##### Cuando react setea un estado nuevo determina que el componente se actualizó, correrá el componente/función otra vez con el valor nuevo del estado para renderizar los elementos con distinto contenido, pero es un proceso muy optimizado
+
+```
+import { Button } from './Button.js';
+
+export function LikeButton(props) {
+	const {meGusta, setMeGusta} = React.useState(false);
+
+	return (
+		<Button
+			onClick={() => setMeGusta(!meGusta)}
+			className={meGusta ? 'button-blue' : 'button-white'}
+		>
+			{meGusta ? 'Le diste me gusta' : 'Dale me gusta'}
+		</Button>
+	);
+}
+```
+
+
+### Rs useState: El setter y la var está muy relacionada visualmente/contenido con prop children, es el contenido que se ve en la superficie, sirve para debuggear y con el click que es el que genera todo al final. Cuando react setea un estado nuevo determina que el componente se actualizó, correrá el componente/función otra vez con el valor nuevo del estado para renderizar los elementos con distinto contenido, pero es un proceso muy optimizado
+
+
+### Orden de llamada de los hook: dependen del orden de llamada dentro del componente. Podemos tener varios useState diferentes 
+
+##### Nuevo button con prop disabled
+
+```
+export function Button(props) {
+	return (
+		<button 
+			disabled={props.disabled} 
+			className={'button' + (props.className || '')} onClick={props.onClick}
+		>
+			{props.children}
+		</button>
+	);
+}
+```
+
+##### Nuevo componente con varios useState
+
+##### Ahora la prop original disabled del boton va a tener como valor la variable de estado disabled
+
+```
+import { Button } from './Button.js';
+
+export function LikeButton(props) {
+	const {meGusta, setMeGusta} = React.useState(false);
+	const {disabled, setDisabled} = React.useState(false);
+	
+	return (
+		<Button
+			disabled={disabled}
+			onClick={() => {
+				setMeGusta(!meGusta);
+				setDisebled(true);
+			}}
+			className={meGusta ? 'button-blue' : 'button-white'}
+		>
+			{meGusta ? 'Le diste me gusta' : 'Dale me gusta'}
+		</Button>
+	);
+}
+```
+
+
+### Los hooks no se pueden llamar condicionalente, for, etc
+
+```
+export function LikeButton(props) {
+	const {meGusta, setMeGusta} = React.useState(false);
+	
+	if (meGusta) {
+		const {disabled, setDisabled} = React.useState(false);
+	}
+	
+	return (
+		<Button
+			onClick={() => setMeGusta(!meGusta)}
+			className={meGusta ? 'button-blue' : 'button-white'}
+		>
+			{meGusta ? 'Le diste me gusta' : 'Dale me gusta'}
+		</Button>
+	);
+}
+```
+
+
+### Solo se pueden usar hooks dentro de componentes funcionales 
+
+```
+const {meGusta, setMeGusta} = React.useState(false);
+
+export function LikeButton(props) {}
+
+```
+
+### Los hooks tampoco se pueden usar dentro de clases
+
+### Si podemos llamar a hooks con custom hooks
+
+
+## Lista para agregar tareas: estados complejos a traves de componentes
+
+### Archivo ./src/index.js
+
+```
+import { ToDoList } from './components/ToDoList.js';
+
+ReactDom.render(<ToDoList />, document.getElementById('react-app'));
+```
+
+### Componente toDoInput() 
+
+##### La función toDoInput define un setValue para modificar value
+
+##### Renderiza un div que tiene un input que el valor de su atributo value será la var value de setValue
+
+##### En el atributo onChange de input define una función con un param event, en el cuerpo llama a setValue para pasarle el valor de event.target.value
+
+##### Llama al componente Button, le pasa una función, en su cuerpo ejecuta props.onAddInput(value) y setValue('')
+
+##### En el children del Button escribe 'Add to list'
+
+```
+import {Button} from './Button.js';
+
+function ToDoInput(props) {
+	const {value, setValue} = React.useState('');
+	
+	return (
+		<div>
+			<input 
+				value={value} 
+				onChange={event => setValue(event.target.value)}
+			/>
+			
+			<Button
+				onClick={() => {
+					props.onAddInput(value);
+					setValue('');
+				}}
+			>
+				Add to list;
+			</Button>
+		</div>
+	);
+}
+```
+
+
+### Componente ToDoList()
+
+##### Define setItems para cambiar items que es un array
+
+##### removeFromItems es una función, modifica indexToRemove con la acción: setItems(items.filter((_, index)=>index indexToRemove))
+
+##### Renderiza un div con la clase main page
+
+##### Contiene el componente ToDoInput, a onAddInput le pada una función para modificar newItem con setItems
+
+##### Renderiza ul que hará un map a items de setItems, creará li y en cada uno Renderizará un componente Botton, le pasará un función que ejecuta removeFromItems(i)
+
+```
+export function ToDoList(props) {
+	const {items, setItems} = React.useState([]);
+	const removeFromItems = indexToRemove =>
+		setItems(items.filter((_, index) => index === indexToRemove));
+	
+	return (
+		<div className="main-page">
+			<ToDoInput onAddInput={newItem => setItems([ ... items, newItems])} />
+			<ul>
+				{items.map((item, i) => {
+					<li key={i}>
+						{item} <Button onClick={() => removeFromItems(i)}>X</Button>
+					</li>
+				})}
+			</ul>
+		</div>
+	);
+}
+```
+
+##### ToDoList: el state arranca con un array vacío llamado items
+
+##### removeFromItems: le pasamos indexToRemove, llama a setItems con todos los items menos que mandamos (saca un item de la lista) para setearselo al estado. 
+
+##### Al llamar a removeFromItems seteamos otra vez a setItems y el componente se va a re renderizar
+
+##### Renderizamos un div con el componente ToDoInput al que le pasamos una función onAddInput (customEventHandler) el algún momento dispara este evento, cuando apretemos el botón add to list
+
+##### Tenemos <ToDoInput onAddInput={newItem => setItems([ ... items, newItems])} />
+
+##### spread array (no muta arr original): en otro array incluir arran 'anterior' y más elementos
+
+```
+const arr = [1, 2, 3]
+
+const otroArr = [...arr, 4, 5, 6]
+```
+
+Al ejecutar: 
+
+```
+otroArr // [1, 2, 3, 4, 5, 6]
+```
+
+##### Entonces: newItem => setItems([ ... items, newItems]) setea lo que teniamos en items + newItem
+
+##### El componente ToDoInput tiene un estado propio value con setValue con un str vacío por default
+
+##### el str vacío se lo pasa al input en value={value}
+
+##### Cuando input cambio (onChange) setea setValue
+
+##### Cada vez que agregamos una letra nueva al input del sitio, cambia el input y el estado del componente ToDoInput se esta actualizando con el valor nuevo
+
+##### La var estado value siempre va a ser el valor que tenga input dentro
+
+##### En onClick define una prop onAddInput(value) 
+
+Cuando ToDoList llama a ToDoInput
+
+```
+<ToDoInput onAddInput={newItem => setItems([... items, newItems])} />
+```
+
+##### Recibimos eso y es lo que agregamos a la lista de la var estado items original + nuevo
+
+##### Queda al descubierto que la lista newItems son todos strings, son los value que vamos obteniendo en el elem input
+
+##### Al final del click vuelve a setear cadena vacía para volver a escribir en input, borra lo que hay
+
+##### Volvemos a ToDoList, su var estado items va a ser un array de strings y le hacemos un map(item, i) cada item va a estar dentro del li y le agregamos un Button con X
+
+##### Cuando le hacemos click al botón llama a removeFromItmes(i) para remover el item de la lista que fue agregado en algún momento 
+
+### jQuery vs React: En jquery estamos trabajando directamente sobre el documento de una forma imperativa, le tenemos que dicir que hacer en el momento que definimos una acción; en React las acciones son declarativas, le decimos como es el documento y qué acciones cambian un estado y según qué estado como está el documento y react se encarga de cómo hacerlo por dentro
+
+
+### Mejor práctica para los keys: 
+
+No es la mejor práctica: 
+
+```
+{items.map((item, i) => {
+	<li key={i}>
+		{item} <Button onClick={() => removeFromItems(i)}>X</Button>
+	</li>
+
+```
+
+Pero evita que si introducimos el mismo string, uno debajo de otro el último nos de error por que las key no pueden ser iguales
+
+
+##### La mejor práctica es tener id en las key que sea especifica de lo que estamos renderizando 
+
+##### En general si estamos mapeando sobre una lista va a ser una lista de objeto que tenga un id, consumiendo alguna api, en su obj tiene definido en id para cada elemento. Eso ya está desde el lado de la api/db, etc
+
+
+##### El peor caso para las key es hacer: {items.map((item, i) => {<li key={item}>})}
+
+
+
+# React 2: hooks
+
+## Ejercicos
+
+
+### 1. Tarjeta y BlogPost
+
+##### Tarjeta renderiza div que tiene img y un div con header y span
+
+##### Props: imagen, nombre y titulo
+
+```
+export function Tarjeta(props)  {
+	return (
+		<div className="tarjeta">
+			<img src={props.imagen} alt="Foto de perfil" className="tarjeta-img" />
+			<div className="tarjeta-data">
+				<header className="tarjeta-data-header>{props.nombre}</header>
+				<span>{props.titulo}</span>
+			</div>
+		</div>
+	);
+}
+
+
+
+export function BlogPost(props) {
+	return (
+		<article className="post">
+		
+			<header className="post-header">
+				<h2 className="post-title">{props.titulo}</h2>
+				<Tarjeta { ...props.autor} />
+			</header>
+			
+			{props.parrafos.split("\n").map((parrafo, i) => {
+				<p key={i} className="post-paragraph">
+					{parrafo}
+				</p>
+			})}
+			
+		</article>
+	);
+}
+```
+
+##### BlogPost renderiza article, dentro header y parrafos
+
+##### Sus props: titulo, autor, parrafos
+
+##### Su funcionalidad: En header renderiza Tarjeta con props.autor
+
+##### Contenido de article: con split dividimos parrafos en salto de linea, se convierte en un array, cada linea es un elemento de arr; en la posición actual de parrafo genera un li y su contenido es del parrafo
+
+##### <Tarjeta { ...props.autor} />: Primero es un nuevo prop (que le debemos pasar a BlogPost)
+
+##### Segundo: Crea un array que suma/agrega/con todos los props del elemento Tarjeta
+
+##### Objeto spread: desparramamos las cosas de props.autor dentro del objeto mayor
+
+Ej: 
+
+```
+{
+	...props.autor 
+	apellido: Smith // y además le queremos agregar otra key
+}
+```
+
+Puede tener props como: nombre, titulo, imagen más lo que le agregamos que es apellido
+
+
+spread array (no muta arr original): en otro array incluir arran 'anterior' y más elementos
+
+```
+const arr = [1, 2, 3]
+
+const otroArr = [...arr, 4, 5, 6]
+```
+
+Al ejecutar: 
+
+```
+otroArr // [1, 2, 3, 4, 5, 6]
+```
+
+##### Al encerar en llaves {...props.autor}, le podemos pasar un spread de algún objeto {...{}} va a mapear las props según las definamos
+
+##### Hacer <Tarjeta {... { nombre: 'Bob' }} /> que <Tarjeta nombre: 'Bob' />
+
+##### Con el beneficio que {...props.autor} se puede expandir 
+
+##### Alternativamente era valido hacer <Tarjeta nombre={props.autor.nombre} />
+
+
+
+### 2. MatchNombre, PasswordInput, ValidationInput
+
+##### MatchNombre setea useState value con un str vacío
+
+##### Props: nombre
+
+##### Renderiza un input: en su clase le pasa value.match(props.nombre)
+
+##### El atributo value será el string de setValue en cada momento
+
+##### Funcionalidad onChange: el elemento llama a setValue y le pasa como str/contenido a event.targe.value
+
+```
+export function MatchNombre(props) {
+	const {value, setValue} = React.useState('');
+	
+	return (
+		<input
+			className={'input ' + (value.match(props.nombre) && 'input-match')} 
+			value={value}
+			onChange={event => setValue(event.targe.value)}
+		/>
+	);
+}
+
+export function PasswordInput(props) {
+	const {value, setValue} = React.useState('');
+	
+	return (
+		<input
+			className={'input ' + (value.length < props.minLength && 'input-match')}
+			type="password"
+			value={value}
+			onChange={event => setValue(evetn.target.value)}
+		/>
+	);
+}
+
+export function ValidationInput(props) {
+	const {value, setValue} = React.useState('');
+	
+	return (
+		<input 
+			className={'input ' + (props.validation(value) && 'input-match')}
+			type={props.isPassword ? 'password' : 'test'}
+			value={value}
+			onChange={event => setValue(event.target.value)}
+		/>
+	);
+}
+
+```
+
+##### PasswordInput setea value en string vacío
+
+##### La clase tiene un condicional (value.length < props.minLength && 'input-match')
+
+##### Le pasa el atributo type="password" de html
+
+##### El atributo value será el que diga setValue() empieza vacío
+
+##### El atributo onChange tiene una función que tranforma el objeto event en setValue
+
+
+##### ValidationInput setea value como str vacío y hace algo parecido con los demás atributos
+
+##### El tipo lo que le pasen a prop.isPassword y evaluará condicionalmente si es true será 'password' o si es false será 'test'
+
+##### Rs MatchNombre: le pasamos un props.nombre y si lo tiene dentro del input cambia el color; PasswordInput: el tipo password de html esconde el input, si en input supera la prop minLength deja de estar roja; ValidationInput le pasamos una función, la tiene que cumplir para, value === 'xValue' ej: value === 'Tarea 2', si es eso se pone rojo
+
+```
+<MatchNombre nombre="Bob" />
+
+<PasswordInput minLength={8} />
+
+<ValidationInput validation={value => value === 'Tarea 2' />
+```
+
+##### Cada input tiene un useState vacío y se mapea a value y cada vez que cambia se queda con su propio valor, el que introduce el usuario: onChange=(event => setValue(event.target.value))
+
+##### Atributo className harcodeamos 'input' y si la condición (value.match(props.nombre)) con && le agregamos otro string harcodeado 'input-match'
+
+##### Todos tienen este tipo de comparación pero con distinto props y condiciones de acuerdo a la necesidad del input
+
+##### La idea del componente ValidationInput es generalizar la validación y agrarrar directamente (props.validation(value): al pasarle un value, el componente chequee que devuelve props.validation si es true agregamos 'input-match', sino no le agregamos nada
+
+##### La clave es trackear la variable estado como value y en el onChange hacer event => setValue(event.target.value)
+
+##### Con los inputs siempre hay que tratar de manejar el valor dentro
+
+##### Después hacer las comparaciones en className para mostrar una cosa o la otra o no agregar nada 
+
+
+### 3. UncontrolledCheckbox(), ChecboxList()
+
+```
+export function UncontrolledCheckbox(props) {
+	const {checked, setChecked} = React.useState(props.initialValue);
+	
+	return (
+		<React.Fragment>
+			<label>{props.name}</label>
+			<input type="Checkbox" checked={checked} onChange={()=> setChecked(!checked)} />
+		</React.Fragment>
+	);
+}
+
+export function ChecboxList(props) {
+	return (
+		<div>
+			{Object.entries(props.items).map(([key, value]) => {
+				<UncontrolledCheckbox key={key} initialValue={value} name={key} />
+			})}
+		</div>
+	);
+}
+```
+
+Uso ChecboxList
+
+```
+<CheckboxList
+	items=[{
+		uno: false,
+		dos: true, 
+		tres: false
+	}]
+/>
+```
+
+##### Así es como empiezan esos inputs
+
+##### Su estado {checked, setChecked} = React.useState(props.initialValue);
+ 
+##### Es la prop que inicializamos en: <UncontrolledCheckbox key={key} initialValue={value} name={key} /> haciendo un mapeo: 			{Object.entries(props.items).map(([key, value]) => {
+
+
+### Sintaxis param array en map: map(([key, value]) => {}) es una desestructuración de arrays (asignación multiple y directa en esas vars tomando los valores de un objeto/array) transforma un objeto en un array de arrays
+
+
+
+```
+{
+	uno: false, 
+	dos: true,
+	tres: false
+}
+
+[
+	['uno': false]
+	['dos': true]
+	['tres': false]
+]
+```
+
+##### en cada elemento del array externo nos va a devolver un array con dos posiciones, el primer elemento es la key y el segundo es el value
+
+##### Es una desestructuración de arrays en los argumentos
+
+
+### 4. ControlledCheckbox(), CheckboxListWithState 
+
+##### Cambio en la ubicación del estado
+
+##### ControlledCheckbox no tiene estado, tiene tres props: name, value y onChange
+
+##### Tiene que mostrar el props.value; si le pasas true tiene que ser true siempre 
+
+##### onChange es un eventHandler que lo pasamos hacia arriba para que el componente superior se pueda encargar de renderizar props.value
+
+```
+export function ControlledCheckbox(props) {
+	return (
+		<React.Fragment>
+			<label>{props.name}</label>
+			<input type="checkbox" checked={props.value} onChange={props.onChange} />
+		</React.Fragment>
+	);
+}
+
+export function CheckboxListWithState(props) {
+	const [checkboxes, setCheckboxes] = React.useState(props.items);
+	
+	return(
+		<div>
+			{Object.entries(checkboxes).map(([name, value]) => {
+				<ControlledCheckbox
+					key={name}
+					name={name}
+					value={value}
+					onChange={() => {
+						setCheckboxes({ ... checkboxes, {name}: !value});
+					}}
+				/>
+			})}
+		</div>
+	);
+}
+```
+
+##### CheckboxListWithState tiene un estado para checkboxes que toma props.items
+
+Como en:
+
+```
+uno: true,
+dos: false, 
+tres: true
+```
+
+##### Pero con la diferencia que ahora van a cambiar a lo largo de la vida del componente
+
+##### Modificar state que se elevo: inmutabilidad de estado, tanto las props como las vars estado son inmutables no podemos redefinirlas
+
+```
+onChange={() => {
+	checkboxes[name] = !value;
+	setCheckboxes(checkboxes)
+}}
+```
+
+##### Si las vars estado no cambia no rerenderiza el componente
+
+```
+onChange={() => {
+	setCheckboxes({ ... checkboxes, [name]: !value});
+}}
+```
+
+Es como hacer 
+
+```
+onChange={() => {
+	const newCheckboxes = { ...checkboxes };
+	newCheckboxes[name] = !value;
+	setCheckboxes(newCheckboxes);
+}}
+```
+
+
+##### Rs onChange={() => { setCheckboxes({ ... checkboxes, [name]: !value}); }}: esparcimos el objeto de checkboxes, seteamos el name actual (que viene del param de entries) su valor será !value
+
+### Componente ejer total
+
+```
+import { Tarjeta, BlugPost } from './Tarea1.js;
+import { MatchNombre, PasswordInput, ValidationInput } from './Tarea2.js';
+import { CheckboxList} from './Tarea3.js';
+import { CheckboxListWithState } from './Tarea4.js''
+
+export default function Tareas(props) {
+	return (
+		<React.fragment>
+			<Tarjeta
+				nombre="Bob Smith"
+				titulo="Construct"
+				imagen="https://avatars2..."
+			/>
+			
+			<BlogPost
+				titulo="Ardillas"
+				parrafos={`Hoy vi una ardilla. Era negra y tenía...`}
+				autor=[{
+					nombre: 'Bob Smith',
+					titulo: 'Construct',
+					imagen: 'https://avatars2...'
+				}]
+			/>
+			<MatchNombre nombre="Bob Smith" />
+			<PasswordInput validation={value => value === 'Tarea 2'} />
+			<CheckboxList
+				items=[{
+					uno: false,
+					dos: true, 
+					tres: false
+				}]
+			/>
+			
+			<CheckbosxListWithState
+				items=[{
+					uno: false,
+					dos: true, 
+					tres: false
+				}]
+			/>
+		</React.fragment>
+	);
+}
+```
+
+
+## Componente controlado vs no controlado
+
+##### Cada vez que definimos un componente con estado, estamos decidiendo que cosas son controlados y qué no son controladas
+
+##### Ej en tarea 3: UncontrolledCheckbox(), ChecboxList()
+
+```
+export function UncontrolledCheckbox(props) {
+	const {checked, setChecked} = React.useState(props.initialValue);
+	
+	return (
+		<React.Fragment>
+			<label>{props.name}</label>
+			<input type="Checkbox" checked={checked} onChange={()=> setChecked(!checked)} />
+		</React.Fragment>
+	);
+}
+```
+
+##### UncontrolledCheckbox no es controlado, en ningún momento le estamos diciendo qué hacer, ni le estamos pasando los valores que tiene que tener en cada momento. Solo le estamos diciendo que su valor inicial viene del componente CheckboxList: 
+
+```
+export function ChecboxList(props) {
+	return (
+		<div>
+			{Object.entries(props.items).map(([key, value]) => {
+				<UncontrolledCheckbox key={key} initialValue={value} name={key} />
+			})}
+		</div>
+	);
+}
+```
+
+##### UncontrolledCheckbox tiene su propio estado y lo va actualizando como lo necesita 
+
+##### Un componente controlado es más simple, en cada momento le tenemos que decir sus atributos/estado/acciones como si tiene que estar checkeado o no y tiene depender de la interfaz/props como onChange para ir actualizando el estado, lo vemos cuando lo llamamos en CheckboxListWithState para ir actualizando el estado según necesitamos
+
+```
+export function ControlledCheckbox(props) {
+	return (
+		<React.Fragment>
+			<label>{props.name}</label>
+			<input type="checkbox" checked={props.value} onChange={props.onChange} />
+		</React.Fragment>
+	);
+}
+
+export function CheckboxListWithState(props) {
+	const [checkboxes, setCheckboxes] = React.useState(props.items);
+	
+	return(
+		<div>
+			{Object.entries(checkboxes).map(([name, value]) => {
+				<ControlledCheckbox
+					key={name}
+					name={name}
+					value={value}
+					onChange={() => {
+						setCheckboxes({ ... checkboxes, {name}: !value});
+					}}
+				/>
+			})}
+		</div>
+	);
+}
+```
+
+##### La ventaja de controlled es cambiarle es estado a un controlled component desde otro componente que lo usa como vemos en CheckboxListWithState, si no fuera controlado no tenemos acceso a algo como setCheckboxes() para setearlo por afuera desde dónde está declarado
+
+##### A su vez requiere un estado más complejo de programar como lo vemos en CheckboxListWithState
+
+
+### Los inputs pueden funcionar como un componente controlado o como no controlado
+
+```
+export function MatchNombre(props) {
+	const {value, setValue} = React.useState('');
+	
+	return (
+		<input
+			className={'input ' + (value.match(props.nombre) && 'input-match')} 
+			value={value}
+			onChange={event => setValue(event.targe.value)}
+		/>
+	);
+}
+
+```
+
+##### Podemos eliminar todo el código que le dice que hacer y seguirá funcionando: podemos escribir sobre el, se está actualizando por su cuenta sin que le digamos qué hacer
+
+```
+export function MatchNombre(props) {
+	const {value, setValue} = React.useState('');
+	
+ 	return <input />;
+
+}
+```
+
+
+##### En general con los inputs, la unica regla para tratar inputs basicos y forms de html se considerá que es una mala práctica no controlarlo/decirle que hacer
+
+##### Tenemos que tratar de tener el valor seteado como un estado de React (useState) como se ve en la tarea
+
+##### Es para no tener que ir a buscar su value, dado que en los inputs se escriben cosas y para sacar su valor tendríamos que hacer onChange={} que se ejecuta cada vez que se cambia el input y sería lo mismo que declarar el value en un estado por eso se considera una mejor práctica tenerlo como en el ejercicio
+
+
+## No elevar estado vs Elevar estado
+
+##### Como en el componente CheckboxWithState (tiene estado) que usa a ControlledCheckbox (no tiene estado)
+
+##### Tambien en UncontrolledCheckbox (tiene estado) pero acá el que usa al componente es CheckboxList (el que no tiene estado)
+
+##### UncontrolledCheckbox no es controlado, en ningún momento le estamos diciendo qué hacer, ni le estamos pasando los valores que tiene que tener en cada momento. Solo le estamos diciendo que su valor inicial viene del componente CheckboxList: 
+
+##### UncontrolledCheckbox tiene su propio estado y lo va actualizando como lo necesita 
+
+##### Un componente controlado es más simple, en cada momento le tenemos que decir sus atributos/estado/acciones como si tiene que estar checkeado o no y tiene depender de la interfaz/props como onChange para ir actualizando el estado, lo vemos cuando lo llamamos en CheckboxListWithState para ir actualizando el estado según necesitamos
+
+##### La ventaja de controlled es cambiarle es estado a un controlled component desde otro componente que lo usa como vemos en CheckboxListWithState, si no fuera controlado no tenemos acceso a algo como setCheckboxes() para setearlo por afuera desde dónde está declarado
+
+##### A su vez requiere un estado más complejo de programar como lo vemos en CheckboxListWithState
+
+
+##### Entonces cuando necesitemos más control sobre el componente debemos tener en cuanta; debemos tener en cuenta cuales son controlados y cuales y si se puede refactorizar
+
+##### Rs controlado vs no controlado: el no controlado tiene estado, puede usar a un controlado; y un controlado puede usar a uno no controlado con estado
+
+
+## Mejorando el ambiente de desarrollo
+
+##### Se trata de integrar a nuestro proyecto de react herramientas más potentes para facilitarnos el desarrollo
+
+##### Como hacer uso de vite un conjunto de herramientas (bundler) frontend
+
+##### Nos hace más facil los imports, analizar el código, correr el servidor, debuggear, etc. 
+
+##### Algo como source map se comunica con el navegador para decirle que nuestros archivos son una versión compilada de otro archivo, entonces nos deja ver el código exactamente como lo escribimos para poder debuggear todo en el navegador sin preocuparnos por los avisos de compilador
+
+##### El código con herramientas cmo vite cambian algo de la sintaxis como por ej los imports: 
+
+##### Podemos declarar archivos css para cada componente
+
+##### Tienen un ambiente de test como jest
+
+### Archivo src/index.js: renderiza el componente <App>
+
+```
+import React from 'react';
+import ReactDOM from 'react-dom';
+import './index.css';
+import App from './App';
+import * as serviceWorker from './serviceWorker';
+
+ReactDOM.render(<App />, document.getElement.ById('root'));
+serviceWorker.unregister();
+```
+
+### Archivo src/App.js
+
+```
+import React from 'react';
+import logo form './logo.svg';
+import './App.css';
+
+function App() {
+	return (
+		<div className="App">
+			<header className="App-header">
+				<img src={logo} className="App-logo" alt="logo" />
+				<p>
+					Edit <code>src/App.js</code> and save to reload.
+				</p>
+				<a
+					className="App-link"
+					href="https://reactjs.org"
+					target="_blank"
+					rel="noopener noreferrer"
+				>
+					Learn React
+				</a>
+			</header>
+		</div>
+	);
+}
+
+export default App;
+```
+
+
+### Archivo ./src/app.test.js
+
+```
+import React form 'react';
+import { render } from '@testing-library/react';
+import App from './App';
+
+test('renders learn react link', () => {
+	const { getByTest } = render(<App />);
+	const linkElement = getByText(/learn react/i)
+	expect(linkElement).toBeInTheDocument();
+});
+```
+
+
+### Estructura de proyecto: la carpteta src guardará el css y el archivo js de testeo del componente App, 
+
+##### La carpeta public guardará el index.html, algún asset, etc
+
+##### La carpeta raíz del proyecto guardará el package.json y el lock-json, etc
+
+```
+my-app
+	node_modules
+	public
+		favicon.ico
+		index.html
+		logo.png
+	src
+		App.css
+		App.js
+		App.test.js
+		index.css
+		index.js
+		logo.png
+	package.json
+	README.md
+```
+
+
+### Archivo public/index.html: es la config básica/estatica/constante de nuestra app como e titulo y otros recursos como el icono de fav
+
+
+### React Developer Tools: plugin para navegadores
+
+##### Agrega vista para componentes y profiler 
+
+##### Podemos ver todos los componentes renderizados, al costado vemos sus props actual y su estado
+
+```
+props:
+	min-length: 8
+	
+state: 
+	"laksdj"
+```
+
+##### Podemos cambiar estos valores para ir testeando
+
+##### Profiler se usar cuando nuestra app necesita ser muy performante o cuando tengamos un error raro
+
+
+### Sintaxis más usadas en React
+
+#### 1. ObjectArray destructuring para los hooks y para declara todas las props utilizadas
+
+```
+const [primerElemento, segundoElemento] = [1, 2]
+const {a, b} = {a:1, b:2}; 
+```
+
+#### 2. ObjectArray spread: muy común para setar un estado
+
+```
+const nuevoEstado = [...viejoEstado, "nuevoElemento"];
+const nuevoEstado2 = {...viejoEstado, "nuevaKey": "nuevoElemento"}
+```
+
+#### 3. ObjectArray Notation: se usa para acceder dinámicamente a alguna key de un objeto
+
+```
+const objeto = {a: 1, b: 2};
+let propiedad = "a";
+console.log(objeto[propiedad]); //1
+propiedad2 = "b";
+console.log(objeto[propiead2]) //2
+```
+
+
+#### 4.Computed Property Names: declarar keys de objetos con variables. También para setear estado como con Object spread 
+
+```
+const nuevaKey = "algunaKey";
+const nuevoEstado = {...viejoEstado, [nuevaKey]: "nuevoElemento"};
+console.log(nuevoEstado.algunakey); //"nuevo elemento"
+```
+
+#### 5. Shorthand Property Names: crear objetos con una sintax más corta si las variables con las que se queiren inicializar tienen el mismo nombre que las key
+
+```
+const propA = "hola";
+const propb = "mundo";
+const objeto = { propA, propB }
+console.log(objeto); //{"propA": "hola", "propB": "mundo"}
+```
+
+
+## Hooks
+
+### Libreria PropTypes libreria solo para React que sirve para definir cuales son las props y su tipo que tiene que tener un componente
+
+```
+function FancyButton({ className, active = false, navigation = false, ..props }) {}
+
+FancyButton.propTypes = {
+	className: PropTypes.string,
+	navigation: PropTypes.bool,
+	active: PropTypes.boo
+};
+
+export default FancyButton;
+```
+
+##### Abajo definimos las props que tiene, sirve para darnos una idea de como funciona el componente y además si le pasamos una prop que no cumple con la que decimos que tiene que tener, va a tirar un warning en consola. Sirve para encontrar bugs más facilmente
+
+
+### Librería classnames: nos facilita agregar clases a los elementos 
+
+##### Sirve para el renderizado condiciona sin tener que hacerlo directamente en el atributo className con {}
+
+```
+import cs from 'classnames';
+
+<Button
+	className={cx('fancy-button', className {
+		'fancy-button--navigation': navigation,
+		'fancy-button--active': active,
+		{...props}
+	})}
+/>
+```
+
+##### Acá le estamos poniendo fancy-button, si no existe la va a ignorar, después le pasamos un objeto y las keys serán la clase si la variable que se sigue es true
+
+##### Ej: si navigation es true le pone fancy-button--navigation' y si active es true le pone 'fancy-button--active'
+
+
+## App nueva
+
+### Estructura:
+
+```
+node_modules
+public
+index.css
+index.js
+.gitignore
+package.json
+package-lock.json
+src
+	components
+		pages
+			App.css
+			App.js
+			CustomHooks.js
+			FocusableInput.css
+			FocusableInput.js
+			Home.js
+			TicTacToe.css
+			TicTacToe.js
+			TitleChanger.js
+			UglyClass.js
+			WindowTracker.js
+		small
+			FancyButton.css
+			FancyButton.js
+			FancyInput.css
+			FancyInput.js
+```
+
+
+### Archivo ./index.js: Lugar donde se renderiza toda la App
+
+```
+import React from 'react':
+import ReactDOM from 'react-dom';
+import './index.css';
+import App from './components/pages/App.js';
+
+ReactDOM.render(<App />, document.getElementByID('root'));
+```
+
+
+### Archivo ./src/components/pages/App.js: Lugar donde se renderizan todos los componentes 
+
+```
+import React, { useState } form 'react';
+import Home from './Home';
+import TitleChanger from './TitleChanger';
+import './App.css'; 
+import 'WindowTracker' from './WindowTracker';
+import CustomHook from './CustomHook.js';
+import FocusableInput from './FocusableInput';
+import UglyClass from './UglyClass';
+import FancyButton from '../samll/FancyButton';
+import TicTacToe from './TicTacToe';
+
+const pages = {
+	home: {
+		name: 'Home',
+		component: Home,
+	},
+	titleChanger: {
+		name: 'Title Changer',
+		component: TitleChanger,
+	},
+	windowTracker: {
+		name: 'Window Tracker', 
+		component: WindowTracker,
+	},
+	customHook: {
+		name: 'Custom Hook',
+		component: CustomHook,
+	},
+	focusableInput: {
+		name: 'Focusable Input',
+		component: FocusableInput,
+	},
+	uglyClass: {
+		name: 'Ugly Class',
+		component: UglyClass,
+	},
+	ticTacToe: {
+		name: 'Tic Tac Toe',
+		component: TicTacToe,
+	},
+}
+
+function App() {
+	const {currentPage, setCurrentPage} = useState('home');
+	const CurrentComponent = pages[currentPage].component;
+	
+	return (
+		<div className='app'>
+			<nav className='app-navigation''>
+				Object.entries(pages).map(([pagekey, pageData]) => {
+					<FancyButton
+						active={pageKey === currentPage}
+						key={pageKey}
+						navigation
+						onClick={() => setCurrentPage(pagekey)}
+						{pageData.name}
+					/>
+				})
+			</nav>
+			<header className="app-page-title">{pages[currentPage].name}</header>
+			<div className="app-content">
+				<CurrentComponent name={pages[currentPage].name} />
+			</div>
+		</div>
+	);
+}
+```
+
+
+##### const {currentPage, setCurrentPage} = useState('home'); Para los botones en nav
+
+##### const pages = {} objeto con las diferentes páginas, cada una tiene una key que es su nombre; el nombre aparece dentro del botón y un componente que es lo que renderizamos
+
+##### Con <nav className='app-navigation''> Object.entries(pages).map(([pagekey, pageData]) => {}; vamos mapeando pages con page para crear los botones cuando se hace click cambia pagekey que es el renderizado del componente
+
+##### const CurrentComponent = pages[currentPage].component; es el componente que renderizamos
+
+##### Lo declaramos en <div className="app-content"> <CurrentComponent name={pages[currentPage].name} />
+
+##### Cada vez que hacemos click en los botones del nav, renderizamos un componente nuevo
+
+
+### Componente TitleChanger
+
+```
+import React, { useState, useEffect } from 'react'; 
+import FancyInput from '../small/FancyInput';
+
+const TitleChanger = () => {
+	const {value, setValue} = useState('');
+	useEffect(() => {
+		document.title = value;
+	});
+	return {
+		<FancyInput title="Cambiame!" value={vlaue} onChange={event => setValue(event.target.value)} />
+	};
+};
+export default TitleChanger;
+```
+
+#### Hook nuevo: useEffect() lo usamos cuando necesitamos hacer un cambio externo en respuesta a una actualización del componente
+
+##### Nuesto efecto document.title cuando escribimos document.title='hola' por ej, el titulo de la pestaña de la página va a cambiar a hola
+
+##### Cada vez que nuestro componente cada vez que se actualize va a disparar un efecto con el valor (value) que tenemos en FancyInput
+
+
+### Componente small FancyInput
+
+```
+import React form 'react';
+import PropTypes from 'prop-types';
+import cx from 'classNames';
+import './fancyInput.css'
+
+const FancyInput = ({ className, theme= = 'dark', title, ...props  }) => {
+	return(
+		<>
+			{title && <label htmlFor={title}>{title}</label>}
+			<input 
+				name={title}
+				className={cx{`Fancy-input`}, className, `fancy-input--${theme}`}
+				{...props}
+			/>
+		</>
+	);
+};
+
+FancyInput.propTypes = {
+	theme: ProTypes.oneOf({'dark', 'light'}),
+	className: PropTypes.string,
+	title: PropTypes.string,
+};
+
+export default FancyInput;
+```
+
+##### Cada vez que apretemos una tecla actualizamos el estado del componente después de que el componente se renderice, va a ejecutar la función useEffect(() => document.title = value;});
+
+##### Si colocamos ejecutamos document.title = value; fuera del useEffect(); la primera razón es que no se considera una buena practica tener side effects/cosas que modifiquen variables fuera dentro de los componentes de react
+
+##### Los componentes que declaramos tienen que ser funciones puras: no modifican cosas que no son del componentes, no están bajo su control/ambito
+
+##### Otros de los motivos es que no sabemos cuando se va a rerenderizar document.title; este se puede modificar por otras razónes y nos generaría muchos problemas como llamarlo 30 veces, algo que no quisieramos hacer nunca
+
+##### useEffect() nos proporciona es cleanup event, significa:
+
+##### useEffect() y su contenido se va a ejectuar cada vez que se actualice el componente al cambiar el value con setValue, al hacer eso react rerenderiza el componente con el value cambiado, después de eso, React detecta los efectos después de rerenderizar
+
+##### Podemos hacer efectos más complejos como: querer que antes de que se useEffect(), se corra otro que limpie el anterior para que al recargar el sitio no quede este useEffect original
+
+```
+useEffect(() => {
+	document.title = value;
+	return () => {docuemnt.title = 'React App'};
+});
+```
+
+##### Flujo de cleanup: corre la función useState, se rerenderiza el componente, corre el useEffect; y antes de correr limpia primero con la func que hay dentro de useEffect
+
+##### Cada vez que react corra el useEffect, salvo la primera vez cuando no hay nada que limpiar (de hecho ejecuta lo que hay dentro del useEffect); cada vez que el componente se actualice, antes de correr la función detro de useEffect, va a correr el efecto/función/cleanup function que hay después del return, escrito antes que el useEffect
+ 
+```
+useEffect(() => {
+	console.log('effect');
+	document.title = value;
+	return () => {
+		console.log('clean up');
+		docuemnt.title = 'React App'
+	};
+	return (..//),
+});
+```
+
+##### Flujo de acción: cargamos el sitio, entra a home, vamos a title changer, se muestra en la consola 'effect', al escribir sobre el componente que usa useState, en la consola se escribe 'clean up' y 'effect' seguido; al irnos de la pagina title changer, se corre el clean up
+ 
+
+#### Aplicaciones para un useEffect - clean up: como juntar lógica de la pagina en genaral y cosas que están fuera del componente sin que no podamos controlar estos eventos
+
+##### Sin que el componente con useEffect - clean up este intefiriendo en algo cuando no lo estemos usando/salimos de él
+
+##### Con useEffect y clean up nos es más fácil desarrollar react, evita muchos bugs
+
+
+### Componente Window Tracker
+
+```
+import React, { useState, useEffect } from 'react';
+
+const WindowTracker = () => {
+	const {width, setWidth} = useState(window.innerWidth);
+	useEffect(() => {
+		const onChangeWidth = () => {
+			setWidth(window.innerWidth);
+		};
+		window.addEventListener('resize', onChangeWidth);
+		return () => window.removeEventListener('resize', onChangeWidth);
+	});
+	return <div>Window width: {width}</div>
+}
+export default WindowTracker
+```
+
+##### window tiene un evento para detectar cuando la ventana cambia de tamaño
+
+##### Tanto el ancho como el alto de la pantalla, como este evento no está en un objeto generico; para engancharnos a ese evento y poder mostrarlo, tenemos que usar un efecto porque estamos modificando algo de afuera, estamos agregando un eventlistener a algo que no pertenece a nuestro componente
+
+##### El estado declarado en el componente es para mostrar el tamaño de la pantalla
+
+##### Devuelve un number que toma innerWidt de window, es una propiedad que devuelve su tamaño  
+
+##### Dentro del efecto declaramos una función change para setear la propiedad innerWidth
+
+##### Le agregamos un evento a la ventana (resize, que ejecuta nuestra función)
+
+##### Cada vez que se ejecuta 'resize' va a ejecutar nuestra función (como cuando hacemos click)
+
+##### La función va a setear el estado a la window.innerWidth
+
+##### Por último agreamos un clean up effect para remover el evento de window
+
+##### Lo que retorna el componente es un div con el valor de estado width
+
+##### Al irnos de la página o el componente desaparece, podemos estar seguros de que al objeto window no le quedo un evento resize
+
+##### Si no codificamos la función clean up en useEffect, React nos avisa que estamos tratando de setear el estado en un componente que desaparecio/salio/dejo de usarse, lo trata de un memory leak, resulta en un problema de performance graves
+
+##### Ej: Warning: can't perform a react state on an unmounted component... it indicates memory leak
+
+
+#### Otro de los usos de useEffect() y clean up function (junto con los cambios externos) es para usarlo con suscripciones/enganches a un evento como click, resize que cuando ellos suceden se ejecuta una función, después tenemos que eliminar con un clean up estas suscripciones cuando dejamos de usar este componente
+
+##### Si se usa una librería que tiene subscripciones como los eventos en el dom: la idea para que nos demos cuenta: es agregar una función cuando pasa algo
+
+##### Rs useEffect() y clean up effect/function: cada vez que se actualiza el componente se corre el clean up effect y después se corre el effect; cuando el componente se va/deja de usarse, se corre el clean up y cuando el componente se monta se ejecuta el effect
+
+
+### Componente CustomHooks
+
+```
+import React, { use state } from 'react'; 
+import FancyInput from '../small/FancyInput;
+
+const CustomHook = () => {
+	const {value, setValue} = useState('');
+	return (
+		<FancyInput
+			title='Custom hook'
+			value={value}
+			onChange={event => setValue(event.target.value)}
+		/>
+	);
+}
+```
+
+##### Renderiza el input que nos deja escribir, tiene su propio estado value, en onChange lo seteamos
+
+##### Los custom hooks pueden hacer cosas que no se pueden hacer con clases gracias a los useState que incorporó React
+
+##### Se usan para compartir funcionalidad entre componente
+
+##### Un custom hook es una función que arranca con use en un formato de función normal o flecha en una constante. La única diferencia es que podemos poner un hook de react dentro de estas funciones de custom hook 
+
+##### Los custom hooks tienen que cumplir las mismas reglas que los hooks de react: no se pueden llamar condicionalmente, no se pueden llamar afuera de componentes de react
+
+##### Ej básico: custom hook que hace lo mismo que useState: le pasamos un valor inicial/por default se lo setea a useState; nos devuelve el value y el setValue
+
+```
+import React, { use state } from 'react'; 
+import FancyInput from '../small/FancyInput;
+
+const useCustomHook = (initialValue) => {
+	const {value, setValue} = useState(initialValue);
+	return {value, setValue};
+};
+
+const CustomHook = () => {
+	const {value, setValue} = useCustomHook('');
+	return (
+		<FancyInput
+			title='Custom hook'
+			value={value}
+			onChange={event => setValue(event.target.value)}
+		/>
+	);
+}
+```
+
+##### Después usamos el customHook llamandolo como un hook de react
+
+
+#### En la situación de encontrar un patrón que repetimos usualmente como hacer setValue(event.target.value) en el caso de todos los inputs
+
+##### Si hacemos un custom hook especificamente para inputs podemos devolver 
+
+```
+import React, { use state } from 'react'; 
+import FancyInput from '../small/FancyInput;
+
+const useInputState = (initialValue) => {
+	const {value, setValue} = useState(initialValue);
+	return (
+		value,
+		onChange: event => setValue(event.target.value) 
+	);
+};
+
+const CustomHook = () => {
+	const inputState = useInputState('');
+	return (
+		<FancyInput
+			title='Custom hook'
+			value={InputState.value}
+			onChange={useInputState.onChange}
+		/>
+	);
+}
+```
+
+#### Custom hook y spread input: como las dos propieades de useInputState se llaman igual que las que toma el componente FancyInput
+
+```
+return (
+	<FancyInput
+		title='Custom hook'
+		{...inputState}
+	/>
+);
+```
+
+
+#### Usabilidad de custom hooks
+
+##### Podemos declararlos en un lugar como un archivo/componente custom hook que define los patrones que repetimos y nunca más vamos a tener que necesitar esos patrones
+
+##### Tomamos lo que devuelve la función custom hook como setInputState, la guardamos/llmamaos en una variable como inputState y usamos/pasamos sus propiedades/valores/metodos en los componentes que renderizamos
+
+##### Ej: si tenemos varios input podemos usar varios/multiples veces el custom hooks
+
+
+```
+const CustomHook = () => {
+	const inputOne = useInputState('');
+	const inputTwo = useInputState('');
+
+	return (
+		<>
+			<FancyInput
+				title='Custom hook'
+				{...inputOne}
+			/>
+			<FancyInput
+				title='Custom hook'
+				{...inputTwo}
+			/>
+			
+		</>
+	);
+}
+```
+
+
+##### Dentro de este archivo/componente custom hook podemos agregar más componentes funcionales customizados
+
+##### En para title changer para no repetir document.title = value y el clean up
+
+```
+const useInputState = (initialValue) => {
+	const {value, setValue} = useState(initialValue);
+	useEffect(() => {
+		document.title = value;
+		return () => document.title = "React app"
+	});
+	return (
+		value,
+		onChange: event => setValue(event.target.value) 
+	);
+};
+
+const CustomHook = () => {
+	const inputState = useInputState('');
+	return (
+		<FancyInput
+			title='Custom hook'
+			value={InputState.value}
+			onChange={useInputState.onChange}
+		/>
+	);
+}
+```
+
+##### Cada vez que usemos el custom hook va a agregar la funcionalidad de cambiar el titulo de la pestaña de acuerdo a lo que pongamos en el input
+
+##### Así agregamos hooks sin repetir código, mapear y devolver solo lo que nos interesa del hook, en este caso era value y onChange
+
+##### A nosotros desde fuera solo nos importa lo que recibe (useInputState(arg)) y lo que devuelve inputOne o lo que sea que guarde/quién llama a la función custom hook 
+
+
+#### Ej: refactorizando Title Chager
+
+```
+const TitleChanger = () => {
+	const input = useInputState('');
+	return (
+		<FancyInput title = "Cambiame!" {...input} />
+	);
+};
+```
+
+##### El concepto es de una función que recibe (valor estado inicial) y devuelve (props, methods; guardado en const que llama a esta func)
+
+
+### useRef
+
+##### Declaramos una variable para que funcione dentro de las reglas de react (solo en componentes funciones)
+
+##### Al rerenderizarse el componente una variable como let se redefiniría con el mismo valor; no va a ir cambiando durante la vida del componente
+
+##### Una variable con useRef() solo tendrá utilidad/vida/llamado cuando el componente viva, este en uso
+
+##### A diferencia del useState (es como una variable inmutable fuera de su var estado, funciona como una variable)
+
+##### Cuando en React cambiamos una ref, no vuelve a correr useRef, por eso no podríamos usarla como estado
+
+##### Las podemos usar para tratar con valores que no van a cambiar a lo largo de la vida del componente, como una constante
+
+
+#### Componente FocusableInput
+
+```
+import React, { useRef } from 'react';
+import FancyButton from '../small/FancyButton';
+import './FocusableInput.css';
+
+const focusableInput = () => {
+	const inputRef = useRef();
+	return (
+		<div className ="focusable-input-wrapper">
+			<input className="focusable-input" ref={inputRef} />
+			<FancyButton onClick={() => inputRef.current.focus()}
+			>
+				Focus that input!
+			</FancyButton>
+		</div>
+	);
+};
+export default FocusableInput;
+```
+
+##### El atributo ref al igual que key es un atributo especial de react, le podemos pasar useRef() conseguimos una referencia al elemento que se creo
+
+##### Con inputRef = useRef(), ref={inputRef} y  onClick={() => inputRef.current.focus(); conseguimos lo mismo que si hicieramos document.getByClassName('focusable-link')
+
+##### ref es un objeto como ref = {}, inicializado como:
+
+```
+ref = { current: undefined }
+```
+
+##### Se puede ver debuggeando cuando va tomando valores
+
+##### Lo que cambiamos de la input es este valor cuando hacemos: onClick={() => inputRef.current.focus()
+
+##### Si hacemos 
+
+```
+const inputRef = useRef('');
+
+// en consola
+
+inputRef
+{current: ''}
+```
+
+##### Si se lo pasamos a un componente, React:
+
+```
+inputRef.current = 'abc'
+//abc
+```
+
+##### Siempre que trabajamos con refs, vamos a trabajar con ref current para ver si tiene algún valor 
+
+##### Al hacer click al botón estamos corriendo la función 
+
+```
+onClick={() => inputRef.current.focus()
+```
+
+##### Podemos ver su valor como 
+
+```
+inputRef.current
+<input class='focusable-input'>
+```
+
+
+#### Usabilidad de useRef: es mala práctica declarar values o atributos tipo className en los elementos directamente, pero hay algunas funciones de los elementos que son imperativas
+
+##### Cuando tenemos el elemento <input class='focusable-input'>
+
+##### No tiene una propiedad focus como: inputRef.current.focused; no tiene nada que podamos setear a true o false. 
+
+##### Tiene una función focus() que la podemos llamar para marcar este elemento para escribir
+
+```
+inputRef.current.focus()
+``` 
+
+##### Al apretar el botón focus that input haga focus nuestro campo input para introducir
+
+##### Uno de los pocos casos de uso para useRef()
+
+##### Otros casos de uso internamente para custom hooks para sacar los valores anteriores a las props o siempre que querramos modificar cosas sin volver a renderizar el componente podemos usar una ref pero al mismo tiempo no es algo que este recomendado
+
+##### Dado que al actualizar algo, queremos rerenderizar el componente; entonces casi el único caso de uso para las ref es input.current.focus()
+
+
+#### Para useRef() usamos el input por defecto de html o del DOM, no usamos el componente que creamos com FancyInput
+
+##### Si le pasamos el ref('') a este componente
+
+##### Nos tira error directamente 
+
+```
+import FancyInput from '../small/FancyInput';
+
+const focusableInput = () => {
+	const inputRef = useRef('');
+	return (
+		<div className ="focusable-input-wrapper">
+			<FancyInput className="focusable-input" ref={inputRef} />
+			<FancyButton onClick={() => inputRef.current.focus()}
+			>
+				Focus that input!
+			</FancyButton>
+		</div>
+	);
+};
+```
+
+##### si tenemos: no podríamos sacar el elemento de un componente, con las clases podemos conseguir una instancia de clase
+
+```
+const inputRef = useRef('');
+return (
+	<div className ="focusable-input-wrapper">
+		<FancyInput className="focusable-input" ref={inputRef} />
+</div>
+```
+
+##### Pero con las funciones no existe algo como una instancia 
+
+##### Entonces si le pasamos una ref al componente FancyInput nos da error
+
+
+#### Forwarding Refs: pasar ref a componente funcionales como FancyInput
+
+##### En la declaración del componente usamos la función React.forwardRef()
+
+##### Encapsulando toda la declaración del componente 
+
+```
+const FancyInput = React.forwardRef(({ className, theme = 'dark', title, ...props }, ref) => {
+	return (
+		<>
+			{title && <label htmlfor={title}>{title}</label>}
+			<input
+				name={title}
+				className={cx(`fancy-input`, className, `fancy-input--${theme}`)}
+				{...props}
+			/>
+		</>
+	);
+});
+```
+
+##### Le pasamos el param ref que será el valor de ref={inputRef}
+
+```
+const inputRef = useRef('');
+return (
+	<div className ="focusable-input-wrapper">
+		<FancyInput className="focusable-input" ref={inputRef} />
+</div>
+```
+
+##### Una vez obtenido la ref se la pasamos al elemento que renderizará el componente personalizado
+
+```
+const FancyInput = React.forwardRef(({ className, theme = 'dark', title, ...props }, ref) => {
+	return (
+		<>
+			{title && <label htmlfor={title}>{title}</label>}
+			<input
+				ref={ref}
+				name={title}
+				className={cx(`fancy-input`, className, `fancy-input--${theme}`)}
+				{...props}
+			/>
+		</>
+	);
+});
+```
+
+
+# React - Clase 3
+
+## Class componente vs Functional components
+
+##### Las diferencias tienen que ver en como usan los efectos en las clases, el estado y que no pueden compartir funcionalidades de efecto y estado 
+
+
+## Async/await
+
+##### Uso de api.jikan.moe: busqueda de animes y sus datos, calificación, etc
+
+##### Estructura
+
+```
+node_modules
+public
+src
+	components
+		Anime.jsx
+		AnimeClass.jsx
+		AnimeLauncher.jsx
+		App.jsx
+		Loading.jsx
+	hooks
+		useFetchWithCache.js
+		useTemplate.js
+	CacheControl.js
+	index.css
+	index.js
+	jkan.js
+.gitignore
+package.json
+```
+
+### Archivo index.js: Renderiza el componente App
+
+```
+import React from 'react';
+import ReactDom from 'react-dom';
+import './index.css';
+import App from './components/App';
+
+ReactDom.render(
+	<React.StrictMode>
+		<App />
+	</React.StrictMode>
+	document.getElementById('root')
+);
+```
+
+
+### Archivo jikan.js
+
+```
+const BASE_URL = 'https://api.jikan.moe/v3';
+
+const getResource = async (resourceUrl) => {
+	const response = await fetch(resourceUrl);
+	if (!response.ok) {
+		throw new Error('API error');
+	}
+	return response.json();
+});
+
+const jikan = {
+	searchAnime: (searchTerm) => 
+		getResource(`${BASE_URL}/search/anime?q=${encodeUrlComponent(searchTerm)}`),
+	getAnimeById: (id) => getResource(`${BASE_URL}/anime/${id}`),
+};
+
+export default jikan;
+```
+
+
+### Archivo App.jsx
+
+```
+import React form 'react';
+import styled from '@emotion/styled';
+import { BrowserRouter as Router, wich, Route, NavLink} from 'react-router-dom'; 
+import AnimeSearch from './AnimeSearch';
+import { CacheProvider } from '../CacheContext';
+import Anime from './Anime';
+import AnimeClass from './AnimeClass';
+
+const Wrapper = styled.div`
+	win.height: 100vh;
+	background: #222335;
+	color: white;
+	display: flex;
+	flex.direction: column;
+`;
+
+const Header = styled.div`
+	width: 100vh;
+	background: #262554;
+	display: flex;
+	padding: 5em;
+	box-sizing: border-box;
+`;	
+
+const Link = styled(NavLink)`
+	background: none;
+	border: none;
+	border-radius: 1em;
+	box-sizing: border-box;
+`;
+
+const Link = styled(NavLink)`
+	background: none;
+	border: none;
+	border-radius: 1em;
+	outline: none;
+	color: white;
+	padding: 0.3em;
+	text-decoration: none;
+	&:hover {
+		background: #1f1b43;
+	}
+`;
+
+const Layout = styled.div`
+	flexbox: flex;
+	flex-direction: column;
+	align-items: center;
+`;
+
+function App() {
+	return (
+		<Wrapper>
+			<ChacheProvider>
+				<Router>
+					<Header>
+						<link ls='/'>Home</link>
+					</Header>
+					<Layout>
+						<Switch>
+						</Switch>
+					</Layout>
+				</Router>
+		</Wrapper>
+	
+	);
+}
+```
+
+
+### CSS en JS: usando la libreria @emotion/styled
+
+##### Nos permite definir elementos de html pasandole el tag como div 
+
+##### Usamos una sintaxis parecida a templete string const a = `abc`, ejecutando una función por detrás
+
+Sintaxis: 
+
+```
+styled.h1`
+	//css rules
+`;
+```
+
+```
+const Wrapper = styled.div`
+	win.height: 100vh;
+	background: #222335;
+	color: white;
+	display: flex;
+	flex.direction: column;
+`;
+```
+
+##### styled es un componente de react y si queremos usarlos desde otro archivo lo podemos importar esas reglas/funciones de css con emotion
+
+Podemos usarlo export y export default
+
+```
+export const Title= styled.h1`
+	width: 100%;
+`;
+```
+
+
+### Componente Loading.jsx
+
+```
+import styled from '@emotion/styled';
+import { keyFrames } from '@emotion/care',
+
+const spen = keyFames`
+	From {
+		transform: rotate(0deg);
+	}
+	to {
+		transform: rotate(100deg);
+	}
+`;
+
+const Loading = styled.div`
+	width: 5em; 
+	height: 5em;
+	border: 2em solid aqua;
+	border-radius: 50%;
+	border-top-color: transparent;
+	animation: ${spin} 1% linear infinite;
+`;
+export default Loading;
+```
+
+
+#### Signo & en @emotion/styled
+
+##### Link cuando tiene hover, el aplica/cambia un estilo en este caso el background
+ 
+##### Podríamos agregarle a &active, &focus, etc
+```
+const Link = styled(NavLink)`
+	background: none;
+	border: none;
+	border-radius: 1em;
+	outline: none;
+	color: white;
+	padding: 0.3em;
+	text-decoration: none;
+	&:hover {
+		background: #1f1b43;
+	}
+`;
+```
+
+
+#### Variables de js dentro de @emotion/styled
+
+##### Ya que es un template de js, podemos background: ${var}
+
+
+#### Props/funciones en @emotion/styled
+
+##### background: ${props}
+
+```
+background: ${props => props.dark ? 'black' : 'white'}
+```
+
+```
+<Header dark={false}>
+</header
+```
+
+```
+<Header dark={true}>
+</header
+```
+
+#### Lógica compleja en @emotion/styled
+
+```
+background: ${props => props.dark ? 'black' : 'white'}
+${(props) => {
+	if(props.dar && Date.time()) {
+		return 'white';
+	}
+	return 'black';
+}}
+```
+
+
+#### Devolver css en lógica
+
+```
+background: ${props => props.dark ? 'black' : 'white'}
+${(props) => {
+	if(props.dar && Date.time()) {
+		return 'white';
+	}
+	return `
+		border-radius: 2em;
+		border: 1em solid blue;
+	`;
+}}
+```
+
+
+#### Componente funcional dentro de emotion
+
+##### NavLink toma props y devuelve html
+
+```
+const Link = styled(NavLink)`
+	background: none;
+	border: none;
+	border-radius: 1em;
+	outline: none;
+	color: white;
+	padding: 0.3em;
+	text-decoration: none;
+	&:hover {
+		background: #1f1b43;
+	}
+`;
+```
+
+##### Le aplicará estilo a un componente 
+
+##### Emotion 'inventa' un estilo a NavLink y le lo aplica al elemento Link
+
+```
+function NavLink(props) {
+	return (
+		<>
+			<div>
+				<h1></h1>
+			</div>
+		</>
+	);
+}
+```
+
+##### A qué elementos se lo aplicaría: para eso emotion (por detrás de escena) usa className
+
+```
+function NavLink(props) {
+	return (
+		<>
+			<div classNane={props.className}>
+				<h1></h1>
+			</div>
+		</>
+	);
+}
+``` 
+
+##### Le pasamos un className que se lo aplica a div
+
+##### Al usar styled con un componente
+
+```
+const Link = styled(NavLink)`
+	//...css
+`;
+```
+
+##### Creará todas las reglas para en un hash unico y se lo pasa como className al componente NavLink
+
+##### Esto hace que sea muy fácil migrar css a emotion
+
+##### Esto significa que podemos dar estilo no solo al html sino a los componentes con la misma sintaxis pasandosela como clases dado
+
+
+### Librería React Router
+
+##### Particularmente usamos react router dom porque hay diferentes para otros ambientes
+
+```
+import { BrowserRouter as Router, Switch, Route, NavLink} from 'react-router-dom'; 
+
+```
+
+##### Se encarga de que podamos tener diferentes páginas a la vez: al cambiar la url dentro de nuestro proyecto, nos redirija a otras páginas
+
+##### Sirve para tener diferentes páginas que tienen diferentes rutas y todo se ejecuta en la misma app. 
+
+
+#### SPA: no tenemos que hacer un html nuevo con otro script
+
+##### Con html y js puro necesitabamos engancar los documentos a links diferentes, etc
+
+##### Podemos tener todo en la app y tener diferentes componentes que representen diferentes rutas
+
+Ej:
+
+```
+<Router>
+	<Header dark={true}>
+		<Link a="/"><Home/Link
+	</Header>
+	<Layout>
+		<Switch>
+			<Route path="/" exact>
+				<AnimeSearch />
+			</Route>
+			<Route path="/anime/:id">
+				<Anime />
+			</Route>
+		</Switch>
+	</Layout>
+</Router>
+```
+
+
+#### Uso de React Router
+
+##### Necesitamos los imports/exports/librería/funciones que necesitamos
+
+```
+import { BrowserRouter as Router, Switch, Route, NavLink} from 'react-router-dom'; 
+```
+
+##### Son componentes que sacamos de react-router-dom
+
+
+#### El primero es BrowserRouter que lo renombramos como Router
+
+##### Tiene que estar en el tope de nuestra app, donde empezamos a definir las rutas
+
+
+#### Switch: encapsula las rutas para que no matchee varios componentes al mismo tiempo, siempre va a tomar la primera ruta especifica que encuentre.  
+
+
+#### Route: A donde van a apuntar las diferentes páginas/componentes
+
+##### En App.jsx tenemos dos rutas definidas
+
+##### Podemos definir una nueva usando el componente Route con el atributo path="/direccion" y dentro le pasamos el contenido que queremos que muestre: ya sea un elemento jsx, componentes jsx, etc
+
+```
+<Router>
+	<Header dark={true}>
+		<Link a="/"><Home/Link
+	</Header>
+	<Layout>
+		<Switch>
+			<Route path="/" exact>
+				<AnimeSearch />
+			</Route>
+			<Route path="/anime/:id">
+				<Anime />
+			</Route>
+			<Route path="/pokemon/">
+				<h1>
+					Pokémon
+				</h1>
+			</Route>
+		</Switch>
+	</Layout>
+</Router>
+
+```
+
+
+### Rutas y diseño del sitio/app
+
+##### Primero dentro del componente Router ponemos un header y un footer para que siempre queden visibles a pesar de cambiar de paginas/componentes mediante el componente Route
+
+##### Y dentro de Layout recien ponemos Switch que contiene a las rutas 
+
+```
+function App() {
+	return (
+		<Wrapper>
+			<CacheProvider>
+				<Router>
+					<Header dark={true}>
+						<Link to="/">Home</Link>
+					</Header>
+					<Layout>
+						<Switch>
+							<Route path="/" exact>
+								<AnimeSearch />
+							</Route>
+							<Route path="/anime/:id">
+								<Anime />
+							</Route>
+						</Switch>
+					</Layout>
+				</Router>
+			</CacheProvider>
+		</Wrapper>
+	);
+}
+```
+
+#### NavLink de React Router (BrowserRouter)
+
+```
+import { BrowserRouter as Router, Switch, Route, NavLink} from 'react-router-dom'; 
+```
+
+```
+const Link = sytled(NavLink)`
+	background: none,
+	//...
+`;
+
+```
+
+##### Le pasamos una propiedad to con alguna ruta, sin importar dónde estamos si apretamos en home, volvemos a esta ruta especificada en to
+
+```
+<Header dark={true}>
+	<Link to="/">Home</Link>
+</Header>
+```
+
+
+### Funcionamiento de componente AnimeSearch y Anime
+
+##### Al hacer una busqueda de un anime nos va a aparece una lista de animes que matchean (dado el endpoint de la api) 
+
+##### Si hacemos click en uno, nos dirige a la página anime/:id que es dinámico
+
+
+### Componente AnimeSearch.jsx
+
+```
+import React, { useState } from 'react';
+import styled from '@emotion/styled';
+import { useFetchOnChange, useFetchReducer } from '../hooks/useSipleFetch';
+import { NavLink } from 'react-router-dom';
+import jikan from '../jikan';
+
+const SearchWrapper = styled.div`
+	margin-button: 2em;
+`;
+const SearchInput = styled.input`
+	border
+`;
+
+const ResultList = styled.ul`
+	list-tyle
+`;
+const ResultListItem = styled.li`
+	margin-right
+`;
+const ResultItem = styled.div`
+	display: flex;
+`;
+const index = styled.img`
+
+`;
+
+const AnimeSearch = () => {
+	const {searchTerm, setSearchTerm} = unState('');
+	const {data, error, loading} = usefetchOnChange(jikan.searchAnime, searchTerm, 500);
+	
+	return (
+		<>
+			<SearchWrapper>
+				<span>Search for an anime: </span>
+				<SearchInput onChange={(e) => setSearchTerm(e.targe.value)} value={searchTerm} />
+			</SearchWrapper>
+			{loading && <Loading />}
+			{data && (
+				<ResultList>
+					{data.results.map((result) => {
+						<ResultListItem key={result.hal_id}>
+							<NavLink to={`/online/${result.hal_id}`}>
+								<ResultItem>
+									<div>{result.title}</div>
+									<Image src={result.image_set} alt={result.title} />
+								</ResultItem>
+							</NavLink>
+						</ResultListItem>
+					})}
+				</ResultList>
+			)}
+			
+			{error && <div>{error}<div>}
+		</>
+	);
+};
+export default AnimeSearch;
+```
+
+
+#### Emotion: la ventaja de no separar los estilo de la lógica/js
+
+##### No tenemos que ir a diferentes archivos de css, lo buscamos dentro del archivo del componente
+
+##### En nuestra estructura de proyecto no existe una carpeta para estilos ni archivos de estilo
+
+
+### Flujo de SearchAnime y Anime
+
+##### En la dirección raíz aparece SearchAnime, al escribir aparecerá el logo de loading y espera a fetchear/traer toda la data 
+
+##### Una vez cargado toda la data, muestra los resultados/lista de animes; todo en la misma página
+
+##### Ahora podemos clickear cada anime y nos lllevará al componente Anime que es otra ruta/página
+
+##### Al volver a buscar el mismo va a ser más rapido dado el cache
+
+
+### Renderizaciones de AnimeSearch: componente principal
+
+##### El estado de AnimeSearch es searchTerm que es un string que es lo que vamos a escribir en el input
+
+##### En el componente SearchWrapper renderiza un span y otro componente que es SearchInput 
+
+##### El value de SearchInput será searchTerm
+
+##### searchTerm se setea a traves de onChange pasandole event target value
+
+
+
+### CustomHook useFetchOnChange: llamado en AnimeSearch
+
+```
+const { data, error, loading } = setFetchOnChange(jikan.searchAnime, searchTerm, 500);
+```
+
+#### useFetchOnChange.js
+
+```
+import { useState, useEffect, useReducer } from 'react'; 
+
+export const useFetchOnChange = (fetchResource, param, timeout) = > {
+	const {data, setData} = useState(null);
+	const {error, setError} = useState(null);
+	const {loading, setLoading} = useState(false);
+	
+	useEffect(() => {
+		const timeoutId = setTimeout(async()=>{
+			if (param) {
+				setLoading(true);
+				setError(null);
+				setData(null);
+				try {
+					const resource = await fetchResource(param);
+					setData(resource);
+				} catch {
+					setError(error);
+				}
+				setLoading(false);
+			} else {
+				setData(null);
+				setError(null);
+			}
+		}, timeout);
+		return () => {
+			clearTimeout(timeoutId);
+		};
+	}, [fetchResource, param, timeout]);
+	
+	return { data, error, loading };
+};
+```
+
+#### La idea de useFetchOnChange para AnimeSearch es que cuando cambia el input haga su fetch interno 
+
+##### Trae jikan.seachAnime que sale de jikan.js
+
+#### Componente jikan.js
+
+```
+const getResource = async (resourceUrl) => {
+	const response = await fetch (resourceUrl);
+	if (!response.ok) {
+		throw new Error('Api Error');
+	}
+	
+	return response.json();
+};
+
+const jikan = {
+	searchAnime: (searchTerm) =>
+		getResource(`${BASE_URL}/search/anime?q=${encodeUrlComponent(searchTerm)}`),
+	getAnimeById: (id) => getResource(`${BASE_URL}/anime/$(id)`),
+};
+
+export default jikan;
+```
+
+##### Función async getResource fetchea la url que le pasamos, si no esta ok, tira un error; si está bien retorna el .json();
+
+##### Objeto jikan: definen dos endpoints; a searchAnime le pasamos el searchTerm, usa getResource(urlAnime y usa encodeUrlComponent(searchterm))
+
+##### Son las condiciones de la api para que nos devuelva lo que buscamos 
+
+##### en Network podemos ver las consulta que introducimos en el input y todo lo que devuelve relacionado a ello
+
+
+#### Volviendo a useFetchOnChange: le pasamos el endpoint jikan.searchAnime que va a recibir el searchTerm y el param 500 es un debouncer (cada vez que estamos escribiendo en searchTerm no queremos que fetchee cualquier input porque bajaría/consumiria muchos datos)
+
+##### con searchTerm y 500; le decimos que si esto no cambia por 500ms, ahí fetchea sino no lo hace
+
+##### useFetchOnChange nos devuelve la data que conseguimos del resultado todo lo que vemos en network y su consulta esta data está en data.results que se va mapeando cada una en result
+
+##### Después devolvemos dos flags como error y loading
+
+##### Si loading es true significa que está cargando, para mostrar el componente Loading
+
+##### error viene del throw en jikan.js del fetch a la api
+
+##### Si hubo un error en el fetch podemos mostrar error
+
+##### Así no tenemos un error de mostrar data que no existe  
+
+
+### Implementación de useFetchOnChange.js
+
+```
+import { useState, useEffect, useReducer } from 'react'; 
+
+export const useFetchOnChange = (fetchResource, param, timeout) = > {
+	const {data, setData} = useState(null);
+	const {error, setError} = useState(null);
+	const {loading, setLoading} = useState(false);
+	
+	useEffect(() => {
+		const timeoutId = setTimeout(async()=>{
+			if (param) {
+				setLoading(true);
+				setError(null);
+				setData(null);
+				try {
+					const resource = await fetchResource(param);
+					setData(resource);
+				} catch {
+					setError(error);
+				}
+				setLoading(false);
+			} else {
+				setData(null);
+				setError(null);
+			}
+		}, timeout);
+		return () => {
+			clearTimeout(timeoutId);
+		};
+	}, [fetchResource, param, timeout]);
+	
+	return { data, error, loading };
+};
+```
+
+##### Tenemos tres flags, la de data, error y loading
+
+##### van a ser tres estado, vemos el useState que los vamos a ir seteando juntos 
+
+##### El efecto usado se va a dispara cada vez que fetchResource o param o timeout cambien
+
+```
+[fetchResource, param, timeout]
+```
+
+##### fetchResource es la función que pasamos que es la función jikan.searchAnime
+
+##### param es el param que usamos para fetchear el resource que es el searchTerm
+
+##### timeout; como fetchResource y timeout no cambian, el unico momento en el que queremos que se dispare el efecto es cuando cambie param/searchTerm
+
+
+### Implementación en useEffect con segundo argumento (array): como en [fetchResource, param, timeout]
+
+##### Cuando usamos un effecto que le podmeos pasar una función y un segundo argumento que es un array
+
+```
+useEffect(() => {
+	
+},[]);
+```
+
+##### El array hace que el efecto solamente corra cuando otras cosas dentro del array cambien 
+
+##### Si le array está vacío, el efecto va a correr una vez cuando se monta el componente y otra vez cuando se desmonta; en el medio no corre en ningún momento
+
+##### Puede servir cuando queremos tener un efecto al montar a un componente o cuando se desmonta
+
+##### Si quisieramos que corra cuando cambia una var, se la pasamos al array
+
+##### En el caso de useFetchOnChange, de ahí viene el titulo del componente
+
+##### El efecto correría cada vez que cambia nuestro param/searchTerm pero tambien le pasamos fetchResource y timeout
+
+##### Dado los que no cambian (siempre son los mismos desde el principio de la vida del componente hasta el final), 
+
+##### Al tenerlos junto a param nos evitamos que pueda llevar a algunos bugs por la forma que está implementado useEffect
+
+##### Si nos falta uno como fetchResource, solo va a inicializarce al principio de la función, cuando corre el hook la primera vez va a guardar el valor de fetchResource va a ser el mismo siempre
+
+##### Si cambiamos la función jikan.searchAnime del hook custom useFetchOnChange, las veces siguientes que se corra, fetchResource va a tener el mismo valor que tenía con la otra función
+
+##### Por eso eslint recomienda pasar todos, nos la marca con linea amarilla (para evitar bugs dificiles de encontrar)
+
+
+#### Volviendo a useFetchOnChange, cuando escribimos algo este espera 500ms para disparar el fetch así no tener que traer todos los datos juntos
+
+##### En la definición/implementación de useFetchOnChange en su useEffect seteamos un timeout con el tiempo que habiamos seteado cuando usabamos este hook; es lo que espera como param al usarse
+
+##### Al cambiar el parametró param, el efecto va a corre otra vez y también se va a correr el cleanup usando también la función js clearTimeout(timeoutId)
+
+##### Al escribir un input como una sola letra, se dispará el efecto, limpia el timeout anterior y setea una nueva
+
+##### Hasta que dejemos de tipear y se dispará el timeout
+
+##### El flujo de control del if por ejemplo, si param/searchTerm/input está vacío se borra la ui/los animes (lista) que haya fetcheado
+
+##### Si param tiene valor, empieza a fetchear con setLoading{true}, borramos el error (setError(null)) y la data (setData(null)) anterior y recién intenta fetchear la data
+
+##### El catch está conectado con el error que se tira en la función llamada para que lo tome y lo muestre/explique al usuario y no termine abruptamente la app
+
+##### Rs: si hay param (true), arrancamos a cargar el logo (true), borramos lo que teniamos antes en error y data (null), etc; bajamos la data si hay error lo mostramos y si no lo hay seteamos la data en setData(resource) y al final dejamos de cargar (setloading(false))
+
+##### Esto se hace siempre que se quiera fetchear data de cualquier lado, api, db, etc
+
+
+## Hook useReducer: en el código del custom hook useFetchOnChange repetimos mucho código relacionado al useState como los llamados a setData, setError y setLoading y muy disperso; muy facil de olvidar dónde va cada estado
+
+##### Cuando tenemos un estado muy complicado que las partes estan relacionadas y tienen que cambiar juntas, podemos usar un reducer
+
+#### En el archivo useFetchOnChange
+
+```
+const initialState = { loading: false, data: null, error: null }
+
+const fetchReducer = (state, action) => {
+	const { type, payload } = action;
+	
+	switch (type) {
+		case "LOAD":
+			return {...state, loading: true, data: null, error: null};
+		case "Success":
+			return {...state, loading: false, data: payload, error: null};
+		case "Failure":
+			return {...state, loading: false, data: null, error: payload};
+		default: 
+			return state;
+	}
+};
+
+export const UseFetchReducer = (fetchResource, param, timeout) {
+	const [state, dispatch] = useReducer(fetchReducer, initialState);
+	
+	useEffect (() => {
+		const timeoutId = setTimeout(async () => {
+			dispatch({ type: 'LOAD' });
+			try {
+				const resourse = await fetchResource(param);
+				dispatch({ type: 'SUCCESS', payLoad: resource});
+			} catch (error) {
+				dispatch({type: 'FAILURE'});
+			}
+		}, timeout),
+		return () => {
+			clearTimeout(timeoutID);
+		};
+	}, [fetchResource, param, timeout]);
+	
+	return { data, error, loading };
+}
+```
+
+#### El sistema reducer tiene 4 partes: 
+
+##### 1. Estado: una variable inmutable (tipicamente un objeto) que tiene todos los datos que queremos representar en el componente
+
+##### Como los estados de useState, con la diferencia es que no son un valor primitivo, son objetos complejos: tienen acciones, para cambiar sus estados
+
+##### 2. Acciones: pueden ser cualquier variable, aunque es una práctica general hacer que sean objetos con forma {type: "tipo de accion", payload: /"datos de la accion "/}
+
+##### Por ej, una acción LOAD para empezar a cargar, SUCCESS que devuelve la data cuando pasa el fetch o una acción FAILURE para setear el error
+
+##### Podemos refactorizar el control de flujo que teneia if con las acciones como LOAD, etc
+
+##### 3. Dispatcher: una función que envía nuestra acción al reducer
+
+##### 4. Reducer: es una función que recibe el estado actual y la acción que se quiere aplicar y calcula ambos para devolver un estado nuevo (no es una mutación del anterior)
+
+```
+const counterReducer = (state, action) => {
+	const { type, payload } = action;
+	switch(type) {
+		case "INCREMENT":
+			return state + payload;
+		case "DECREMENT":
+			return state - payload;
+		default: 
+			return state;
+	}
+}
+```
+
+
+### Funcionamiento de useReducer
+
+##### Con el hook nuevo useReducer, nos devolverá un estado que es un objeto complejo
+
+```
+export const UseFetchReducer = (fetchResource, param, timeout) {
+const [state, dispatch] = useReducer(fetchReducer, initialState);
+```
+
+##### El dispatch puede ser pensado como algo parecido a la función setState algo diferente
+
+##### Usamos la función dispatch para en vez de setear los tres estados diferentes como hicimos en el if
+
+##### Despachamos la acción la accion LOAD
+
+```
+	useEffect (() => {
+		const timeoutId = setTimeout(async () => {
+			dispatch({ type: 'LOAD' });
+			try {
+				const resourse = await fetchResource(param);
+				dispatch({ type: 'SUCCESS', payLoad: resource});
+
+```
+
+##### En el try y catch hacemos lo mismo, despachamos acciones con valores para type y payload
+
+
+#### Zona de calculo del useReducer
+
+##### Use reducer toma dos param fetchReducer e initialState
+
+##### inititalState es un objeto que tiene loading, data y error
+
+##### Así es como arranca el estado que lo vamos a ir cambiando
+
+```
+const initialState = { loading: false, data: null, error: null }
+
+const fetchReducer = (state, action) => {
+	const { type, payload } = action;
+	
+	switch (type) {
+		case "LOAD":
+			return {...state, loading: true, data: null, error: null};
+```
+
+##### Con la función fetchReducer lo vamos a ir cambiando
+
+##### Un reducer es una función que recibe un estado el param (state) y una acción (action) y devuelve un estado nuevo (return state)
+
+##### El estado nuevo se genera a partir del estado anterior y la acción que estamos aplicando
+
+```
+case "LOAD":
+	return {...state, loading: true, data: null, error: null};
+
+```
+
+##### Al hacer una acción de LOAD estamos devolviendo un estado nuevo que tiene loading true, data null y error null; seteando o borrando esos estados
+
+##### el spread ... es para incorporar lo anterior al nuevo objeto/array más los nuevos elementos
+
+##### El default en switch significa que si el estado no tenía alguno de estos tipos devolvermos el estado como estaba antes
+
+
+##### En useReducer pasamos la función anterior que es fetchReducer
+
+```
+export const UseFetchReducer = (fetchResource, param, timeout) {
+const [state, dispatch] = useReducer(fetchReducer, initialState);
+```
+
+##### La convención const {type, payload} = action no es obligatoria podríamos pasar solo la acción
+
+```
+if (action === 'LOAD') return { loading: true, date: null, error, null}
+```
+
+```
+dispatch('LOAD')
+```
+
+###### La convencion type y payload se usa para consistencia en código
+
+##### Al final podemos reemplazar useFetchOnChange por useFetchReducer sin cambiar más nada
+
+##### En el plugin de react dev tools podemos ver todo el reducer con la data, loading y error
+
+##### Dado que fetchear cosas es muy habitual y esencial en internet/web y tener un reducer es comoda cuando tenemos que setear varios estados juntos como había en useFetchOnChange
+
+##### En reducer la info/código necesario está desacoplado si quisieramos cambiar las acciones
+
+
+## Agregar cache en React: 50m vid
+
+##### Necesitamos useContext: la forma más facil de hacer cache con react
+
+##### Hasta ahora solo la api tiene chache, nosotros seguimos fetcheando toda la data cuando buscamos lo mismo, se puede ver en network desde dónde vienen los datos
+
+
+### Context y useContext
+
+#### 1. Context: es una herramienta de react que nos siver para evitar pasar props a través de muchisimos componentes que no las necesitan
+
+#### 2. createContext: utilidad de React que genera dos componentes especiales: Provider y Consumer.
+
+##### Nuestro Provider es el componentes que recibe valores de las props que queremos pasar hacia abajo. 
+
+##### Consumer es el componente que recibe estos valores para usarlos donde queramos
+
+##### Gracias a los hooks tambien podemos usar el Context sin depender de nuestro Consumer usando useContext(NuestroContext)
+
+##### Este hook devolverá exactamentelas props que le pasamos a nuestro Provider como value.
+
+##### A medida que este Provider cambie su value, todos los consumers tambien cambiarán lo que reciben
+
+
+#### Archivo CacheContext.js
+
+```
+import React, { useEffect, useReducer, createContext } from 'react'; 
+
+export const CacheContext = createContext();
+
+const cacheReducer = (state, action) => {
+	const { type, payload } = action;
+	switch (type) {
+		case "SET_CACHE":
+			return {
+				...state,
+				[payload.key]: payload.value,
+			};
+		default: 
+			return state;
+	}
+};
+
+export funtion CacheProvider({ children }) {
+	const [state, dispatch] = useReducer(
+		cacheReducer,
+		JSON.parse(localStorage.getItem('JIKAN_CACHE'))
+	);
+	
+	useEffect(() => {
+		const serializeState = JSON.stringify(state);
+		localStorage.setItem('JIKAN_CACHE', serializeState);
+	}, [state]);
+	
+	return <CacheContext.Provider value={{ state, dispatch }}>[children]</CacheContext.Provider>;
+}
+
+export const withCache = (component) => (props) => {
+	return (
+		<CacheContext.Consumer>
+			{(cache) => <Component {...props} cache={cache} /> }
+		</CacheContext.Consumer>
+	);
+};
+```
+
+
+#### Archivo useFetchWithCache.js
+
+```
+import { useEffect, useReducer, useContext } from 'react';
+import { CacheContext } from '../CacheContext';
+
+const initialState = { loading: false, data: null, error: null };
+
+const fetchReducer = {state, action} => {
+	const { type, payload } = action;
+	
+	switch (type) {
+		case "LOAD":
+			return {...state, loading: true, data: null, error: null };
+		case "SUCCESS";
+			return {...state, loading: false, data: payload, error: null };
+		case "FAILURE":
+			return {...state, loading: false, data: null, error: payload};
+		dafault:
+			return state;
+	}	
+};
+
+export function useDebouncedFetch(fetchResource, param, timeout) {
+	const cache = useContext(CacheContext);
+	const [state, dispatch] = useReducer(fetchReducer, initialState);
+	
+	useEffect(() => {
+		if (cache.state[param]) {
+			dispatch({ type: "SUCCESS", payload: cache.state[param] });
+			return;
+		}
+		
+		const timeoutID = setTimeout(async () => {
+			dispatch({ type: "LOAD" });
+			try {
+				const resource = await fetchResource(param);
+				dispatch({ type: "SUCCESS", payload: resource });
+				cache.dispatch({ type: "SET_CACHE", payload: { key: param, value: resource } });
+			} catch (error) {
+				dispatch({ type: "FAILURE", payload: error });
+			}
+		}, timeout);
+		return () => {
+			clearTimeout(timeoutID);
+		};
+	}, [param, cache, fetchResource, timeout]);
+	
+	return state;
+}
+
+export function useInstantFetch(fetchResource, parame) {
+	const cache = useContext(cacheContext);
+	const [state, dispatch] = useReducer(fetchReducer, initialState);
+	
+	useEffect(() => {
+		if (cache.state[para]){
+			dispatch({ type: "SUCCESS", payload: cache.state[param] });
+			return;
+		}
+		
+		const fetch = async () => {
+			dispatch({ type: "LOAD"" });
+			try {
+				const resource = await fetchResource(param);
+				dispatch({ type: "SUCCESS", payload: resouce" });
+				cache.dispatch({ type: "SET_CACHE", payload: { key: param, value: resource } });
+			} catch (error) {
+				dispatch({ type: "FAILURE", payload: error });
+			}
+		};
+		fetch();
+	}, [param, cache, fetchResource]);
+	
+	return state;
+}
+```
+
+
+
+##### El context es un par de elementos que siempre van juntos
+
+##### Como siempre van juntos no tienen que pasar props a todos los elementos
+
+##### Por ej, si quisieramos tener un estado con la var dark y setDark
+
+```
+const {dark, setDark} = setState(true);
+```
+
+##### Este tema oscuro afectará a toda la página
+
+##### Pero no se lo pasamos a cada uno de los elementos de la forma: 
+
+```
+<Wrapper dark={dark}>
+	<header dark={dark}>
+```
+
+##### Así se nos puede llenar toda la app de variables que no tienen nada que ver con el componente een si
+
+##### Hay una forma en la que podemos pasar la var dark sin tener que pasarla por todos los componentes intermedios
+
+##### Esa forma se conoce como Context como se ve en el archivo CacheContext.js
+
+##### La idea es que vamos a tener un componente arriba de todo como está el CacheProvider en App()
+
+##### El nombre debe ser Provider, en este caso es por el cache
+
+##### Genericamentes es un context provider
+
+##### En otro lado vamos a tener un context consumer
+
+```
+function App() {
+	return (
+		<Wrapper>
+			<CacheProvider>
+				<Router>
+					<Header dark={true}>
+						<Link to="/">Home</Link>
+					</Header>
+					<Layout>
+						<Switch>
+							<Route path="/" exact>
+								<AnimeSearch />
+							</Route>
+							<Route path="/anime/:id">
+								<Anime />
+							</Route>
+						</Switch>
+					</Layout>
+				</Router>
+			</CacheProvider>
+		</Wrapper>
+	);
+}
+```
+
+##### La idea es que nuestro CacheProvider tiene unas props definidas
+
+##### Como en la parte del código 
+
+```
+export function CacheProvider({ children }) {
+	//...
+	return <CacheContext.Provider value={{ state, dispatch }}>{children}</CacheContext.Provider>
+
+}
+```
+
+##### Al Provider le estamos pasando un value para cualquier hijo que tenga, sin importar si no es directo pueden acceder a los valores en state y dispatch; lo mismo si cambia,etc
+
+##### Con el objetivo de que no tenga que pasarla por lugares intermedios
+
+
+#### Para crear un contexto usamos createContext
+
+```
+import React, { useEffect, useReducer, createContext } from 'react';
+```
+
+##### Para usar createContext podemos usar el hook useContext traido desde react
+
+##### A useContext lo usamos en el archivo useFetchWithCache.js está en la función useDebouncedFetch
+
+```
+export function useDebouncedFetch(fetchResource, param, timeout) {
+	const cache = useContext(CacheContext);
+	const [state, dispatch] = useReducer(fetchReducer, initialState);
+```
+
+##### Como ejemplo podemos tener algo como: 
+
+```
+const ThemeContext = React.createContext('dark');
+```
+
+##### ThemeContext va a ser el value interno que va a tener al principio
+
+##### Va a tener un componente que se llama Provider y podemos acceder con la notación de punto
+
+##### Lo ubicaremos en algún punto alto de la app: los componentes que envuelve/encapsula podemos pasarle el value que está en ThemeContext.Provider
+
+```
+<Wrapper>
+	<CacheProvider>
+		<ThemeContext.Provider>
+			<Componentes Hijos que tomarán su valor>
+			<//...>
+			<//...>
+			<Router>
+				<Header>
+				<Layout>
+					<Switch>
+						<Route>
+							<AnimeSearch>
+		</ThemeContext.Provider>
+	</CacheProvider>
+</Wrapper>	
+```
+
+##### El valor del componente <ThemeContext.Provider> va a depender de un estado como: 
+
+```
+const ThemeContext = React.createContext('dark');
+
+function App() {
+	const [dark, setDark] = useState(true);
+
+	return(
+		<Wrapper>
+			<CacheProvider>
+				<ThemeContext.Provider value={dark ? 'dark' : 'light'}>
+	);
+}
+```
+
+
+##### Debemos exportarlo para que podemos acceder al ThemeProvider desde otro lado
+
+App component:
+
+```
+export const ThemeContext = React.createContext('dark');
+```
+
+En otro componente:
+
+```
+const AnimeSearch = () => {
+	const theme = useContext(ThemeContext);
+}
+```
+
+##### Finalmente en AnimeSearch podemos devolver algo como: 
+
+```
+const AnimeSearch = () => {
+	const theme = useContext(ThemeContext);
+	//...
+	
+	return (
+		<div>{theme}</div>
+	);
+}
+```
+
+Nos renderiza el valor 'dark'
+
+##### Desde App nunca le pasamos dark al AnimeSearch usando props, le pasamos el contexto en su definición
+
+##### Al ThemeContext ser un hook se puede usar desde otros custom hooks 
+
+
+##### En el archivo CacheContext.js creamos un exportable CacheContext que usa createContext
+
+```
+import React, { useEffect, useReducer, createContext } from 'react'; 
+
+export const CacheContext = createContext();
+
+```
+
+##### Además creamos un componente ChacheProvider para poder usar un reducer que vaya cambiando el estado
+
+```
+
+```
+
+##### Queremos que cache provider, el value sea un objeto que tenga una key con cada cosa que buscamos y lo que devuelve
+
+```
+export funtion CacheProvider({ children }) {
+	const [state, dispatch] = useReducer(
+		cacheReducer,
+		JSON.parse(localStorage.getItem('JIKAN_CACHE'))
+	);
+```
+
+##### Es la idea del tipo de objeto que queremos que tenga cache
+
+##### A esta función le vamos a pasar el estado del reducer que definial al principio de esta función
+
+##### Que es la idea de objeto anterior y el dispatch (acciones) para que podamos setear la cache a las cosas/recursos/solicitudes nuevas (no cacheadas)
+
+```
+export funtion CacheProvider({ children }) {
+	const [state, dispatch] = useReducer(
+		cacheReducer,
+		JSON.parse(localStorage.getItem('JIKAN_CACHE'))
+	);
+	
+	//...
+	
+	return <CacheContext.Provider value={{ state, dispatch }}>[children]</CacheContext.Provider>;
+}
+```
+
+##### En el archivo useFetchWithCache en la función useDebouncedFetch tenemos un useEffect muy parecido al try catch con acciones del dispatch etc
+
+##### Con las diferencias de cache: Tenemos un cache definido al principio de esta función
+
+```
+export function useDebouncedFetch(fetchResource, param, timeout) {
+	const cache = useContext(CacheContext);
+	const [state, dispatch] = useReducer(fetchReducer, initialState);
+	
+	useEffect(() => {
+		if (cache.state[param]) {
+			dispatch({ type: "SUCCESS", payload: cache.state[param] });
+			return;
+		}
+		
+		const timeoutID = setTimeout(async () => {
+			dispatch({ type: "LOAD" });
+			try {
+				const resource = await fetchResource(param);
+				dispatch({ type: "SUCCESS", payload: resource });
+				cache.dispatch({ type: "SET_CACHE", payload: { key: param, value: resource } });
+			} catch (error) {
+				dispatch({ type: "FAILURE", payload: error });
+			}
+
+```
+
+##### Como tenemos ese cache directamente al disparase el efecto si el cache tiene algo con el param que estamos buscando, directamente lo marcamos com "SUCCESS"; como el vemos en el if
+
+##### Entonces el estado actual del reducer va a ser lo que tenemos en el cache
+
+##### De lo contrario se ejecuta el bloque de código desde timeoutId, etc
+
+
+##### Esas dos partes de código son las que se agregan cuando hay cache para solicitudes, junto con el context y algo mas como en el context que hay cosas del local storage para que guarde y levante localStorage
+
+##### En el archivo CacheContext, setear un item JIKAN_CACHE
+
+```
+export funtion CacheProvider({ children }) {
+	const [state, dispatch] = useReducer(
+		cacheReducer,
+		JSON.parse(localStorage.getItem('JIKAN_CACHE'))
+	);
+
+```
+
+##### Podemos ver su key y value en Applicacion en dev tools
+
+##### Es un json con stringify, cuando seteamos algo en localStorage solamente acepta strings
+
+##### Si inicializamos el estado con este valor, getItem lo parceamos para que sea un objeto con JSON.parse
+
+##### Y cada vez que cambia [state] porque se seteo una cache nueva, agarramos 
+
+```
+export funtion CacheProvider({ children }) {
+	const [state, dispatch] = useReducer(
+		cacheReducer,
+		JSON.parse(localStorage.getItem('JIKAN_CACHE'))
+	);
+	
+	useEffect(() => {
+		const serializeState = JSON.stringify(state);
+		localStorage.setItem('JIKAN_CACHE', serializeState);
+	}, [state]);
+	
+	return <CacheContext.Provider value={{ state, dispatch }}>[children]</CacheContext.Provider>;
+}
+```
+
+##### Lo setearemos en localStorage.setItem('JIKAN_CACHE'..) con un efecto
+
+##### Otra cosa con cache se ve en useFetchWithCache
+
+```
+cache.dispatch({ type: "SET_CACHE", payload: { key: param, value: resource } })
+```
+
+##### Es el caso de que cuando cargamos algo nuevo dispachamos en la cache una acción de tipo SET_CACHE y le vamos a pasar payload (lo que cargamos) param (la key para que lo guarde) y resource (la respuesta de la api)
+
+##### Aunque esta cache no tiene validación, una de las cosas más complicadas
+
+
+## Componentes de función vs Componentes de clases
+
+### Archivo Anime.jsx
+
+```
+import React from 'react'; 
+import { useInstantFetch } from '../hooks/useFetchWithCache';
+import jikan from '../jikan';
+import { NavLink, useParams } from 'react-router-dom';
+import Loading from './loading';
+
+const withoutAutoPLay = (url) => 
+	url
+		.split('&')
+		.filter((component) => {component.includes('autoplay'')})
+		.join('&');
+
+const Anime = () => {
+	const { id } = useParams();
+	const { data, loading, error } = useInstantFetch(jikan.getAnimebyId, id);
+	
+	if (loading) return <Loading />;
+	
+	if (error) return 'something want wrong';
+	
+	if (data)
+		return (
+			<>
+				<h1>{data.title}</h1>
+				<img src={data.image.url} alt={data.title} />
+				<div>Score: {data.scorte}</div>
+				<div>Episodes: {data.episodes}</div>
+				{data.source === 'original' ? {
+					<div>Original anime</div>
+					} : {
+					<div>Based on a {data.source.toLowerCase()}</div>
+				}}
+				<a href={data.url} target="_blank" rel="nooporner nonreferrer"
+					Check it out a Wall!
+				</a>
+				{data.trailer_url && {
+					<iframe
+						title={`Trailer for ${data.title}`}
+						width="500"
+						heigth="115"
+						src={withoutAutoplay{data.trailer_url}}
+						frameborder="&"
+						allowfullscream
+					/>
+				}}
+				<NavLink to={`/anime/`${Number(id) > 1}}>Next</NavLink>
+			</>
+		);
+	return null;
+};
+export default Anime
+```
+
+
+### Archivo AnimeClass.jsx
+
+```
+import React, { Component } from 'react';
+import jikan from '../jikan';
+import Loading from './Loading';
+import { NavLink } from 'react-router-dom';
+import { witRouter } from 'react-router';
+import { withCache } from '../CacheContext';
+
+class AnimeClass extends Component {
+	state = {
+		data: null, 
+		loading: false, 
+		error: null;
+	};
+	
+	fetchData = async () => {
+		const { id } = this.props.match.params;
+		
+		this.setState({ loading: false, data: resource });
+		try {
+			const resource = await jikan.getAnimeById(id);
+			this.props.cache.dispatch({ type: "SET_CACHE", payload: { key: id, value: resource } });
+		} catch (error) {
+			this.setState({ loading: false, error });
+		}
+	};
+	
+	componentDidMount() {
+		this.fetchData();
+	}
+	
+	componentDidUpdate(prevProps) {
+		if (prev.props.match.params.id === this.props.match.params.id)
+		this.fetchData();
+	}
+	
+	withoutAutoplay = (url) =>
+		url
+			.split('&')
+			.filter((component) => component.includes('autoplay'))
+			.filter('&'),
+	
+	render() {
+		const { data, loading, error } = this.state;
+		
+		if (Loading) return <Loading />;
+		
+		if (error) return 'Someting went wrong';
+		
+		if (data) 
+			return {
+				<>
+					<h1>{data.title}</h1>
+					<img src={data.image_url} alt={data.title} />
+					//..
+				</>
+			}
+	}
+	
+}
+```
+
+
+##### El archivo Anime.jsx usa el hook useContentFetch del archivo useFetchWithCache.js; este no espera los 500ms del que no tiene cache, dado que no escribe nada en el componente Anime y queremos que carge instantaneamente (desde Anime.jsx no le pasamos ese param de 500ms)
+
+##### También usa el hook useParams de react-router-dom para 
+
+##### En App habiamos seteado que cuando vayamos a una página individual del anime 
+
+```
+<Route patch="/anime/:id">
+```
+
+##### Al tomar id podemos usar el hook useParams y sacamos el {id} que es lo que definimos en la ruta
+
+```
+const Anime = () => {
+	const { id } = useParams();
+	const { data, loading, error } = useInstantFetch(jikan.getAnimeById, id);
+
+```
+
+##### Ese valor es directamente la url + id, lo siguiente que hace es llamar a la url jikan.etAnimeById con id
+
+##### Parecido al componente AnimeSearch sin esperar/pasarle los 500ms dado que no tenemos que buscar/escribir nada para searchTerm
+
+
+##### El archivo AnimeClass.jsx 
+
+##### Con los componentes de clase cambiaríamos a algo como <AnimeClass> en vez de <Anime>
+
+##### Reglas de class component: no pueden compartir funcionalidad tan facilmente como en los componentes funcionales
+
+##### Uno de los motivos por lo cual el código es más largo
+
+##### Con Anime.jsx teniamos toda la lógica en varios archivos, como la del fetch dado que podemos compartir funcionalidad facilmente
+
+##### En class component la tenemos que reescribir/incluirla en el mismo archivo dado que no podemos compartir funcionalidad tan facilmente
+
+##### En general Si queremos compartir codigo igual para no repetirlo, lo tenemos que aplicar otra vez o compartirlo con una forma muy rebuscada para compartir código entre clases
+
+##### Como toda clase, va definiendo propiedades/estado y definiendo métodos para modificar ese estado
+
+##### Todos los métodos están separados unos de otros
+
+##### Los componentes de clase siempre tienen una función/metodo llamado render()
+
+##### Parecido al return() o cuerpo de función que devuelven los elementos de react/jsx, babel lo convertirá en html
+
+
+##### en cuanto al estado que vemos en el método render()
+
+```
+render() {
+const { data, loading, error } = this.state,
+}
+``` 
+
+##### Lo tenemos que declarar al principio como una propiedad de clase:
+
+```
+state = {
+	data: null, 
+	loading: false, 
+	error: null,
+}
+```
+
+##### Como vemos el estado es un objeto y siempre lo será o tiene que ser
+
+##### Al estado lo vamos a cambiar usando la función setState
+
+```
+this.setState({ loading: true, data: null, error: null });
+```
+
+##### Parecida a la función setState del componente AnimeSearch
+
+##### La diferencia es que como state en class es un objeto, solamente va a cambiar las propiedades que definamos de esta forma: 
+
+```
+this.setState({ loading: true, data: null, error: null });
+try {
+	const resource ...
+	this.setState({ loading: false, data: resource });
+}
+```
+
+##### Ahí vemos que estamos seteando loading y data por ejemplo
+
+##### Dejamos error sin cambiar, siendo lo mismo que antes
+
+
+#### Métodos ComponentDidmount() y ComponentDidUpdate() 
+
+##### Es lo que se denomina lifecycle effect y es lo que hoy se reemplaza con useEffect
+
+##### Podemos mesclar componentes funcionales y de clase en el componente App() por ejemplo, son compatibles
+
+
+#### Lifecycle components vs useEffect (efectos) 
+
+##### Tenemos tres lifecycle: componentWillUnmount, componentDidMount y componentDidUpdate
+
+##### componentDidMount es parecido al efecto que se corre al principio de la función; cuerpo del efecto
+
+##### componentWillUnmount se corre siempre al final, parecido al cleanup effect
+
+##### Cada vez que cambiamos una propiedad que usaba el efecto o si no teniamos el array seteado con todos los valores
+
+##### En componentDidUpdate tiene un param prevProps; tambien hay otro que se usa que es prevState
+
+##### prevProps se usa para comparar cual era el valor anterior con el valor nuevo
+
+```
+if (prevProps.match.params.id === this.props.match.params.id)
+```
+
+##### Y si cambió fetcheamos
+
+```
+if (prevProps.match.params.id === this.props.match.params.id)
+	this.fetchData();
+```
+
+##### componentWillUnmount nos puede llevar a muchos bugs que con un efecto lo arreglamos pasandole los params al array de dependencias
+
+
+#### Compartir código entre clases 
+
+##### Hay veces que no le pasamos props al componente AnimeClass, sino importa y usa cache
+
+```
+this.props.cache.dispatch({ type: "SET_CACHE", payload: { key: id, value: resource } });
+```
+
+##### A .cache.dispatch en Anime la agarrabamos con un hook pero dentro de los componentes de clases no se puede usar hooks como useState y menos los personalizados
+
+##### Para agarrar la cache usamos un patrón: higher order component
+
+##### En el archivo CacheContext.js tenemos uno definido: withCache
+
+```
+export const withCache = (component) => (props) => {
+	return (
+		<CacheContext.Consumer>
+			{(cache) => <Component {...props} cache={cache}  />}
+		</CacheContext.Consumer>
+	);
+};
+``` 
+
+##### Parecido a una higher order function, es una función que devuelve un componente
+
+##### La función willCache devuelve una función y la función interna que ya es un componente dado que recibe props y devuelve un elemento
+
+##### El objetivo es poder tener un componente de clase y enriquecerlo con otras cosas
+
+##### Podríamos hacer algo como: 
+
+```
+export const withCache = (component) => (props) => {
+	const cache = useContext(CacheContent);
+	
+	return <Component {...props} cache={cache}  />}
+
+};
+```
+ 
+##### Estamos tomando cache que guarda useContext y se la pasamos como una prop a component
+
+##### En AnimeClass podríamos tener:
+
+```
+export default withRouter(withCache(AnimeClass));
+```
+
+##### App va a llamar a AnimeClass que en el medio entre App y AnimeClass está withCache que es higher order component que withCache renderizará el componente que retorna con la {cache} 
+
+##### withRouter se necesita para sacar al {id} que en Anime.jsx se hace con useParams (const { id } = useParams())
+
+Método de class fetchData:
+
+```
+fetchData = async () => {
+	const { id } this.props.match.params
+}
+```
+
+##### El withRouter agrega props match que tiene los params
+
+##### Una desventaja de los highter order components es que llena de cosas intermedia el árbol de React DOM de elementos intermedios que hace que nos perdamos en el árbol
+
+##### Los highter order components sirven sobre todo para clases y si ya los tenemos y no podemos hacer un hook 
+
+
+### Tabla comparativa entre funcionalidades que tiene las clases y las funciones
+
+```
+Feature					Class						Function	
+			
+State					this.state					useState(), useReducer
+						this.setState
+
+Lifecycle Effects		componentDidMount()			useEffect()
+						componentDidUpdate()
+						componentWillUnmount()
+
+Ref						this.ref = React. 			useRef()
+						this.ref = something
+
+Context					contextType					useContext()
+
+Preserving Memory		this callback = callback	useCallback()
+
+Memoization			 	use memoring library		useMemo()
+
+Modify ref				this any + any 				React.
+
+Opt out of re render	ReactPureComponent			React.
+
+```
+
+
+### Class refs y useImperativHandle
+
+##### Las ref: como ejemplo, podriamos declarar algo como
+
+```
+function App() {
+	 const classRef = useRef();
+} 
+```
+
+##### Y en general se lo pasabamos a elementos de html o a cosas que tuvieran React.ForwardRef como hicimos con focus
+
+##### En clases le podias pasar algo como 
+
+```
+<AnimeClass  ref="{classRef}"></AnimeClass>
+```
+
+##### Pero no está bien
+
+```
+function App() {
+	 const classRef = useRef();
+	 useEffect(() => {
+		console.log(classRef); 
+	 });
+} 
+```
+
+##### La ref va a tener la instancia de la clase AnimeClass
+
+##### El problema es que si nosotros decimos que ahora podemos compartir del fetch data en otro lado
+
+##### Agarramos la ref de AnimeClass y usar la función fetchData() en otro lado
+
+##### Al hacer esto si en algún lado usamos una ref para pasarle a por ej, AnimeClass
+
+```
+<AnimeClass  ref="{classRef}"></AnimeClass>
+```
+
+##### Estamos diciendo que si AnimeClass cambia internamente, que si alguna de las funcionalidades internas cambia, como cambiar el nombre de fetchData a fetchResource puede romper toda la app
+
+##### Puedes la ref estar pasando en vertical en App(), mergeandola con otras cosas, puede estar entre dependencias de dependencias
+
+##### Significa que si quisieramos transformar AnimeClass en un componente como Anime (funcional), la ref se va a romper dado que no la podemos levantar de un componente funcional
+
+##### En funcional solo podemos usar React.ForwardRef
+
+##### Un hook poco usado solo en casos excepcionales para transformar un componente de clase en a un componente funcional
+
+##### Necesita una ref con ciertas propiedades 
+
+##### Se usa useImperativeHandle, también necesita un forwardRef
+
+##### Tenemos que definir el código fetchData entro de useImperativeHandle
+
+##### Ahora le podríamos pasar la ref Anime y se va a encargar de devolvernos un objeto que tenga la prop fetchData
+
+##### No está bien hacerlo pero por temas de compatibilidad o focusear una cosa detrás de otra
+
+
+## React en profundidad
+
+##### Render props, Memoización, Portals, Error Bundaries
+
+#### Redux: es un reducer dentro de un contexto como se hizo con fetch
+
+##### Redux ya no es necesario pero pueder servir en legacy
+
+
+### Buscar librerías que se usan con react
+
 
 
 # OOP - Backend
-
+ 
 
