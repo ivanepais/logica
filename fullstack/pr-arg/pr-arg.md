@@ -19703,4 +19703,1033 @@ function App() {
 
 # OOP - Backend
  
+#### Topicos:
 
+##### Paradigmas como: OOP, Funcional, 
+
+##### Clean Code - SOLID
+
+##### Debugging y refactoring: código roto, reviews
+
+##### Flujo/metodologías de trabajo: Waterfall, Agile: scrum, kanban
+
+##### Seguridad: CORS, OWASP (top 10 vulnerabilidades), Criptográfia, HTTPS (SSL)
+
+##### Trabajo: Front, Back, DevOps, Data: science, engineering; QA, Managm
+
+Carta presentación, CV, Entrevistas
+
+##### Ejercicios de katas: code katas y architecture katas
+
+##### Front: PWA, SSR; Web Assenbly frameworks, css, bundlers, web components
+
+
+##### Back: Node (framework como express, apps monoliticas); 
+
+##### Apis (Rest vs RPC, GraphQL, testeo con postman/newman)
+
+##### Templates engines: handel, blade, express engin
+
+##### DB: SQL, Servidores (SQLite, MySQL), Mongodb(no relacional)
+
+##### Web Sockets
+
+##### Buscadores: Elasticsearch
+
+##### Cache: Redis
+
+##### Colas (Queues): AMQP
+
+
+##### DevOps: Docker (config local y correr aps; multiserver; docker compose)
+
+##### kubernates
+
+##### CI/CD (config test y coverage automaticos; escribir validaciones propias)
+
+
+##### Agnóstico: TS, Logging, Seguridad, git
+
+
+## Topicos: 
+
+##### Inteligencia Abstracta: leer la documentación/cómo funciona algo y ver como aplicarlo a distintos escenarios (se consigue con la práctica, prueba, error y solución)
+
+##### Seguridad: capa que abarca el front, al back y a la db y puede ir más allá incluso en el proyecto/empresa/personas 
+
+##### Ej/pregunta/test: Dónde hacer validaciones: en el front, en el back o en db. La respuesta es en todos lados
+
+##### Conexión entre cliente (request) y servidor (response): con web sockets permite comunicación bidireccional para mandar info del cliente al servidor y viceversa
+
+##### DB en memoria: Redis
+
+##### Transacciones: que tienen mucho para hacer o procesamiento en batch, colas/queues como AMQP
+
+##### DevOps: docker es fundamental para configurar maquinas virtuales dentro del server
+
+Docker tiene las especificaciones, librerías y todo lo se necesita para una app
+
+Podemos emular entornos/escenarios dónde necesitemos cierta versión de frameworks o librerias en una sola máquina necesitamos los contenedores/orquestadores
+
+##### Kubernets
+
+##### CI/CD auto para cada vez que hagamos un comit a github, pasa por una máquina virtual que corre nuestras pruebas y el code coverage y que al final evalue si pasan o no las pruebas para dar el ok/incluir el comit (fusionar ramas); lo mismo si baja el code coverage
+
+##### TS/typos/clases
+
+##### Logging: para una app en producción, si falla tenemos que enterarnos antes de que el usuario nos diga
+
+
+### Trainers, JR, Senior: 
+
+##### trainers: cuando no trabajaron en tech; js: después de empezar; Sr: a los años, buen programador, caracteristicas de sr (no mid level); 
+
+##### Entraga de proyecto: conceptos teoricos, saber hacer: como delibery de softw, cumplir tiempo, requisitos
+
+##### The managers paht - Camile Fourrier: tecnica, personalidad para pasar niveles 
+
+
+
+# Clases - OOP
+
+##### Nos ayudan a modelar apicaciones complejas y describir las relaciones entre distintas partes del sistema
+
+##### Algunas son sencillas como (Usuario, Equipo, Jugador) y otras son especificas a la app y sistemas especifico que debemos construir como (ServicioUsuario, EquipoFactory), por lo general siguiendo patrones de diseño
+
+##### Las propiedades y métodos tienen que ver con la esencia de esa entidad/objeto/clase
+
+##### Los patrones de diseño son un poco distintos, casi no tienen propieades y métodos sino que incorporarán a las entidades/objeto/clase. Son como recetas para crear software y que todos las entiendan
+
+##### POO se enfoque en cosas que deberían ser entidades, y cómo deberían relacionarse estas entidades entre si
+
+##### Distinguir/Abstraer qué cosas son entidades, cómo son sus relaciones, su lógica, etc. 
+
+##### Cuando hay varios sistemas interactuando entre si, la decisión de cómo se da esa relación, también es llamado arquitectura
+
+##### La arquitectura tiene varios niveles: dentro de la app (modelar las clases de la app, cómo va a funcionar), a nivel sistemas: cómo van a interactuar varios sistemas entre si 
+
+##### Modelar apps complejas es importante sobre todo cuando se trabaja en equipo, o cuando uno trabaja sobre software ya hecho (y el autor no está)
+
+##### Se usan herramientas que permitan conceptualizar en diagramas, UML (diagrama de clases)
+
+##### El conocimiento en patrones de diseño hace que no sea extraño/dificil de entender la arquitectura de una app
+
+##### Si cada persona tiene se patrón de diseño, hace software como le parece, el desarrollador fuerza a atado al código por siempre (vendor lock-in en terminos empresariales)
+
+##### Cómo el software es complejo, debe ser mantenible con patrones para cuando el autor ya no esté
+
+##### En diagramas empezamos por hacer diagramas de clases al principio y hacer un diagrama de entidad y relación cuando se avance con las clases y se integre una DB
+
+##### UML utiliza simbolos estandares para las clases, relaciones, entidades para que todos pueden entender
+
+##### Tipos de asociación en UML: 
+
+```
+----> association
+
+====> inheritance
+
+- - > Dependency
+
+----[] Aggregation
+
+----[•] Composition
+
+```
+
+#### Ej diagrama de clases incompleto
+
+##### Las entidades tiene relaciones
+
+```
+Pokemon
+-----------
+//props:
++id: number
++name: string []------- //(relación)
++moves: []
+------------
+//Methods:
+...
+------------
+	|
+	1+
+	|
+    |	//(relación) 
+    |
+	[]
+Movimiento
+-----------
++id: number
++name: string
+------------
+
+```
+
+
+#### Composición el diagrama:
+
+##### Tenemos el titulo de la clase, las propiedades; al lado de las propiedades pude haber un signo + que indica la visibilidad de las propiedades 
+
+##### Puede ser publico (cualquiera lo puede ver), puede ser privado (para la clase) o pueden ser share/protected (lo puede ver la clase o aquellas que extiendan o herenden la clase)
+
+##### Tiene props y metodos: las props son como si fueran vars y los métodos como si fueran funciones/acciones solo que se llaman propiedad y metodo cuando nos referimos a las clases
+
+
+#### Ej de modelado: pokeapi
+
+##### Tomamos a la entidad pokemon, tiene habilidades 
+
+##### Entonces le damos el nombre pokemon, un id, un nombre y moves 
+
+##### Las habilidades de pokemon son otro entidad
+
+##### Si vamos a habilities es un array que tiene un objeto y este tiene keys como is_hidden, slot y la habilidad que es otro objeto con name y url
+
+
+#### Lectura de las relaciones en el diagrama: 
+
+##### -1+-------1-[] se lee como tiene o pertenece: por ej, la entidad HabilidadPokemon -----[] Pokemon "tiene o pertenece a uno o más pokemones"
+
+##### En este caso puede ser una relación bidireccional por que un pokemon tiene uno o más habilidades de pokemon
+
+##### Cuando la relación es algo como: ----[•]
+
+##### ---[] o ---[•] significa que si existen fuera del contexto de la relación: ej, profesor y clase: un profesor puede dar una o más clases; pero ambas entidades existen de manera independiente (si el profesor deja de estar, la clase sigue existiendo), habrá otro profesor y si la clase no existe, los profesores siguen existiendo
+
+##### Cuando ambas entidades tiene sentido por si mismas, el icono es []
+
+##### Ej: Pokemon-[]-HabilidadPokemon: "Pokemon existe incluso si no existiera la habilidad del pokemon", si desaparece HabilidadPokemon no siginifica que Pokemon desaparezca 
+
+##### Pero en HabilidadPokemon-[•]-Habilidad: si desaparece Habilidad, HabilidadPokemon no existe más
+
+```
+Pokemon 					Habilidad
+...							...
+...							...
+	|						HabilidadPokemon
+	|							[•]
+	-[]-HabilidadPokemon________|
+
+```
+
+##### Ej: Auto y Carburador: un carburador no tiene sentido si no estamos hablando en el contexto de un auto como un vehiculo, eso depende del contexto en que este modelado la app, por eso es complejo la OOP y sus entidades y relaciones porque todo depende de su contexto
+
+##### Si vendemos autos, si eliminamos auto, eliminamos carburador ([•] recibe el nombre de composición)
+
+
+#### Relación de agregación []: por ej, si le ponemos un sticker al auto y este deja de existir; el sticker sigue existiendo
+
+##### Un Auto pude tener 0 o muchos stickers pero son una agregación no una composición
+
+
+##### Decidir si es una agregación o composición depende como continua en el contexto de la app, existiendo las entidades si la otra desaparece
+
+##### Ej: Relación entre equipo y jugador: si el equipo quiebra, el jugador sigue existiendo
+
+##### Si desaparece es composición [•], si no desaparece es una agregación [ ]
+
+
+#### Herencia/Inheritance: ====> 
+
+##### En draw io vamos a diagramas,tenemos las figuras generales; vamos a las figuras de UML, 
+
+##### Seleccionamos la figura de clase para poder crear campos/props y métodos
+
+##### También tenemos clases qeu solamente tienen campos para props
+
+##### Ej: Persona, todas las personas tienen nombre como prop y como método puede ser respirar()
+
+```
+Persona
++nombre: string
++respirar(): void
+
+Programador
++lenguajes: []string
++programar(): string
+```
+
+##### Ej programador, sabe lenguajes, es un arr/list string como prop y su metodo/acción es programar() devuelve un string que sera el código
+
+##### Al crear la relación entre Persona y Programador, extendemos una linea
+
+##### Buscamos la relación correspondiente que es la de herencia
+
+```
+Persona
++nombre: string
++respirar(): void
+	/\
+	||
+	||
+Programador
++lenguajes: []string
++programar(): string
+```
+
+##### Decimos que programardor es un subtipo de Persona
+
+
+#### Ubicación del simbolo: desde lo más abstracto (Persona), apunta hacia Persona; apunta hacia la superclase (clase padre), programador extiende de persona
+
+##### Se llama herancia: Estamos diciendo que programador herada las props y métodos de Persona, no hace falta reescribir las props y métodos de Persona en Programador
+
+##### En Programador definimos lo que Persona no incluye (no sabe de lenguajes de programación ni programar)
+
+
+#### Diagramar más clases: podemos agregar otra clase que se llame lenguaje de programación que agrupe las caracteristicas de ellos (tipado, memoria, recolector etc) y quien lo puede extender (python, js, ts, java, c, c++, etc)
+
+```
+Persona
++nombre: string
++respirar(): void
+	/\
+	||						
+	||						
+Programador	        []-1---1...-- Lenguaje
++lenguajes: []string		      +nombre: string
++programar(): string		      +tipado: boolean
+```
+
+##### Es una relación de agregación porque el lenguaje sique existiendo por más que el programador no exista más
+
+##### Agregamos 1 lenguaje, un progrador sabe 1 o más/varios lenguaje
+
+##### Ahora modificamos la clase Programador
+
+```
+Programador	        								Lenguaje
++lenguajes: []Lenguaje		      []-1---1...--		+nombre: string
++programar(): (Lenguaje lenguaje):string 			+tipado: boolean
+
+```
+
+##### Ahora a programar() le tenemos que pasar en qué lenguaje programa y que tipo de lenguaje (tipado/no tipado)
+
+##### La función programar() toma un param/var (lenguaje) de tipo (Lenguaje) que devolverá un string
+
+## Diagrama de Entidad-Relación: para base de datos
+
+##### También conocido como ERD, es un tipo de diagrama de flujo que ilustra cómo las "entidades" como son las personas, objetos o conceptos; se relacionan entre si (está orientado a datos) y agrega sus propias caracteristicas
+
+##### Modelamos entidades como tablas
+
+
+## C4 Model: Utilizado para diagramar arquitectura entre sistemas
+
+##### Hay un plugin para drawio para poder dibujar arquitecturas de sistemas
+
+
+
+## Clases en JS: código
+
+### Objetos
+
+#### 1. Se pueden crear con {} o con new Object()
+
+```
+let objeto = {};
+console.log(objeto);
+objeto = new Object();
+console.log(objeto);
+```
+
+##### la palabra new tiene que ver con las clases
+
+
+#### 2. for...in en objetos
+
+for x(algo) in {algo/obj}
+
+ej: for key/xVar en un objeto 
+
+```
+for(let key in {a:1, b:2}) {
+	console.log(key); // a y b
+}
+```
+
+##### Nos devuelve cada llave por separado
+
+
+##### Antes se podría hacer Object.keys: nos devuelve un array
+
+```
+const keys = Object.keys({a:1, b:2});
+```
+
+##### Después usaríamos ese array para usarlo en un for normal
+
+
+#### 3. Agregar valor undefined: el for in toma este valor
+
+```
+for(let key in {a:1, b:2, c:undefined}) {
+	console.log(key); //a,b,c
+}
+```
+
+Si hicieramos: 
+
+```
+x = {a: 1}
+```
+devuelve {a: a}
+
+Si hacemos x.b
+
+```
+x.b
+```
+devuelve undefined
+
+
+##### Pero si declaramos x.b = undefined es valido
+
+```
+x.b = undefined
+```
+
+
+#### 4. For in tambien funciona con indices de array y strings
+
+```
+for (let key in [1, 2]) {
+	console.log(key); // 0, 1
+}
+```
+
+```
+for (let key in "hola") {
+	console.log(key); // 0, 1, 2, 3
+}
+```
+
+##### Rs for in: devuelve keys en objetos y devuelve indices en arrays y strings
+
+
+#### Uso de la key o indice: al array/string/objeto accedemos a la posición actual pasandole la var que creamos en el for in
+
+```
+for (let key in "hola") {
+	"hola"[key]
+	console.log(key); // 0, 1, 2, 3
+}
+```
+
+
+#### For of: devolverá los values de un arr/string, no funciona en objetos
+
+
+#### 5. For of en arrays
+
+```
+for(let val of [1, 2]) {
+	console.log(val); //1, 2
+}
+```
+
+#### 6. For of en strings
+
+```
+for(let val of "hola") {
+	console.log(val); //h, o, l, a
+}
+```
+
+
+#### No funciona en objetos: Error: Intermediate value Is Not Iterable
+
+##### No se puede iterar los objetos de la misma forma que lo hacemos con array/list/strings 
+
+```
+for(let val of {a: 1, b: 2}) {
+	console.log(val);
+```
+
+
+### Variables por valor/copia (apuntar a otra dirección de memoria) y por Referencia (apuntar a misma dirección de memoria)
+
+#### Valor: Cuando reasignamos el valor de una variable, otro variable que estaba usando ese valor no se ve afectada porque queda en su memoria el antiguo valor
+
+```
+let val1 = 1;
+let val2 = val1;
+console.table([['val1', val2'], [val1, val2]])
+```
+Salida:
+'val1' es 1
+'val2' es 1
+
+
+##### Si cambiamos el valor de val1 no se verá afectado val2
+
+```
+let val1 = 'hola';
+
+console.table([['val1', val2'], [val1, val2]])
+```
+Salida:
+'val1' es 'hola'
+'val2' es 1
+
+
+#### Referencia: se refiere que se guardará en memoria (RAM). Al apuntar hacia la referencia (memoria/posición/ubicación); si cambiamos el valor de una variable y otra variable estaba usando ese valor si se verá afectada
+
+##### Los tipos de datos que son complejos/objetos como los arrays y los objetos funcionan por referencia
+
+##### Ej usando un objeto
+
+```
+let ref1 = {a: 1};
+let ref2 = {b: 2};
+```
+
+##### Al crear una variable como ref1 que es un objeto que tiene a:1
+
+##### Estamos creando un valor en una posición/dirección de memoria ram
+
+##### La variable ref1 apuntará a la posición de memoria del objeto {}, y contendrá {a: 1}
+
+##### Lo mismo para ref2 pero creará otra posición de memoria distintas
+
+```
+[ADDRESS, VALUE]
+[0x0001, {A: 1}]
+[0x0002, {B: 2}]
+[0x0003, REF1 -> 0x0001, REF2 -> 0x0002]
+
+```
+
+Tabla 1: 
+
+```
+console.table([['ref1', ref2'], [ref1, ref2]])
+```
+'ref1'
+Object(a.1)
+
+'ref2'
+Object(b.2)
+
+
+##### Si se nos ocurre cambiar que ref2 = ref1
+
+```
+ref2 = ref1
+console.table([['ref1', ref2'], [ref1, ref2]])
+
+```
+'ref1'
+Object(a.1)
+
+'ref2'
+Object(a.1)
+
+
+##### Ahora vemos como ref1.a afecta a ref2 que estaba usando se valor
+
+```
+ref1.a = 'hola';
+console.table([['ref1', ref2'], [ref1, ref2]])
+```
+'ref1'
+Object(a.'hola')
+
+'ref2'
+Object(a.'hola')
+
+##### No son dos objetos iguales, sino que son exactamente el mismo objeto porque los dos apuntan a la misma dirección de memoria
+
+##### En el último: ambos objeto tienen a = hola porque en realidad son el mismo objeto
+
+##### Cuando hacemos ref2 = ref1 estamos haciendo: [0x0003, REF1 -> 0x0001, REF2 -> 0x0001]
+
+##### ref2 apunta a la misma dirección de memoria que el objeto ref1
+
+
+#### Comprabar si los objetos son iguales: 
+
+```
+console.log('ref1 === ref2', ref1 === ref2)
+```
+
+##### Devuelve true dado que así comprobamos que son el mismo objeto
+
+
+#### Comparar objeto vácio: están guardados en posiciones de memoria distintas
+
+```
+console.log('{} === {}', {} === {});
+```
+
+##### Devuelve false, los objetos tienen la misma estructura pero son distintos objetos
+
+
+#### Variables por valor/copia vs referencia en funciones
+
+##### Estos conceptos son importantes cuando se pasan como parámetros, porque van a estar modificando el mismo objeto
+
+
+##### 1. Función que pasa variables por referencia
+
+```
+function agregarPropiedad(obj) {
+	obj.propiedadNueva = 'nueva propiedad';
+}
+
+aregarPropiedad(ref1);
+console.log('ref1', ref1);
+```
+
+##### ref1 sufre una modificación por haber usado la función
+
+##### Se debe a que los objetos complejos funcionan por referencia
+
+##### Es una modificación literal, el param obj no es una copia
+
+##### Por otra parte, la función no devuelve nada y al llamarla tampoco se guarda en una var
+
+En consola:
+
+```
+ref1 {...}
+	a: 'hola'
+	propiedadNueva: 'nueva propiedad'
+```
+
+
+##### 2. Función que pasa variables por valor/copia
+
+```
+function sumar(valor) {
+	valor + 1; 
+}
+
+let val3 = 1;
+sumar(val3);
+console.log('val3', val3') 
+```
+
+##### Declaramos la función sumar, tomá un valor y a ese valor le suma 1
+
+##### val3 sigue siendo 1, no sufre una modificación por haber usado la función
+
+##### Con los numeros, strings y booleanos, la función si hace una copia
+
+
+### Ventajas de pasar valor por referencia: Ahorro de memoria 
+
+##### Ahorra memoria evitando copiar objetos pesados
+
+##### Permite pasar un objeto de un lado a otro
+
+
+#### Clonar objetos
+
+```
+const obj1 = {a: 1, b: 2};
+```
+
+##### Si hicieramos const obj2 = obj1 no sería un clon, obj2 sería el mismo objeto que obj1
+
+```
+const obj2 = Object.assign({}, obj1);
+console.log ('obj1 === obj3', obj1, obj2, obj1 == obj2); 
+```
+
+Da false, no son el mismo objeto
+
+##### Object.assign aplica sobre un objeto (su primer param, {}) todas las propiedades de otro objeto (su segundo param, obj1)
+
+##### A un objeto vacío le agrega lo que hay en el obj1
+
+##### Ahora tenemos que obj2 es exactamente igual a objeto 1 pero no son el mismo obj
+
+##### Son iguales pero no son el mismo
+
+
+ 
+#### Problema de Object.assign(): los objetos 'nesteados'
+
+##### Termina siendo un shallow clone
+
+Ej: problema con el objeto nesteado obj3
+
+##### Cuando un valor es otro objeto, copiará la referencia de ese
+
+##### Cuando modificamos la propiedad c: obj3.b.c = 3
+
+##### Al mismo tiempo estamos modificando la propiedad c de la propiedad b del obj4
+
+##### Dado que b es un objeto nuevo, lo que hicimos fue clonar la a, pero la b se mantuvo cmo una referencia a una dirección de memoria
+
+```
+const obj3 = {a: 1, b: {c: 2}};
+ const obj4 = Object.assign({}, obj{3});
+obj3.b.c = 3;
+console.log('obj4.b.c', obj4.b.c);
+```
+
+##### Devuelve 3 porque obj3.b es igual a obj4.b
+
+##### Cuando preguntamos por el objeto cuatro (obj4.b.c) nos da la modificación que hicimos en obj3.b.c = 3
+
+##### La propiedad b de obj3 y obj4 sigue apuntando al mismo objeto {c: 2} que está un una posición de memoria; por eso cuando modificamos la propiedad b de cada uno estamos modificando la propiedad b del otro
+
+##### Object.assign hace un SHALLOW clone, nosotros necesitamos un Deep Clone
+
+
+#### Necesitamos un deepclone para que no ocurra el problema de referencia en objetos anidados cuando queremos hacer una copia
+
+##### Lodash clone deep es una mejor solución: actua de forma recursiva, por cada propiedad del objeto, si esa propiedad es un objeto; lo clona y así con cada objeto nesteado
+
+
+##### Solución sin librería (solo en objetos que contienen datos): el problema: es que no acepta métodos
+
+##### Ej: objeto con datos como {a:1, b:2, c:{a:1, b: {c:3}}}
+
+##### Ej: objeto con método: {x(){//...}, a:1, b:2}, deja de funcionar
+
+
+##### Por ejemplo, agarrando el objeto 3 que es {a: 1, b: {c: 2}} es anidado, pero modificamos c: 2 haciendo obj3.b.c = 3;
+
+```
+const obj5 = JSON.parse(JSON.stringify(obj3));
+obj3.b.c = "hola";
+console.table([["obj3.b.c", obj5.b.c"], [obj3.b.c, obj5.b.c], [obj3, obj5]]);
+```
+
+##### Primero lo pasamos a un string de JSON usando stringify con el objeto como param
+
+##### Parseamos/analizamos/escaneamos con JSON.parse() y convierte el string en un objeto distinto en una posición de memoria distinta
+
+##### Ahora obj5 es un deep clone siempre y cuando no tenga metodos y solamente tengan datos
+
+##### Comprobamos que si modificamos obj3 e imprimimos obj5 son distintos
+
+
+#### Recolección de basura forzado: leer articulo garbaje collection en javascriptl.info
+
+##### Cuando tengamos variables u objetos que ya no son accesibles por el código
+
+##### Ej, cuando ya fueron usado/llamados y no lo van a hacer por el resto del código (dado que el interprete analiza todas las llamadas primero antes de ejecutarse)
+
+##### Dado las referencias creadas como en ref1 y ref2 (hasta ahora distintos objetos)
+
+##### Cuando hicimos que ref2 = ref1 (objetos) vamos a perder la referencia al objeto que estaba en la inicialización de ref2
+
+##### Ahora ambos apuntan al mismo, el interprete se da cuenta que la referencia 2, ya no la necesita y además es imposible que se pueda volver a usar
+
+##### Al hacer ref2 = ref1, el objeto inicial de ref2 quedo inaccesible para siempre
+
+
+##### A veces pasa que si tenemos una función como traerDatosDePokemon() y traemos cientos de datos
+
+##### Se tranforma en una variable con muchos datos, lo guardamos en datosPokemon = traerDatosDePokemon()
+
+##### Si empezamos a hacer cosas como renderearPokemones(datosPokemon) pasandole los datos del pokemon
+
+##### Después hacemos más operaciones y ahí terminará la operación 
+
+##### Entre las 20 operaciones, la var datosPokemon se mantuvo en memoria todo el tiempo
+
+##### El truco es forzar que datosPokemon exista dentro de un bloque de ejecución
+
+```
+try{
+	//recolección de basura
+	{
+		let x = 1;
+	}
+	console.log(x); //error, x is not defined. Dentro del scope anterior ya no existe
+
+} catch(3) {
+	
+}
+```
+
+##### Cuando declaramos que let x = 1 y cuando queremos leer x fuera de ese bloque, nos tira un error dado que paso el recolector de memoria
+
+##### Genera que cuando termina de ejecutarse el bloque de código ya no es más alcanzable por otro código
+
+
+## This en objetos
+
+### 1. use strict
+
+```
+console.log('this', this);
+```
+
+##### por default es 'window', globalmente
+
+##### Del lado del cliente this es window por default, en node this es global
+
+##### window y global son objetos
+
+
+### 2. Dentro de funciones: es window (sin modo estricto), undefined (modo estricto)
+
+```
+function x() {
+	console.log("this dentro de x ", this)
+};
+x();
+```
+
+##### This = window, al descomentar la linea 1, el resultado es undefined
+
+##### Cuando aplicamos "use strict"; arriba de todo el documento, el código estará bajo los estandares más estrictos del interprete/navegador
+
+```
+"use strict";
+```
+
+##### Ahora al ejecutar la función x(); el this dentro de ella es undefined en modo estricto, sin modo estricto era window
+```
+x();
+```
+
+
+### 3. this en objetos
+
+```
+const persona = {
+	nombre: "Bob", 
+	decirHola() {
+		console.log("hola", this.nombre)
+	}
+}
+```
+
+##### El out: "hola Bob"
+
+
+```
+persona.decirHola(); //persona = this
+const persona2 = Object.assign({}, pesona);
+persona2.nombre = "Pepe";
+persona2.decirHola(); // Hola pepe. persona2 = this
+```
+
+##### persona será this, this reemplaza a persona y persona reemplaza a this bajo el contexto d objetos
+
+##### this.nombre pasa a ser persona.nombre y podemos acceder a las props y métodos
+
+##### Al clonar persona con Object.assign desde un objeto vacío y pasandole la prop y metodos de persona 
+
+##### Es una shallow copy (si hay un objeto anidado, copia la referencia a ese objeto)
+
+##### Ahora this como está en el contexto de persona2, pasa a ser persona2
+
+
+```
+const saludar = function() {
+	console.log('this dentro de saludar', this)
+	//console.log('Saludos ", this.nombre); //notar que "this.nombre" no es nada al momento de definir la función
+}
+```
+
+##### primera linea: "this dentro de saludar" es window
+
+##### segunda linea: "Saludos" undefined
+
+```
+saludar(); // Saludos undefined
+```
+
+##### Si a window el agregamos una prop: window.nombre = "Bob"; la segunda linea de la función si va a funcionar, no va a dar undefined
+
+```
+saludar(); // Saludos Bob
+```
+##### Ahora puede acceder a esa prop 
+
+##### Tener en cuenta si estamos o no en strict mode 
+
+
+##### Si le agregamos un metodo a un objeto
+
+##### En este caso lo hacemos bajo la prop saludar que será la función saludar
+
+```
+persona.saludar = saludar;
+persona.saludar(); // Saludos Bob
+persona2.saludar(); // Saludos pepe
+```
+
+##### Bajo el objeto persona y persona2 this es ese objeto y no window
+
+##### Dado que se ejecuta en su contexto
+
+
+### 4. La función flecha no es contextual
+
+##### this será window, window.nombre es 'pepe'
+
+```
+const saludarFlecha = () => {
+	console.log("Saludos (flecha) ", this.nombre)
+};
+```
+
+```
+saludarFlecha(); // Saludos (flecha) undefined
+```
+
+##### Como this es window y window no tiene prop nombre va a tirar undefined
+
+##### Si le asignamos un prop nombre a window: como window.nombre = 'pepe'
+
+##### Ahora si this/window saludará a pepe porque accede a la prop nombre
+
+
+##### Asignamos a saludar la función saludarFlecha en persona y persona2
+
+```
+persona.saludar = saludarFlecha; 
+persona2.saludar = saludarFlecha;
+persona.saludar(); // Saludos undefined
+persona2.saludar(); // Saludos undefined
+```
+
+##### Ahora no accede a ninguna prop dado que saludarFlecha es una función flecha, no tiene contexto; su contexto es window
+
+##### No es una función normal, this no puede ser persona ni persona2
+
+##### En la función flecha this sigue siendo window dado que se creo en este contexto
+
+
+#### 5. Funcion flecha y this fuera de global o window:
+
+##### 1. Captura Léxica: La función flecha no tiene su propio this. En su lugar, captura el valor de this del ámbito padre más cercano que no sea una función flecha.
+
+##### 2. El valor de this dentro de una flecha no puede ser modificado por métodos como call(), apply(), o bind(), ni tampoco por el objeto que la llama.
+
+```
+const user = {
+  name: 'Leo',
+  
+  // Función Regular: 'this' es 'user' (el objeto que la llama)
+  getNameRegular: function() {
+    console.log(this.name); // 'Leo'
+    
+    // Función Flecha interna: 'this' captura el 'this' del ámbito padre (getNameRegular), 
+    // que es el objeto 'user'.
+    const innerArrow = () => {
+      console.log('Flecha interna:', this.name); // 'Flecha interna: Leo'
+    };
+    innerArrow();
+  },
+  
+  // Función Flecha como método: 'this' captura el 'this' del ámbito circundante (global, si 'user' 
+  // no está dentro de otra función o módulo especial).
+  getNameArrow: () => {
+    // Si se ejecuta en un navegador fuera de un módulo, 'this' será 'window'
+    console.log(this.name); 
+    console.log(this); // Esto podría ser 'window' o 'undefined' en modo estricto/módulos
+  }
+};
+
+user.getNameRegular(); 
+// Leo
+// Flecha interna: Leo
+
+user.getNameArrow(); // Dependerá del entorno global/módulo.
+```
+
+##### 3. Funcion flecha para un método: no establecerá su propio contexto de this (como lo hace una función regular).
+
+```
+const miObjeto = {
+  // Propiedad que es una función flecha
+  metodoFlecha: () => {
+    // ... código del método ...
+    console.log(this); 
+  },
+  
+  // Propiedad que es una función regular (Mejor práctica para métodos)
+  metodoRegular() {
+    // ... código del método ...
+    console.log(this); // -> 'miObjeto'
+  }
+};
+```
+
+
+##### Advertencia: una función flecha como un método de objeto, su this no se enlaza al objeto en el que fue definida, sino que captura el valor de this del ámbito léxico circundante (el código padre).
+
+##### El padre del objeto es window
+
+##### En la mayoría de los casos donde defines un objeto directamente en el ámbito global (o de un módulo), el this de la función flecha terminará apuntando a:
+
+window (en navegadores).
+
+undefined (si se ejecuta en strict mode o dentro de módulos ES6).
+
+```
+const persona = {
+  nombre: 'Alicia',
+  
+  // MALA PRÁCTICA como método de objeto
+  saludar: () => {
+    // 'this' es capturado del ámbito global (window o undefined)
+    // NO es el objeto 'persona'
+    console.log(`Hola, soy ${this.nombre}`); 
+  },
+  
+  // BUENA PRÁCTICA: Usa función regular para métodos
+  presentarse() {
+    console.log(`Hola, soy ${this.nombre}`); // -> 'Hola, soy Alicia'
+  }
+};
+
+persona.saludar(); // Intentará acceder a 'nombre' en el objeto global. 
+                   // En un navegador, podría imprimir: 'Hola, soy undefined'
+persona.presentarse();
+```
+
+
+##### Recomendaciones y uso: 
+
+##### Función Regular para Métodos de Objeto: Establece su propio this enlazado al objeto que la llama
+
+##### Función Flecha: Callbacks o Funciones Anidadas
+
+
+
+### bind: cambiar contexto de this cuando llamamos a una función
+
+##### bind solo funciona con funciones normales, no flecha
+
+```
+saludar.bind(persona)(); // Saludos Bob
+saludar.bind(persona2)(); // Saludos pepe
+```
+
+##### saludar.bind(persona) será equivalente a: persona.saludar = saludar;
+
+##### Es como si la la prop saludar de persona le hubiesemos signado este método
+
+##### Adentro de la función saludar (definida en contexto window/global)
+
+##### bind mete adentro del this de la funcion al objeto persona
+
+##### bind nos retorna una nueva función que es igual a saludar solo que cambia el this
+
+
+##### Con bind podemos hacer algo como: modificar el contenido de la función, el nuevo contenido reemplazará al this; pero no imprimirá
+
+```
+saludar.bind('asdf')();
+```
+
+##### Respuesta: ""this dentro de saludar es: String('asdf') // saludso undefined
+
+
+##### call, apply son similares
+
+
+## Clases 
