@@ -5027,10 +5027,6 @@ Se basa en tres pilares
 
 
 
-
-
-
-
 # Diseño de sistemas de crecimiento y relación con clientes (Customer Lifecycle Systems).
 
 #### Clientes y prospectos, desde el primer contacto hasta la etapa de fidelización o pérdida.
