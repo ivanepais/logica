@@ -20732,4 +20732,1533 @@ saludar.bind('asdf')();
 ##### call, apply son similares
 
 
-## Clases 
+## Clases: del diagrama de clases al código 
+
+##### Existen distintas formas de lograr las relaciones que fijamos en la lógica/diagrama de la app
+
+##### Sintaxis: las clases son PascalCase 
+
+### Clases en ES6
+
+```
+class Persona{
+	static esCuarentena = true; //propiedad estatica, comun a todas las clases
+	tieneDni = true // propiedad pública
+	//#id = 5 // propiedad privada, aún no soportada. Se puede lograr con Babel
+	
+	constructor(nombre) { // fnción constructora (se tiene que llamar constructor),
+		//tiene parametros iniciales opcional
+		this.nombre = nombre
+	}
+	
+	presentar() { // método público
+		return "Hola, mi nombre es " = this.nombre;
+	}
+}
+
+const bob = new Persona("Bob"); //instancia con nueva clase "Persona" y le pasa el nombre como dice el param
+// la var bob ahora es de tipo Persona
+
+console.log(bob); // muestra como está construido el objeto
+console.log(bob.nombre); // Bob
+console.log(Persona.enCuarentena); // Método estático
+//Accedido directamente desde la clase
+console.log(bob.presentar()); // Hola, mi nombre es Bob
+
+//Se pueden agregar props
+
+bob.clubFavorito = 'Boca Juniors';
+console.log(bob.clubFavorito);
+```
+
+#### 1. Propiedad pública: al declararla sin palabras clave como static; estamos diciendo que todos los objetos que se creen a través del tipo/clase persona van a tener una propiedad pública llamada tieneDni y su valor por default es true 
+
+
+#### 2. Función constructor: se ejecuta automaticamente al instanciar o crear una nueva persona con new
+
+
+#### 3. this.nombre = nombre: estamos diciendo que nuestro objeto/nuevo/instancia sepa que su nombre es el nombre que pasamos como param
+
+##### (this se reemplaza por la nueva instancia: bob.nombre será el nombre que le pasen como param al constructor al instanciar)
+
+
+#### 4. Método público: como una propiedad publica, todas las instancias de clase pueden acceder a el
+
+
+#### 5. static: Palabras antes de prop o método como static que se puede usar tanto para métodos como para props
+
+##### Como las clases tienen instancia, cuando hacemos referencia a this, estamos haciendo referencia a cada instancia según el contexto de quién la llame
+
+##### Las distintas instancias (como pepe y bob) ejecutan la misma función pero en contexto distintos
+
+##### static no dependerá del contexto, corresponde a la clase persona en si 
+
+##### Todas las personas/instancias como pepe y bob estarán en cuarentena
+
+##### Cualquier persona en si estará en cuarentena, no es individual del contexto
+
+##### Otro ejemplo podría ser: static alive = true; pertenece al concepto de una persona
+
+##### No podemos acceder a static dado que no pertenece a la instancia, sino a la persona/clase Persona en si
+
+
+#### 6. Instanciar una clase: la palabra new va a ejecutar la función constructor()
+
+##### Es opcional, podemos no escribir la func constructor en la clase y no pasarle, pero el objeto no tendrá/accederá a la prop nombre
+
+##### Cuando le pasamos el argumento que espera el contructor funciona el this
+
+##### En la clase, al usar this podríamos haber hecho algo más complejo como: 
+
+```
+contructor(nombre) {
+	this.nombre = 'Señor ' + nombre;
+}
+```
+
+#### 8. En la consola: objeto bob
+
+```
+const bob = new Persona('Bob');
+console.log(bob);
+console.log(bob.nombre);
+```
+
+Muestra: 
+
+```
+> Object { tieneDni: true, nombre: 'Bob' }
+> Bob
+```
+
+#### Si consultamos las props de la clase Persona: 
+
+```
+console.log(Persona.enCuarentena);
+```
+
+Muestra: 
+
+```
+> true
+```
+
+#### 9. Usar propiedad de Clase: no se puede hacer: instanciaDePersona.enCuarentena. El resultado es undefined porque no es una propiedad de instancia
+
+```
+console.log(bob.enCuarentena);
+```
+
+##### Debemos llamar a algo como MyClass.propDeMyClass
+
+```
+console.log (Persona.enCuarentena);
+```
+
+
+#### 10. Los métodos pueden acceder a las props de la clase 
+
+```
+tieneDni = ture //prop pública
+constructor(nombre) {
+	this.nombre = nombre;
+}
+presentar() { //método público
+	return 'Hola, mi nombre es ' + this.nombre;
+}
+```
+
+##### Llamada al método: 
+
+```
+console.log(bob.presentar());
+```
+
+Consola:
+
+```
+> Hola mi nombre es bob
+```
+
+##### Para el objeto bob, el nombre es Bob cuando lo instanciamos
+
+##### Cada instancia tiene algo como si fuera el blue print/prototipo de lo que es la clase Persona (tiene la prop tieneDni, el constructor que espera nombre y método presentar)
+
+##### Ahora el estado/valor de cada variable de la clase Persona, depende de cada instancia
+
+##### El valor/estado de cada instancia será distinto
+
+
+#### 11. Agregar props
+
+```
+bob.clubFavorito = 'Boca Juniors';
+console.log(bob.clubFavorito);
+```
+
+```
+> Boca Juniors
+```
+
+
+### Herencia en ES6
+
+##### Las estructuras de código como las funciones, las variables, los for loops, los ifs, existe con el unico fin de escribir menos código
+
+##### Lo mismo para la oop, no tener que duplicar las tareas
+
+##### Nos permite tener una clase que haga lo mismo que otra, pero que tenga props y métodos especificas que necesita
+
+##### La palabra clave extends se usa para aplicar herencia
+
+```
+class Bombero extends Persona {
+	static nombreProfesion ="Bombero";
+	
+	//usa el mismo tiene constructor
+	//No sobreescribe métodos, usa el mismo método
+}
+
+```
+
+```
+const pepe = new Bombero("Pepe"); //Hereda el constructor de Persona
+```
+
+##### Bombero extiende a Persona
+
+##### Es una persona que tiene, dni, que está en cuarentena, que tenga el método presentar, que reciba nombre
+
+##### Como código adicional solo agregamos static nombreProfesion = 'Bombero'
+
+##### Instanciamos la clase nueva Bombero
+
+##### Pepe será un nuevo bombero, aunque la clase Bombero no tenga constructor está llamando al constructor superior de Persona/quien extiende o hereda código/props/metodos
+
+##### Ejecuta las props, met y constructor del padre/super clase
+
+##### Por default lo hereda
+
+##### Usará el método publico presentar que pueden acceder todas las instancias de persona
+
+
+```
+class Programador extends Persona {
+	static nombreProfesion = 'Programador';
+	
+	constructor(nombre, nivel) { //pisa el constructor de Persona
+		super(nombre); //llama al constructor de Persona
+		this.nivel = nivel;
+	}
+	
+	presentar() { //pisa la función presetnar de Persona
+		return `${super.presentar()} y soy un ${Programador.nombreProfesion} ${this.nivel}`;
+	}
+}
+
+```
+
+```
+const juan = new programador("Juan, "Senior");
+console.log(juan.presentar());
+console.log(juan.clubFavorito); //undefined, no tiene club
+
+const jose = new Programador("Jose", "Junior");
+```
+
+
+##### Programador extiende Persona y tiene static como nombreProfesion
+
+##### Declara un constructor para pisar el constructor de Persona/quien extiende
+
+##### Siempre es buena práctica llamar al constructor padre con super(propAHeredar)
+
+##### El constructor vuelve a recibir nombre y agrega nivel 
+
+##### Con la llamada al contructor de Persona con super(nombre)
+
+##### Nos ahorramos de escribir lo mismo que habia en Persona
+
+##### Tambien pisamos la funcion presentar de Persona
+
+##### Para agregar más info/complejidad
+
+##### Hacemos uso de la prop de clase como static nombreProfesion y de la prop de instancia como nivel
+
+##### Accediendo a ellas como: Programador.nombreProfesion no usamos this.nombreProfesion de la clase y no de la instancia y this.nivel
+
+##### Como parte de la complejidad: pisa presentar() y ademas llama a presentar() de la clase Persona, usando super.presentar();
+
+##### Para ahorar/no volver a escribir 'Hola...' etc
+
+
+#### Al tener dos programadores
+```
+const juan = new programador("Juan, "Senior");
+console.log(juan.presentar());
+console.log(juan.clubFavorito); //undefined, no tiene club
+
+const jose = new Programador("Jose", "Junior");
+
+```
+
+
+### Prototype y _proto_
+
+#### Uso de Prototype
+
+##### JS es muy flexible y podemos modificar las propiedades de las clases incluso una vez hayan objetos instanciados
+
+##### Si quisieramos acceder a juan.nacionalidad da undefined, no tiene esa prop
+
+##### Ahora como tenemos el objeto/instancia creada
+
+##### Con Prototype podemos hacer:
+
+```
+Persona.prototype.nacionalidad  = 'Argentina';
+
+console.log(bob.nacionalidad, juan.nacionalidad, jose.nacionalidad);
+console.log(bob, jose, juan);
+```
+
+##### Persona.prototype hace referencia al objeto que da como resultado el constructor de la función, en este caso sería el constructor de Persona
+
+##### Lo que tenemos en ese constructor es el prototipo de los objetos/instancia que se van a crear de tipo Persona
+
+##### Le podemos agregar props a ese prototipo
+
+##### Ahora todos los objetos creados y que se crearán pasan a tener la prop nacionalidad
+
+##### Dentro de si mismos, no ya de prototype (que sería el constructor Persona (?))
+
+#### Rs Prototype: si tenemos una clase (Persona/no objeto/instancia) le podemos pedir que haya un prototype y agrege una propiedad y eso se agrega a todos los objetos
+
+
+#### Filtrando las props que solo pertenecen directamente al objeto bob
+
+##### Como a veces tenemos instancias con props especificas como las de Programador y Bombero o Persona
+
+##### Ej nacionalidad pertenece a la persona, no a Programador ni Bombero
+
+```
+for (const key in bob) {
+	if (bob.hasOwnProperty(key)) {
+		console.log(key); // no imprime nacionalidad
+	}
+}
+```
+
+##### Hacemos for key in objeto/instancia, comprobamos .hasOwnProperty
+
+
+#### Modificando/uso de _proto_
+
+##### Si queremos modificar el prototipo de un objeto pero no sabemos de qué clase es
+
+##### Nos puede pasar es que recibamos un objeto y no sepamos de que tipo es el objeto en tiempo real
+
+##### Al comprobar con typeof no daría object
+
+##### En el caso de querer modificar el prototipo de un objeto del que no sabemos que clase es 
+ 
+##### Ej: jose es un objeto, ahí podemos acceder a _proto_ o podemos usar getPrototypeOf()
+
+##### Le agregamos lenguajes que es un array 
+
+```
+jose._proto_.lenguajes = ['js', 'php', 'python']; //esto es equivalente a Programador.prototype
+console.log(jose.lenguajes, juan.lenguajes);
+console.log(bob.lenguajes, pepe.lenguajes); //undefined, undefined
+jose._proto_._proto_.nombre = "x" //en este caso todos ya tenían nombre, por lo que se pisa
+console.log(juan.nombre); //sigue siendo "Juan"
+jose._proto_._proto_.apellido = "Pérez"; //en este caso nadie tenia apellido, po lo que se crea con este valor
+console.log(juan.apellido, pepe.apellido); //Pérez Pérez
+```
+
+##### Dado que jose es un programador, pepe es bombero
+
+##### Al preguntar por los lenguajes de jose y juan, como ambos son programadores 
+
+##### jose._proto_. es lo mismo que modificar Programador.prototype hacen referencia a lo mismo/mismo objeto
+
+##### Entonces van a tener un arra y los que no son programadores nos dan undefined
+
+##### Concatenar ._proto_._proto_.: Para jose por ej
+
+##### El primer proto ser refiere a Programador y el segundo a Persona
+
+##### Combinado: Seteamos que el nombre de todas las personas sean x
+
+##### Pero como todas ya tenian nombre, no se pisa
+
+##### Si hacemos esto con una propiedad que no existía como apellido, si funciona
+
+
+#### En Js la herencia funciona por prototipo
+
+##### En es6 class por dentro es una función
+
+### Clase Persona en ES5
+
+```
+function Persona(nombre) {
+	const id = 5; //variable privada
+	
+	this.nombre = nombre; //propiedad publica
+	this.tieneDni = true; //propiedad publica
+	
+	this.presentar = function() {
+		return 'Hola, mi nombre es' + this.nombre
+	}
+
+}
+
+```
+
+##### La herencia es herencia prototipica y se hace a través de funciones
+
+##### Todo en js son objetos y las clases son funciones
+
+
+### Extender clases con ES5
+
+##### Es una extensión prototipica, herencia prototipica de una función hacia otra función 
+
+##### 
+
+```
+function Bombero(nombre) {
+	//constructor apunta a la funcion Persona, que es el prototipo de Bombero
+	this.constructor(nombre);
+	console.log(this.constructor.toString());
+}
+Bombero.profesion = 'Bombero'; //declara una prop estatica
+Bombero.prototype = new Persona();
+
+const pepe = new Bombero("Pepe"); //hereda el constructor de Persona
+console.log(pepe.presentar()); //hola, mi nombre es pepe
+console.log(pepe.tieneDni); //true
+```
+
+
+##### Cuando en ES6 hacemos class B extends A, en ES5 es Bombero.prototype = new Persona();
+
+##### Hacemos que el prototype de Bombero sea una new Persona();
+
+##### Todo por funciones
+
+
+### Method override (pisar métodos)
+
+```
+class A {
+	a(){
+		return this.b();
+	}
+	
+	b(){
+		return 'A';
+	}
+	
+	c() {
+		return 'A';
+	}
+}
+```
+
+```
+class B extends A{
+	b(){
+		return 'B';
+	}
+}
+```
+
+```
+const a = new A();
+const b = new B();
+```
+
+```
+console.table([
+	['Metodo', 'Objeto A', 'Objeto B'],
+	['metodo a', a.a(), b.a()], //incluso si b no reemplaza al metodo 'a', al llamar a this.b() esta llamando al método b de B
+	['metodo b', a.b(), b.b()],
+	['metodo c', a.c(), b.c()],
+]);
+```
+
+##### Tenemos una clase A y una clase B que extiende de A
+ 
+##### Todo lo presente en A está presente en B
+
+##### El método a() de la clase A llama a this.b()
+
+##### b() retorna 'A', c() retorna 'A'
+
+##### Al extender A con la clase B
+
+##### Sus instancias pisan la función b() para devolver 'B'
+
+##### Al crear dos objetos/instancias con el contructor de A y B (el mismo)
+
+##### La tabla muestra cuando se ejecuta cada método en cada objeto y su retorno 
+
+##### El objeto a usa a(), b() y c() todos retornan a
+
+##### El objeto b usa a(): a() devuelve b() pero b() en la clase B esta sobreescrita va a retorna 'B' y no 'A'
+
+##### Cuando el objeto b usa this en el metodo b se refiere a su método b y no el de la super clase
+
+##### Para acceder al metodo del padre tenemos que hacer super.b(); ese devuelve 'A'
+
+##### Devolverá B, B, A
+
+
+#### Cuando JS trata a las funciones como First Class Citizen podemos pasarlas en un montón de objetos, pasarlas como params, en vars
+
+
+### Herencia Prototipica
+
+#### Propiedad prototype: es el prototipo para construir objetos
+
+##### Ej: Podemos modificar el objeto String para agregar props y metodos como lo hicimos arriba
+
+##### String.prototype.saludar = () => {'Hola'}
+
+##### Para cualquier objeto que exista podemos modificar casi cualquier propiedad/método
+
+##### Ej: modificar length
+
+```
+"a".length
+
+String.prototype.length = 1000 //no funciona
+
+"a".length //1
+
+String.prototype.toUpperCase = function() {
+	return 'hola';
+}
+
+"a".toUpperCase(); //hola
+```
+
+##### Todo en Js es un objeto, las funciones, los number, los str
+
+##### Y todo heredan de Object, después se abstrae para hacerlo más facil
+
+##### Referenci y valor en los objetos: Number, String y Booleanos son objetos especiales, nativos
+
+##### Al ser nativos, internamente son objetos que tiene que devolver una copia de si mismo
+
+
+
+# Software Design
+
+## Entidades y relaciones
+
+##### Las entidades son clases que representan objetos que tienen un significado/necesidad en el contexto de la app, pueden ser partes o componentes de ellas
+
+```
+export default class ListadoPokemon {
+	
+	constructor(total, siguienteUrl, anteriorUrl, nombresPokemones) {
+		this.total = total;
+		this.siguienteUrl = siguienteUrl;
+		this.anteriorUrl = anteriorUrl;
+		this.nombrePokemones = nombresPokemones;
+	}
+}
+```
+
+```
+export default class Movimiento {
+	constructor(nombre,versiones = [] ) {
+		this.nombre = nombre;
+		this.versiones = versiones;
+	}
+}
+
+```
+
+```
+export default class Pokemon {
+	constructor (id, foto, habilidades = [], tipos = [], movimientos = []) {
+		this.id = id;
+		this.nombre = nombre;
+		this.foto = foto; 
+		this.habilidades = habilidades;
+		this.tipos = tipos;
+		this.movimientos = movimientos;
+	}
+}
+```
+
+
+### Js doc: documenta el código automaticamente
+
+##### En las clases, antes del constructor vemos anotaciones como @param (Number) total
+
+##### Dado que JS no es un lenguaje fuertemente tipaso
+
+##### A los params le pueden pasar cualquier objeto dado que son una variable local que guarda cosas
+
+##### Js doc no cambia el funcionamiento de JS, solo es una ayuda
+
+##### Ej complejo: en la entidad/clase Pokemon definimos 'movimientos' que es un array que adentro va a tener objetos de tipo 'Movimiento'
+
+```
+class Pokemon {
+	/*
+		jsdoc: (array<Movimiento>) movimientos
+	*/
+	
+	constructor(movimientos = []) {
+		this.movimientos = movimientos;
+	}
+}
+
+```
+
+##### Tenemos que importar Movimiento
+
+
+### Estructura del proyecto
+
+#### Archivo pokemon.js
+
+##### Antes teniamos un archivo pokemon.js que devolvía datos de la api
+
+##### Tiene una url base, etc
+
+##### A los programadores se les enseña a que el código tiene que ser sencillo, corto, no repetir código
+
+##### A veces por querer aplicar todas esas tecnicas, queremos reutilizar código y lo terminamos acoplando en todo la app cuando no tienen que ver
+
+##### En el archivo Pokemon.js tenemos cargarPokemon que usa la estructura definida en la api para traer datos
+
+##### En el todo el proyecto tomabamos los datos de la api y lo usabamos en varios archivos
+
+##### En servicios, storage y ui
+
+
+##### El problema es que si necesitamos cambiar de api o la api cambia, tenemos que reescribir la app
+
+##### Sin querer estamos desparramando la lógica por varios módulos 
+
+##### Las entidades que estamos creando resuelven el problema
+
+##### Vamos a combinar las clases/entidades con las funciones que teníamos enlazandolas, retornando/creando instancias/objetos de esas entidades
+
+#### min 10
+
+
+##### Si la api cambia o si se empieza a usar otra api, que tiene otra estructura 
+
+##### Cambiamos el archivo que consulta a la api anterior eso es inevitable
+
+##### Lo ultimo que cambiariamos sería la función mapeadora de pokemones que usa los datos de la api
+
+##### Esta devuelve un nuevo objeto Pokemon, la implementación del nuevo objeto queda igual en todo los archivos que devuelven el objeto pokemon
+
+##### Evitamos desparramar la lógica que esta entidad y cumple con los principios de solid
+
+##### Por ej, las clases deberían tener una única razón para cambiar 
+
+##### En el caso de mapearPokemon cambia solo si cambian los datos de la api
+
+##### Y la conexión de la api cambia solo si tenemos que consultar la otra api
+
+
+## Diagrama de clases: relación entre entidades
+
+##### Si bien hay patrones de diseño que hay que podemos seguir y formas de hacer las cosas
+
+##### Lo dificil del diseño de software es que es subjetivo
+
+
+### Pensamiento
+
+##### Partimos de la entidad Usuario del sitio que tiene sus props
+
+##### id, email, pass, nombre, equipo, hincha, creado, modificado (user/cuenta)
+
+##### id, creado y modificado son comunes a todas las entidades
+
+
+##### Despues tenemos la entidad Equipo, nace desde la propiedad hincha (equipo real del usuario)
+
+##### El Equipo de verdad tiene un id, nombre, escudo, creado, modificado
+
+
+##### De la propiedad equipo nace la tercera entidad
+
+##### Es EquipoUsuario para jugar al gran dt
+
+
+## SDLC (Soft dev life cycle): 30m
+
+### Estadios/etapas
+
+#### 1. Obtener/analizar requerimientos: empezamos por diagramas, c4 (arquitectura de servicios)
+
+#### 2. Diseño: OOP, patrones como intro: los diagramas explican como va a funcionar la app antes de escribir código
+
+#### 3. Construcción/implementación: código
+
+#### 4. Testing: unit, integration, e2e; mock
+
+#### 5. Deploy: puesta en producción, ambientes de pre producción
+
+#### 6. Mantenimiento: monitoreo. Planificación sobre lo que está sucediendo en la app, la actividad en tiempo real, desde el uso del disco, incidentes, etc
+
+
+### Métodologias: waterfall, Agile
+
+#### Waterfall: Requirements -> design -> implementation -> Verification -> Maintenance
+
+#### Agile:
+ 
+
+### Diagrama de secuencia: usado por grandes companias, no así por startups
+
+#### Es más complejo/visual que los diagramas de clases convencionales
+
+
+### Diagrama de entidad-relacion: modelado datos (db)
+
+#### Modelado de tablas en una db
+
+
+### Métodología espiral: iterativo
+
+#### Empezamos por los requerimientos, después por las operaciones (código)
+
+#### La segunda parte es sacar el prototipo, lo testeamos
+
+#### Y volvemos a los pasos 1 y 2 en pequeñas iteraciones
+
+##### Si el cliente quiere cambiar algo de la app porque el mercado está cambiando en medio del desarrollo
+
+##### Si estamos diseñando un sistema hace mucho tiempo que en un momento deja de ser valido para el mercado el costo de cambiar es enorme como en waterfall
+
+
+### Agile: cada poco tiempo le mostramos al cliente como va quedando la app
+
+#### Le mostramos tanto el back como el front
+
+#### Funcionalidades de a poco empezando por lo más importante
+
+#### Comunicación constante con el cliente sobre sus requisitos
+
+
+### Agile y espiral es el más utilzado por todas las empresas de tec y startups
+
+##### Por ser el más flexible para adaptarse al mercado (menos costoso)
+
+
+#### Diagrama de espiral
+
+```
+1. Determine Objectives			2. Identify and resolve risks
+
+				Prototypes 1, 2, 3
+
+4. Plan the next iteration		3. Dev and test
+
+
+```
+
+##### En general el cliente no sabe lo que quiere a priori solo tiene una idea, cuando empezamos a desarrollar se van encajando las ideas, acercandose a lo que quiere el cliente
+
+##### Los contratos son por pocos meses de tiempo, si todo va bien se sigue
+
+##### Si hay conflicto se corta la relación/contrato
+
+##### El riesgo/costo a lo largo del tiempo es descendiente
+
+##### Se va entregando valor/producto por corto periodo de tiempo
+
+
+### Otras formas de Agile: SCRUM, Kanban
+
+#### SCRUM: en el equipo de desarrollo hay un product owner que es el que define las prioridades (puede ser un persona no tecnica)
+
+##### Despues el scrum master resuelve los conflictos que pueda tener el equipo, organización, motivación, calendario, delivery en tiempo en forma (puede ser persona no tecnica)
+
+##### Despues está el equipo tecnico (diseñadores, programadores) que van a completar los objetivos de cada entrega de valor/iteraciones en Agile: semanales, mensuales, etc
+
+
+#### Kanban: tenemos listas/columnas como "por hacer", "haciendo", "terminado"
+
+##### Los items de la derecha tiene más prioridad que los de la izquierda y que hay un limite de cuantos items podes poner por columna
+
+##### Las cosas "por hacer" son más importantes pero a la vez, no podemos hacer tantas cosas a la vez; como max por ej, podrían ser 2 y esas dos tienen una fecha en la que deberían estar terminadas
+
+
+### Habilidades blandas: comunicación, honestidad, sinceridad ante el cliente, metas, objetivos
+
+##### Si no podemos cumplir es mejor que nos comuniquemos mucho antes para tomar decisiones sobre los recursos, adquirirlos, etc
+
+##### Comunicarse con el manager y cliente sobre los requisitos si no llegamos con algo, por ahí no era prioridad y el problemas se resuelve
+
+
+## Diseño de Software 2
+
+##### Dado que las partes son: Requirements, Design, Implementation, Verificatin y Maintenance
+
+
+### Tomamos Design
+
+##### Las clases nos permiten modelar sistemas complejos de una manera más clara
+
+##### Es más fácil razonar que haya una una entidad/clase Jugador que pertenezca a una clase/entidad Equipo 
+
+##### De lo contrario tendriamos dos funciones, la función equipo tendria que tomar un array de jugadores, etc
+
+
+##### Diseñar un sistema se compatible con crear la arquitectura, Al diseño también se lo llama arquitectura de software
+
+##### La idea es que sea facil de entender y modificar, es decir, hacerlo mantenible
+
+##### Antes de escribir código se diseña un sistema que sea escalable y facil de mantener
+
+##### Cuando se quiere ser profesional, es lo que hay que hacer
+
+
+### Principios de diseño de software
+
+#### 1. El proceso de diseño debería contemplar soluciones alternativas
+
+##### Ej: el cliente pidio un sistema que le permite subir contenido estático con la posibilidad de poner contenido multimedia optimizado para SEO, con un panel de administración y que sea fácil de actualizar
+
+##### Si la solución ya existe, como wordpress que esta hace mas 20 años en el mercado, no vamos a hacer algo mejor desde 0
+
+##### Si esta alternativa existente alcanza para el cliente, se usa
+
+
+#### 2. No reinventar la rueda
+
+##### Ej: Usar patrones de diseño ya existentes
+
+##### Los patrones de diseño son soluciones a problemas comunes que existen en la industria
+
+##### Ej: El mapeador de pokemones que toma los datos de la api y devuelve una instancia de pokemon según esos datos es un patrón de diseño
+
+##### ES un patron de diseño llamado mapper/data mapper/translater
+
+##### Toma un objeto de cierto tipo (datosApi) y lo traduce a otro objeto de cierto tipo (pokemon)
+
+##### Se usa en situaciones dónde necesitamos tomar datos de dominio externo y transferirlo a algo de un dominio interno/que entendemos
+
+
+#### 3. El diseño debería ser conceptualmente simial al problema que se intenta resolver
+
+##### Ej: En vez de tener la clase 'SerAntropomorfico' le ponemos 'Pokemon'
+
+
+#### 4. El diseño es coherente (y consistente)
+
+##### Ej: Si definimos la propiedad 'es_titular' en la entidad 'Jugador', no nos hace falta crear una entidad 'Suplente'
+
+
+#### 5. El diseño debe permitir hacer cambios
+
+##### Ej: Se logra solo cuando se tiene un intimo conocimiento sobre el problema que se intenta resolver. Los mejores desarrolladores de software de negocio son aquellos que entienden el problema que intentan resolver
+
+##### Algunas cosas del sistemas deben ser inmutables/inflexibles que puede ser el corazón de nuestra app
+
+##### Antes de empezar a desarrollar se intenta entender el dominio del problema
+
+##### Entender como deben ser las operaciones de este sistema en el mundo real
+
+##### Entender a la gente como lo va a usar, como están acostumbrados
+
+##### Entender el corazón del negocio del cliente
+
+##### Al entender lo que estamos haciendo nos convertimos en mejores desarrolladores
+
+
+### Conceptos de diseño 
+
+#### 1. Abstracción: 
+
+##### Ej: El hecho de poder generalizar y decir voy a construir 'una función que me de el promedio de un array de numeros' en vez de hacer la misma operación cada vez.
+
+##### Ej: Puntualmente en diseño de objetos, y por ej el gran dt como ejemplo, si tenemos jugadores titulares, suplentes, jugadores en el equipo ficticio de un usuario pero tambien jugadores en un equipo real y el deporte es basquet, voley, handball o cualquier otro deporte deberiamos poder decir 'ok, hay una unica clase Jugador', 'no importa el deporte'
+
+
+#### 2. Herencia:
+
+##### Podemos crear clases especializadoas que se basen en una clase padre
+
+##### Ej: la clase programador extiende de persona
+
+
+#### 3. Modularización: 
+
+##### Se pueden agrupar varias clases en un mismo modulo
+
+##### Ej: el módulo de Pagos tendrá varias clases que lo definan, y si el módulo de Pagos interactua con el módulo de Mensajeria que tiene clases propias para mandar comunicaciones a quienes realizen y reciban pagos
+
+##### Es importante no desparramar lógica. El modulo de mensajeria no deberia saber nada del modulo de pagos. El modulo de pagos no debe saber que puede mandar mensajes con el modulo de mensajeria
+
+
+#### 4. Encapsulación:
+
+##### La encapsulación tiene que ver con esconder/ocultar las funcionalidades de una clase
+
+##### El beneficio es que podemos cambiar una clase sin romper nada
+
+
+#### 5. Polimorfismo
+
+
+### Principios OOP - SOLID 
+
+
+
+
+# NodeJS
+
+#### Herramientas requeridas: cURL y postman
+
+postman/similares: para trabajar con web apis, sobre todo para si vamos a crear una
+
+
+## Ambientes de ejecución
+
+##### Node es una plataforma que provee un entorno de ejecución para ejecutar JS fuera/del lado del servidor
+
+##### Permite ejecutar JS fuera del navegador, provee multiples bibliotecas como modulos como http, fs, herramientas que funcionan dnetro del entorno de NodeJS
+
+##### El control lo tiene el desarrollador, dice como debe funcionar las cosas o partes de la app como: la lógica del servidor, las rutas, etc
+
+##### Los Frameworks obligan a seguir arquitecturas para desarrollar de forma como lo fueron pensando, se debe seguir un flujo de trabajo, reduciendo la toma de decisiones. Es un plano/esqueleto que tenemos que ir siguiendo/completando para crear una app.
+
+##### El framework crea objetos y llama a métodos en respuesta a eventos, el desarrollador se encarga de implementar la lógica y la presentación. La inversión de control es un patrón de diseño.
+
+##### Las bibliotecas son modulos con código reutilizable que pueden ser llamados directamente para hacer una tarea especifica, no imponen una forma de hacer las cosas.
+
+
+##### NodeJS permite crear un servidor web (creado con js) que nos permite escuchar llamadas/request/solicitudes que nos hagan y mandar respuestas/recursos/request
+
+##### Otro ejemplo: es php que tiene como servidor a apache o nginx quienes le pasan los request a php
+
+##### En NodeJS todo es js, está listo para ser usado en producción
+
+
+### JS Browser vs JS Node
+
+##### Por ejemplo: import vs require, export vs module.exports
+
+##### Node incorpora CJS pero podemos usar ESM en Node gracias a Babel
+
+
+#### En la consola del navegador tenemos al objeto window, en el servidor de Node tenemos a global
+
+##### window nos da info de la ventana, de la misma forma si llamamos a document
+
+##### En el servidor de Node no existe window ni document
+
+##### El servidor tiene un objeto que se llama process que nos da info sobre el ambiente en dónde se ejecuta el código; que no existe en el navegador
+
+
+#### Código isomórfico: cuando el código puede correr en ambos ambientes, en este caso en el navegador o en el servidor
+
+#### Uso de Babel: JS moderno a Js antiguo para hacer el código moderno compatible con navegadores antiguos o versiones antiguas de JS
+
+##### Babel traduce ESM y lo traduce a CJS reemplazando los imports por require y los exports por module.exports y después ejecuta el código directamente en Node
+
+
+#### Herramientas: Nodemon (rastrea el estado de los archivos), postman/similares, eslint, jest 
+
+##### Nodemon: cuando corremos una app de node tiene cierta version de este
+
+```
+nodemon app.js: 
+```
+
+Ejecuta la aplicación app.js
+
+```
+nodemon --exec ts-node app.ts:
+```
+
+Ejecuta la aplicación app.ts
+
+
+##### Nodemon solo se usa en el ambiente/estado de desarrollo de la app
+
+
+### Web server
+
+##### Apis, web server y web Apis: Del lado del web server están las web Apis
+
+##### Del lado de las apis: Si tenemos un modulo que exporta ciertas funcionalidades/funciones, entonces, esto es la api de este modulo
+
+##### Las web apis ofrecen funcionalidades a través de la web
+
+##### Son remotos, necesitan ofrecer endpoints/url para que funcionen y los usuarios/clientes de la api pueden pedirle/consultarle recursos
+
+##### Las url se consultan a través del protocolo HTTP como cualquier web
+
+
+#### HTTP (HiperText Transfer Protocol)
+
+#### Estructura de una Url: Tiene un protocolo (hay varios) especifico para lo que ofrece
+
+#### 1. Protocolos:
+
+##### HTTP
+
+##### HTTPS
+
+##### file
+
+##### about
+
+
+#### 2. host: sitio web, sub domimnio (www) + dominio (google) + (.com/u otro tld) top level domain (los sitios que están bajo uno de estos tld)
+
+
+#### 3. path: ruta especifica para un recurso (google.com/images)
+
+
+#### 4. query: params especificos/personalizados/dinámicos
+
+##### Ej: google.com/images/?param=value&other+value
+
+##### Está separado de la url con un signo de pregunta, le sigue param, igual, value, &, otro param, igual, otro value &...
+
+##### El motivo es que http no tiene estado, cada vez que entramos a una página, para http es como si fuera la primera vez que entra
+
+##### Http no sabe si estuvimos en una página o no
+
+##### Pero hay tecnicas que usamos del lado del servidor que nos ayuda a entender si un usuario estuvo en esta página o no y actuar en consecuencia
+
+##### Ej: Uno de los trucos para cargar/ofrecer algo especifico le pasamos params
+
+##### Ej: si tenemos una función de bienvenida: function welcome(userName){}
+
+##### En el query especificamos: ?nombre-usuario=Pepe
+
+##### Es como ejecutar la función welcome con el param 'Pepe'
+
+
+#### 5. hash: id dentro de la página a dónde queremos que el navegador vaya
+
+##### Sección especifica de la página es lo que representa el numeral
+
+```
+#id-dentro-del-sitio
+```
+
+##### Ej: 
+
+```
+https://es.wikipedia.org/w/index.php/?title=Argentina&printable=yes#La_formacion_del_estado_federal
+```
+
+https: protocolo
+
+host: es.wikipedia.org (es: subdominio), (wikipedia: dominio), (org: tld -top level domain-)
+
+path: /w/index.php/
+
+query: ?title=Argentina& (title es el param, Argentina el el value); & es para otro param y value
+
+hash: #La_formacion_del_estado_federal
+
+
+### Estructura de Request (solicitud/petición) y response (respuesta)
+
+##### Todo en internet un request y un response
+
+#### 1. Headers (encabezados): Va la meta info que es la info acerca del request/solicitud
+
+
+#### 2. Body (cuerpo): datos que le pasamos al servidor para hacer ciertas acciones
+
+##### Como get: Tiene el body vacío y los datos viajan en la url a través de las query de la página apuntada/solicitada
+
+
+#### En el caso de las respuestas tambien tienen headers y body
+
+##### El body de la respuesta del servidor (puede estar vacía), puede ser una página, xml o json, etc
+
+##### La respuesta en los headers tienen un código de estado
+
+
+#### 3. Códigos de estado: 200, 404, 403, 500
+
+##### Nos dice el estado de la respuesta, por Ej:
+
+##### 2xx: éxito (ok)
+
+##### 4xx: error del cliente/usuario (bad request)
+
+##### 5xx: error del servidor (internal server error)
+
+##### Por ej: si como cliente/usuario le pasamos una mal dirección de un recurso va a devolver un estado 4xx 
+
+##### Los codigos de estado son esenciales al trabajar con apis, que pueden devolver estado 200 pero el mensaje dentro es error, está mal
+
+##### Si el mensaje dentro es error, la respuesta del estado tiene que ser 500
+
+##### El que consume la api web debe saber en base al código del estado si fue error o si fue bien (ok)
+
+##### Entonces con ese código error u ok decidirá que hace, sus acciones
+
+##### Si pasamos un 200, y dentro estamos diciendo que es un error, es mala práctica
+
+##### 
+
+
+
+### Web server y Web Apis
+
+##### Un web server recibe request de HTTP, las interpreta y devuelve una respuesta
+
+##### Esta respuesta/response es siempre texto que puede seguir un formato (HTML, JSON, XML, o cualquier otra cosa que queramos, incluso formatos propios)
+
+##### En el caso de una web api, por lo general devuelve un JSON o XML junto con un estado (200, 404, 500, etc.)
+
+
+### Crear un web server y aceptar requests
+
+#### Ej servidor básico de Node: 
+
+##### http es un módulo de las librerías por default en node
+
+##### Archivo index-0.js
+
+##### require('http') es como hacer un import, para usar el módulo http
+
+##### El equivalente en ESM sería import http from 'http'
+
+```
+const http = require('http');
+
+const PUERTO = 8080;
+
+const server = http.createServer((req, res) => {
+	res.writeHead(200);
+	res.end('Hola, mundo!');
+});
+
+console.log(`Escuchando en el puerto ${PUERTO}`);
+server.listen(PUERTO);
+```
+
+##### Ejecutamos node index-0.js
+
+##### Con la función createServer del módulo http nos permite crear un servidor que espera una solicitud y da una respuesta
+
+##### La función arrow es de callback (como lo especifica createServer) 
+
+##### se va a ejecutar cada vez que haya una conexión al servidor
+
+##### Toma el param request (req) y el segundo es response (res)
+
+##### Vamos a usar esos params internamente con la función writeHead() para req y end() para res
+
+##### Cada vez que haya una llamada al servidor (server), escribirá el estado 200 (ok) en el head
+
+##### Termina la respuesta con un hola mundo usando end()
+
+##### Invocamos a server.listen(PUERTO);
+
+##### Para correr este archivo tenemos el comando: npm run dev --paso=0
+
+```
+"scripts": {
+	"dev": "nodemon index-${npm_config_paso}.js"
+}
+```
+
+##### Va a llamar a nodemon y la variable ${npm_config_paso} 
+
+##### Es para pasar --paso=0, entonces el valor de ${...} será 0
+
+##### Lo que da lugar a ejecutar 
+
+```
+npm run dev --paso=0
+```
+
+##### Le decimos a la terminal que paso es 0
+
+##### Va a ejecutar el archivo index-0.js
+
+
+##### La terminal va a mostrar escuchando en el puerto 8080 (server abierto/listo)
+
+##### Si en otra terminal hacemos un curl 
+
+```
+curl http://localhost:8080
+```
+
+##### Vamos a recibir la respuesta del servido
+
+```
+Hola, mundo!
+```
+
+#### curl nos permite hacer un request sin un navegador
+
+##### Es un request de http para poder ver las respuestas
+
+
+##### Si no cerramos el servidor, el programa sigue corriendo
+
+##### Si modificamos la respuesta a algo como Chau, mundo!
+
+##### nodemon va a resetear el programa/script y volverlo a ejecutar
+
+##### Si lo ejecutaramos solo con node index-0, el servidor va a volver a estar abierto
+
+##### Si vamos a la otra terminal y volvemos a hacer la petición/request con curl
+
+##### Nos va a dar la modificación, pero si lo volvemos a modificar y volvemos a ejecutar curl sin haber ejecutado node nos va a dar la respuesta vieja 
+
+##### Dado que node carga el programa en memoria y queda ahí
+
+##### Para solucionarlo tenemos que cerrarlo y volver a correr node
+
+
+##### La ruta alternativa sin script para ejecutar el programa con nodemos es: 
+
+```
+./node_modules/.bin/nodemon index-0.js
+```
+
+
+### Postman
+
+#### 1. Config de postman
+
+##### Postman collections: carpetas del proyecto
+
+##### Podemos importar una colección de postman, como un archivo
+
+##### Conexión de postman es un archivo como name-js.postman_collection.json
+
+##### Importamos esto para tener la misma colección para empezar a testear los archivos
+
+##### Ej: vaamos a la subcarpeta de la colección importada
+
+##### En este caso es paso-0
+
+##### En la ventana pricipal vemos a acción GET, la barra de dirección y un botón para enviar
+
+
+##### En esta subcarpeta o en la anterior, podemos crear una nueva colección
+
+##### Al hacer click derecho podemos agregar request
+
+##### Completamos los campos como por ej: paso-0 como nombre de request
+
+##### Vamos a guardarlo, elegimos la carpeta y la salvamos
+
+##### Vemos que tenemos como get paso-0
+
+##### Al seleccionarlo podemos elegir otro acción
+
+##### Tenemos que introducir la url
+
+##### Ej: http://localhost:8080
+
+
+##### Tenemos una barra de configuraciones para como Params, Authentication, Headers, Body, pre request script, text, settings
+
+##### En Params se habilita Query Params
+
+##### O podríamos escribirlo en la url: ej, http://localhost:8080/?asd=1
+
+##### Va a aparecer en Query params y a su vez cambiarlo desde esta sección misma
+
+
+#### 2. Headers: del request, si tenemos, los podemos pasar en esta sección
+
+##### Por default, postman pasa headers
+
+
+#### 3. Body: para pasarle, podemos seleccionar none, found-data, encoded y lo que queremos mandar como un request de json
+
+##### Escribimos como se códifica cada uno, json como objeto, xml como etiqueta
+
+```
+{
+	"hola": 1
+}
+```
+
+
+#### 4. Send: cuando estamos listos
+
+##### Vamos a ver la respuesta
+
+##### Tenemos una pestaña Body que a su vez tiene otras como Proxy, Raw, Header, etc
+
+##### Pretty: muestra, 1 hola, mundo!; muestra la linea de código
+
+##### Raw (crudo): hola, mundo!
+
+##### Preview como se vería en el navegador
+
+
+#### 5. Despues de la herramienta/respuesta Body, hay cookies
+
+
+#### 6. Sigue Headers: tiene key and value, lo que vienen en la respuesta
+
+##### Tiene una fecha Date: con su value
+
+##### Correction: keep-alive
+
+##### Tranfer-Encoding: 
+
+
+
+#### 7. En la barra superior a la derecha nos muestra el estado de la consulta
+
+##### El tiempo de ejecución, y la cantidad de bytes
+
+
+#### 8. Para que todo funcione debemos tener abierto el servidor
+
+
+##### Hasta ahora creamos nuestro primer servidor node
+
+
+#### Puertos
+
+##### Con server.listen(PUERTO): Como todas las maquinas tienen 65535 puertos, va en potencia de dos; empieza de 0 a 65535 > 65536
+
+##### Por lo general hay puertos que son por default
+
+##### Ej, el 80 es para http,  el 22 es para ssh, el 23 ftp, puerto para mysql
+
+##### Hay aplicaciónes que tiene su propio puerto por default
+
+
+#### Por lo general cuando desarrollamos pones el puerto 8080 (http), 8000, etc
+
+##### Marcamos que no es un ambiento de producción, porque solamente puede haber un programa escuchando en un puerto a la vez
+
+##### Al hacer server.listen(PUERTO), solo el programa puede estar escruchando el puerto
+
+##### Solo nuestro programa paso-0 puede estar en 8080
+
+##### Si queremos levantar otro servidor que este escuchando en el mismo puerto nos va a dar error
+
+##### Ej si intentamos correr el programa paso-1 en 8080
+
+```
+npm run dev --paso1
+```
+
+##### Nos da un error listen address in use
+
+##### pero si cambiamos el puerto de ese programa va a funcionar 
+
+
+### Index-1.js === npm run dev --paso1
+
+##### Ahora queremos devolver HTML, especificamos en el header que el content type es text/html
+
+```
+const http = require('http');
+
+const PUERTO = 8001;
+
+const server = http.creteServer((req, res) => {
+	res.writeHead(200, { 'Content-Type': 'text/html' });
+	res.end('<h1>Hola, Mundo!</h1>');
+});
+
+console.log(`escuchando en el puerto ${PUERTO}`);
+server.listen(PUERTO);
+```
+
+##### En el otro servidor/programa teniamos solo 0k en el Head y devolviamos un string
+
+```
+const server = http.createServer((req, res) => {
+	res.writeHead(200);
+	res.end('Hola, mundo!');
+});
+```
+
+##### Devolvía nada más que un hola mundo
+
+
+#### El camino de la web: el cliente/usuario hace un request en el navegador, llega al servidor de cierta forma, el servidor lo interpreta de cierta forma y lo devuelve. El user al final termina viendo HTML
+
+##### Como antes, el programa importa http, define el puerto para la app, crea un server
+
+##### Pero ahora especificamos un content type como text/html para ayudar al navegador a interpretar la respuesta de manera adecuada
+
+##### Y en la respuesta mandamos un string con forma de un elemento html
+
+```
+const server = http.creteServer((req, res) => {
+	res.writeHead(200, { 'Content-Type': 'text/html' });
+	res.end('<h1>Hola, Mundo!</h1>');
+});
+```
+
+##### En res.end/servidor no existe el concepto de html, para el servidor está mandando un texto 
+
+##### Este texto cuando llegue al navegador se va a interpretar como html
+
+##### No tiene validación, ni nos va avisar si está bien códificado
+
+##### Solo mandamos texto
+
+
+#### Ejecutamos el servidor con run dev --paso=1
+
+##### Vamos a postman, repetimos el proceso para el programa/servidor 0
+
+##### Apretamos el botón send
+ 
+##### En el Body, en Pretty vemos 1 <h1>Hola, mundo!</h1>
+ 
+##### En Raw del body vemos: <h1>Hola, mundo!</h1>
+ 
+##### En Preview nos muestra el texto/elem y contenido html como lo interpreta el navegador
+
+##### Preview es como si fuera un navegador
+ 
+ 
+#### En el inspector del navegador podemos ver nuestro programa frontend
+
+##### El navegador crea tags
+
+##### Si volvemos a editar nuestro programa en la respuesta no cerramos bien el tag
+
+```
+const server = http.creteServer((req, res) => {
+	res.writeHead(200, { 'Content-Type': 'text/html' });
+	res.end('<h1>Hola, Mundo!<h1');
+});
+```
+
+##### El navegador lo cerrará, intenta interpretar los errores que podemos llegar a tener y lo corrige para mostrale al usuario por medio del cliente/navegador como debería ser
+
+##### El consejo web decidio hacer eso antes que tirar un error
+
+
+#### Volviendo a postman en Headers
+
+##### Ahora nos pasa una key Content Type con un value text/html
+
+##### Como lo habiamos definido
+
+##### Si se lo quitasemos, en postman en Pretty no nos va a detectar que es un código html
+
+##### Las apps se guían mucho por el contenido del header
+
+##### La api de pokemon devuelve Application JSON
+
+##### Lo podemos chequear en Headers, buscando content-type, veremos application json más el charset
+
+
+#### Podemos llamar a una url de la pokeapi en postman
+
+##### En el Body, en Pretty lo formateará como código json 
+
+##### Dado que sabe que en headers viene application json en content type
+
+
+## Crear server con muchas URLs
+
+
+
+
+
+
+#### 1. Params a scripts de node 
+
+
+#### 2. Crear el server
+
+```
+npm run dev --paso=0
+```
+
+
+#### 3. Crear un server que devuelva HTML
+
+```
+npm run dev --paso=1
+
+```
+
+
+#### 4. Crear un server con varias URLs
+
+```
+npm run dev --paso=2
+
+```
+
+
+#### 5. res.write vs rest.end	
+
+##### res.write: escribe parcialmente
+
+##### rest.end: escribe y termina la respuesta
+
+
+#### 6. res.writeHead | res.writeHead(200, {"Content-Type": ""textHome"}|
+
+
+#### 7. charset utf8
+
+
+#### 8. cURL
+
+##### curl http://127.0.0.1:8080
+
+
+#### 9. Postman
+
+##### nueva > coleccion
+
+##### nuevo > request
+
+
+#### 10. Browser
+
+##### ir a http://127.0.0.1:8080
+
+
+#### 11. Refactorizar paso 2 (...) para devolver un estado de error en xaso de que sea una URL invalida
+
+```
+npm run dev --paso=3
+```
+
+
+### Crear un web server con expressjs y aceptar un request
+
+```
+npm run dev --paso=0
+```
+
+#### 1. Majenos de peticiones (Request handling)
+
+##### Exportar rutas (routing)
+
+##### Soportan multiples funciones de callback
+
+##### Soportan expresiones regulares
+
+
+#### 2. Parametros 
