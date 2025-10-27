@@ -22178,9 +22178,294 @@ const server = http.creteServer((req, res) => {
 
 ## Crear server con muchas URLs
 
+##### Dado que los sitios tiene muchas páginas web
+
+##### Son distintas rutas o urls
 
 
+### Archivo index-2.js === npm run dev --paso=2
 
+##### Muestra como manejar distintas rutas
+
+##### url es una librería es core, no está en un json
+
+##### Con console.log mostramos en la termina la constante pagina
+
+##### pagina pasa parse de url que toma el param req que accede a url, 
+
+##### Debe pasar antes que el write de la respuesta
+
+##### res.writeHead antes que res.write
+
+```
+const http = require('http');
+
+const url = require('url');
+
+const server = http.createServer((req, res) => {
+	const pagina = url.parse(req.url).pathname;
+	
+	res.writeHead(200, { 'Content-Type': 'text/html' });
+	
+	res.write (
+		<!DOCTYPE html>
+		<html>
+		<head>
+			<meta charset="utf-8"> <!-- Probar en el navegador comentar la linea-->
+			<title>Intro a Node.js</title>
+		</head>
+		<body>
+	);
+	
+	Switch (pagina) {
+		case '/':
+			res.write('Welcome');
+			break;
+		case '/sotano';
+			res.write('mi sotano');
+			break;
+		case 'patio';
+			res.write('mi sotano');
+			break;
+		default: 
+			res.write('epa');
+	}
+	res.end('</body></html>');
+	
+});
+server.listen(8080);
+```
+
+##### Estamos usando url para entender qué página es la que se pide
+
+##### req.url es una propiedad de req/request
+
+##### Tomamos req.url se lo pasamos a url.parse dado que req.url es un string
+
+##### Analiza/examina/interpreta el string req.url
+
+##### El resultado de url.parse(req.url) nos permite manipular en toda su estructura
+
+#### Protocolo, host, path, query, id/hash
+
+##### Podemos pedir el path, el query, etc
+
+##### Nos devuelve un objeto json que nos explica toda las distintas partes de la url
+
+##### url.parse(req.url).pathname: finalmente con esto le pedimos el path/ruta
+
+##### Todo esto será guardado en pagina
+
+##### Podemos ver el objeto en la terminal con console.log(url.parse(req.url))
+
+
+#### Vamos a postman, repetimos el proceso para crear una request/accion
+
+##### En postman tenemos paginas/request creados como home, 
+
+##### Tocamos en enviar request/solicitudes/petición
+
+##### Pretty muestra un documento html
+
+```
+<html>
+<head>
+	<meta charset="utf-8"> <!-- Comentar meta para el navegador --> 
+	<title>Intro a Node.js</title>
+</head>
+
+<body>
+	Welcome
+</body>
+</html>
+``` 
+
+##### Como fue llamado, ahora en la consola/terminal nos va a mostrar el objeto
+
+```
+Url: {
+	protocol: null,
+	slashes: null, 
+	auth: null, 
+	host: null, 
+	hostname: null,
+	hash: null,
+	query: null, 
+	pathname: '/',
+	path: '/'.
+	href: '/'
+}
+```
+
+##### El objeto json se llama url que tiene keys y values
+
+##### Como pagina decimos que sea pathname
+
+##### Con res.writeHead(200, {}) empezamos diciendo que la respuesta es 200 (ok)
+
+##### Su contenido será html
+
+##### En vez de hacer un res.end
+
+##### Hacemos res.write
+
+##### res.end hace un res.write para terminar el request
+
+##### res.end es como un return, terminará el response
+
+##### Se mandará la respuesta hasta esta linea de código
+
+##### No hay posibilidades despues de modificar la respuesta
+
+##### Con res.write escribimos en el body de res y poder seguír ejecutando código
+
+##### Despues con Switch(pagina){//cases}
+
+##### Se fija cuál es la url de la página, si pagina es /, /sotano o /patio
+
+##### Al final con res.end('</body></html>'), terminamos el response agregando o cerrando el html
+
+
+##### En postman vamos a las urls guardadas/creadas en collection y damos a send
+
+##### Si el usuario introduce un web que no está codificada en la lógica/switch va a mostrar el caso por default
+
+##### Lo podemos simular con postman también, escribiendo cualquier url
+
+
+### error caso por default: código de estado en ruta inexistente
+
+##### Cuando el usuario va a una url que no existe, el código de estado no puede ser 200
+
+##### Tiene que ser error del cliente (404)
+
+
+### Charset: si sacamos la etiqueta meta info sobre charset 
+
+##### El navegador muestra caracteres raros, dado a una mala encodificación
+
+##### Se agrega agregando una meta charset utf-8 en el header de la página
+
+
+### Comportamiento de rutas en apps modernas como ig
+
+##### No tiene 20 millones de rutas guardadas en el disco del server como si fueran archivos
+
+##### Tienen un unico archivo en el servidor que es profile
+
+##### Este archivo interpreta el request para acceder a un perfil especifico
+
+##### Formará dinamicamente la pagina
+
+
+### Error del cliente: app nueva index-2.js
+
+#### 
+
+```
+const http = require('http');
+const url = require('url');
+
+const server = http.createServer((req, res) => {
+	const pagina = url.parse(req.url).pathname;
+
+	let respuesta = `
+		<!DOCTYPE html>
+		<head>
+		<meta charset="utf-8">
+		<title>Introducción a Node.js</title>
+		</head>
+		<body>
+	`;
+	
+	res.setHeader('Content-Type', 'txt/html');
+	res.statusCode = 200;
+	
+	switch (pagina) {
+		case '/':
+			respuesta += 'Welcome';
+			break;
+		case '/sotano';
+			respuesta += 'mi sotano';
+			break;
+		case 'patio';
+			respuesta += 'mi sotano';
+			break;
+		default: 
+			res.statusCode(404)
+			respuesta += 'No existe esa página';		
+	}
+	res.end('</body></html>');
+	
+});
+server.listen(8080);
+``` 
+
+##### No estamos haciendo res.writeHead
+
+```
+
+const server = http.createServer((req, res) => {
+	const pagina = url.parse(req.url).pathname;
+	
+	res.writeHead(200, { 'Content-Type': 'text/html' });
+	
+	res.write (
+		<!DOCTYPE html>
+```
+
+##### Esto escribe el contenido directamente, escribe el header 
+
+##### Escribir/setear el header siempre se tiene pasar antes de que empezemos a escribir la respuesta
+
+##### De lo contrario nos da error de que no se puede modificar el header porque ya se envio
+
+##### Dado que el contenido ya fue enviado
+
+##### Ahora tenemos
+
+```
+const server = http.createServer((req, res) => {
+	const pagina = url.parse(req.url).pathname;
+
+	let respuesta = `
+		<!DOCTYPE html>
+		<head>
+		//...
+```
+
+```
+	res.setHeader('Content-Type', 'txt/html');
+	res.statusCode = 200;
+		
+	switch (pagina) {
+		case '/':
+			respuesta += 'Welcome';
+			break;
+```
+
+##### Siempre escribimos el header antes que la respuesta que es lo que hace el switch al final de código
+
+##### res.setHeader('Content-Type', 'text-html') que no se escribio, está en memoria; al navegador no le dimos esa orden hasta este momento, pasará más adelante
+
+##### El status code va a ser 200 con la instrucción: res.statusCode = 200
+
+##### En el switch, según en dónde estemos, concatenamos la respuesta con más string
+
+##### En el caso de default, cambiamos primero el status code a 500
+
+##### Al final mandamos la respuesta con res.end haciendo que se escriban los headers y el body
+
+```
+	respuesta += '</body></html>';
+	res.end(respuesta);
+
+server.listen(8080);
+```
+
+##### Probamos el caso de error en postman
+
+##### Con setHeader para ir cambiando la respuesta con switch y al final delegar a res.end escribir la respuesta final formada en vez de ir haciendolo por partes
 
 
 #### 1. Params a scripts de node 
@@ -22262,3 +22547,1324 @@ npm run dev --paso=0
 
 
 #### 2. Parametros 
+
+
+
+## Express JS
+
+##### Framework backend para node, de los más utilizados por la comunidad
+
+##### Es el que usa nest.js por default
+
+
+### Archivo en express/index-0.js == npm run dev:express --paso=0
+
+#### A express lo instalamos como una dependencia del proyecto(producció), no dev: npm i express
+
+```
+npm i express
+```
+
+##### Primero requerimos/importamos express
+
+##### express nos devuelve una función 
+
+##### Al ejecutarla nos da una app: const app = express();
+
+##### Será un objeto de tipo application
+
+```
+// lo que instalamos a través de npm
+const express = require('express'),
+
+const PUERTO = 8080;
+const app = express();
+
+// app.MÉTODO('/ruta', (request, response) = {})
+app.get('/, (req, res) => {
+	res.end('hola, mundo!');
+});
+
+// matches /patricio, /mauricio, y otros nombres con lo que alguna vez se confundieron como le puede pasar a cualquier persona con nombre parecidos
+app.get(/\/[a-z]{3}ricio$/, (req, res, next) => { // notar el param next
+	res.write('Hola');
+	next('este es un param que se le pasa a la siguiente función');
+}, (a, req, res, next) => {
+	console.log(a);
+	res.write(', che!');
+	next();
+}, (req, res) => {
+	res.end(' Chau.');
+});
+
+app.listen(8080);
+console.log(`Escuchando en el puerto ${PUERTO}`)
+```
+
+
+### Flujo de trabajo de express
+
+##### app tiene funciones que representan las acciones del servidor
+
+##### app.get le pasamos sobre que ruta queremos que se ejecute la siguiente función de callback
+
+##### (req, res) => {res.end('hola, mundo!')} es lo que se ejecutará cuando vayamos a home o /
+
+##### Podemos probarlo en postan creando y guardando las solicitudes, etc
+
+##### Seleccionamos la solicitud correcta en collection y apretamos Send
+
+
+#### Con express podemos matchear expresiones regulares
+
+##### Con la expresión regular /\/[a-z]{3}ricio$/ la url empezará con una barra que la escapamos
+
+##### Va a tener que tener las letras de a hasta la z
+
+##### Tienen que ser exactamente 3: {3}
+
+##### Con el texto ricio y el signo $ es como tiene que terminar la expresión regular/ruta
+
+##### Como ruta va a matchear patricio, mauricio, etc
+
+##### Con el tercer param (next): (req, res, next) => {}
+
+##### Se usa para concatenar funciones de callback
+
+##### Como {res.write('Hola'); next('...')}
+
+##### Al decir que debe ejecutar res.write, en vez de terminar la res
+
+##### Le decimos que queremos llamar a next con un param x que le pasamos a next('..,')
+
+##### (a, req, res, next) => {} son todas funciones extras que queremos que se ejecute además del callback inicial
+
+##### Las demas funciones son params como la ruta, el primer callback
+
+##### La segunda función y la tercera son tambien params
+
+##### Para el request/get en la ruta con la expresiónr regular
+
+##### Se usa para aplicar Middlewares como uso primario y también sirve para organicar el código
+
+
+#### El primer next() y su param next('...') va a guardarse en el primer param (a) de la siguiente función
+
+##### El la segunda funcion de callback ya no tenemos param en next
+
+##### Y para la última función solo usamos req y res
+
+##### Si en next necesitaramos pasar más cosas se crea o se le pasa un objeto ahí mismo
+
+##### Tambien le podemos pasar un array
+
+##### Si next tiene más de un param, tenemos que guardarlo en otro param en la siguiente función
+
+##### Ej: (a, b, c, req, res, next) => {}
+
+
+##### Despues de llamar a la url con un nombre
+
+##### Se le responde con un res.write('Hola')
+
+##### Llamamos a next, la primera instrucción de la función será un console del param a
+
+##### Se le responde res.write(', che!') y llamamos a next() sin param
+
+##### La ultima solo escribe res.end(' Chau.')
+
+##### En postman podemos crear/guardar paso-0-regex
+
+##### Al hacer send, nos devuelve hola, che! Chau
+
+##### En la terminal vamos a ver el valor de a
+
+##### Que es el texto que estaba en el primer next()
+
+
+#### next() es para todo lo que queramos hacer con cada request
+
+
+### Archivo express/index-1.js == npm run dev:express --paso=1
+
+#### Params en express: el punto de inflexion en el backend
+
+##### Así como la manipulación del DOM lo es en frontend
+
+
+#### Manipular y usar los params
+
+##### Requerimos express, creamos la app con express()
+
+##### Hacemos app.get para una solicitud en /
+
+##### Su respuesta va a ser un el valor req.param('x')
+
+##### ${req.param('x')} va a consultar por un param que se haya pasado en la url
+
+##### Probamos la solicitud en postman
+
+##### Debemos introducir en la barra: /?q=1
+
+```
+http://localhost:8080/?q=1
+```
+
+##### En Pretty del body nos responde que e valor es 1
+
+##### Si lo cambiamos va a imprimir ese cambio
+
+##### Si fueramos a crear una api, así podemos centralizar la lógica para ir a buscar un recurso en particular y sus datos
+
+##### Lo devolvemos en una sola página
+
+##### Así no necesitamos cientos de páginas para los datos que quisieramos mostrar
+
+##### Tendríamos una única página, la ruata de entrada es una sola; tomamos el param que puede venir desde el cliente 
+
+##### O tambien el param puede venir desde la /
+
+##### En base a esto de forma abstracta nos vamos a referir a la entidad que necesita nuestra app o contexto
+
+##### Ej, Pokemon; con el pokemon solicitado como recurso
+
+##### Vamos a tener que ir a buscarlo
+
+##### El primer get a /x/1 es para cualquier param con un solo value
+
+##### Para cualquier cosa que le entre en la url principal como param
+
+##### En la vida real el usuario no escribe la x
+
+##### Escribe o entra directamente al nombre del recurso especifico
+
+##### Como http://localhost:8080/pikachu
+
+```
+const express = require('express');
+ const app = express();
+
+app.get('/', (req, res) => {
+	// obtiene el param x
+	res.end(`El parámetro x es ${req.param('x')}`);
+});
+
+app.get('usuario/:id', (req, res) => {
+	res.end(`El valor del id de usuario es ${req.param('id')}`);
+});
+
+app.get('/equipo/:idEquipo/jugador/:idJugador', (req, res) => {
+	res.end(`El valor del id del equipo es ${req.param('idEquipo')} y el id ${req.param('idJugador')} es el jugador`)
+});
+
+app.get('/hola-mundo', (req, res) => {
+	res.writeHead(200, { 'Content-Type': 'text/html' });
+	res.end(`
+		<html>
+			<head>
+				<title>Hola mundo</title>
+			</head>
+			<body>
+			</body>
+	`);
+});
+```
+
+##### Para un comportamiento más real
+
+##### Express provee name parameters
+
+##### Podemos matchear que cada vez que llamen a /usuario/:id
+
+##### /:id (se lee/interpreta como "algo")
+
+##### A ese algo, lo llamaremos id
+
+##### La sintaxis es : + nombre del param
+
+##### Ej: la respuesta a la solicitud usuario/:id
+
+##### Es ${req.param('id')}
+
+```
+app.get('usuario/:id', (req, res) => {
+	res.end(`El valor del id de usuario es ${req.param('id')}`);
+});
+```
+
+##### con esto matcheamos todo lo que le pasemos a usuario
+
+```
+http://localhost:8080/usuario/abcd
+http://localhost:8080/usuario/2
+```
+
+Out: 
+
+El valor del id de usuario es abcd
+
+El valor del id de usuario es 2
+
+##### Podemos crearlo y probar en postman
+
+
+#### Cae en el mismo endpoint
+
+##### Una funcionalidad puede ser si tenemos muchos usuario
+
+##### Vamos a tener un único punto de entrada para todos
+
+##### Vamos a capturar el id a través de pasarle algo como: 
+
+```
+http://localhost:8080/usuario/3
+```
+
+##### Cuando sepamos (por el id) que usuario es o que equipo es o qué jugadores
+
+##### Desde el frontend le vamos a pedir al servidor traer el usuario 1 o el jugador 1 o el equipo 1 o lo que sea
+
+```
+http://localhost:8080/usuario/1
+http://localhost:8080/equipo/1
+http://localhost:8080/jugador/1
+```
+
+##### Desde el lado del servidor creamos las rutas que matchean contra una parte de la url y en esa parte hacemos que suceda algo en la respuesta
+
+
+#### Algo más elaborado: Podemos hacer get a un equipo con cualquier id del equipo (:idEquipo), seguido de /jugador y al final cualquier id del jugador
+
+```
+app.get('/equipo/:idEquipo/jugador/:idJugador', (req, res) => {
+	res.end(`El valor del id del equipo es ${req.param('idEquipo')} y el id ${req.param('idJugador')} es el jugador`)
+});
+```
+
+##### Ej en postman creamos las solicitudes como: /equipo/independiente/jugador/Romero
+
+##### Debe responder: "El valor del id del equipo es Independiente y el id Romero es el jugador"
+
+##### 
+
+
+### Request que devuelva html
+
+#### La app tiene una sola página y la va escribiendo
+
+##### Según las rutas que el usuario entre/quiera solicitar
+
+##### Para eso debemos escribir en el Head y pasarle el contenido
+
+##### La respuesta terminará con el html
+
+```
+app.get('/hola-mundo', (req, res) => {
+	res.writeHead(200, { 'Content-Type': 'text/html' });
+	res.end(`
+		<html>
+			<head>
+				<title>Hola mundo</title>
+			</head>
+			<body>
+			</body>
+	`);
+});
+```
+
+
+## Middleware
+
+### Archivo index-2.js npm run dev express --paso=2
+
+#### Ejemplo de logging
+
+##### Empezamos con un require express, definimos puerto y creamos la app
+
+##### El middleware es app.use y le pasa la funcion con los params req, res y next
+
+##### app.use significa que cada request que entre va a ejecutar lo que hay en la función
+
+##### next(); es para que la app con un middleware continue
+
+##### next() va a ejecutar la siguiente función de callback
+
+##### Como loggin, cada petición/request que llege al servidor
+
+##### en la terminal va a mostrar la fecha + "llamada" + el metodo del req + la url del req
+
+```
+const express = require('express');
+
+const Puerto = 8080,
+const app = express();
+
+// Ejem middleware que hace logging
+app.use((req, res, next) => {
+	console.log(`|${new Date()}| - Llamada a ${req.method} ${req.url}`);
+	next();
+});
+
+// El orden de los middleware importa. El primero que "matchea" es el que vale
+
+// middleware para requests con Content-Type: application/json
+app.use(express.json());
+
+// middleware para parsear cualquier request como texto
+// Si ponemos este middleware primero, nunca va a usar el de json (porque este atrapa a todos)
+app.use(express.text({ type: '</>' }));
+
+app.get('/', (req, res) => {
+	res.end('Hola, mundo!');
+});
+```
+
+##### En postman generamos las solicitudes para esta app
+
+##### Le hacemos un get y send en localhost:8080/
+
+```
+app.get('/', (req, res) => {
+	res.end('Hola, mundo!');
+});
+```
+
+##### Nos da la respuesta de la ultima función 
+
+##### Y en la terminal registra la acción que pusimos en el middleware
+
+##### Nos devuelve un logg: a cierta hora se registra una llamada get a la url algo
+
+
+#### El concepto de middleware es hacer algo antes de que termine el programa
+
+#### El next() del middleware posiblilita esto
+
+
+#### Orden de los middleware: el primero que matche es el que vale
+
+##### Después del middleware del logg, implementamos un middleware para request con json
+
+##### Para app.use(express.json()) estamos implementando un middleware que viene con express (express.json())
+
+##### Se usa para los request que tienen content type para los application/json
+
+##### Sin esto, el servidor solo va a recibir un texto 
+
+##### Así como el browser recibe un texto y nosotros lo tenemos que convertir a json 
+
+##### Del lado del servidor, el cliente manda un texto que le llega al servidor
+
+##### Al usar el middleware app.use(express.json()) logramos que req.body sea un objeto de json
+
+```
+app.use(express.json());
+
+app.use(express.text({ type: '</>' }));
+
+app.post('/', (req, res) => {
+	console.log(req.body);
+	res.end(req.body);
+});
+```
+
+
+##### En el middleware app.use(express.text)
+
+##### Estamos diciendo que cualquier content type llegue como texto
+
+##### Si este middleware estuviese antes, atrapa a todos
+
+##### express.json() no funcionaría
+
+##### Primero ponemos el middleware para json que es más especifico y después el de texto que es más general
+
+##### Siempre es de más especifico a más general
+
+
+### Del lado del navegador: mandar un request que tengan un body
+
+#### Vamos a mandar un post ya no get a la ruta raíz de localhost
+
+##### Lo hacemos con postman
+
+##### Vamos a la pestaña superior Body
+
+##### Muestra hola
+
+##### En postman: Post a localhost:8080/
+
+##### En el server tenemos que matchearlo
+
+```
+app.post('/', (req, res) => {
+	console.log(req.body);
+	res.end(req.body);
+});
+```
+
+##### Codificamos que cuando a la app le hagan un post a la url /
+
+##### Vamos a ejecutar la funcion (req, res) => {}
+
+##### En postman si revisamos la pestaña Headers, no tiene un header, content type
+
+##### No lo va a matchear app.use(express.json())
+
+##### Lo va a matchear app.use(express.text({ Type: '</>' }))
+
+##### Entonces va a decir que el request.body es de tipo texto
+
+##### Si no codificamos express.json y express.text el req.body es null
+
+##### En postman ahora hay tres secciones en la ventana principal
+
+##### Por la respuesta al final, vemos que muestra lo que hay en req.body
+
+##### La función toma un request con un param y la devuelve exactamente
+
+##### En la segunda sección en postman podemos modificar/aumentar lo que hay despues del hola
+
+##### En la tercera sección lo va a mostrar 
+
+
+#### Ahora tenemos métodos res.send
+
+```
+app.all('/todo', (req, res) => {
+	res.send(`Hola! Me llamaste con un ${req.method}`);
+});
+
+app.put('/prueba-middleware', (req, res) => {
+	res.send(`El body es ${JSON.stringify(req.body)}`);
+});
+
+app.delete('/borrar', (req, res) => {
+	res.send(`El body es ${JSON.stringify(req.body)}`);
+});
+
+app.listen(PUERTO);
+console.log(`Escuchando en el puerto ${PUERTO}`);
+```
+
+##### app.all marca que cualquier tipo de request (http verbs) en la url de todo
+
+##### La respuesta será con res.send: esto captura el tipo de verbo html
+
+##### Lo podemos ver en postman: PATCH a localhost:8080/todo
+
+##### En body podemos ver 'Hola! Me llamaste con un PATCH'
+
+#### Para el verbo put el body es hola (en la tercera seccion)
+
+#### Si nos fijamos en la segunda (medio) vemos hola en la pestaña del Body
+
+
+#### En postman podemos simular lo que envia el usuario (segunda sección)
+
+##### En la tercera sección es lo que devuelve el servidor
+
+
+
+### HTTP Verbs: GET, POST, PUT, PATCH, DELETE
+
+#### Params GET, POST, PUT, PATCH, DELETE
+
+#### 1. Casos generales para GET: busquedas, filtros, etc
+
+##### Donde queremos que el enlace se pueda copiar y pegar y lograr el mismo resultado
+
+##### Lugares donde queramos copiar y pegar la url y que funcione
+
+##### Y que todos miren lo mismo (cliente/serv), que la accion sea reproducible
+
+
+#### 2. Casos para POST: pass, pagos acciones
+
+##### No tiene el mismo efecto reproducible que GET
+
+
+#### 3. Para PUT: actualizar un registro entero (se usa más que nada en REST web apis)
+
+##### GET y POST se usan siempre pero PUT, PATCH y DELETE se usan por lo general en las web apis
+
+
+#### 4. PATCH: actualizar un campo de un registro
+
+##### Se usa mas que nada en rest web apis
+
+##### No todo el registro como en PUT
+
+
+##### 5. DELETE: eliminar un registro, más que nada en rest web apis
+
+
+## SSR - Templating
+
+#### SSR = Server Side Rendering
+
+##### Por ej en la api de pokemon, lo unico que hace es devolver json, no hace ssr
+
+##### Después como desarrolladores elegimos como mostrar ese json 
+
+##### En SSR, el servidor devuelve el html que necesita renderear el usuario
+
+##### Como ventanja es que es más rapido (el cliente no trabaja), no tiene que compilar js, etc. 
+
+##### Toma la respuesta como está y la muestra en el navegador
+
+##### Como desventaja está el acoplamiento que tenemos entre la lógica de la app y la presentación 
+
+##### El acoplamiento no es algo que deberiamos tener
+
+##### Por el acoplamiento y mantenibilidad, la industria puede preferir a los microservicios/servicios separados con arquitectura orientada a servicios
+
+
+#### Podemos empezar a hacer un app monolitica y después la podemos empezar a dividir 
+
+##### Entonces la app va a dejar de hacer SSR, se va a convertir en una web api
+
+##### Hacemos un frontend separado para que consuma la web api
+
+
+#### npm run dev:template
+
+#### Templating: escribir todo el 'cableado' de la app es tedioso
+
+##### Escribir el html, el body, concatenarlo con js, metodos, objetos
+
+```
+res.send(`El body es ${JSON.stringify(req.body)}`);
+```
+
+##### No es una forma escalable y elegante
+
+##### Para no hacer esto usamos un templating engine
+
+##### Podemos usar un templating engine (motor de plantilla)
+
+##### Hace el trabajo de 'cableado' por nosotros
+
+
+### Handlebars: template engine
+
+#### Layouts: son archivos que definen estructura común de varias páginas
+
+##### Ej: el header, footer y en main va el contenido (cada uno es un archivo)
+
+
+#### Views: son archivos que se renderean dentro de un layout
+
+##### Por lo general representan una página
+
+##### El contenido estará rendereado por una vista
+
+##### Tendremos la vista de 'home', la vista de u 'pokemon', view de un 'jugador' o de un 'equipo'
+
+
+#### Partials: Interfaces que se pueden renderear en distintas páginas o layouts
+
+##### Ej: Queremos que en 5 páginas se muestren siempre se muestre el ranking de los jugadores
+
+##### Como no pasa en todas las páginas, no es parte del layout y por otro lado no queremos copiar y pegar a mano
+
+##### Se crea un partial y desde cualquier vista incluimos a un partial
+
+##### En esas 5 vistas queremos un partial que haga tal cosa
+
+##### En otros tecnologias pueden ser llamados widget
+
+
+#### Pasar params a los templates: sirve para separar la lógica entre el back y el front
+
+##### En front no deberia haber logica de negocio, solo lógica de presentación
+
+##### Ej: (si este valor es true, mostrar este botón), esto no es lógica de negocio es está bien que esten en el front
+
+
+
+#### Funciones como params
+
+##### Se ejecutan del lado ser servidor antes de mandarse al template engine como handlebars
+
+##### El engine recibe el resultado de ejecutar esa función
+
+##### Cosas a tener en cuenta
+
+#### Condicionales
+
+#### Loops
+
+
+### Archivo archivo index.js == npm run dev:template
+
+##### Vamos a requerir fs, express y express-handlebars (debe instalarse)
+
+##### Creamos la app
+
+##### En la var hbs = exphbs.create(): creamos el engine de handlebars
+
+##### en app.engine('handlebars', hbs.engine): en la app de express a la función engine le pasamos el string handlebars que será hbs.engine
+
+##### 1. exphbs es un objeto que nos da el handlebars como lo definimos en la linea: exphbs = requiere('express-handlebars')
+
+##### Este objeto puede usar la función create()
+
+##### 2. create() nos da un objeto handlebars -> hbs
+
+##### 3. El objeto handlebars tiene un engine que se lo pasamos a app.engine
+
+##### app.engine espera un engine, definimos el nombre y el objeto que tiene el engine, qué engine es en particular
+
+
+##### exphbs se lee como 'express handlebars'
+
+##### Usamos/guardamos exphbs.create() en la var hbs
+
+##### en app.set decimos que el view engine es handlebars
+
+##### Así se define en la doc de express
+
+```
+// multer es para subir archivos de un form que tiene type enctype multipart/form-data
+
+// nodejs core, fs = filesystem
+const fs = require('fs');
+const express = require('express');
+const multer = require('multer);
+
+const upload = multer({ dest: './uploads/images' });
+const exphad = require('express-handlebars');
+
+const PUERTO = 8080;
+const app = express();
+const hbs = exphbs.create();
+
+app.engine('handlebards', hbs.engine);
+app.set('view engine', 'handlebars');
+
+// esta define que el directorio /uploads contiene assets estáticos
+// que se deben servir tal cual están
+// notar que no hace falta ir a localhost:8080/uploads
+// doc en express static-files
+app.use(express.static(`${_dirname}/uploads`));
+
+const nombre = 'Bob'
+
+app.get('/', (req, res) => {
+	res.render('home_ejemplo', {
+		layout: 'ejemplo',
+		data: {
+			nombre,
+			// notar que esta función se ejecuta al renderear la vista
+			// en el servidor, no en el navegador
+			nombreMayusculas: () => nombre.toUpperCase(),
+			listado: [1, 2, 3, 4],
+			esPar: Math.ceil(Math.random() + 1000) % 2 === 0,
+		},
+	});
+});
+
+app.get('/form', (req, res) => {
+	console.log(req.files);
+	res.render('form', {
+		layout: 'ejemplo',
+	});
+});
+
+app.post('/form', upload.single('imagen'), (req, res) => {
+	console.log(req.files);
+	res.render('form', {
+		layout: 'ejemplo',
+		data: {
+			mensaje: 'Exito',
+			nombreArchivo: req.file.filename,
+		},
+	});
+)};
+	
+app.get('/equipo', (req, res) => {
+	const equipos = fs.readFileSync('./data/equipos.json');
+	res.setHeader('Content-type', 'application/json');
+	res.send(equipos);
+});
+
+app.listen(PUERTO);
+console.log(`Escuchando en http://localhost:${PUERTO}`),
+```
+
+##### Cuando tengamos una solicitud a app.get('/',...)
+
+##### Llamará a res.render le pasamos el html/pagina para renderear que es home_ejemplo
+
+##### En el objeto, definimos el layout para la página que será 'ejemplo'
+
+##### En el objeto data están definidos los datos que le vamos a pasar a la página 'home_ejemplo'
+
+##### nombre, nombreMayusculas (función) para nombre
+
+##### Le pasamos un listado/arr y esPar
+
+##### Las funciones se ejecutan al renderear la vista en el servidor, no en el navegador
+
+##### Al navegador siempre le llega el html final 
+
+
+#### Archivos de view, carpeta layouts: tenemos ejemplo.handlebars, 
+
+##### por fuera tenemos partials form_handlebars y home_ejemplo.handlebars
+
+
+#### Ej: Archivo ejemplo.handlebars
+
+```
+<!DOCTYPE html>
+
+<html>
+
+<head>
+	<meta charset='utf-8'>
+	<meta http-equivn='X-OR-Compatible' content='IE=edge'>
+	<title>hello</title>
+	<meta name='viewport' content...>
+</head>
+
+<body>
+	{{{ body }}}
+</body>
+
+</html>
+```
+
+##### Estamos diciendo que renderee el body con {{{ body }}}
+
+##### El body va a ser la página que pedimos que renderee que es 'home_ejemplo''
+
+
+#### Archivo home_ejemplo.handlebars pertenece a la carpeta vistas
+
+```
+<h1>Esto va dentro del body</h1>
+
+<p>Y acá agarro datos del servidor. Por ejemplo: Hola, <strong>{{data.nombre}}</strong></p>
+
+<p>Y acá agarro datos del servidor. Por ejemplo: Hola, <strong>{{data.nombreMayusculas}}</strong></p>
+
+<p>Y esto viene desde un archivo parcial (partial) </p>
+{{>navegacion items=data.listado}}
+
+{{#if data.espar }}
+	<strong>ES PAR</strong>
+{{else}}
+	<strong>ES IMPAR</strong>
+{{/if}}
+```
+
+
+#### Estos dos archivos terminan de darle funcionamiento al index.js
+
+##### Se fusionan con la entrada de la app: index.js
+
+##### Para cargar partials debemos usar el signo >, {{>nombreDelPartial}}
+
+
+#### archivo partial (parcial) navegación
+
+##### Esta en views, carpeta partials
+
+##### Se llama navegacion.handlebars, como extensións
+
+##### Se le pasa items=data.listado
+
+##### Quiere decir que le vamos a pasar items a navegacion
+
+##### Los items son los data.listado que definimos en el servidor/punto de entrada index.js
+
+##### navegacion espera items (que sea un array/list por eso plural)
+
+##### Por eso le definimos un value
+
+```
+<ul>
+{{#each items as [item]}}
+	<li>item {{item}}</li>
+{{/each}}
+</ul>
+
+```
+
+##### Si en el index.js aumentamos o reducimos el valor del data.listado, va a aumentarse o contraerse la lista
+
+
+## Forms del lado del servidor
+
+##### En index.js definimos una ruta form
+
+##### Va a cargar una página llamada form
+
+##### Y va a cargar un diseño llamado ejemplo, el mismo que el anterior
+
+```
+app.get('/form', (req, res) => {
+	console.log(req.files);
+	res.render('form', {
+		layout: 'ejemplo',
+	});
+});
+```
+
+##### Dentro de index.js tenemos dos rutas / y form
+
+##### Renderean dos páginas/views distintas (home_ejemplo y form) 
+
+##### Pero un mismo diseño que es 'ejemplo'
+
+##### Las dos rutas / y form tienen el verbo GET
+
+##### Pero la tercera tiene el verbo Post y tambien va a usar el mismo diseño 'ejemplo'
+
+##### Al hacer un get en /form queremos que renderee dentro de layout 'ejemplo' va a renderear la vista/view 'form'
+
+
+#### Archivo form.handlebars
+
+##### Caracteristicas: subir archivo al servidor
+
+```
+{{#elif data.mensaje}}
+<p>{{data.mensaje}}</p
+
+<img src="/images{{data.nombreArchivo}}# />
+{{/if}}
+
+<!-- enctype=multipart/form-data" es lo que nos permite subir un archivo al servidor -->
+<form action="/form" method="post" enctype="multipart/form-data">
+	<label for="imagen">Imagen: </label>
+	<input type="file" name="imagen" id="imagen">
+	<input type="submit" value="Subir">
+</form>
+```
+
+##### en el navegador vamos a ir al form
+
+##### localhost:8080/form
+
+##### Va a mostrar un form para subir cosas
+
+```
+Imagen: |Choose file| (no file chosen) 	|subir|
+```
+
+##### Cuando escribimos/mostramos algo sobre el archivo html layout
+
+##### Eso estará presente en todas las páginas 
+
+##### Cuando inspeccionamos la página desde el navegador, el código es html puro, no handlebar, no hay nada de js
+
+##### Lo compila express y handlebars antes de que se mande al navegador, lo que le termina llegando es la respuesta html
+
+##### en postman si hacemos la solicitud vemos lo mismo
+
+
+## Subir archivos al servidor
+
+##### Por ejemplo subir un escudo del equipo
+
+#### Vamos a enganchar el get /form con el post /form
+
+##### Cuando nos hacen un get a /form queremos renderear el form con el layout ejemplo
+
+##### En el archivo form.handlebars hay un condicional que pregunta por data.mensaje si es true lo muestra
+
+##### Y seguido de eso muestra la imagen
+
+##### Y siempre vamos a mostrar el form para subir archivos
+
+##### El form por defecto tiene form action="/form" method="post"
+
+##### Cuando enviamos/submit al form va a ser un post a la dirección /post
+
+##### Así conectará el get con el post
+
+##### form.handlebars:
+
+```
+<form action="/form" method="post" enctype="multipart/form-data">
+```
+
+
+##### index.js:
+
+```
+app.get('/form', (req, res) => {
+	console.log(req.files);
+	res.render('form', {
+		layout: 'ejemplo',
+	});
+});
+
+app.post('/form', upload.single('imagen'), (req, res) => {
+	console.log(req.files);
+	res.render('form', {
+		layout: 'ejemplo',
+		data: {
+			mensaje: 'Exito',
+			nombreArchivo: req.file.filename,
+		},
+	});
+)};
+```
+
+##### app.post captura el form va a ejecutar lo que hay dentro
+
+##### Cuando necesitemos subir archivos al servidor si o si necesitamos enctype="multipart/form-data"
+
+##### en form.handlebars:
+
+```
+<label for="imagen">Imagen: </label>
+<input type="file" name="imagen" id="imagen">
+<input type="submit" value="Subir">
+```
+
+##### label form imagen y el texto Imagen
+
+##### input type file, name imagen; id imagen (el id es importante para label for)
+
+##### El name es lo que el servidor usa para entender que información se le mandó
+
+
+#### El app.post a /form: despues de la ruta, le sigue un listado de funciones a ejecutar
+
+```
+app.post('/form', upload.single('imagen'), (req, res) => {
+	console.log(req.files);
+	res.render('form', {
+		layout: 'ejemplo',
+		data: {
+			mensaje: 'Exito',
+			nombreArchivo: req.file.filename,
+		},
+	});
+)};
+```
+
+##### La primera es upload.single('imagen'): subir un única imagen que venga en el campo con nombre imagen del form
+
+##### Se corresponde con el form.handlebars: 
+
+```
+input type="file" name="imagen" id="imagen"
+```
+
+##### La segundo función/callback es (req, res) => {}
+
+##### El console.log(res.file) muestra en la terminal que hay dentro del file 
+
+##### res.render('form'), {layout: 'ejemplo'}, data: {//...} muestra el form otra vez con el layout ejemplo otra vez
+
+##### Pero ahora manda datos: mensaje exito y el nombreArchivo: req.file.filename que se subio al servidor
+
+##### Podemos testear esto en el navegador subiendo una imagen: nos va a mostrar el texto Éxito!, la imagen y el form inicial para elegir otro archivo
+
+##### La imagen va a estar guardada en el servidor, queda un la carpeta uploads/imagenes crea una imagen con un nombre hash
+
+
+## Subir archivos con Multer: index.js instalar e importar multer
+
+##### Multer es para subir archivos de un form que tiene type enctype="multipart/form-data"
+
+##### Es lo que tenemos que poner para subir archivos con datos
+
+```
+const fs = requiere('fs');
+
+const multer = require('multer');
+
+const upload = multer({ dest: './uploads/imagenes' });
+
+app.use(express.static(`${__dirname}/uploads`));
+```
+
+##### Requerimos multer, que está en package.json 
+
+##### Su documentación dice que ejecutemos multer con lo que nos devuelve el require: const multer = require('multer');
+
+##### upload = multer({ dest: './uploads/imagenes' })
+
+##### La función devuelta por multer es multer() que toma un objeto de configuración
+
+##### Le tenemos que decir el destino donde vamos a guardar las imagenes
+
+##### Lo guardamos desde dónde estamos, vamos a uploads y seguimos hasta imagenes
+
+##### Necesitamos: app.use(express.static(`${__dirname}/uploads`));
+
+##### Por default hasta ahora, express matchea urls y ejecutar funciones de callback
+
+##### Pero si queremos empezar a seguir la ruta que hay en el server
+
+##### Son assets o directorios estaticos, no hay lógica
+
+##### Toma el archivo pedido y lo devuelve
+
+##### app.use es un middleware static(directorio actual/uploads)
+
+##### Si copiamos la url de la imagen que subimos al server y que muestra el navegador
+
+##### Si la solicitamos por el navegador podemos ir al directorio de esa imagen
+
+##### Pero por una cuestion de headers va a bajar img
+
+```
+localhost:8080/imagenes/asd1234565789
+```
+
+##### Cuando en index.js usamos upload.algo ser refiere a la constante upload que usa multer(objeto destino)
+
+```
+const upload = multer({ dest: './uploads/imagenes' });
+
+app.post('/form', upload.sigle), ...
+```
+
+##### En el post a /form lo que queremos hacer es un upload de un unico archivo que va a venir en el campo imagen
+
+```
+input type="file" name="imagen" id="imagen"
+```
+
+##### Tambien podemos configurar el nombre los los archivos, por default el pone un nombre como hast
+
+
+##### El console.log(req.file) muestra un objeto en la terminal
+
+```
+{ fieldname: 'imagen', 
+originalname: 'perro.jpg', 
+encoding: 7bit,
+nimetype: 'image/jpeg',
+destination: './uploads/imagenes',
+filename: asdf12345678, 
+path: 'uploads/imagenes/asdf1234567812345,
+size: 589657}
+```
+
+
+## fs.readFileSync()
+
+##### En la carpeta data hay un archivo equipo.json que tiene tiene todos los equipos de la premier league
+
+##### Y hay otros json por cada equipo de inglaterra que tiene los jugadores
+
+##### Ej: premier_league.json y equipo_pl.json: como ARS.json; CHEL.json, ManU.json, etc
+
+##### Al ir a la url /equipo
+
+##### Va a leer el archivo de equipo.json que está en ./data
+
+```
+app.get('/equipo', (req, res) => {
+	const equipos = fs.readFileSync('./data/equipos.json');
+	res.setHeader('Content-type', 'application/json');
+	res.send(equipos);
+});
+```
+
+##### Como todo en node es una promesa, usamos reaFileSync (efecto sincrono)
+
+##### De lo contrario tendríamos que usar readFile() y usar los then() para dar un efecto asyncrono
+
+##### Como reaFileSync es sincrono, va a bloquear hasta leer el archivo y despues sigue
+
+##### Lo pone el equipo, continua con res.setHeader
+
+##### Con res.send(equipo) devolvemos lo que hay en equipos
+
+##### Va a leer el json com texto
+
+##### Si vamos a la url localhost:8080/equipos vemos que imprime todo el json
+
+
+## Flujo de trabajo de SSR
+
+### 1. index.js funciona/se fusiona con las vista/pagina
+
+
+### 2. Dentro del layout se renderizarán las páginas
+
+##### Ej: si tenemos un get en /form queremos que renderee dentro de layout 'ejemplo' va a renderear la vista/view 'form'
+
+
+### 3. El layout y las páginas tiene extension handlebars
+
+```
+res.render('form'), {
+	layouu: 'ejemplo';
+}
+```
+
+
+### 4. Subir archivos: enganchar get y post
+
+##### Atributos de lo elem del form: for, name, id (tres iguales)
+
+##### el id es importante para label for
+
+##### name es importante para el servidor 
+
+
+### 5. Leer archivos: readFileSync() que es sincrono (bloquea hasta que termine) y readFile() (no bloquea)
+
+
+## Threads
+
+##### Node.js no es multithread, pero usa librerías que si lo son 
+
+##### Como threads.js
+
+#### npm rund dev:treads
+
+
+##### Node.js no tiene muchos threads/hilos 
+
+##### Un thread es como una linea de procesamiento que tiene un programa
+
+##### Un programa que es single thread, hace una cosa a la vez
+
+##### Si es multi, puede tener como varios hilos de ejecución
+
+##### Node tiene un único hilo de ejecución pero algunas librerias interna son multithreads
+
+
+#### Archivo treads.js
+
+```
+// node tiene un único thread, pero algunas librerias internas de Node son multithreads
+
+const crypto = require('crypto');
+
+const start = Date.now();
+
+function logHashTime() {
+	crypto.pbkdf2('a', 'b', 100000, 512, 'sha512' () => {
+		console.log('Hash', Date.now() - start);
+	});
+}
+
+// Maquina con 4 procesadores puede realizar 4 operaciones "a la vez" con "threads"
+// creados con livub (interna de node)
+logHashTime();
+logHashTime();
+logHashTime();
+logHashTime();
+logHashTime();
+logHashTime();
+logHashTime();
+logHashTime();
+```
+
+##### La funcion logHashTime tarde en ejecutarse
+
+##### Al llamarla varias veces, al correrlo con npm run dev:threads
+
+##### La ejecución fue en bloques de a 4 pero 3 veces
+
+##### Si la maquina tiene 4 procesadores, la libreria interna de node livub le delega a los 4 procesadores que ejecute 4 cosas a la vez logHashTime()*4
+
+##### Pero en node no tenemos el concepto de multithreads para crear hilos, solo es un funcionamiento interno
+
+##### Vemos que hace 4 operaciones juntas pero las siguientes sufren un bloquea por la cantidad de tiempo que tomo ejecutar las 4 anteriores
+
+
+# App crud (Create, Reed, Update y Delete): crear, consultar, actualizar y borrar
+
+#### express + handlebars
+
+#### Form que pida datos del team
+
+##### Tenemos que poder subir imagen desde el form y guardarla en el server
+
+##### La pagina debe mostrar un listado de equipos
+
+##### Al hacer click en un equipo se debe mostrar la info detallada
+
+##### Se debe poder eliminar el equipo desde la tabla que muestra todos los equipos
+
+##### Tip: el archivo equipos.db.json, va a tener json que se puede leer, interpretar y manipular como un objeto, se puede agregar o quitar registro y luego poder a guardar
+
+##### Es una entrada a guardar cosas en disco para entrar a ver Base de Datos
+
+##### El tip se usa para poder persistir/guardar info data en disco
+
+
+##### la app debe mostrar un listado de equipos
+
+##### La app debe poder crear equipos nuevos (incluyendo) el logo
+
+##### La app debe (previa confirmación del front) poder eliminar equipos
+
+##### La app debe poder mostrar un equipo en detalle
+
+##### Bonus: con la dirección, en la página de detalle de equipo, mostrar un mapa de google maps
+
+##### El método de persistencia es un archivo .json
+
+##### crestUrl (la imagen), la tienen que poder subir desde el form y guardarla en el server
+
+
+### mockup app
+
+#### Pagina home: nombre de pestaña Equipo
+
+##### Url: /
+
+```
+Hay 4 equipos 	|agregar|
+
+Nombre Equipo 		País 		Accion
+(escudo) Arsenal	Ingl		Ver, Editar(actualiz), eliminar 
+
+```
+
+
+#### Pagina del equipo: nombre de pestaña Arsenal
+
+##### Url: /equipo/1/ver
+
+```
+				img
+			Arsenal
+		| info -   -	|
+
+	|editar| 		|borrar|
+```
+
+
+#### Tarea 2 (avanzada) - Microservicios
+
+##### Servir la app anterior en 2 aplicaciones (microservicios)
+
+##### Servicio web api y Servicio app front
+
+##### Node rendereará JSON, no html
+
+##### Problema CORS: usar express handlebars cors
+
+#### Ya no va a ser express + handlebars (app monolitica)
+
+#### Será express + JSON (web api)
+
+#### Crear app frontend aparte (node no rendereará html)
+
+#### Node rendereará json y la app de frontend interpretará el json y mostrarlo como se quiera
+
+##### Como cuando usamos pokeapi o los precios de la divisa
+
+
+### CORS: significa que si el servidor no acepta conexiones de otros sitios web, el navegador al intentar hacer un request al nuestro server nos va a tirar un error de seguridad que se verá en consola
+
+##### Es muy probable: la solución es usar express middleware cors
+
+
+# DB
