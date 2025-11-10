@@ -23867,4 +23867,5481 @@ Nombre Equipo 		País 		Accion
 ##### Es muy probable: la solución es usar express middleware cors
 
 
-# DB
+
+# Principio de Inversión de Dependencia (DIP)
+
+#### Conceptos
+
+##### Dip y sus diferencias con Inversión de Control (IoC)
+
+##### Inyección de Dependencias (DI)
+
+##### Dependency Injection Container (DIC) o Inversion of Control Container (ioCC)
+
+##### Service Locator
+
+
+### Importancia de DIP: Hace que nuestro código sea más limpio y mantenible que hace que seam más fácil de modificar, más adaptable
+
+##### Que un sistema sea más fácil de modificar es una característica deseable en todo software que construyamos
+
+
+### DIP: tenemos que empezar con el concepto de IoC
+
+##### IoC también nos permite que el código sea más mantenible, es un concepto clave para lograr el DIP
+
+
+#### IOC: "The Hollywood Principle", "No nos llames, nosotros te llamaremos"" 
+
+##### Dip (param espera una función), es la D de SOLID
+
+##### Usamos solid para que el código sea más limpio y mantenible
+
+##### DIP logra reducir las dependencias entre módulos lo que hace que el código se mantenible
+
+
+#### Código mantenible: para que sea más fácil de cambiar
+
+##### Ante nuevas reglas de negocio o nuevos requerimientos del cliente dado a un cambio en el mercado
+
+##### Si el sistema es dificil de cambiar, no va a soportar el paso del tiempo; dado que el sistema será muy riguido quedará en desuso muy rapido
+
+
+### Ej de IoC: Event Handlers (pasar un función/espacio para una función que necesite hacer el desarrollador)
+
+```
+document.querySelector('#un-boton').onclick = function() {
+	// hacer alto
+};
+```
+
+##### IoC nos permite invertir el flujo de control de nuestras apps
+
+##### En el ejemplo, nosotros llamaremos a la función cuando se haga click
+
+##### Invertimos el control: no estamos diciendo cuando queremos que se ejecute la función
+
+##### Cuando le hagan click va a mandar el evento, para que pase algo le tenemos que pasar una función con un evento como param
+
+##### Nunca ejecutamos la función directamente, el que la ejecuta es el control (el botón)
+
+
+### Cuando no hay IoC
+
+```
+function cargarPokemon(id) {
+	//carga 1 pokemon
+}
+
+function mostrarListadoPokemon(pokemones) {
+	const contenedor = document.querySelector('#contenedor');
+	pokemonos forEach((pokemon) => {
+		const linkPokemon = document.createElement('a');
+		linkPokemon.onClick = () => {cargarPokemon(pokemon.id)}
+		contenedor.appendChild(linkPokemon);
+	});
+}
+
+mostrarListadoPokemon([pokemon1, pokemon2]);
+```
+
+##### La función mostrarListadoPokemones dice "Me das un listado de pokes y lo muestro, y cuando le hagan click a un poke voy a llamar a la función cargarPokemon"
+
+##### La función cargarPokemon(pokemon.id) está ensuciando un poco a la función mostrarListadoPokemones
+
+##### Ahora esa función tiene que saber qué pasa cuando le hacen click a uno de los elementos que está creando
+
+
+##### Si el dia de mañana queremos llamar a otra función, tengo que cambiar esa llamada 
+
+##### Si hubiesemos usado IoC, no tendríamos ese problema
+
+```
+function cargarPokemon(id) {
+	// cargar 1 pokemon
+}
+
+function mostrarListadoPokemones(pokemones, callbackClickPokemon) {
+	const contenedor = document.querySelector('#contenedor');
+	pokemones.forEach((pokemon) => {
+		const linkPokemon = document.createElement('a');
+		linkpokemon.onclick = () => {callbackClickPokemon(pokemon.id)} 
+		contenedor.appendChild(linkPokemon)
+	});
+}
+
+mostrarListadoPokemones([pokemon1, pokemon2], cargarPokemon);
+```
+
+
+```
+function mostrarListadoPokemones(pokemones, callbackClickPokemon) 
+	linkpokemon.onclick = () => {callbackClickPokemon(pokemon.id)} 
+
+mostrarListadoPokemones([pokemon1, pokemon2], cargarPokemon);
+```
+
+##### Cuando le pasamos cargarPokemon va a tomar el lugar de callbackClickPokemon (la intención/comportamiento que deseamos/esperamos)
+
+##### Se ejecutará en linkpokemon.onclick = () => {callbackClickPokemon(pokemon.id)} 
+
+
+##### mostrarListadoPokemones invirtió el control, porque ahora quién decide qué función se ejecuta es quien llama a mostrarListadoPokemones
+
+##### Ej frameworks, events handlers
+
+
+### !!! La ventaja de este modelo es que podemos cambia la función de callback por otra y el código de mostrarListadoPokemones no debe cambiar 
+
+##### Hicimos el código más mantenible/fácil de cambiar
+
+
+##### Este principio es acerca de reducir dependencias, haciendo el código más mantenible
+
+### !!! Al no aplicar esto y hacer todas las funciones deterministas en los distintos modulos, tenemos que importar muchas funciones que hacen más dificil testear
+
+##### Las importaciones son dependencias
+
+#### !!! Al archivo principal puede ser el que sirva todas las dependencias, haciendo de orquestador para llamar a las funciones y pasar los callback
+
+
+### Inyección de Dependencias (DI) o DIP (en SOLID) =/= Dependency Inversion
+
+##### Dependency Injection es un patrón que permite inyectar las dependencias (por lo general en objetos y clases)
+
+##### Hay muchas formas de lograr IoC, callbacks es una de ellas y es muy común.
+
+#####  Otra forma de lograr IoC es mediante el patrón DI
+
+##### Ej no Di que no cumple IoC
+
+```
+class Auto {
+	irHaceAdelanteKmH(velocidad){
+		//codigo
+	}
+}
+
+class Uber extends Auto {}
+class Taxi extends Auto {}
+
+class Conductor {
+	constructor() {
+		this.auto = new Uber();
+	}
+	
+	manejar(){
+		this.auto.irHaciaAdelanteKmH(10);
+	}
+}
+
+const pepe = new Conductor();
+```
+
+##### Tenemos una clase Auto que sabe ir hacia adelante, le tenemos que pasar la velocidad
+
+##### Una clase Uber que sabe que extiende Auto o es un Auto
+
+##### Y lo mismo para Taxi
+
+##### La clase Conductor inicializa un nuevo Uber
+
+##### Esta determinando que el conductor siempre va a ser un Uber
+
+##### Si lo queremos cambiar para que sea un conductor de taxi
+
+##### Tenemos que ir al código fuente y cambiar new Uber por new Taxi
+
+##### Por lógica un conductor sabe manejar, sea uber o taxi
+
+
+#### Con Dependency Injection (forma de IoC) lo solucionamos
+
+```
+class Auto {
+	irHaciaAdelanteKmH(velocidad) {
+		//código
+	}
+}
+
+class Uber extends Auto {}
+class Taxi extends Auto {}
+
+class Conductor {
+	constructor(auto) {   // Implementación DI
+		this.auto = auto;
+	}
+	
+	manejar(){
+		this.auto.irHaciaAdelanteKmH(10);
+	}
+}
+
+// Uso de DI
+const unTaxi = new Taxi();
+const pepe = new Conductor(unTaxi);
+
+const unUber = new Uber();
+const juan = new Conductor(unUber);
+```
+
+#### !!! Ahora conductor toma como param qué Auto/objeto/instancia/entidad, no importa si es taxi o uber
+
+##### Después queremos que el conductor maneje, entonces usamos la función
+
+
+##### Definir Di
+
+```
+	constructor(auto) {
+		this.auto = auto;
+	}
+```
+
+
+##### Uso de Di
+
+```
+const unTaxi = new Taxi();
+const pepe = new Conductor(unTaxi);
+
+const unUber = new Uber();
+const juan = new Conductor(unUber);
+
+```
+
+##### unTaxi y unUber son nuevos objetos de Taxi y Uber
+
+##### pepe y juan son nuevos objetos de Conductor para eso le tenemos que pasar auto
+
+#### !!! Si algún dia queremos modificar: pepe que era taxista quiere manejar un uber, le pasamos el auto uber y el uber (juan) quiere manejar un taxi, le pasamos un auto taxi
+
+##### La clave tambien estuvo en las dos clases/tipos de auto taxi y uber
+
+#### !!!  Nunca tuvimos que cambiar el código fuente Conductor
+
+
+### !!! Por lo tanto se aplicó IoC (El que decide que es lo que se hace es el que llama)
+
+#### !!! Al cambiar dependencia, no tenemos que modificar la clase base (logica de negocio) para lograr un cambia de comportamiento
+
+
+### Inyección de dependencia mediante un setter
+
+```
+class Conductor {
+	constructor() {
+		this.auto = null;
+	}
+	
+	setearAuto(auto) {
+		this.auto = auto;
+	}
+	
+	manejar() {
+		this.auto.irHaciaAdelanteKmH(10);
+	}
+}
+
+const auto = new Uber();
+const conductor = new Conductor();
+conductor.setearAuto(auto);
+conductor.manejar();
+```
+
+##### Cuando inicializamos el conductor con su constructor, decimos que el auto es nulo
+
+##### Para setear el auto creamos un metodo que le pasan auto
+
+##### En la implementación creamos un auto que es un uber
+
+##### Creamos un conductor, este objeto es el que llama a setearAuto(auto) por lo tanto aplica IoC 
+
+##### Clave: El constructor de Conductor no espera auto como param, lo inicializa como null
+
+##### La instancia de conductor llamará al setter 
+
+#### !!! Si no codificamos/olvidamos la parte de llamar a setearAuto, al querer usar los otros métodos va a fallar
+
+##### Falla por que this.auto será null (this=conductor), (auto=null) + (irHacia...etc)
+
+
+#### Este método existe porque hay casos dónde no tenemos opción
+
+##### Si estamos implementando una librería de terceros, código que no es nuestro y este dice que se deben usar setters, no hay otra forma de hacerlo
+
+#### !!! En código propio siempre se puede y debe evitar crear setter
+
+##### !!! Al querer usar inyección de dependencia siempre definiendola en el constructor
+
+##### !!! Implica no podemos crear un conductor a menos que le pasemos un auto
+
+##### Esta restricción permite que el conductor no tenga errores al acceder a metodos
+
+##### En código legacy que no sigue el patrón IoC o DI y usa setter va a ser dificil de corregir
+
+
+#### Si seguimos el consejo de aplicar DI puede ser que nuestras dependencias tengan otras dependencias y que sus dependencias tengan otras
+
+##### Para resolver esto debemos usar DIC (Dependency Injection Container o Inversion of Control Container)
+
+
+## DIC (Dependency Injection Container)
+
+##### Caso: sistema de alquiler de autos, para asegurarse que el cliente reciba la confirmación tanto por e-mail como por tel, implemento 2 proveedores: GMail para los e-mails y Movistar para enviar SMS
+
+##### Por razones de seguridad, para ambos proveedores debe instanciarlos con un código de seguridad (diferente para cada uno)
+
+##### (API Key: cuando se consume apis pagas o servicios pagos, tenemos que autenticarnos, pasar credenciales; dado las credenciales determinan cuando nos van a cobrar)
+
+
+##### Dado que IoC es bueno, elegimos usar una implementación usando DI para mantener el código limpio
+
+##### Creamos una clase NotificadorUsuarios que se encarga pura y exclusivamente de mensajear a los usuarios
+
+##### Como param, toma los servicios que voy a usar para notificar a los usuarios
+
+
+##### NotificadorUsuarios no crea nueva clase de Gmail ni Movistar para mandar email y sms, invierte el control: lo toma como param convirtiendose en dependencias
+
+##### Para notificar a los usuarios le tenemos que pasar gmail y movistar
+
+##### Clase Gmail toma codigoSeguridad, valida/errores; expone un metodo enviarEmail el cual necesita destinatario y el mensaje
+
+##### Lo mismo con Movistar, al constructor/instanciacion/inicialización se le pasa la API Key (codigo de seguridad)
+
+##### NotificadorUsuarios toma gmail y movistar haciendo IoC con DI
+
+```
+class Gmail {
+	constructor(codigoSeguridad) {
+		//valida el código de seguridad
+	}
+	
+	enviarEmail(destinatario, mensaje) {
+		//código para enviar email
+	}
+}
+
+class Movistar {
+	constructor(codigoSeguridad) {
+		//valida el codigo de seguridad
+	}
+	
+	enviarSMS(destinatario, mensaje) {
+		//código para enviar sms
+	}
+}
+
+class NotificadorUsuario {
+	constructor(gmail, movistar) {
+		this.gmail = gmail;
+		this.movistar = movistar;
+	}
+	
+	notificar(destinatario, mensaje) {
+		this.gmail.enviarEmail(destinatario, mensaje);
+		this.movistar.enviarSms(destinatario, mensaje);
+	}
+}
+
+// Ahora para unir todo, tengo que instanciar cada clase por separado
+const codigoSeguridadGmail = 'asdfasdf'
+const codigoSeguridadMovistar = 'alksjdflk'
+const gmail = new Gmail (codigoSeguridadGmail); 
+const movistar = new Movistar(codigoSeguridadMovistar);
+const notificadorUsuarios = new NotificadorUsuarios(gmail, movistar);
+
+// Recien ahora se puede usar el método de NotificadorUsuarios
+codigoSeguridadMovistar.notificar('pepe', 'hola!');
+```
+
+##### Esta implementación sigue IoC por DI pero no es del todo limpia
+
+#### !!! El problema es que lo tengo que hacer cada vez que se necesite el notificador de usuarios
+
+##### Suponiendo que necesito notificar a mis usuarios cuando se alquila un auto, cuando el auto está listo para retirar
+
+##### Cuando se devuelve el auto, cuando se devuelve el deposito del auto; necesitamos replicar esta lógica de instanciación en todo la app
+
+### !!! Un problema con esto es que la lógica de instanciación está mezclada con la lógica de negocio
+
+##### !!! Si hay que cambiar Gmail por Hotmail, tengo que ir a todos los lugares dónde uso NotificadorUsuarios y cambiarlo
+
+
+### Podemos usar un Dependency Injection Container para centralizar la lógica de instanciación en un solo lugar
+
+##### El ejemplo usa la librería rsdi acepta DIC con JS
+
+```
+class Gmail {
+	constructor(codigoSeguridad) {
+		//valida codigo 
+	}
+	
+	enviarEmail(destinatario, mensaje) {
+		//codigo para enviar
+	}
+}
+
+class Movistar {
+	constructor(codigoSeguridad) {
+		//valida codigo 
+	}
+	
+	enviarSms(destinatario, mensaje) {
+		//codigo para enviar
+	}
+}
+
+class NotificadorUsuarios {
+	constructor(gmail, movistar) {
+		this.gmail = gmail;
+		this.movistar = movistar;
+	}
+	
+	notificar(destinatario, mensaje) {
+		this.gmail.enviarEmail(destinatario, mensaje)
+		this.movistar.enviarSms(destinatario, mensaje)
+
+	}
+}
+
+import DIContainer, {
+	object, 
+	get, 
+	factory
+} form 'rsdi';
+const container = new DIContainer();
+container.addDefinitions({
+	"codigo.gmail": "asdasd", 
+	"codigo.movistar": "asdasdf", 
+	"Gmail": object(Gmail).constructor{
+		get("codigo.gmail") //get busca un valor definido en el container
+	},
+	"Movistar": object(Movistar).constructor{
+		get("codigo.movistar") 
+	},
+	"NotificadorUsuarios": object(NotificadorUsuarios).constructor{
+		get("Gmail"), get("Movistar")
+	},
+)};
+
+// en una parte de la aplicación
+
+// cuando se alquila el auto
+const notificador = container.get('NotificadorUsuarios')
+notificador.notificar('pepe', "Tu auto fue alquilado");
+
+// en otra parte de la aplicación
+// cuando el auto está listo para retirar
+const notificador = container.get('NotificadorUsuarios')
+notificador.notificar('pepe', "Tu auto está listo para que lo pases a buscar");
+
+// en otra parte
+// cuando hay que devolver el auto
+const notificador = container.get('NotificadorUsuarios')
+notificador.notificar('pepe', "Tu auto está listo devolverse");
+
+```
+
+##### Cambio la parte de implementación
+
+##### Se importa la libreria y los recursos que usamos
+
+##### Empezamos creando un nuevo DIContainer (una de las funciones de rsdi que importamos)
+
+##### DIContainer tiene un método para agregar definiciones
+
+##### addDefinitions es una función que toma como params objetos
+
+##### Las claves son como nos vamos a referir a la definición/dependencia
+
+##### El valor es para esa dependencia
+
+##### La dependencia Gmail utilizará otro recurso de rsdi, object que es una función
+
+##### Se usa para crear un objeto del tipo de la clase que necesitamos
+
+##### Le pasamos como para a object, la clase en si, para instanciar
+
+##### Usamos la función constructor del objeto interno de la librería
+
+##### A constructor le podemos pasar los params al objeto instanciado/inicializado de la clase
+
+```
+"Gmail": object(Gmail).constructor{
+	get("codigo.gmail") //get busca un valor definido en el container
+},
+```
+
+##### Si vemos la definición de la clase, pide el param codigoSeguridad
+
+```
+class Gmail {
+	constructor(codigoSeguridad) {
+		//...
+	}
+}
+```
+
+##### Usamos la función getter de la instancia interna del objeto de la librería
+
+```
+get("codigo.gmail")
+```
+
+##### Para agarrar/acceder/obtener dependencias y su valor que existen en el contenedor
+
+```
+"codigo.gmail": "asdasd", 
+```
+
+##### Lo mismo con las otras clases
+
+
+##### Acceder al notificar y usarlo: necesita destinatario y mensaje
+
+```
+// cuando se alquila el auto
+const notificador = container.get('NotificadorUsuarios')
+notificador.notificar('pepe', "Tu auto fue alquilado");
+```
+
+#### !!! Ahoramos las lineas de código para instanciar el notificador de usuarios en todos los modulos o en cada parte de la app que se use
+
+##### Se lo pedimos al container y el container se encargo de resolver todas las dependencias
+
+##### Resuelve el problema en el que la logica de implementación este mezclada con la logica de negocio
+
+##### Ya no necesitamos que cada parte de la app sepa como instanciar un notificador, el DIC se encarga de hacer eso por nosotros
+
+
+### DIC ayuda a mantener nuestras app ligeras
+
+##### Ej: Clase A depende de la clase B y C; la clase B dependende de la clase C; la clase C no tiene dependencias
+
+##### Cuando decimos 'Depende' en su constructor va a recibir una instancia de la clase B y C
+
+```
+import DIContainer {
+	object,
+	get, 
+	factory
+} from "rsdi"; 
+const container = new DIContainer();
+
+container addDefinitions({
+	"C": object(C), // sin dependencias
+	"B": object(B).constructor(get('C')),
+	"A": object(A).construct(get('B'), get('C')),
+});
+```
+
+##### "C": object(C), "C"/key será un objeto de clase C, no tiene dependencias
+
+##### La instrucción container.get('C') nos va a dar un objeto de clase C sin ninguna dependencia
+
+##### "B": object(B), como "B" depende de la clase C
+
+##### "B": object(B).constructor(get('C')) se puede leer
+
+##### "B" es un objeto de clase B que al construirse necesita la dependencia 'C'
+
+##### Lo mismo para A
+
+#### !!! La eficiencia está en que la clase C se va a inicializar una única vez
+
+##### Cuando pedimos container.get('A') va a llamar a new A() y le va a pasar new B() y new C()
+
+##### B a la vez tambien tiene new C()
+
+##### El contenedor en vez de tener dos objetos en memoria de tipo C, vamos a tener uno solo
+
+##### Si pedimos muchas veces el mismo objeto, nos va a devolver ese mismo todas las veces
+
+
+### Patrón Singleton
+
+##### Hoy en dia está considerado un anti patrón (investigar)
+
+##### No debe confundirse con el concepto anterior de la eficiencia de DIC
+
+##### DIC no es un singleton, nada nos impide instanciar muchas veces una clase
+
+
+##### En DIC teníamos la dependencia factory de rsdi
+
+##### Como DI es un patrón para lograr IoC
+
+#### !!! El patrón factory (patrón creacional), también permite lograr IoC
+
+##### Ej: muchas plataformas de pago (como Stripe, MP, PP, etc) hay ambientes de prueba donde uno puede realizar pagos falsos contra esas plataformas para testear que todo esté funcionando bien
+
+##### Cuando sale a producción, simplemente hay que utilizar las credenciales correctas
+
+##### Nuestro código tiene que poder construir objetos de MercadoPago que se conecten al 'Sandbox' (ambiente de prueba) o al de producción dependiendo de ambiente de ejecución
+
+##### (Si es development o si es producción)
+
+
+#### Para lograr esto podemos usar un factory method
+
+##### Ej: asumiendo que existe una variable de entorno en process.env.Node_ENV con valores "development" o "producction"
+
+```
+import MercadoPago form 'mercadoPago'
+import DIContainer, {
+	object,
+	get,
+	factory
+} from "rsdi";
+const container = new DIContainer();
+
+function createMercadoPagoService(container) {
+	let credenciales;
+	if (process.env.NODE_ENV === "production") {
+		credenciales = container.get("mercadopago_production")
+	} else {
+		credenciales = container.get("mercadopago_sandbox")
+	}
+	
+	return new MercadoPagoService(credenciales);
+}
+
+container.addDefinitions({
+	"mercadopago_production": "clave_production",
+	"mercadopago_sandbox": "clave_sandbox",
+	"MercadoPagoService": factory(createMercadoPagoService)
+});
+
+const mercadoPagoService = container.get('MercadoPagoService')
+mercadoPagoService.cobrar('pepe', 100)
+```
+
+##### Existiendo la variable de entorno NODE_ENV, los valores pueden ser development y production
+
+### !!! Clave: "MercadoPagoService": factory(createMercadoPagoService)
+
+##### En las definiciones tenemos las keys con sus valores
+
+##### La clase MercadoPagoService ya no es un objeto de tipo MercadoPagoService y en su constructor hay que pasarle las key anteriores
+
+##### No sabríamos cual pasarle, tendríamos que consultar la var process.env.NODE_ENV
+
+##### Para eso necesitamos el método factory
+
+##### MercadoPagoService será el resultado de llamar al método factory con el factory en particular: createMercadoPagoService
+
+##### La librería rsdi nos promete que al llamar a la función factory createMercadoPagoService
+
+##### Va a aplicar IoC y nos va a pasar el container
+
+##### La función crea las credenciales 
+
+##### Chequea que si NODE_ENV es production, las credenciales son las de mercadopago_production; lo mismo con else
+
+##### Dado que ya sabemos que credenciales usar en base al ambiente, variable de entorno
+
+##### Retornará la instancia de la clase MercadoPagoService(credenciales) que necesita las credenciales como dependencia
+
+##### El MercadoPagoService del container sera este último creado con las credenciales adecuadas
+
+##### El DIC ejecuta las cosas una sola vez, el factory se ejecuta una única vez y siempre va a devolver la misma dependencias
+
+#### !!! Flujo: Factory 1 vez, siempre devuelve misma dependencia; se construye el objeto MercadoPagoService y después no se vuelve a ejecutar
+
+##### Cuando lo queremos usar, llamamos al get y usamos el método
+
+```
+const mercadoPagoService = container.get('MercadoPagoService')
+mercadoPagoService.cobrar('pepe', 100)
+```
+
+##### get('MercadoPagoService') nos va a dar "MercadoPagoService": factory(createMercadoPagoService)
+
+##### Ejecuta la función que va a retornar una versión de MercadoPagoService según NODE_ENV va a obtener cierta credencia
+
+##### Si es production estará conectado a producción, etc
+
+##### Al final podemos usar el método cobrar a pepe 100
+
+##### Así funciona el factory
+
+
+#### Rs DIC: sabe como administrar nuestra jerarquia de dependencias de una manera eficiente y simplifica el uso de patrones de IoC en el resto de nuestra app
+
+##### No necesitamos hacer la lógica de creación cada vez que queramos usar objetos que tienen muchas dependencias
+
+##### Con un container, los metemos un un container, se los pedimos y el se encarga de administrar todo
+
+
+## Service Locator (anti patrón: no recomendado) 
+
+##### Otra forma de lograr IoC
+
+##### Un ServiceLocator es un antipatron que se logra cuando en vez de que una clase defina dependencias explicitas, tome el DIC como param directo
+
+##### Esto tiene la desventaja de obfuscar qué dependencias tiene una clase realmente
+
+##### Una clase no debería tener muchas dependencias, si las tiene, significa que es hora de partir/dividir esa clase en otras más pequeñas)
+
+```
+class Gmail {
+	constructor(codigoSeguridad) {//validaciones}
+	enviarEmail(destinatario, mensaje) {//código}
+}
+
+class Movistar {
+	constructor(codigoSeguridad) {//validaciones}
+	enviarSms(destinatario, mensaje) {//código}
+}
+
+class NotificadorUsuarios {
+	constructor(serviceLocator) { //definición del antipatrón
+		this.gmail = serviceLocator.get(Gmail);
+		this.movistar = serviceLocator.get('Movistar');
+	}
+	
+	notificar(destinatario, mensaje) {
+		this.gmail.enviarEmail(destinatario, mensaje);
+		this.movistar.enviarSms(destinatario, mensaje);
+
+	}
+}
+```
+
+##### NotificadorUsuarios { constructor(serviceLocator) }
+
+##### En vez de decir que necesita la dependencia gmail y movistar, toma el serviceLocator para que tomo explicitamente las dependencias/clases/objetos/instancias
+
+##### Obsfusca las dependencias que tenemos, no podemos a simple vista todas las dependencias que usa
+
+##### Por ahí tiene acceso a cosas que no debería, por ahí tiene las claves de gmail y movistar, el notificador de usuarios no debería saberlas
+
+##### Expone problemas de seguridad
+
+##### No nos permite ver que clases que son muy grandes deberian ser más pequeñas
+
+##### Si serviceLocator recibe cientos de dependencias, a notificar usuario se las tenemos que pasar
+
+```
+import DIContainer {}
+const container = newDiContainer();
+container.addDefinitions({	
+	codigo_gmail
+	codigo_movistar
+	Gmail (clase)
+	Movistar (clase)
+	NotificadorUsuarios (clase): object(NotificadorUsuarios).construct{
+		container //uso del antipatron
+	}
+	
+});
+```
+
+
+## Dependency Inversion Principle
+
+##### Ahora que vimos IoC, DI (dependency injection) y DIC nos es posible entender DIP (dependency inversion principle)
+
+### !!! Modulos de alto nivel no deberían depender de módulos de bajo nivel
+
+##### Ej que cumple IoC mediante DI utilizando DIC, pero que rompe DIP
+
+```
+class Gmail {
+	constructor(codigoSeguridad) {//validaciones}
+	enviarEmail(destinatario, mensaje) {//código}
+}
+
+class Movistar {
+	constructor(codigoSeguridad) {//validaciones}
+	enviarSms(destinatario, mensaje) {//código}
+}
+
+class NotificadorUsuarios {
+	constructor(gmail, movistar) {
+		this.gmail = gmail;
+		this.movistar = movistar;
+	}
+	
+	notificar(destinatario, mensaje) {
+		this.gmail.enviarEmail(destinatario, mensaje);
+		this.movistar.enviarSms(destinatario, mensaje);
+
+	}
+}
+
+import DIContainer, {
+	object, 
+	get, 
+	factory
+} form 'rsdi';
+const container = new DIContainer();
+container.addDefinitions({
+	"codigo.gmail": "asdasd", 
+	"codigo.movistar": "asdasdf", 
+	"Gmail": object(Gmail).constructor{
+		get("codigo.gmail") //get busca un valor definido en el container
+	},
+	"Movistar": object(Movistar).constructor{
+		get("codigo.movistar") 
+	},
+	"NotificadorUsuarios": object(NotificadorUsuarios).constructor{
+		get("Gmail"), get("Movistar")
+	},
+)};
+
+const notificador = container.get('NotificadorUsuarios')
+notificador.notificar('pepe', "Tu auto fue alquilado");
+```
+
+##### En este caso, el problema para DIP es qeu NotificadorUsuario está esperando las clases concretas de gmail y movistar. 
+
+##### Sin embargo, realmente para una clase que notifica usuarios, no importa que proveedor sea, siempre y cuando pueda enviar un sms y pueda recibir un e-mail
+
+##### Ahora arreglamos este código para que cumpla con DIP
+
+#### Modulos de alto nivel no deberían depender de modulos de bajo nivel
+
+```
+class EmailProvider {
+	enviarEmail(destinatario, mensaje) {}
+}
+
+class SmsProvider {
+	enviarSms(destinatario, mensaje) {}
+}
+
+class Gmail extends EmailProvider {
+	constructor(codigoSeguridad) {//validaciones}
+	enviarEmail(destinatario, mensaje) {//codigo}
+}
+
+class Movistar extends SmsProvider {
+	constructor(codigoSeguridad) {//validaciones}
+	enviarEmail(destinatario, mensaje) {//codigo}
+}
+
+class NotificadorUsuarios {
+	// NotificadorUsuarios ahora depende de proveedores generales/genericos y no de uno en concreto 
+
+	constructor(proveedorEmail, proveedorSms) {
+		this.proveedorEmail = proveedorEmail;
+		this.proveedorSms = provedorSms
+	}
+	
+	notificar(destinatario, mensaje) {
+		this.proveedorEmail.enviarEmail(destinatario, mensaje);
+		this.proveedorSms.enviarSms(destinatario, mensaje);
+	}
+}
+
+//Esta implementación no necesita cambiar porque las clases concretas siguen siendo las mismas
+//El beneficio es que si mañana otros proveedores
+import DIContainer, {
+	object, 
+	get, 
+	factory
+} form 'rsdi';
+const container = new DIContainer();
+container.addDefinitions({
+	"codigo.gmail": "asdasd", 
+	"codigo.movistar": "asdasdf", 
+	"Gmail": object(Gmail).constructor{
+		get("codigo.gmail") //get busca un valor definido en el container
+	},
+	"Movistar": object(Movistar).constructor{
+		get("codigo.movistar") 
+	},
+	"NotificadorUsuarios": object(NotificadorUsuarios).constructor{
+		get("Gmail"), get("Movistar")
+	},
+)};
+
+const notificador = container.get('NotificadorUsuarios')
+notificador.notificar('pepe', "Tu auto fue alquilado");
+```
+
+##### La clave de DIP esta en las abstracciones de alto nivel y las clases concretas extenderan o seran representadas por esas abstracciones cumpliendo sus contratos
+
+##### Despues le pasamos estas clases/extensiones de las abstracciones a otras clases como NotificadorUsuario que van a declara uno generico
+
+##### La implementación del container no cambia, porque de todas formas tiene que pasar clases concretas
+
+##### El notificador de usuario es un objeto de tipo notificador de usuario que para construirlo necesitamos pasarle cosas concretas
+
+##### Dado que son las que tienen la implementación real
+
+
+
+# Arquitectura MVC y SQL
+
+##### En un proyecto escalado es importante conocer la filosofia de diseño de la app
+
+##### En los proyectos usan distintos patrones, frameworks; esta info nos sirve para guiarnos y seguir construyendo/aportando al proyecto
+
+##### Ej: Arquitectura en Capas/Layered Architecture una de las más comunes en apps web
+
+##### La cantidad de capas puede variar pero en general son 3
+
+##### Presentación (ui/ux), Negocio (reglas particulares y logica del negocio especifico) y Datos (almacenamiento de la información)
+
+##### Puede ser a nivel código como a nivel servidor a veces se mezclan los conceptos
+
+##### A nivel servidor (la capa de presentación corre en el navegador)
+
+##### La capa de negocio corre en un servidor web
+
+##### La capa de datos que corre en un servidor de datos
+
+##### La otra referencia puede ser a capas de organización de código
+
+##### No capas de maquinas/servidores, sino, como organizar el código dentro de una app
+
+##### Otra forma de referirse a la arquitectura
+
+##### Los patrones de diseño no solo se usan en la web
+
+##### Se usan en apps moviles, apps de escritorio
+
+##### Donde puede que las interacciones sean distintas a las de hacer un request y actualizar una vista web
+
+
+
+
+
+### Model View Controller (Modelo, vista, controlador)
+
+##### Es una implementación de la arquitectura de capas
+
+##### El modelo puede estar subdividido en varios módulos y dentro de estos, componentes, que hacen que la app sea más desacoplada (pero con alta cohesión); por lo tanto más facil de entender, de testear y de mantener
+
+
+#### Desacoplar las cases nos sirve porque nos permite enfocarnos en una parte de la app sin tener que conocer toda la app a fondo
+
+
+#### Alta cohesión: nos ayuda a no tneer que saltar de una clase o módulo a otro para cambiar un comportamiento
+
+##### Un componente de soft (función, clase, modulo) debería tener una sola razón por la cual cambiar
+
+
+#### Alta cohesión y bajo acoplamiento: estan bien especificados en la "S" de Single Resposability Principle
+
+
+#### En este caso como los componentes están por dentro y fuera del modulo porque el autor aclara que componentes son un concepto de la 'vista'
+
+
+#### La vista por lo genral muestra ENTIDADES o alguna representación de estas entidades como por ej DTOs (Data Transfer Object) y se quiere contralizar mucha info para minimizar el overhead de tenre que hacer la llamada remota en si
+
+
+#### !!! Los modulos no deberían comunicarse entre si
+
+##### El flujo es de arriba hacia abajo en una sola dirección
+
+##### !!! Solo hablan con la que le sigue, no se mezcla
+
+##### La capa de presentación habla con la de aplicación
+
+##### La capa de aplicación habla con la de negocio
+
+##### La capa de negocio habla con la de persistencia
+
+##### Y la de persistencia habla con la base de datos
+
+```
+Presentación 
+	|
+Aplicación 
+	|
+Negocio
+	|
+Persistencia
+	|
+Base de datos
+	|
+    v
+```
+
+#### !!! El flujo de vuelta/respuesta es al reves
+
+##### La capa de base de datos habla con la de persistencia, esta habla con la de negocio y esta con la app y la app con la de presentacion
+
+
+#### En MVC: View es la vista, C es el controlador (toma request del usuario y le pide al modelo que haga algo)
+
+##### Cuando vuelve la respuesta del modelo se lo pasa a la vista y le pide renderear la visa (en app web)
+
+##### El Modelo se encarga de las reglas o lógica del negocio
+
+
+#### El concepto de desacoplamiento significa que en la vista no tenemos debería haber un conector para la db
+
+##### O que el modelo que maneja clubes de futbol, no maneje a usuarios
+
+##### Todo debe tener su solución separado 
+
+
+#### En un proyecto grande los desarrolladores tambien estan desacoplados/dividos para desarrollar o mantener los distintos modulos
+
+##### Los desarrolladores no tienen que entender toda la app para contribuir en ella
+
+
+#### La cohesión se refiere a la esencia/espiritu/responsabilidades de las cosas
+
+##### Todo lo que tenga que ver con pagos está en el modulo de pago
+
+##### No solo se traslada a modulos, sino tambien a clases, funciones, etc
+
+##### Nos hace más facil saber donde buscar o ir especificamenta un código sin tener que buscar por toda la app
+
+
+#### Alta cohesión y bajo acoplamiento se corresponde con SRP
+
+##### Los componentes de soft deberían tener solo una razón por la cual cambiar
+
+
+
+### MVC Web
+
+```			
+					Manipula/pide cosas
+Request -> Controlador -> (Capa modelo: repo, entidades, servicios, componentes)
+				|	muestra
+				Vista -> interactua con el modelo (muestra una entidad)		
+```
+
+##### El controlador manipula el modelo y muestra la vista
+
+##### Cuando el controlador pide algo al modelo, devuelve una respuesta ocmo entidada o colección de entidades
+
+##### Cuando el controlador renderea la vista pasa ahí las cosas que se tienen que renderear
+
+#### !!! El modelo y la vista se ejecutan en tecnologias distintas, la vista se puede ejecutar en react/navegador y el modelo en node/server
+
+
+#### La vista muestra entidades (como Club) que tiene todas las propieades de un club
+
+##### La vista va a mostrar las propiedades relevantes de un club
+
+##### Entre la vista y el controlador tambien se pueden transferir DTO (data transfer objects) y no entidades
+
+
+#### DTO se usan cuando tenemos que hacer llamadas remotas
+
+##### Como cuando la vista tiene que llamar al controlador
+
+##### Dado que viaja por http, no estan en el mismo lugar
+
+##### Para minimizar cuantos datos se tranfieren por llamadas
+
+##### Podemos crear en DTO que puede ser un objeto donde entidades o datos que conceptualmete estarian separados 
+
+##### Los podemos mezclar dentro de un mismo request para minimizar la cantidad de llamadas remotas
+
+##### Sea por http o el protocolo que sea
+
+
+#### En MVC comun tenemos simplemente la vista y el controlador y el modelo que es una sola cosa (repos, entidades, servicios, componentes)
+
+##### El modelo es una sola clase que tiene la logica de negocio que se encarga tambien de guardar cosas en la db
+
+
+#### Con el paso del tiempo la capa de modelo se empezo a subdividir
+
+##### Quedaron los repos (interactuan con la deb), le pide a la db que persista entidades
+
+##### El repo toma un pedido/entidad (club) y lo guarda en una db
+
+##### Sabe con que db comunicarse y como hacer que club persista
+
+
+#### La entidad es el objeto, corazón de la app; lo que modelo el dominio/contexto de la app
+
+
+#### Los servicios pueden abarcar conceptos muy amplios 
+
+##### Dependiendo del framework, en nest.js es la logica de negocios
+
+##### Para nest.js las entidades son un conjunto de props de la entidad
+
+##### Y el servicio es lo que tiene la logica de negocio y que interactua con el repo para decirle que entidad guardar/persistir
+
+
+#### Al ver DDD (Domain Driven Design)
+
+##### La separción de servicios y entidad no se usa tanto
+
+##### Los servicios tiene otro uso, en DDD servicios y entidad en conjunto serían el modelo
+
+##### DDD nos dice que si tenemos entidades que no tienen ningun tipo de logica, le corresponde a un modelo anemico
+
+##### El modelo anemico en ddd se considera un antipatrón
+
+
+#### Controlador 'Lean' (fit/flacos) y Modelos gordos
+
+##### Los controladores no pueden tener nada de logica de negocio
+
+##### Si pueden tener algun tipo de validación y manejar datos/tipos
+
+##### De la misma forma que la logica tiene logica de presentación
+
+##### Pero todas las validaciones de negocio se hacen el Modelo (o capa de negocio)
+
+##### La view y controlador se mantiene en DDD
+
+
+### Diagramas C4: l1, l2, l3 (levels)
+
+#### Nivel 1 es el adm gestiona entidades como clubes por ej, a traves de crud ?) clubes por ej
+
+#### Nivel 2, persona que adm clubes que se guarda en sql 
+
+#### Nivel 3, tenemos un modulo por entidad, ej clubes
+
+#### El sitio interactua con el controlador, el controlador interactua con el servicio, el servicio interactua con el repo y el repo interactua con la db especifica
+
+##### La respuesta vuelve por ese camino sin saltearse modulos/comunicación/receptor
+
+
+#### Esta arquitectura tambien sirve para la vista
+
+##### Main sería el modulo principal que orquesta los otros componentes
+
+##### Tenemos archivos de interfaz que interactua con la interfaz
+
+##### Tenemos archivos de servicios para pedir datos a la capa de repo/api/local storage
+
+##### Tambien sigue el flujo de comunicación/separacion de responsabilildade sin saltearse modulos
+
+#### Además de presentación, este modelo existe para todo el desarrollo de software
+
+
+## Conceptos nuevos para el código
+
+### Estructura del proyecto: CRUD clubes
+
+```
+vscode
+coverage
+data
+node_modules
+public
+src
+.env
+.env.dist
+apikey
+package.json
+package-lock.json
+README.md
+```
+
+### 1. Dotenv
+
+##### Variables de entorno definidas en un archivo para desarrollo
+
+##### Nos sirve para no hardcodear credenciales (api keys, usuarios, passw) en el código porque despues es dificil/tedioso de borrar de la historia de git
+
+
+#### Dotenv es un paquete: npm install dotenv (con save dev?)
+
+##### Tiene un archivo .env
+
+##### Por lo general se crea un archivo .env.dist
+
+##### Va a tener todas las variables de entorno
+
+
+#### Archivo .env.dist
+
+##### Estas son las variables de entornos que necesitamos
+
+##### Se le pone algunos datos por dafault
+
+##### Al bajar la app, tenemos que avisar en el README.md
+
+##### Que tenemos que copiar .env.dist y pegar 
+
+##### Y cambiarle el nombre a .env
+
+```
+DB_PATH=./data/database.db
+JSON_DB_PATH=./data/clubs.json
+API_FOOTBALL_DATA=
+SESSION_DB_PATH=./data/session.db
+SESSION_SECRET=secreto por default (que puede tener espacios y caracteres no alfanumericos)
+NODE_ENV=development
+CREST_UPLOAD_DIR=./public/img/crest
+```
+
+##### Estos son los valores correctos que va a tomar la app
+
+##### En producción, al hacer deployment
+
+##### Todos los usuarios y los passw se pasan por varialbes de entorno
+
+##### Las variables de entorno, cuando ejecutamos algo 
+
+##### Como en el archivo: example/json-instead-of-sqlite
+
+##### Y correr npm run test
+
+```
+PEPE=1 npm run test
+```
+
+##### El programa que corre en test, va a tener la variable de entorno PEPE=1
+
+##### La info (PEPE es 1) se captura en archivo ./src/config/di.js
+
+##### El archivo es de código real de producción
+
+##### ./src/config/di.js tiene una función como:
+
+```
+function configurarMainJSONDatabase() {
+	return process.env.JSON_DB_PATH;
+}
+```
+
+##### En .env.dist hay:
+
+```
+JSON_DB_PATH=./data/clubs.json
+```
+
+##### process.env.JSON_DB_PATH: todo lo que tiene que ver con variables de entorno se captura con processs.env.nombreVariableDeEntorno
+
+##### Tomamos JSON_DB_PATH que es ./data/clubs.json
+
+##### Si el dia de mañana lo cambiamos en .env.dist
+
+##### Esta instrucción process.env.JSON_DB_PATH lo va a cambiar
+
+
+##### Otra forma de hacerlo es: example/json-instead-of-sqlite
+
+```
+JSON_DB_PATH=algo npm run programaX
+```
+
+##### Cuando corramos el programa, si ponemos process.env.JSON_DB_PATH va a ser igual a ese algo
+
+
+#### Dotenv solamente setea variables de entorno que no existen
+
+##### Si ponemos JSON_DB_PATH=algo
+
+##### algo toma precedencia por sobre el valor que está en el archivo .env.dist
+
+##### Pasa a valer algo y no ./data/clubs.json
+
+##### Dado que lo seteamos nuevamente
+
+
+#### !!! Uso de Dotenv: al principio de la app, lo primero que hacemos es un require a dotenv
+
+### Archivo src/app.js
+
+##### Ejecutamos .config()
+
+##### En la doc de dotenv nos instruye a su uso
+
+```
+require('dotenv').config();
+```
+
+##### Se pone arriba de todo por las librerias o código propio que dependen de estas variables de entorno para operar correctamente
+
+##### Si lo seteamos abajo de todo ya habrá ejecutado todoas las operaciones con las variables de entorno no setadas o inadecuadas
+
+
+### 2. Sesiones
+
+##### HTTP es stateless: !!! Usamos sesiones para establecer una permanencia entre el servidor y el cliente
+
+##### !!! Por lo general se usan en el controlador
+
+##### Guardar sesiones: Idealmente en una db como mysqql, redis
+
+##### Para desarrollo, nunca producción: Ninguno de los siguientes se puede usar en producción porque si tenemos 2 serviores con un balanceador de carga adelante, puede pasar que un cliente que antes tenía una sesión ahora no la tenga
+
+##### Esto ultimo es para sqlite, en memoria o en el sistema de archivos
+
+
+#### HTTP es sin estado: no recuerda datos entre sesión y sesión
+
+##### Al usar el protocolo http, este no sabe nada
+
+##### Pero si vamos a un sitio como Google sabrá que somos nosotros, nos identificará; a menos que usemos una navegación privada
+
+##### De alguna manera se acuerda: esta logrando que haya estado en su app web, por más que http no lo permita
+
+##### De esta forma funciona todos los login, los sitios nos identifican y nos proveen contenido distinto 
+
+##### Este comportamiento se logra con sesiones
+
+##### Las sesiones guardan en un cookie, detalles de nuestra sesion
+
+
+#### Cookies
+
+##### Diferencia con localStorage y sessionStorage
+
+##### 1. localStorage: siempre en el cliente, la info no expira
+
+##### 2. sessionStorage: siempre en el cliente, la info expira cuando termina la sesión en la página (mientras el browser esta abierto)
+
+##### 3. Cookies: siempre viajan en el cliente y en el servidor, por lo que si las hacemos muy 'pesadas' estamos haciendo la conexión más lenta
+
+
+#### Las cookies tienen nombre y valor: los podemos ver con herramientas como editMyCookie
+
+```
+nombre: connect.sid
+value: %ghl_2k4sa2ljk
+```
+
+##### Al hacer una llamada al servidor, los valores de las cookies siempre viajan entre cliente y servidor
+
+##### El server siempre nos devuelve cookies y cuando hacemos un request, post, put; etc
+
+##### Siempre pasamos el valor de las cookies
+
+##### Esto es el comportamiento por default del servidor
+
+##### En network -> club -> Request Headers: Cookie
+
+```
+Cookie: Phpstorm-deconnect.sid=%ghl_2k4sa2ljk
+```
+
+##### Tambien o vemos en la respuesta: Response Headers: Set-Cookie
+
+```
+Set-Cookie: connect.sid=%ghl_2k4sa2ljk
+```
+
+##### Asi logramos la permanencia
+
+##### La logica de la app pregunta por cookies seteados en id, pregunta por el usuario y nos muestra info relevante para nosotros
+
+##### Las cookies somos nosotros, si las obtinen son nosotros (concepto de seguridad)
+
+
+##### localStorage (siempre esta en el cliente, no expira y no está en el server), los valores estan en la maquina
+
+##### sessionStorage (Los valores expiran al cerrar la ventana)
+
+##### Si las cookies estan muy cargados de kb, son +kb por cada request
+
+##### Por cualquier cosa que el cliente pida
+
+
+#### Las cookies guardan valores que se pueden utilizar para identificar sesiones
+
+##### En las sesiones que son como objetos globales en las que podemos guardar info acerca del usuario
+
+##### Ej: x usuario tiene nombre y, id z; entonces en cada parte de la app, podemos referir en la sesion para identificar al usuario
+
+
+#### Las sesiones en general se usan en el controlador
+
+##### Accede a la sesion, identifica al usuario, y la capa de servicio/negocio recibe la entidad del usuario
+
+##### La capa de negocio no interactua con las sesiones
+
+
+#### Guardar sesiones: pregunta de entrevista
+
+##### Hay formas de guardado que tren probleas como en el sistema de archivos, en memoria
+
+##### Lo ideal es un una db relacional (mysql) o db de cache (redis)
+
+##### Estas herramientas son profesionales, tiene persistencia
+
+##### Si cerramos el server y lo volvemos a abrir, las sesiones van a seguir estando
+
+##### Si estuvieran en memoria, al apagar el server/maquina/pc se pierde; se deslogea
+
+
+#### SQLite es como guardarlo en el sistema de archivos dado que permite guardarlo en memoria o permite guardarlo en el sistema de archivos
+
+##### Problema con el sistema de archivos: al configurarlo por esta via, se crean archivos en una carpeta y cada archivo representa una sesion
+
+##### Cuando escalamos apps, en la escalabilidad horizontal y vertical (maquinas más potentes: forma de lidiar con mucho trafico, tiene un limite)
+
+#### !!! Escalabilidad horizontal: agregar más maquinas y adelante de esas maquinas ponemos un balanceador de carga
+
+##### Todos los request pasan por ahí este los redirecciona a las maquinas
+
+##### Podemos tener maquina: round robin que significa de maquina en maquina, primero a la 1, despues a al 2, así sucesivamente
+
+##### Si la maquina receptora está explotada, el problema con el sistema de archivos
+
+##### Es que cada maquina tiene su propio sistema de archivo
+
+##### No hay nada que garantice que la request siempre termine en la misma maquina
+
+##### Por más que los balanceadores sean muy inteligentes
+
+##### !!! Si temiamos la sesión guardada en cierto sistema de archivo no matchea si estamos en otra maquina
+
+##### !!! La maquina no nos puede identificar
+
+
+#### Por eso se guardan las sesiones en una un servidor/maquina aparte de db relacional o cache profesiona/ para producción 
+
+##### Dado que estas escalan verticalmente y los servers web que hostean la app, siempre se terminan conectando a un unico server de DB
+
+##### !!! Separamos server web de server DB así la app siempre podrá identificarnos
+
+
+### 3. Redirecciones
+
+#### Enviamos un codigo de respuesta 300 (redireccionar) para mandarlo a tal direccion 
+
+#### Cuando el servidor recibe esta respuesta, viajará a esa dirección
+
+
+### 4. Otras herramientoas
+
+#### jsdoc (antes de ts)
+
+
+#### Bulma framewor de CSS que es una colección de clases CSS, significa que el html que uno escribe en la pagina no tiene inferencia alguna
+
+
+#### iconos de FontAwesome
+
+
+#### Plantilla Nunjucks, creado por Mozilla
+
+##### Lo usamos para hacer el render para cuando el controlador quiere renderear una vista y esta vista esta escrita con tags de nunjucks
+
+
+## Estructura de la app
+
+### 1. app.js
+
+#### Punto de entrada de la app
+
+#### Configura cosas comunes a toda la app: servidor web, template engine y archivos estaticos
+
+#### Inicializa modulos
+
+
+### 2. config
+
+#### di.js configura el DIC: contiene referencias a los objetos concretos
+
+
+### 3. Modulos: 
+
+#### 1. concepto de repo
+
+##### Un repo es un patrón de diseño que nos permite interactuar con la capa de datos
+
+##### En este caso el el filesystem, en un archivo json
+
+##### Devolvemos entidades especificas de nuestro dominio
+
+
+#### 2. Controller: No tiene logica, solo toma datos del cliente, realiza validaciones de datos básica y las pasa a otras capas
+
+##### Por lo general todos los controladores extienden de un controlador base, en este controlador base podemos llamar a componentes como el de seguridad para validar/chequear sesiones por ej
+
+##### En este controlador tenemos que permitir acceder a ciertas rutas sin estar logeado (como la home, login, etc)
+
+
+#### 3. Entity: entidades, no tiene logica, solo es una representación de nuestra entidad
+
+
+#### 4. Mapper: mapea de un tipo de objeto a otro
+
+##### Ej, de datos de un form a una entidad
+
+
+#### 5. Service: Tiene la logica de negocio
+
+
+#### 6. Vista: tiene las vistas de ese módulo en particular
+
+
+#### 7. module.js: Sabe como inicializar el modulo
+
+##### Obtiene dependencias, configura rutas, usa patrón serviceLocator
+
+
+## Estructura del proyecto - Archivos
+
+##### Todo el código esta dentro de src
+
+```
+vscode
+coverage
+data
+node_modules
+public
+src
+	config
+		di.js
+	module
+	app.js
+.env
+.env.dist
+apikey
+package.json
+package-lock.json
+README.md
+```
+
+
+### app.js
+
+##### Por donde empieza la app
+
+##### Siempre todos los request van a ejecutar este código
+
+##### Requerimos las variables de entorno, express (el server web), la plantilla
+
+##### Requiere el modulo de dependency injection: exporta la función que configura el di, por dentro usa la librería rsdi
+
+##### Requiere el modulo de clubes: exporta una función que sabe hacer su propia inicialización (concepto llamado bootstrap)
+
+##### Crea la app, setea el puerto y por las dudas será 3000
+
+```
+require('dotenv').config();
+const express = require('express');
+const nunjucks = require('nunjucks');
+
+const configureDependencyInjection = require('./config/di');
+const { init: initClubModule } = require('./module/club/module');
+
+const app = express();
+const port = process.env.PORT || 3000;
+
+app.use(express.urlencoded(({ extended: true }));
+app.use('/public', express.static('public'));
+
+//mozilla nunjucks doc, use node
+nunjucks.configure('src/module', {
+	autoescape: true,
+	express: app,
+});
+
+const container = configureDependencyInjection(app);
+app.use(container.get('Session'));
+
+initClubModule(app, container);
+
+/**
+	*@type {import('./module/club/controller/clubController')} clubController;
+	*/
+const clubController = container.get('ClubController');
+app.get('/', clubController.index.bind(clubController));
+
+app.listen(port, () => console.log(`Server listening ath http://localhost:${port}`));
+```
+
+##### app.use(express.urlencoded(({ extended: true }))
+
+##### Es para subir archivos jpeg
+
+##### en /public seteamos que sirva archivos estaticos que hay en public
+
+##### En el directorio public tenemos archivos estaticos como main.css, imgs y js
+
+##### Configurar plantilla: la fuente será /module
+
+##### en club tenemos las view
+
+##### Despues configuramos di, le pasamos la app como param
+
+##### container es el de rsdi, a eso le pedimos la clase/obj/instanc/entidad Session
+
+##### A la app le decimos que use el componente session con app.use()
+
+##### Hacemos un bootstrap del modulo de clubes: initClubesModule(app, container);
+
+##### anotamos el tipo de clubController que es de tipo clubController 
+
+##### para que nos de todas sus props y metodos
+
+##### Creamos el clubController, se lo pedimos al contenedor
+
+##### En la home: app.get('/') va a ser el controller.index.bind(clubController)
+
+##### bind estamos haciendo referencia a una función dentro de un controlador
+
+
+#### Rs: setea la app, las variables de entorno, el server, los objetos/entidades
+
+##### Todo lo relacionado al servidor web lo hacemos en app.js que es el punto de entrada
+
+##### Tambien inicializamos cada mudulo que usa la app
+
+
+## Dependency Injection implementado en una app
+
+### Archivo ./src/config/di.js
+
+#### Esta version funciona con JSON, guardará sus cosa
+
+#### No se conecta con ninugna DB relacional
+
+##### Empezando desde abajo hacia arriba: tenemos module.exports = function configureDi()
+
+##### Exportará una función para configurar DI
+
+##### Cuando se ejecute nos devolverá un contenedor, el contenedor tendrá las dependencias/obj/inst/clases, etc
+
+##### Siguiendo con el uso de rsdi: crear contendor, agrear definiciones, asignar props, objetos, llamarlos obtenerlos y despues usarlos
+
+##### configureDi() creará el contenedor con new, agrega las definiciones y agrega los modulos (definiciones que tienen que ver con el modulo de clubes) y al final devuelve el contendor
+
+```
+const path = require('path');
+const uuid = require('uuid');
+const fs = require('fs');
+const { default: DIContainer, object, get, factory } = require('rsdi');
+const multer = require('multer');
+
+const session = require('express-session');
+const { ClubController, ClubService, ClubRepository } = require ('../module/club');
+
+function configureMainJSONDatabase() {
+	return process.env.JSON_DB_PATH;
+}
+
+function configureSession() {
+	const ONE_WEEK_IN_SECONDS = 604800000;
+	
+	const sessionOptions = {
+		secret: process.env.SESSION_SECRET,
+		resave: false,
+		saveUninitialized: false,
+		cookie: { maxAge: ONE_WEEK_IN_SECONDS },
+	};
+	return session(sessionOptions);
+}
+
+function configureMulter() {
+	const storage = multer.diskStorage({
+		destination(req, file, cb) {
+			cb(null, process.env.CRESTS_UPLOAD_DIR);
+		},
+		filename(req, file, cb) {
+			//store file with file
+			// al tener una extension, el navegador lo sirve en vez
+			cb(null, Date.now() + path.extname(file.originalname));
+		}
+	});
+	
+	return multer({ storage });
+}
+
+function configureUuid() {
+	return uuid.v4;
+}
+
+/**
+	* @param {DIContainer} container
+*/
+function addCommonDefinitios(container) {
+	container.addDefinitions({
+		fs, 
+		uuid: factory(configureUuid),
+		JSONDatabase: factory(configureMainJSONDatabase),
+		Session: factory(confiureSession),
+		Multer: factory(configureMulter),
+	});
+}
+
+/**
+	* @param {DIContainer} container
+*/
+function addClubModuleDefinitions(container) {
+	container.addDefinitions({
+		ClubController: object(ClubController).construct(get('Multer'), get('ClubService'))
+		ClubService: object(ClubService).construct(get('ClubRepository'))
+		ClubReposotory: object(ClubRepository).construct(get('uuid'))
+	})
+}
+
+module.exports = function configureDI() {
+	const container = new DiContainer();
+	addCommonDefinitions(container);
+	addClubModuleDefinitions(container);
+	return container;
+}
+```
+
+##### En la funcion addCommonDefinitions(container)()
+
+##### Necesitamos el fs, el uuid (para crear ids los clubes)
+
+##### Dado que en json no tenemos formas de crear ids automaticos
+
+##### Despues necesitamos la db de json en si
+
+```
+JSONDatabase: factory(configureMainJSONDatabase)
+```
+
+##### Viene de la funcion definida en el mismo di.js
+
+```
+function configureMainJSONDatabase() {
+	return process.env.JSON_DB_PATH;
+}
+```
+
+##### Devuelve el path a la db, no es un objeto
+
+##### Despues tenemos el objeto de session
+
+##### Y al final el Multer para subir cosas al servidor
+
+
+#### En la función addClubModuleDefinitions(container)
+
+##### Tenemos las definiciones sobre como construir un ClubController, ClubService y un ClubRepository
+
+##### El ClubController necesita Multer y ClubService
+
+##### A su vez ClubService necesita el ClubRepository
+
+##### Y el ClubRepository va a estar guardando cosas en el archivo de JSON (db)
+
+##### También necesita el uuid, el fs y la dbjson (necesita el path)
+
+
+#### Todo el archivo di separado por responsabilidades, funciones
+
+#### Al hacer esto evitamos harcodear las dependencias y se nos haría dificil testear
+
+#### Todos los modulos tiene pruebas sencillas
+
+#### !!! mockeamos las funciones que vamos a necesitar 
+
+##### Ej test repo
+
+```
+const reposotoryMock = {
+	save: jest.fn(),
+	delete: jest.fn(),
+	getById: jest.fn(),
+	getAll: jest.fn(),
+};
+
+const service = new ClubService(repositoryMock);
+
+test('Guardar un equipo, llama al metodo save', => (){
+	service.save({});
+	expect(repository.Mock.save).toHaveBeenCalledTimes(1);
+});
+```
+
+#### !!! Es el poder de abstraer todo con DIC (dependency injection container)
+
+
+#### El archivo di.js empieza con las dependencias concretas para path, uuid, fs, multer, etc
+
+##### Lo que sigue es abstracto
+
+##### Las cosas más complicadas son configurar Multer y Session
+
+
+#### Multer
+
+##### Al subir los archivos queremos que se suban con la extension adecuada
+
+##### Estos se van a subir en la ubicación que indica la variable de entorno CREST_UPLOAD_DIR
+
+##### Despues especificamos que el nombre del archivo se construya en base de la fecha y el nombre de la extension del archivo original
+
+
+#### Session: hace un require de express-session
+
+##### Retornará un objeto de tipo session y le pasa las opciones de la session
+
+##### Las opciones son el secreto (dado que la session está hasheada)
+
+##### El secreto es como el password/key de la app, cambiará de app en app
+
+##### Y le pasamos la duracion del cookie
+
+##### Cada una semana, el usuario deberia volver a logearse
+
+
+## Todo el modulo del codigo fuente
+
+```
+src
+	config
+	module
+		_test_
+		club
+		error
+		module.js
+		view/layout
+		abstractController.js
+	app.s
+```
+
+#### en app.js configuramos todas las dependencias 
+
+```
+const container = configureDependencyInjection(app);
+```
+
+##### Esto nos devuelve un container
+
+##### Al container le podemos pedir objetos en particular
+
+##### Como una session, un controlador
+
+##### En la url / nos devolverá clubController
+
+```
+const clubController = container.get('clubContainer');
+app.get('/', clubController.index.bind(clubController));
+```
+
+##### La app tiene que decir que ruta se carga por defualt
+
+
+#### Si vamos al archivo del controlador del club en general
+
+##### tiene para configurar rutas
+
+
+### Archivo clubController.js
+
+##### en ./src/module/club/controller/clubController.js
+
+```
+
+/**
+	* @param {import('express').Application} app
+*/
+configureRoutes(app) {
+	const ROUTE = this.ROUTE_BASE;
+	
+	// Nota: el bind es necesario porque estamos atando el callback a una funcion
+	// y no a la clase en si
+	// Al hacer bind nos aseguramos de que this dentro de create sea el controlador 
+	
+	app.get(`${Route}/create`, this.create.bind(this));
+	app.get(`${Route}`, this.index.bind(this));
+	app.get(`${Route}/view/:id`, this.view.bind(this));
+	app.post(`${Route}/save`, this.uploadMiddleware.single('crest_url'), this.save.bind(this);
+	app.get(`${Route}/delete/:id`, this.delete.bind(this));
+}
+```
+
+##### Las rutas estan configuradas en base al club que está en el constructor
+
+##### ROUTE_BASE = '/club';
+
+##### Al controlador le corresponde saber que si uno va a /club/create
+
+##### Va a ejecutar
+
+```
+app.get(`${Route}/create`, this.create.bind(this));
+```
+
+##### Si solo se va a club, se va a ejecutar el index
+
+##### el post llama al multer y al save (fs)
+
+##### Al final hay un get para delete
+
+
+#### importacion del modulo en app.js
+
+```
+const { init: initClubModule } = require('./module/club/module');
+```
+
+#### module.js
+
+```
+src
+	config
+	module
+		_test_
+		club
+		error
+		module.js
+		view/layout
+		abstractController.js
+	app.s
+```
+
+
+### Archivo module.js
+
+##### Incluye las tres clases: ClubController, ClubRepository y ClubService
+
+##### Y las exporta, porque cuando queramos darle mantenimiento
+
+##### Si vamos a config/di.js estamos requiriendo el modulo de clubes
+
+##### Asi las importamos desde este lado 
+
+##### Como dependencias que necesitamos
+
+```
+const { ClubController, ClubService, ClubRepository } = require ('../'module/club/module);
+```
+
+```
+const ClubController = require('./controller/clubController');
+const ClubRepository = require('./reposotory/json/clubReposotory');
+const ClubService = require('./service/clubService');
+
+/**
+	* @param {import('express').Applications} app
+	* @param {import('rsdi').IDIContainer} container
+*/
+function init(app, container) {
+	/**
+		* @type {ClubController} controller;
+	*/
+	const controller = container.get('ClubController');
+	controller.configureRoutes(app);
+}
+
+module.exports = {
+	init, 
+	ClubController,
+	ClubService,
+	ClubRepository,
+};
+```
+
+##### Module tiene más dependencias como mapper, job
+
+##### y otras cosas que no se exportan porque no son relevantes para los demas modulos
+
+##### Lo que necesitan y lo que no
+
+##### Además exporta la funcion init que toma la app y un contenedor
+
+##### Pide la instancia de clubController
+
+##### Y usa este objeto para llamar a su funcion configurRoutes(app)
+
+##### Que son las rutas que vimos en clubController.js
+
+
+#### El archivo app va a llamar a initClubModule
+
+##### Que vimos anteriormente init que toma app y un container
+
+
+## !!! Extender/escalar un app MVC: siguiendo esto patrones de codigo, estructura, configuracion, import, export, etc
+
+### min 1h
+
+
+## !!! Flujo MVC: ej, el CRUD clubes, la web llama al controlador, que llama al servicio que llama al repo y que llama a la DB
+
+### Todo esto lo vimos en el codigo/estructura del proyecto
+
+#### en la teoria de IoC, DI, DIC, DIP (inversion principle)
+
+##### Se ve todo reflejado/aplicado/implementado tal cual
+
+
+### Dentro del modulo de clubes, hay un controlador, un servicio, mapper, view, etc
+
+##### Pero el flujo basico es controlador, servicio, repo (y db)
+
+##### Hasta ahora vimos toda esa configuracion
+
+#### !!! El CRUD, Clubes llama por http a ClubController segun las rutas que estan definidas
+
+
+#### !!! Cuando ClubController llama a ClubService
+
+##### ClubService tiene que ser una dependencia de ClubController
+
+##### ClubService tiene que ser pasado al constructor de ClubController
+
+##### Así logramos IoC
+
+
+### Código constructor de la clase ClubController 
+
+#### En el archivo clubController.js en src/module/controller/clubController.js
+
+##### En el constructor tomamos clubService
+
+```
+module.exports = class ClubController extends AbstractController {
+	/**
+		* @param {import('../service/clubService')} clubService
+	*/
+	constructor(uploadMiddleware, clubService) {
+		super();
+		this.ROUTE_BASE = 'club';
+		this.uploadMiddleware = uploadMiddleware;
+		this.clubService = clubService;
+	}
+	
+	configureRoutes()app{}
+}
+```
+
+##### Tiene el metodo configureRoutes
+
+##### El otro param es la config de multer
+
+
+### abstractController.js en src/module
+
+##### No tiene logica, solo previene/valida que no puede crearse a si mismo
+
+```
+const AbstractControllerError = require('./error/abstractControllerError');
+
+module.exports = class AbstractController {
+	constructor() {
+		if (new.target === AbstractController) {
+			throw new AbstractControllerError();
+		}
+	}
+}
+```
+
+##### En otros lenguajes para esto tendriamos una palabra clave como abstract antes de class
+
+##### Para evitar instanciar la clase, en js lo simulamos con new y un condicional
+
+
+### clubController va a renderear index que va a cargar la vista 
+
+#### La vista renderea la entidad (club) como vimos en el diagrama de MVC
+
+#### !!! Flujo del controlador: 
+
+##### 1. recibe la petición (habiamos configurado rutas en el)
+
+##### 2. se la pide al modelo: clubService.getAll();
+
+##### 3. renderea la vista
+
+```
+/**
+	* @param {import('express'), Request} req
+	* @param {import('express'), Response} res
+*/
+
+async index(req, res) {
+	const clubs = await this.clubService.getAll();
+	const { errors, messages } = req.sessions;
+	req.render('club/view/index.html', { data: { clubs }, messages, errors });
+	req.session.errors = [];
+	req.session.messages = [];
+}
+```
+
+##### 4. La vista renderea todas las propiedades del modelo
+
+##### En este caso es la entidad clubs
+
+
+### Entity clubs.js
+
+```
+module.exports = class Club {
+	constructor({
+		id, 
+		name,
+		shortName,
+		tla,
+		cresUrl,
+		address,
+		phone,
+		website,
+		email,
+		founded,
+		clubColors,
+		venue,
+	}) {
+		thi.id = id;
+		this.name = name;
+		this.shortName = shortName;
+		this.tla = tla;
+		this.cresUrl = cresUrl;
+		this.address = address;
+		this.phone = phone;
+		this.website = website;
+		this.email = email;
+		this.founded = founded;
+		this.clubColors = clubColors;
+		this.venue = venue;
+		...
+	}
+}
+```
+
+### !!! clubController.js maneja la asincronia/peticiones/resp
+
+#### No hay logica de negocio, hay logica de controlador
+
+```
+/**
+	* @param {import('express').Request} req
+	* @param {import('express').Response} res
+*/
+
+async save(req, res) {
+	try {
+		const club = fromDatatoEntity(req.body);
+		if (req.file) {
+			const { path } = req.file;
+			club.crestUrl = path;
+		}
+		const savedClub = await this.clubService.save(club);
+		if (club.id) {
+			req.session.messages = (`El club con id ${club.id} se actualizó exitosamente`);
+		} else {
+			req.session.messages = (`Se creó el club con id ${savedClub.id} (${savedClub})`);
+		}
+		res.redirct('/club');
+	} catch (e) {
+		req.session.errors = [e.message, e.stack];
+		res.redirect('/club');
+	}
+}
+```
+
+#### clubController usa la session para persistir info a traves de varios request
+
+
+## Flujo MVC: de servicio a reposorio
+
+#### Tenemos los archivos clubService.js y clubReposotry.js
+
+#### El clubService tiene logica de negocio
+
+#### clubRepository guarda en json
+
+
+### !!! clubController, clubService y clubRepository tienen un clase abstracta y ellos son la implementación concreta
+
+
+#### clubRepository pide toda la data del club para guardar
+
+##### Aplica logia/validacion para esta, para salvar la info, los datos que le entra
+
+```
+async save(club) {
+	const clubs = await this.getData();
+	let clubtoSave;
+	
+	if (club.id) {
+		const clubIndex = clubs.findIndex ...
+		//...
+		
+		if (clubIndex === -1) {
+			throw new ClubNotFound(
+				`No se pudo actualizar el club con id`
+			);
+		}
+	} 
+}
+```
+
+### La capa de servicio toma entidades y devuelve entidades
+
+### La capa de repositorio los transforma para persistirlos a entidades de negocio
+
+#### Siempre devuelve entidades de negocio
+
+
+
+
+# Intro DB/SQL
+
+##### Simular DB: guardar en un archivo JSON en el disco
+
+##### Es rapido pero también básico
+
+##### En un JSON debemos siempre cargar todo el archivo, realizar las modificaciones que necesitamos en memoria y luego volver a escribir todo el archivo
+
+##### Es inificiente y en cierto momento se vuelve imposible trabajar con varios registros
+
+##### Si bien podemos escribir códiog que nos permita leer sólo la porción adecuada y escribir en la porción adecuada del archivo, esto sería complejo
+
+##### Nos encontramos con problemas de concurrencia
+
+##### Ej: El programa A cargoa todo el archivo, agrega un registro y lo vuelve a guardar.
+
+##### El programa B carga todo el archivo, agrega un registro y lo vuelve a guardar
+
+##### Si se ejecutan a la vez, algunos registros se van a perder
+
+##### Ej: npm run concurrency test: ejecuta 4 operaciones concurrentes; los registros se pisan unos a otros; A veces la db queda corrupta
+
+##### Ej con DB: npm run concurrency:db:test
+
+
+##### No podemos busar un registro especifico sin cargar todos los datos y filtrar en memoria. Esto no es eficiente ni escalable
+
+#### Una DB Soluciona todos estos problemas
+
+##### Maneja concurrencia
+
+##### Maneja transacciones (todos los cambios pasan a la vez o no pasa ninguno)
+
+##### Nos permite buscar, eliminar, insertar y actualizar información de manera más eficiente
+
+##### En el caso de DB relacionales como MySQL, Postgres
+
+#### !!! Nos permite cumplir ACID (Atomicity, Consistency, Isolation, Durability)
+
+
+### !!! Ej: En el sistema de un banco que tiene que transferirle de una cuenta a la otra, debitamos la cuenta del cliente A y al mismo tiempo acreditar la cuenta del cliente B
+
+#### Estas operaciones pasan juntas o no pasan
+
+
+### !!! Claves foraneas / Foreing keys: Podemos modificar un registro en una tabla, y como el registro era mantenido como una referencia a la clave foranea, no tenemos que ir por todas las tablas, actualizando el registro
+
+##### Establecer relaciones entre distintos registros: 
+
+##### Relación: jugador | club | anio_desde | anio_hasta
+
+```
+SELECT*FROM clubes_jugadores_historial WHERE club=1
+```
+
+##### Hay valores que viene de otras tablas, si le cambiamos su nombre dónde fue definido/origen, se cambia en la otra dónde está anclado/referenciado
+
+
+
+### Atomicity: Una transacción debería ser atomica, significa que un cambio no puede ser dividido en partes más pequeñas.
+
+##### Cuando comiteamos/confimamos una transacción, se comitea todo, o no se comitea nada
+
+##### Esto es importante cuando tienen que insertar varios registros/modificar varias tablas pero necesitan qeu se realicen todos los cambios si o si (por ejemplo, debitar una cuenta y acreaditar en otra, no puede quedar en un estado inconsistente)
+
+
+### Consistency: Una transacción debe dejar a la vase de datos en un estado VALIDO (esto no pasa en JSON)
+
+##### Al escribir la db, dos o más procesos al mismo tiempo no puede fallar o dejar la db ilegible, corrupa, inconsistente
+
+##### Una db lo logra con el siguiente conceptos que es aislamiento
+
+
+### Isolation: Una transacción hecha por una sesión (una conexión especifica) debe estar aislada de otras sesiones. 
+
+##### Cuando una sesión empieza una transacción y ejecuta un INSERT o UPDATE, esos cambios son solo viables para esa sesión, las demás sesiones al hacer SELECT*FROM... no van a leer estos cambios hasta no no sean commiteados/confirmados/mandados
+
+##### Si estamos escribiendo la db, nadie más lo puede ver hasta que termine y la db se consistente, que haya pasado de un estado valido a otro estado valido 
+
+
+### Durability: Si una transacción fue comiteadacon éxito, los cambios deben ser permanentes, independientemente de si se corta la luz, si el programa dea un error, etc.
+
+##### Por otro lado, si tenemos cualquier error ANTES de que la transacción sea comiteada, entonces, estos cambios no deberían ser permanentes/persistidos
+
+##### Si la transacción se escribe en el disco queda permanente, estable
+
+
+### Distintos tipos de DB
+
+#### Relacionales (mysql, mssql, postgres, mariadb, sqlilte)
+
+##### !!! Son las más comunes, utilizadas para representar el modelo de negocio y obtener transacciones seguras que cumplan con el concepto de ACID
+
+
+#### no-sql (mongdb, firebase, firestone, dinamodb)
+
+##### Se utilizan cuando se necesita guardar información no estructurada en grandes cantidades. 
+
+##### Guardan documentos de JSON en vez de estructuras SQL (tablas, columnas)
+
+##### Ej: si tenemos que guardar algo que varia mucho, como productos que tienen atributos completamente distintos
+
+##### lentes de sol tiene atributos que son especificos a lentes, polarizados, con/sin aumento, color del marco, color de lentes, formas
+
+##### Si esto lo tenemos en una unica tabla de productos describiendo todas estas caracteristicas 
+
+##### Si tuviesemos una tabla de caracteristicas describiendolas, nos termina pasando que si vendemos otros productos, tendriamos un montón de info que no estariamos usando
+
+##### Si nos consultan por buzos, las caracteristicas de los lentes de sol se volverían null
+
+##### Y a la vez el buzo tiene características que el lente no tiene 
+
+##### Como la info tiene muchos atributos que no están estructurados
+
+##### En estos casos nos conviene usar bases de datos no sql
+
+##### Otro caso de uso es guardar mucha info que no esten asociados
+
+
+#### in-memory, kvp (redis, memcache)
+
+##### key-value-pair
+
+##### Se utilizan por su gran velocidad generalmente como un caché, por lo general persisten a disco cada x segundos
+
+##### sqlite tambien corre en memoria pero no se recomienda para producción
+
+##### Se usan por/como cache, como las db que escriben en el disco son lentas
+
+##### Si tenemos info a la que accedemos muy frecuentemente, por ej; los pokes que son 900, no vamos todo el tiempo a la db a preguntar si no van a cambiar
+
+##### Lo ponemos en un cache, en un proceso aparte que corre el servidor cada un dia y va a buscar los pokes a la api y las guarda en cache
+
+##### La app va a conectar con el cache de redis o memcache db
+
+
+#### de grafo (neo4j, titan)
+
+##### Optimizada para correr info de tipo de grafo
+
+
+#### de tiempo (influedb, graphite)
+
+##### Se pierde granularidad con el tiempo pero siempre mantiene el mismo tamaño
+
+##### Se utiliza mucho para monitorear performance de sistemas donde ir al detalle 7 años atras no es tan importante como ir al detalle de la última hora
+
+##### Ej: si tenemos una db que pesa 3gb y es lo que pesa siempre, definimos la granularidad
+
+##### Podemos monitorear request que entran a nuestro server
+
+##### Otra cosa pueder ser la memoria que usa la pc o el espacio en disco
+
+##### Con estas db de tiempo, las usamos para monitorear por ej, los ultimos 7 dias para saber al 2do dia (detalle de granularidad) cuantas conexiones habia en cada segundo
+
+##### Despues de los 7 dias podemos establecer que nos diga cada semana o cada dia; ej: un promedio/averaje de dia de cuando usan el server en promedio de memoria por dia
+
+##### Establecer que pasado los 3 meses que nos lo diga por mes está bien
+
+##### Y pasado el año con que nos lo diga de forma anual está bien
+
+##### Así es como estas db manienen el tamaño, lo unico que hacen es cambiar el nivel de granularidad con el que podemos ver la info dependiendo del tiempo, de cuanto mas atras estemos yendo
+
+
+### Search engines
+
+##### soir, elasticsearch
+
+##### Cuando hay que buscar info, muchos clientes van a estar usando nuestro sitio a la vez (google o campos de busqueda, filtros)
+
+##### !!! Es más rapido usar una db 100% indexada como soir o elasticsearch
+
+##### Son motores de busqueda para que nos den info más rapido ya que están 100% en memoria
+
+##### A diferencia de las db in-memory, tienen capacidades avanzadas de busqueda
+
+##### Ej: busqueda de pepe en google: nos da que tiene 282 millones de resultados en 0.60s
+
+##### Esto no se logra yendo a buscar a la db como mysql, tardaría mucho
+
+##### Lo que hacen es usar db de search engine que son motores de busqueda que agarran todas las cosas que tengan el termino que buscamos 
+
+##### Y crean un montón de documentos donde por cada palabra o letra o termino que aparece en cierta columna, crean una relación con todos los registros que tambien tienen ese termino de busqueda
+
+##### Así se logra la rapidez, se usa mucho para ver cosas en un catalogo en las tiendas, tienen un motor de busqueda
+
+##### Las db in-memory no tienen capacidades avanzadas de busqueda
+
+##### En las db search engine podemos filtrar los items/productos/algo por caracteristicas
+
+
+## Intro a db relacionales SQL
+
+##### Structured Query Language
+
+##### Instalar SQLTools en vscode: sobre el archivo de la db permite abrir la db
+
+##### Tiene un sqlite explorer que muestra todas las tablas
+
+##### Otra cosa que permite es al abrir el archivo y querer ejecutar algo nos permite ejecutarlo en una conexión activa
+
+##### Setear conexiones y ejecutar queries ahí 
+
+##### O podemos ir a la pestaña que se agrega en VS sobre connections
+
+##### Con click derecho sobre lastablas en connections podemos ver los registros (table records)
+
+
+### SQL: varia un poco entra cada motor de DB
+
+##### Ej: en el motor de sqlite con instrucciones especificas
+
+##### Lo más importantes es centrase en los conceptos
+
+
+### 1. Crear tabla SQL
+
+#### Tipos de datos
+
+#### Claves primarias
+
+#### Buenas prácticas: Siempre las siguientes
+
+##### 1. Id: para poder hacer referencia especificamente al registro/record de la tabla/table
+
+##### 2. created_at: para tener referencia de cuando se creo el registro
+
+##### 3. updated_at: para tener referencia de cuando se actualizo el registro
+
+
+##### Es importante para auditoria: siempre tenemos que saber o rastrear los registros creados o actualizados
+
+##### Si lo podemos atar al usuario que hizo estas acciones es mejor
+
+
+##### Es importante para data warehouse: las distintas apps con las db va a parar a la warehouse para hacer reportes analiticos (business intelligence)
+
+##### La forma eficiente de copiar la db es hacer: desde x id o desde x created_at o desde x uptadated_at hacia adelante obtener los registros nuevos e insertarlos en la tabla maestra gigante
+
+##### Si dejamos crecer la db de un app al infinito, la app eventualmente va a dejar de funcionar
+
+##### Son conceptos de Data Retention Estrategy
+
+##### Por ej, si estamos creando 1000/2000 registros por dia, al cabo de x tiempo vamos a tener 20/30 millones de registros, si no mantenemos esta tabla, va a dejar de funcionar
+
+##### Por lo general en el negocio podemos tener requisitos legales como puede ser tener que mantener datos financieros de los ultimos 7 años
+
+##### Entonces, de lo 7 años para atras no hace falta mantener esos datos, en esta db relacional siempre y cuando tengamos esa info disponible en la tabla maestra o data warehouse
+
+##### Podemos tener un worker/trabajo que corre todos los dias o todos los domingos a las 3/5am borrar todos los registros que tiene created_at o updated_at mayor/menor a x fecha
+
+
+### 2. Insertar un registro con SQL
+
+
+### 3. Insertar varios registros con SQL
+
+
+### 4. Consultar todos los registros con SQL
+
+
+### 5. Consultar registros por id
+
+
+### 6. Consultar registros según otras condiciones
+
+#### LIKE: especial para busquedas
+
+#### IN: satisfacer multiples valores
+
+
+### 7. Consultar collumnas especificas de un registro
+
+#### 1. Importante siempre usar columnas y no * en producción
+
+##### Si alguen agrega más columnas (imaginemos una de tipo BLOB/binario de repente en vez de traer unos pocos kb terminamos trayendo varios MB)
+
+
+#### 2. Alias
+
+
+### 8. Agregación (Aggregate functions)
+
+#### 1. AVG
+
+#### 2. COUNT
+
+#### 3. SUM
+
+#### 4. MAX
+
+#### 5. MIN
+
+
+### 9. Agrupamiento
+
+#### 1. GROUP BY
+
+#### 2. HX/ING
+
+
+### 10. Subqueries: pueden ser poco eficientes pero faciles de razonar
+
+
+### 11. Joins
+
+#### Inner
+
+#### Left
+
+#### Right
+
+#### Outer
+
+
+### 12. Actualizar 1 registro (según condición)
+
+### 13. Actualizar todos los registros
+
+
+### 14. Borrar un registro según condición
+
+
+### 15. Truncar una tabla (y la diferencia con borrar todos los registros)
+
+#### En SQLite es posible haciendo DELETE FROM table
+
+#### En otros lenguajes es TRUNCATE TABLE table
+
+
+### 16. Eliminar una tabla (DROP table)
+
+
+### 17. Alterar una tabla (ATER TABLE)
+
+#### Agregar columnas
+
+#### Quitar columna
+
+#### Renombrar columna
+
+#### Renombrar tabla
+
+
+##### Diagrama de flujo
+
+```
+
+```
+
+
+### 18. Transacciones
+
+
+### 19. Intro a indices
+
+#### Hacen que nuestras busquedas sean más eficientes 
+
+#### Pueden servir para borrar restricciones
+
+##### 1. Ej: UNIQUE
+
+##### Si hace que sea más rapido leer porque no ponemos indices en todas las columnas?
+
+##### La respuesta: 
+
+##### Porque incrementa el tiempo que se tarda en INSERTAR y BORRAR
+
+##### El disco es la operación más lenta de una maquina porque es mecanico (sobre todo los qeu tienen rpm) por lo que por lo general siempre es nuestro cuello de botella
+
+##### !!! Por eso es necesario implementar caches cuando queremos escalar la app
+
+
+#### 2. Estructura de datos árboles-b
+
+
+# Uso de SQL
+
+### Estructura de archivos
+
+```
+sql
+	alter.sql
+	delete.sql
+	index.sql
+	join.sql
+	select.sql
+	setup.sql
+	transaction.sql
+	update.sql
+	
+```
+
+
+## 1. setup.sql: correr los datos, resetea la db, muestra consultas
+
+
+#### Run on active connection
+
+##### Multiple query results
+
+##### Ej: Query returned 0 rows
+
+```
+DROP TABLE IF EXISTS liga_italiana;
+CREATE TABLE IF NOT EXIST liga_italiana (
+	id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+	posicion INTEGER NOT NULL,
+	nombre TEXTO NOT NULL,
+	jugados INTEGER NOT NULL, 
+	ganados_total INTEGER NOT NULL,
+	empatados_total INTEGER NOT NULL, 
+	perdidos_total INTEGER NOT NUL,
+	goles_favor_total INTEGER NOT NULL,
+	goles_contra_total INTEGER NOT NULL,
+	goles_diferencia_total INTEGER NOT NULL,
+	puntos_total INTEGER NOT NULL,
+	ganados_casa INTEGER NOT NULL, 
+	empatados_casa INTEGER NOT NULL,
+	perdidos_casa INTEGER NOT NULL,
+	goles_favor_casa INTEGER NOT NULL,
+	goles_contra_casa INTEGER NOT NULL,
+	ganados_fuera INTEGER NOT NULL,
+	empatados_fuera INTEGER NOT NULL,
+	perdidos_fuera INTEGER NOT NULL,
+	goles_favor_fuera INTEGER NOT NULL,
+	goles_contra_fuera INTEGER NOT NULL,
+
+	/*
+		datetime es UTC por default
+		para especificar una zona horaria especifica 
+		o la hora del servidor, podemos usar:
+		datetime('now', 'localtime')
+	*/
+	
+	created_at DATE DEFAULT (datetime('now')) NOT NULL,
+	updated_at DATE DEFAULT (datetime('now')) NOT NULL
+);
+
+DROP TABLE IF EXISTS partidos;
+CREATE TABLE IF NOT EXIST partidos (
+	id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+	fk_equipo_casa INTEGER NOT NULL, /* fk es convención*/
+);
+```
+
+### 1. Creamos la tabla de la liga italiana 
+
+##### Dentro de los parentesis de create table van todas las columnas
+
+##### Las columnas se terminan de escribir con coma
+
+##### Cierra el parentesis con punto y coma
+
+
+### 2. Columna: nombre de columna, tipo de columna, dado el id lo definimos como PRIMARY KEY que tendrá AUTOINCREMENT y NOT NULL
+
+##### AUTOINCREMENT: si no especificamos la columna id, siempre va a agarrar el último valor y le va a sumar 1
+
+##### Ej: id INTEGER 
+
+##### Ej: la columna posición estamos diciendo que será un entero no nulo
+
+##### NOT NULL: si no le pasamos valor, el query para insertar un registro(record/row?) en esta tabla va a fallar
+
+
+### 3. Diseño columnas y filas: 
+
+#### La tabla en si tiene columnas que describen las propiedades de un registro según lo que queremos guardar/contexto/esencia
+
+#### Las filas son cada uno de los registros, en cada columna va a tener un dato que explica que es cada columna
+
+##### Ej: clubes: columnas id y nombre; filas 1 (id), CAI (nombre)
+
+```
+/* clubes */
+id		nombre
+1		CAI
+```
+
+#### !!! Especificamos que tipos de datos van a tener
+
+### !!! Procesamiento de datos, de original (openfutbol) a sql
+
+
+##### Despues de la liga italiana creamos la tabla de los jugadores
+
+##### !!! datetime('now', 'localtime') zona horaria para servidor 
+
+```
+created_at DATE DEFAULT (datetime('now'))
+```
+
+##### columna created_at de tipo date, su valor por default es datetime now/ahora que no es nulo 
+
+##### No tenemos que especificar el created_at y update_at ni el id si no queremos, los tres valores se completan automaticamente
+
+##### En trabajar en una app en producción, que tengan distintas zonas horarias 
+
+##### Debemos guardaar las cosas con UTC, al guardarlo en la hora del servidor/donde esta localizado
+
+##### Si tenemos que servir a cliente en otras zonas horarias
+
+##### Es conflictiva hacer la transformación
+
+
+### 4. Insertar registros: para que la tabla creada tenga datos
+
+##### Ej: en la tabla liga_italiana
+
+##### Ej: INSERT INTO liga_italiana (posición, ...)
+
+```
+INSERT INTO liga_italiana (posición, ...)
+```
+
+### 5. Despues de crear tablas nos toca seleccionar
+
+
+## 2. select.sql
+
+```
+/* Selecciona todos los registros de la tabla */
+SELECT * FROM liga_italiana;
+
+/* Selecciona todos los registros de la tabla según condición */
+SELECT * FROM liga_italiana WHERE id = 1;
+
+/* Selecciona todos los equipos que terminen con 'FC' */
+SELECT * FROM liga_italiana WHERE nombre LIKE '%FC';
+
+/* Selecciona todos los equipos que terminen con ' FC' */
+SELECT * FROM liga_italiana WHERE nombre LIKE '% FC';
+
+/* Selecciona todos los registros que cumplan estas 2 condiciones */
+SELECT * FROM liga_italiana
+WHERE goles_diferencia_total > 20
+AND goles_favor_total > 40;
+
+/* Selecciona todos los registros que cumplan con estas 2 condiciones */
+SELECT * FROM liga_italiana
+WHERE 
+```
+
+#### Al correr este query
+
+##### * (asterisco) marca todas las columnas y filas (registros)
+
+##### FROM: de
+
+##### x tabla nos devolverá todos los registros insertados
+
+
+#### Condicional donde: WHERE id = 1 (donde la columna id valga 1)
+
+##### Como id es un unico registro nos va a devolver uno solo dado que no puede haber id repetidos o mas de dos en uno solo, etc
+
+
+#### LIKE: se usa para las busquedas (es mejor una db search engine para busquedas avanzadas)
+
+##### Para empezar o para aplicaciones pequeñas un search engine es demasiado
+
+##### Podemos usar like toma wildcardas como %
+
+##### % (todo) o cualquier cosa/registro y luego lo que queremos que matchee
+
+```
+SELECT * FROM liga_italiana WHERE nombre LIKE '%FC';
+```
+
+##### Se traduce como dame todos los equipos de la liga italiana donde el nombre terminen
+
+##### Ej nos devuelve helas verona fc, bologna fc, etc
+
+##### Podemos meterle un espacio para lo que exclusivamente terminen con fc
+
+```
+/* Selecciona todos los equipos que terminen con ' FC' */
+SELECT * FROM liga_italiana WHERE nombre LIKE '% FC';
+```
+
+##### Con esta consulta ya no aparece genoa cfc
+
+
+#### Dos condiciones: WHERE AND
+ 
+##### "Selecciona todos los equipos de la liga italiana"
+ 
+##### "Donde columna diferencia de goles sea mayor a 20"
+
+##### Y a la vez, el total de goles a favor sea mayor a 40
+
+```
+/* Selecciona todos los registros que cumplan estas 2 condiciones */
+SELECT * FROM liga_italiana
+WHERE goles_diferencia_total > 20
+AND goles_favor_total > 40;
+```
+
+##### Nos devolverá juventus, lazio, inter, etc
+
+
+#### SELECT * FROM x... WHERE y... OR z...
+
+
+### Especificar columnas 
+
+#### SELECT x..., y... FROM z... WHERE a... AND b... OR c...
+
+##### No hace falta las mismas columnas por las que se filtra 
+
+```
+SELECT posicion, nombre, puntos_total from liga_italiana
+WHERE
+(goles_diferencia_total > 20 AND goles_favor_total > 40)
+OR (goles_diferencia_total < 0) 
+```
+
+
+#### IN: seleccionar multiples valores
+
+```
+SELECT * FROM liga_italiana WHERE nombre IN ('Parma', 'cacliari calcio');
+```
+
+##### "Dame los equipos que tenga en su nombre parma y cacliari calcio"
+
+
+#### COUNT(): cuenta cuantos registros hay en la tabla
+
+```
+SELECT COUNT(*) FROM liga_italiana
+```
+
+##### Devolverá 20 (equipos)
+
+##### (*): significa que cuenta todas las filas
+
+##### Si decimos COUNT(name): va a contar todas las filas donde name no sea nulo
+
+
+#### COUNT() con condiciones and, or 
+
+
+#### MAX(): Ej, equipo con más goles a favor afuera (visitante)
+
+```
+SELECT posicion, nombre, MAX(goles_favor_fuera) FROM liga_italiana
+```
+
+#### MIN(): ej, equipo con menos goles fuera de casa
+
+```
+SELECT posicion, nombre, MIN(goles_favor_casa) FROM liga_italiana
+
+```
+
+#### SUM(): ej, total de goles liga italiana
+
+```
+SELECT SUM(goles_favor_total) FROM liga_italiana
+```
+
+
+#### AVG: ej, promedio de goles en contra
+
+```
+SELECT AVG(goles_contra_total) FROM liga_italiana
+```
+
+#### DATETIME: ej, seleccionar la fecha con la hora local del servidor
+
+```
+SELECT DATETIME(created_at, 'localtime'), DATETIME(update_at, 'locatime') FROM liga_italiana
+```
+
+##### Guardamos en UTC pero cuando leemos tenemos que hacerlo en la fecha especifica
+
+##### En este caso fecha local del servidor
+
+##### Seleccionamos datetime en la columna created_at ('localtime': es para convertir) el tiempo utc a la hora local
+
+
+### Agrupar
+
+#### AS... GROUP BY
+
+##### Agrupamos por partidos jugados y contamos cuantos equipos hay en cada grupo
+
+```
+SELECT jugados, COUNT(*) AS cantidad_equipos FROM liga_italiana GROUP BY jugados
+```
+
+##### Se interpreta: "Dame los partidos jugados, contalos"
+
+##### "Con esto vamos a crear grupos por jugados"
+
+##### Respuesta: 6 equipos que jugaron 25 partidos
+
+##### 12 equipos que jugaron 26
+
+##### 2 equipos que jugaron 27
+
+
+#### AS... GROUP BY... HAVING
+
+##### Agrupamos por partidos jugados y contamos cuantos equipos hay en cada grupo
+
+##### Ademas, solo nos enfocamos en los grupos con más de 2
+
+```
+SELECT jugados, COUNT(*) AS cantidad_equipos FROM liga_italiana
+GROUP BY jugados
+HAVING cantidad_equipos > 2
+```
+
+##### HAVING es el propio WHERE (donde) de GROUP BY
+
+##### Le unimos una condición a este grupo: cantidad_equipo > 2
+
+##### HAVING filtra grupos
+
+##### WHERE filtra filas
+
+
+#### AS: es un alias
+
+##### Si lo omitimos, COUNT(*) va a aparecer como cantidad_equipos, lo referencia como cantidad_equipos
+
+##### Ponemos AS para que sea mas completo
+
+
+### Subqueries
+
+##### Seleccionar un query dentro de un query
+
+#### Ej: Suma la cantidad de equipos que vienen en el subquery
+
+```
+SELECT SUM(cantidad_equipos) FROM (
+	SELECT jugados, COUNT(*) AS cantidad_equipos FROM liga_italiana
+	GROUP BY jugados
+	HAVING cantidad_equipos > 2
+);
+```
+
+##### Select algo de FROM (subquery) en vez de una tabla
+
+##### Dentro sumamos las columnas de los resultados del subquery
+
+
+#### Subquery en la condición del WHERE
+
+##### Ej: todos los equipos que tengan goles_contra_total mayor al promedio goles_contra_total
+
+```
+SELECT * FROM liga_italiana
+WHERE goles_contra_total > (
+	SELECT AVG(goles_contra_total) FROM liga_italiana
+);
+```
+
+
+## JOINS
+
+##### Al crear el archivo setup.sql se crearon las tablas como liga_italiana, partidos, jugadores y se inserto registors, etc
+
+##### Al crear las tablas se crean las columnas
+
+```
+CREATE TABLE IF NOT EXIST partidos(
+	id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+	fk_equipo_cada INTEGER NOT NULL
+	...
+);
+```
+
+##### Al insertar registros se crean las filas
+
+```
+INSERT INTO liga_italiana (posición, nombre, jugados, ganados_total, empatados_total)
+INSERT INTO liga_italiana (posición, nombre, jugados, ganados_total, empatados_total)
+INSERT INTO liga_italiana (posición, nombre, jugados, ganados_total, empatados_total)
+```
+
+##### Después se creo/inserto varios partidos random
+
+```
+INSERT INTO partidos(
+	fk_equipo_casa,
+	fk_equipo_fuera,
+	goles_casa, 
+	goles_fuera
+) VALUES (
+	(SELECT id FROM liga_italiana ORDER BY RANDOM() LIMIT 1)
+	....
+)
+```
+
+##### Y al final se creo varios jugadores
+
+```
+INSER INTO jugadores (fk_equipo, nombre) VALUES 
+((SELECT id FROM liga_italiana ORDER BY RANDOM() LIMITIT 1, 'pepe', ),
+((SELECT id FROM liga_italiana ORDER BY RANDOM() LIMITIT 1, 'pepe', ),
+(NULL, 'cacho');
+```
+
+##### Dos jugadores tienen un equipo random
+
+##### Y un jugador no tiene equipo/libre
+
+
+### Archivo join.sql
+
+##### Si elegimos todos los partidos SELECT * FROM partidos; da la estructura de la tabla
+
+##### Columnas: id; fk_equipo_casa; fk_equipo_fuera; goles_casa; goles_fuera
+
+##### Filas: 1, 2, 3, 4...
+
+```
+id 	fk_equipo_casa 	fk_equipo_fuera  goles_casa	 goles fuera 
+1	4				8					4			3
+2	8				13					2			4
+3	6				9					1			2
+4	3				4					5			6
+```
+
+##### El equipo_casa y fuera está representados con los id
+
+##### goles_casa y goles_fuera son los goles de cada uno de estos equipos
+
+##### En el partido del equipo con el id 4 y 8 termino 4 a 3; gano el equipo casa con el id 4
+
+
+```
+/*
+Con el JOIN uno 2 o más tablas
+INNER implica que a menos que la condición de union se cumpla (en las dos tablas)
+(ej. ON l1.id = p.fk_equipo_casa) el registro no aparece en el resultado
+*/
+SELECT
+	l1.nombre AS nombre_casa
+	l2.nombre AS nombre_fuera
+	p.*
+FROM partidos p
+INNER JOIN liga_italiana l1
+ON l1.id = p.fk_equipo_casa
+INNER JOIN liga_italiana l2
+ON l2.id = p.fk_equipo_fuera;
+```
+
+
+##### En: 
+
+```
+SELECT
+	l1.nombre AS nombre_casa
+	l2.nombre AS nombre_fuera
+	p.*
+FROM partidos p
+INNER JOIN liga_italiana l1
+ON l1.id = p.fk_equipo_casa
+INNER JOIN liga_italiana l2
+ON l2.id = p.fk_equipo_fuera;	
+```
+
+##### Pedimos o consultamos por los partidos (FROM partidos p o FROM partidos AS p (alias para partidos))
+
+##### INNER JOIN (unilos) con la liga_italiana que su alias será como l1
+
+##### INNER JOIN (unilos) con la liga_italiana l2, dado que tenemos dos equipos; equipo que juega en casa y el que juega fuera
+
+##### Entonces, los unimos en el id e la liga 1 (ON l1.id = p.fk_equipo_casa) que será p.fk_equipo_casa (el mimsmo id del equipo que jugo en casa en la tabla de partidos)
+
+##### Y en la liga 2 consultamos por el que tenga id igual al id del equipo fuera
+
+##### INNER JOIN y ON son las condiciones de union
+
+##### En SELECT estamos pidiendo l1.nombre será nombre_casa (equipo de la liga 1)
+
+##### Despues pedimos por el nombre del equipo de la liga 2 que se llamará nombre_fuera
+
+##### p.*: pide todas las columnas de partidos
+
+```
+nombre_casa 	nombre_fuera
+Milan 			atalanta
+```
+
+Se unirá a la tabla de inicio que tenia id y etc
+
+```
+nombre_casa 	nombre_fuera	id 		fk_equipo_casa 	fk_equipo_fuera  goles_casa	 goles fuera 
+Milan			Atalanta		1		4				8					4			3
+```
+
+
+#### JOIN: Caso jugador sin equipo
+
+```
+/*
+Con el JOIN uno 2 o más tablas
+INNER implica que a menos que la condición se cumpla
+(ej. ON l1.id = p.fk_equipo_casa) el registro no aparece en el resultado
+cacho no tiene equipo por lo tanto no aparece en los resultados
+*/
+SELECT j.nombre, l.nombre AS nombre_equipo FROM jugadores j
+INNER JOIN liga_italiana l
+ON l.id = j.fk_equipo;
+```
+
+##### Estamos uniendo la liga italiana con los jugadores
+
+##### Query de los jugadores solo: SELECT * FROM jugadores
+
+```
+id	fk_equipo	nombre
+1	8			pepe
+2	15			juan	
+3	NULL		cacho
+```
+
+##### Un jugador juega para el equipo 8, otro para el 15
+
+##### Cacho es NULL, no tiene equipo
+
+##### Con el join: INNER JOIN liga_italiana l ON l.id = j.fk_equipo
+
+##### Estamos diciendo que el id de la liga italiana (l) sea igual al foreing key (fk) del equipo
+
+##### Dado que es un INNER JOIN cacho ya no va a aparecer
+
+```
+id	fk_equipo	nombre	nombre_equipo
+1	8			pepe	AC Milan
+2	15			juan	Torino fc
+```
+
+
+#### 
+
+```
+/*
+Con el JOIN uno 2 o más tablas
+LEFT implica que quiero los registros de la tabla de la 'izquierda' por más que no hubo match
+RIGHT y OUTER existen en otros motores pero en SQlite no
+RIGHT es como LEFT pero al revés
+OUTER es la combinación de LEFT y RIGHT
+*/
+SELECT j.nombre, l.nombre As nombre_equipo
+FROM jugadores j
+LEFT JOIN liga_italiana l
+ON l.id = j.fk_equipo
+```
+
+##### La tabla de la izquierda en este caso es jugadores
+
+##### La primer tabla que aparece es la de la 'izquierda'
+
+##### Si se formatea como:
+
+```
+FROM jugadores j LEFT JOIN liga_italiana l
+```
+
+##### Pedimos todos los que existan en jugadores (from jugadores j)
+
+##### Y unilos (left join ) con la liga italiana
+
+##### En este caso si o si va a aparecer cacho
+
+##### Trae los resultados de la tabla de la izquierda
+
+##### Cacho va a venir y la no encontrar nada en la tabla de la derecha cacho será null
+
+
+## Actulizar registros 
+
+### Archivo update.sql
+
+##### Miramos un registro como: SELECT * FROM liga_italiana WHERE id = 1;
+
+##### Y si lo actualizamos con: UPDATE liga_italiana SET nombre = 'CALCIO FC' WHERE id = 1;
+
+
+### Instrucción SET (modificar registros) : le tenemos que pasar una columna como 'nombre'
+
+##### Ej: podemos actualizar todos los registros de la columna jugados en 27: todos los equipos con 27 partidos jugados
+
+##### Si corremos un UPDATE sin WHERE (condición podemos actualizar todos registros de una columna)
+
+```
+SELECT * FROM liga_italiana WHERE id = 1;
+/* Actualizamos los registros que cumplan con la condición (en este caso solo es 1, dado el id) */
+UPDATE liga_italiana SET nombre = 'CALCIO FC' WHERE id = 1;
+SELECT * FROM liga_italiana; 
+
+/* Actualizamos todos los registros */
+UPDATE liga_italiana SET jugados = 27;
+SELECT * FROM liga_italiana;
+
+/* Cualquier equipo que termine con FC */
+UPDATE liga_italiana SET jugados = 26, posicion = 1
+WHERE nombre LIKE '%FC';
+
+SELECT * FROM liga_italiana;
+
+/* Cualquier equipo que tenga la 'o' en su nombre */
+UPDATE liga_italiana SET jugados = 28, posicion = 2
+WHERE nombre LIKE '%o%';
+
+SELECT * FROM liga_italiana;
+```
+
+#### !!! Buena practica: Cada vez que escribimos un UPDATE o DELETE, usamos WHERE para hacerlo más especificos y no modificar todos los registros de un lugar 
+
+
+#### Combinar UPDATE con SET, WHERE y LIKE
+
+##### "Actualizar liga italiana, queremos setear que los partidos jugados son 26 y que la posición sea 1, donde el nombre termine con 'fc'"
+
+```
+/* Cualquier equipo que termine con FC */
+UPDATE liga_italiana SET jugados = 26, posicion = 1
+WHERE nombre LIKE '%FC';
+```
+
+##### Ahora todos los equipos que terminaban con fc, se actualizaron sus partidos jugados a 26 y la posición de todos los equipos que terminan con 'fc' será 1
+
+
+#### Ej: Cualqueir equipo que tenga la 'o' en su nombre tenga partidos jugados 28 y posición 2
+
+#### Instrucción % (cualquier cosa) + 'x' + % (cualquier cosa)
+
+```
+/* Cualquier equipo que tenga la 'o' en su nombre */
+UPDATE liga_italiana SET jugados = 28, posicion = 2
+WHERE nombre LIKE '%o%';
+```
+
+
+## Archivo delete.sql
+
+##### Primero contamos los equipos de la liga italiana: hay 20
+
+##### Borramos el equipo que tiene el id 1
+
+##### Si lo volvemos a contar, nos da 19
+
+
+#### Si volvemos a borrar el que tiene el id 1, no da error, solo que no actualiza nada
+
+##### Si volvemos a contar nos va a dar 19
+
+```
+SELECT COUNT(*) FROM liga_italiana;
+DELETE FROM liga_italiana WHERE id = 1;
+
+/* No da error, simplemente no actualiza nada */
+DELETE FROM liga_italiana WHERE id = 1;
+SELECT COUNT(*) FROM liga_italiana;
+
+
+SELECT COUNT(*) FROM liga_italiana;
+DELETE FROM liga_italiana WHERE nombre LIKE '%FC' OR
+posicion > 10;
+SELECT COUNT(*) FROM liga_italiana;
+
+/* Esto difiere de TRUNCATE porque TRUNCATE también resetearía el AUTOINCREMENT a 0 */
+DELETE FROM liga_italiana;
+SELECT COUNT(*) FROM liga_italiana;
+
+/* El id es 21 en vez de 1 */
+INSERT INTO liga_italiana (posición, nombre, jugados, ganados_total, empatados_total)
+SELECT * FROM liga_italiana
+
+/* Simular el TRUNCATE para que el ID sea 1 */
+DELETE FROM liga_italiana;
+DELETE FROM sqlite_sequence WHERE NAME='liga_italiana';
+SELECT COUNT(*) FROM liga_italiana;
+INSERT INTO liga_italiana (posicion, nombre, jugados, ganados_total, empatados_total)
+SELECT * FROM liga_italiana;
+```
+
+#### Ej: Borrar todos los equipos de la liga italiana donde el nombre termine con fc o la posición sea mayor a 10
+
+##### Si hacemos esto borramos una gran cantidad de registros
+
+```
+DELETE FROM liga_italiana WHERE nombre LIKE '%FC' OR
+posicion > 10;
+```
+
+
+#### En sql lite no existe TRUNCATE (borra todos los registros de una tabla y les vuelve a setear el id al primer numero que es 1)
+
+##### DELETE FROM liga_italiana borramos todos los registros de una
+
+```
+/* Esto difiere de TRUNCATE porque TRUNCATE también resetearía el AUTOINCREMENT a 0 */
+DELETE FROM liga_italiana;
+```
+
+##### Nos va a devolver 0 si la volvemos a seleccionar/mostrar/pedir
+
+#### Pero cuando volvemos a insertar los registros
+
+##### El id es 21, porque el autoincremente no se reseteo
+
+```
+INSERT INTO liga_italiana (posición, nombre, jugados, ganados_total, empatados_total)
+```
+
+### Simular/resetear id
+
+##### Primero borramos la liga italiana
+
+##### sqlite tiene una tabla propia que se llama sqlite_sequence
+
+##### Donde podemos borrar el registro que mantiene el incremento de la tabla
+
+##### Insertamos un nuevo registro y vamos a ver que su id vuelve a 1 y no a 21
+
+```
+/* Simular el TRUNCATE para que el ID sea 1 */
+DELETE FROM liga_italiana;
+DELETE FROM sqlite_sequence WHERE NAME='liga_italiana';
+SELECT COUNT(*) FROM liga_italiana;
+INSERT INTO liga_italiana (posicion, nombre, jugados, ganados_total, empatados_total)
+SELECT * FROM liga_italiana;
+```
+
+##### Vista de la tabla
+
+```
+id 		posicion 		nombre
+1		1				SS Lazio
+```
+
+
+## Insertar registros: al terminar de crear las tablas (cada una con sus columnas)
+
+#### Vamos a insertar registros seleccionando una tabla 
+
+##### Archivo setup.sql
+
+
+#### Sintaxis de INSERT
+
+##### INSERT INTO tabla-x y entre parentesis las columnas referenciadas
+
+##### Sacando id, created_at y upadated_at que se autocompletan/tiene valores por default dado una buena practica
+
+##### Seguido usamos la palabra VALUES y en su parentesis los valores que le correspondan a cada columna
+
+
+```
+/* Insertar registros */
+
+INSERT INTO liga_italiana (posicion, nombre, jugados, ganados_total, empatados_total) 
+VALUES (1, SS Lazio, 27, 19,6,2,60)
+INSERT INTO liga_italiana (posicion, nombre, jugados, ganados_total, empatados_total) 
+VALUES (2, ... )
+INSERT INTO liga_italiana (posicion, nombre, jugados, ganados_total, empatados_total) 
+VALUES (3, ... )
+INSERT INTO liga_italiana (posicion, nombre, jugados, ganados_total, empatados_total) 
+VALUES (4, ... )
+INSERT INTO liga_italiana (posicion, nombre, jugados, ganados_total, empatados_total) VALUES (5, ... )
+
+/* ... */
+
+
+/* Insertar varios registros */
+INSERT INTO liga_italiana
+(
+	posicion,
+	nombre,
+	ganados_total,
+	empatados_total,
+)
+VALUES
+(20, 'Brescia',27,4,4,19)
+(19, 'SPAL', ...)
+(...)
+```
+
+
+### Insertar varios registros: en tre los parentesis ponemos todas las columnas
+
+##### Ponemos las referencias, distintos set de valores de lo que queremos insertar 
+
+
+## Eliminar tabla (DROP TABLE)
+
+#### En el archivo setup tenemos:
+
+```
+DROP TABLE IF EXISTS liga_italina
+CREATE TABLE IF NOT EXIST liga_italiana (
+	id ...
+	posicion
+	nombre
+	jugados
+	...
+)
+```
+
+##### DROP TABLE IF EXISTS liga_italina evita que si intentamos eliminar una tabla que no existe nos da un error (siempre va a funcionar: la borra porque existe o no la borra porque no existe)
+
+##### Así evitamos el error en el query
+
+##### Lo mismo con CREATE TABLE IF NOT EXISTS (la crea si no existe y si existe no la crea)
+
+
+## Alterar tabla (ALTER TABLE)
+
+### Archivo alter.sql
+
+##### Renombramos la tabla, si queremos consultar por el nombre anterior nos va a dar un error en el query
+
+##### Podemos volver a cambiarle el nombre por el anterior y consultar por ella
+
+##### Cuando se cambia el nombre la tabla no existe más
+
+```
+/* Renombrar tabla */
+ALTER TABLE liga_italiana RENAME TO 'liga_italiana_2'
+SELECT * FROM liga_italiana_2;
+SELECT * FROM liga_italiana;
+ALTER TABLE liga_italiana_2 RENAME TO 'liga_italiana'
+SELECT * FROM liga_italina;
+SElECT * FROM liga_italiana_2;
+
+/* Agregar columna */
+ALTER TABLE liga_italiana ADD COLUMN created_at_2 DATE;
+SELECT * FROM liga_italiana;
+
+/* Renombrar columna */
+ALTER TABLE liga_italiana RENAME COLUMN created_at_2 TO created_at_3;
+SELECT * FROM liga_italiana;
+
+/* Para eliminar una columna en mysql hariamos 
+ALTER TABLE liga_italiana DROP created_at_2;
+
+sqlite no permite hacer esto, crear una tabla
+la alternativa es mover los datos a la nueva tabla 
+borrar la tabla actual, renombrar la tabla nueva a liga_italiana
+*/
+```
+
+### !!! Agregar Columna a una tabla ya creada
+
+##### Podemos hacer un alter table para crear una columna
+
+```
+ALTER TABLE liga_italiana ADD COLUMN created_at_2 DATE;
+
+```
+
+##### Agregamos una columna a la liga italiana, llamada created_at_2 de tipo fecha
+
+
+### Renombrar columna: mediante la palabra TO
+
+```
+ALTER TABLE liga_italiana RENAME COLUMN created_at_2 TO created_at_3;
+
+```
+
+
+## Usos de sqlite: para aprender y profesionalmente para usarlo en pruebas de integracion
+
+
+## Transacciones
+
+### Archivo transaction.sql
+
+```
+/* Todas las queries se ejecutan satisfactoriamente o no se ejecuta ninguna (conocido) */
+BEGIN TRANSACTION;
+	INSERT INTO liga_italiana (posicion, nombre, jugados, ganados_total)
+	INSERT INTO liga_italiana (posicion, nombre, jugados, ganados_total)
+/* El comite hace que la transacción finalice, si no lo ejecutamos todo lo que hagamos se pierde*/
+COMMIT;
+
+/*
+El primer query está bien porque el ID 99 no existe.
+El segundo (id 1) da error porque ya existe
+El problema es que la primer transacción existe en la tabla y el segundo no
+*/
+INSERT INTO liga_italiana (posicion, nombre, jugados, ganados_total)
+INSERT INTO liga_italiana (posicion, nombre, jugados, ganados_total)
+SELECT * FROM liga_italiana
+```
+
+##### En el primer ejemplo insertamos nuevos equipos
+
+##### El primer ejemplo insertamos valores con id 99
+
+##### En el segundo query tenemos un problema dado que le intentamos poner el id 1 que ya existe, falla el query
+
+##### La Primary Key no puede esta duplicada
+
+
+### Sintaxis transacción: cambia segun los motores
+
+##### INSERT OR ROLLBACK instruye al motor de busqueda que haga rollback de la transacción 
+
+```
+BEGIN TRANSACTION;
+/*
+	esta instruccion funciona porque 100 es un ID que no existe
+*/
+	INSERT OR ROLLBACK INTO liga_italiana (posicion, nombre, jugados, ganados_total)
+	/*
+		esta instruccion falla porque el ID 1 ya existe
+		entonces, hace un rollback de toda
+	*/
+	INSERT OR ROLLBACK INTO liga_italiana (posicion, nombre, jugados, ganados_total)
+COMMIT;
+
+SELECT * FROM liga_italiana
+```
+
+##### En SQLite empezamos con BEGIN TRANSACTION
+
+##### Despues ponemos la accion sql que queremos hacer como INSERT
+
+##### O ROLLBACK (intentar hacer la accion anterior)
+
+##### Si no puede hacer la accion, hará un rollback y terminará la transaccion
+
+##### Queremos que pasen dos operaciones al mismo tiempo o ninguna, como acreditar y debitar
+
+
+##### En el segundo query cuando falla, la db nos queda en un estado inconsistente
+
+##### Dado que no hicimos una transaccion con BEGIN y COMMIT etc
+
+##### Solo hicimos dos insert
+
+```
+/*
+El primer query está bien porque el ID 99 no existe.
+El segundo (id 1) da error porque ya existe
+El problema es que la primer transacción existe en la tabla y el segundo no
+*/
+INSERT INTO liga_italiana (posicion, nombre, jugados, ganados_total)
+INSERT INTO liga_italiana (posicion, nombre, jugados, ganados_total)
+SELECT * FROM liga_italiana
+``` 
+
+##### El primer query usa BEGIN y COMMIT con dos operaciones simultaneas con exito
+
+##### Las dos se tienen que ejecutar satisfactoriamente
+
+
+##### El tercer query con BEGIN y COMMIT tambien fallará
+
+```
+BEGIN TRANSACTION;
+/*
+	esta instruccion funciona porque 100 es un ID que no existe
+*/
+	INSERT OR ROLLBACK INTO liga_italiana (posicion, nombre, jugados, ganados_total)
+	/*
+		esta instruccion falla porque el ID 1 ya existe
+		entonces, hace un rollback de toda
+	*/
+	INSERT OR ROLLBACK INTO liga_italiana (posicion, nombre, jugados, ganados_total)
+COMMIT;
+
+SELECT * FROM liga_italiana
+```
+
+##### La primera instruccion va a funcionar pero la segunda no
+
+##### Cuando hacemos SELECT * FROM liga_italiana
+
+##### No nos crea la que tenia id 100
+
+##### Dado que la primera instruccion dentro de BEGIN es valida
+
+##### La segundo instruccion no es valida
+
+##### Hasta que no ejecutó el rollback no falló
+
+
+### Cerrar la transacción con COMMIT o ROLLBACK
+
+##### sqlite cuando no llega a correr el comit (falla query)
+
+##### esta esperando a que pase algo, entonces, crea un archivo llamado sample.db-journal 
+
+##### sample.db-journal se va a quedar hasta que cerremos/ejecutemos la transacción con COMMIT o ROLLBACK
+
+##### Si a la transacción anterior la cerramos con un rollback
+
+```
+BEGIN TRANSACTION;
+/*
+	esta instruccion funciona porque 100 es un ID que no existe
+*/
+	INSERT OR ROLLBACK INTO liga_italiana (posicion, nombre, jugados, ganados_total)
+	/*
+		esta instruccion falla porque el ID 1 ya existe
+		entonces, hace un rollback de toda
+	*/
+	INSERT OR ROLLBACK INTO liga_italiana (posicion, nombre, jugados, ganados_total)
+ROLLBACK;
+```
+
+##### El query se transforma en valido y el archivo journal desaparece
+
+##### La db quedará como antes, sin el id 100
+
+
+## Indices
+
+### Conceptos
+
+#### Claves foraneas
+
+##### Ej: con PRAGMA foreing_keys = ON y OFF (solo para sqlite)
+
+
+#### Indices
+
+##### Los indices hacen que nuestras búsquedas sean más eficientes y tambien puedan servir para poner restricciones
+
+##### Ej: UNIQUE
+
+##### Al hacer más rapido leer, igualmente no se pone en todas las columnas
+
+##### Incrementa el tiempo que tarda INSERT y DELETE
+
+##### Por eso es necesario implementar cache cuando queremos escalar nuestra app
+
+
+#### Estructuras de datos arboles-b
+
+```
+		10
+	9		11
+  8 7 6   12 13 14
+```
+
+
+#### Limpiar datos para manejar SQL
+
+
+## Interacción de DB y JS
+
+### Librería better-sqlite3
+
+### Ejemplos de concurrencia con db vs filesystem puro
+
+
+## Usar SQlite en vez de JSON
+
+### test unitarios con jest
+
+#### Testeamos la lógica de cada componente funcione bien
+
+#### Testear la DAL (Data Access Layer) es complejo
+
+##### Una solución es usar una in-memory DB que permite correr los queries sin tener que mockear la implementación de repositorio en un unit test en si, dado que ahi se pierde el sentido del test
+
+##### En este sentido pasa a ser un integration test
+
+
+## Claves foraneas
+
+### Archivo setup.sql
+
+```
+PRAGMA foreingn_keys = OFF;
+DROP TABLE IF EXISTS liga_italiana;
+CREATE TABLE IF NOT EXISTS liga_italiana(
+	id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+	posicion INTEGER NOT NULL,
+	nombre TEXT NOT NULL, 
+	...
+)
+```
+
+##### En setup tenemos la tabla partidos con el equipo fuera y casa 
+
+```
+fk_equipo_casa INTEGER NOT NULL /*fk es un convencion*/
+fk_equipo_fuera INTEGER NOT NULL
+```
+
+##### Ahí no guardamos el nombre del equipo
+
+### !!! Guardamos el id del equipo lo que se conoce como una clave foranea
+
+##### La clave fk_equipo_casa y fuera estan apuntando a
+
+##### en setup.sql:
+
+```
+id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL
+```
+
+### !!! El id le da permanencia, identidad a un registro de una tabla
+
+#### Para hacerlo explicito se escribe en setup partidos
+
+```
+fk_equipo_casa INTEGER NOT NULL /*fk es un convencion*/
+fk_equipo_fuera INTEGER NOT NULL
+...
+FOREIGN KEY(fk_equipo_casa) REFERENCES liga_italiana(id)
+FOREIGN KEY(fk_equipo_fuera) REFERENCES liga_italiana(id)
+
+```
+
+##### Lo escribimos al final de la lista de columnas 
+
+##### Le pasamos/especificamos cual fk
+
+##### la nomenclatura fk tambien podría ser id
+
+##### Despues usamos REFERENCE a la tabla que le pasamos la columna id dentro de la tabla liga_italiana
+
+
+#### En setup la tabla jugadores tiene fk
+
+```
+CREATE TABLE IF NOT EXISTS jugadores (
+	id INTEGER PRIMARY NULL,
+	fk_equipo INTEGER NULL,
+	...
+	FOREIGN KEY(fk_equipo) REFERENCES liga_italiana(id)
+);
+```
+
+##### Cuando usamos NULL y no usamos NOT NULL
+
+##### Nos podemos permitir crear jugadores que todavía no tiene asignado un equipo, son jugadores libres
+
+
+### Fusion de Foreign Key en SQLite
+
+#### Para habilitar la fusion de las fk
+
+en setup
+
+```
+PRAGMA foreign_keys = OFF;
+```
+
+##### Tenemos que darle a PRAGMA OFF u ON 
+
+##### En mysql ya tiene el comportamiento adecuado
+
+##### En sqlite tenemos que ser explicitos
+
+
+### !!! en setup al comienzo decimos que esten apagadoas
+
+#### Creamos todas las tablas que necesitamos 
+
+#### Antes de insertar los registros ponemos PRAGMA en ON
+
+```
+PRAGMA foreign_keys = ON;
+
+INSERT INTO liga_italiana
+```
+
+
+## Uso de Foreign Key
+
+### Archivo foreign_key.sql
+
+#### Primero para que las fk se cumplan, lo habilitamos
+
+##### Despues si intentamos insertar jugador
+
+##### Diciendo que fk es 100000, nos va a dar un error de query
+
+##### Dado que intentamos hacer referencia a un id que no existe en la liga_italiana
+
+#### !!! Es lo que explicita en setup: FOREIGN KEY(fk_equipo) REFERENCES liga_italiana(id)
+
+##### Si le pasamos un valor a fk_equipo debe existir en liga_italiana
+
+##### O debe ser nulo
+
+##### Si le cambiamos el valor a 2, si se puede crear
+
+##### Dado que el equipo 2 si existe
+
+```
+/* En SQLite esto es necesario para pedirle al motor que 
+se asegure que las foreign key se cumplan */
+PRAGMA foreign_keys = ON;
+
+/* El id 100000 no existe por lo que da error */
+INSERT INTO jugadores
+(fk_equipo, nombre)
+VALUES (100000, 'cacho');
+
+/* Da error porque jugadores y partidos tiene registros  
+que dependen de esta tabla */
+DELETE FROM liga_italiana;
+
+DELETE FROM jugadores;
+DELETE FROM partidos;
+
+/* Ahora si puede borrar los registros de la liga italiana 
+porque nadie depende de estos registros
+DELETE FROM liga_italiana
+*/
+```
+
+##### Si intentamos borrar en tabla de liga_italiana
+
+##### Nos va a dar error porque hay jugadores y partidos que dependen de datos que existen en la liga italiana
+
+##### Por default nos va a dar error pero si queremos cambiar este comportamiento
+
+##### Cuando hacemos el setup/crear tablas
+
+##### Podemos especificar que cuando se haga un delete, especificamos que se borre cosas en cascada (peligroso)
+
+##### Si borramos liga_italiana va a ir todas las tablas que tengan fk asosiados con liga_italiana y van a borrar todos los registros que tengan referencia a la fk que se borro de la liga italiana
+
+##### Si las tablas jugadores y partidos tienen la misma configuracion 
+
+##### Que es cuando se borra liga_italiana en cascada, termina borrando todas las demas tablas
+
+##### Si podemos borrar los jugadores y partidos porque no hay fk que esten asociados a esa tabla
+
+```
+DELETE FROM jugadores;
+DELETE FROM partidos;
+```
+
+##### Despues si podemos borrar la tabla de la liga italiana
+
+```
+/* Ahora si puede borrar los registros de la liga italiana 
+porque nadie depende de estos registros
+DELETE FROM liga_italiana
+*/
+```
+
+##### Dado que ya no hay más registros que esten apuntando a esta tabla
+
+
+## index.sql
+
+#### Podemos querer crear un indice por dos cosas: leer columnas sea más rapido (se crean sobre columnas) y para marcar valores unicos
+
+```
+/* NOTA no podemos crear el indice si ya hay registros duplicados */
+CREATE UNIQUE INDEX IF NOT EXISTS idx_liga_italiana_nombre ON liga_italiana(nombre);
+INSERT INTO liga_italiana (posicion, nombre, jugados, ganados_total)
+```
+
+##### Acá estamos creando un indice con INDEX 
+
+##### Lo llamamos idx_liga_italiana_nombre: es un sintaxis que empieza con idx_tablaY_columnaZ (nombre en este caso)
+
+##### Al crear un indice logramos que cuando seleccionemos la tabla y la columnas
+
+```
+SELECT * FROM liga_italiana
+WHERE nombre = 'algo';
+```
+
+##### El WHERE se ejecuta más rapido porque está indexado
+
+##### Es más rapido encontrar campos por esta columna
+
+#### !!! Si no esta indexado, recorre uno por uno todos los registros, pierde tiempo en recorrer toda la table (si tenemos millones de registros) y no tenemos la columna indexada 
+
+#### Tambien usamos UNIQUE INDEX para querer valores de una columna sean unicos
+
+##### Creamos un unico indice, sintaxis: idx_idx_tablaY_columnaZ ON tablaY(columnaZ)
+
+```
+CREATE UNIQUE INDEX IF NOT EXISTS idx_liga_italiana_nombre ON liga_italiana(nombre);
+INSERT INTO liga_italiana (posicion, nombre, jugados, ganados_total)
+VALUES(1, 'SS Lazio',27,19,6,2)
+```
+
+#### Si intentamos insertar un registro duplicado, va a fallar
+
+```
+SQLITE_CONSTRAINT: UNIQUE constraint failed: liga_italiana_nombre
+```
+
+#### !!! Tanto para FK como para INDEX, los fk los podemos crear sobre varias columnas, compuestos (dos columnas o más que formen un registro unico), por el id nos da un registro unico
+
+
+### !!! Pregunta entrevista SQL/DB: si con indices es más rapido de leer, por qué no ponemos indices en todas las columnas?
+
+#### Al hacer eso hace que sea más costoso insertar y borrar registros 
+
+##### Si tenemos una tabla donde insertamos poco y leemos mucho, nos conviente que las columnas más buscadas esten indexadas
+
+##### Si tenemos una tabla y le ponemos un indice a una columna que nunca consultamos, estamos haciendo la operación de insertar y borrar más costosa y estamos ocupando más espacio en disco
+
+#### !!! Las columnas candidatas a ser indexadas son aquellas que escribimos en WHERE x = y; este nombre de columna es un buen candidato a ser un indice
+
+
+#### Internamente el tiempo de inserción tiene que ver como estan creados los indices
+
+##### Estan creadas por una estructura de datos arbolos-b
+
+##### Ej: empiezan con un numero 10, columna que guarda valores numericos
+
+```
+		10	
+```
+
+##### Elije un numero calculado (no arbitrario) y siempre garantiza que a la izquierda de este numero los valores van a ser menores y a la derecha va a ser menores
+
+```
+		10
+	9		11
+  8 7 6   12 13 14
+```
+
+##### Lo mismo para sus nodos/hijos, etc
+
+#### !!! Esto hace que leer se muy rapido: si necesitamos encontrar el numero 8, lee el primer registro que es 10, compará y como es menor, va a la izquierda. Al hacer este movimiento, descarta el 50% de la tabla
+
+##### El arbol b descarta nodos muy rapidamente lo que lo hace rapido para leer
+
+#### !!! Ahora cuando insertamos nuevos registros como un numero como 35, significa lo se va a ubicar a la derecha, entonces, tenemos que partir los subnodos, tiene que volver a escribir la parte derecha del nodo para rebalancear el arbol b, lo mismo para borrar un numero 
+
+##### !!! Por eso solo ponemos indices a las columnas que consultamos frecuentemente
+
+
+## Limpiar datos para convertirlos en SQL
+
+### Copiamos una tabla como
+
+```
+				Total		Home 		Away
+			 pld w d l fok	...			...
+1. SS Lazio  27 19 6 2 ... 
+2. Juventus  26 29 3 3 ... 
+...
+```
+
+#### Esto para que sea SQL le falta todos las expresiones
+
+### Lo llevamos a un exel
+
+### 1er split: seleccionamos la primera columna de todos los datos recien copiados; en la opcion 'Datos' -> 'dividir texto en columnas'
+
+### Despues tenemos datos que los malinterpreta
+
+### Este problema será el segundo split: creamos una columna desde el primer dato/columna malinterpretada, la insertamos a la derecha y despues y la izquierda dividimos texto en columna
+
+### Así formatemos la tabla en texto como las necesitamos
+
+### Al final le agregamos nombre de columna a esos datos formateados
+
+### Para finalmente tener el sql, en otra hoja copiamos y pegamos la tabla formateada con todos los datos y las columnas
+
+### Agregamos dos columnas principales con las instrucciones de sql que necesitabamos
+
+### Mediante una formula
+
+```
+INSERT INTO liga_italiana(posicion, nombre, jugadores)
+VALUES()
+```
+
+### Cuando abrimos parentesis tenemos que concatenar todos los valores de la tabla formateada
+
+### Replicamos la formula para las filas siguientes
+
+### Al final copiamos tal y cual hacia el archivo sql en setup
+
+
+## Interactuar con la DB mediante JS
+
+#### Utilizamos una librería better-sqlite3
+
+### Uso de better-sqlite3
+
+```
+const db = require('better-sqlite3')('foobar.db', options);
+
+const row = db.prepare('SELECT * FROM users WHERE id = ?').get(userId);
+console.log(row.firstName, row.lastName, row.email);
+```
+
+#### require('better-sqlite3') nos devuelve una función
+
+#### Luego con ('foobar.db', options); la ejecutamos
+
+#### Abre el archivo 'foobar.db'
+
+#### Le pasamos options
+
+#### Y si queremos consultar algo en la db (dado que os dio la db) para acceder a sus metodos
+
+#### Con const row = db.prepare pedimos 'SELECT * FROM users WHERE id = ?'
+
+#### Esto nos da un pseudo instruccion de sql .get(userId)
+
+#### El param userId va a pasar al signo de id = ?
+
+#### Lo completamos con el param adecuado 
+
+#### Es una practica para sanitizar la información 
+
+#### El row pasa a ser un objeto de json que tiene la info que necesitamos para poder acceder a ella
+
+#### Así lo vemos reflejado cuando hacemos row.firstName, etc
+
+
+### Al final consultamos la documentación para ver como se hace las cosas que necesitamos
+
+#### Ej: Si queremos ejecutar un COUNT
+
+##### Vamos a class Database -> Database.aggregate()
+
+```
+.aggregate(name, options) -> this
+```
+
+```
+db.aggregate('addAll', {
+	start: 0,
+	stops: (total, newValue) => total * newValue
+});
+
+db.prepare('Select addAll(dollars) FrOM expensees').push().get();
+```
+
+
+#### Si queremos usar el get debemos usar prepare
+
+```
+.prepare(string) -> Statement
+```
+
+```
+const stwl = db.prepare('SELECT name, age FROM cats');
+```
+
+#### Para hacer un insert, update tambien
+
+#### prepare nos da un pseudo statement de sql que completamos con params
+
+
+### sqlite y js
+
+##### En concurrency
+
+```
+concurrency
+	filesystem
+	sqlite
+		concurrency.db
+		concurrency.db.js
+```
+
+
+#### Archivo concurrency.db.js
+
+##### Requerimos la libreria que devuelve una funcion como vimos antes, pero no la ejecuta inmediatamente
+
+##### Le ponemos el nombre sqlite, ejecutamos esta funcion en db
+
+##### El param que necesita es el archivo que queremos usar
+
+##### path es una variable de entorno que tiene una dirección 
+
+##### options puede ser: options.readonly; fileMustExist; timeout 
+
+##### y .verbose que es la que usamos para que nos de info
+
+```
+const path = require("path");
+const sqlite = require("better-sqlite3");
+
+const db = sqlite(path.resolve(__dirname, "./concurrency.db"), {
+	verbose: () => {
+		return console.log;
+	},
+});
+
+db.exec("CREATE TABLE IF NOT EXISTS test(text VARCHAR(225))");
+console.log(
+	`proceso ${process.pid} empezó con`,
+	db.prepare("SELECT COUNT(+) FROM test").get()
+);
+
+for (let i = 0; i < 1000; i++) {
+	db.exect(`INSERT INTO \`test\` (\`text\`) VALUES ('test${i}');`);
+}
+console.log(
+	`proceso ${process.pid} terminó con`,
+	db.prepare("SELECT COUNT(*) FROM test").get()
+);
+```
+
+
+#### !!! db.exect no sanitiza nada, ejecuta exactamente lo que le pedimos
+
+##### Ejecutamos al cual el string SQL: "CREATE TABLE IF NOT EXISTS test(text VARCHAR(225))"
+
+##### En este caso creamos la db/tabla test con una unica columna text que VARCHAR(225) es solo para mysql, no existe en sqlite
+
+##### Representan caracteres variables que van de 0 a 255
+
+##### Hasta 255 caracteres podemos guardar en esta tabla
+
+##### en sqlite se transforma en TEXT, lo hace automaticamente; no es que este mal
+
+
+#### Mostramos y obtenemos la tabla test
+
+#### Despues de 1 a 1000 ejecutamos db.exect INSERT INTO tabla test
+
+#### escapamos el nombre de la tabla \`test\`
+
+
+## SQL en código
+
+### Arquitectura: entidadX -> entidadxControlador -> entidadXServicio -> entidadXRepositorio -> DB
+
+#### Tenemos un controlador, un servicio y un repo que es el que sabe persistir en algún medio
+
+##### Antes teniamos el repo de json, ahora tenemos el repo de sql
+
+
+### Del codigo anterior ambiamos o eliminamos uuid por sqlite
+
+##### rsdi sigue existiendo
+
+
+#### en a configuración del Dependency Injection di.js
+
+##### uuid que ya no lo necesitamos y el filesystem que era para guardar en el archivo de json, tampoco lo necesitabamos
+
+##### La función que antes configuraba DB JSON y nos devolvía el path de la db json
+
+##### Se reemplazo por una función que nos da una db de sqlite
+
+```
+const sqliteDatabase =  require('better-sqlite');
+
+function  configureMainDatabaseAdapter() {
+	return new sqliteDatabase(process.env.DB_PATH, {
+		verbose: console.log, 
+	});
+}
+```
+
+##### Podemos usar como una clase a db con better-sqlite, como lo dice en su documentación
+
+##### Así podemos devolver un objeto 
+
+##### Abrimos el archivo/la db que viene del archivo de las variables de entorno
+
+##### La funcion verbose será console.log
+
+
+#### En definitions agregamos un MainDatabaseAdapter
+
+#### En ClubReposotory la dependencia que necesita es MainDatabaseAdapter
+
+
+### Migraciones DB: manejar cambios en la DB 
+
+#### Archivo src/config/setup.sql
+
+```
+CREATE TABLE...()
+...
+
+VALUES(...)
+```
+
+#### Por ahora lo copiamos y pegamos así para que la db este creada
+
+##### Corremos este script para asegurarnos que la db este creada
+
+##### Todos los valores/props de json ahora estan en la tabla
+
+##### La sintaxis para los nombre en la db es snake_case
+
+
+### Necesidad de un Mapper
+
+#### Dado que ahora lo que guardamos en la db son statements de sql
+
+#### Lo que recibimos son objetos de json
+
+#### Tiene nombres inadecuados para nuestra entidad
+
+##### Nuestra entidad espera camelCase
+
+
+#### En src/module/club/mapper/clubMapper.js
+
+```
+function fromDbEntity ({
+	id,
+	name
+	shortName,
+	...
+}) {
+	
+	return new Club({
+		id, 
+		name,
+		shortName
+	})
+}
+``` 
+
+##### fromDbEntity toma lo que nos pasaría la db y lo convierte a una entidad
+
+##### Toma un objeto de json con las propieades que pusimos en la función
+
+##### y nos devuelve un nuevo objeto de tipo club, la entidad
+
+#### Nuestra app, desde el repo para arriba, siempre tiene que interactuar con una entidad nuestra, no con un objeto que viene de la db
+
+##### Una entidad de tipo Club
+
+
+### En src/module/club/module.js
+
+#### Cambiamos el json del repo por sqlite
+
+```
+const clubRepository = require('./repository/sqlite/clubRepository');
+```
+
+##### Lo unico que hacemos es cambiar la clase que estamos exponiendo
+
+
+### Cambio fundamental: clubRepository.js (por que lo que se comunica con la db)
+
+#### En src/module/club/repository/sqlite/clubRepository.js
+
+##### Tenemos que crear un repo nuevo, lo anterior fueron cambios de config
+
+
+### No hubo cambios en el controlador, las vistas y el servicio
+
+#### La separación de responsabilidades, como el código está 100% testeado
+
+##### Mientras llamemos al repo con la interfaz adecuada nos devuelva el tipo de datos adecuado y si el repo está bien implementado todo lo demás va a funcionar
+
+##### SOLID nos ayuda a que el código sea más mantenible
+
+##### Si incurrimos en un error, lo tenemos en el repo y no en el controlador, las vistas o servicio
+
+#### !!! Nos da bajo acoplamiento y alta cohesion, nos enfocamos en el repo sin tener que saber como funciona el resto de la app
+
+##### Si nuestro repo cumple con el contrato del repo Abstracto que tiene los métodos save, getById, getAll y delete y devuelve los datos que tiene que devolver, todo va a funcionar bien
+
+
+### Cambio/eliminacion del archivo json repo
+
+##### En save(club) teniamos que cargar todos los datos
+
+##### Luego decidia si hacer un update o un club nuevo
+
+##### Agregar esos datos, agregar/modificar el club en los datos existente
+
+##### Y al final persistir todos los datos nuevos
+
+
+### repo sql
+
+#### src/module/club/repository/json/clubRepository.js
+
+##### Ahora vamos a manipular sql desde js
+
+```
+const AbstractClubRepository = require('../abstractClubRepository');
+const clubNotFound = require('../error/clubNotFoundError');
+const clubIdNotDefinedError = require('../error/clubIdNotDefinedError');
+const {  fromDbEntity } = require('../../mapper/clubMapper');
+
+module.exports = class ClubRepository extends AbstractClubRepository {
+	constructor(databaseAdapter) {
+		super();
+		this.databaseAdapter = databaseAdapter;
+	}
+	
+	save(club) {
+		let id;
+		if (club.id) {
+			id = club.id;
+			const statement = this.databaseAdapter.prepare(`
+				UPDATE clubes SET
+					${club.crestUrl ? `crest_url = ?` : ''}
+					name = ?,
+					short_name = ?,
+					tla = ?,
+					address = ?,
+					phone = ?,
+					website = ?,
+					email = ?,
+					founded = ?,
+					club_colors = ?,
+					venue = ?
+				WHERE id = ?				
+			`);
+			
+			const params = [
+				club.name,
+				club.shorName,
+				club.tla,
+				club.address,
+				club.phone,
+				club.website,
+				club.email,
+				club.founded,
+				club.colors,
+				club.venue
+				club.id,
+			];
+			
+			if (club.cresUrl) {
+				params.unshift(club.crestUrl);
+			}
+			
+			statement.run(params);
+		} else {
+			const stetament = this.databaseAdapter.prepare (`
+				INSERT INTO clubes (
+					name, 
+					short_name,
+					tla,
+					crest_url,
+					address,
+					phone,
+					website,
+					email,
+					founded,
+					club_colors
+				)
+			`)
+		}
+	}
+}
+
+```
+
+##### En nuestra nueva implementación, no necesitamos leer todo 
+
+##### Una de las ventajas de las DB
+
+##### Ej, podemos hacer un update o un insert como se ve en la implementación de save
+
+##### Va a hacer lo que queremos y no necesitamos todos los datos en memoria
+
+##### Preguntamos si existe un club.id, el id será el club.id
+
+##### Despues definimos la instruccion sql
+
+##### WHERE id es una clave primaria que nos garantiza actualizar una unica cosa
+
+##### Con un condicional evitamos pisar el valor de la cresta existente
+
+##### Los params se tiene que pasar en orden
+
+##### Pero como tenemos un valor por condicional (crest)
+
+##### lo resolvermos con un if y cambiando posiones en el array
+
+```
+if (club.crestUrl) {
+	params.unshift(club.crestUrl);
+}
+
+statement.run(params);
+```
+
+##### Lo insertamos al principio de todo
+
+##### statement.run(params), cuando no nos interesan los resultados que nos den
+
+##### si nos interesa, sería statement.get(params)
+
+##### Corre el update
+
+
+#### Cuando no es un update, el flujo pasa al else
+
+##### Hacemos algo similar, llamamos a prepare donde hacemos el sql del insert
+
+##### Le pasamos los valores
+
+##### Despues llamamos statement.run y le pasamos los params
+
+##### Es una lista de params que se corresponde con cada uno de los valores 
+
+##### Al correr statement.run si nos da un resultado
+
+##### Lo que nos interesa de este es el lastInsertRowid
+
+##### Al final vamos a devolver this.getById(id) id nuevo
+
+
+#### El metodo getById(id) {} corre un select
+
+
+### Practica SELECT en código de producción: como va a correr de forma automatizada, evitemos poner SELECT *
+
+##### Poner exactamente las columnas que queremos
+
+##### Al hacer mantenimiento como agregar más columnas en la tabla que no son necesarias para lo que hace la app
+
+#### !!! Vamos a estar cargando muchisima info de la que deberíamos
+
+##### De esta manera nos aseguramos de que la vamos a usar
+
+#### Los tipos de datos blobs en otros motores de sql
+
+##### Se usan para guardar info binaria en la db
+
+##### Si ponemos un * y otro empieza a crear muchos blobs
+
+
+## Test Jest: testear sqlite
+
+### sqlite/clubRepository.js
+
+#### !!! No queremos testear al implementación paso a paso
+
+#### !!! Queremos testear que los metodos/funcionalidades hagan lo que tengan que hacer
+
+
+### sqlite/test/clubRepository.js
+
+#### !!! Como sqlite se puede correr en memoria 
+
+##### Como primer param le pasabamos en que archivo queremos que abra
+
+##### Pero si le pasamos :memory: significa que no lo guarda en un archivo, sino lo crea en memoria 
+
+#### !!! Esta tecnica se usa cuando tenemos en produccion un servidor de mysql por ej
+
+##### Si lo tenemos que testear de forma automatizada ya tenemos que tener el servidor de mysql configurado con todos los datos que necesitamos para correr las pruebas unitarias
+
+#### !!! En vez de hacer esto que es tedioso, podemos en vez de conectarnos a la db de mysql; nos conectamos a un db sqlite en memoria
+
+```
+let mockDb;
+
+beforeEach(() => {
+	mockDb = new Sqlite3Database(':memory:');
+	const migration = fs.readFileSync('./src/config/setup.sql', 'utf-8');
+	mockDb.exec(migration);
+});
+```
+
+### Entra en juego los ORM (Object Relational Mappper) que es una capa de abstraccion entre la db que realmente utilizamos
+
+#### No utilizaríamos mas sql, sino el orm que viene con js y el orm va a traducir en statement de sqlite, mysql, etc
+
+##### Cuando estamos testeando elegimos sqlite in memory
+
+##### Para que los test se ejecuten de una manera rapida
+
+
+### Volviendo al test: 
+
+#### Antes de cada prueba, creamos una db en memoria como lo hace mockDb
+
+```
+let mockDb;
+
+beforeEach(() => {
+	mockDb = new Sqlite3Database(':memory:');
+	const migration = fs.readFileSync('./src/config/setup.sql', 'utf-8');
+	mockDb.exec(migration);
+});
+```
+
+##### Cargamos el setup.sql y lo vamos a ejecutar
+
+##### Antes de empezar cada prueba empezamos con una tabla vacía
+
+
+### Prueba: 
+
+#### Guardar club nuevo genera un id
+
+##### Creamos un nuevo repo que es lo que vamos a testear, al que le pasamos la db mockeada
+
+##### Sin IoC no tendríamos manera de testear esto
+
+##### Llamamos al metod save, le pasamos la entidad, sin id
+
+##### Esperamos que el resultado de haber ejecutado el repo club = repository.save
+
+##### Sea el id de ese club, sea igual a 1
+
+#### !!! De una prueba unitaria pasa a ser una prueba de integración
+
+```
+test('Guardar club nuevo genera un id', () => {
+	const repository = new ClubRepository(mockDb);
+	const club = repository.save(
+		new Club({
+			name: 'name',
+			tl: 'tla',
+			shortName: 'shortName',
+			address: 'address',
+			clubColors: 'clubColors',
+			crestUrl: 'cres.url',
+			email: 'e@amil.com',
+			founded: 'founded',
+			phone: 'phone',
+			venue: 'venue',
+			website: 'website',
+		})
+	);
+	
+	expect(club.id).toEqual(1);
+});
+```
+
+### !!! Testing/mock: se testea el resultado, no toda la implementación
+
+
+
+# ORM (Object-relational mapping) y relaciones de entidades
+
+#### Con ORM la idea es oder escribir queries como SELECT * FROM users WHERE email = 'test@test.com' utilizando OOP
+
+##### Ej transformar un query (como el anterior) con una librería generíca
+
+```
+const orm = require ('generic-orm-library');
+const user = orm("users").where({email: 'test@test.com'});
+```
+
+##### Esto nos daría un usuario, en vez de escribir sql escribimos código de js que se traducirá a sql
+
+
+#### Las librerías que nos permiten hacer esto se llaman Object-relational Mappers
+
+##### !!! Al utilizar un ORM (como sequelize) y escribir queries a través de objetos, nos permite que nuestra app pueda usar distintos motores de sql de forma intercambiable
+
+##### Ej: mysql en producción y sqlite en memoria para las pruebas
+
+##### Nos sirve porque no queremos levantar un servidor de mysql cada vez que querramos correr una prueba
+
+##### Solo queremos testear que nuestro código haga lo que tenga que hacer
+
+##### !!! Si usamos mysql en producción y mysql en desarrollo, el problema es que cuando querramos correr las pruebas que interactuan con la db, vamos a tener que instalar un servidor local de mysql configurado
+
+
+#### !!! Otro uso de las orm es que si cambiamos el motor de nuestra db en producción, no vamos a tener que modificar el código
+ 
+##### Lo unico que deberíamos hacer es cambiar el motor de db, hacer la mitración, cambiar los params de conexión
+
+##### Pero todo el código que se construyo de forma generíca utilizando la orm, no vamos a tener que cambiar el código escrito, a lo sumo instalar algunas dependencias
+
+
+### Conceptos ORM
+
+#### Inflexion (inflexción): Los ORM por lo general vienen con librerías que ayudan a convertir singulares a plurales
+
+##### El problema: cuando creamos tablas, las buenas practicas dicen que su nombre debe ser en plural, (tabla usuario -> usuarios)
+
+##### Pero los nombres de los modelos (mvc: entidad) son en singular, Usuario interactua con la tabla usuarios
+
+##### Cada modelo representa un único usuario, cada instancia del modelo usuario representará a un usuario
+
+##### La inflexion nos ayuda a no tener que definir esto manualmente
+
+##### Cuando definimos un modelo, en este podemos ir y decir que utilize inflexión automaticamente
+
+##### Funciona más en verbos ingles
+
+##### Si tuvieramos el modelo person, entendería automaticamente que lo tiene que ir a buscar a la tabla people
+
+##### Hace inflexión para sujetos irregulares
+
+
+#### Migraciones: por lo general nos permiten manejar cambios en la estructura de nuestra db de forma programática (en código)
+
+##### La estructura de la db son las tablas, los fk, alteraciones de columnas: cambios estructurales, no agregar más datos
+
+##### Modificar la estructura base como de una columna en una tabla
+
+##### Los orm no permiten escribir esto en forma de código 
+
+##### Como persistencia/mantenimiento, el orm crea una tabla separada de nuestra db, con su unico proposito es mantener un registro sobre qué migraciones se corrieron
+
+##### 
+
+
+### Sequelize
+
+#### !!! Solo funciona para base de datos relacionales, no para no-sql como mongo-db
+
+##### Hay orms que permiten esa flexibilidad
+
+##### Las RDMS (relational database management system o las db relacionales) y no-sql son para casos de uso distintos y no se deberían utilizar de forma intercambiable
+
+##### sequelize es el motor de orm que utiliza nest.js
+
+
+##### Se debe instalar la librería sequelize junto con la librería perteneciente al motor de datos que se quiera usar
+
+```
+npm install --save sequelize
+npm install --save sqlite3
+```
+
+##### U otras opciones como postgres, mysql, mariadb
+
+##### !!! En el archivo sqlite/clubRepository.js habiamos escribo SQL puro, lo vamos a cambiar 
+
+```
+UPDATE clubes.SET
+	name = ?
+	...
+```
+
+##### Vamos a utilizar un orm en vez de escribir sql puro
+
+##### Esto nos trae problemas si el dia de mañana quisieramos cambiar la db que tiene algunas instrucciones distintas
+
+##### Al utilizar un orm nos despreocupamos por eso, lo abstrae por nosotros
+
+
+### Carpeta raíz intro-db
+
+```
+concurrency
+orm
+	orm_01
+	orm_02
+	orm_03
+sql
+sample.db
+```
+
+En los scripts esto corre el archivo orm/orm_01/index.js
+
+```
+npm run orm:01
+```
+
+##### Requerimos las librerias, es un objeto que tiene las clases que necesitamos
+
+##### Sequelize inicializa todo el proceso 
+
+##### Model es la clase a la que nuestro modelo va a extender, como una clase base/abstracta
+
+##### DataTypes son los distintos tipos de datos que soporta
+
+```
+// instalación doc sequelize
+
+const { Sequelize, Model, DataTypes } = require("sequelize");
+
+// crea la instancia de la conexion a la db
+const sequelize = new Sequelize({
+	dialect: "sqlite",
+	storage: ":memory:",
+	logging: console.log,
+});
+
+class Club extends Model {}
+
+Club.init (
+	{
+		// definiendo una columna con varias opciones
+		id: {
+			type: DataTypes:INTEGER,
+			primaryKey: true, // definimos que esta es la primary key (lo que indentifica a este club)
+			autoIncrement: true, // definimios que queremos que se autoincremente con cada nuevo registro
+		},
+		nombre: {
+			type: DataType.String,
+			// mostrar por qué es importante el intelisense (inferir allowNull tipeando "null")
+			// mostrar referencia a la documentación (cmd = click en allowNull)
+			allowNull: false, // no aceptamos valores nulos
+		},
+		// "shorthand" para columnas sin opciones adicionales
+		fundado: DataTypes.Date,
+	},
+	{
+		sequelize, // la instancia de la conexión a la db
+		modelName: "Club", // el nombre del modelo, mediante inflexión crea/lee la tabla 'club'
+		// sequelize crea created_at, updated_at automaticamente, nosotros los queremos en español
+		createdAt: "creado_en",
+		updatedAt: "modificado_en",
+		talbeName: "clubes", // no queremos utilizar inflexión, podemos definirlo manualmente
+	}
+)
+```
+
+##### Instancia de la conexión a la db: creamos una instancia de lo que importamos y espera un objeto como param
+
+##### Tiene que tener dialecto, storage (solo para sqlite para que funcione en memoria) 
+
+##### Podriamos poner userName o password si estuvieramos conectandonos a un server
+
+##### sqlite es solo un archivo, en este caso pedimos que este en memoria
+
+##### Va a crear una db en memoria, lo va a ejecutar y cuando termine de ejecutarse el script, la db va a dejar de existir 
+
+##### Si lo quisieramos guardar apuntamos a la db
+
+```
+storage: "./sample.db";
+```
+
+##### logging: la que describe las cosas que suceden
+
+
+#### Extender model
+
+##### El modelo es la representación del Modelo es lo que queremos solucionar en la vida real
+
+##### En el ej, queremos representar a un club
+
+##### Club.init: nos permite definir que columnas va a tener el club
+
+##### La columna puede tener varias opciones, se hace con un objeto
+
+##### Cuando no queremos que acepte valores nulos usamos allowNull: false
+
+```
+allowNull: false
+```
+
+##### El ide nos puede ayudar con los params, si escribimos valores; os va a recomendar los metodos que aceptan esos valores
+
+##### Si hacemos control + click en el metodo de la librería, vemos su código fuente/documentación/implementación que se instala en node modules en la carpeta local/raiz del proyecto
+
+##### Va a crear las columnas createdAt y updatedAt así con camelCase, no las crea con snake_case y además por default las crea en ingles
+
+##### Podemos especificar otro nombre y nomenclatura
+
+
+#### Sequelize: Uso de inflexión automatica
+
+```
+modelName: "Club"
+tableName: "clubes"
+```
+
+##### Si dejaramos vacío tableName utilizaría inflexion para entender cual es el nombre de la tabla en base a el nombre del modelo
+
+##### Si no estuviera, pensaría que el nombre de la tabla es 'clubs'
+
+##### Si la inflexión por default no nos ayuda definimos nosotros el table name
+
+##### Al init hay que pasarle sequelize (que es la instancia de la conexión a la db)
+
+##### Por shorthand cuando el nombre y valor es el mismo el id nos va a recomendar en rojo que pongamos uno
+
+```
+sequelize: sequelize -> sequelize
+```
+
+##### Nombre del modelo: por lo general va a ser igual al nombre de la clase
+
+#### Los metodos de sequelize son promise-based (casi todos devuelven una promesa)
+
+##### sequelize usa la librería inflection para realizar inflexiones en los modelos (convertir singulares a plurales)
+
+##### La librería permite inflexiones en ingles, incluso irregulares como person -> people
+
+##### Permiten definir los nombres de las tablas manualmente sin usar inflexion (por ej, para nombres en español)
+
+
+#### Modelos en sequelize: son una representación de una tabla en nuestra db, en teoría de POO también se conoce como DAO (data access object)
+
+##### Si bien en muchos casos la relación es 1:1, es mejor no atar las entidades a tablas de la db, hay veces que sus entidades va a tener que ser guardades en varias tablas, por eso nosotros tenemos entidades separadas en crud-clubes
+
+##### Nos centramos en la forma de usarlos como POO
+
+##### Una instancia del modelo hacer referencia a una fila (un unico registro) de nuestra tabla
+
+##### Los métodos estáticos del modelo hacen referencia a una tabla
+
+
+#### Al definir el modelo estamos difiniendo una tabla
+
+##### La tabla clubes, después definimos una función asincrona
+
+#### En el mismo archivo: orm_01/index.js
+
+#### async es una función arrow ejecutada inmediatamente
+
+##### Dado que todavía no se puede usar lo que se llama un top level await, dado que si o si tiene que estar dentro de una función asincrona
+
+##### Habiamos definido el modelo de club que iba a estar atado a la tabla de clubes
+
+##### Como tabla de datos en memoria empieza completamente vacía
+
+##### Lo primero que vamos a ejecutar es await sequelize.sync();
+
+##### Creará todas las tablas que no existen actualmente en base a los modelos definicios
+
+##### Como solo definimos un solo modelo (Club)
+
+##### Si ubiesemos definidos más y ejecutamos sequelize que es la instancia de conexión a la db
+
+##### Sincronizará todos los modemos definidos para esta instancia por eso lo pasamos anteriormente como param
+
+##### Generará todos los modelos de la instancia
+
+##### !!! Si solo quesieramos sincronizar el club: Club.sync() 
+
+##### Sincronizará solamente la tabla de clubes
+
+```
+(async () => {
+	// sequelize.sync crea todas las tablas que no existen actualmente en base a los modelos definidos
+	// alternative: Club.sync();
+	// también se pueden pasar los params (alter: true) o (force: true)
+	// para alterar si ay diferencia de columnas/datos o recrear la tabla siempre, respectivamente
+	// alter: y force: no deben usarse nunca en producción, la alteración de tablas debe hacerse con el concepto de migración
+	// si se desea recrear tablas en modo desarrollo es recomendable usar Safety Checks, ej. 1
+	// sequelize.sync({ force: ture, match: /_test }) solo corre si el nombre de la base de datos termina en _test
+	
+	await sequelize.sync();
+	
+	// construye un objeto de tipo Club (no lo guarda en la db aún)
+	// build es de los pocos métodos de SQLite que no es asíncrono -- porque no se comunica con la db
+	const independiente = Club.build({
+		nombre: "Independiente",
+		fundado: new Date(1905, 1, 1),
+	});
+
+	// ahora si lo guarda en la db
+	await independiente.save();
+	console.log(independiente.toJSON());
+	
+	// Construye y graba el método de una sola vez
+	const racing = await Club.create({
+		nombre: "Racing Club",
+		fundado: new Date(1903, 3, 25),
+	});
+	console.log(racing.toJSON()),
+	
+	// Actualiza un registro 
+	independiente.nombre = "Club Atlético Independiente";
+	await independiente.save(); // atención: el método no es 'update' (se usa para otro caso)
+	console.log(independiente.toJSON());
+	
+	// Elimina un registro de la base de datos
+	racing.destroy();
+	
+	// el objeto en si sigue existiendo:
+	console.log(racing.toJSON());
+	
+	// pero si consultamos la base de datos...
+	const racingDb = await Club.findByFk(2);
+	console.log("Cuanto vale Racing?", racingDb)
+	
+	// traigamos todos los registros para estar seguros
+	const todosLosClubes = await Club.findAll();
+	console.log(`Hay ${todosLosClubes.length} club`);
+	console.log(todosLosClubes.map((club) => club.toJSON()));
+})();
+```
+
+##### Tambien se pueden usar params alter: true y force:true
+
+##### Si le pasamos 
+
+```
+await sequelize.sync({alter: true})
+```
+
+##### Significa que si no existe la tabla, la va a crear 
+
+
+### !!! El código que sigue de await sequelize.sync() interactua con el modelo de sequelize para poder guardar cosas en la db
+
+#### Con independiente = Club.build({obj}) representará una fila de la tabla
+
+#### ahora con independiente.save() si lo guarda en la db
+
+##### independiente representa una instancia del Modelo Club que representa una fila en particular que se va a crear en esa tabla
+
+##### Con await independiente.save() perisistimos la info y la guarda en la db
+
+##### to independiente.JSON(): todos las instancias del modelo tiene el métoodo toJSON
+
+##### Convertimos el modelo independiente a un objeto JSON
+
+
+### Tabla/columna/fila en Sequelize
+
+#### Los Modelos para sequelize como club (en nuestro dominio) son una repre de una tabla en la db
+
+#### Club hace referencia a la tabla Clubes, por lo tanto tiene métodos como crear, guardar, buscar
+
+#### Una instancia de ese modelo hace referencia una fila/registro nuevo de una tabla
+
+
+## Migración en sequelize
+
+#### Con el orm, podemos a partir de un modelo, crear tablas y queries de sql
+
+##### Tambien nos permite a partir de tablas existentes, crear modelos
+
+#### Con el paquete sequelize-auto nos permite convertir de una db, generar código
+
+##### Si tenemos una db como sample.db
+
+##### podemos ejecutar sequelize-auto sample.db dialecto sqlite (por ej) y ruta
+
+##### Teniamos la tabla liga italiana, jugadores, etc
+
+##### Nos genera el código squelize sqlite a partir de esa db convencional
+
+##### !!! No es perfecto, pero nos ayuda a no hacerlo manualmente
+
+##### Lo tenemos que modificar manualmente para obtener el modelo que deseamos
+
+```
+module.exports = funtion (sequelize, DataTypes) {
+	return seqeulize.define(
+	"Liga_italiana",
+	{
+		id: {
+			autoIncrement: true,
+			type: DataTypes.INTEGER,
+			allowNull: false,
+			primaryKey: true,
+		},
+		posicion: {
+			type: DataType.Integer,
+			allowNull: false
+		},
+	}
+	)
+}
+```
+
+#### Una modificación puede ser especificar created at y updated at
+
+```
+{
+	sequelize,
+	tableName: "liga_italiana",
+	updatedAt: "updated_at",
+	createdAt: "created_at",
+}
+```
+
+##### Se corresponden con las dos columnas created_at y updated_at
+
+##### Dado que sequelize por defecto va a usar created_at y updated_at otra vez, automaticamente; además de las que tenemos
+
+```
+created_at: {
+	type: DataTypes.DATEONLY,
+	allowNull: false,
+	defaultValue: "dateltime('now')",
+},
+updated_at: {
+	type: DataTypes.DATEONLY,
+	allowNull: false,
+	defaultValue: "dateltime('now')",
+},
+```
+
+##### Con esto lo mapeamos
+
+##### Si tenemos una db que ya existe, la podemos mapear de esta forma
+
+
+### orm/orm_02/index.js
+
+#### Conexión con la db y la relación entre los modelos (como las ligas, club)
+
+##### chalk: muestra las descripciones con colores para ciertas cosas
+
+##### Las funciones que le siguen cambian el color a los outputs y para imprimir instrucciones coloridas
+
+```
+// modelos autogenerados con npm run generar-modelos
+const chalk = require("chalk");
+const { Sequelize, DataTypes, Op } = require("sequelize");
+
+const info = {...params} => {
+	console.log(chalk.bold.bqBlue.white(...params));
+};
+
+const dividir = () => {
+	console.log(chalk.bold.bgRedBright("#".repeat(80)));
+}
+
+// crea la instancia de la conexion a la db
+const sequelize = new Sequelize({
+	dialect: "sqlite",
+	storage: "./orm/orm_02/data/orm_ejemplo_liga_italiana.db",
+	logging: console.log
+});
+
+const Jugador = require("./modelos/jugadores")(sequelize, DataTypes);
+
+const Equipo = require("./modelos/liga_italiana")(sequelize.DataTypes);
+
+const Partido = require("./modelos/partidos")(sequelize, DataTypes);
+
+function definirAsociaciones() {
+	info("Define asociaciones");
+	
+	console.log("un equipo tiene muchos jugadores");
+	Equipo.hasMany(Jugador, {
+		foreignKey: "fk_equipo",
+	});
+	
+	console.log("un jugador pertenece a un equipo");
+	Jugador.belognsTo(Equipo, {
+		foreignKey: "fk_equipo",
+	});
+}
+```
+
+
+## Migraciones
+
+#### Se utilizan para crear cambios prográmaticos en esqeumas de base de datos
+
+##### Por o general se logra guardando en una tabla separada qué migraciones corrieron y cuando (en el caso de sequelize lo hace un una tabla llamada SequelizeMeta)
+
+##### npm sequelize-cli migration generate --mane nombre-migracion (en vez de hacer node_modules/.bin/sequelize-cli)
+
+#### up: como crear los cambios
+
+#### down: como revertir cambios
+
+##### Esto asegura la consistencia entre varios devs y producción 
+
+##### Este patrón de hacer todo de forma programatica, es extremadamente importante cuando creamos software ya que nos ahorra mucho tiempo de errores inesperados (dificiles de debuggear)
+
+##### Tiene una relacion con IoC (infrastructure as Code) con Docker
+
+
+## Teoría de Relaciones
+
+### One-to-One (ono a uno); Belongs-to (pertenece a)
+
+#### Ej: departamento y jefe de departamento 
+
+##### 1 departamente tiene 1 jefe de departamente y el jefe solo puede administrar un departamente a la vez
+
+#### Ej: un partido le pertenece a un equipo (local) y tambien a un equipo (visitante)
+
+##### Pertenencia indica que mantiene una fk a la tabla a la cual pertenece el registro (fk_equipo_casa, fk_equipo_fuera)
+
+
+#### Ej: supongamos que tenemos que capturar info de productos de ropa
+
+##### Dependiendo del tipo de producto, queremos capturar distintos tipos de info
+
+##### Para los lentes vamos a querer capturar el tamaño del marco, el color del marco, el aumento del lente, polarización
+
+##### Para las camperas queremos capturar el color, el talle, si tiene capucha o no, etc
+
+#### !!! Si ponemos toda esta info en la misma tabla, vamos a terminar con muchos NULLs que terminan 'contaminando' la intención de nuestro DOMINIO
+
+##### Porque estaríamos teniendo un objeto Lentes que tiene la propiedad tieneCapucha?
+
+##### Tener muchos nulls tambien puede afectar la perfo de la db (hace que los indices sean ineficientes)
+
+
+### One-to-Many (uno a muchos)
+
+#### Ej: un equipo tiene muchos jugadores (y un jugador pertenece solo a un equipo)
+
+#### Ej: Un equipo juega muchos partidos de visitante y local
+
+##### Y un partido tiene un unico equipo local y un único equipo visitante
+
+
+### Many-to-Many (muchos a muchos): siempre va a haber una tercer tabla de por medio
+
+#### Ej: una orden tiene muchos productos, y un producto puede pertenecer a muchas ordenes
+
+#### Ej: un libro puede pertenecer a muchas categorias y una categoria puede contener muchos libros
+
+#### Las asociaciones muchos a muchos siempre se hace a través de una tercer tabla (por ej, libros y categorias estan asociadas a traves de categoria_libros)
+
+##### Los nombres de las tablas asociadas es preferible ordenarlos alfabeticamente
+
+
+### Es importante decidir qué relaciones tienen sentido en nuestro modelo 
+
+##### Si no estamos interesados en mostrar un jugador fuera del contexto del equipo al que pertenece, entonces, seguramente no nos haga definir una relacion de Jugador.belongsTo(Equipo)
+
+
+### !!! En el modelado de la app, no hace falta caer en los casos extremos, detallistas, muy poco frecuente (casos borde)
+
+#### Solo en lo que la app intenta resolver (nombre, apellido, dni, profesion), etc
+
+##### No estar pensando en todos los casos que podría pasar
+
+
+
+
+## JS y sequelize
+
+#### Vamos a usar sequelize para los queries y js para envolver esos queries con funciones
+
+```
+function consultarEquipoConAsociacionesDeJugadores(id) {
+	info("Equipo con jugadores asociados");
+	return Equipo.findByFk(id, { include: jugador });
+} 
+```
+
+
+## Migraciones
+
+### Archivo config.js: no queremos guardar datos como nombre de user, pass, etc en un json que despues terminan en github
+
+#### En vez de hacer referencia a un json, hacemos referencia a un config js
+
+
+### Tenemos development y production
+
+```
+module.exports = {
+	developtment: {
+		dialect: "sqlite",
+		storage: "./orm/orm_o2/data/orm_ejemplo_liga_italiana.db" // por defaut corre con :memory: por lo tanto siempre
+	},
+	production: {
+		database: process.env.DB_HOST,
+		user: process.env.DB_USER,
+		password: process.env.DB_PASSWORD,
+		dialect: "mysql",
+	},
+};
+```
+
+
+### Migración
+
+```
+module.exports = {
+	up: async (queryInterface, Sequelize) => {
+		return queryInterface.createTable("Person", {
+			name: Sequelize.DataTypes.STRONG,
+			isBetamember:{
+				type: Sequelize.DataTypes.BOOLEAN
+				defaultValue: false,
+				allowNull: false,
+			},
+		});
+	},
+	
+	down: async (queryInterace) => {
+		return queryInterface.dropTable("Person");
+	},
+};
+```
+
+#### Ambos toman como param queryInterface, la clase Sequelize que tiene para definir los data types, es el objeto que obtenemos cuando hacemos require("sequelize")
+
+##### queryInterface se utiliza para ejecutar cosas como createTable o dropTable, etc
+
+##### En up creamos la tabla Persona, le ponemos nombre; isBetaMember es de sqlite que espera un objeto con ciertas propieades
+
+##### En up viene que es lo que nosotros queremos ejecutar, qué cambios incluye la migración
+
+##### En down está definido como volver para atras los cambios (de up)
+
+##### Hacemos lo contrario que en up: usamos dropTable
+
+
+### SequelizeMeta: registro de qué migraciones se corrieron
+
+
+### orm 03
+
+#### Archivo orm/orm_03/index.js
+
+##### Lo que hace funcionar la relacion many to may
+
+#### La funcion inicializar inicializa las tablas
+
+#### Lo que sigue es un setup de las asociaciones
+
+```
+const { Sequelize, DataTypes } = require("sequelize");
+const Libro = require("./models/libro");
+const Categoria = require("./models/categoria");
+const CategoriaLibre = require("./models/categoriaLibro");
+
+// crea la instancia de la conexión a la base de datos
+const sequelize = new Sequelize({
+	dialect: "sqlite",
+	storage: ":memory:",
+	logging: console.log,
+});
+
+async function inicializar() {
+	Libro.inicialiar(sequelize, DataTypes);
+	Categoria.inicializar(sequelize, DataTypes);
+	CategoriaLibro.inicializar(sequelize, DataTypes);
+	
+	Categoria.belongsToMany(Libro, {
+		through: CategoriaLibro,
+		as: "Libros",
+		foreignKey: "fk_categoria",
+		uniqueKey: "id",
+	});
+	
+	Libro.belognsToMany(Categoria, {
+		through: CategoriaLibro,
+		as: "categorias",
+		foreignKey: "fk_libro",
+		uniqueKey: "id"
+	})
+}
+```
+
+
+#### Código funcion inicializar de cada tabla
+
+```
+static inicializar(sequelize, DataTypes) {
+	Libro.init(
+		{
+			id: {
+				type: DataTypes.INTEGER,
+				primaryKey: true,
+				autoIncrement: true,
+			}
+			titulo: {
+				type: DataTypes.STRING,
+				allowNull: false,
+			},
+		}
+	);
+}
+```
+
+
+### Archivo modelos
+
+#### orm/orm_03/models/categoria.js
+
+```
+const { Model } = require("sequelize");
+
+module.exports = class Categoria extends Model {
+	static inicializar(sequelize, DataTypes) {
+		Categoria.init(
+			{
+				id: {
+					type: DataTypes.INTEGER,
+					primaryKey: true,
+					autoIncrement: true,
+				},
+				nombre {
+					...
+				}
+			}
+		);
+	}
+}
+```
+
+
+### Uso de js y sequelize para interactuar con la db
+
+```
+async function crearLibrosConCategoriasNuevas() {
+	const libro = await Libro.create(
+		{
+			titulo: "Libro 1",
+			categorias: [
+				{
+					nombre: "Categoria 1",
+				},
+				{
+					nombre: "Categoria 2",
+				},
+			],
+		},
+		
+		{ include: { model: Categoria, as: "categorias"" } }
+	);
+}
+```
+
+
+### Con sequelize podemos crear libro, categoria y está asociando las categorias al libro
+
+
+### Transacciones en sequelize y js
+
+#### Commit y Rollback
+
+
+## Extender app
+
+### Agregar un nuevo modulo:
+
+#### Area
+
+##### Estructura del crud-clubes
+
+```
+module
+	club
+	test
+	area
+		controller
+			eror
+			areaController.js
+		entity
+			area.js
+		mapper
+			areaMapper.js
+		model
+			areaModel.js
+		repository
+			error
+			sqlite
+				areaRepository.js
+			abstractRepository.js
+		service
+			error
+			areaService.js
+		view
+			form.html
+			index.html
+		module.js
+```
+
+#### Club tenía todo esto
+
+##### areaModel.js es el modelo de sequelize
+
+##### module.js hace el bootstrap
+
+##### Ahora todo esto se debe usar con sequelize
+
+##### club antes tenia los queries sql puro manipulado con js
+
+##### en la config del dependency injection (di.js) tambien configuramos sequelize
+
+```
+const { Sequelize } = require('sequelize');
+
+const sequelizeStore = require('connect-session-sequelize')(session.Store);
+
+function configureMainSequelizeDatabase() {
+	const sequelize = new Sequelize({
+		dialect: 'sqlite',
+		storage: process.env.DB_PATH,
+	});
+	return sequelize;
+}
+
+function configureSessionSequelizeDatabase() {
+	const sequelize = new Sequelize({
+		dialect: 'sqlite',
+		storage: process.env.SESSION_DB_PATH,
+	});
+	return sequelize;
+}
+```
+
+
+##### En las definiciones seteamos la dependencia sequelize se configura con configureMainSequelizeDatabase
+
+```
+function addCommonDefinitions(container) {
+	container.addDefinitios({
+		Sequelize: factory(configureMainSequelizeDatabase),
+		SessionSequelize: factory(configureSessionSequelizeDatabase),
+		...
+		...
+	});
+}
+```
+
+#### Cuando hay que hacer un setup complicado usamos una factory function
+
+##### Después seteamos el modulo de areas
+
+```
+function addAreaModuleDefinitions(container) {
+	container.addDefinitions ({
+		AreaController: object(AreaController).construct(get('AreaService')),
+		AreaService: object(AreaService).construct(get('AreaRepository')),
+		AreaRepository: object(AreaRepository).construct(get('AreaModel')),
+		AreaModel: factory(configureAreaModel),
+	});
+}
+
+module.exports = function configureDi() {
+	const container = new DIContainer();
+	addCommonDefinitions(container);
+	addAreaModuleDefinitions(container);
+	addClubModuleDefinitions(container);
+	return container;
+}
+```
+
+#### Para configurar el modelo de areas llamaos a areaModel
+
+```
+function configureAreaModel(container) {
+	return AreaModel.setup(container.get('Sequelize'));
+}
+```
+
+
+#### El modulo de area es un copy-paste del modulo de club, cambiando club por area
+
+#### En app.js vamos a tener
+
+```
+initClubModule(app, container);
+initAreaModule(app, container);
+```
+
+
+#### Cuando creamos el club, necesitamos ver las areas disponibles
+
+##### ClubController.js
+
+```
+async create(req, res) {
+	// Esto puede debatirse pero puede que se vea la falta de areas como una validacion de representación y no una falta de lógica
+	const areas = await this.areaService.getAll();
+	
+	if (areas.length = 0) {
+		res.render('club/view/form.html', { data: { areas } });
+	} else {
+		req.session.errors = ('Para crear un club, primero debe crear un area');
+		res.redirect(this.ROUTE_Base);
+	}
+}
+```
+
+##### Primero consulta todas las areas al servicio de areas, areaService.getAll
+
+##### Lo que sigue es una validación de presentación
+
+
+# Sistema alquiler
+
+
+
+
+
+# Client frontend
+
+##### sass, gulp
+
+
