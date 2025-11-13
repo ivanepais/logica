@@ -29334,7 +29334,65 @@ async create(req, res) {
 ##### Lo que sigue es una validación de presentación
 
 
-# Sistema alquiler
+
+# App avanzada: Sistema alquiler
+
+#### No todo se resuelve con un front, back y db
+
+##### A veces se va a necesitar hacer tareas asincronas, utilizar caching, un sistema de busqueda
+
+
+## Sistema con reglas de negocio
+
+### La lógica de negocio puede estar en dos lugares
+
+#### En los servicios: en este caso, estamos haciendo un ADM (anemic domain model) o modelo de dominio anemico
+
+##### Esto es cuando tratamos a las entidades como una bolsa de datos y nada más
+
+##### Las entidades no tienen métodos ni reglas, todo existe en los servicios
+
+##### Ej: El servicio manipula el estado interno del objeto directamente
+
+
+### Logica de negocio en las entidades: Rich Domain Model
+
+#### Un modelo de dominio rico es cuando las entidades exponen comportamientos que las ayuda a manipular el estado interno
+
+##### Cuando las reglas del negocio no pertenecen claramente a una única entidad es meor ponerlas en un servicio
+
+
+### state machine: cuando algo/entidad tienen varios cambios de estado y algunos son validos y otros invalidos
+
+#### Ej: no podemos pasar de pendiente a finalizado, sin haber pasado por pago
+
+##### Se recomienda una state machine
+
+
+### Debug en node
+
+#### Clickeamos el numero de la linea hasta donde queremos que se frene
+
+##### Vamos a la opcion de debug al costado
+
+##### Elegimos el script, vos va a salir los script personalizados como run script dev
+
+##### cliceamos en el simbolo del launcher
+
+##### cuando termina de correr, al costado tendremos los valores de las variables
+
+##### En la barra de arriba tendremos controles para pasar a 
+
+##### Pasar a la siguiente linea
+
+##### Entrar en la función para ver qué está haciendo
+
+##### Esto te lleva al código dónde esta definido
+
+##### Y esto va a cambiar el estado de las variables al costado
+
+##### Podemos salir de la función y al costado recargar toda la ejecución y al final hay un botón para quitar la ejecución del debug
+
 
 
 
