@@ -3494,3 +3494,965 @@ Mermaid / PlantUML / Draw.io: Alternativas populares que pueden usarse para dibu
     
 ##### Dominar el C4 te permitirá crear documentación de arquitectura que sea precisa, útil y fácil de mantener, cerrando la brecha entre el diseño de alto nivel y el código fuente.    
 
+
+
+
+# SOLID 
+
+
+## S (Single Responsibility Principle o SRP/ Principio de Responsabilidad Única)
+
+##### Una clase debe tener una, y solo una, razón para cambiar.
+
+##### Cada clase, módulo o componente debería ser responsable de una única tarea o funcionalidad dentro del sistema.
+
+##### La "razón para cambiar" es sinónimo de responsabilidad.
+
+Si una clase tiene más de una responsabilidad, significa que podría ser modificada por más de un motivo.
+
+Si la clase maneja, por ejemplo, la lógica de cálculo de un pedido y también la lógica de guardado en la base de datos, tiene dos responsabilidades.
+
+El SRP te dice que debes separar estas responsabilidades en diferentes clases (o módulos).
+
+##### Menor Acoplamiento: Los cambios en una parte del sistema tienen menos probabilidades de afectar a otras partes, ya que las responsabilidades están separadas.
+
+
+### Ej SRP con 3 responsabilidad: crear usuario, persistir datos y enviar mail
+
+##### Separamos estas tres responsabilidades en tres clases distintas, cada una con un único propósito.
+
+
+### 1. Definición de la Entidad y Servicios
+
+```
+// Entidad simple
+interface User {
+    name: string;
+    email: string;
+}
+
+// 1. Responsabilidad: Gestión y validación del Usuario.
+class UserCreator {
+    create(name: string, email: string): User {
+        if (!name || !email) {
+            throw new Error("Name and email are required.");
+        }
+        console.log(`User object for ${name} created successfully.`);
+        return { name, email };
+    }
+}
+
+// 2. Responsabilidad: Persistencia de datos.
+class UserRepository {
+    save(user: User): void {
+        // Lógica real de conexión e inserción a la BD...
+        console.log(`Saving user ${user.email} to the database.`);
+    }
+}
+
+// 3. Responsabilidad: Notificación.
+class EmailService {
+    sendWelcomeEmail(user: User): void {
+        // Lógica real de envío de email (SMTP, API de terceros, etc.)...
+        console.log(`Sending welcome email to ${user.email}.`);
+    }
+}
+```
+
+
+### 2. Clase Coordinadora (Facade)
+
+##### Usar una clase "Facade" o "Service" que coordine el uso de las otras clases, pero sin implementar la lógica interna de sus responsabilidades.
+
+```
+// Clase que coordina, no que implementa las responsabilidades.
+class RegistrationService {
+    private userCreator: UserCreator;
+    private userRepository: UserRepository;
+    private emailService: EmailService;
+
+    constructor() {
+        this.userCreator = new UserCreator();
+        this.userRepository = new UserRepository();
+        this.emailService = new EmailService();
+    }
+
+    registerUser(name: string, email: string): User {
+        // 1. Crea y valida.
+        const newUser = this.userCreator.create(name, email);
+
+        // 2. Guarda.
+        this.userRepository.save(newUser);
+
+        // 3. Notifica.
+        this.emailService.sendWelcomeEmail(newUser);
+
+        console.log(`\n User ${name} fully registered!`);
+        return newUser;
+    }
+}
+
+// Uso:
+const registration = new RegistrationService();
+registration.registerUser("Juan", "juan@example.com");
+```
+
+Si cambian las reglas de validación, solo modificas UserCreator.
+
+Si cambia la base de datos, solo modificas UserRepository.
+
+Si cambia el proveedor de emails, solo modificas EmailService.
+
+
+
+## O: (Open/Closed Principle o OCP; Principio Abierto/Cerrado)
+
+##### Establece cómo debe evolucionar el diseño de tu código para ser flexible y robusto.  
+  
+##### Las entidades de software (clases, módulos, funciones, etc.) deben estar:
+  
+#### 1. Abiertas para la Extensión: Debes poder añadir nuevas funcionalidades al sistema.
+
+#### 2. Cerradas para la Modificación: Una vez que una entidad está probada y funcionando, no deberías modificar su código fuente original para cambiar su comportamiento.
+  
+
+##### Se logra principalmente a través del uso de la abstracción, como las interfaces o las clases abstractas, y la herencia/polimorfismo.
+
+##### En lugar de codificar la lógica directamente en una clase concreta, se define un contrato (una interfaz) y luego se crean múltiples implementaciones de ese contrato.
+
+
+### Mecanismo Clave: Polimorfismo
+
+##### Cuando tienes una clase que depende de una interfaz, puedes cambiar el comportamiento en tiempo de ejecución inyectando una nueva clase que implemente esa interfaz, sin tocar el código de la clase dependiente.
+
+Para extender el sistema, simplemente creas una nueva clase que implemente la interfaz. (Abierto para Extensión)
+
+No necesitas cambiar ninguna de las clases existentes que usan esa interfaz. (Cerrado para Modificación)
+
+
+### Extender la interfaz rompe con OCP y ISP: crear nueva interfaz y nueva responsabilidad
+
+##### Cada principio SOLID debe cumplir con el anterior
+
+##### Por eso, extender agrega nuevas responsabilidades 
+
+
+#### Opciones: 
+
+##### 1. Define una nueva interfaz que extienda la interfaz original
+
+##### 2. Interfaz completamente nueva
+
+##### Ej: Si tienes IForma, y necesitas un nuevo método de dibujo 3D, crea IForma3D que extienda IForma.
+
+##### 3. Nueva Implementación: Implementa el nuevo comportamiento en una nueva clase concreta.
+
+
+### Ej OCP: usando una interfaz (abstracción) y el polimorfismo. 
+
+#### 1. Interfaz (Cerrado a la Modificación)
+
+##### Definimos un contrato para todas las formas.
+
+```
+// La interfaz es el contrato que todas las formas deben cumplir.
+interface Shape {
+    calculateArea(): number;
+}
+```
+
+
+#### 2. Clases Concretas (Abierto a la Extensión)
+
+##### Cada forma se convierte en una clase que implementa la interfaz, conteniendo solo su propia lógica de cálculo. 
+
+```
+// La clase Circle implementa el contrato Shape
+class Circle implements Shape {
+    constructor(public radius: number) {}
+
+    calculateArea(): number {
+        return Math.PI * (this.radius ** 2);
+    }
+}
+
+// La clase Rectangle implementa el contrato Shape
+class Rectangle implements Shape {
+    constructor(public width: number, public height: number) {}
+
+    calculateArea(): number {
+        return this.width * this.height;
+    }
+}
+
+// EXTENSIÓN: Añadimos una nueva forma (Triangle)
+// sin modificar el código de Circle o Rectangle.
+class Triangle implements Shape {
+    constructor(public base: number, public height: number) {}
+
+    calculateArea(): number {
+        return 0.5 * this.base * this.height;
+    }
+}
+```
+
+
+#### 3. Clase de Alto Nivel (Cerrado a la Modificación)
+
+##### !!! La clase que calcula el área ahora depende de la abstracción (Shape), no de las implementaciones concretas.
+
+```
+class AreaCalculatorOCP {
+    // Este método está CERRADO a la modificación.
+    // No necesita saber cuántos tipos de formas existen o cómo calculan su área.
+    calculateArea(shapes: Shape[]): number {
+        let totalArea = 0;
+
+        for (const shape of shapes) {
+            // Usa el polimorfismo: llama al método calculateArea()
+            // y la forma concreta sabe cómo hacerlo.
+            totalArea += shape.calculateArea();
+        }
+
+        return totalArea;
+    }
+}
+```
+
+
+#### Uso 
+
+```
+const shapes: Shape[] = [
+    new Circle(10),
+    new Rectangle(4, 5),
+    new Triangle(6, 8) // ¡Añadida sin tocar AreaCalculatorOCP!
+];
+
+const calculator = new AreaCalculatorOCP();
+const area = calculator.calculateArea(shapes);
+
+console.log(`El área total es: ${area.toFixed(2)}`);
+```
+
+##### Si quieres añadir una forma Square, simplemente extiendes creando una nueva clase Square implements Shape.
+
+##### La clase AreaCalculatorOCP permanece cerrada a la modificación, cumpliendo con el OCP.
+
+
+
+## Interfaces y SOLID
+
+Los principios OCP, LSP e ISP (las letras 'O', 'L' e 'I') se centran fuertemente en cómo se deben usar y diseñar las interfaces.
+
+
+### 1. O: OCP dicta que las entidades deben estar abiertas a la extensión pero cerradas a la modificación.
+
+##### Lograr el OCP es a través de la dependencia de abstracciones (interfaces).
+
+##### Una clase que depende de una interfaz puede ser extendida en funcionalidad simplemente creando una nueva clase que implemente esa interfaz, sin modificar el código de la clase dependiente.
+
+
+### 2. L: Principio de Sustitución de Liskov (LSP)
+
+##### Los objetos de un programa deben ser sustituibles por instancias de sus subtipos sin alterar la corrección de ese programa.
+
+##### Al usar una interfaz, cualquier clase que la implemente debe poder ser utilizada donde se espera la interfaz sin causar problemas.
+
+Significa que las implementaciones de la interfaz no deben hacer cosas que el código cliente no espera (ej. lanzar excepciones no documentadas o cambiar el contrato del método). 
+
+
+### 3. I: Principio de Segregación de Interfaces (ISP) 
+
+##### "Los clientes no deben ser forzados a depender de interfaces que no usan".
+
+##### Significa que es mejor tener muchas interfaces pequeñas y específicas (de "rol") que una sola interfaz grande y "gorda".
+
+##### Si una clase solo necesita tres métodos, no debería ser forzada a implementar una interfaz que tiene diez.
+
+
+### 4. Aplicación Indirecta
+
+#### S (Responsabilidad Única): apoya la creación de interfaces pequeñas y enfocadas, ya que cada interfaz puede representar una única responsabilidad o capacidad que una clase puede tener (ej. IRepositorio, ILogger).
+
+#### D (Inversión de Dependencias): los módulos de alto nivel no deben depender de módulos de bajo nivel, sino que ambos deben depender de abstracciones (interfaces)
+
+##### Objetivo: promover el uso de interfaces para "invertir" la dirección de las dependencias.
+
+
+
+## Modulos de Alto nivel y Bajo nivel
+
+
+### 1. Módulos de alto nivel (High-Level Modules o HLM)
+
+#### Contienen la lógica de negocio central y las políticas importantes de la aplicación.
+
+##### Responsabilidad: Definen qué hace la aplicación.
+
+##### Ejemplos: Un módulo de GestiónDePedidos, un ServicioDeFacturación, o un módulo de ControlDeInventario. Estos módulos orquestan las acciones.
+
+##### Dependencia (Ideal): Deberían ser independientes de cómo se realizan las operaciones técnicas. Solo deberían depender de abstracciones (interfaces).
+
+
+### 2. Módulos de bajo nivel (Low-Level Modules o LLM)
+
+#### Se ocupan de los detalles técnicos y las implementaciones concretas de tareas específicas.
+
+##### Responsabilidad: Definen cómo se realizan las acciones.
+
+##### Ejemplos: Un RepositorioMySQL para guardar datos, un ServicioDeArchivosJSON para lectura/escritura, o un ServicioDeEnvioDeEmail que usa una librería específica.
+
+##### Dependencia (Natural): Tienden a depender de bibliotecas externas, bases de datos o sistemas operativos.
+
+
+### 3. Inversión de Dependencias (DIP)
+
+La relación de dependencia "natural" va del alto al bajo nivel (el módulo de Pedidos usa directamente el repositorio de MySQL). El DIP invierte esto.
+
+
+#### Sin DIP (Acoplamiento)
+
+En un diseño pobre, el módulo de alto nivel depende directamente del módulo de bajo nivel.
+
+##### Módulo de Alto Nivel (GestiónDePedidos) -> Módulo de Bajo Nivel (RepositorioMySQL)
+    
+Problema: Si decides cambiar de MySQL a MongoDB, tienes que modificar el módulo de alto nivel (GestiónDePedidos), que es el núcleo de tu negocio. Esto viola el OCP y hace que el sistema sea frágil.
+
+
+#### Con DIP (Desacoplamiento)   
+
+##### 1. Los módulos de alto nivel no deben depender de módulos de bajo nivel.
+
+##### 2. Ambos deben depender de abstracciones (interfaces).
+
+```
+						Abstracción
+
+Módulo de Alto Nivel 				Módulo de Bajo Nivel
+(GestiónDePedidos)					(RepositorioMySQL)
+```
+
+##### La interfaz (IRepositorio) se convierte en el contrato.
+
+Tanto:
+
+#### !!! Lógica de negocio (alto nivel)
+
+#### !!! Implementación técnica (bajo nivel)
+
+##### Dependen de este contrato, invirtiendo la dependencia y logrando un sistema más flexible y mantenible.
+
+
+#### Lógica de Negocio (Alto Nivel)
+
+##### Rol	Contiene la lógica de negocio (las políticas). Define QUÉ se hace.
+
+##### Tipo de Clase Clases concretas (servicios) que orquestan acciones.
+
+##### !!! Abstracción	Depende de las interfaces
+
+##### Ejemplo	ServicioDeGestiónDeUsuarios
+
+
+#### Detalles Técnicos/implementación (Bajo Nivel)
+
+Rol: Contiene los detalles técnicos (la implementación). Define CÓMO se hace. 
+
+Tipo de Clase: Clases concretas que interactúan con sistemas externos (BD, red, disco).
+
+##### !!! Abstracción: Implementa las interfaces.
+
+Ejemplo RepositorioUsuariosMySQL
+
+
+#### Abstracciones (Interfaces)
+
+##### !!! Permiten el Principio de Inversión de Dependencias (DIP).
+
+##### 1. Módulo de Alto Nivel (HLM): Es una clase concreta (ServicioDeFacturación) que depende de la abstracción (IRepositorio).
+
+##### 2. Módulo de Bajo Nivel (LLM): Es una clase concreta (RepositorioMongoDB) que implementa la abstracción (IRepositorio).
+
+##### 3. Abstracción: Es la interfaz (IRepositorio).
+
+
+##### La interfaz es un contrato común del cual dependen ambos módulos, invirtiendo la dependencia.
+
+ServicioDePedidos	Alto Nivel (Lógica de Negocio)	Clase Concreta
+IRepositorio	Contrato (Abstracción)	Interfaz
+RepositorioSQL	Bajo Nivel (Detalle Técnico)	Clase Concreta
+
+
+
+## Diseño DIP: alto y bajo nivel, dependencias e implementaciones
+
+##### Un diseño típico, a menudo llamado Arquitectura Hexagonal o Arquitectura de Capas Limpias (Clean Architecture), se vería así:
+
+
+### 1. Capa 1: Presentación / Entrada
+
+Controladores (Controllers): Reciben la petición (ej. /api/users/123).
+
+Vistas/UI: Muestran los datos al usuario.
+
+
+### 2. Capa 2: Dominio / Alto Nivel
+
+Módulos de Alto Nivel (Servicios/Use Cases): Contienen la lógica de negocio.
+
+    Dependen de interfaces.
+
+Entidades/Modelos de Dominio: Objetos que representan el negocio (ej. Clase Usuario, Clase Pedido).
+
+Interfaces/Clases Abstractas: Los contratos que definen las capacidades requeridas.
+
+
+### 3. Capa 3: Infraestructura / Bajo Nivel
+
+Módulos de Bajo Nivel (Implementaciones Concretas): Contienen los detalles técnicos.
+
+	Implementan las interfaces.
+
+Repositorios Concretos: Implementan la lógica para interactuar con la base de datos (MySQL, MongoDB, etc.).
+
+Adaptadores/Clientes Externos: Implementaciones para servicios de email, APIs de pago, etc.
+
+
+### 4. Componente de Ensamblaje (Cross-Cutting Concern)
+
+Contenedor IoC / Composer: El "pegamento" que inicializa y conecta las dependencias.
+
+
+##### Este enfoque asegura que la lógica de negocio (Alto Nivel) esté totalmente aislada de los detalles técnicos (Bajo Nivel), adhiriéndose rigurosamente al DIP y haciendo el sistema muy fácil de probar y mantener.
+
+
+### Diagrama Arquitectura de Capas
+
+El diagrama muestra la Inversión de Dependencias (DIP):
+
+##### Las flechas de dependencia siempre apuntan hacia adentro, hacia la capa de Abstracciones/Dominio, lo que significa que las capas externas dependen de las internas, pero no al revés.
+
+
+#### -> Flujo de la Aplicación
+
+1. Entrada: El Controlador (Capa de Presentación) recibe una petición (ej. HTTP).
+
+2. Lógica: El Controlador llama al Módulo de Alto Nivel (Servicio de Dominio).
+
+3. Contrato: El Módulo de Alto Nivel llama a la Interfaz (Repositorio/Abstracción).
+
+4. Ejecución: En tiempo de ejecución (gracias al IoC Container), la llamada es resuelta por el Módulo de Bajo Nivel (Implementación Concreta) que interactúa con la BD.
+
+5. Salida: El resultado viaja de regreso al Controlador para ser presentado.
+
+
+#### Componentes Clave y SOLID
+
+```
+Componente,Nivel,Rol en el Diseño,Principios SOLID
+"Controladores (API, UI)",Presentación/Externo,"Reciben la entrada, mapean datos y delegan al Alto Nivel.",SRP (Responsabilidad Única)
+Módulos de Alto Nivel,Dominio/Negocio (Interno),Contienen la lógica de negocio central. Dependen de interfaces.,"S, O, L"
+Interfaces (Contratos),Abstracción/Dominio,Definen las capacidades. Son la clave para la Inversión de Dependencias.,"I, D"
+Módulos de Bajo Nivel,Infraestructura/Externo,"Implementan los detalles técnicos (BD, Email, Sistema de Archivos). Implementan interfaces.","O, D"
+IoC Container / Composer,Configuración (Pegamento),Ensambla la aplicación: inyecta las clases de Bajo Nivel en las clases de Alto Nivel.,D
+```
+
+Capas de Arquitectura: Presentación, Dominio (Alto Nivel/Abstracciones) e Infraestructura (Bajo Nivel).
+
+Elementos Esenciales: Controladores, Módulos de Alto Nivel, Interfaces, Módulos de Bajo Nivel y el IoC Container.
+
+Principio Clave: Se ilustró la Inversión de Dependencias (DIP).
+
+
+Podría ampliarse (Opcional)
+
+Si bien la estructura es completa, el diseño de software es vasto. Los detalles que podrían añadirse, si fuera necesario profundizar, serían:
+
+Manejo de Errores: Una capa o módulo específico para gestión centralizada de excepciones.
+
+Seguridad/Autenticación: Middlewares o servicios que se cruzan entre las capas (Cross-Cutting Concerns).
+
+Logging y Monitoreo: Un servicio dedicado para registrar eventos y métricas.
+    
+
+
+
+## Dependencias y Modulos 
+
+### Modulos
+
+#### Unidad de software autocontenida que encapsula una funcionalidad específica. Como una caja de herramientas
+
+##### Sirve para organizar el código, prevenir conflictos de nombres (colisiones de variables o funciones globales) y facilitar la reutilización.
+
+##### Encapsulamiento: Un módulo decide qué partes de su código son públicas (accesibles desde fuera) y cuáles son privadas (detalles internos).
+
+##### Un archivo .py en Python o un archivo .ts/.js que usa export en TypeScript/JavaScript
+
+##### Un módulo de CálculoDeImpuestos que solo expone la función calcularIVA().
+
+
+### Dependencias
+
+#### Cuando un módulo de software (el módulo A) necesita o utiliza el código o la funcionalidad proporcionada por otro módulo (el módulo B) para poder funcionar.
+
+##### Naturaleza: Es una relación de uso. Si B cambia de una manera que A no espera, el módulo A podría romperse.
+
+##### Tipos de Dependencias:
+
+Bibliotecas/Paquetes Externos: Depender de herramientas de terceros (ej. usar lodash para manipular arrays).
+    
+Módulos Locales: Depender de otros módulos dentro del mismo proyecto (ej. el módulo Ventas depende del módulo Inventario para verificar el stock).
+
+Gestión: En proyectos grandes, la lista de dependencias se gestiona con herramientas (como npm en Node.js o pip en Python) para asegurar que el proyecto siempre use las versiones correctas.
+
+
+### Acoplamiento y Desacoplamiento
+
+La gestión de dependencias es crucial para la calidad del software:
+
+#### Acoplamiento: Es el grado en que dos módulos están interconectados. Un alto acoplamiento (dependencias rígidas y directas) hace que el código sea difícil de cambiar y probar.
+
+#### Desacoplamiento: Es el objetivo. Se logra mediante técnicas como la Inversión de Dependencias (DIP) (la 'D' de SOLID), donde un módulo de alto nivel no depende directamente de un módulo de bajo nivel, sino que ambos dependen de una abstracción (una interfaz).
+
+Esto reduce el riesgo de que los cambios en un módulo afecten a otros.
+
+
+Los módulos son las piezas de construcción, y las dependencias son las conexiones entre esas piezas. Un buen diseño maximiza la funcionalidad de cada módulo (alta cohesión) y minimiza las dependencias directas entre ellos (bajo acoplamiento).
+
+
+### Modulos y Dependencias en SOLID
+
+##### Buscan gestionar las relaciones entre los componentes de un sistema para hacerlo más robusto y flexible.
+
+
+#### La Estructura (Módulos)
+
+#### Las Reglas (Dependencias)
+
+##### SOLID establece las reglas para cómo los módulos deben interactuar y cómo deben manejarse sus dependencias. 
+
+
+S (Responsabilidad Única):
+
+Módulos enfocado. Una clase/módulo debe tener una única razón para cambiar. Esto asegura que el módulo sea pequeño y cohesivo.
+
+Alta Cohesión
+
+
+O (Abierto/Cerrado):
+
+Extensión de Módulos. Los módulos deben estar cerrados a la modificación, pero abiertos a la extensión. Esto se logra permitiendo que nuevos módulos hereden o implementen contratos sin tocar el código existente.
+
+Estabilidad y Flexibilidad
+
+
+L (Sustitución de Liskov):
+
+Confiabilidad de Módulos. Los módulos dependientes deben poder usar cualquier subtipo de un módulo sin encontrar errores inesperados. Garantiza que las dependencias cumplen sus contratos.
+
+Fiabilidad del Sistema
+
+
+I (Segregación de Interfaces):
+
+Dependencias mínimas. Los módulos no deben depender de contratos (interfaces) que contengan métodos que no utilizan. Fomenta interfaces pequeñas y de rol específico.
+
+Bajo Acoplamiento
+
+
+D (Inversión de Dependencias)
+
+Dirección de la Dependencia. Invierte la dependencia natural. Los módulos de Alto Nivel (lógica de negocio) y los módulos de Bajo Nivel (detalles técnicos) deben depender de abstracciones (interfaces), no el uno del otro.
+
+Desacoplamiento Total
+
+
+#### Abstracciones
+
+##### El puente entre los módulos de Alto y Bajo Nivel para lograr el desacoplamiento es la Abstracción (Interfaces o Clases Abstractas).
+
+##### El DIP exige que el Módulo de Alto Nivel no dependa directamente del Módulo de Bajo Nivel. En su lugar, ambos deben depender de la misma Interfaz (la abstracción).
+
+
+### !!! El Principio de Responsabilidad Única (SRP) no limita el número de métodos; limita el número de razones para cambiar la clase.
+
+##### Por ejemplo, una clase llamada UserRepository tiene la única responsabilidad de gestionar la persistencia de los datos del usuario. Para cumplir esa responsabilidad, podría necesitar muchos métodos:
+
+getById(id: string)
+
+save(user: User)
+
+update(user: User)
+
+delete(id: string)
+
+getAll()
+
+mapToDatabaseRecord(user: User) (método interno/privado)
+
+
+##### Todos estos métodos están enfocados en la única responsabilidad de la persistencia de usuarios.
+
+##### Si cambia la base de datos (por ejemplo, de SQL a NoSQL), todos estos métodos tendrían que cambiar, y esa es la única razón por la que la clase cambiaría.
+
+
+
+## Inversion e Inyección de dependencias
+
+
+### Abstracciones
+
+##### Contrato que define una funcionalidad o un conjunto de comportamientos sin preocuparse por los detalles de su implementación
+
+Las abstracciones se implementan típicamente como Interfaces o Clases Abstractas en la mayoría de los lenguajes orientados a objetos.
+
+Su propósito central es mediar la relación entre módulos, asegurando que la lógica de negocio (Alto Nivel) dependa solo de los contratos, y no de las implementaciones concretas (Bajo Nivel).
+
+#### Las mejores interfaces son pequeñas y enfocadas en un único rol (ej. IUserRepository, IEnviable). (Principio ISP).
+
+
+#### 1. Se define la interfaz con los métodos que el módulo de Alto Nivel necesita para realizar su trabajo.
+
+```
+// Abstracción: Define el CONTRATO
+interface ILogger {
+    log(message: string): void;
+    error(message: string): void;
+}
+```
+
+
+#### 2. Implementación
+
+##### Los módulos de Bajo Nivel crean la implementación concreta que cumple con el contrato.
+
+```
+// Módulo de Bajo Nivel: Implementa los DETALLES TÉCNICOS
+class FileLogger implements ILogger {
+    log(message: string): void {
+        // Detalles: Lógica para escribir en un archivo.
+        console.log(`[FILE LOG]: ${message}`);
+    }
+    error(message: string): void {
+        // Detalles: Lógica para escribir error en el archivo.
+        console.error(`[FILE ERROR]: ${message}`);
+    }
+}
+```
+
+
+#### 3. Inyección (Dependencia del Contrato)
+
+##### El módulo de Alto Nivel requiere la abstracción en su constructor o método, no la implementación concreta.
+
+```
+// Módulo de Alto Nivel: Depende de la ABSTRACCIÓN
+class PaymentProcessor {
+    // Dependencia inyectada a través del constructor
+    constructor(private logger: ILogger) {} 
+
+    process(amount: number): void {
+        // La lógica de negocio USA el contrato, sin saber si es FileLogger o ConsoleLogger
+        this.logger.log(`Processing payment of ${amount}.`); 
+        // ... (lógica de pago)
+    }
+}
+```
+
+##### De esta forma, puedes cambiar FileLogger por un DatabaseLogger o un CloudLogger sin modificar el PaymentProcessor, logrando el deseado desacoplamiento y cumplimiento de OCP/DIP.
+
+
+#### 4. Ensamblaje
+
+```
+// Componente de Ensamblaje (fuera de la lógica de negocio)
+
+// 1. Crear la dependencia CONCRETA (Bajo Nivel)
+const databaseImplementation = new MySQLUserRepository(); 
+// Podría ser: const databaseImplementation = new MongoDBUserRepository(); 
+// Y el UserService seguiría funcionando.
+
+// 2. Inyectar la dependencia en el módulo de Alto Nivel
+const userService = new UserService(databaseImplementation); 
+
+// Ahora, el userService está listo y desacoplado.
+userService.registerUser(user);
+```
+
+
+
+
+### Modulo Alto (depende -ideal- de abstracciones/interfaces)
+
+Independientes, logica de negocio y politicas importantes
+
+Definen qué hace la aplicación.
+
+Ej: módulo de GestiónDePedidos, un ServicioDeFacturación, o un módulo de ControlDeInventario.
+
+Estos módulos orquestan las acciones.
+
+
+### Modulo Bajo (depende -natural- de bibliotecas externas, db y os)
+
+Se ocupan de los detalles técnicos y las implementaciones concretas de tareas específicas.
+ 
+Definen cómo se realizan las acciones
+
+
+ 
+### DIP: 
+
+##### La relación de dependencia "natural" va del alto al bajo nivel (el módulo de Pedidos usa directamente el repositorio de MySQL).
+
+#### El DIP invierte esto: porque sería un diseño pobre
+
+módulos de alto nivel no deben depender de módulos de bajo nivel.
+
+Ambos deben depender de abstracciones (interfaces).
+
+```
+Módulo de Alto Nivel (GestiónDePedidos) -> Abstracción (IRepositorio) <- Módulo de Bajo Nivel (RepositorioMySQL)
+```
+
+##### La interfaz (IRepositorio) se convierte en el contrato. 
+
+##### Tanto la lógica de negocio (alto nivel) como la implementación técnica (bajo nivel)
+
+##### Dependen de este contrato, invirtiendo la dependencia y logrando un sistema más flexible y mantenible.
+
+
+#### Ej: 
+
+##### Módulo de Alto Nivel (HLM): Es una clase concreta (ServicioDeFacturación) que depende de la abstracción (IRepositorio).
+
+##### Módulo de Bajo Nivel (LLM): Es una clase concreta (RepositorioMongoDB) que implementa la abstracción (IRepositorio). 
+
+##### Abstracción: Es la interfaz (IRepositorio).
+
+
+## !!! Ej de código: Alto nivel y dependencia de interfaz/abstracción
+
+1. Abstracción
+
+```
+// 1. La Abstracción (Interfaz)
+interface IUserRepository {
+    save(user: User): void;
+    findById(id: string): User | null;
+}
+```
+
+
+##### Esta interfaz reside idealmente en la misma capa que el módulo de alto nivel o en una capa de dominio central. El HLM ahora declara que necesita un IUserRepository.
+
+
+2. Implementar la Abstracción (Bajo Nivel)
+
+##### El módulo de bajo nivel se encarga de implementar los detalles técnicos requeridos por el contrato.
+
+```
+// 2. El Módulo de Bajo Nivel (Implementación Concreta)
+class MySQLUserRepository implements IUserRepository {
+    save(user: User): void {
+        // Lógica de conexión a MySQL e inserción
+        console.log(`User ${user.id} saved in MySQL.`);
+    }
+
+    findById(id: string): User | null {
+        // Lógica de consulta en MySQL
+        return { id, name: 'John Doe', email: 'john@example.com' };
+    }
+}
+```
+
+
+3. Usar la Inyección de Dependencias (DI)
+
+##### Aquí es donde se invierte la dependencia. 
+
+##### El módulo de alto nivel es diseñado para no crear su dependencia, sino para recibirla (inyectarla) a través de su constructor.
+
+```
+// 3. El Módulo de Alto Nivel (Depende de la Interfaz)
+class UserService {
+    // El constructor exige una Abstracción (IUserRepository)
+    constructor(private userRepository: IUserRepository) {}
+
+    registerUser(user: User): void {
+        // La lógica de negocio NO sabe si es MySQL o MongoDB,
+        // solo sabe que el objeto inyectado CUMPLE con IUserRepository.
+        this.userRepository.save(user);
+        console.log(`User registration completed.`);
+    }
+}
+```
+
+
+4. El Ensamblaje (IoC Container)
+
+##### Finalmente, un módulo de configuración (el IoC Container o Composer) crea y "une" las piezas, decidiendo qué implementación concreta (bajo nivel) se pasa al módulo de alto nivel.
+
+```
+// 4. Ensamblaje: Inyección de Dependencias
+const dbRepository = new MySQLUserRepository(); // Módulo de Bajo Nivel CONCRETO
+const userService = new UserService(dbRepository); // Inyección en Alto Nivel
+
+// Uso
+userService.registerUser({ id: '1', name: 'Test', email: 't@e.com' });
+```
+
+##### De esta manera, el UserService (Alto Nivel) queda completamente desacoplado y solo depende de la interfaz IUserRepository, cumpliendo con el DIP.
+
+
+
+### Forma más recomendada DIP (inversión)
+
+
+### Forma más recomendada DI (inyección)
+
+
+
+
+## Nest.js: Abstracción, módulo de bajo nivel, módulo de alto nivel y ensamblaje
+
+##### Utiliza el patrón Inversión de Control (IoC) de forma nativa
+
+##### El Ensamblaje y la Inyección de Dependencias (DI) se manejan principalmente a través de los Módulos y los Proveedores inyectables.
+
+
+### 1. La Abstracción (Interfaz)
+
+##### Este es el contrato que define lo que necesita el módulo de alto nivel.
+
+```
+// src/user/interfaces/user-repository.interface.ts
+
+import { User } from '../entities/user.entity';
+
+// La Interfaz es la Abstracción (el contrato)
+export interface IUserRepository {
+  save(user: User): Promise<User>;
+  findById(id: number): Promise<User | null>;
+}
+
+// Token de Inyección (para referenciar la interfaz en Nest)
+export const USER_REPOSITORY = 'USER_REPOSITORY';
+```
+
+
+### 2. Módulo de Bajo Nivel (Implementación Concreta)
+
+##### Esta es la implementación específica que maneja los detalles técnicos (ej. la base de datos real).
+
+```
+// src/user/infrastructure/mysql-user.repository.ts
+
+import { Injectable } from '@nestjs/common';
+import { IUserRepository } from '../interfaces/user-repository.interface';
+import { User } from '../entities/user.entity';
+
+@Injectable()
+// Clase de Bajo Nivel: Implementa la Abstracción
+export class MySQLUserRepository implements IUserRepository {
+  // Simulación de una base de datos o TypeORM
+  private db: User[] = [];
+
+  async save(user: User): Promise<User> {
+    const newUser = { ...user, id: this.db.length + 1 };
+    this.db.push(newUser);
+    console.log(`[Bajo Nivel] Usuario guardado en MySQL con ID: ${newUser.id}`);
+    return newUser;
+  }
+
+  async findById(id: number): Promise<User | null> {
+    return this.db.find(u => u.id === id) || null;
+  }
+}
+```
+
+
+### 3. Módulo de Alto Nivel (Lógica de Negocio)
+
+##### Este es el servicio de negocio que solo depende de la Abstracción. No sabe que está usando MySQL.
+
+```
+// src/user/application/user.service.ts
+
+import { Injectable, Inject } from '@nestjs/common';
+import { IUserRepository, USER_REPOSITORY } from '../interfaces/user-repository.interface';
+import { User } from '../entities/user.entity';
+
+@Injectable()
+// Clase de Alto Nivel: Sigue la lógica de negocio
+export class UserService {
+  
+  // Dependencia de Abstracción: Solo requiere un IUserRepository
+  constructor(
+    // Inyecta el token de la interfaz, NO la clase MySQLUserRepository
+    @Inject(USER_REPOSITORY) private userRepository: IUserRepository,
+  ) {}
+
+  async register(name: string, email: string): Promise<User> {
+    const newUser: User = { id: 0, name, email };
+    
+    // Lógica de Negocio: Usa el contrato (IUserRepository)
+    const savedUser = await this.userRepository.save(newUser);
+    
+    console.log(`[Alto Nivel] Lógica de registro para ${name} ejecutada.`);
+    
+    return savedUser;
+  }
+}
+```
+
+
+### 4. Ensamblaje (NestJS Module)
+
+##### El Módulo de NestJS es el Ensamblador (IoC Container) que conecta la Abstracción (el token) con la implementación concreta (el Bajo Nivel).
+
+```
+// src/user/user.module.ts
+
+import { Module } from '@nestjs/common';
+import { UserService } from './application/user.service';
+import { MySQLUserRepository } from './infrastructure/mysql-user.repository';
+import { USER_REPOSITORY } from './interfaces/user-repository.interface';
+import { UserController } from './presentation/user.controller';
+
+@Module({
+  controllers: [UserController],
+  providers: [
+    // La clave del Ensamblaje (DIP):
+    {
+      // 1. El token que pide el Alto Nivel
+      provide: USER_REPOSITORY, 
+      // 2. La implementación CONCRETA (Bajo Nivel) que se le inyecta
+      useClass: MySQLUserRepository, 
+    },
+    // El módulo de Alto Nivel
+    UserService,
+  ],
+  exports: [UserService],
+})
+export class UserModule {}
+```
+
+#### !!! Si en el futuro deseas cambiar la base de datos a MongoDB, solo necesitas crear una nueva clase MongoDBUserRepository implements IUserRepository y cambiar una sola línea en el UserModule:
+
+```
+// En user.module.ts
+{
+    provide: USER_REPOSITORY,
+    useClass: MongoDBUserRepository, // ¡Cambiado aquí!
+}
+```
+
+##### El UserService (Módulo de Alto Nivel) permanece intacto, demostrando la aplicación perfecta del DIP y el OCP.
+
+
+## L: 
+
+
