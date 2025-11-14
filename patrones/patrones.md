@@ -4453,6 +4453,1347 @@ export class UserModule {}
 ##### El UserService (Módulo de Alto Nivel) permanece intacto, demostrando la aplicación perfecta del DIP y el OCP.
 
 
-## L: 
+
+
+## L: (Principio de Sustitución de Liskov/Liskov Sustitution Principle (LSP)
+
+#### Los objetos de un programa deben poder ser reemplazados por instancias de sus subtipos (clases derivadas) sin alterar el correcto funcionamiento de ese programa.
+
+##### Formalmente: si S es un subtipo de T
+
+##### Entonces los objetos de tipo T pueden ser reemplazados por objetos de tipo S
+
+##### Ej: una función que espera un tipo T debería funcionar perfectamente si se le pasa un tipo S
+
+
+### Está estrechamente ligado a los conceptos de herencia y polimorfismo
+
+#### 1. Garantiza la Coherencia: Asegura que la herencia se utilice de forma correcta, donde la clase hija (subtipo) no solo herede la implementación, sino que también mantenga el comportamiento de la clase padre (tipo base).
+
+#### 2. Evita Sorpresas: Al sustituir la clase base por una derivada, no debería haber efectos secundarios inesperados
+
+Si una subclase cambia de manera drástica el comportamiento esperado de un método heredado (por ejemplo, arrojando una excepción inesperada o devolviendo un valor sin sentido en el contexto del padre), se está violando el LSP.
+
+#### 3. Fomenta el Diseño Sólido: Contribuye a un diseño de software que es más robusto, reutilizable y fácil de mantener y extender.
+
+
+Ej: Cuando se rompe LSP, problema del Rectángulo/Cuadrado:
+
+1. Una clase base Rectangulo tiene métodos para establecer el ancho y el alto.
+
+2. Una clase Cuadrado hereda de Rectangulo (porque un cuadrado es un rectángulo especial).
+
+3. En la clase Cuadrado, al establecer el ancho, también se debe establecer el alto (y viceversa) para mantener la propiedad de que todos sus lados son iguales.
+
+4. Si tienes una función que espera un Rectangulo y llama a establecerAncho(5) y luego a establecerAlto(10), espera un área de 50. Si se le pasa un objeto Cuadrado (el subtipo), la llamada a establecerAncho(5) podría cambiar el alto a 5, y la llamada a establecerAlto(10) podría cambiar el ancho a 10. Al final, el área será 100, no 50.
+
+Rompe LSP porque el subtipo (Cuadrado) no pudo ser sustituido por el tipo base (Rectangulo) sin romper el comportamiento esperado del programa.
+
+
+### Ej que Rompe LSP en TypeScrit
+
+1. Definición de Clasees
+
+```
+class Rectangulo {
+    constructor(protected ancho: number, protected alto: number) {}
+
+    getAncho(): number {
+        return this.ancho;
+    }
+
+    getAlto(): number {
+        return this.alto;
+    }
+
+    setAncho(ancho: number): void {
+        this.ancho = ancho;
+    }
+
+    setAlto(alto: number): void {
+        this.alto = alto;
+    }
+
+    area(): number {
+        return this.ancho * this.alto;
+    }
+}
+
+// Violación: Cuadrado hereda de Rectangulo, pero cambia su comportamiento
+class Cuadrado extends Rectangulo {
+    constructor(lado: number) {
+        super(lado, lado);
+    }
+
+    // Se fuerzan ambas dimensiones a ser iguales, cambiando el comportamiento del padre
+    setAncho(lado: number): void {
+        this.ancho = lado;
+        this.alto = lado; // Esto es la violación
+    }
+
+    setAlto(lado: number): void {
+        this.ancho = lado; // Esto es la violación
+        this.alto = lado;
+    }
+}
+```
+
+
+2. Función de Prueba (Consumidora)
+
+Esta función espera un Rectangulo y prueba un comportamiento básico:
+
+```
+function probarArea(forma: Rectangulo): void {
+    forma.setAncho(5);
+    forma.setAlto(10);
+    const areaEsperada = 50;
+    
+    console.log(`--- Probando ${forma.constructor.name} ---`);
+    console.log(`Ancho: ${forma.getAncho()}, Alto: ${forma.getAlto()}`);
+    console.log(`Área calculada: ${forma.area()}`);
+
+    if (forma.area() !== areaEsperada) {
+        // ¡La falla! El comportamiento no se mantuvo.
+        console.error(`¡Violación de LSP! Área esperada ${areaEsperada}, obtenida ${forma.area()}`);
+    } else {
+        console.log(`LSP cumplido para esta instancia.`);
+    }
+}
+
+// Ejecución que muestra la violación
+probarArea(new Rectangulo(1, 1)); // Funciona bien
+probarArea(new Cuadrado(1));      // Falla porque el Cuadrado fuerza el Ancho a ser igual al Alto (10*10=100)
+```
+
+
+### Ej que Cumple LSP en TypeScript
+
+#### Uso de un Tipo Base Coherente
+
+##### Debemos asegurar que la clase base y sus subtipos mantengan el mismo contrato de comportamiento
+
+##### La solución es usar una abstracción más general, como una Forma, y no forzar una relación de herencia incorrecta.
+
+
+1. Definición de la Interfaz Base
+
+Definimos una interfaz simple que solo requiere el cálculo del área.
+
+```
+interface Forma {
+    area(): number;
+}
+```
+
+
+2. Implementación de Clases
+
+Ahora, ambas clases implementan la interfaz Forma, pero manejan sus propias propiedades sin interferir en el comportamiento del otro
+
+```
+// Implementación que cumple con el LSP
+class RectanguloLSP implements Forma {
+    constructor(private ancho: number, private alto: number) {}
+
+    area(): number {
+        return this.ancho * this.alto;
+    }
+}
+
+// Implementación que cumple con el LSP
+class CuadradoLSP implements Forma {
+    constructor(private lado: number) {}
+
+    area(): number {
+        return this.lado * this.lado;
+    }
+}
+```
+
+
+3. 3. Función de Prueba (Consumidora)
+
+La función ahora solo utiliza el contrato garantizado por la interfaz:
+
+```
+function imprimirArea(forma: Forma): void {
+    console.log(`--- Probando ${forma.constructor.name} (LSP) ---`);
+    console.log(`Área: ${forma.area()}`);
+}
+
+const rectangulo = new RectanguloLSP(5, 10);
+const cuadrado = new CuadradoLSP(7);
+
+// Sustitución exitosa:
+imprimirArea(rectangulo); // Esperamos 50
+imprimirArea(cuadrado);   // Esperamos 49
+```
+
+##### La función imprimirArea solo llama a area(), un método cuyo comportamiento no cambia de manera disruptiva en los subtipos.
+
+Ambos subtipos (RectanguloLSP y CuadradoLSP) pueden ser sustituidos por el tipo Forma sin causar efectos secundarios, cumpliendo con el LSP.
+
+
+
+
+# I: Principio de Segregación de Interfaces/Interface Segregation Principle (ISP)
+
+#### Establece que: Ningún cliente debe ser forzado a depender de interfaces que no utiliza.
+
+##### Es mejor tener muchas interfaces pequeñas y específicas (segregadas)
+
+##### que una sola interfaz grande y "gorda" que fuerce a las clases implementadoras a definir métodos que no necesitan.
+
+
+#### Cuando una clase implementa una interfaz, se compromete a implementar todos los métodos definidos en ella
+
+##### Si la interfaz es muy grande y agrupa muchas responsabilidades:
+
+### 1. Dependencia Innecesaria: El cliente (la clase que usa la interfaz) se vuelve dependiente de métodos que nunca va a llamar.
+
+### 2. Mantenimiento Complicado: Si se modifica un método en la interfaz grande, todas las clases que la implementan deben ser modificadas, incluso si no usaban el método en cuestión.
+
+Esto causa un acoplamiento innecesario y hace que el sistema sea frágil.
+
+### 3. Violación de SRP: Las interfaces grandes a menudo también violan el Principio de Responsabilidad Única (SRP), ya que agrupan responsabilidades distintas.
+
+
+#### ISP promueve interfaces cohesionadas (que solo se ocupan de una única responsabilidad) y acoplamiento débil.
+
+### Ej que Rompe ISP: una única interfaz grande para una "Máquina Multifuncional":
+
+```
+interface MaquinaMultifuncional {
+    imprimir(documento: string): void;
+    escanear(documento: string): string;
+    fax(documento: string): void;
+}
+
+// Clase que VIOLA el ISP
+class ImpresoraBasica implements MaquinaMultifuncional {
+    imprimir(documento: string): void {
+        console.log(`Imprimiendo: ${documento}`);
+    }
+    // Obligada a implementar métodos que no usa
+    escanear(documento: string): string {
+        throw new Error("Error: Esta máquina no escanea.");
+    }
+    fax(documento: string): void {
+        throw new Error("Error: Esta máquina no envía faxes.");
+    }
+}
+```
+
+La ImpresoraBasica es forzada a implementar escanear() y fax(), lo que la obliga a generar errores o implementaciones vacías, frustrando al cliente que use esta clase.
+
+
+## Ej Cumple con ISP: En lugar de una sola interfaz, segregamos las responsabilidades en interfaces más pequeñas y específicas:
+
+```
+interface Impresora {
+    imprimir(documento: string): void;
+}
+
+interface Escaner {
+    escanear(documento: string): string;
+}
+
+interface Fax {
+    fax(documento: string): void;
+}
+
+// Clase que CUMPLE el ISP
+class ImpresoraBasicaISP implements Impresora {
+    imprimir(documento: string): void {
+        console.log(`Imprimiendo: ${documento}`);
+    }
+    // Solo implementa lo que realmente hace.
+}
+
+// Una máquina que sí puede hacer todo, implementa varias interfaces
+class MaquinaTodoEnUno implements Impresora, Escaner, Fax {
+    imprimir(documento: string): void { /* ... */ }
+    escanear(documento: string): string { /* ... */ return "Escaneado"; }
+    fax(documento: string): void { /* ... */ }
+}
+```
+
+##### Ahora, una clase cliente que solo necesita imprimir solo dependerá de la interfaz Impresora
+
+##### no estará al tanto de la existencia de los métodos de escaneo o fax.
+
+##### La ImpresoraBasicaISP solo implementa el método que le es relevante, cumpliendo con el ISP.
+
+
+
+## D: Principio de Inversión de Dependencias/Dependency Inversion Principle (DIP) 
+
+Establece dos reglas principales: 
+
+### 1. Módulos de alto nivel no deben depender de módulos de bajo nivel. Ambos deben depender de abstracciones.
+
+### 2. Las abstracciones no deben depender de los detalles. Los detalles deben depender de las abstracciones.
+
+
+#### Objetivo: Desacoplamiento
+
+##### Reducir el acoplamiento entre módulos de software, haciendo que el código sea más flexible, reutilizable y fácil de probar.
+
+Tradicionalmente, en una aplicación, los módulos de alto nivel (que contienen la lógica de negocio importante)
+
+Dependen directamente de los módulos de bajo nivel (que se encargan de la implementación de tareas específicas, como acceder a una base de datos o enviar un email).
+
+
+#### El DIP invierte esta dependencia: en lugar de que la lógica de negocio dependa de la implementación concreta 
+
+##### Ambos dependen de una abstracción (como una interfaz o una clase abstracta).
+
+
+### Ej: módulo de Alto Nivel (ServicioPedidos) que necesita guardar datos.
+
+#### 1. Sin DIP (Dependencia Directa): El ServicioPedidos crea directamente una instancia de la clase concreta BaseDeDatosMySQL.
+
+Si mañana cambias a PostgreSQL o a un archivo JSON, tienes que modificar el código dentro de ServicioPedidos.
+
+
+#### 2. Con DIP (Inversión de Dependencia):
+
+Se define una Abstracción (InterfazAlmacenamiento).
+
+El ServicioPedidos (Alto Nivel) depende de la InterfazAlmacenamiento.
+
+La BaseDeDatosMySQL (Bajo Nivel) implementa la InterfazAlmacenamiento.
+
+
+El ServicioPedidos ya no le importa cómo se guardan los datos, solo que el objeto que se le pase cumpla con el contrato de la interfaz
+
+Esto hace que el código de alto nivel sea independiente de los detalles.
+
+
+### Mecanismos Clave: La forma más común de implementar el DIP es a través de la Inyección de Dependencias (DI).
+
+##### En lugar de que el módulo de alto nivel cree el módulo de bajo nivel, se le inyecta la dependencia a través del constructor
+
+##### O un setter, o una propiedad, pero siempre haciendo referencia a la abstracción, no a la clase concreta.
+
+
+El DIP es fundamental para el desarrollo impulsado por pruebas (TDD) porque te permite reemplazar las implementaciones concretas (ej. la base de datos real) con Mocks o Stubs durante las pruebas, asegurando que tu lógica de negocio funcione correctamente sin necesidad de una infraestructura real.
+
+
+### Ej en TypeScript de DIP
+
+#### GestorNotificaciones (módulo de alto nivel) que necesita enviar mensajes usando diferentes mecanismos, como email o SMS (módulos de bajo nivel).
+
+#### 1. Sin DIP (Acoplamiento fuerte): el módulo de alto nivel depende directamente de los detalles de bajo nivel.
+
+```
+// Módulos de Bajo Nivel (Implementaciones concretas)
+class ServicioEmail {
+    enviarCorreo(destinatario: string, mensaje: string): void {
+        console.log(`Enviando correo a ${destinatario}: "${mensaje}"`);
+        // Lógica real para enviar email
+    }
+}
+
+class ServicioSMS {
+    enviarSMS(numero: string, mensaje: string): void {
+        console.log(`Enviando SMS a ${numero}: "${mensaje}"`);
+        // Lógica real para enviar SMS
+    }
+}
+
+// Módulo de Alto Nivel (Lógica de negocio)
+class GestorNotificacionesACoplado {
+    private emailService: ServicioEmail; // Dependencia directa y concreta
+    private smsService: ServicioSMS;     // Dependencia directa y concreta
+
+    constructor() {
+        // El módulo de alto nivel crea y depende directamente de las implementaciones concretas
+        this.emailService = new ServicioEmail();
+        this.smsService = new ServicioSMS();
+    }
+
+    enviarNotificacionPorEmail(destinatario: string, mensaje: string): void {
+        this.emailService.enviarCorreo(destinatario, mensaje);
+    }
+
+    enviarNotificacionPorSMS(numero: string, mensaje: string): void {
+        this.smsService.enviarSMS(numero, mensaje);
+    }
+}
+
+// --- Uso sin DIP ---
+console.log("--- SIN DIP ---");
+const gestorAcoplado = new GestorNotificacionesACoplado();
+gestorAcoplado.enviarNotificacionPorEmail("usuario@ejemplo.com", "¡Tu pedido ha sido enviado!");
+gestorAcoplado.enviarNotificacionPorSMS("123456789", "¡Tu paquete llegará pronto!");
+
+// Problemas:
+// 1. Si cambiamos la implementación de ServicioEmail (ej. usamos una librería diferente),
+//    GestorNotificacionesACoplado necesita ser modificado.
+// 2. Es difícil de probar unitariamente GestorNotificacionesACoplado sin enviar emails/SMS reales.
+```
+
+##### Aquí, GestorNotificacionesACoplado está fuertemente acoplado a las clases ServicioEmail y ServicioSMS.
+
+##### Si queremos añadir un nuevo servicio (por ejemplo, notificaciones push) o cambiar el proveedor de email, tendremos que modificar GestorNotificacionesACoplado.
+
+##### Rompe el Principio Abierto/Cerrado y dificulta las pruebas.
+
+
+#### 2. DIP (Inversión de Dependencias): desacoplar el GestorNotificaciones de las implementaciones concretas.
+
+##### 1. Abstracciones (interfaces): para nuestros servicios de bajo nivel.
+
+```
+// Abstracciones (Módulos de Alto Nivel y Bajo Nivel dependerán de estas)
+interface Notificador {
+    enviar(destino: string, mensaje: string): void;
+}
+```
+
+
+##### 2. Módulos de Bajo Nivel (Implementaciones Concretas)
+
+Estas clases ahora implementan las abstracciones.
+
+```
+// Módulos de Bajo Nivel (Implementaciones concretas, dependiendo de la abstracción Notificador)
+class ServicioEmailDIP implements Notificador {
+    enviar(destinatario: string, mensaje: string): void {
+        console.log(`[Email] Enviando correo a ${destinatario}: "${mensaje}"`);
+        // Lógica real para enviar email
+    }
+}
+
+class ServicioSMSDIP implements Notificador {
+    enviar(numero: string, mensaje: string): void {
+        console.log(`[SMS] Enviando SMS a ${numero}: "${mensaje}"`);
+        // Lógica real para enviar SMS
+    }
+}
+
+// Podemos añadir fácilmente un nuevo tipo de notificador sin modificar el GestorNotificaciones
+class ServicioPushDIP implements Notificador {
+    enviar(idUsuario: string, mensaje: string): void {
+        console.log(`[Push] Enviando notificación push a usuario ${idUsuario}: "${mensaje}"`);
+        // Lógica real para enviar notificación push
+    }
+}
+```
+
+
+##### 3. Módulo de Alto Nivel (Lógica de Negocio)
+
+Ahora, el GestorNotificaciones depende de la abstracción Notificador, no de las implementaciones concretas. 
+
+##### !!! Usamos la Inyección de Dependencias a través del constructor.
+
+```
+// Módulo de Alto Nivel (Lógica de negocio, dependiendo de la abstracción Notificador)
+class GestorNotificacionesDIP {
+    // El módulo de alto nivel depende de la abstracción Notificador
+    // La dependencia es "inyectada" (Dependency Injection)
+    constructor(private notificador: Notificador) {}
+
+    notificar(destino: string, mensaje: string): void {
+        this.notificador.enviar(destino, mensaje);
+    }
+}
+
+// --- Uso con DIP ---
+console.log("\n--- CON DIP ---");
+
+// Inyectamos el servicio de email
+const gestorConEmail = new GestorNotificacionesDIP(new ServicioEmailDIP());
+gestorConEmail.notificar("usuario@ejemplo.com", "¡Tu cuenta ha sido creada!");
+
+// Inyectamos el servicio de SMS
+const gestorConSMS = new GestorNotificacionesDIP(new ServicioSMSDIP());
+gestorConSMS.notificar("987654321", "¡Código de verificación: 12345!");
+
+// Inyectamos el servicio de Push (¡sin cambiar GestorNotificacionesDIP!)
+const gestorConPush = new GestorNotificacionesDIP(new ServicioPushDIP());
+gestorConPush.notificar("userId-XYZ", "¡Oferta especial solo para ti!");
+```
+
+### Beneficios de DIP
+
+#### 1. Desacoplamiento: GestorNotificacionesDIP no sabe ni le importa cómo se envía la notificación, solo sabe que tiene un objeto que cumple el contrato Notificador.
+
+#### 2. Flexibilidad: Podemos cambiar el tipo de notificación (email, SMS, push) simplemente inyectando una implementación diferente, sin modificar el GestorNotificacionesDIP.
+
+#### 3. Reusabilidad: Los servicios de bajo nivel (Email, SMS, Push) son más reutilizables y se pueden usar en otros contextos
+
+#### 4. Testeabilidad: Es muy fácil probar GestorNotificacionesDIP con "mocks" o "stubs" del Notificador en lugar de servicios reales.
+
+
+Con el DIP, hemos invertido la dirección de la dependencia. Antes, GestorNotificaciones dependía de ServicioEmail
+
+Ahora, ServicioEmail (el detalle) depende de Notificador (la abstracción), y GestorNotificaciones (el alto nivel) también depende de Notificador. Ambos dependen de la abstracción.
+
+
+
+# Diseño de interfaces/abstracciones
+
+## 1. Fundamentos
+
+### Herencia vs. Composición
+
+Cuándo usar cada uno
+
+La Composición sobre la Herencia es un principio clave en el diseño de interfaces.
+
+Polimorfismo: Cómo las interfaces permiten que diferentes objetos sean tratados como un tipo común.
+
+
+### Uso de SOLID
+
+Principio de Responsabilidad Única (SRP): Cada interfaz debe tener una sola razón para cambiar.
+
+Principio de Sustitución de Liskov (LSP): Clases que implementan una interfaz deben ser sustituibles sin romper el programa.
+
+Principio de Segregación de Interfaces (ISP): Clientes no deben depender de métodos que no usan (interfaces pequeñas).
+
+Principio de Inversión de Dependencias (DIP): Depender de abstracciones, no de concreciones (el concepto central de este estudio).
+
+
+### Abstracciones Avandado
+
+Interfaces (TypeScript/Java/C#): Cómo definen un contrato de comportamiento.
+
+Clases Abstractas: Cuándo usarlas en lugar de interfaces (cuando se necesita una implementación parcial o estado base).
+
+Acoplamiento y Cohesión: Comprender cómo las buenas abstracciones reducen el acoplamiento y aumentan la cohesión.
+
+
+## 2. Diseño Aplicado
+
+#### Utilizar las interfaces para implementar soluciones de diseño probadas.
+
+### Patrones de Diseño Esenciales
+
+Patrones de Creación: Implementar una fábrica (Factory Pattern) o fábrica abstracta (Abstract Factory) usando interfaces para crear objetos.
+
+Patrones Estructurales: Estudiar el patrón Adaptador (Adapter), que usa una interfaz para que dos clases incompatibles trabajen juntas.
+
+Patrones de Comportamiento: Implementar el patrón Estrategia (Strategy), donde las interfaces permiten intercambiar algoritmos sin cambiar la clase cliente.
+
+
+### Inyección de Dependencias (DI)
+
+DI como el mecanismo práctico para aplicar el DIP.
+
+Inyección por Constructor (la forma más limpia de inyectar abstracciones).
+
+
+### Mocking y Testabilidad
+
+El objetivo principal de una buena abstracción es la testabilidad.
+
+Crear "Mocks" o "Stubs" (implementaciones falsas de interfaces) para aislar la lógica de negocio de los detalles de infraestructura (bases de datos, APIs externas) durante las pruebas unitarias.
+
+
+## 3. Avanzado
+
+### Abstracción de Repositorios (Repository Pattern):
+
+Crear una interfaz IRepositorio<T> para acceder a datos.
+
+Implementar una versión concreta (RepositorioSQL) y una versión de prueba (RepositorioEnMemoria) que ambas satisfagan la misma interfaz.
+
+Esto demuestra el poder de la sustitución y el DIP.
+
+
+### Casos de Estudio
+
+Cómo las interfaces se utilizan en frameworks de código abierto (ej. en la configuración de middleware o plugins).
+
+
+### Recursos
+
+Clean Code y Clean Architecture de Robert C. Martin (Uncle Bob).
+
+Design Patterns: Elements of Reusable Object-Oriented Software (GoF).
+
+
+## Herencia vs Composición
+
+### Herencia
+
+#### mecanismo donde una nueva clase (subclase o clase hija) toma las propiedades y métodos de una clase existente (superclase o clase padre).
+
+##### Relación: Representa una relación "Es un/a" (Is-a).
+
+Ejemplo: Un Gato es un Animal.
+
+Implementación: Se logra mediante la palabra clave extends (en TypeScript/Java/etc.).
+
+Reutilización: Se reutilizan la implementación (código) y la interfaz (los métodos públicos) del padre.    
+
+
+### Desventaja de la Herencia
+
+#### 1. Acoplamiento Fuerte: La subclase queda íntimamente ligada a la implementación de la superclase
+
+##### Si la superclase cambia, la subclase puede romperse o cambiar su comportamiento (lo que potencialmente viola el LSP).
+
+
+#### 2. Rigidez: La herencia se define estáticamente en el momento de la compilación
+
+##### Una clase solo puede heredar de una clase (herencia simple en muchos lenguajes), lo que limita la reutilización.
+
+
+#### 3. El Problema de Subclases Frágiles: La subclase hereda métodos y propiedades, incluso aquellos que no necesita o que no son apropiados para ella.
+
+
+### Composición
+
+#### Mecanismo donde una clase incluye instancias de otras clases para obtener la funcionalidad deseada
+
+##### Relación: Representa una relación "Tiene un/a" (Has-a).
+
+Ejemplo: Un Coche tiene un Motor.
+
+##### Implementación: Se logra mediante la inclusión de referencias (propiedades) de otras clases
+
+##### O, idealmente, de interfaces (abstracciones) como miembros de la clase principal.
+
+Reutilización: Se reutiliza comportamiento delegando responsabilidades a objetos especializados.
+
+
+### Beneficios de Composición
+
+#### 1. Acoplamiento Débil: La clase solo se acopla a la interfaz del objeto que compone, no a su implementación concreta
+
+Esto facilita el cambio o la sustitución de la funcionalidad.
+
+
+#### 2. Flexibilidad: Permite la creación dinámica (en tiempo de ejecución) de objetos con diferentes comportamientos
+
+Una clase puede "componerse" de múltiples objetos para obtener múltiples capacidades.
+
+
+#### 3. !!! Cumplimiento de SOLID: Es la base para aplicar el DIP (dependencia de abstracciones) y el ISP (interfaces específicas).
+
+
+### Ej TS de Composición: La composición utiliza interfaces para desacoplar el comportamiento:
+
+```
+// 1. Abstracción/Interfaz (Comportamiento)
+interface Volador {
+    volar(): void;
+}
+
+// 2. Clases de Comportamiento (Implementación)
+class ComportamientoVueloAlas implements Volador {
+    volar(): void {
+        console.log("¡Vuela batiendo sus alas!");
+    }
+}
+
+class ComportamientoVueloCohete implements Volador {
+    volar(): void {
+        console.log("¡Vuela propulsado por un cohete!");
+    }
+}
+
+// 3. Clase Principal (Composición)
+class Pato {
+    // La clase Pato TIENE un objeto que implementa Volador
+    constructor(private comportamientoVuelo: Volador) {}
+
+    realizarVuelo(): void {
+        this.comportamientoVuelo.volar();
+    }
+    
+    // El comportamiento de vuelo se puede cambiar en tiempo de ejecución
+    setComportamientoVuelo(nuevoComportamiento: Volador): void {
+        this.comportamientoVuelo = nuevoComportamiento;
+    }
+}
+
+// Uso:
+let patoNormal = new Pato(new ComportamientoVueloAlas());
+patoNormal.realizarVuelo(); // Vuela batiendo sus alas
+
+// Cambiamos el comportamiento dinámicamente:
+patoNormal.setComportamientoVuelo(new ComportamientoVueloCohete());
+patoNormal.realizarVuelo(); // Vuela propulsado por un cohete
+```
+
+##### Si hubiéramos usado Herencia, el Pato estaría ligado a una sola forma de volar.
+
+#### Con Composición, el comportamiento (Volador) se intercambia fácilmente, lo que es mucho más flexible y menos acoplado.
+
+
+## Prácticas para Diseño de Abstracciones
+
+
+
+# Diseño de Módulos
+
+Se enfoca en las tres áreas principales del diseño modular
+
+##### Principios de Cohesión y Acoplamiento, Patrones Estructurales y Gestión de Dependencias
+
+
+## 1. El Corazón de la Modularidad (Cohesión y Acoplamiento)
+
+##### Objetivo: Criterios para dividir un sistema en módulos (clases, paquetes o namespaces).
+
+### 1. Cohesión (Cohesion): La medida en que los elementos dentro de un módulo están relacionados y trabajan juntos para lograr un único propósito.
+
+Tipos de cohesión, enfocándose en la Cohesión Funcional (la mejor, donde el módulo realiza una única función bien definida) y evitando la Cohesión Temporal o Coincidental.
+
+##### Principio de Responsabilidad Única (SRP): Asegurar que cada módulo (clase o paquete) tenga una sola razón para cambiar.
+
+
+### 2. Acoplamiento (Coupling): La medida de la interdependencia entre diferentes módulos. El objetivo es mantener el acoplamiento bajo.
+
+Estudiar tipos de acoplamiento, enfocándose en el Acoplamiento por Datos (el más aceptable) y evitando el Acoplamiento por Contenido (el peor, donde un módulo depende de detalles internos de otro).
+
+El objetivo es que los módulos se comuniquen a través de interfaces públicas estables, no de detalles de implementación.
+
+
+### 3. Principios de Diseño para la Modularidad (GRASP):
+
+#### Experto en Información (Information Expert): Asignar la responsabilidad de la operación al módulo que tiene la información necesaria para realizarla
+
+Esto promueve la alta cohesión.
+
+#### Bajo Acoplamiento (Low Coupling): Asignar responsabilidades para mantener la interdependencia lo más baja posible.
+
+
+## 2. Principios de Arquitectura Modular (Los 5 Principios de Diseño de Paquetes)
+
+Establecidos por Robert C. Martin) se aplican a nivel de paquetes o módulos grandes, no solo a nivel de clases.
+
+### Principios de Cohesión de Paquetes:
+
+#### REP (Reuse/Release Equivalence Principle): La unidad de reutilización debe ser la unidad de publicación. Lo que se reutiliza en conjunto, debe empaquetarse junto.
+
+#### CCP (Common Closure Principle): Las clases que cambian por las mismas razones deben estar en el mismo módulo. Esto está directamente relacionado con el SRP a nivel de paquete.
+
+#### CRP (Common Reuse Principle): Las clases que se usan juntas deben agruparse. Evita que los clientes dependan de módulos que no necesitan (relacionado con el ISP a nivel de paquete).
+
+
+### Principios de Acoplamiento de Paquetes:
+
+ADP (Acyclic Dependencies Principle): Las dependencias entre módulos deben ser unidireccionales, evitando ciclos (dependencia circular), ya que estos dificultan la comprensión, el despliegue y la prueba.
+
+SDP (Stable Dependencies Principle): Los módulos más fáciles de cambiar (menos estables) deben depender de los módulos más difíciles de cambiar (más estables). Los módulos estables deben ser abstractos para que puedan ser extendidos (relacionado con el OCP y DIP).
+
+
+## 3. Patrones y Estructuras Modulares Avanzadas
+
+### Abstracción y Encapsulamiento:
+
+Regla de Encapsulamiento: Proteger los detalles internos del módulo, exponiendo solo la interfaz pública. Todo lo que el cliente no necesita saber debe ser privado.
+
+Diseño por Contrato (Design by Contract): Definir claramente las precondiciones, postcondiciones e invariantes de la interfaz pública del módulo.
+
+
+### Patrones de Diseño Estructurales:
+
+Fachada (Facade): Proporcionar una interfaz única y simple a un subsistema complejo (un buen módulo a menudo actúa como una Fachada para sus componentes internos).
+
+Módulo (Module/Package): Uso de namespaces o paquetes para agrupar clases relacionadas y controlar la visibilidad (pública/privada) entre módulos.
+
+
+### Inversión de Dependencias (DIP) y Capas:
+
+Diseñar el sistema en Capas (ej. Dominio, Aplicación, Infraestructura).
+
+Asegurar que las capas superiores (más abstractas, como el Dominio) no dependan de las capas inferiores (más concretas, como la Infraestructura), aplicando el DIP para invertir la dependencia a través de interfaces. Esto es la base de la Arquitectura Limpia (Clean Architecture).
+
+
+
+
+# Diseño de Módulo de Bajo Nivel
+
+##### Se centra en la construcción de unidades de código pequeñas (como clases y funciones) que son robustas, fáciles de probar y reutilizables.
+
+##### Donde los principios SOLID y la programación orientada a objetos se aplican con mayor detalle.
+
+
+## 1. Fundamentos de la Unidad (Clase y Función)
+
+##### Objetivo: dominar los criterios para diseñar la unidad de código más pequeña de manera óptima.
+
+### Cohesión a Nivel de Clase:
+
+Revisar el Principio de Responsabilidad Única (SRP) a fondo. Una clase debe tener solo una razón para cambiar.
+
+Asegurar que los métodos de una clase siempre operen sobre los datos de esa clase (alta Cohesión Funcional). 
+
+
+### Encapsulamiento y Contratos:
+
+Definir la interfaz pública de la clase como su contrato.
+
+Hacer que el estado interno sea privado (ocultación de información).
+
+##### !!! Diseño por Contrato (DbC): Definir precondiciones (qué debe ser verdad antes de llamar al método), postcondiciones (qué será verdad después) e invariantes (qué debe ser verdad siempre). 
+
+
+### Diseño de Funciones/Métodos:
+
+Asegurar que las funciones hagan una sola cosa (Cohesión Funcional).
+
+##### !!! Evitar listas largas de argumentos. Si se necesitan más de tres o cuatro, usar un objeto de configuración (config object).
+
+Preferir las Funciones Puras cuando sea posible (sin efectos secundarios y deterministas).
+
+
+## 2. Robustez y Flexibilidad (SOLID en Detalle)
+
+##### Se utilizan los principios SOLID para garantizar que los módulos de bajo nivel sean flexibles y estables.
+
+### Aplicación Práctica del LSP:
+
+Asegurarse de que al sobrescribir (override) un método, la subclase no cambie el comportamiento esperado ni introduzca excepciones inesperadas que no estén documentadas en la clase base.
+
+Práctica: Evaluar si una relación "Es un/a" (herencia) no se debe convertir en "Tiene un/a" (composición) para evitar violaciones del LSP (ej. el dilema del Rectángulo/Cuadrado).
+
+
+### Uso de Interfaces para Flexibilidad (ISP y DIP):
+
+Principio de Segregación de Interfaces (ISP): Dividir interfaces grandes en roles específicos para que las clases solo dependan de los métodos que realmente usan.
+
+Principio de Inversión de Dependencias (DIP): Los módulos de bajo nivel (como las clases de servicio) deben depender de las abstracciones (interfaces) definidas en el módulo de alto nivel (como la lógica de negocio), y no al revés.
+
+
+### Manejo de Errores y Excepciones:
+
+Los módulos de bajo nivel deben manejar los errores de manera consistente.
+
+Preferir el uso de excepciones personalizadas (o tipos Result/Either) en lugar de devolver códigos de error genéricos. Las excepciones deben ser descriptivas y estar documentadas en el contrato del método.
+
+
+## 3. Testabilidad y Reutilización
+
+##### El objetivo final de un buen módulo de bajo nivel es que sea trivial de probar y fácil de reutilizar.
+
+### Inyección de Dependencias (DI)
+
+#### !!! Asegurar que todas las dependencias externas (otras clases, APIs) se inyecten a través del constructor y se almacenen como propiedades privadas (Inyección por Constructor). Esto facilita el mocking.
+
+Evitar el uso del operador new dentro de la clase para instanciar dependencias.
+
+
+### Diseño Dirigido por Pruebas (TDD)
+
+Adoptar la práctica de escribir la prueba unitaria antes de escribir el código de la función o clase. Esto garantiza que el módulo esté diseñado para ser probado.
+
+#### !!! Enfocarse en la cobertura de rama y línea para asegurar que toda la lógica del módulo se haya ejecutado en las pruebas.
+
+
+### Herramientas de Mocking y Stubs:
+
+Aprender a usar librerías de mocking (como Jest Mocks, Sinon, o Mockito) para sustituir las dependencias inyectadas con dobles de prueba.
+
+Practicar el aislamiento de la clase bajo prueba para que solo se pruebe su lógica, no la lógica de sus dependencias.
+
+
+
+## Módulo de Bajo Nivel que cumple con todos los SOLID
+
+##### Un buen ejemplo es un validador de datos que usa la Composición y el Principio de Inversión de Dependencias (DIP).
+
+
+### Ej: clase ValidadorEmail que depende de una interfaz de estrategia para realizar las comprobaciones, haciendo que sea fácil de probar y extender.
+
+#### 1. DIP y ISP: Abstracción (Interfaz)
+
+Definimos una interfaz pequeña y específica para el comportamiento de validación. Esto cumple con el ISP (Segregación de Interfaces) y es la abstracción en la que confiaremos para el DIP.
+
+```
+// Notamos que la interfaz tiene un único propósito, cumpliendo con SRP a nivel de contrato.
+interface EstrategiaValidacion {
+    esValido(valor: string): boolean;
+}
+```
+
+
+#### 2. SRP y OCP: Implementaciones Concretas
+
+Creamos implementaciones concretas de la interfaz
+
+Cada una tiene una única razón para cambiar (SRP) y podemos añadir nuevas reglas sin modificar las existentes (OCP).
+
+```
+// Módulo de Bajo Nivel 1: Implementa la abstracción
+class ValidacionRegexEmail implements EstrategiaValidacion {
+    // Implementación concreta basada en una expresión regular
+    esValido(email: string): boolean {
+        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        console.log(`- Usando Regex: ${regex.test(email) ? '✅' : '❌'}`);
+        return regex.test(email);
+    }
+}
+
+// Módulo de Bajo Nivel 2: Otra estrategia para otra regla (ej. no está en una lista negra)
+class ValidacionListaNegra implements EstrategiaValidacion {
+    private listaNegra = ['spam.com', 'phishing.net'];
+
+    esValido(email: string): boolean {
+        const dominio = email.split('@')[1];
+        const esBloqueado = this.listaNegra.includes(dominio);
+        console.log(`- Comprobando Lista Negra: ${!esBloqueado ? '✅' : '❌'}`);
+        return !esBloqueado;
+    }
+}
+```
+
+
+#### 3. DIP y LSP: El Módulo de Alto Nivel
+
+La clase ValidadorEmail es nuestro módulo de "alto nivel" en este contexto, ya que contiene la lógica de negocio (aplicar una o más estrategias de validación).
+
+```
+// Módulo de Alto Nivel: Depende de la abstracción, no de las concreciones.
+class ValidadorEmail {
+    // La dependencia es la interfaz (abstracción), cumpliendo el DIP.
+    // Usamos composición: ValidadorEmail TIENE una lista de Estrategias.
+    private estrategias: EstrategiaValidacion[];
+
+    // Inyección de Dependencias a través del constructor
+    constructor(estrategias: EstrategiaValidacion[]) {
+        this.estrategias = estrategias;
+    }
+
+    // El método utiliza todas las estrategias, cumpliendo con LSP: 
+    // cualquier objeto inyectado que implemente EstrategiaValidacion funcionará.
+    validar(email: string): boolean {
+        console.log(`\nValidando Email: ${email}`);
+        
+        for (const estrategia of this.estrategias) {
+            if (!estrategia.esValido(email)) {
+                return false; // Falla en la primera estrategia que no pasa
+            }
+        }
+        return true; // Pasa todas las estrategias
+    }
+}
+```
+
+
+#### 4. Uso (Demostración de Flexibilidad)
+
+El cliente final solo necesita configurar el ValidadorEmail inyectándole las estrategias deseadas:
+
+```
+// 1. Caso de uso A: Solo validación de formato (fácil de testear)
+const soloFormato = new ValidadorEmail([
+    new ValidacionRegexEmail()
+]);
+soloFormato.validar("test@ejemplo.com"); // Pasa
+soloFormato.validar("invalido");        // Falla
+
+// 2. Caso de uso B: Formato y Lista Negra
+const completo = new ValidadorEmail([
+    new ValidacionRegexEmail(),
+    new ValidacionListaNegra()
+]);
+completo.validar("usuario@spam.com"); // Falla por Lista Negra
+completo.validar("usuario@gmail.com"); // Pasa ambos
+```
+
+##### S (SRP): Cada clase de validación (ej. ValidacionRegexEmail) tiene una única responsabilidad (validar una regla específica).
+
+##### O (OCP): El ValidadorEmail está abierto a la extensión (puedes añadir una nueva regla de validación, como ValidacionLongitudMinima) pero cerrado a la modificación (no tienes que cambiar la clase ValidadorEmail).
+
+##### L (LSP): Cualquier objeto inyectado que implemente EstrategiaValidacion (ej. si sustituyes ValidacionRegexEmail por un ValidacionServicioExterno) funcionará sin problemas en el método validar().
+
+##### I (ISP): La interfaz EstrategiaValidacion es muy específica, obligando a los implementadores a usar solo el método esValido().
+
+##### D (DIP): La clase de alto nivel ValidadorEmail no depende de las clases concretas (ValidacionRegexEmail), sino de la abstracción (EstrategiaValidacion).
+    
+
+
+
+# Diseño de Módulo de Alto Nivel
+
+#### Es donde se define la arquitectura de la aplicación, enfocándose en la lógica de negocio y la coordinación
+
+##### El objetivo es crear módulos que sean estables, abstractos y completamente independientes de los detalles de la infraestructura.
+
+Siguen la Arquitectura Limpia (Clean Architecture).
+
+Se centra en la lógica de negocio y la inversión de dependencias para aislar el corazón del sistema.
+
+
+## 1. El Corazón del Sistema (La Capa de Dominio)
+
+##### El objetivo es definir la esencia del sistema sin preocuparse por la tecnología. Esta es la capa de más alto nivel.
+
+##### Esta es la capa de más alto nivel.
+
+
+### Diseño de Entidades (Entities):
+
+#### !!! Definir las estructuras que contienen las reglas de negocio más críticas y transversales (ej. Usuario, Cuenta).
+
+Asegurar que las Entidades sean agnósticas a la persistencia; no deben tener conocimiento de bases de datos, frameworks o interfaces de usuario.
+
+#### !!! Implementar las reglas de negocio como métodos dentro de las Entidades (comportamiento), no solo como estructuras de datos anémicas
+
+
+### Definición de Contratos (Interfaces)
+
+#### Crear Interfaces de Repositorio (ej. IUsuarioRepositorio) que definan las operaciones de acceso a datos necesarias.
+
+#### Crear Interfaces de Servicio (ej. IProveedorEmail) para cualquier interacción con sistemas externos.
+
+#### !!! Inversión de Dependencias (DIP): Las interfaces de bajo nivel (Infraestructura) deben estar definidas en esta capa de alto nivel, forzando a los detalles a depender de ellas.
+
+
+## 2. Lógica de Aplicación (Casos de Uso)
+
+##### Se enfoca en cómo la aplicación realiza tareas específicas usando las Entidades.
+
+### Creación de Casos de Uso (Use Cases/Interactors)
+
+Cada Caso de Uso debe representar una funcionalidad específica de la aplicación (ej. CrearNuevoPedido, ActualizarPerfilDeUsuario).
+
+Asegurar el SRP: Un Caso de Uso tiene una sola responsabilidad, que es coordinar el flujo de datos para lograr un objetivo de negocio.
+
+Los Casos de Uso solo deben orquestar el flujo; deben utilizar las Entidades para ejecutar las reglas de negocio.
+
+
+### Inyección de Dependencias (DI) en Casos de Uso
+
+El Caso de Uso debe recibir todas las dependencias (Repositorios, Servicios, etc.) a través de su constructor, y deben ser abstracciones (interfaces).
+
+Esto garantiza que el módulo de alto nivel sea completamente independiente de la infraestructura, haciendo que la capa de aplicación sea trivial de probar.
+
+
+### Patrón Estrategia y Mediador
+
+Aplicar el patrón Estrategia para hacer que los Casos de Uso sean flexibles al delegar algoritmos intercambiables (ej. calcular impuestos para diferentes países).
+
+Considerar el patrón Mediador para coordinar la comunicación entre múltiples Entidades o Servicios sin acoplarlos directamente.
+
+
+## 3. Separación y Estabilidad de Módulos (Principios de Paquetes)
+
+##### Aplica los principios de modularidad a la estructura del proyecto.
+
+### Aislamiento de Capas:
+
+Implementar la regla: La Capa de Dominio solo puede depender de ella misma. La Capa de Aplicación puede depender de la Capa de Dominio. Ninguna de ellas puede depender de la Capa de Infraestructura (Web/DB/APIs).
+
+Garantizar el ADP (Acyclic Dependencies Principle): No debe haber ciclos de dependencia entre módulos (ej. Dominio no puede depender indirectamente de la Interfaz de Usuario).
+
+
+### Principio de Dependencias Estables (SDP):
+
+Asegurar que los módulos de alto nivel (Dominio y Casos de Uso) sean los más estables (difíciles de cambiar, muy referenciados) y abstractos (llenos de interfaces).
+
+Los módulos de bajo nivel (Implementaciones de Repositorios) deben ser inestables (fáciles de cambiar) y concretos.     
+
+
+### Integración a través de Puertos y Adaptadores:
+
+Entender la Capa de Aplicación como el Puerto (la API de la aplicación).
+
+La Capa de Infraestructura son los Adaptadores (que convierten las llamadas de la API/Base de Datos a las interfaces de la aplicación).
+
+
+## Módulo de Alto Nivel que cumple con todos los SOLID
+
+
+Es el Caso de Uso central en una arquitectura limpia (como la Arquitectura Hexagonal o Limpia).
+
+##### Este módulo contendrá la lógica de negocio y dependerá solo de abstracciones (interfaces) definidas dentro de sí mismo, invirtiendo la dependencia de la infraestructura.
+
+
+## Ej: sistema de gestión de cuentas de usuario
+
+Caso de Uso para registrar un nuevo usuario.
+
+
+### 1. Módulo de Abstracciones (Cumplimiento de DIP, LSP, ISP)
+
+##### Interfaces que nuestro Módulo de Alto Nivel necesita para operar. 
+
+Estas interfaces son los "Puertos" de la aplicación.
+
+```
+// 1. Entidad de Dominio (Alta Cohesión, SRP)
+class Usuario {
+    constructor(
+        public id: string,
+        public email: string,
+        public nombre: string,
+        public estaActivo: boolean = false
+    ) {}
+    
+    // Regla de Negocio: La entidad sabe cómo activarse.
+    activar(): void {
+        this.estaActivo = true;
+    }
+}
+
+// 2. Puertos (Interfaces requeridas por el Caso de Uso)
+// DIP: El módulo de alto nivel define la interfaz del módulo de bajo nivel.
+
+// Puerto de Base de Datos (ISP: solo lo que necesitamos)
+interface IRepositorioUsuarios {
+    buscarPorEmail(email: string): Promise<Usuario | null>;
+    guardar(usuario: Usuario): Promise<void>;
+}
+
+// Puerto de Comunicación Externa (ISP: solo lo que necesitamos)
+interface IServicioNotificacion {
+    enviarEmailActivacion(usuario: Usuario, token: string): Promise<void>;
+}
+```
+
+
+### 2. Módulo de Alto Nivel (Caso de Uso)
+
+Clase central. 
+
+Contiene la lógica de negocio pura y coordina las operaciones.
+
+```
+// Datos de entrada y salida del Caso de Uso
+interface EntradaRegistro {
+    email: string;
+    nombre: string;
+}
+
+// 3. Caso de Uso (SRP: Una sola responsabilidad: registrar un usuario)
+class RegistrarUsuario {
+    // Inyección de Dependencias: Depende SOLAMENTE de las interfaces (DIP)
+    constructor(
+        private readonly repositorio: IRepositorioUsuarios,
+        private readonly notificador: IServicioNotificacion
+    ) {}
+    
+    // OCP: La lógica está cerrada a la modificación, pero abierta a la extensión 
+    // (ej. cambiando el repositorio o el notificador inyectado).
+    async ejecutar(datos: EntradaRegistro): Promise<Usuario> {
+        
+        // 1. Lógica de Negocio: Verificar si el email ya existe.
+        const usuarioExistente = await this.repositorio.buscarPorEmail(datos.email);
+        if (usuarioExistente) {
+            throw new Error("El email ya está registrado.");
+        }
+        
+        // 2. Creación de la Entidad y aplicación de reglas de dominio.
+        const nuevoUsuario = new Usuario(
+            `user-${Date.now()}`, 
+            datos.email, 
+            datos.nombre
+        );
+        nuevoUsuario.activar(); // Regla de negocio simplificada
+        
+        // 3. Persistencia de la Entidad (LSP: El Repositorio real o un Mock funcionarán)
+        await this.repositorio.guardar(nuevoUsuario);
+        
+        // 4. Notificación externa
+        const token = "TOKEN_DE_EJEMPLO";
+        await this.notificador.enviarEmailActivacion(nuevoUsuario, token);
+        
+        return nuevoUsuario;
+    }
+}
+```
+
+
+### 3. Los Módulos de Bajo Nivel (Infraestructura)
+
+##### Estas clases son los "Adaptadores" que implementan las interfaces del módulo de alto nivel.
+
+```
+// Adaptador de Base de Datos (puedes sustituirlo por Postgres, Mongo, etc.)
+class RepositorioUsuariosMemoria implements IRepositorioUsuarios {
+    // Implementación concreta
+    private usuarios: Usuario[] = [];
+
+    async buscarPorEmail(email: string): Promise<Usuario | null> {
+        return this.usuarios.find(u => u.email === email) || null;
+    }
+
+    async guardar(usuario: Usuario): Promise<void> {
+        this.usuarios.push(usuario);
+        console.log(`[INFRA] Usuario ${usuario.email} guardado en memoria.`);
+    }
+}
+
+// Adaptador de Notificaciones (puedes sustituirlo por SendGrid, Twilio, etc.)
+class ServicioNotificacionConsola implements IServicioNotificacion {
+    // Implementación concreta
+    async enviarEmailActivacion(usuario: Usuario, token: string): Promise<void> {
+        console.log(`[INFRA] Email enviado a ${usuario.email} con token: ${token}`);
+    }
+}
+```
+
+S (SRP)	La clase RegistrarUsuario tiene una única responsabilidad: el flujo de registro. La gestión de datos está delegada al Repositorio.
+
+O (OCP)	Para cambiar la base de datos o el proveedor de email, no modificas RegistrarUsuario. Simplemente creas una nueva clase que implemente la interfaz y la inyectas.
+
+L (LSP)	El método ejecutar de RegistrarUsuario puede recibir cualquier implementación de IRepositorioUsuarios (el real o un mock para pruebas) y funcionará correctamente.
+
+I (ISP)	Las interfaces (IRepositorioUsuarios, IServicioNotificacion) son pequeñas y específicas. El Caso de Uso no depende de un único interfaz "gordo".
+
+D (DIP)	Sí	RegistrarUsuario (Alto Nivel) depende de las abstracciones (IRepositorioUsuarios y IServicioNotificacion). Los detalles de infraestructura (Bajo Nivel) como RepositorioUsuariosMemoria dependen de estas mismas abstracciones. La dependencia ha sido invertida.
+
+
+
+# Estructura/orden de código con Módulo de Bajo Nivel y Módulo de Alto Nivel
+
+Basada en la Arquitectura Limpia (Clean Architecture)
+
+```
+.
+├── src/
+│   ├── 1_aplicacion_y_dominio/  <- Módulo de Alto Nivel (El "Core")
+│   │   ├── entidades/
+│   │   │   └── Usuario.ts        // Reglas de negocio críticas (Entidades)
+│   │   ├── puertos/              <- Abstracciones/Interfaces (DIP)
+│   │   │   ├── IRepositorioUsuario.ts  // I/O de Dominio
+│   │   │   └── IServicioNotificacion.ts // I/O de Sistemas Externos
+│   │   └── casos_uso/
+│   │       └── RegistrarUsuario.ts  // Lógica de Alto Nivel (Clase 'RegistrarUsuario')
+│   │
+│   └── 2_infraestructura/       <- Módulo de Bajo Nivel (Los "Detalles")
+│       ├── persistencia/
+│       │   └── RepositorioUsuarioSQL.ts // Implementa IRepositorioUsuario
+│       └── servicios_externos/
+│           └── ServicioNotificacionSendGrid.ts // Implementa IServicioNotificacion
+│
+└── index.ts                 // Punto de Entrada (Orquestación/Inyección de Dependencias)
+```
+
+
+## Código
+
+##### El código en cada módulo y, lo más importante, cómo las flechas de dependencia se invierten.
+
+
+### 1. Módulo de Alto Nivel (1_aplicacion_y_dominio)
+
+#### Este módulo contiene el core y define las abstracciones.
+
+
+#### A. Abstracciones/Puertos (puertos/IRepositorioUsuario.ts)
+
+```
+// Módulo de Alto Nivel: Define el contrato.
+// NOTA: No hay NINGÚN 'import' de la capa de infraestructura aquí.
+import { Usuario } from '../entidades/Usuario';
+
+export interface IRepositorioUsuario {
+    // El ALTO NIVEL decide qué métodos necesita el BAJO NIVEL.
+    buscarPorEmail(email: string): Promise<Usuario | null>;
+    guardar(usuario: Usuario): Promise<void>;
+}
+```
+
+
+#### B. Lógica de Negocio (casos_uso/RegistrarUsuario.ts)
+
+##### La clase de Alto Nivel solo importa la interfaz, no la implementación concreta.
+
+```
+// Módulo de Alto Nivel: Lógica pura.
+import { Usuario } from '../entidades/Usuario';
+import { IRepositorioUsuario } from '../puertos/IRepositorioUsuario';
+import { IServicioNotificacion } from '../puertos/IServicioNotificacion';
+
+// Depende de Abstracciones (Cumple DIP)
+export class RegistrarUsuario {
+    constructor(
+        private readonly repositorio: IRepositorioUsuario, // Interfaz
+        private readonly notificador: IServicioNotificacion // Interfaz
+    ) {}
+
+    async ejecutar(email: string, nombre: string): Promise<Usuario> {
+        // ... (Lógica de negocio aquí)
+        // Llama a this.repositorio.guardar(), sin saber dónde se guardan los datos.
+        
+        // Simulación:
+        const nuevoUsuario = new Usuario('id-123', email, nombre);
+        await this.repositorio.guardar(nuevoUsuario); 
+        await this.notificador.enviarEmailActivacion(nuevoUsuario, 'token');
+        return nuevoUsuario;
+    }
+}
+```
+
+
+### 2. Módulo de Bajo Nivel (2_infraestructura)
+
+#### Contiene la implementación concreta y depende de la interfaz definida en el módulo de Alto Nivel.
+
+
+##### Adaptador de Base de Datos (persistencia/RepositorioUsuarioSQL.ts)
+
+```
+// Módulo de Bajo Nivel: Implementación concreta (el detalle).
+// NOTA: Debe IMPORTAR la interfaz del Módulo de Alto Nivel.
+import { IRepositorioUsuario } from '../1_aplicacion_y_dominio/puertos/IRepositorioUsuario';
+import { Usuario } from '../1_aplicacion_y_dominio/entidades/Usuario';
+
+export class RepositorioUsuarioSQL implements IRepositorioUsuario {
+    // Implementación del Adaptador.
+    // Aquí es donde estaría el código SQL o la conexión a la base de datos.
+    async buscarPorEmail(email: string): Promise<Usuario | null> {
+        // Lógica de consulta SQL...
+        return null; 
+    }
+
+    async guardar(usuario: Usuario): Promise<void> {
+        // Lógica para INSERT INTO database...
+        console.log(`[SQL]: Usuario ${usuario.email} persistido en la base de datos.`);
+    }
+}
+```
+
+
+### 3. Punto de Entrada (Ensamblaje)
+
+##### Este es el único lugar donde se unen las partes, aplicando la Inyección de Dependencias.
+
+```
+// index.ts: Orquestación (Módulo de Configuración)
+import { RegistrarUsuario } from './src/1_aplicacion_y_dominio/casos_uso/RegistrarUsuario';
+import { RepositorioUsuarioSQL } from './src/2_infraestructura/persistencia/RepositorioUsuarioSQL';
+import { ServicioNotificacionSendGrid } from './src/2_infraestructura/servicios_externos/ServicioNotificacionSendGrid';
+// ... (otras implementaciones)
+
+// 1. Instanciar los Módulos de Bajo Nivel (Concreciones)
+const repositorioConcreto = new RepositorioUsuarioSQL();
+const notificadorConcreto = new ServicioNotificacionSendGrid();
+
+// 2. Instanciar el Módulo de Alto Nivel, INYECTANDO las implementaciones concretas
+//    como si fueran sus interfaces (polimorfismo).
+const registrarUsuario = new RegistrarUsuario(
+    repositorioConcreto, // IRepositorioUsuario
+    notificadorConcreto  // IServicioNotificacion
+);
+
+// 3. Ejecutar la lógica de Alto Nivel
+registrarUsuario.ejecutar('ejemplo@correo.com', 'Carlos');
+```
+
+
+## Abstracciones en el Módulo de Alto Nivel
+
+Cuando la interfaz se define junto a la Lógica de Negocio (Módulo de Alto Nivel):
+
+### Bajo Nivel depende de Alto Nivel (Inversión): El Módulo de Bajo Nivel (RepositorioSQL) es el que debe importar la interfaz del Módulo de Alto Nivel e implementarla.
+
+### Desacoplamiento Total: El Módulo de Alto Nivel es completamente independiente. Puede existir, ser probado y funcionar sin que el módulo de bajo nivel exista siquiera. Solo sabe que recibirá "algo" que cumple con su contrato.
+
+### Cumplimiento de DIP: Se invierte la dirección de la dependencia. Las flechas de dependencia ahora apuntan hacia adentro, hacia la lógica de negocio estable (las abstracciones), protegiéndola de los cambios en los detalles.
+
+#### : La abstracción es la necesidad del módulo de alto nivel. Por lo tanto, el módulo de alto nivel debe ser quien defina esa necesidad (el contrato) para que los módulos de bajo nivel sean quienes la satisfagan.
 
 
