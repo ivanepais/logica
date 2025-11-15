@@ -3306,6 +3306,8 @@ Si el estado es global, cualquier línea de código en cualquier archivo podría
 #### Práctica: Diseñar una capa de servicio y repositorio donde el Repositorio utiliza una base de datos simulada o un ORM para probar que el Agregado mantiene la consistencia de su estado.
 
 
+
+
 # Variables de entorno
 
 
@@ -5797,3 +5799,1420 @@ Cuando la interfaz se define junto a la Lógica de Negocio (Módulo de Alto Nive
 #### : La abstracción es la necesidad del módulo de alto nivel. Por lo tanto, el módulo de alto nivel debe ser quien defina esa necesidad (el contrato) para que los módulos de bajo nivel sean quienes la satisfagan.
 
 
+
+
+# Patrones Creacionales (Creational Patterns)
+
+##### Gestionan la instanciación de objetos: haciendo que el sistema sea independiente de cómo se crean, componen y representan sus objetos.
+
+##### Proporcionar soluciones a los problemas relacionados con la creación de objetos de una manera flexible y controlada.
+
+##### Su objetivo principal es desacoplar el sistema de las clases concretas que se instancian, lo que facilita los cambios, incrementa la flexibilidad y promueve la reutilización del código
+
+Buscan abstraer el proceso de instanciación.
+
+
+## Beneficios
+
+#### 1. Flexibilidad: Puedes cambiar la forma en que se crean los objetos sin modificar el código que los utiliza (el cliente).
+
+#### 2. Abstracción: El código cliente no necesita saber los detalles de implementación de las clases concretas que está usando
+
+#### 3. Reutilización: Se pueden reutilizar las lógicas de creación en diferentes partes del sistema.
+
+
+
+## Singleton: Garantiza que una clase tenga una sola instancia y proporciona un punto de acceso global a ella.
+
+##### Garantiza que una clase tenga una única instancia
+
+##### Proporciona un punto de acceso global a ella.
+
+##### Se utiliza para recursos compartidos y controlados.
+
+Ejemplo: Una clase de Configuración, un Administrador de Conexiones a base de datos, o un Sistema de Registro de Logs (Logger). 
+
+
+### Código
+
+##### Usa el modificador de acceso private y static para controlarlo
+
+##### Clase ConfiguracionGlobal que solo debe existir una vez en toda la aplicación para manejar ajustes de configuración compartidos.
+
+```
+class ConfiguracionGlobal {
+    // 1. Instancia estática y privada (la única instancia del Singleton)
+    private static instance: ConfiguracionGlobal;
+
+    // Propiedades de la configuración
+    public tema: string = "claro";
+    public idioma: string = "es";
+
+    // 2. Constructor privado: Evita la instanciación directa (con 'new')
+    private constructor() {
+        // Inicialización que solo se ejecuta una vez
+        console.log("Configuración Global inicializada.");
+    }
+
+    // 3. Método estático público de acceso: El único punto para obtener la instancia
+    public static getInstance(): ConfiguracionGlobal {
+        // Si la instancia no existe, la crea
+        if (!ConfiguracionGlobal.instance) {
+            ConfiguracionGlobal.instance = new ConfiguracionGlobal();
+        }
+        // Devuelve la instancia existente
+        return ConfiguracionGlobal.instance;
+    }
+
+    // Método de ejemplo para manipular la configuración
+    public mostrarEstado(): void {
+        console.log(`Estado actual: Tema=${this.tema}, Idioma=${this.idioma}`);
+    }
+}
+
+// --- Uso del Singleton ---
+
+// No podemos hacer esto: new ConfiguracionGlobal(); // Error de TS: El constructor es privado
+
+// 1. Obtenemos la única instancia
+const config1 = ConfiguracionGlobal.getInstance();
+console.log("config1 obtenida.");
+
+// 2. Modificamos el estado a través de esta instancia
+config1.tema = "oscuro";
+config1.idioma = "en";
+config1.mostrarEstado();
+
+console.log("---");
+
+// 3. Intentamos obtener otra instancia (obtenemos la misma)
+const config2 = ConfiguracionGlobal.getInstance();
+console.log("config2 obtenida.");
+
+// 4. Observa que config2 tiene los cambios hechos por config1
+config2.mostrarEstado();
+
+// Comprobación de que ambas referencias apuntan al mismo objeto
+console.log("¿Son la misma instancia?", config1 === config2);
+```
+
+#### Características
+
+##### 1. private static instance: ConfiguracionGlobal;	Instancia Única	Al ser static, pertenece a la clase y no a una instancia específica. Al ser private, solo es accesible desde dentro de la clase.
+
+##### 2. private constructor()	Control de Creación	El modificador private prohíbe el uso directo de new ConfiguracionGlobal(), forzando a usar el método de acceso getInstance().
+
+##### 3. public static getInstance()	Punto de Acceso Global	Este es el único camino para obtener el objeto. Contiene la lógica para crear la instancia una sola vez (if (!instance)) y luego devolver siempre esa misma instancia
+
+
+
+## Factory Method: Define una interfaz para crear un objeto, pero deja que las subclases decidan qué clase instanciar.
+
+##### Proporciona una interfaz para crear objetos en una superclase, pero permite a las subclases decidir qué clase instanciar.
+
+Ejemplo: Un sistema de notificaciones que crea objetos de Email, SMS o Push Notification según la configuración del usuario.
+
+##### Se utiliza para desacoplar el código que usa el objeto de la lógica que lo crea.
+
+
+### Código
+
+##### Sistema de gestión de pedidos donde necesitamos crear diferentes tipos de Transporte (ej. Camión o Barco) para entregar un producto.
+
+1. Interfaz Común del Producto
+
+Definimos una interfaz para el "Producto" que todas las clases concretas deben implementar.
+
+```
+// Producto: Define la interfaz de los objetos que el Factory Method crea.
+interface Transporte {
+    entregar(): string;
+}
+``` 
+
+
+2. Productos Concretos
+
+Creamos las clases concretas que implementan la interfaz Transporte.
+
+```
+// Producto Concreto A
+class Camion implements Transporte {
+    public entregar(): string {
+        return "🚚 Entrega por carretera en caja.";
+    }
+}
+
+// Producto Concreto B
+class Barco implements Transporte {
+    public entregar(): string {
+        return "🚢 Entrega por mar en contenedor.";
+    }
+}
+```
+
+
+3. Creador Abstracto (Factory)
+
+Esta es la clase principal que declara el Método de Fábrica (crearTransporte), el cual devuelve un objeto Transporte
+
+##### La lógica de negocio utiliza el resultado de este método, sin importarle qué transporte concreto se haya creado.
+
+```
+// Creador: Declara el método de fábrica que DEBE ser implementado por las subclases.
+abstract class Logistica {
+    // El Factory Method que las subclases implementarán.
+    protected abstract crearTransporte(): Transporte;
+
+    // Lógica de negocio principal (que es independiente del producto concreto).
+    public planificarEntrega(): string {
+        // Llama al método de fábrica para obtener un objeto Producto.
+        const transporte = this.crearTransporte();
+        
+        // Utiliza el producto.
+        return `Logística: Preparando la entrega. El transporte dice: ${transporte.entregar()}`;
+    }
+}
+```
+
+
+4. Creadores Concretos
+
+Estas subclases extienden el Logistica y sobrescriben el método de fábrica para devolver un tipo específico de Transporte.
+
+```
+// Creador Concreto A: Crea Camiones
+class LogisticaCarretera extends Logistica {
+    protected crearTransporte(): Transporte {
+        return new Camion();
+    }
+}
+
+// Creador Concreto B: Crea Barcos
+class LogisticaMaritima extends Logistica {
+    protected crearTransporte(): Transporte {
+        return new Barco();
+    }
+}
+```
+
+
+5. Uso del Cliente
+
+El código cliente trabaja únicamente con la interfaz del Logistica (el Creador) y la interfaz Transporte (el Producto), sin saber si está usando un Camion o un Barco.
+
+```
+function clientCode(logistica: Logistica) {
+    console.log(logistica.planificarEntrega());
+}
+
+console.log('--- Uso de Logística Terrestre ---');
+let carretera = new LogisticaCarretera();
+clientCode(carretera);
+// Salida: Logística: Preparando la entrega. El transporte dice: Entrega por carretera en caja.
+
+console.log('\n--- Uso de Logística Marítima ---');
+let maritima = new LogisticaMaritima();
+clientCode(maritima);
+// Salida: Logística: Preparando la entrega. El transporte dice: Entrega por mar en contenedor.
+```
+
+
+#### Beneficios
+
+##### Desacoplamiento: El cliente (clientCode) solo necesita saber que obtendrá algo que implementa Transporte, pero no cómo se crea.
+
+##### Extensibilidad: Si necesitas añadir un Avion o una Bicicleta, solo tienes que crear la clase Avion (Producto Concreto) y una nueva LogisticaAerea (Creador Concreto). No tienes que modificar el código existente en Logistica o el clientCode.
+
+
+
+## Abstract Factory: Proporciona una interfaz para crear familias de objetos relacionados sin especificar sus clases concretas.
+
+##### Permite producir familias de objetos relacionados o dependientes sin especificar sus clases concretas
+
+##### Útil cuando los componentes deben funcionar juntos y ser fácilmente intercambiables (por ejemplo, cambiar el "tema" de una aplicación).
+
+Ejemplo: Una fábrica que produce elementos de interfaz de usuario (Botón, Ventana, Campo de Texto) que coinciden con un tema específico (Claro u Oscuro).
+
+
+#### Es como tener una fábrica maestra que produce sub-fábricas para diferentes estilos o sistemas.
+
+### Ej: Aplicación que debe soportar dos temas (Claro y Oscuro) para sus elementos de interfaz de usuario (Botones y Campos de Texto).
+
+1. Interfaces de Productos
+
+Definimos las interfaces para los dos tipos de productos que nuestra fábrica creará: Boton y CampoTexto.
+
+```
+// Producto A (Botón)
+interface Boton {
+    pintar(): string;
+}
+
+// Producto B (Campo de Texto)
+interface CampoTexto {
+    escribir(): string;
+    // Un método que usa un Producto A (relacionado)
+    interactuar(b: Boton): string; 
+}
+```
+
+
+2. Interfaces de Fábrica Abstracta
+
+Definimos la interfaz para la Fábrica Abstracta que declara los métodos para crear todos los productos de la familia (el tema).
+
+```
+// Abstract Factory
+interface TemaFactory {
+    crearBoton(): Boton;
+    crearCampoTexto(): CampoTexto;
+}
+```
+
+
+3. Productos Concretos (Familia "Claro")
+
+Implementamos los productos específicos para el tema "Claro".
+
+```
+// Productos Concretos del Tema Claro
+class BotonClaro implements Boton {
+    public pintar(): string {
+        return "🖌️ Renderizando Botón Blanco.";
+    }
+}
+
+class CampoTextoClaro implements CampoTexto {
+    public escribir(): string {
+        return "📝 Campo de Texto con fondo claro.";
+    }
+    public interactuar(b: Boton): string {
+        return `Campo Claro interactúa con ${b.pintar()}`;
+    }
+}
+```
+
+
+4. Productos Concretos (Familia "Oscuro")
+
+Implementamos los productos específicos para el tema "Oscuro".
+
+```
+// Productos Concretos del Tema Oscuro
+class BotonOscuro implements Boton {
+    public pintar(): string {
+        return "🖌️ Renderizando Botón Negro.";
+    }
+}
+
+class CampoTextoOscuro implements CampoTexto {
+    public escribir(): string {
+        return "📝 Campo de Texto con fondo oscuro.";
+    }
+    public interactuar(b: Boton): string {
+        // Observa la interacción entre productos de la misma familia
+        return `Campo Oscuro interactúa con ${b.pintar()}`; 
+    }
+}
+```
+
+
+5. Fábricas Concretas
+
+Implementamos las Fábricas Concretas para cada familia de productos, asegurando que solo creen productos del mismo tema.
+
+```
+// Fábrica Concreta A: Tema Claro
+class TemaClaroFactory implements TemaFactory {
+    public crearBoton(): Boton {
+        return new BotonClaro();
+    }
+    public crearCampoTexto(): CampoTexto {
+        return new CampoTextoClaro();
+    }
+}
+
+// Fábrica Concreta B: Tema Oscuro
+class TemaOscuroFactory implements TemaFactory {
+    public crearBoton(): Boton {
+        return new BotonOscuro();
+    }
+    public crearCampoTexto(): CampoTexto {
+        return new CampoTextoOscuro();
+    }
+}
+```
+
+
+6. Código Cliente
+
+El código cliente trabaja únicamente con las interfaces TemaFactory, Boton y CampoTexto, sin depender de las clases concretas.
+
+```
+function clientCode(factory: TemaFactory) {
+    // La fábrica crea una familia de productos
+    const boton = factory.crearBoton();
+    const campo = factory.crearCampoTexto();
+    
+    console.log("--- Componentes Creados ---");
+    console.log(boton.pintar());
+    console.log(campo.escribir());
+    
+    console.log("\n--- Interacción ---");
+    // Se asegura la compatibilidad al usar productos de la misma fábrica
+    console.log(campo.interactuar(boton)); 
+}
+
+console.log('Cliente: Probando la configuración con Tema CLARO...');
+clientCode(new TemaClaroFactory());
+/* Salida:
+Cliente: Probando la configuración con Tema CLARO...
+--- Componentes Creados ---
+🖌️ Renderizando Botón Blanco.
+📝 Campo de Texto con fondo claro.
+
+--- Interacción ---
+Campo Claro interactúa con 🖌️ Renderizando Botón Blanco.
+*/
+
+console.log('\n======================================\n');
+
+console.log('Cliente: Probando la configuración con Tema OSCURO...');
+clientCode(new TemaOscuroFactory());
+/* Salida:
+Cliente: Probando la configuración con Tema OSCURO...
+--- Componentes Creados ---
+🖌️ Renderizando Botón Negro.
+📝 Campo de Texto con fondo oscuro.
+
+--- Interacción ---
+Campo Oscuro interactúa con 🖌️ Renderizando Botón Negro.
+*/
+```
+
+### Beneficio
+
+#### Cambiar toda la apariencia de la aplicación (de Claro a Oscuro) simplemente cambiando la fábrica concreta que pasas a la función clientCode sin tener, que modificar la lógica de la interfaz de usuario en sí
+
+Las familias de productos (los temas) se mantienen consistentes y son fácilmente intercambiables.
+
+
+
+## Builder: Separa la construcción de un objeto complejo de su representación, permitiendo que el mismo proceso de construcción cree diferentes representaciones.
+
+##### Permite construir objetos complejos paso a paso.
+
+##### Separa el proceso de construcción de la representación final
+
+##### De modo que el mismo proceso de construcción puede crear diferentes tipos y representaciones del objeto.
+
+Ej: Construir documentos con diferentes formatos de salida (PDF, HTML, Texto Plano) usando la misma secuencia de pasos de construcción.
+
+
+### Código
+
+##### Ej: construir un objeto complejo, como una Pizza, con varios ingredientes opcionales.
+
+#### La clase PizzaBuilder se encarga de añadir los ingredientes
+
+#### la clase Director se encarga de ejecutar una receta estándar, desacoplando la lógica de construcción de la representación final (Pizza).
+
+
+1. Producto
+
+La clase Pizza es el objeto complejo que estamos construyendo.
+
+```
+// El Producto complejo que se está construyendo
+class Pizza {
+    private partes: string[] = [];
+
+    public agregarParte(parte: string): void {
+        this.partes.push(parte);
+    }
+
+    public mostrar(): string {
+        return `Pizza construida: ${this.partes.join(', ')}.`;
+    }
+}
+```
+
+
+2. Builder Abstracto
+
+Define la interfaz con todos los métodos de construcción que los builders concretos deben implementar
+
+```
+// La interfaz Builder
+interface PizzaBuilder {
+    reset(): void;
+    agregarMasa(): void;
+    agregarSalsa(): void;
+    agregarTopping(topping: string): void;
+    obtenerPizza(): Pizza;
+}
+```
+
+
+3. Builder Concreto
+
+La clase Builder concreto implementa la interfaz y mantiene una referencia al objeto Pizza que está construyendo.
+
+```
+// Builder Concreto
+class PizzaBuilderConcreta implements PizzaBuilder {
+    private pizza: Pizza;
+
+    constructor() {
+        this.reset();
+    }
+
+    public reset(): void {
+        this.pizza = new Pizza();
+    }
+
+    // Métodos de construcción paso a paso
+    public agregarMasa(): void {
+        this.pizza.agregarParte("Masa Fina");
+    }
+
+    public agregarSalsa(): void {
+        this.pizza.agregarParte("Salsa de Tomate");
+    }
+
+    public agregarTopping(topping: string): void {
+        this.pizza.agregarParte(topping);
+    }
+
+    // Método para devolver el producto final
+    public obtenerPizza(): Pizza {
+        const resultado = this.pizza;
+        this.reset(); // Reinicia el builder para futuras construcciones
+        return resultado;
+    }
+}
+```
+
+
+4. Director
+
+El Director es opcional, pero es útil para definir recetas u órdenes de construcción comunes, aislando aún más al cliente de los pasos de construcción
+
+```
+// El Director: Opcional, pero útil para recetas comunes.
+class Director {
+    private builder: PizzaBuilder | null = null;
+
+    public setBuilder(builder: PizzaBuilder): void {
+        this.builder = builder;
+    }
+
+    // Receta estándar: Construye una Pizza Margherita
+    public construirMargherita(): void {
+        if (!this.builder) return;
+        this.builder.reset();
+        this.builder.agregarMasa();
+        this.builder.agregarSalsa();
+        this.builder.agregarTopping("Mozzarella");
+    }
+
+    // Receta compleja: Construye una Pizza Hawaiana (sí, con piña)
+    public construirHawaiana(): void {
+        if (!this.builder) return;
+        this.builder.reset();
+        this.builder.agregarMasa();
+        this.builder.agregarSalsa();
+        this.builder.agregarTopping("Jamón");
+        this.builder.agregarTopping("Piña"); // ¡Piña!
+    }
+}
+```
+
+
+ 
+
+
+5. Uso por el Cliente
+
+El cliente puede usar el Director para recetas predefinidas o usar el Builder directamente para personalizar la construcción.
+
+```
+const builder = new PizzaBuilderConcreta();
+const director = new Director();
+director.setBuilder(builder);
+
+console.log('--- 1. Usando el Director para una receta estándar (Margherita) ---');
+director.construirMargherita();
+const pizza1 = builder.obtenerPizza();
+console.log(pizza1.mostrar());
+// Salida: Pizza construida: Masa Fina, Salsa de Tomate, Mozzarella.
+
+console.log('\n--- 2. Usando el Director para una receta compleja (Hawaiana) ---');
+director.construirHawaiana();
+const pizza2 = builder.obtenerPizza();
+console.log(pizza2.mostrar());
+// Salida: Pizza construida: Masa Fina, Salsa de Tomate, Jamón, Piña.
+
+console.log('\n--- 3. Construcción personalizada por el Cliente ---');
+builder.agregarMasa();
+builder.agregarSalsa();
+builder.agregarTopping("Pepperoni");
+builder.agregarTopping("Champiñones");
+const pizza3 = builder.obtenerPizza();
+console.log(pizza3.mostrar());
+// Salida: Pizza construida: Masa Fina, Salsa de Tomate, Pepperoni, Champiñones.
+```
+
+
+#### Beneficios
+
+Construcción Controlada: Permite construir objetos en pasos controlados, verificando la validez de cada paso si es necesario.
+
+Diferentes Representaciones: El mismo proceso de construcción (los métodos agregar...) puede crear diferentes productos (Pizza, Calzone, etc.) si se implementan builders concretos distintos.
+
+Código Limpio: Evita tener constructores con una gran cantidad de parámetros opcionales, haciendo que el código de creación sea más legible y mantenible.
+
+
+
+## Prototype: Especifica los tipos de objetos a crear mediante la clonación de una instancia prototipo.
+
+##### Permite copiar objetos existentes sin que el código dependa de sus clases concretas
+
+##### El objeto a copiar actúa como un "prototipo" y el clonado se realiza a través de una interfaz de clonación.
+
+
+
+# Patrones Estructurales (Structural Patterns)
+
+##### Se enfocan en la composición de clases y objetos para formar estructuras más grandes y flexibles: 
+
+##### Su objetivo principal es simplificar la estructura del sistema, asegurando que si una parte de este cambia, la estructura global no se vea comprometida
+
+##### Ayudan a organizar clases y objetos de manera que puedan trabajar juntos eficazmente, mejorando la flexibilidad y la reutilización.
+
+
+## Adapter (o Wrapper): Permite que clases con interfaces incompatibles trabajen juntas, envolviendo una interfaz existente.
+
+##### Permite que las interfaces de clases incompatibles trabajen juntas. Funciona como un traductor.
+
+##### Ej: adaptador de corriente que permite enchufar un dispositivo con un enchufe de un país a un toma de corriente de otro país
+
+##### El adaptador "envuelve" el objeto incompatible para que coincida con la interfaz que el cliente espera.
+
+
+#### Permite que la interfaz de una clase existente (el Adaptee) sea utilizada por otra clase (el Client) que espera una interfaz diferente (el Target).
+
+### Código
+
+Adaptamos un sistema de procesamiento de pagos antiguo (PasarelaPagoAntigua) para que funcione con el código de nuestra aplicación moderna que espera una interfaz estándar (ProcesadorPago).
+
+1. Target (La Interfaz Esperada)
+
+Esta es la interfaz que nuestro código cliente espera usar.
+
+```
+// Target: La interfaz que el cliente espera.
+interface ProcesadorPago {
+    procesar(monto: number): string;
+}
+``` 
+
+
+2. Adaptee (La Clase Incompatible)
+
+Esta es la clase antigua o externa que queremos usar, pero cuya interfaz es diferente.
+
+```
+// Adaptee: La clase incompatible que necesitamos adaptar.
+class PasarelaPagoAntigua {
+    public ejecutarTransaccion(cantidad: number, moneda: string): string {
+        if (moneda !== "USD") {
+            return `ERROR: Solo se admite USD. Recibido: ${moneda}`;
+        }
+        return `✅ Transacción antigua de $${cantidad} USD ejecutada.`;
+    }
+}
+``` 
+
+
+3. Adapter (El Adaptador)
+
+El Adaptador toma la interfaz Target (ProcesadorPago) y la implementa, mientras que internamente utiliza la funcionalidad de la clase Adaptee (PasarelaPagoAntigua), traduciendo las llamadas.
+
+```
+// Adapter: Implementa la interfaz Target y "envuelve" al Adaptee.
+class PagoAntiguoAdapter implements ProcesadorPago {
+    private pasarelaAntigua: PasarelaPagoAntigua;
+
+    constructor(pasarela: PasarelaPagoAntigua) {
+        this.pasarelaAntigua = pasarela;
+    }
+
+    // El método 'procesar' de la interfaz Target
+    public procesar(monto: number): string {
+        console.log("Adaptador: Adaptando la llamada para PasarelaPagoAntigua...");
+        
+        // Aquí se traduce la llamada:
+        // 1. El cliente solo pasa 'monto'.
+        // 2. El adaptador añade el parámetro 'moneda' (USD) que la PasarelaAntigua espera.
+        return this.pasarelaAntigua.ejecutarTransaccion(monto, "USD");
+    }
+}
+```
+
+
+4. Código Cliente
+
+El código cliente trabaja únicamente con la interfaz ProcesadorPago, sin preocuparse de si está usando una pasarela moderna o la antigua adaptada
+
+```
+// El código cliente solo sabe trabajar con la interfaz ProcesadorPago.
+function clienteEjecutarPago(procesador: ProcesadorPago, cantidad: number) {
+    console.log(`\nCliente: Iniciando pago de ${cantidad}...\n`);
+    const resultado = procesador.procesar(cantidad);
+    console.log(`Cliente: Resultado del pago: ${resultado}`);
+}
+
+// 1. Instanciamos la clase incompatible (Adaptee)
+const pasarelaAntigua = new PasarelaPagoAntigua();
+
+// 2. Creamos el Adaptador, pasándole el Adaptee.
+const adaptador = new PagoAntiguoAdapter(pasarelaAntigua);
+
+// 3. El cliente usa el Adaptador como si fuera un ProcesadorPago normal (Target).
+clienteEjecutarPago(adaptador, 50);
+
+/*
+Salida:
+Cliente: Iniciando pago de 50...
+
+Adaptador: Adaptando la llamada para PasarelaPagoAntigua...
+✅ Transacción antigua de $50 USD ejecutada.
+Cliente: Resultado del pago: ✅ Transacción antigua de $50 USD ejecutada.
+*/
+```
+
+El patrón Adapter logra su objetivo: el cliente pudo usar la funcionalidad de PasarelaPagoAntigua sin que la firma de su método (ejecutarTransaccion) fuera modificada.
+
+
+
+## Decorator: Añade responsabilidades dinámicamente a un objeto (decorándolo) sin modificar su clase.
+
+##### Esto se logra envolviendo el objeto original con wrappers que añaden el nuevo comportamiento.
+
+Capas de ingredientes que añades a un café. El café base (objeto original) se envuelve con leche, luego con azúcar, luego con sirope, y cada capa añade una nueva función o sabor sin modificar la esencia del café.
+
+
+### Código
+
+Aplicación de bebidas donde queremos añadir ingredientes (como leche, azúcar o caramelo) que modifican el costo y la descripción de una bebida base.
+
+1. Componente Base
+
+Definimos la interfaz para el componente principal (Bebida) y la clase concreta base (CafeSimple).
+
+```
+// Componente: Interfaz para el objeto que queremos decorar.
+interface Bebida {
+    costo(): number;
+    obtenerDescripcion(): string;
+}
+
+// Componente Concreto (La Bebida Base)
+class CafeSimple implements Bebida {
+    public costo(): number {
+        return 5;
+    }
+
+    public obtenerDescripcion(): string {
+        return "Café Simple";
+    }
+}
+```
+
+
+2. Decorador Abstracto
+
+##### !!! Creamos la clase base para todos los decoradores. 
+
+Esta clase implementa la interfaz Bebida y tiene una referencia a un objeto Bebida.
+
+```
+// Decorador Base: Implementa la interfaz Bebida y contiene una referencia al componente.
+abstract class IngredienteDecorator implements Bebida {
+    protected bebida: Bebida;
+
+    constructor(bebida: Bebida) {
+        this.bebida = bebida;
+    }
+    
+    // Estos métodos deben ser implementados por los decoradores concretos
+    public abstract costo(): number;
+    public abstract obtenerDescripcion(): string;
+}
+```
+
+
+3. Decoradores Concretos
+
+##### !!! Creamos las clases que añaden funcionalidad (costo extra y descripción). Cada una extiende el IngredienteDecorator
+
+```
+// Decorador Concreto A: Añade Leche
+class LecheDecorator extends IngredienteDecorator {
+    public costo(): number {
+        // Añade el costo de la leche al costo base
+        return this.bebida.costo() + 2; 
+    }
+
+    public obtenerDescripcion(): string {
+        // Añade la descripción de la leche a la descripción base
+        return `${this.bebida.obtenerDescripcion()}, Leche`;
+    }
+}
+
+// Decorador Concreto B: Añade Caramelo
+class CarameloDecorator extends IngredienteDecorator {
+    public costo(): number {
+        // Añade el costo del caramelo al costo base
+        return this.bebida.costo() + 3;
+    }
+
+    public obtenerDescripcion(): string {
+        // Añade la descripción del caramelo a la descripción base
+        return `${this.bebida.obtenerDescripcion()}, Caramelo`;
+    }
+}
+```
+
+
+4. Uso del Cliente
+
+El cliente crea una bebida base y la envuelve dinámicamente con los decoradores que desee.
+
+```
+// 1. Iniciamos con el objeto base
+let miCafe: Bebida = new CafeSimple();
+console.log(`Bebida base: ${miCafe.obtenerDescripcion()} | Costo: $${miCafe.costo()}`);
+// Salida: Bebida base: Café Simple | Costo: $5
+
+console.log("\n--- Añadiendo Ingredientes ---");
+
+// 2. Decoramos con Leche
+miCafe = new LecheDecorator(miCafe); 
+console.log(`Con leche: ${miCafe.obtenerDescripcion()} | Costo: $${miCafe.costo()}`);
+// Salida: Con leche: Café Simple, Leche | Costo: $7
+
+// 3. Decoramos con Caramelo (aplicado sobre el objeto con Leche)
+miCafe = new CarameloDecorator(miCafe);
+console.log(`Con caramelo: ${miCafe.obtenerDescripcion()} | Costo: $${miCafe.costo()}`);
+// Salida: Con caramelo: Café Simple, Leche, Caramelo | Costo: $10
+```
+
+
+
+## Facade: Proporciona una interfaz unificada y simplificada a un subsistema complejo.
+
+##### Ej: El panel de control de un coche. En lugar de interactuar con el motor, la transmisión, el sistema eléctrico y el combustible por separado
+
+##### Tienes una fachada (el volante, los pedales, el encendido) que simplifica el uso del complejo sistema mecánico.
+
+
+### Código
+
+Simplificamos un subsistema complejo de gestión de audio (inicialización, carga de buffers, reproducción) a través de una sola clase AudioFacade.
+
+1. El Subsistema Complejo
+
+Estas son las clases complejas y fuertemente acopladas que el cliente no debería manejar directamente.
+
+```
+// Clase 1: Gestiona la inicialización de hardware
+class AudioMixer {
+    public inicializarSistema(): string {
+        return "Mixer: Inicializando hardware de audio.";
+    }
+
+    public ajustarGanancia(): string {
+        return "Mixer: Ajustando niveles de ganancia a 0dB.";
+    }
+
+    public detenerTodo(): string {
+        return "Mixer: Silenciando todos los canales.";
+    }
+}
+
+// Clase 2: Gestiona la memoria y los datos de sonido
+class BufferLoader {
+    public cargarBuffer(ruta: string): string {
+        return `BufferLoader: Cargando archivo desde '${ruta}'.`;
+    }
+
+    public liberarMemoria(): string {
+        return "BufferLoader: Liberando buffers de memoria.";
+    }
+}
+
+// Clase 3: Gestiona la lógica de reproducción
+class SoundPlayer {
+    public reproducir(bufferInfo: string): string {
+        return `SoundPlayer: Iniciando reproducción con ${bufferInfo}.`;
+    }
+
+    public pausar(): string {
+        return "SoundPlayer: Reproducción en pausa.";
+    }
+}
+```
+
+
+2. La Fachada (Facade)
+
+La clase AudioFacade encapsula toda la complejidad del subsistema, proporcionando un par de métodos simples y de alto nivel.
+
+```
+// Facade: Proporciona una interfaz simple y unificada.
+class AudioFacade {
+    private mixer: AudioMixer;
+    private bufferLoader: BufferLoader;
+    private soundPlayer: SoundPlayer;
+
+    constructor() {
+        // La fachada inicializa y mantiene referencias a los componentes del subsistema
+        this.mixer = new AudioMixer();
+        this.bufferLoader = new BufferLoader();
+        this.soundPlayer = new SoundPlayer();
+    }
+
+    /**
+     * Método simple para el cliente: Inicializa el sistema y carga el audio.
+     */
+    public inicializarAudio(ruta: string): string {
+        let resultado = "";
+        resultado += this.mixer.inicializarSistema() + "\n";
+        resultado += this.mixer.ajustarGanancia() + "\n";
+        resultado += this.bufferLoader.cargarBuffer(ruta) + "\n";
+        
+        return resultado;
+    }
+
+    /**
+     * Método simple para el cliente: Reproduce el audio.
+     */
+    public reproducirAudio(): string {
+        // Asumimos que el buffer ya fue cargado
+        return this.soundPlayer.reproducir("datos del buffer cargado");
+    }
+
+    /**
+     * Método simple para el cliente: Apaga el sistema.
+     */
+    public apagarSistema(): string {
+        let resultado = "";
+        resultado += this.soundPlayer.pausar() + "\n";
+        resultado += this.mixer.detenerTodo() + "\n";
+        resultado += this.bufferLoader.liberarMemoria() + "\n";
+        
+        return resultado;
+    }
+}
+```
+
+
+3. Cliente
+
+El cliente interactúa únicamente con la AudioFacade, sin preocuparse por los detalles de AudioMixer, BufferLoader o SoundPlayer.
+
+```
+const audioSystem = new AudioFacade();
+
+console.log('--- Cliente: Quiero inicializar el audio ---');
+const inicializacion = audioSystem.inicializarAudio("assets/musica_fondo.mp3");
+console.log(inicializacion);
+/*
+Mixer: Inicializando hardware de audio.
+Mixer: Ajustando niveles de ganancia a 0dB.
+BufferLoader: Cargando archivo desde 'assets/musica_fondo.mp3'.
+*/
+
+console.log('--- Cliente: Quiero reproducir ---');
+const reproduccion = audioSystem.reproducirAudio();
+console.log(reproduccion);
+// Salida: SoundPlayer: Iniciando reproducción con datos del buffer cargado.
+
+console.log('--- Cliente: Quiero apagar todo ---');
+const apagado = audioSystem.apagarSistema();
+console.log(apagado);
+/*
+SoundPlayer: Reproducción en pausa.
+Mixer: Silenciando todos los canales.
+BufferLoader: Liberando buffers de memoria.
+*/
+```
+
+
+#### Beneficios 
+
+AudioFacade simplifica la vida del cliente
+
+En lugar de que el cliente tenga que saber qué orden llamar a qué clases (mixer.inicializarSistema(), bufferLoader.cargarBuffer(), etc.), solo necesita llamar a un método simple como audioSystem.inicializarAudio().
+
+Esto desacopla el cliente del subsistema y reduce la complejidad percibida.
+
+
+
+
+
+## Composite: Compone objetos en estructuras de árbol para representar jerarquías de parte-todo. Permite que los clientes traten objetos individuales y compuestos de manera uniforme.
+
+##### Ej: El sistema de archivos de una computadora. Puedes interactuar con un solo Archivo (objeto individual o "hoja") o una Carpeta (composición de objetos) usando los mismos comandos (abrir, mover, eliminar).
+
+
+
+
+## Bridge: Desacopla una abstracción de su implementación, permitiendo que ambas varíen independientemente.
+
+##### Separa una abstracción de su implementación, permitiendo que ambas puedan variar o evolucionar de forma independiente.
+
+##### Ej: Imagina que tienes formas (abstracción: Círculo, Cuadrado) y colores (implementación: Rojo, Azul).
+
+Te permite tener Círculo Rojo o Cuadrado Azul sin crear una clase para cada combinación.
+
+Las formas y los colores son dos jerarquías separadas que se "conectan" con un puente.
+
+
+
+## Flyweight: Utiliza la compartición para admitir un gran número de objetos de grano fino de forma eficiente.
+
+##### Minimiza el uso de memoria compartiendo tanta información como sea posible entre objetos similares
+
+Ej: Las letras que aparecen en un documento de texto. En lugar de almacenar todos los datos de formato (fuente, color) para cada ocurrencia de la letra 'A' en un documento de 100 páginas, el patrón almacena una sola instancia de 'A' (el Flyweight) y reutiliza esa instancia en todas partes.
+
+
+
+## Proxy: Proporciona un sustituto o marcador de posición para otro objeto para controlar el acceso a él.
+
+##### Apoderado: En lugar de interactuar directamente con una persona (el objeto real), interactúas con su apoderado (el Proxy)
+
+##### Quien controlará, registrará o limitará las operaciones que puedes realizar con la persona real.
+
+
+## 4. Patrones de Comportamiento (Behavioral Patterns)
+
+##### Se ocupan de la comunicación y la asignación de responsabilidades entre objetos.
+
+##### Se enfocan en cómo los objetos interactúan y distribuyen sus responsabilidades.
+
+
+Se ocupan de los algoritmos y la asignación de responsabilidades entre los objetos, facilitando la comunicación y el flujo de control entre ellos
+
+El objetivo principal es lograr un sistema con acoplamiento débil (bajo coupling) y alta cohesión (alta cohesion), lo que hace que el software sea más flexible y fácil de mantener.
+
+
+
+## Strategy: Define una familia de algoritmos, los encapsula y los hace intercambiables, permitiendo seleccionar el algoritmo en tiempo de ejecución.
+
+Ej: Diferentes rutas de navegación en un GPS.
+
+Puedes elegir la Estrategia "Ruta más Rápida", "Ruta más Corta" o "Ruta sin Peajes".
+
+El GPS (el Contexto) usa el mismo código, pero le delega el cálculo real a la Estrategia seleccionada.
+
+
+### Código
+
+##### Usamos diferentes estrategias para calcular el costo de envío de un paquete, dependiendo del método de transporte seleccionado.
+
+1. Interfaz de la Estrategia
+
+Definimos la interfaz que todas las estrategias de envío deben implementar.
+
+```
+// Strategy: Interfaz para el algoritmo intercambiable.
+interface EstrategiaEnvio {
+    calcularCosto(pesoKg: number, distanciaKm: number): number;
+}
+```
+
+
+2. Estrategias Concretas
+
+Implementamos los diferentes algoritmos de cálculo.
+
+```
+// Estrategia Concreta A: Envío Terrestre (costo fijo + costo por distancia)
+class EnvioTerrestreStrategy implements EstrategiaEnvio {
+    public calcularCosto(pesoKg: number, distanciaKm: number): number {
+        // Costo base por transporte terrestre
+        const costoBase = 10; 
+        // Cargo por distancia recorrida
+        const cargoDistancia = 0.5 * distanciaKm; 
+        
+        return costoBase + cargoDistancia;
+    }
+}
+
+// Estrategia Concreta B: Envío Aéreo (costo por peso elevado)
+class EnvioAereoStrategy implements EstrategiaEnvio {
+    public calcularCosto(pesoKg: number, distanciaKm: number): number {
+        // Alto costo base por rapidez
+        const costoBase = 50; 
+        // Alto cargo por peso
+        const cargoPeso = 5 * pesoKg; 
+        
+        // La distancia no es tan relevante en el aéreo para este ejemplo
+        return costoBase + cargoPeso;
+    }
+}
+``` 
+
+
+3. Contexto
+
+La clase Contexto (en este caso, CalculadoraEnvio) mantiene una referencia a la estrategia y delega la ejecución del algoritmo a ella.
+
+```
+// Contexto: Mantiene la referencia a la Estrategia y delega la ejecución.
+class CalculadoraEnvio {
+    private estrategia: EstrategiaEnvio;
+
+    constructor(estrategiaInicial: EstrategiaEnvio) {
+        this.estrategia = estrategiaInicial;
+    }
+
+    // Permite al cliente cambiar la estrategia en tiempo de ejecución
+    public setEstrategia(nuevaEstrategia: EstrategiaEnvio): void {
+        this.estrategia = nuevaEstrategia;
+    }
+
+    // Ejecuta el algoritmo delegado. El contexto no conoce los detalles del cálculo.
+    public calcularCostoFinal(pesoKg: number, distanciaKm: number): number {
+        return this.estrategia.calcularCosto(pesoKg, distanciaKm);
+    }
+}
+```
+
+
+4. Cliente
+
+El cliente crea el Contexto y luego le inyecta la estrategia que desea usar, pudiendo cambiarla en cualquier momento.
+
+```
+const pesoPaquete = 15; // kg
+const distanciaEnvio = 200; // km
+
+// 1. Iniciamos con la estrategia terrestre
+let calculadora = new CalculadoraEnvio(new EnvioTerrestreStrategy());
+
+console.log('--- Estrategia: Envío Terrestre ---');
+let costoTerrestre = calculadora.calcularCostoFinal(pesoPaquete, distanciaEnvio);
+console.log(`Costo ($${costoTerrestre}): 10 (Base) + 0.5 * 200 (Distancia)`); 
+// Salida: Costo ($110): 10 (Base) + 0.5 * 200 (Distancia)
+
+// 2. Cambiamos la estrategia en tiempo de ejecución
+calculadora.setEstrategia(new EnvioAereoStrategy());
+
+console.log('\n--- Estrategia: Envío Aéreo (Mismo paquete) ---');
+let costoAereo = calculadora.calcularCostoFinal(pesoPaquete, distanciaEnvio);
+console.log(`Costo ($${costoAereo}): 50 (Base) + 5 * 15 (Peso)`);
+// Salida: Costo ($125): 50 (Base) + 5 * 15 (Peso)
+```
+
+
+#### Beneficios
+
+##### Intercambiabilidad: El cliente (CalculadoraEnvio) puede cambiar fácilmente de algoritmo (de terrestre a aéreo) en tiempo de ejecución sin modificar su propia estructura.
+
+##### Aislamiento de Lógica: La lógica de negocio del envío está aislada en clases separadas (EnvioTerrestreStrategy, EnvioAereoStrategy).
+
+##### Extensibilidad: Si necesitas añadir una nueva estrategia (EnvioMaritimoStrategy), solo tienes que crear una nueva clase que implemente la interfaz EstrategiaEnvio. El Contexto y el código cliente existente no necesitan ser modificados.
+
+
+## Observer: Define una dependencia uno-a-muchos entre objetos, de modo que cuando un objeto cambia de estado, todos sus dependientes son notificados y actualizados automáticamente.
+
+Ej: Un servicio de suscripción a un newsletter o un canal de YouTube.
+
+El canal (Sujeto) notifica automáticamente a todos sus suscriptores (Observadores) cada vez que publica un nuevo video (cambio de estado).
+
+
+### Código
+
+Usando un sistema de Notificaciones de Precios donde varios usuarios observan el precio de una acción.
+
+1. Interfaz del Sujeto (Observable) y Observador
+
+Definimos las interfaces que establecen el contrato para la comunicación
+
+```
+// Sujeto: Interfaz que implementará la clase que emite los eventos.
+interface Sujeto {
+    // Métodos para gestionar suscriptores
+    adjuntar(observador: Observador): void;
+    desadjuntar(observador: Observador): void;
+    notificar(): void;
+}
+
+// Observador: Interfaz que implementarán las clases que reciben las actualizaciones.
+interface Observador {
+    // El Sujeto pasa la referencia a sí mismo para que el Observador pueda obtener el estado.
+    actualizar(sujeto: Sujeto): void;
+}
+```
+
+
+2. Sujeto Concreto (El Publicador)
+
+La clase PrecioAccion es el sujeto. Mantiene una lista de observadores y notifica a todos cuando su precio cambia.
+
+```
+class PrecioAccion implements Sujeto {
+    private observadores: Observador[] = [];
+    private precio: number;
+    private nombre: string;
+
+    constructor(nombre: string, precioInicial: number) {
+        this.nombre = nombre;
+        this.precio = precioInicial;
+        console.log(`SUJETO: ${this.nombre} inicializado a $${this.precio}.`);
+    }
+
+    public adjuntar(observador: Observador): void {
+        const estaYa = this.observadores.includes(observador);
+        if (estaYa) {
+            console.log("Sujeto: Observador ya adjunto.");
+            return;
+        }
+        this.observadores.push(observador);
+        console.log("Sujeto: Observador adjunto.");
+    }
+
+    public desadjuntar(observador: Observador): void {
+        const indice = this.observadores.indexOf(observador);
+        if (indice === -1) return;
+
+        this.observadores.splice(indice, 1);
+        console.log("Sujeto: Observador desadjunto.");
+    }
+
+    public notificar(): void {
+        console.log(`\nSUJETO: Notificando a observadores sobre el nuevo precio ($${this.precio})...`);
+        for (const observador of this.observadores) {
+            observador.actualizar(this);
+        }
+    }
+
+    // El método clave que cambia el estado y notifica
+    public cambiarPrecio(nuevoPrecio: number): void {
+        this.precio = nuevoPrecio;
+        this.notificar();
+    }
+    
+    // Método para que los observadores puedan obtener el estado
+    public obtenerPrecio(): number {
+        return this.precio;
+    }
+    
+    public obtenerNombre(): string {
+        return this.nombre;
+    }
+}
+```
+
+
+3. 3. Observadores Concretos (Los Suscriptores)
+
+Las clases Usuario son los observadores. Implementan el método actualizar para reaccionar al cambio de estado.
+
+```
+class Usuario implements Observador {
+    private nombreUsuario: string;
+
+    constructor(nombre: string) {
+        this.nombreUsuario = nombre;
+    }
+
+    public actualizar(sujeto: Sujeto): void {
+        // Verificamos que el sujeto sea del tipo esperado para obtener datos
+        if (sujeto instanceof PrecioAccion) {
+            const precioActual = sujeto.obtenerPrecio();
+            const nombreAccion = sujeto.obtenerNombre();
+            
+            console.log(`  [${this.nombreUsuario}]: ¡Alerta! El precio de ${nombreAccion} es ahora $${precioActual}.`);
+            
+            // Lógica reactiva opcional
+            if (precioActual > 105) {
+                console.log(`  [${this.nombreUsuario}]: VENDIENDO ${nombreAccion}.`);
+            }
+        }
+    }
+}
+```
+
+
+4. 4. Uso del Cliente
+
+El cliente crea el Sujeto, adjunta los Observadores y provoca cambios de estado.
+
+```
+// Creación del Sujeto
+const teslaStock = new PrecioAccion("Tesla", 100);
+
+// Creación de los Observadores
+const juan = new Usuario("Juan");
+const maria = new Usuario("María");
+const pedro = new Usuario("Pedro");
+
+// 1. Juan y María se suscriben (se adjuntan)
+teslaStock.adjuntar(juan);
+teslaStock.adjuntar(maria);
+
+console.log("\n====================================");
+
+// 2. Primer cambio de estado (Solo Juan y María son notificados)
+teslaStock.cambiarPrecio(103);
+
+console.log("\n====================================");
+
+// 3. Pedro se suscribe, María se desuscribe
+teslaStock.adjuntar(pedro);
+teslaStock.desadjuntar(maria);
+
+console.log("\n====================================");
+
+// 4. Segundo cambio de estado (Solo Juan y Pedro son notificados, y se activa la lógica reactiva)
+teslaStock.cambiarPrecio(110);
+```
+
+
+#### Flujo del Patrón
+
+1. Suscripción: Los objetos Usuario (Observadores) se registran en el objeto PrecioAccion (Sujeto) llamando a adjuntar().
+
+2. Cambio de Estado: Cuando teslaStock.cambiarPrecio() es llamado, el Sujeto ejecuta notificar().
+
+3. Notificación: notificar() recorre su lista de Observadores y llama al método actualizar() de cada uno.
+
+4. Reacción: El método actualizar() del Usuario ejecuta la lógica específica para reaccionar al nuevo estado, en este caso, mostrando una alerta y simulando una venta.
+
+
+
+## State: Permite que un objeto altere su comportamiento cuando su estado interno cambia. El objeto parecerá cambiar de clase.
+
+Un semáforo. La lógica del semáforo se divide en estados (Rojo, Amarillo, Verde).
+
+Cuando el semáforo cambia de Rojo a Verde, el objeto que lo representa cambia su comportamiento al delegar a una nueva clase de estado.
+
+
+## Chain of Responsibility: Evita acoplar el remitente de una solicitud a su receptor al dar a más de un objeto la oportunidad de manejar la solicitud.
+
+##### Permite pasar una solicitud a lo largo de una cadena de manejadores
+
+##### Al recibir la solicitud, cada manejador decide si la procesa o si la pasa al siguiente manejador de la cadena.
+
+##### Ej: Un sistema de aprobación de gastos en una empresa. Una solicitud de gasto se pasa al Gerente
+
+##### Si este no tiene la autoridad, la pasa al Director, y así sucesivamente, hasta que alguien la procesa o la cadena termina.
+
+
+
+## Command: Encapsula una solicitud como un objeto, permitiendo parametrizar clientes con diferentes solicitudes, poner las operaciones en cola o registrar.
+
+Convierte una solicitud en un objeto autónomo, encapsulando la acción como un objeto.
+
+##### Esto permite parametrizar a los clientes con diferentes solicitudes, poner las operaciones en cola o registrarlas, y soportar la capacidad de deshacer (undo).
+
+Ej: El control remoto de la televisión. Cada botón (el objeto Comando) encapsula la acción que se realizará (encender, subir volumen) sin que el botón sepa los detalles internos de cómo la televisión ejecuta esa acción.
+
+
+
+## Iterator: Proporciona una forma de acceder secuencialmente a los elementos de un objeto agregado sin exponer su representación subyacente.
+
+Ej: Un catálogo de biblioteca. El catálogo (el Iterador) permite recorrer los libros uno por uno (acceso secuencial) sin tener que saber si los libros están almacenados en estanterías, en el depósito o en un sistema digital (representación interna).
+
+
+
+## Template Method: Define el esqueleto de un algoritmo en una operación, delegando algunos pasos a las subclases.
+
+Ej: Una receta de cocina. La receta base (la Plantilla: calentar, mezclar, hornear) tiene pasos definidos, pero los pasos concretos (el ingrediente a mezclar, la temperatura de horneado) se dejan a la libre implementación de las variaciones de la receta
+
+
+## Mediator: Define un objeto que encapsula cómo un conjunto de objetos interactúa. Promueve el acoplamiento débil.
+
+Reduce el acoplamiento desordenado entre varios objetos al forzarlos a comunicarse únicamente a través de un objeto Mediador central. Los objetos ya no se comunican directamente entre sí.
+
+Un controlador de tráfico aéreo. Los aviones (objetos) no se comunican directamente entre sí; en cambio, informan y reciben instrucciones únicamente del controlador de tráfico (el Mediador), simplificando las interacciones.
+
+
+
+## Memento: Captura y externaliza el estado interno de un objeto sin violar el encapsulamiento, de modo que el objeto pueda restaurarse a este estado más tarde.
+
+Permite guardar y restaurar el estado interno anterior de un objeto (Originator) sin violar su encapsulación
+
+##### Es fundamental para implementar las funcionalidades de "deshacer".
+
+Ej: punto de guardado en un videojuego. El juego (el Caretaker) le pide al personaje (el Originator) que cree un Memento (el punto de guardado), que almacena el estado completo del personaje en ese momento, para poder restaurarlo más tarde.
+
+
+
+## Visitor: Representa una operación a realizar sobre los elementos de una estructura de objetos. Permite definir una nueva operación sin cambiar las clases de los elementos.
+
+Permite añadir nuevas operaciones a un conjunto de objetos sin modificar las clases de esos objetos
+
+Las nuevas operaciones se colocan en una clase Visitor separada.
+
+Ej: Un inspector de mantenimiento que visita diferentes tipos de equipos (motores, tuberías, válvulas).
+
+La clase de equipo no tiene que cambiar cuando se necesita una nueva inspección; simplemente creas un nuevo Visitor ("Inspector de Ruido" o "Inspector de Desgaste") que sabe cómo operar con cada equipo existente.
+
+
+
+
+# MVC
+
+
+## MVC en TypeScript
+
+
+### Estructura/orden de código 
+
+```
+├── src/
+│   ├── application/     <-- Lógica de Aplicación (Casos de Uso, Coordinación)
+│   │   ├── services/
+│   │   │   └── ServicioDePedidos.ts    // Coordina Agregados, gestiona transacciones
+│   │   └── handlers/
+│   │       └── PedidoCreadoHandler.ts  // Reacciones a eventos de Dominio
+│   │
+│   ├── domain/          <-- Modelo (Núcleo de Negocio - DDD)
+│   │   ├── aggregates/
+│   │   │   └── Pedido.ts             // Raíz del Agregado
+│   │   ├── entities/
+│   │   │   └── Cliente.ts            // Entidad sin ser Raíz (o Agregado simple)
+│   │   ├── value-objects/
+│   │   │   └── Direccion.ts          // Objeto Inmutable
+│   │   ├── repositories/
+│   │   │   └── IPedidoRepository.ts  // Contrato de Repositorio (Interfaz)
+│   │   └── events/
+│   │       └── PedidoPagadoEvent.ts  // Evento de Dominio
+│   │
+│   ├── infrastructure/  <-- Lógica Externa (Persistencia, APIs externas)
+│   │   ├── database/
+│   │   │   └── SqlPedidoRepository.ts  // Implementación de IPedidoRepository
+│   │   ├── api/
+│   │   │   └── ClienteAPI.ts         // Adaptador de un servicio externo
+│   │   └── utils/
+│   │       └── EmailService.ts       // Envío de correos
+│   │
+│   ├── interfaces/      <-- Lógica de Entrada (MVC Controllers) y Salida (Views)
+│   │   ├── http/
+│   │   │   └── PedidoController.ts   // Recibe la solicitud y llama al Servicio
+│   │   └── views/
+│   │       └── catalogo.html/jsx     // Presentación de datos
+│   │
+│   └── index.ts         // Punto de entrada de la aplicación (inicia el servidor, inyecta dependencias)
+│
+├── tests/               // Pruebas unitarias e de integración
+├── package.json         // Dependencias del proyecto
+└── tsconfig.json        // Configuración de TypeScript
+```
