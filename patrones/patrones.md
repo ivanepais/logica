@@ -7170,8 +7170,262 @@ La clase de equipo no tiene que cambiar cuando se necesita una nueva inspección
 
 # MVC
 
+## SoC: (Separation of Concerns
+
+Establece que un sistema de software debe dividirse en componentes de tal manera que cada componente se preocupe por una única y distinta preocupación (interés o responsabilidad).
+
+### 1. El Interés de los Datos y la Lógica de Negocio (Modelo)
+
+#### Modelo (Model): Su única "preocupación" es cómo son los datos, cómo se manipulan, y cuáles son las reglas de negocio (ej. validar un usuario, calcular un precio).
+
+Separación: No le importa cómo se mostrarán los datos (esa es la preocupación de la Vista) ni cómo el usuario solicitó la acción (esa es la preocupación del Controlador).
+    
+
+### 2. El Interés de la Presentación y la Interfaz (Vista)
+
+Vista (View): Su única "preocupación" es la interfaz de usuario (UI), es decir, el diseño, los estilos y la visualización de la información.
+
+Separación: No contiene lógica de negocio, ni sabe cómo se almacenan o actualizan los datos (esas son las preocupaciones del Modelo). 
+
+Solo renderiza lo que el Controlador le indica con los datos que le proporciona el Modelo.
+
+
+### 3. El Interés del Flujo y la Coordinación (Controlador)
+
+Controlador (Controller): Su única "preocupación" es recibir las entradas del usuario (eventos o solicitudes), decidir qué lógica de negocio se necesita (Modelo) y determinar qué resultado mostrar (Vista).
+
+Separación: No gestiona directamente los datos (eso es del Modelo) ni genera la interfaz de usuario (eso es de la Vista). Simplemente actúa como un coordinador.
+
+
+#### Beneficios
+
+Modularidad y Mantenimiento: Al estar las responsabilidades separadas, puedes modificar una parte del código sin afectar a las otras
+
+Por ejemplo, puedes cambiar la base de datos (Modelo) sin tocar la interfaz (Vista) o viceversa.
+
+
+Reutilización: Puedes reutilizar el mismo Modelo (datos y lógica de negocio) con múltiples Vistas
+
+(ej. una interfaz web, una aplicación móvil, o un reporte en PDF), ya que el Modelo es independiente de la presentación.
+
+
+Testeo: Cada componente se puede probar de forma aislada (pruebas unitarias).
+
+##### Puedes probar la lógica del Modelo sin necesidad de un navegador o una interfaz gráfica, lo cual simplifica enormemente el proceso de aseguramiento de calidad.
+
+
+Desarrollo Colaborativo: Permite que diferentes equipos o desarrolladores trabajen en paralelo
+
+##### Por ejemplo, los diseñadores web pueden centrarse en la Vista mientras los desarrolladores de backend trabajan en el Modelo y el Controlador.
+
+
+## Modelo y Datos
+
+El Modelo tiene una única preocupación: saber qué son los datos y cómo operan.
+
+Datos (Data):
+
+Representa las estructuras de datos que maneja la aplicación (ej. un objeto Usuario, Producto, Pedido).
+
+Se encarga de la persistencia: acceder y manipular la base de datos (consultar, guardar, actualizar, eliminar información).
+
+Importante: En muchas implementaciones, el Modelo no es solo el objeto que representa la tabla de la base de datos, sino la capa completa que interactúa con ella.
+
+
+Lógica de Negocio (Business Logic):
+
+Implementa las reglas de cómo los datos pueden ser cambiados o cómo deben interactuar entre sí (ej. "Un usuario menor de 18 años no puede realizar un pedido", "Calcular el impuesto total de la compra").
+
+El Modelo asegura que los datos sean consistentes y válidos antes de ser almacenados.
+
+
+Mecanismos de Notificación:
+
+En un MVC clásico (especialmente en aplicaciones de escritorio), el Modelo tiene la capacidad de notificar a las Vistas cuando sus datos han cambiado. Esto permite que la interfaz de usuario se actualice automáticamente sin que el Controlador tenga que intervenir constantemente
+
+
+#### La Interacción del Usuario (Controlador): El Modelo no procesa clics de ratón ni solicitudes HTTP; simplemente recibe instrucciones (ej. "Dame el producto con ID 5") y devuelve los datos o un resultado.
+
+##### El Modelo es la capa que define qué hace la aplicación en el mundo real, independientemente de cómo se le pregunte (Controlador) o cómo se muestre el resultado (Vista).
+
+
 
 ## MVC en TypeScript
+
+```
+/src
+├── /models
+│   └── TodoModel.ts       // Gestión de los datos de las tareas
+├── /views
+│   └── TodoView.ts        // Renderizado de la lista y manejo de la UI
+├── /controllers
+│   └── TodoController.ts  // Maneja la lógica de la aplicación
+└── index.ts               // Inicialización
+```
+
+
+1. El Modelo (TodoModel.ts)
+
+El Modelo se encarga de los datos (la lista de tareas) y la lógica para manipularlos. Usaremos una interfaz para tipificar los objetos de las tareas.
+
+```
+// Define la estructura de un objeto Tarea
+export interface Todo {
+    id: number;
+    text: string;
+    completed: boolean;
+}
+
+// Clase que maneja la lógica de negocio y los datos
+export class TodoModel {
+    private todos: Todo[] = [];
+    private nextId: number = 1;
+
+    // Lógica de Negocio: Añadir una nueva tarea
+    public addTodo(text: string): Todo {
+        const newTodo: Todo = {
+            id: this.nextId++,
+            text: text,
+            completed: false
+        };
+        this.todos.push(newTodo);
+        return newTodo;
+    }
+
+    // Lógica de Negocio: Marcar una tarea como completada
+    public toggleTodo(id: number): void {
+        const todo = this.todos.find(t => t.id === id);
+        if (todo) {
+            todo.completed = !todo.completed;
+        }
+    }
+
+    // Acceso a los datos
+    public getTodos(): Todo[] {
+        // Devuelve una copia para evitar modificación externa directa
+        return [...this.todos]; 
+    }
+}
+```
+
+
+2. La Vista (TodoView.ts)
+
+La Vista se encarga de mostrar la interfaz y de capturar las interacciones del usuario. No tiene lógica de negocio.
+
+```
+import { Todo } from '../models/TodoModel';
+
+// Clase que gestiona la interfaz (ej. el DOM en una aplicación web)
+export class TodoView {
+    // Referencias a los elementos del DOM (ej. un formulario y una lista)
+    private todoListElement: HTMLElement;
+    private addButton: HTMLButtonElement;
+    private inputElement: HTMLInputElement;
+
+    constructor() {
+        // Asume que estos elementos existen en el HTML
+        this.todoListElement = document.getElementById('todo-list')!; 
+        this.addButton = document.getElementById('add-button') as HTMLButtonElement;
+        this.inputElement = document.getElementById('todo-input') as HTMLInputElement;
+    }
+
+    // Renderiza la lista de tareas recibida del Controlador
+    public render(todos: Todo[]): void {
+        this.todoListElement.innerHTML = ''; // Limpiar la lista
+        
+        todos.forEach(todo => {
+            const li = document.createElement('li');
+            li.textContent = todo.text;
+            li.className = todo.completed ? 'completed' : '';
+            li.dataset.id = todo.id.toString(); // Usado para identificar en el evento
+            this.todoListElement.appendChild(li);
+        });
+    }
+
+    // Método para capturar el texto de la nueva tarea
+    public getNewTodoText(): string {
+        const text = this.inputElement.value.trim();
+        this.inputElement.value = ''; // Limpiar el campo
+        return text;
+    }
+
+    // Bindea el evento de añadir (Controlador se suscribe a este evento)
+    public bindAddTodo(handler: (text: string) => void): void {
+        this.addButton.addEventListener('click', () => {
+            const text = this.getNewTodoText();
+            if (text) {
+                handler(text); // Llama al método del Controlador
+            }
+        });
+    }
+}
+```
+
+
+3. El Controlador (TodoController.ts)
+
+El Controlador actúa como intermediario. 
+
+Recibe la entrada de la Vista, pide al Modelo que cambie el estado, y luego pide a la Vista que se actualice.
+
+```
+import { TodoModel } from '../models/TodoModel';
+import { TodoView } from '../views/TodoView';
+
+// Clase que coordina el flujo de la aplicación
+export class TodoController {
+    private model: TodoModel;
+    private view: TodoView;
+
+    constructor(model: TodoModel, view: TodoView) {
+        this.model = model;
+        this.view = view;
+
+        // Inicializa la Vista con el estado actual del Modelo
+        this.onTodoListChanged(this.model.getTodos());
+
+        // Bindea los manejadores de eventos de la Vista a los métodos del Controlador
+        this.view.bindAddTodo(this.handleAddTodo);
+    }
+
+    // Metodo que actualiza la vista, llamado cuando el modelo cambia
+    private onTodoListChanged = (todos: Todo[]): void => {
+        this.view.render(todos);
+    }
+
+    // Manejador de eventos para añadir una tarea (recibido de la Vista)
+    private handleAddTodo = (text: string): void => {
+        this.model.addTodo(text);
+        
+        // El Controlador pide al Modelo el estado actualizado y se lo da a la Vista
+        this.onTodoListChanged(this.model.getTodos()); 
+    }
+    
+    // (Aquí irían otros manejadores, ej: handleToggleTodo)
+}
+```
+
+
+4. Inicialización (index.ts)
+
+Aquí instanciamos los tres componentes y los conectamos.
+
+```
+import { TodoModel } from './models/TodoModel';
+import { TodoView } from './views/TodoView';
+import { TodoController } from './controllers/TodoController';
+
+const app = new TodoController(new TodoModel(), new TodoView());
+// La aplicación comienza a funcionar, el Controlador ahora coordina.
+```
+
+El Modelo (TodoModel) solo sabe sobre listas y manipulación de datos.
+
+La Vista (TodoView) solo sabe cómo mostrar los datos en el HTML y qué eventos escuchar.
+
+El Controlador (TodoController) maneja el flujo de la solicitud: "Añadir tarea" -> Modelo.getTodos() -> Vista.render().
+
 
 
 ### Estructura/orden de código 
@@ -7216,3 +7470,3417 @@ La clase de equipo no tiene que cambiar cuando se necesita una nueva inspección
 ├── package.json         // Dependencias del proyecto
 └── tsconfig.json        // Configuración de TypeScript
 ```
+
+
+#### domain: Reglas de Negocio Puras; Agregados, Entidades, Objetos de Valor, Interfaces de Repositorio.
+
+#### application: Casos de Uso y Coordinación; Servicios de Aplicación (manejo de transacciones, orquestación del dominio).
+
+#### infrastructure: Detalles Técnicos; Implementaciones concretas de Repositorios (DB), clientes API, utilidades.
+
+#### interfaces: Puntos de Entrada/Salida; Controladores HTTP/CLI, Vistas y lógica de presentación.
+
+
+### Carpetas principales
+
+##### Model, View, Controller dentro del directorio de código fuente (/src o /app)
+
+##### Más una carpeta de Infraestructura o Servicios para las dependencias externas.
+
+
+#### 1. Controladores (/controllers)
+
+Clases que manejan la entrada del usuario y la orquestación.
+
+UsuarioController.js/ts: Maneja las solicitudes relacionadas con los usuarios (ej., registrar, iniciar sesión).
+
+ProductoController.js/ts: Maneja las solicitudes de e-commerce (ej., ver catálogo, añadir al carrito).
+
+HomeController.js/ts: Maneja las rutas principales o la página de inicio
+
+
+#### 2. Modelos (/models o /domain)
+
+Contiene la lógica de negocio y las estructuras de datos. 
+
+En frameworks modernos, estos suelen ser las clases que interactúan con la base de datos (ORMs o clases de Dominio/DDD).
+
+Usuario.js/ts: Define la estructura de un usuario y la lógica para su validación o autenticación.
+
+Producto.js/ts: Define un producto, sus reglas de stock y precio.
+
+Pedido.js/ts: Define la estructura de una orden de compra y su lógica de estado.
+
+
+#### 3. Vistas (/views)
+
+Contiene los archivos de la interfaz de usuario que se renderizan al cliente. 
+
+El contenido de estas carpetas depende de la tecnología (ej., archivos .ejs, .html, .jsx):
+
+/views/productos/
+
+    catalogo.html: Muestra la lista de productos.
+
+    detalle.html: Muestra la información de un producto específico.
+
+/views/usuario/
+
+    login.html: Formulario para iniciar sesión.
+
+    perfil.html: Página de perfil del usuario.
+
+/views/shared/: Contiene layouts o plantillas comunes (ej., header.html, footer.html).
+
+
+#### 4. Capa de Aplicación y Otros (/services, /config, /infrastructure)
+
+Contiene la lógica que coordina el flujo (Capa de Servicio) y las configuraciones técnicas.
+
+/services/:
+
+    ServicioDeAutenticacion.js/ts: Lógica que coordina el Modelo de Usuario y otros sistemas (ej., enviar email de verificación).
+
+    ServicioDeTransaccion.js/ts: Lógica que usa los Modelos Pedido y Producto para realizar una compra completa (simulando una Capa de Servicio/UoW).
+
+/config/: Archivos de configuración de la base de datos o variables de entorno.
+
+/public/: Recursos estáticos como CSS, imágenes y JavaScript del lado del cliente.
+
+
+
+## Service Layer en MVC
+
+No es un componente estándar y obligatorio del patrón MVC original
+
+##### Capa adicional introducida comúnmente en arquitecturas más complejas para mejorar la separación de intereses (SoC)
+
+##### Gestionar la lógica de negocio que abarca múltiples Modelos.
+
+
+### Capa de Servicio
+
+Se ubica entre el Controlador y el Modelo.
+
+Sin Capa de Servicio: El Controlador llama directamente a los métodos del Modelo (Entidades, Repositorios, etc.).
+
+##### Con Capa de Servicio: El Controlador llama a los métodos del Servicio, y el Servicio coordina las llamadas a uno o más Modelos (capa de Dominio/Persistencia).
+
+```
+Vista ⟷ Controlador ⟷ Servicio ⟷ Modelo
+```
+
+
+##### Responsabilidades
+
+Se enfoca en la Lógica de Aplicación y la Coordinación Transaccional.
+
+1. Lógica de Aplicación (Casos de Uso)
+
+El Servicio define y ejecuta las operaciones de alto nivel o los "casos de uso" de la aplicación.
+
+Ejemplo: En lugar de tener un Controlador que llama a ModeloPedido.guardar() y luego a ModeloInventario.actualizarStock(), el Controlador llama a un único método: ServicioDePedidos.crearPedidoYActualizarStock(datos).
+
+
+2. Coordinación Transaccional
+
+Es el lugar ideal para gestionar la Unidad de Trabajo (Unit of Work). 
+
+Si una operación de negocio requiere modificar varios Modelos o Agregados (en terminología DDD), el Servicio se asegura de que esto se haga dentro de una única transacción atómica.
+
+Ejemplo: El servicio crearPedidoYActualizarStock se asegura de que, si falla la actualización del stock, la creación del pedido también se revierta (rollback).
+
+
+3. Traducción y Autorización
+
+Autorización: A menudo, el Servicio maneja las verificaciones de seguridad de alto nivel (ej. "¿Tiene este usuario permisos para crear un pedido?").
+
+Traducción: Puede convertir datos de entrada (recibidos del Controlador) a objetos de dominio (pasados al Modelo) y viceversa.
+
+ 
+##### Beneficios
+
+1. Controladores más Limpios (Thin Controllers): El Controlador solo se preocupa por la interfaz de usuario, la validación de la solicitud y llamar al método de servicio adecuado.
+
+Ya no contiene lógica de negocio o de coordinación compleja.
+
+
+2. Reutilización de la Lógica: La lógica de negocio compleja (crearPedidoYActualizarStock) puede ser reutilizada por diferentes Controladores 
+
+(ej., un Controlador API y un Controlador de interfaz gráfica).
+
+
+3. Aislamiento del Modelo (Dominio): La Capa de Servicio protege el Modelo, asegurando que solo se le pida hacer cosas que tienen sentido en el contexto de una operación de aplicación.
+
+
+4. Mejor Testeabilidad: Puedes probar la lógica de negocio completa del caso de uso probando solo la Capa de Servicio, sin necesitar la Vista o el Controlador.
+
+
+La Capa de Servicio toma la responsabilidad de la Lógica de Aplicación y la Coordinación del Controlador
+
+Permitiendo que el Controlador se enfoque solo en las interacciones de E/S y que el Modelo se enfoque solo en las reglas de datos y el dominio.
+
+
+
+
+## Unit of Work en MVC
+
+##### Patrón de diseño que se utiliza para agrupar una o más operaciones de base de datos en una única transacción atómica.
+
+##### Su propósito es asegurar que todos los cambios realizados durante un proceso de negocio sean exitosos y se guarden juntos, o que ninguno de ellos se guarde si algo falla.
+
+#### UoW actúa como un rastreador que mantiene un registro de todos los cambios realizados en el modelo de negocio (Entidades, Agregados, etc.) durante una determinada operación de la aplicación.
+
+1. Seguimiento de Cambios: Cuando una operación comienza, la UoW inicia y comienza a rastrear cualquier Entidad que sea agregada, modificada o marcada para eliminación.
+
+2. Transacción Única: Cuando la operación de negocio finaliza con éxito, la UoW le pide a los Repositorios que persistan todos los cambios rastreados en la base de datos como una única transacción.
+
+3. Compromiso (Commit): Si todas las operaciones de persistencia son exitosas, la UoW ejecuta el commit de la transacción.
+
+4. Reversión (Rollback): Si cualquier operación de persistencia falla (por un error del sistema, una violación de integridad, etc.), la UoW ejecuta un rollback, asegurando que la base de datos se mantenga en el estado inicial y consistente
+
+
+### Relación con Repos
+
+UoW se utiliza casi siempre junto con el patrón Repositorio (especialmente en DDD o arquitecturas basadas en capas) para desacoplar el código:
+
+#### Repositorio: Se enfoca en el acceso a los datos de una única Raíz de Agregado (cómo obtener y cómo guardar).
+
+#### Unidad de Trabajo: Se enfoca en la coordinación transaccional entre múltiples Repositorios
+
+##### !!! En lugar de que cada Repositorio abra y cierre su propia conexión y transacción de base de datos, todos comparten la misma UoW para una operación de negocio.
+
+
+### Beneficios
+
+1. Atomicidad: Garantiza que las operaciones complejas sean atómicas (todo o nada), lo que es fundamental para la integridad de los datos.
+
+2. Eficiencia: Reduce la cantidad de interacciones con la base de datos al agrupar múltiples comandos (INSERTs, UPDATEs, DELETEs) en un solo viaje.
+
+3. Simplificación del Dominio: Mantiene la lógica transaccional fuera de los Agregados y los Servicios de Dominio, delegándola a la capa de Aplicación/Infraestructura.
+
+
+### Ejemplo de Flujo: Transferencia de Dinero
+
+La Capa de Aplicación inicia la UoW: uow.iniciar().
+
+1. El Servicio de Dominio solicita a los Repositorios:
+
+	cuentaOrigen = repoCuenta.obtener(idOrigen)
+
+	cuentaDestino = repoCuenta.obtener(idDestino)
+
+2. La lógica de negocio se ejecuta (dentro del Dominio):
+
+	cuentaOrigen.retirar(monto)
+
+	cuentaDestino.depositar(monto)
+
+3. La Capa de Aplicación informa a la UoW que se debe guardar el estado de las dos cuentas: uow.guardarCambios().
+
+4. La UoW garantiza que tanto la operación de retiro como la de depósito se ejecuten y confirmen simultáneamente en la base de datos.
+ 
+ 
+
+
+## Ej: Modelo MVC
+
+Gestiona los datos y la lógica de negocio de la aplicación.
+
+
+## Ej Modelo simple app notas (NoteModel), que se encarga de almacenar, añadir y obtener las notas
+
+Modelo (Model): NoteModel
+
+Este modelo encapsula el estado (la lista de notas) y la lógica para manipular ese estado.
+
+```
+// /src/models/Note.ts (Define la estructura del dato)
+export interface Note {
+    id: number;
+    title: string;
+    content: string;
+}
+
+// /src/models/NoteModel.ts (El Modelo MVC)
+export class NoteModel {
+    // El estado interno que representa los datos de la aplicación
+    private notes: Note[] = [];
+    private nextId: number = 1;
+
+    // --- Lógica de Negocio y Manipulación de Datos ---
+
+    /**
+     * Añade una nueva nota a la colección, encapsulando la asignación de ID.
+     */
+    public addNote(title: string, content: string): Note {
+        // Lógica de negocio: asegurarse de que no haya títulos vacíos
+        if (!title.trim()) {
+            throw new Error("El título de la nota no puede estar vacío.");
+        }
+        
+        const newNote: Note = {
+            id: this.nextId++,
+            title: title,
+            content: content
+        };
+        
+        this.notes.push(newNote);
+        console.log(`Modelo: Nota ${newNote.id} añadida.`);
+        return newNote;
+    }
+
+    /**
+     * Devuelve una nota específica por su ID.
+     */
+    public getNoteById(id: number): Note | undefined {
+        // Lógica de acceso a datos: buscar en la colección interna
+        return this.notes.find(note => note.id === id);
+    }
+    
+    /**
+     * Devuelve la lista completa de notas.
+     * Se devuelve una copia para evitar la modificación directa e incontrolada del array.
+     */
+    public getAllNotes(): Note[] {
+        // Retorna los datos que el Controlador pasará a la Vista
+        return [...this.notes]; 
+    }
+}
+```
+
+1. Datos Centralizados: La variable privada notes es el almacén de datos.
+
+2. Lógica Encapsulada: El método addNote() no solo agrega la nota, sino que también maneja la lógica de negocio (asignar el id) y la validación (título no vacío).
+
+3. Independencia: Este código no tiene ninguna referencia a elementos de la interfaz de usuario (HTML, DOM) ni al flujo de solicitudes (Controlador). Solo se preocupa por qué son los datos y cómo se manipulan
+
+
+
+## View MVC
+
+Es la capa responsable de la presentación de los datos al usuario y de capturar las interacciones del usuario (como clics de botones o entradas de texto).
+
+Es crucial que la Vista no contenga lógica de negocio. Solo sabe cómo mostrar la información que recibe del Controlador y cómo notificar al Controlador sobre las acciones del usuario.
+
+
+### Ej: Vista simple para una lista de notas, diseñada para interactuar con un Controlador
+
+La vista define la interfaz para conectarse a él
+
+Vista (View): NoteView
+
+Esta clase simula la interacción con el DOM de una aplicación web, mostrando notas y notificando la acción "Añadir Nota".
+
+```
+// /src/views/NoteView.ts
+
+import { Note } from '../models/Note'; // Asumimos la interfaz Note del Modelo
+
+export class NoteView {
+    // Referencias a elementos del DOM (Asume que existen en el HTML)
+    private appElement: HTMLElement;
+    private noteListElement: HTMLElement;
+    private addButton: HTMLButtonElement;
+    private inputTitleElement: HTMLInputElement;
+    private inputContentElement: HTMLTextAreaElement;
+
+    constructor() {
+        // Inicialización y obtención de referencias del DOM
+        this.appElement = document.getElementById('app')!;
+        this.noteListElement = document.getElementById('note-list')!;
+        this.addButton = document.getElementById('add-button') as HTMLButtonElement;
+        this.inputTitleElement = document.getElementById('note-title') as HTMLInputElement;
+        this.inputContentElement = document.getElementById('note-content') as HTMLTextAreaElement;
+    }
+
+    // --- 1. Presentación de Datos (Método de Renderizado) ---
+    
+    /**
+     * Muestra la lista de notas, recibiendo los datos directamente del Controlador.
+     */
+    public render(notes: Note[]): void {
+        this.noteListElement.innerHTML = ''; // Limpiar la lista
+        
+        if (notes.length === 0) {
+            this.noteListElement.innerHTML = '<p>No hay notas. ¡Añade una!</p>';
+            return;
+        }
+
+        notes.forEach(note => {
+            const li = document.createElement('li');
+            li.className = 'note-item';
+            li.innerHTML = `
+                <div class="note-title">${note.title}</div>
+                <p class="note-content">${note.content}</p>
+            `;
+            this.noteListElement.appendChild(li);
+        });
+    }
+
+    // --- 2. Captura de Interacciones y Notificación ---
+
+    /**
+     * Captura los datos de la nueva nota para enviarlos al Controlador.
+     */
+    public getNewNoteData(): { title: string, content: string } {
+        const title = this.inputTitleElement.value;
+        const content = this.inputContentElement.value;
+        
+        // Limpiar los campos después de la captura
+        this.inputTitleElement.value = '';
+        this.inputContentElement.value = '';
+        
+        return { title, content };
+    }
+
+    /**
+     * Conecta el evento del botón con una función del Controlador.
+     * Esto usa el patrón "observador" para notificar al Controlador de una acción.
+     * * @param handler La función del Controlador que se ejecutará al hacer clic.
+     */
+    public bindAddNote(handler: (title: string, content: string) => void): void {
+        this.addButton.addEventListener('click', () => {
+            const data = this.getNewNoteData();
+            
+            // La Vista NO valida ni guarda. Solo llama al método del Controlador.
+            if (data.title && data.content) {
+                handler(data.title, data.content); 
+            }
+        });
+    }
+}
+```
+
+
+1. Solo Presentación: El método render() solo se preocupa por la estructura HTML y cómo mostrar los datos `(Note[])` que le da el Controlador. No sabe de dónde vienen esos datos (Base de Datos, Archivos, etc.).
+
+2. Notificación de Eventos: El método bindAddNote() es el mecanismo clave. En lugar de procesar la lógica, la Vista llama a una función (handler) que le pasa el Controlador, desacoplando la interacción de la lógica.
+
+3. Aislamiento del Dominio: La Vista no contiene llamadas al Modelo. El flujo es siempre: Vista → Controlador → Modelo → Controlador → Vista.
+
+
+
+## Controller MVC
+
+Intermediario o "cerebro" que gestiona el flujo de la aplicación
+
+##### Recibe las interacciones de la Vista, decide qué lógica de negocio se necesita ejecutar en el Modelo, y luego le dice a la Vista qué mostrar.
+
+
+### Ej: app notas que conecta el NoteView y el NoteModel
+
+
+#### Controlador (Controller): NoteController
+
+Esta clase orquesta la aplicación. 
+
+Recibe instancias del Modelo y la Vista en su constructor y establece la conexión entre ellas.
+
+```
+// /src/controllers/NoteController.ts
+
+import { NoteModel, Note } from '../models/NoteModel';
+import { NoteView } from '../views/NoteView';
+
+export class NoteController {
+    private model: NoteModel;
+    private view: NoteView;
+
+    constructor(model: NoteModel, view: NoteView) {
+        this.model = model;
+        this.view = view;
+
+        // 1. Inicialización: El Controlador le pide los datos al Modelo
+        // y le dice a la Vista que los renderice.
+        this.onNoteListChanged(this.model.getAllNotes());
+
+        // 2. Conexión de Eventos: El Controlador se suscribe a los eventos de la Vista
+        // y les asigna su propio manejador.
+        this.view.bindAddNote(this.handleAddNote); 
+    }
+
+    // --- Métodos de Orquestación y Flujo ---
+
+    /**
+     * Método llamado por el Controlador cada vez que el Modelo cambia.
+     * Obtiene el estado actual del Modelo y se lo pasa a la Vista para su actualización.
+     */
+    private onNoteListChanged(notes: Note[]): void {
+        console.log("Controlador: Actualizando la Vista con nuevos datos.");
+        this.view.render(notes);
+    }
+
+    /**
+     * Manejador de Evento: Esta función se llama cuando el usuario hace clic en 'Añadir Nota'
+     * (gracias al 'bindAddNote' definido en el constructor).
+     */
+    private handleAddNote = (title: string, content: string): void => {
+        console.log(`Controlador: Recibida solicitud para añadir nota: "${title}".`);
+        
+        try {
+            // 1. El Controlador llama al Modelo para ejecutar la lógica de negocio (guardar)
+            this.model.addNote(title, content); 
+
+            // 2. El Controlador solicita los datos actualizados y le dice a la Vista que se actualice
+            this.onNoteListChanged(this.model.getAllNotes());
+            
+        } catch (error) {
+            // Manejo de errores de negocio (ej. título vacío)
+            console.error("Error al añadir nota:", (error as Error).message);
+            // Opcional: El controlador podría decirle a la Vista que muestre un mensaje de error
+            // this.view.displayError((error as Error).message); 
+        }
+    }
+}
+```
+
+
+#### Conexión de la Aplicación (index.ts)
+
+Finalmente, se inicializa la aplicación conectando los tres componentes:
+
+```
+// /src/index.ts
+
+import { NoteModel } from './models/NoteModel';
+import { NoteView } from './views/NoteView';
+import { NoteController } from './controllers/NoteController';
+
+document.addEventListener('DOMContentLoaded', () => {
+    // 1. Instanciar el Modelo y la Vista
+    const model = new NoteModel();
+    const view = new NoteView();
+
+    // 2. Instanciar el Controlador, conectando el Modelo y la Vista
+    new NoteController(model, view);
+
+    console.log("Aplicación MVC inicializada.");
+});
+```
+
+1. Intermediario: El Controlador es la única clase que tiene referencias directas tanto al Modelo como a la Vista.
+
+2. Manejo de Solicitudes: Recibe la acción del usuario (handleAddNote), interpreta la intención y traduce eso en una acción del Modelo (model.addNote()).
+
+3. Control de Flujo: Determina el siguiente paso de la aplicación: después de modificar el Modelo, siempre llama a la Vista para asegurar que la interfaz esté sincronizada (onNoteListChanged).
+
+4. No Contiene Lógica de Negocio: El Controlador no sabe cómo se guarda la nota ni si el título es válido; esa lógica reside en el Modelo. Su única tarea es orquestar.
+
+
+
+
+# DDD
+
+##### Domain-Driven Design (Diseño Dirigido por el Dominio) pone el dominio del negocio en el centro de la aplicación.
+
+Serie de principios y patrones arquitectónicos cuyo objetivo es alinear estrechamente el código con la lógica y las reglas del negocio, especialmente en sistemas complejos.
+
+
+## Principios
+
+DDD se basa en tres pilares conceptuales clave para lograr esta alineación:
+
+### 1. El Dominio como Foco
+
+##### El Dominio es el problema específico del mundo real que la aplicación busca resolver (por ejemplo, "gestión de inventario de una tienda de comercio electrónico" o "sistema de reservaciones hoteleras").
+
+##### DDD exige que los desarrolladores adquieran un conocimiento profundo del negocio, colaborando estrechamente con los expertos del dominio.
+
+##### El diseño del software debe reflejar directamente los conceptos, reglas y procesos de este dominio.
+
+
+### 2. Lenguaje Ubicuo (Ubiquitous Language)
+
+##### Este es quizás el concepto más importante a nivel de comunicación.
+
+Consiste en una colección de términos y definiciones que son utilizados de la misma forma por todos los miembros del equipo: expertos del negocio, usuarios y desarrolladores.
+
+##### Este lenguaje se plasma directamente en el código (nombres de clases, métodos, variables). Por ejemplo, si el experto del negocio dice ProductoAgregado, el código debe tener una clase llamada ProductoAgregado.
+
+Esto reduce la fricción, elimina malentendidos y garantiza que el código hable el mismo idioma que el negocio
+
+
+### 3. Contextos Delimitados (Bounded Contexts)
+
+##### En sistemas complejos, un mismo término puede tener diferentes significados. DDD soluciona esto dividiendo el sistema en contextos claros:
+
+##### Un Contexto Delimitado es un límite lógico dentro del cual un modelo de dominio específico está definido y es consistente.
+
+##### Ejemplo: La entidad "Producto" en el contexto de Inventario puede tener atributos como stock y ubicacion, mientras que la entidad "Producto" en el contexto de Ventas solo tiene precio y descripcion.
+
+##### Los Contextos Delimitados permiten manejar la complejidad al asegurar que cada parte del sistema se preocupe por una porción manejable y coherente del dominio. 
+
+
+#### Patrones Arquitectónicos Centrales
+
+##### Dentro de cada Contexto Delimitado, DDD propone patrones específicos para construir un Modelo de Dominio sólido y protegido:
+
+
+### 1. Entidad (Entity): Objetos que tienen una identidad única y persisten a través del tiempo. Importa su identidad, no sus atributos (ej. un Cliente con un ID).
+
+### 2. Objeto de Valor (Value Object)	Objetos que no tienen identidad y se definen únicamente por sus atributos. Son inmutables (ej. una Dirección o un RangoDeFechas).
+
+### 3. Una colección de Entidades y Objetos de Valor que deben tratarse como una unidad transaccional. Hay una Entidad raíz que garantiza la consistencia del grupo (ej. un Pedido que incluye varios ArtículosDeLínea).
+
+### 4. Repositorio (Repository)	Proporciona la interfaz para acceder y almacenar los Agregados, aislando el Modelo de Dominio de los detalles técnicos de la base de datos (la infraestructura).
+
+
+##### El objetivo de estos patrones es que la lógica de negocio (Domain Layer) resida en el centro, aislada de la infraestructura (bases de datos, UI, frameworks, etc.), lo que mejora la mantenibilidad, testeo y adaptabilidad del software.
+
+
+## Lenguaje Ubicuo
+
+Vocabulario compartido y estrictamente coherente que es utilizado por todos los participantes de un proyecto de software complejo. Esto incluye:
+
+#### 1. Expertos del Dominio (los que entienden el negocio).
+
+#### 2. Desarrolladores (los que escriben el código).
+
+#### 3. Documentación (los requisitos y especificaciones).
+
+
+### Coherencia entre Negocio y Código
+
+El UL no es solo una lista de términos
+
+##### Es el modelo de dominio expresado a través del lenguaje.
+
+#### En el Negocio: Los expertos usan el UL para describir los procesos, reglas y conceptos del negocio.
+
+#### En el Código: Los desarrolladores toman esos términos y los usan directamente para nombrar clases, métodos, variables y módulos
+
+
+#### Ej. 
+
+Concepto	si el negocio dice..	El código debe tener...
+
+Regla de Negocio "El cliente debe ActivarCuenta." Un método llamado cuenta.activarCuenta()
+
+Entidad "La entidad central es el Pedido." Una clase o módulo llamado Pedido
+
+
+### Relación con los Contextos Delimitados
+
+##### El UL debe ser coherente, pero solo dentro de su propio Contexto Delimitado (Bounded Context).
+
+#### En sistemas grandes, un mismo término puede tener significados diferentes. 
+
+El UL ayuda a manejar esto al delimitar dónde es válido cada significado:
+
+
+Término | Contexto Delimitado | Significado en el UL
+
+Producto | Inventario | Ítem físico con stock y ubicacion.
+
+Producto | Ventas | Ítem vendible con precio y descripcionPromocional.
+
+
+##### Dentro del contexto de "Inventario," la palabra "Producto" siempre significa la entidad con stock, y el código lo reflejará.
+
+##### Si un desarrollador usa la palabra "Producto" en el contexto de "Ventas," el código debe reflejar el significado de ese contexto.
+
+
+Lenguaje Ubicuo es la herramienta de comunicación que asegura que el diseño del software (el código) sea un espejo fiel del entendimiento del negocio (el dominio).
+
+
+
+## Bounded Contexts
+
+Patrones arquitectónicos más importantes en Domain-Driven Design (DDD) para manejar la complejidad en sistemas grandes.
+
+Un Contexto Delimitado es, esencialmente, un límite lógico dentro del cual un modelo de dominio específico está definido y es coherente
+
+
+Su propósito es:
+
+1. Aislar Modelos: Asegurar que el modelo de dominio interno (las clases, entidades y lógica) permanezca consistente y no se vea contaminado por la lógica de otras partes del sistema.
+
+2. Clarificar el Lenguaje Ubicuo (UL): Definir el espacio exacto donde un término del negocio tiene un significado particular.
+
+3. El Contexto Delimitado es el límite físico donde el Lenguaje Ubicuo es válido y único.
+
+
+### Delimitar
+
+En la vida real, un mismo concepto tiene diferentes significados según el contexto. 
+
+Los sistemas de software deben reflejar esta realidad.
+
+
+Ejemplo Clásico: El Cliente
+
+#### Imagina una empresa con diferentes departamentos (contextos):
+
+
+Contexto Delimitado	Nombre del Modelo Interno	Atributos y Lógica
+
+Ventas (Sales)	Prospecto	ScoreDeInteres, FechaPrimerContacto.
+
+Soporte (Support)	CuentaDeSoporte	NivelDeServicio, HistorialDeTickets
+
+Facturación (Billing)	TitularDeFactura	DireccionFiscal, TerminosDePago.
+
+
+##### Si se intenta crear una única clase monolítica llamada Cliente con todos estos atributos, la clase se vuelve enorme, confusa e inconsistente.
+
+Al usar Contextos Delimitados, cada uno tiene su propio modelo pequeño, bien definido y enfocado en su preocupación particular.
+
+
+## Características
+
+#### Autónomos: Cada Contexto Delimitado debe ser tan independiente como sea posible, teniendo su propia base de datos (o esquema), código y equipo de desarrollo dedicado.
+
+#### Límites Clares: La frontera del contexto debe ser explícita, a menudo mapeándose a módulos de código, servicios o incluso microservicios independientes.
+
+#### Comunicación Explícita: Cuando dos Contextos Delimitados necesitan interactuar (ej. el contexto de "Ventas" necesita saber si el cliente en el contexto de "Facturación" está al día)
+
+##### La comunicación entre ellos debe ser explícita y controlada, generalmente a través de interfaces bien definidas, APIs o mensajes (Eventos de Dominio).
+
+
+La correcta delimitación de los contextos es el paso más crítico en un proyecto DDD, ya que establece las bases para una arquitectura software desacoplada y escalable.
+
+
+
+## Modelado Táctico
+
+##### Se refiere a la aplicación de patrones de diseño específicos para construir, de manera detallada y robusta, el Modelo de Dominio dentro de un Contexto Delimitado (Bounded Context).
+
+El Modelado Estratégico se enfoca en dividir el sistema en grandes contextos
+
+#### El Modelado Táctico se enfoca en cómo se ve el código internamente.
+
+Estos patrones se utilizan para asegurar que el código refleje fielmente la lógica de negocio y mantenga la coherencia del modelo:
+
+
+1. Entidades (Entities)
+
+Concepto: Son objetos de dominio que tienen una identidad única y persistente a lo largo del tiempo.
+
+Característica: Su identidad (un ID) es más importante que sus atributos. Dos entidades son iguales si tienen el mismo ID, incluso si todos sus atributos cambian.
+
+Propósito: Representan elementos que necesitan ser rastreados de forma individual (ej., un Cliente, un Pedido).
+
+
+2. Objetos de Valor (Value Objects)
+
+Concepto: Son objetos que no tienen identidad propia. Son definidos únicamente por sus atributos.
+
+Características: Son inmutables (una vez creados, no cambian) y si dos Objetos de Valor tienen los mismos atributos, se consideran iguales.
+
+Propósito: Modelar conceptos que describen o miden el dominio (ej., una Dirección, un RangoDeFechas, una Moneda).
+
+
+3. Agregados (Aggregates)
+
+Concepto: Una colección de Entidades y Objetos de Valor que deben tratarse como una única unidad transaccional.
+
+Raíz del Agregado: Cada Agregado tiene una Entidad Raíz (o Raíz del Agregado) que es la única que debe manipularse directamente desde fuera.
+
+Propósito: Garantizar la consistencia de los objetos que lo componen, asegurando que cualquier cambio dentro del límite del Agregado cumpla con todas las reglas de negocio. Por ejemplo, el Agregado Pedido se asegura de que sus LíneasDePedido y el EstadoDelPedido sean siempre coherentes.
+
+
+### Otros Patrones Tácticos Importantes
+
+Servicios de Dominio (Domain Services): Se usan para modelar operaciones que son importantes para el dominio, pero que no encajan naturalmente como responsabilidad de una Entidad o un Objeto de Valor (ej., una operación que involucra varias entidades, como TransferirDinero(cuentaOrigen, cuentaDestino, monto)).
+
+Eventos de Dominio (Domain Events): Son objetos que representan algo significativo que ocurrió en el dominio y que otros componentes o contextos podrían necesitar reaccionar (ej., ProductoAgotado, PedidoEnviado).
+
+Repositorios (Repositories): Proporcionan la interfaz para acceder y almacenar los Agregados. Su rol es aislar el Modelo de Dominio de los detalles técnicos de la base de datos (la infraestructura).
+
+Fábricas (Factories): Se utilizan para encapsular la lógica compleja necesaria para crear Agregados o Entidades que requieren un proceso de inicialización complicado.
+
+
+##### El Modelado Táctico toma las grandes decisiones del Modelado Estratégico (los Contextos Delimitados) y proporciona las herramientas de diseño específicas para construir el corazón funcional y detallado de la aplicación: el Modelo de Dominio.
+
+
+## Entidades (Entities)
+
+Representan los objetos de dominio que tienen una identidad única.
+
+Una Entidad es un objeto de dominio definido por su identidad y continuidad a través del tiempo, más que por sus atributos.
+
+
+1. Identidad Única
+
+Tiene un identificador único (como un ID) que la distingue de todas las demás.
+
+Persistencia: La identidad persiste a lo largo de la vida de la Entidad, incluso si todos sus atributos cambian. Por ejemplo, un Cliente mantiene su mismo ID de cliente, aunque cambie su nombre, dirección o número de teléfono.
+
+Comparación: Para determinar si dos Entidades son iguales, solo se necesita comparar su identificador.
+
+
+2. Mutabilidad
+
+A diferencia de los Objetos de Valor, las Entidades suelen ser mutables. 
+
+Sus atributos internos pueden cambiar (ej. el Estado de un pedido puede pasar de "pendiente" a "enviado"), y aun así, sigue siendo la misma Entidad (el mismo Pedido).
+
+
+3. 3. Encapsulación de Comportamiento
+
+Las Entidades no son solo estructuras de datos; encapsulan la lógica de negocio asociada con ellas.
+
+Los métodos de una Entidad son las acciones que puede realizar ese objeto en el dominio.
+
+
+#### Ejemplo: En lugar de tener una función externa cambiarEstadoPedido(pedido, nuevoEstado)
+
+##### El comportamiento debe residir en la propia Entidad: pedido.enviar().
+
+##### Esto asegura que las reglas de negocio (ej. "un pedido solo puede ser enviado si está pagado") se apliquen dentro de la propia Entidad.
+
+
+
+## Value Objects
+
+Representa un concepto descriptivo dentro del dominio, el cual no tiene identidad única y es definido únicamente por sus atributos.
+
+1. Definición Clave
+
+Sin Identidad: No tienen un ID o clave persistente.
+
+Igualdad Basada en Atributos: Dos Objetos de Valor son considerados iguales si y solo si todos sus atributos son idénticos.
+
+Inmutabilidad: Una vez creados, sus atributos no cambian. Si necesitas modificar el "valor", creas una nueva instancia del objeto
+
+
+Ejemplos:
+
+Una Dirección (calle, número, ciudad).
+
+Un RangoDeFechas (fechaInicio, fechaFin).
+
+Una Cantidad con Moneda (valor: 50, moneda: USD).
+
+
+
+## Domain Services
+
+##### Ayudan a encapsular la lógica de negocio que no encaja naturalmente en una Entidad o un Objeto de Valor.
+
+##### Es una clase que representa una operación importante del negocio o una coordinación que:
+
+1. No tiene un estado intrínseco: El servicio en sí no representa un objeto persistente del negocio (como un Cliente o un Producto).
+
+2. No es responsabilidad de una Entidad: La lógica involucra la coordinación de múltiples Entidades, Agregados, o componentes, y no tiene sentido ubicarla en un único objeto
+
+
+### El objetivo principal es mantener la pureza de las Entidades y los Objetos de Valor. 
+
+Si una operación es de dominio, pero no pertenece a un objeto específico, se crea un Servicio de Dominio para manejarla.
+
+
+1. Operaciones que Involucran Múltiples Agregados
+
+La razón más común para usar un Servicio de Dominio es cuando una única acción de negocio requiere manipular o acceder a múltiples Agregados (que, por definición, deben ser aislados).
+
+Ejemplo Clásico: Transferencia de Dinero
+
+La lógica no pertenece a la entidad CuentaOrigen ni a la entidad CuentaDestino, sino que involucra a ambas.
+
+Un Servicio de Dominio llamado ServicioDeTransferencia podría coordinar la acción:
+
+	cuentaOrigen.retirar(monto)
+
+	cuentaDestino.depositar(monto)
+
+	Manejar la lógica de transacción y las reglas de negocio (ej., verificar fondos).
+	
+
+2. Operaciones que No Tienen Estado
+
+El Servicio de Dominio es un objeto de dominio sin estado propio.
+
+Sus métodos suelen recibir parámetros del dominio (Entidades, Objetos de Valor) y devolver un resultado o modificar un estado.
+
+
+3. Evitar Anemia
+
+Es crucial no confundir los Servicios de Dominio con los Servicios de Aplicación o usarlos para toda la lógica. 
+
+Si una lógica pertenece claramente a una Entidad (ej., pedido.marcarComoEnviado()), debe residir allí. 
+
+El uso excesivo de Servicios de Dominio conduce a un "Modelo Anémico" donde las Entidades son solo contenedores de datos sin comportamiento.
+
+
+Ubicación en la Arquitectura de DDD
+
+En una arquitectura DDD en capas, los Servicios de Dominio se ubican en la capa de Dominio, junto a las Entidades y Objetos de Valor, y por debajo de la capa de Aplicación.
+
+Capa de Aplicación	Recibe la solicitud del usuario (Controlador), busca los Agregados necesarios y llama al método del Servicio de Dominio
+
+Capa de Dominio	Ejecuta la lógica de negocio coordinada que manipula los diferentes Agregados.
+
+
+los Servicios de Dominio son un patrón de diseño que le da un hogar formal y explícito a la lógica de negocio compleja y de coordinación que no tiene un lugar claro en ninguna Entidad individual.
+
+
+
+## Aggregate
+
+Uno de los patrones más críticos y complejos del Modelado Táctico en DDD
+
+##### Diseñado para garantizar la integridad transaccional y la consistencia del Modelo de Dominio.
+
+Es un clúster de Entidades y Objetos de Valor que están vinculados conceptualmente y que deben ser tratados como una única unidad transaccional.
+
+
+El propósito central de un Agregado es aplicar una regla fundamental:
+
+##### Todo cambio dentro del Agregado debe ser atómico y mantener la coherencia interna del grupo.
+
+
+### La Raíz del Agregado (Aggregate Root)
+
+#### Cada Agregado tiene una única Entidad Raíz.
+
+##### Esta Entidad Raíz es el único punto de acceso al Agregado desde fuera.
+
+
+#### Acceso Exclusivo: Solo se puede obtener o manipular el Agregado usando la Raíz.
+
+##### Si un cliente quiere modificar una Entidad interna (no la Raíz), debe hacerlo a través de un método de la Raíz.
+
+
+#### Garante de Reglas: La Raíz es responsable de asegurar que se cumplan todas las reglas de negocio (invariants) del Agregado antes y después de cualquier operación.
+
+
+### Límites y Reglas de Consistencia
+
+La clave de los Agregados radica en la rigidez de sus límites:
+
+1. Consistencia Transaccional: Todas las Entidades y Objetos de Valor dentro de un Agregado deben ser cargadas y guardadas juntas en una única operación de base de datos. Esto garantiza que el estado interno del Agregado siempre sea válido.
+
+2. Referencia por ID: Un Agregado nunca debe contener referencias directas a objetos de otros Agregados. Si un Agregado necesita referenciar a otro, solo debe hacerlo usando el ID de su Raíz. Esto promueve el bajo acoplamiento y la autonomía.
+
+3. Lógica Localizada: La lógica que aplica a varias Entidades internas del Agregado debe ser codificada en la Raíz para asegurar que la integridad se mantenga centralizada.
+
+
+### Ej: Pedido (Order)
+
+Componente	| Tipo de Patrón DDD | Rol en el Agregado
+
+Pedido | Entidad Raíz / Agregado	| El punto de acceso. Gestiona el estado general (ej. enviando()) y verifica que los ítems cumplan las reglas.
+
+LíneaDePedido |	Entidad | Es una Entidad interna que existe solo en el contexto del Pedido. No puede existir sola.
+
+Monto | Objeto de Valor | Representa el total del pedido; no tiene identidad, solo valor.
+
+ID del Cliente | Referencia Externa	 | El Pedido referencia al Cliente (que es otro Agregado) solo por su ID, no por el objeto completo.
+
+
+Los Agregados son una herramienta de modelado para reducir la complejidad, agrupando objetos relacionados y forzando la consistencia a través de la Entidad Raíz, lo que es esencial para el diseño de sistemas transaccionales y robustos.
+
+
+## Aggregate Root
+
+##### Entidad principal de un Agregado y el único punto de acceso para interactuar con ese grupo de objetos.
+
+Agregado es una Entidad que está en la cima jerárquica de su Agregado. Se diferencia de las demás Entidades por su rol:
+
+Punto de Acceso Único: Todas las interacciones, modificaciones o consultas al Agregado deben pasar obligatoriamente a través de la Raíz. Nunca se debe acceder a las Entidades internas directamente.
+
+Garante de Consistencia: La Raíz del Agregado es responsable de hacer cumplir todas las reglas de negocio (invariantes) que afectan al conjunto de objetos dentro de su límite transaccional.
+
+
+#### objetivo: es garantizar la integridad transaccional del Agregado
+
+Al forzar todas las operaciones a pasar por la Raíz, se asegura que el estado interno del Agregado sea siempre válido antes y después de cualquier cambio.
+
+
+### Reglas: deben seguir estas reglas estrictas:
+
+#### 1. Manipulación a través de Métodos: Para cambiar el estado de cualquier objeto dentro del Agregado (incluidas las Entidades internas), se debe llamar a un método público en la Raíz. 
+
+La Raíz del Agregado se encarga de delegar la acción internamente.
+
+
+#### 2. Persistencia Transaccional: El Agregado completo (la Raíz y todos sus miembros) debe ser guardado o actualizado en una única transacción atómica en la base de datos
+
+Esto previene estados inconsistentes.
+
+
+#### 3. Referencia Externa por ID: Otros Agregados solo pueden referenciar a este Agregado usando el ID de su Raíz, nunca deben mantener referencias directas a objetos internos.
+
+Esto evita que la Raíz pierda el control de sus invariantes.
+
+
+#### 4. Ciclo de Vida: La Entidad Raíz controla el ciclo de vida de los objetos internos.
+
+Si la Raíz se elimina, todos los objetos que pertenecen a su Agregado también deben ser eliminados.
+
+
+### Ej: Pedido
+
+En un Agregado Pedido:
+
+Raíz del Agregado: La Entidad Pedido (con su ID único).
+
+Objetos Internos: Las Entidades LíneaDePedido y los Objetos de Valor como DirecciónDeEnvío.
+
+Comportamiento: Si quieres agregar un producto al pedido, llamas a pedido.agregarProducto(productoId, cantidad). La Raíz (Pedido) se asegura de que el estado del pedido lo permita antes de crear la LíneaDePedido interna.
+
+   
+##### La Raíz del Agregado actúa como un guardián que protege las reglas y la coherencia de su Agregado.
+
+     
+     
+## Regla de Consistencia (o Invariante)
+
+##### Conjunto de reglas de negocio que siempre deben ser verdad para ese Agregado en cualquier momento.
+
+Regla de negocio que garantiza que el estado interno del Agregado sea siempre válido y coherente
+
+Estas reglas deben ser satisfechas al inicio y al final de cualquier operación o método de la Raíz del Agregado.
+
+
+#### La Regla de Consistencia se aplica a todo el conjunto de Entidades y Objetos de Valor que componen el Agregado
+
+No solo a un único campo.
+
+Propósito: Proteger los datos y la lógica de negocio fundamental de cambios inconsistentes o corruptos.
+
+
+### La Raíz del Agregado es el único responsable de hacer cumplir esta regla. Lo logra mediante:
+
+1. Encapsulación: La Raíz del Agregado encapsula todas las entidades internas. Dado que solo se puede interactuar con el Agregado a través de los métodos de la Raíz, ella puede interceptar y validar cualquier intento de cambio.
+
+2. Validación: Antes de completar una transacción (y antes de guardar el Agregado en el repositorio), la Raíz ejecuta la lógica necesaria para confirmar que la Regla de Consistencia se mantiene. Si la regla se rompe, la operación es rechazada.
+
+3. Transacción Única: DDD establece que el Agregado completo (la Raíz y sus miembros) debe ser guardado en una única transacción atómica. Esto garantiza que no haya un estado intermedio en la base de datos donde la Regla de Consistencia esté rota.
+
+
+### Ej: Agregado llamado Pedido.
+
+Regla de Consistencia (Invariante) | Mecanismo de Control de la Raíz
+
+"Un Pedido en estado 'ENVIADO' no puede tener ítems con cantidad cero." | El método pedido.enviar() verifica que todas las LíneasDePedido internas tengan cantidad > 0 antes de cambiar el estado del Pedido.
+
+"El Total del Pedido debe ser igual a la suma de los subtotales de todas las LíneasDePedido." | El método pedido.agregarLinea(...) recalcula automáticamente el Total de la Raíz para asegurar que la regla se mantenga actualizada y coherente después del cambio interno.
+
+
+#### Si el código intenta modificar la cantidad de una LíneaDePedido a cero y luego intenta enviarlo
+
+##### La Raíz del Agregado bloqueará la operación, protegiendo así la coherencia de la aplicación.
+
+
+
+## Repository
+
+##### Simula ser una colección de objetos en memoria para el acceso a las Raíces de Agregado (Aggregate Roots).
+
+#### Propósito Principal: Aislar el Modelo de Dominio de los detalles técnicos de la base de datos (SQL, NoSQL, ORM, etc.).
+
+El Dominio no debe saber cómo se guardan los datos, solo que puede obtener y guardar Agregados.
+
+
+#### Contrato: El Repositorio expone métodos que parecen operaciones de colección simples
+
+(ej., obtenerPorId(), guardar(), buscarTodos()), tratando los datos persistentes como si fueran objetos de una lista en memoria.
+
+
+### Reglas
+
+1. Trabajan Solo con Raíces de Agregado
+
+Un Repositorio siempre trabaja con Agregados completos. 
+
+Nunca se debe crear un Repositorio para una Entidad o un Objeto de Valor que no sea la Raíz de un Agregado.
+
+Regla: Solo existe un Repositorio por cada Raíz de Agregado.
+
+Ejemplo: Tienes un RepositorioDePedidos para la Raíz Pedido, pero no un RepositorioDeLineasDePedido (porque LíneaDePedido es una entidad interna del Agregado Pedido).
+
+
+2. Contrato Definido en la Capa de Dominio
+
+Para mantener el aislamiento, la interfaz (o el contrato) del Repositorio se define en la capa de Dominio. 
+
+La implementación concreta (el código que se conecta a la base de datos) se coloca en la capa de Infraestructura.
+
+Capa | Responsabilidad
+
+Dominio	| Define la interfaz (IRepositorioDePedidos).
+
+Infraestructura	| Implementa la interfaz (SqlRepositorioDePedidos).
+
+
+3. Recuperan y Persisten Agregados
+
+Cuando se llama a un método obtenerPorId(id), el Repositorio es responsable de reconstruir el Agregado completo (la Raíz y todas sus entidades y objetos de valor internos) a partir de los datos de la base de datos. 
+
+Cuando se llama a guardar(pedido), el Repositorio debe persistir el Agregado completo en una única transacción.
+
+
+### Flujo de Interacción
+
+1. La Capa de Aplicación (o un Controlador) necesita actualizar un Pedido.
+
+2. Llama al Repositorio: pedido = RepositorioDePedidos.obtenerPorId(123).
+
+3. La implementación del Repositorio va a la base de datos, carga todos los datos relacionados y reconstruye el Agregado Pedido.
+
+4. La Capa de Aplicación llama a un método de la Raíz: pedido.agregarProducto(nuevoProducto). (Esto es lógica de dominio).
+
+5. La Capa de Aplicación guarda el cambio: RepositorioDePedidos.guardar(pedido).
+
+6. La implementación del Repositorio traduce los cambios del objeto Pedido de vuelta a comandos de base de datos (INSERT/UPDATE) y los ejecuta atómicamente.
+
+
+## Domain Events
+
+##### Se utiliza para modelar y comunicar cambios significativos que han ocurrido en el sistema.
+
+#### objeto que representa algo que ocurrió en el dominio
+
+Es importante para que otros componentes del negocio (dentro o fuera del mismo Contexto Delimitado) lo sepan y potencialmente reaccionen a él.
+
+
+### Características
+
+1. Inmutable y en Tiempo Pasado: Un evento de dominio siempre describe algo que ya sucedió (ej., PedidoCreado, PagoProcesado, ProductoAgotado). Una vez creado, el objeto del evento no cambia.
+
+2. Transparencia de Intención: El nombre del evento debe reflejar la intención de negocio, no solo una acción técnica.
+
+3. Contiene Datos Relevantes: El evento debe contener los datos necesarios para que los suscriptores reaccionen, generalmente el ID de la Raíz del Agregado que lo originó y cualquier información clave del estado.
+
+
+### Proposito 
+
+Fomenta el desacoplamiento y ayuda a mantener la consistencia del Agregado
+
+Separando las acciones que deben ocurrir inmediatamente (dentro del Agregado) de las reacciones que pueden ocurrir después.
+
+1. Desacoplamiento: Permite que un Agregado notifique a otros sobre un cambio sin saber quiénes son esos otros. Esto significa que la lógica de reacción se separa de la lógica de origen.
+
+Ejemplo: El Agregado Pedido emite PedidoCreado. El Agregado Inventario y el Agregado Notificaciones pueden reaccionar sin que Pedido sepa que existen.
+
+
+2. Ejecución de Lógica Transcontextual: Facilitan la coordinación de reglas de negocio que abarcan varios Contextos Delimitados.
+
+
+3. Registro de Auditoría: Son excelentes para registrar el historial de acciones importantes en el dominio.
+
+
+### Flujo de Operación
+
+El ciclo de un Evento de Dominio es el siguiente:
+
+1. Origen: Una Entidad Raíz ejecuta un método (ej., pedido.pagar()). La lógica de negocio se ejecuta y, si es exitosa, se crea el Evento de Dominio (PagoProcesado).
+
+2. Emisión: La Raíz del Agregado recolecta el evento internamente.
+
+3. Publicación: Una vez que la transacción del Agregado se completa exitosamente (garantizando la consistencia del Agregado), el framework o la infraestructura de DDD publica el evento.
+
+4. Suscripción/Reacción: Los Manejadores de Eventos (Event Handlers) o Escuchadores, que residen en la Capa de Aplicación o en otros Contextos Delimitados, reciben el evento y ejecutan la lógica de reacción correspondiente (ej., enviar un email de confirmación, actualizar el stock de inventario).
+
+
+Usar Eventos de Dominio es fundamental para mover la lógica secundaria o de reacción fuera del Agregado
+
+Simplificando la Raíz y permitiendo que la lógica que no es crítica para la consistencia inmediata se ejecute de forma asíncrona o separada.
+
+
+## Mapa de Contextos
+
+Es un diagrama de alto nivel que documenta las dependencias, las interacciones y los patrones de integración que existen entre los Contextos Delimitados de un sistema grande.
+
+
+### Objetivo:
+
+1. Visibilidad: Mostrar al equipo qué partes del sistema existen y dónde residen las fronteras de cada modelo de dominio.
+
+2. Comunicación: Facilitar el diálogo entre equipos al definir explícitamente las relaciones y los acuerdos de integración.
+
+3. Gestión de Dependencias: Identificar qué equipos tienen el control sobre las interfaces de comunicación y qué equipos son dependientes.
+
+
+### Patrones de Relación
+
+La clave del Mapa de Contextos es que no solo identifica los contextos
+
+#### Etiqueta la naturaleza de su relación
+
+
+#### 1. Cliente-Proveedor (Customer-Supplier)
+
+Definición: Un contexto (el Proveedor) suministra a otro contexto (el Cliente) el modelo que necesita. 
+
+Típicamente, el equipo Proveedor tiene la autonomía para hacer cambios, pero el equipo Cliente puede negociar o influir en las necesidades.
+
+Ejemplo: El contexto de Inventario (Proveedor) suministra información de stock al contexto de Ventas (Cliente).
+
+
+#### 2. Conformista (Conformist)
+
+Definición: El contexto Cliente elige adoptar y conformarse al modelo de datos del contexto Proveedor, incluso si no es ideal. 
+
+Esto se hace para evitar la complejidad de la traducción constante, aceptando el control que tiene el equipo Proveedor sobre el modelo.
+
+Ejemplo: El contexto de Reportes (Cliente) simplemente consume el modelo de Usuario tal como lo define el contexto de Autenticación (Proveedor)
+    
+    
+### 3. Anticorrupción (Anticorruption Layer - ACL)
+
+Definición: Se utiliza una capa de traducción (el ACL) para aislar el modelo del Contexto Cliente de las complejidades o cambios no deseados del Contexto Proveedor. 
+
+El ACL se encarga de convertir los objetos del modelo externo al formato interno del Cliente.
+    
+Ejemplo: Un sistema heredado (Proveedor) tiene un modelo de Producto confuso. 
+
+El nuevo Contexto de Búsqueda (Cliente) utiliza un ACL para traducirlo a su modelo de ÍtemBuscable limpio.
+
+
+#### 4. Socios (Partnership)
+
+Definición: Dos contextos y sus equipos trabajan en una relación de dependencia mutua, con un fuerte nivel de colaboración. El éxito de uno depende del éxito del otro. Se requiere un esfuerzo coordinado para planificar y negociar los cambios de interfaz.
+
+Ejemplo: Los contextos de Precios y Promociones deben trabajar juntos estrechamente para definir cómo se calcula el precio final de forma conjunta.
+
+
+### Estrategia
+
+El Mapa de Contextos es la primera herramienta de diseño estratégico. Ayuda a:
+
+Identificar riesgos: Muestra dónde hay acoplamiento fuerte (como en las relaciones de Socios o Conformistas).
+
+Definir la arquitectura: Ayuda a decidir qué contextos deberían ser Microservicios independientes (Autónomos) y dónde se necesita una capa de traducción (ACL).
+
+
+#### El Mapa de Contextos es el plano de la ciudad del software
+
+##### Mostrando dónde están las fronteras de los barrios (Bounded Contexts) y cómo se comunican entre sí.
+
+
+
+## Relaciones de Integración
+
+##### Patrones que se utilizan para definir y gestionar cómo se comunican e interactúan los diferentes Contextos Delimitados (Bounded Contexts) de un sistema.
+
+Son la parte central del Mapa de Contextos y son cruciales para el Modelado Estratégico, ya que gestionan la complejidad de la integración y el acoplamiento.
+
+
+### Patrones de Relación (Integración)
+
+##### Describen los términos del acuerdo de comunicación entre dos equipos o Contextos Delimitados:
+
+
+#### 1. Cliente-Proveedor (Customer-Supplier)
+
+##### Este es un patrón jerárquico donde un Contexto depende del modelo de otro.
+
+Proveedor (Supplier): El Contexto que define el modelo que se utilizará y tiene la autonomía para cambiarlo.
+
+Cliente (Customer): El Contexto que consume el modelo del Proveedor.
+
+Acoplamiento: El Cliente depende del Proveedor. 
+
+El Cliente puede negociar o solicitar cambios, pero el Proveedor mantiene el control. 
+
+Esta relación debe definirse con un Acuerdo de Servicio explícito (Service Level Agreement o SLA).
+
+
+#### 2. Conformista (Conformist)
+
+Esta relación ocurre cuando el Contexto Cliente opta por conformarse totalmente al Lenguaje Ubicuo (UL) y al modelo de datos del Contexto Proveedor.
+
+Ventaja: Reduce la complejidad de la traducción constante y el mantenimiento de una Capa Anticorrupción.
+
+Desventaja: El Cliente se vuelve completamente vulnerable a los cambios introducidos por el Proveedor y pierde autonomía sobre ese segmento del modelo. 
+
+Se usa a menudo cuando el Contexto Proveedor es un modelo maduro y dominante, o cuando el Cliente tiene poco capital para invertir en traducción.
+
+
+#### 3. Capa Anticorrupción (Anticorruption Layer - ACL)
+
+Este patrón es un mecanismo defensivo.
+
+Definición: Es un código de traducción que reside en el Contexto Cliente. 
+
+Su propósito es aislar completamente el modelo interno del Cliente de las particularidades, inconsistencias o cambios constantes del modelo del Proveedor.
+
+Función: Convierte los objetos del modelo del Proveedor (el sistema externo o heredado) a la interfaz y el modelo interno del Cliente, protegiendo al modelo principal de la "corrupción" externa.
+
+
+#### 4. Publicación Abierta de Host (Open Host Service - OHS)
+
+Este patrón ocurre en el lado del Proveedor.
+
+Definición: El Contexto Proveedor define una interfaz de servicio pública y bien documentada (ej., una API REST o un sistema de mensajería).
+
+Propósito: Permite que cualquier sistema o Contexto Delimitado utilice su funcionalidad y modelo. Es la forma en que un proveedor dice: "Aquí está nuestro modelo de datos, úsenlo bajo su propia responsabilidad".
+
+    
+#### 5. Idioma Compartido (Shared Kernel)
+
+Definición: Dos o más equipos acuerdan compartir y codificar una pequeña parte de su modelo de dominio y/o código.
+
+Restricción: Requiere una coordinación constante y obligatoria entre los equipos, ya que cualquier cambio en ese núcleo compartido afecta a ambos contextos. Se usa con mucha moderación, solo cuando el costo de duplicar la lógica es mayor que el costo de la coordinación
+
+
+#### 6. Socios (Partnership)
+
+Definición: Dos Contextos y sus equipos trabajan en una dependencia mutua, donde el éxito de uno está ligado al éxito del otro. 
+
+La relación es bilateral y requiere un esfuerzo conjunto de coordinación para cambios de interfaz o planificación de funcionalidad.
+    
+
+
+## Anti-Corruption Layer
+
+Patrón de diseño fundamental en el Modelado Estratégico de Domain-Driven Design
+
+Su principal función es aislar un Contexto Delimitado (Bounded Context) del modelo de otro Contexto Delimitado (generalmente un sistema externo o heredado) que posee un diseño o una calidad deficiente.
+
+
+### Propósito
+
+##### Actúa como una capa de traducción defensiva entre su sistema (el Cliente) y un sistema externo (el Proveedor).
+
+#### Aislamiento: El objetivo es evitar que los conceptos, la estructura de datos o las inconsistencias del modelo externo "corrompan" el modelo limpio y bien definido de su propio Contexto Delimitado.
+
+#### Traducción: La ACL se encarga de convertir los objetos y las estructuras de datos del Proveedor al Lenguaje Ubicuo (UL) y a las entidades internas del Cliente, y viceversa.
+
+
+#### Partes
+
+Cliente (Su Sistema)	Su Contexto Delimitado, que tiene un modelo de dominio bien definido y busca protegerlo. Solo interactúa con el ACL.
+
+Proveedor (Sistema Externo)	El sistema con el que debe integrarse, que a menudo tiene un modelo distinto, confuso o heredado.
+
+Capa Anticorrupción (ACL)	La capa intermedia que contiene la lógica de traducción y mapeo. La implementación a menudo utiliza patrones como Adaptadores y Mappers.
+
+
+### Funcionamiento: opera mediante la inversión de dependencias y la traducción de conceptos:
+
+#### 1. Definición de Interfaz: Su modelo (el Cliente) define una interfaz de Puerto de Salida (por ejemplo, IRepositorioDeClientesExternos).
+
+Esta interfaz usa los términos y objetos del UL del Cliente.
+
+
+#### 2. Implementación del ACL: El ACL implementa esta interfaz. 
+
+Cuando el núcleo del sistema pide un objeto (ej., clienteExternoRepo.obtenerCliente(id)), el ACL:
+
+Llama al API del sistema Proveedor.
+
+Recibe los datos en el formato del Proveedor (ej., un objeto LegacyCustomer).
+
+Traduce y mapea el LegacyCustomer a un objeto o Entidad del Contexto Cliente (ej., DatosClienteMapeados).
+
+Devuelve el objeto mapeado.
+
+
+#### 3. Aislamiento Total: Si el modelo del Proveedor cambia (ej., cambian nombres de campos o la estructura), solo el ACL necesita modificarse.
+
+El código del núcleo de su Contexto Delimitado permanece intacto.
+
+
+### Uso
+
+##### !!! Es indispensable en las siguientes situaciones
+
+#### Integración con Sistemas Heredados (Legacy Systems): Cuando se necesita interactuar con código antiguo cuyo modelo no se alinea con el nuevo diseño DDD.
+
+#### Integración con Paquetes de Software Comercial (COTS): Cuando se utiliza software de terceros que tiene una API rígida o no alineada con su dominio.
+
+#### Relación de Integración Unidireccional: Se utiliza a menudo en la relación Cliente-Proveedor cuando el Cliente no tiene el poder de influir en el diseño del Proveedor y debe protegerse de sus decisiones.
+
+
+
+# Arquitectura Hexagonal
+
+También conocida como la Arquitectura de Puertos y Adaptadores (Ports and Adapters)
+
+Es un patrón de diseño de software cuyo objetivo principal es crear sistemas desacoplados, testeables e independientes de la tecnología.
+
+
+"Hexagonal" es puramente una convención gráfica
+
+Deja espacio para ilustrar las distintas interfaces de entrada y salida
+
+No implica que deba haber exactamente seis puertos.
+
+
+## Principio: Nucleo de la app
+
+Es la Lógica de Negocio (o Dominio), la cual se aísla de todos los componentes externos, como la interfaz de usuario, las bases de datos o los servicios web.
+
+
+### 1. El Hexágono (El Núcleo)
+
+Capa central y más protegida
+ 
+##### Lógica de Dominio: Las Entidades, Objetos de Valor, Agregados y todas las reglas de negocio de la aplicación (los conceptos centrales de DDD).
+
+##### Casos de Uso (Application Layer): La lógica de la aplicación que orquesta el flujo de trabajo (ejecuta un caso de uso como "Crear Nuevo Pedido"), pero que aún no sabe nada sobre tecnología externa.
+
+
+### 2. La Frontera y la Inversión de Dependencia
+
+El Hexágono define la frontera con el mundo exterior.
+
+Para comunicarse, se utiliza el Principio de Inversión de Dependencia, que asegura que las dependencias siempre apunten hacia adentro, hacia el núcleo.
+
+
+## Puertos y Adaptadores
+
+Permiten al núcleo interactuar con el mundo exterior sin estar acoplado a él:
+
+
+### 1. Puertos (Ports)
+
+#### Un Puerto es simplemente una interfaz o un API (Application Programming Interface) que define un contrato de comunicación. 
+
+##### Los Puertos viven dentro del Hexágono.
+
+
+### 2. Adaptadores (Adapters)
+
+#### Un Adaptador es la implementación concreta de un Puerto.
+
+##### Los Adaptadores viven fuera del Hexágono (en la capa de Infraestructura) y tienen un conocimiento técnico específico.
+
+Tipo de Adaptador |	Rol | Tecnología
+
+Adaptador Primario (Driver)	| Llama al Puerto de Entrada | Un controlador web (HTTP) o una interfaz gráfica de usuario (GUI).
+
+Adaptador Secundario (Driven) |	Implementa el Puerto de Salida. | Un repositorio (SQL, NoSQL) o un cliente de servicio externo (API REST).
+
+
+
+
+# CQRS (Command Query Responsibility Segregation)
+
+##### Patrón que separa radicalmente las operaciones de lectura de datos (Queries) de las operaciones de escritura/modificación de datos (Commands).
+
+
+## Principio Separar Lectura y Escritura
+
+##### Arquitectura tradicional (como la que se ve comúnmente en el CRUD), la misma capa de código y el mismo modelo de datos se utilizan para leer y escribir
+
+#### CQRS rompe con esto y establece dos modelos de datos y dos pilas de código completamente independientes:
+
+
+### 1. El Lado de los Comandos (Commands)
+
+Propósito: Manejar las solicitudes de cambio (escritura).
+
+Función: Los comandos son órdenes inmutables que representan la intención del usuario de cambiar el sistema (ej., CrearPedidoCommand, ActualizarStockCommand).
+
+Modelo de Datos: Utiliza un modelo de dominio orientado a la escritura (a menudo siguiendo los principios de DDD, con Agregados y Entidades) que garantiza la consistencia y las reglas de negocio
+
+Esta es la única parte del sistema que modifica la base de datos maestra.
+
+
+### 2. 2. El Lado de las Consultas (Queries)
+
+Propósito: Manejar las solicitudes de lectura.
+
+Función: Las consultas son solicitudes simples que buscan datos y no modifican el estado del sistema. 
+
+Devuelven Objetos de Transferencia de Datos (DTOs).
+
+Modelo de Datos: Utiliza un modelo de datos orientado a la lectura y a la vista (a menudo desnormalizado o altamente optimizado) que prioriza la velocidad y la simplicidad.
+    
+
+### Bases de Datos Separadas
+
+CQRS separa físicamente las bases de datos para cada lado:
+
+#### Base de Datos de Escritura (Modelo de Dominio): Es la fuente de la verdad.
+
+Está optimizada para transacciones y consistencia (a menudo SQL o NoSQL transaccional).
+
+Aquí es donde reside el Modelo de Dominio (los Agregados).
+
+
+#### Base de Datos de Lectura (Modelo de Lectura): Es una o varias réplicas optimizadas para consultas complejas o específicas de la interfaz de usuario.
+
+Puede ser cualquier cosa que proporcione rendimiento: vistas materializadas, caches, almacenes NoSQL, etc.
+
+
+## Flujo Típico con CQRS
+
+##### Cuando las bases de datos están separadas, se necesita un mecanismo para sincronizarlas:
+
+1. Comando: El usuario envía un CrearPedidoCommand.
+
+2. Manejador: El Manejador de Comandos ejecuta la lógica de negocio usando el Modelo de Dominio (Agregados).
+
+3. Persistencia: Se guarda el nuevo estado en la Base de Datos de Escritura.
+
+4. Evento: La Base de Datos de Escritura (o el Agregado) emite un Evento de Dominio (ej., PedidoCreadoEvent).
+
+5. Sincronización: Un Manejador de Eventos consume este evento y actualiza la Base de Datos de Lectura, transformando el formato transaccional en el formato optimizado para la lectura.
+
+6. Consulta: Cuando otro usuario pide ver el pedido, la Consulta se ejecuta directamente contra la Base de Datos de Lectura, obteniendo los datos rápidamente.
+
+
+## Beneficios y Complejidades
+
+Escalabilidad	Se puede escalar cada lado de forma independiente. Las lecturas (que suelen ser más frecuentes) pueden usar recursos dedicados.	Mayor complejidad de infraestructura y deploy.
+
+Rendimiento	El modelo de lectura puede ser altamente optimizado para consultas rápidas, ya que no tiene que preocuparse por la consistencia transaccional.	Introduce Consistencia Eventual (los datos de lectura pueden tardar un breve tiempo en reflejar la última escritura).
+
+Simplicidad del Modelo	Cada modelo es mucho más simple y enfocado: el de escritura se centra en la lógica, el de lectura en la presentación.	Requiere un sistema de mensajería o eventos robusto para la sincronización
+
+
+##### CQRS se aplica mejor en sistemas complejos (como los que usan DDD) donde la lógica de escritura es intrincada, o donde hay requisitos extremos de escalabilidad y rendimiento de lectura.
+
+
+## DDD en TypeScript
+
+La lógica y las reglas (validación de nombre, método desactivar()) residen en el Dominio (CursoNombre, Curso).
+
+La interfaz de acceso a datos (CursoRepository) está en el Dominio, pero la implementación está en la Infraestructura.
+
+El flujo de trabajo (DesactivarCursoService) reside en la capa de Aplicación.
+
+
+### Agregado: Curso
+
+1. Objeto de Valor (Value Object): CursoNombre
+
+Un nombre tiene que ser validado para asegurar que cumple con una regla de negocio.
+
+```
+// /src/domain/value-objects/CursoNombre.ts
+
+export class CursoNombre {
+    readonly valor: string;
+
+    constructor(nombre: string) {
+        if (nombre.length < 5 || nombre.length > 100) {
+            throw new Error("El nombre del curso debe tener entre 5 y 100 caracteres.");
+        }
+        this.valor = nombre;
+    }
+
+    // Método para la igualdad basada en valor
+    equals(otro: CursoNombre): boolean {
+        return this.valor === otro.valor;
+    }
+}
+```
+
+
+2. Entidad Raíz (Aggregate Root): Curso
+
+La Entidad Curso es la Raíz del Agregado. 
+
+Centraliza toda la lógica de negocio y protege sus invariantes.
+
+```
+// /src/domain/entities/Curso.ts
+
+import { CursoNombre } from '../value-objects/CursoNombre';
+import { CursoID } from '../value-objects/CursoID'; // Asume que existe
+
+export class Curso {
+    private id: CursoID;
+    private nombre: CursoNombre;
+    private activo: boolean;
+    private fechaCreacion: Date;
+    // Podría tener Entidades internas, como una colección de Lecciones.
+
+    constructor(id: CursoID, nombre: CursoNombre, fechaCreacion: Date, activo: boolean = true) {
+        this.id = id;
+        this.nombre = nombre;
+        this.activo = activo;
+        this.fechaCreacion = fechaCreacion;
+    }
+
+    // Lógica de Dominio: Invariante protegido por la Raíz
+    public desactivar(): void {
+        if (!this.activo) {
+            throw new Error("El curso ya está inactivo.");
+        }
+        // *Regla de Consistencia:* Desactivar el curso si no tiene estudiantes activos, por ejemplo.
+        // this.verificarEstudiantesActivos(); 
+        
+        this.activo = false;
+        // Opcional: Podría generar un Evento de Dominio: new CursoDesactivadoDomainEvent(...)
+    }
+
+    public getID(): CursoID {
+        return this.id;
+    }
+
+    public getNombre(): CursoNombre {
+        return this.nombre;
+    }
+    
+    // Método estático para reconstruir el objeto desde la persistencia
+    public static fromPrimitives(primitives: { id: string, nombre: string, activo: boolean, fechaCreacion: Date }): Curso {
+        return new Curso(
+            new CursoID(primitives.id),
+            new CursoNombre(primitives.nombre),
+            primitives.fechaCreacion,
+            primitives.activo
+        );
+    }
+}
+```
+
+
+3. Repositorio (Repository)
+
+La interfaz del Repositorio se define en el Dominio para aislarlo de la infraestructura.
+
+```
+// /src/domain/repositories/CursoRepository.ts
+
+import { Curso } from '../entities/Curso';
+import { CursoID } from '../value-objects/CursoID';
+
+// La interfaz (el Contrato)
+export interface CursoRepository {
+    // El repositorio solo trabaja con la Raíz del Agregado
+    guardar(curso: Curso): Promise<void>;
+    obtenerPorId(id: CursoID): Promise<Curso | null>;
+}
+
+// Nota: La implementación real (ej. MySqlCursoRepository) iría en la capa de Infraestructura.
+```
+
+
+4. Servicio de Aplicación (Application Service)
+
+Este orquesta el flujo de trabajo (el caso de uso) y utiliza el Repositorio.
+
+```
+// /src/application/services/DesactivarCursoService.ts
+
+import { CursoRepository } from '../../domain/repositories/CursoRepository';
+import { CursoID } from '../../domain/value-objects/CursoID';
+
+export class DesactivarCursoService {
+    private cursoRepository: CursoRepository;
+
+    constructor(repo: CursoRepository) {
+        this.cursoRepository = repo;
+    }
+
+    // Este es el Caso de Uso (el punto de entrada de la aplicación)
+    public async ejecutar(cursoId: string): Promise<void> {
+        const id = new CursoID(cursoId);
+        
+        // 1. Obtener el Agregado (usando el Repositorio)
+        const curso = await this.cursoRepository.obtenerPorId(id);
+
+        if (!curso) {
+            throw new Error(`Curso con ID ${cursoId} no encontrado.`);
+        }
+
+        // 2. Ejecutar la Lógica de Dominio (llamando a un método en la Raíz)
+        curso.desactivar(); 
+
+        // 3. Persistir el Agregado (usando el Repositorio, a menudo dentro de un Unit of Work)
+        await this.cursoRepository.guardar(curso);
+    }
+}
+```
+
+
+## Entity
+
+##### Objeto que tiene una identidad única y que encapsula la lógica de negocio relacionada con ese objeto.
+
+
+### Ej: Producto
+
+Es identificada por su id.
+
+Su atributo stock puede cambiar, pero seguirá siendo el mismo producto
+
+Además, encapsula la lógica para disminuirStock(), asegurando que el negocio no permita stock negativo.
+
+```
+// Asumimos que ProductoID y CategoriaID son Value Objects (Objetos de Valor)
+// para encapsular la validación y evitar usar strings primitivos.
+
+interface ProductoProps {
+    nombre: string;
+    stock: number;
+    precio: number;
+    categoriaId: string; 
+}
+
+export class Producto {
+    // La identidad es privada para que solo se pueda modificar a través de métodos
+    private id: string;
+    
+    // Atributos de la Entidad
+    private props: ProductoProps;
+
+    // --- Constructor: Usado para crear una nueva instancia ---
+    private constructor(id: string, props: ProductoProps) {
+        this.id = id;
+        this.props = props;
+    }
+
+    // Método estático para la creación o reconstrucción de la Entidad
+    public static crear(id: string, props: ProductoProps): Producto {
+        // Aquí podría ir alguna validación inicial del estado
+        if (props.stock < 0) {
+            throw new Error("El stock inicial no puede ser negativo.");
+        }
+        return new Producto(id, props);
+    }
+
+    // --- Lógica de Dominio: Mutación de la Entidad (Comportamiento) ---
+
+    public disminuirStock(cantidad: number): void {
+        if (cantidad <= 0) {
+            throw new Error("La cantidad a disminuir debe ser positiva.");
+        }
+        
+        // *Regla de Consistencia (Invariante):* No permitir stock negativo
+        if (this.props.stock - cantidad < 0) {
+            throw new Error(`Stock insuficiente para el producto ${this.props.nombre}.`);
+        }
+
+        this.props.stock -= cantidad;
+        
+        // Opcional: Si el stock llega a un límite crítico, podría emitir un Domain Event
+        // if (this.props.stock <= 5) {
+        //     this.addDomainEvent(new StockCriticoEvent(this.id));
+        // }
+    }
+
+    // --- Acceso a la Identidad y Atributos (Getters) ---
+
+    public getID(): string {
+        return this.id;
+    }
+
+    public getStock(): number {
+        return this.props.stock;
+    }
+
+    public getNombre(): string {
+        return this.props.nombre;
+    }
+
+    // Dos entidades son iguales si sus IDs son iguales.
+    public equals(otro: Producto): boolean {
+        return otro.id === this.id;
+    }
+}
+```
+
+1. Identidad Fija (id): La Entidad Producto siempre se identifica por su id. Incluso si cambiamos el nombre o el precio, sigue siendo el mismo producto.
+
+2. Mutabilidad Controlada: El estado (stock) es privado y solo se puede cambiar a través del método público disminuirStock().
+
+3. Encapsulación de Lógica: El método disminuirStock() encapsula la regla de negocio fundamental: nunca permitir stock negativo. Esta es la principal diferencia con una simple estructura de datos (Data Transfer Object o DTO).
+
+
+## Value Object en TypeScript
+
+##### Modela un concepto descriptivo del dominio y se define por sus atributos, no por una identidad única.
+
+1. No tienen ID: La clase Direccion no tiene un campo id. Su identidad depende de sus valores.
+
+2. Inmutabilidad: Las propiedades son de solo lectura (readonly). El método conNuevoCodigoPostal demuestra cómo "modificar" un VO: se crea una nueva instancia en lugar de cambiar la existente.
+
+3. Igualdad Basada en Valor: El método equals() es la prueba de fuego de un VO. Dos direcciones son iguales si todos sus componentes coinciden, no si son el mismo objeto en memoria.
+
+4. Encapsulación de Reglas: La lógica de validación (ej. el largo del código postal) está centralizada en el constructor, asegurando que una Direccion siempre sea válida en el Modelo de Dominio.
+
+
+### Ej: Dirección
+
+El propósito de este VO es encapsular la lógica y las reglas de validación relacionadas con una dirección postal, asegurando que siempre sea un objeto válido y coherente.
+
+```
+// /src/domain/value-objects/Direccion.ts
+
+interface DireccionProps {
+    calle: string;
+    ciudad: string;
+    codigoPostal: string;
+    pais: string;
+}
+
+export class Direccion {
+    // Los atributos deben ser inmutables (solo lectura)
+    readonly calle: string;
+    readonly ciudad: string;
+    readonly codigoPostal: string;
+    readonly pais: string;
+
+    constructor(props: DireccionProps) {
+        // 1. Encapsulación de la Lógica de Dominio: Validación
+        this.validar(props); 
+        
+        // 2. Inicialización de Propiedades
+        this.calle = props.calle.trim();
+        this.ciudad = props.ciudad.trim();
+        this.codigoPostal = props.codigoPostal.trim();
+        this.pais = props.pais.trim();
+    }
+
+    private validar(props: DireccionProps): void {
+        if (!props.calle || !props.ciudad || !props.codigoPostal || !props.pais) {
+            throw new Error("Todos los campos de la dirección son obligatorios.");
+        }
+        if (props.codigoPostal.length < 4) {
+            throw new Error("El código postal debe tener al menos 4 caracteres.");
+        }
+        // ... otras reglas como formatos específicos por país.
+    }
+
+    // 3. Método para la Igualdad Basada en Valor (Invariante Clave)
+    /**
+     * Dos direcciones son iguales si todos sus atributos son idénticos.
+     */
+    public equals(otro: Direccion): boolean {
+        return (
+            otro.calle === this.calle &&
+            otro.ciudad === this.ciudad &&
+            otro.codigoPostal === this.codigoPostal &&
+            otro.pais === this.pais
+        );
+    }
+
+    // 4. Inmutabilidad (Opcional, pero muy recomendado)
+    /**
+     * Método para obtener una nueva Dirección con un cambio, sin modificar la actual.
+     */
+    public conNuevoCodigoPostal(nuevoCP: string): Direccion {
+        return new Direccion({
+            ...this,
+            codigoPostal: nuevoCP
+        });
+    }
+}
+```
+
+
+## Domain Service
+
+##### Encapsular la lógica de negocio que es importante para el dominio pero que no pertenece inherentemente a una Entidad o un Objeto de Valor
+
+##### Porque involucra la coordinación de múltiples Agregados.
+
+
+### Ej: ServicioDeTransferenciaDeFondos
+
+##### Coordina la lógica entre dos Entidades Cuenta (que asumimos son Raíces de Agregado diferentes).
+
+Asumimos Entidad Cuenta (que encapsula retirar() y depositar()) y su CuentaRepository.
+
+El servicio implementa la regla de negocio: "transferir dinero de la cuenta A a la cuenta B".
+
+
+#### 1. Interfaces y Entidades Requeridas (Asunciones)
+
+##### !!! Para el dominio del servicio, necesitamos dos interfaces que representen las dependencias que el servicio usará:
+
+```
+// /src/domain/entities/Cuenta.ts (Simplificado)
+export interface Cuenta {
+    getID(): string;
+    retirar(monto: number): void;
+    depositar(monto: number): void;
+}
+
+// /src/domain/repositories/CuentaRepository.ts (Interfaz del Repositorio)
+export interface CuentaRepository {
+    obtenerPorId(id: string): Promise<Cuenta | null>;
+    guardar(cuenta: Cuenta): Promise<void>;
+}
+```
+
+
+#### 2. El Servicio de Dominio (ServicioDeTransferenciaDeFondos.ts)
+
+Este servicio reside en la capa de Dominio porque encapsula una regla de negocio clave. 
+
+Recibe las dependencias (los Repositorios) a través del constructor.
+
+```
+// /src/domain/services/ServicioDeTransferenciaDeFondos.ts
+
+import { Cuenta } from '../entities/Cuenta';
+import { CuentaRepository } from '../repositories/CuentaRepository';
+
+// El Servicio de Dominio
+export class ServicioDeTransferenciaDeFondos {
+    private cuentaRepository: CuentaRepository;
+
+    // Inyección de dependencias a través del constructor (Dependencia de Repositorios)
+    constructor(repo: CuentaRepository) {
+        this.cuentaRepository = repo;
+    }
+
+    /**
+     * Coordina la lógica de negocio para transferir fondos entre dos cuentas.
+     * @param origenId ID de la cuenta que envía el dinero.
+     * @param destinoId ID de la cuenta que recibe el dinero.
+     * @param monto Cantidad a transferir.
+     */
+    public async ejecutar(origenId: string, destinoId: string, monto: number): Promise<void> {
+        if (monto <= 0) {
+            throw new Error("El monto de la transferencia debe ser positivo.");
+        }
+
+        // 1. Obtener los Agregados (Cuentas)
+        const cuentaOrigen = await this.cuentaRepository.obtenerPorId(origenId);
+        const cuentaDestino = await this.cuentaRepository.obtenerPorId(destinoId);
+
+        if (!cuentaOrigen) {
+            throw new Error(`Cuenta origen ${origenId} no encontrada.`);
+        }
+        if (!cuentaDestino) {
+            throw new Error(`Cuenta destino ${destinoId} no encontrada.`);
+        }
+
+        // 2. Ejecutar la Lógica en las Entidades (Agregados)
+        try {
+            // La Entidad Cuenta asegura que no haya saldo negativo, por ejemplo.
+            cuentaOrigen.retirar(monto);
+            cuentaDestino.depositar(monto);
+        } catch (error) {
+            // Si falla la lógica interna (ej. saldo insuficiente), se propaga.
+            throw error;
+        }
+
+        // 3. Persistir los Cambios (Coordinación)
+        // Nota: En la implementación real, esta lógica se envuelve en un Unit of Work
+        // en la capa de Aplicación para garantizar que ambos 'guardar' sean atómicos.
+        await this.cuentaRepository.guardar(cuentaOrigen);
+        await this.cuentaRepository.guardar(cuentaDestino);
+
+        // Opcional: Podría emitir un Domain Event: new FondosTransferidosEvent(...)
+    }
+}
+```
+
+Coordinación de Agregados: La operación ejecutar manipula dos Agregados (cuentaOrigen y cuentaDestino) que no deben referenciarse directamente, haciendo que la lógica sea una responsabilidad del servicio, no de una sola Entidad.
+
+Sin Estado Propio: El ServicioDeTransferenciaDeFondos no tiene atributos que representen datos persistentes (no es una Entidad). Su única función es la ejecución de una acción de negocio.
+
+Dependencia del Repositorio: Necesita los Repositorios para obtener los Agregados necesarios, pero se enfoca en el qué (la lógica de transferencia), no en el cómo de la persistencia (que es trabajo de la Capa de Aplicación/Infraestructura).
+
+
+## Aggregate
+
+##### Clúster de entidades y objetos de valor que se tratan como una única unidad transaccional para mantener la consistencia.
+
+##### El Agregado tiene una Raíz del Agregado (Aggregate Root) que es el único punto de acceso externo.
+
+
+### Ej Agregado CarritoDeCompras
+
+con su Raíz (CarritoDeCompras) y una Entidad interna (ItemDeCarrito).
+
+El Agregado CarritoDeCompras garantiza que todas las operaciones sobre los ítems dentro del carrito (ItemDeCarrito) mantengan la consistencia del carrito en su conjunto.
+
+
+1. Entidad Interna: ItemDeCarrito
+
+Esta entidad no tiene un Repositorio propio y solo puede existir dentro del CarritoDeCompras.
+
+```
+// /src/domain/entities/ItemDeCarrito.ts
+
+export class ItemDeCarrito {
+    // ID local para rastreo interno, no necesariamente global
+    private id: string; 
+    private productoId: string; // Referencia por ID a otro Agregado (Producto)
+    private cantidad: number;
+
+    constructor(id: string, productoId: string, cantidad: number) {
+        if (cantidad <= 0) {
+            throw new Error("La cantidad debe ser mayor a cero.");
+        }
+        this.id = id;
+        this.productoId = productoId;
+        this.cantidad = cantidad;
+    }
+    
+    // Lógica interna
+    public aumentarCantidad(monto: number): void {
+        this.cantidad += monto;
+    }
+
+    // Getters para exponer datos (sin exponer la posibilidad de mutación directa)
+    public getID(): string { return this.id; }
+    public getCantidad(): number { return this.cantidad; }
+    public getProductoId(): string { return this.productoId; }
+}
+```
+
+
+2. Raíz del Agregado: CarritoDeCompras
+
+La Raíz del Agregado encapsula la colección de ítems y protege la consistencia de todo el Agregado.
+
+Una Sola Raíz: El CarritoDeCompras es la única entidad que tiene un Repositorio asociado. Otros Agregados (o la Capa de Aplicación) solo interactúan con un carrito llamando a sus métodos (ej., carrito.agregarItem(...)).
+
+Integridad Transaccional: Cuando la Capa de Aplicación llama a carritoRepository.guardar(carrito), la base de datos guarda la Raíz y todos sus ítems internos (ItemDeCarrito) en una única transacción.
+
+Lógica Encapsulada: El método agregarItem gestiona la lógica de buscar un ítem existente o crear uno nuevo. Esta es la forma en que la Raíz protege las reglas del conjunto.
+
+```
+// /src/domain/aggregates/CarritoDeCompras.ts
+
+import { ItemDeCarrito } from '../entities/ItemDeCarrito';
+
+export class CarritoDeCompras {
+    private id: string; // ID de la Raíz (único y persistente)
+    private clienteId: string; // Referencia por ID a otro Agregado (Cliente)
+    private items: ItemDeCarrito[] = [];
+    private ultimaActualizacion: Date;
+
+    // --- Constructor ---
+    private constructor(id: string, clienteId: string, items: ItemDeCarrito[] = []) {
+        this.id = id;
+        this.clienteId = clienteId;
+        this.items = items;
+        this.ultimaActualizacion = new Date();
+    }
+
+    // Método de creación (Factory)
+    public static crearNuevo(id: string, clienteId: string): CarritoDeCompras {
+        return new CarritoDeCompras(id, clienteId);
+    }
+
+    // --- Lógica de Dominio Centralizada en la Raíz ---
+    
+    /**
+     * Añade un nuevo ítem o incrementa la cantidad si ya existe.
+     * La lógica está en la Raíz para mantener la consistencia de la colección.
+     */
+    public agregarItem(productoId: string, cantidad: number): void {
+        const itemExistente = this.items.find(item => item.getProductoId() === productoId);
+        
+        if (itemExistente) {
+            // Si existe, usamos la lógica interna de la Entidad ItemDeCarrito
+            itemExistente.aumentarCantidad(cantidad); 
+        } else {
+            // Si no existe, creamos una nueva Entidad interna
+            const nuevoId = Math.random().toString(36).substring(2, 9); // ID simple para el ejemplo
+            this.items.push(new ItemDeCarrito(nuevoId, productoId, cantidad));
+        }
+
+        // Se actualiza el estado transaccional
+        this.ultimaActualizacion = new Date();
+    }
+
+    /**
+     * Vacía el carrito, asegurando la limpieza de todo el Agregado.
+     */
+    public vaciar(): void {
+        this.items = [];
+        this.ultimaActualizacion = new Date();
+        // Opcional: Emitir un Evento de Dominio: new CarritoVaciadoEvent(...)
+    }
+
+    // --- Acceso Controlado (Getters) ---
+    public getID(): string { return this.id; }
+    public getClienteId(): string { return this.clienteId; }
+    public getItems(): readonly ItemDeCarrito[] { 
+        // Devolvemos una copia para evitar la mutación externa directa de la colección
+        return this.items; 
+    }
+}
+```
+
+
+## Aggregate Root
+
+Entidad principal de un Agregado que sirve como el único punto de acceso
+
+Su propósito es garantizar la consistencia de todos los objetos que contiene.
+
+
+### Ej: Entidad Pedido actuando como la Raíz del Agregado
+
+Asumimos que ItemDePedido es una Entidad interna y Monto es un Objeto de Valor.
+
+##### !!! El Pedido es la Raíz. Cualquier cambio en sus ítems internos o su estado debe realizarse a través de sus métodos.
+
+1. Identidad y Acceso: La propiedad id es la clave. El Repositorio solo tendría el método obtenerPedidoPorId(id) y devolvería el objeto Pedido completo.
+
+2. Encapsulación de Lógica: Las reglas de negocio (como no modificar un pedido pagado) están codificadas en los métodos de la Raíz (agregarItem, marcarComoPagado). Si la lógica no pasa la validación, la Raíz lanza una excepción y el estado del Agregado se mantiene consistente.
+
+3. Protección de Objetos Internos: No se proporcionan métodos para acceder o modificar directamente las Entidades ItemDePedido desde fuera. La manipulación se realiza exclusivamente a través de la Raíz, garantizando que el Pedido siempre mantenga su integridad.
+
+```
+// Asumimos que estas clases ya existen en el dominio
+// import { ItemDePedido } from './ItemDePedido';
+// import { Monto } from '../value-objects/Monto'; 
+
+// Simplificamos las dependencias para el ejemplo
+interface ItemDePedido {
+    productoId: string;
+    cantidad: number;
+    precioUnitario: number;
+    calcularSubtotal(): number;
+}
+
+enum EstadoPedido {
+    PENDIENTE = 'PENDIENTE',
+    PAGADO = 'PAGADO',
+    ENVIADO = 'ENVIADO'
+}
+
+export class Pedido {
+    private id: string; // La identidad de la Raíz
+    private clienteId: string; // Referencia por ID a otro Agregado (Cliente)
+    private estado: EstadoPedido;
+    private items: ItemDePedido[] = []; // Entidades internas
+
+    // --- Constructor: Solo la Raíz puede ser creada o reconstruida directamente ---
+    constructor(id: string, clienteId: string, estado: EstadoPedido = EstadoPedido.PENDIENTE) {
+        this.id = id;
+        this.clienteId = clienteId;
+        this.estado = estado;
+    }
+
+    // --- Métodos de Consistencia (Invariantes Protegidos) ---
+
+    public agregarItem(item: ItemDePedido): void {
+        // Regla de Consistencia 1: No se puede modificar el pedido si ya ha sido pagado.
+        if (this.estado !== EstadoPedido.PENDIENTE) {
+            throw new Error(`No se pueden añadir ítems a un pedido en estado ${this.estado}.`);
+        }
+        
+        // Lógica de adición de ítem (la Raíz decide cómo manejar la colección interna)
+        this.items.push(item);
+    }
+
+    public marcarComoPagado(montoPagado: number): void {
+        // Regla de Consistencia 2: Solo se puede marcar como pagado si está pendiente
+        if (this.estado !== EstadoPedido.PENDIENTE) {
+            throw new Error(`El pedido ya está en estado ${this.estado}.`);
+        }
+        
+        // Regla de Consistencia 3: El monto debe coincidir con el total
+        if (montoPagado < this.calcularTotal()) {
+            throw new Error("El monto pagado es insuficiente.");
+        }
+
+        this.estado = EstadoPedido.PAGADO;
+        // Opcional: Podría emitir un Domain Event aquí: new PedidoPagadoEvent(...)
+    }
+
+    // --- Getters y Cálculos ---
+    
+    public calcularTotal(): number {
+        return this.items.reduce((total, item) => total + item.calcularSubtotal(), 0);
+    }
+
+    public getID(): string {
+        return this.id;
+    }
+
+    public getEstado(): EstadoPedido {
+        return this.estado;
+    }
+
+    // No se expone la colección de ítems directamente para evitar manipulación externa
+    public getItems(): readonly ItemDePedido[] {
+        return this.items;
+    }
+}
+```
+
+
+## Repository
+
+Actúa como una colección en memoria para acceder a las Raíces de Agregado y aislarlas de los detalles de la base de datos.
+
+##### El Repositorio se define primero como una interfaz en la capa de Dominio (el contrato)
+
+##### Luego se implementa en la capa de Infraestructura (la implementación técnica).
+
+
+1. El Contrato (Capa de Dominio)
+
+La interfaz define qué puede hacer el Dominio. 
+
+Solo trabaja con la Raíz del Agregado (Pedido en este caso).
+
+```
+// /src/domain/repositories/PedidoRepository.ts
+
+import { Pedido } from '../aggregates/Pedido'; // Asumimos que Pedido es la Raíz del Agregado
+
+/**
+ * Define la interfaz que el Dominio requiere para acceder y persistir Pedidos.
+ * No contiene detalles de la base de datos (SQL, MongoDB, etc.).
+ */
+export interface PedidoRepository {
+    // Busca un Agregado completo por su ID
+    obtenerPorId(id: string): Promise<Pedido | null>;
+    
+    // Persiste el Agregado completo (INSERT o UPDATE)
+    guardar(pedido: Pedido): Promise<void>;
+
+    // Opcional: Buscar pedidos que cumplan un criterio de negocio
+    buscarPedidosPendientes(clienteId: string): Promise<Pedido[]>;
+}
+```
+
+
+2. Implementación (Capa de Infraestructura)
+
+Esta clase implementa la interfaz anterior y contiene el código específico para interactuar con la tecnología de persistencia (ej., una base de datos SQL o una colección de MongoDB).
+
+```
+// /src/infrastructure/database/SqlPedidoRepository.ts
+
+import { PedidoRepository } from '../../domain/repositories/PedidoRepository';
+import { Pedido } from '../../domain/aggregates/Pedido';
+// Asumimos un cliente para la base de datos SQL
+// import { SqlClient } from 'sql-library'; 
+
+/**
+ * Implementación concreta del Repositorio para una base de datos SQL.
+ */
+export class SqlPedidoRepository implements PedidoRepository {
+    private dbClient: any; // Simulación del cliente de base de datos
+
+    constructor(dbClient: any) {
+        this.dbClient = dbClient;
+    }
+
+    // --- Implementación del Contrato ---
+
+    public async obtenerPorId(id: string): Promise<Pedido | null> {
+        // Lógica para obtener los datos del Pedido (Raíz) y sus Items (Entidades internas)
+        const pedidoData = await this.dbClient.query('SELECT * FROM pedidos WHERE id = ?', [id]);
+        const itemsData = await this.dbClient.query('SELECT * FROM item_pedido WHERE pedido_id = ?', [id]);
+
+        if (!pedidoData) return null;
+
+        // El Repositorio es responsable de reconstruir el Agregado completo
+        // Se llama a un método estático o constructor de la Raíz para reconstruirlo.
+        // const items = itemsData.map(data => ItemDePedido.fromPrimitives(data));
+        // return Pedido.fromPrimitives(pedidoData, items); 
+        
+        // Retornamos un Pedido simulado para el ejemplo:
+        return {
+            getID: () => id,
+            guardar: async () => {},
+            // ... otros métodos del Agregado
+        } as Pedido;
+    }
+
+    public async guardar(pedido: Pedido): Promise<void> {
+        // El Repositorio maneja la lógica de persistencia del Agregado completo
+        // 1. Iniciar una transacción de base de datos (clave para el Unit of Work)
+        await this.dbClient.beginTransaction();
+        
+        try {
+            // 2. Actualizar la Raíz (Pedido)
+            await this.dbClient.query('UPDATE pedidos SET estado = ? WHERE id = ?', [pedido.getEstado(), pedido.getID()]);
+            
+            // 3. Persistir o actualizar las Entidades internas (ej. ItemsDePedido)
+            // Lógica para manejar INSERTS, UPDATES y DELETES de los ítems.
+
+            // 4. Si todo es exitoso, confirmar la transacción
+            await this.dbClient.commit();
+        } catch (error) {
+            // Si algo falla, revertir la transacción para mantener la consistencia
+            await this.dbClient.rollback();
+            throw error;
+        }
+    }
+    
+    // ... implementación de buscarPedidosPendientes
+}
+```
+
+
+## Domain Event
+
+##### Objeto inmutable que representa algo significativo que acaba de ocurrir en el dominio
+
+
+### Ej: basándose en el Agregado Pedido.
+
+1. Definición del Evento de Dominio
+
+El evento es una clase simple que solo contiene los datos necesarios para que otros componentes reaccionen al cambio.
+
+##### !!! Su nombre debe estar en tiempo pasado.
+
+```
+// /src/domain/events/PedidoPagadoEvent.ts
+
+export class PedidoPagadoEvent {
+    // 1. Identificador del evento (buena práctica para auditoría)
+    public readonly occurredOn: Date = new Date();
+    
+    // 2. Datos relevantes (solo IDs o valores, no objetos del Dominio)
+    public readonly pedidoId: string;
+    public readonly clienteId: string;
+    public readonly montoTotal: number;
+
+    constructor(pedidoId: string, clienteId: string, montoTotal: number) {
+        this.pedidoId = pedidoId;
+        this.clienteId = clienteId;
+        this.montoTotal = montoTotal;
+    }
+}
+```
+
+
+2. Emisión del Evento en la Raíz del Agregado
+
+La Raíz del Agregado (Pedido) es la única responsable de generar el evento, asegurando que la lógica de negocio se ejecute correctamente antes de anunciarlo.
+
+```
+// /src/domain/aggregates/Pedido.ts (Extracto de la Raíz del Agregado)
+
+import { PedidoPagadoEvent } from '../events/PedidoPagadoEvent';
+
+export class Pedido {
+    private id: string;
+    private clienteId: string;
+    private estado: string = 'PENDIENTE';
+    private items: any[] = []; // Objetos internos
+    private domainEvents: PedidoPagadoEvent[] = []; // Lista para recolectar eventos
+
+    // ... (constructor y otros métodos)
+
+    public marcarComoPagado(montoPagado: number): void {
+        if (this.estado !== 'PENDIENTE') {
+            throw new Error("El pedido ya está pagado.");
+        }
+        if (montoPagado < this.calcularTotal()) {
+            throw new Error("Monto insuficiente.");
+        }
+
+        // 1. Ejecutar la lógica de negocio y asegurar la consistencia del Agregado
+        this.estado = 'PAGADO'; 
+
+        // 2. Recolectar (Emitir) el Evento de Dominio
+        const evento = new PedidoPagadoEvent(
+            this.id,
+            this.clienteId,
+            montoPagado
+        );
+        this.domainEvents.push(evento);
+    }
+    
+    // Método para que la Capa de Aplicación acceda a los eventos
+    public releaseEvents(): PedidoPagadoEvent[] {
+        const events = this.domainEvents;
+        this.domainEvents = []; // Limpiar la lista después de la publicación
+        return events;
+    }
+    
+    public calcularTotal(): number { /* ... */ return 100; } 
+}
+```
+
+3. Manejador de Eventos (Event Handler)
+
+El Manejador de Eventos reside en la Capa de Aplicación (o a veces en la Capa de Infraestructura) y define la reacción a lo que ocurrió, desacoplando la lógica
+
+```
+// /src/application/handlers/EnviarEmailDeConfirmacionHandler.ts
+
+import { PedidoPagadoEvent } from '../../domain/events/PedidoPagadoEvent';
+// import { ServicioDeEmail } from '../../infrastructure/services/ServicioDeEmail'; // Dependencia externa
+
+export class EnviarEmailDeConfirmacionHandler {
+    private emailService: any; // Simulación del servicio de infraestructura
+
+    constructor(emailService: any) {
+        this.emailService = emailService;
+    }
+
+    // Este método reacciona al evento
+    public async handle(event: PedidoPagadoEvent): Promise<void> {
+        console.log(`[HANDLER] Recibido evento: Pedido Pagado ID ${event.pedidoId}`);
+        
+        // La lógica de reacción:
+        const asunto = `Confirmación de Pago #${event.pedidoId}`;
+        const cuerpo = `Gracias por su pago de $${event.montoTotal}. Su pedido está siendo procesado.`;
+        
+        // Uso del servicio de infraestructura para realizar la acción
+        // await this.emailService.enviar(event.clienteId, asunto, cuerpo);
+        
+        console.log(`[HANDLER] Email de confirmación enviado al cliente ${event.clienteId}.`);
+    }
+}
+```
+
+
+4. Flujo de Aplicación (Coordinación)
+
+La Capa de Aplicación coordina el flujo de la UoW y la publicación de eventos:
+
+1. Capa de Aplicación: Llama al Repositorio para obtener el Pedido.
+
+2. Capa de Aplicación: Llama a la Raíz: pedido.marcarComoPagado(100).
+
+3. Capa de Aplicación: Llama al Repositorio para guardar el Pedido (dentro de una UoW, garantizando que el commit de la base de datos se haga).
+
+4. Capa de Aplicación (o UoW): Después del commit, llama a pedido.releaseEvents() para obtener los eventos recolectados.
+
+5. Capa de Aplicación: Publica el evento, disparando el EnviarEmailDeConfirmacionHandler y cualquier otro manejador que esté escuchando, de forma desacoplada. 
+
+
+
+# Diseño de DB
+
+## 1. Fundamentos
+
+DB, Sistemas de Gestión de Bases de Datos (SGBD), Ventajas
+
+
+Tipos de Modelos de Datos:
+
+Jerárquico, de Red, Relacional (énfasis).
+
+NoSQL (breve introducción: clave-valor, documental, grafo).
+
+
+Terminología Relacional:
+
+Tabla, fila (tupla/registro), columna (atributo/campo).
+
+Dominio, grado y cardinalidad.
+    
+
+## 2. Modelado de Datos (E-R)
+
+##### Representar los requisitos del mundo real de forma abstracta.
+
+
+### Modelo Entidad-Relación
+
+Entidades: Fuertes y débiles.
+
+Atributos: Simples, compuestos, multivaluados, derivados.
+
+Claves: Superclave, Clave Candidata, Clave Primaria (PK), Clave Foránea (FK).
+
+
+### Relaciones:
+
+Definición y conjuntos de roles.
+
+Cardinalidad: Uno a Uno (1:1), Uno a Muchos (1:N), Muchos a Muchos (M:N).
+
+Participación: Total y Parcial.
+    
+
+### Diagramas E-R:
+
+Convenciones de notación (Chen o Crow's Foot).
+
+Práctica: Convertir escenarios de negocio en diagramas E-R.
+
+
+## 3. Modelado de Datos Lógico (Relacional)
+
+##### Transición del modelo conceptual a un esquema relacional
+
+
+### Conversión del Modelo E-R a Relacional:
+
+Reglas para mapear entidades y relaciones (1:1, 1:N, M:N) a tablas y claves.
+
+Manejo de herencia (generalización/especialización).
+
+
+### Álgebra Relacional:
+
+Conceptos básicos: Operadores de conjunto (unión, diferencia, intersección, producto cartesiano).
+
+Operadores relacionales: Selección (σ), Proyección (π), Join (⋈) (natural, theta, outer).
+
+
+### Cálculo Relacional:
+
+Cálculo de tuplas y de dominio (solo como fundamento teórico para SQL).
+
+
+## 4. Diseño Relacional y Normalización
+
+##### Calidad del diseño para evitar redundancia e inconsistencias. 
+
+
+### Anomalías de Actualización: Inserción, borrado y modificación
+
+
+### Dependencias Funcionales (DF):
+
+Definición, inferencia y cierre de atributos.
+    
+
+### Formas Normales (FN):
+
+Primera Forma Normal (1NF): Atributos atómicos.
+
+Segunda Forma Normal (2NF): Dependencia total de la clave primaria.
+
+Tercera Forma Normal (3NF): Eliminación de dependencias transitivas.
+
+Forma Normal de Boyce-Codd (BCNF): Una forma más estricta de 3NF.
+
+Otras (4NF, 5NF - solo conocimiento conceptual).
+
+
+### Descomposición: Descomposición con conservación de dependencias y sin pérdida de información (Join).
+
+
+## 5. SQL (Structured Query Language
+
+##### Herramienta fundamental para interactuar con bases de datos relacionales.
+
+### Lenguaje de Definición de Datos (DDL):
+
+CREATE (TABLE, INDEX, VIEW).
+
+ALTER (TABLE).
+
+DROP (TABLE, INDEX, VIEW).
+
+
+### Lenguaje de Manipulación de Datos (DML):
+
+SELECT (cláusulas FROM, WHERE, GROUP BY, HAVING, ORDER BY).
+
+INSERT, UPDATE, DELETE.
+
+
+### Consultas Avanzadas:
+
+`**JOIN**s` (Inner, Left, Right, Full Outer).
+
+Subconsultas (escalares, de columna, de tabla).
+
+Funciones de agregación (COUNT, SUM, AVG, MIN, MAX).
+
+Funciones de ventana (Window Functions).
+
+
+### Lenguaje de Control de Datos (DCL) y de Transacciones (TCL):
+
+GRANT y REVOKE (Permisos).
+
+COMMIT, ROLLBACK, SAVEPOINT.
+
+
+## 6. Implementación y Optimización Avanzada
+
+##### Rendimiento y la integridad.
+
+
+### Transacciones y Propiedades ACID:
+
+Atomicidad, Consistencia, Islamiento, Durabilidad.
+
+
+### Control de Concurrencia:
+
+Bloqueos (Locking), Deadlocks.
+
+Niveles de aislamiento de transacciones (ej: Read Committed, Serializable).
+
+
+### Optimización de Consultas (Performance Tuning):
+
+Índices: Tipos (B-tree, Hash, Clustered/Non-Clustered). Uso correcto de índices.
+
+Análisis de planes de ejecución (EXPLAIN).
+
+Desnormalización estratégica      
+    
+
+### Autenticación y Autorización.
+
+Vistas (VIEW) para restringir acceso.
+
+Inyección SQL (concepto y prevención
+
+
+## 7. Temas Complementarios y Actuales
+
+##### Expansión de conocimientos en tecnologías modernas.
+    
+
+### Almacenamiento de Datos (Data Warehousing):
+
+Modelos dimensionales: Esquema Estrella y Esquema Copo de Nieve.
+
+Conceptos ETL (Extract, Transform, Load).
+
+
+### Bases de Datos NoSQL:
+
+Introducción a los diferentes tipos (Documentales, Columnares, Grafo).
+
+Modelo de consistencia BASE (Básicamente Disponible, Estado Suave, Consistencia Eventual) como alternativa a ACID.
+
+
+### Programación en la BD
+
+Procedimientos Almacenados (Stored Procedures) y Funciones.
+
+Disparadores (Triggers).
+
+
+## Herramientas
+
+### SGBD Relacionales
+
+MySQL/PostgreSQL: Excelentes opciones open-source para práctica.
+
+SQL Server/Oracle: Usados comúnmente en entornos empresariales
+
+
+### Herramientas de Modelado E-R:
+
+Lucidchart, draw.io, o Dia.
+
+
+
+# ORM: Mapeo Objeto-Relacional
+
+
+## 1. Fundamentos
+
+Convierte datos entre sistemas de tipos incompatibles (lenguaje orientado a objetos y bases de datos relacionales).
+
+Ventajas: Reducción de código SQL repetitivo, seguridad (prevención de Inyección SQL), portabilidad.
+
+
+### El Desajuste de Impedancia Objeto-Relacional:
+
+Problemas de granularidad (muchas clases a pocas tablas).
+
+Problemas de subtipos (herencia en código vs. estructura plana en tablas).
+
+Problemas de identidad (objetos en memoria vs. claves primarias en DB).
+
+Problemas de navegación (relaciones objeto vs. JOINs de tablas).
+    
+
+### Conceptos claves
+
+Entidad/Modelo: Una clase que representa una tabla de la base de datos.
+
+Repositorio/DAO: Patrón para manejar la lógica de acceso a datos.
+
+
+## 2. Configuración y Mapeo Básico
+
+##### Configurar el ORM y mapear las estructuras fundamentales.
+
+
+### Configuración Inicial:
+
+Conexión a la base de datos (string de conexión, dialecto).
+
+Selección de un ORM específico (ej. SQLAlchemy en Python, Hibernate en Java, Entity Framework en .NET).
+
+
+### Mapeo de Clases y Tablas:
+
+Definición de clases como entidades ORM.
+
+Mapeo de atributos de clase a columnas de tabla.
+
+Declaración de la Clave Primaria (PK).  
+
+
+### Operaciones CRUD Básicas (Data Manipulation):
+
+Crear (Insertar): Instanciar un objeto y guardarlo.
+
+Leer (Seleccionar): Recuperar objetos por PK, o con filtros simples.
+
+Actualizar (Modificar): Cambiar atributos de un objeto persistido.
+
+Eliminar (Borrar): Eliminar el objeto de la base de datos. 
+
+
+### Mapeo de Tipos de Datos: Manejo de la conversión entre tipos de lenguaje (ej. datetime de Python a TIMESTAMP de SQL).
+
+
+## 3. Mapeo de Relaciones (Asociaciones)
+
+##### Manejar las relaciones entre entidades
+
+
+### Tipos de Relaciones:
+
+Uno a Uno (1:1): Mapeo de una relación que utiliza una Clave Foránea única.
+
+Uno a Muchos (1:N): Mapeo común (ej. un Usuario tiene muchos Pedidos). Uso de listas o colecciones en el lado "Uno".
+
+Muchos a Muchos (M:N): Uso de una Tabla de Asociación/Intermedia implícita o explícita.
+
+
+### Configuración de Claves Foráneas (FK):
+
+Definir la columna FK en la clase correspondiente.
+    
+
+### Carga de Datos Relacionados:
+
+Carga Perezosa (Lazy Loading): Los datos relacionados se cargan solo cuando se accede a ellos (predeterminado).
+
+Carga Ansiosa (Eager Loading): Los datos relacionados se cargan inmediatamente junto con la entidad principal (generalmente con JOIN).
+
+Carga Selectiva: Uso de consultas separadas.    
+
+
+## 4. Consultas Avanzadas y Optimización
+
+##### Capacidades avanzadas del ORM para consultas eficientes
+
+
+### Lenguajes de Consulta del ORM
+
+Uso de Builders o métodos para construir consultas dinámicas.
+
+
+### Filtros Complejos:
+
+Cláusulas WHERE con operadores lógicos (AND, OR, NOT).
+
+Uso de funciones de agregación y agrupamiento (Group By).
+
+Paginación y Ordenación (LIMIT/OFFSET, ORDER BY).
+
+
+### Optimización de Rendimiento:
+
+Manejo de la carga (Lazy vs. Eager) para evitar el problema N+1 Queries (la principal fuente de lentitud en ORMs).
+
+Consultas Nativa (SQL): Saber cuándo recurrir a SQL puro para consultas muy complejas o optimizadas.
+
+Caching (Caché de primer y segundo nivel).
+
+
+## 5. Transacciones y Persistencia
+
+##### Integridad de los datos en la base de datos.
+
+### Unidad de Trabajo (Unit of Work):
+
+El concepto de que todas las operaciones dentro de una sesión se manejan como una única transacción.
+
+El ORM rastrea los cambios a los objetos y genera el SQL apropiado.
+
+
+### Transacciones ACID:
+
+Uso de bloques transaccionales (BEGIN, COMMIT, ROLLBACK).
+
+Manejo de la sesión/contexto de persistencia del ORM.
+
+
+### Manejo de Errores y Excepciones:
+
+Captura de errores de la base de datos (ej. violación de restricciones de unicidad o FK).
+
+
+### Versionado y Concurrencia Optimista:
+
+Uso de un campo de versión o timestamp para detectar y prevenir conflictos de actualización concurrentes.
+
+
+
+# Diseño de Relaciones
+
+##### !!! Cómo se definen, diseñan y optimizan las relaciones entre las tablas
+
+
+## 1. Fundamentos de las Relaciones y Claves Primarias/Foráneas
+
+##### Punto de partida para establecer cualquier vínculo entre tablas.
+
+
+### Esquema Relacional:
+
+Definición de una tabla y el concepto de un Esquema (estructura).
+
+La relación como un vínculo semántico entre dos o más tablas
+
+
+### Claves Primarias (PK):
+
+Definición y propósito (identificación única de registros).
+
+Propiedades: No nula y única.
+
+Claves compuestas (PK formada por múltiples atributos).
+
+
+### Claves Foráneas (FK):
+
+Definición y propósito (establecer el vínculo entre tablas).
+
+La FK en la tabla dependiente apunta a la PK en la tabla principal.    
+
+
+### Integridad Referencial:
+
+##### Regla esencial: Todo valor de FK debe coincidir con un valor de PK en la tabla referenciada o ser nulo.
+
+
+## 2. Modelado de Relaciones (Cardinalidad y Participación)
+
+##### Uso del Modelo Entidad-Relación (E-R) para definir el tipo de relación.
+
+
+### Cardinalidad: Determina cuántas instancias de una entidad se relacionan con cuántas instancias de la otra.
+
+#### Uno a Uno (1:1): (Ej. Un Empleado tiene un Detalle de Contacto).
+
+	Implementación: La FK se coloca en cualquiera de las dos tablas, y se hace única.
+
+#### Uno a Muchos (1:N): (Ej. Un Departamento tiene muchos Empleados).
+
+	Implementación: La FK se coloca en el lado "Muchos" (Empleado).
+
+#### Muchos a Muchos (M:N): (Ej. Un Estudiante toma muchos Cursos).
+
+	Implementación: Se requiere una tabla intermedia (o de enlace) cuya PK es una clave compuesta formada por las FKs de ambas tablas
+
+
+### Participación: Define si la participación en la relación es obligatoria u opcional.
+
+Participación Total (Obligatoria): Indicado por una FK No Nula.
+
+Participación Parcial (Opcional): Indicado por una FK Nula o por no existir un registro.	
+
+
+## 3. Opciones de Integridad Referencial (Acciones de Borrado/Actualización)
+ 
+##### Cómo la base de datos reacciona cuando se modifica la tabla principal.
+
+
+### Restricciones de Acción (ON DELETE, ON UPDATE):
+
+CASCADE: Propaga la acción (borra o actualiza los registros relacionados en la tabla dependiente).
+
+RESTRICT / NO ACTION: Impide la acción si existen registros relacionados (el comportamiento más seguro).
+
+SET NULL: Establece el valor de la FK en la tabla dependiente a NULL. (Solo si la FK acepta valores nulos).
+
+SET DEFAULT: Establece el valor de la FK en el valor predeterminado.
+
+
+### Consideraciones de Diseño:
+
+Elegir la acción adecuada para garantizar la integridad lógica de la aplicación (ej. una orden de compra no debe borrarse si se borra un cliente).
+
+
+## 4. Diseño Relacional Avanzado y Normalización
+
+##### Asegurar que el diseño de relaciones sea eficiente y evite la redundancia
+
+
+#### Dependencias Funcionales (DF): El concepto de que el valor de un atributo determina el valor de otro. 
+
+Esto es clave para determinar dónde deben ir las columnas.
+
+
+### Redundancia e Anomalías: Cómo un diseño de relaciones pobre lleva a problemas de inserción, actualización y borrado.
+
+
+### Normalización y Relaciones:
+
+Segunda Forma Normal (2NF): Se asegura que todos los atributos de una tabla dependan de la PK completa (elimina dependencias parciales). A menudo resulta en la creación de una nueva tabla y una relación 1:N.
+
+Tercera Forma Normal (3NF): Se asegura que todos los atributos dependan directamente de la PK, no de otros atributos que no son PK (elimina dependencias transitivas). Esto crea otra nueva tabla y una relación 1:N.
+
+
+## 5. Modelado de Relaciones Complejas y Flexibles
+
+Manejo de estructuras de datos más complejas que las relaciones binarias simples.
+
+
+### Relaciones Reflexivas/Recursivas:
+
+Una tabla se relaciona consigo misma (Ej. Un Empleado es supervisado por otro Empleado).
+
+Implementación: Una FK en la tabla apunta a la PK de la misma tabla.
+
+
+### Relaciones Ternarias (Relaciones de 3 o más entidades):
+
+Cuando una relación involucra a tres o más entidades de forma simultánea (Ej. Proveedor, Pieza, y Proyecto en una transacción).
+
+Implementación: Usualmente se modela con una tabla intermedia que contiene tres o más FKs.
+
+
+### Generalización/Especialización (Herencia):
+
+Modelar tipos de relaciones de "es-un" (Ej. Cuenta es padre de Cuenta de Ahorros y Cuenta Corriente).
+
+Patrones de implementación: Una tabla por jerarquía, una tabla por clase concreta, o una tabla por subclase
+
+
+## Práctica
+
+Modelado E-R: Diseñar los diagramas E-R para varios escenarios de negocio, prestando especial atención a la cardinalidad y participación.
+
+Ejercicios de Mapeo: Convertir los diagramas E-R resultantes a código DDL (SQL), implementando correctamente las CREATE TABLE, PRIMARY KEY, FOREIGN KEY, y las acciones ON DELETE/UPDATE.
+
+
+
+# CRUD
+
+CRUD (Create, Read, Update, Delete) es el acrónimo fundamental en la gestión de bases de datos y el desarrollo de aplicaciones
+
+Operaciones de persistencia
+
+
+## 1. Fundamentos y Concepto de Persistencia
+
+Contexto de las operaciones
+
+### CRUD
+
+Definición de las cuatro operaciones básicas: Crear (C), Leer (R), Actualizar (U), Borrar (D).
+
+Su función como el ciclo de vida de un dato/registro en un sistema
+
+
+### Persistencia de Datos:
+
+El concepto de almacenar datos de manera duradera (no solo en memoria).
+
+Diferencia entre persistencia y sesión
+
+
+### El Rol del CRUD en la Arquitectura:
+
+Mapeo del CRUD a los métodos HTTP en APIs RESTful (POST, GET, PUT/PATCH, DELETE).
+
+La capa de acceso a datos (DAO/Repositorio) en el desarrollo de software.
+
+
+## 2. Operación Crear (Create) y Persistencia   
+    
+##### Introducir nuevos datos al sistema.
+
+
+### Concepto SQL: INSERT INTO.
+
+Sintaxis básica: Especificar tabla, columnas y valores.
+
+Inserción de múltiples registros.
+
+
+### Validación de Datos:
+
+Restricciones de base de datos (claves únicas, no nulos, check constraints).
+
+Validación a nivel de aplicación (antes de intentar la inserción).
+
+
+### Generación de Claves Primarias:
+
+Autoincremento (AUTO_INCREMENT/IDENTITY).
+
+UUIDs (Universally Unique Identifiers).
+
+
+## 3. Operación Leer (Read) y Consulta
+
+##### La recuperación de datos es crucial.
+
+
+### Concepto SQL: SELECT.
+
+Lectura Simple: Seleccionar todas (*) o columnas específicas.
+
+Filtrado (WHERE): Operadores de comparación y lógicos (AND, OR).
+
+Búsqueda (Patrones): Uso de LIKE y comodines `(%, _)`.
+
+
+### Lectura Avanzada (Consultas):
+
+Ordenación (ORDER BY): Ascendente (ASC) y Descendente (DESC).
+
+Agregación: GROUP BY y funciones (COUNT, SUM, AVG, MIN, MAX).
+
+Unión de Tablas (JOIN): INNER JOIN, LEFT JOIN, RIGHT JOIN para leer datos relacionales.
+
+Paginación: Uso de LIMIT y OFFSET.
+
+
+## 4. Operación Actualizar (Update)
+
+##### Modificar datos existentes de forma segura.
+
+
+### Concepto SQL: UPDATE.
+
+Sintaxis básica: Especificar tabla, la cláusula SET (columnas a cambiar) y la cláusula WHERE.
+
+Advertencia de Seguridad: La importancia crítica de la cláusula WHERE para evitar actualizar toda la tabla
+
+
+### Actualizaciones Condicionales:
+
+##### Uso de subconsultas o funciones en la cláusula SET.
+
+
+### Transacciones:
+
+La necesidad de encerrar las operaciones de actualización en una transacción para asegurar la atomicidad (ACID), especialmente en operaciones complejas o en múltiples tablas.
+
+
+## 5. Operación Borrar (Delete)
+
+##### Eliminar registros del sistema.
+
+
+### Concepto SQL: DELETE FROM.
+
+Sintaxis básica: Especificar tabla y la cláusula WHERE.
+
+Advertencia de Seguridad: Al igual que UPDATE, la cláusula WHERE es fundamental. 
+
+Un DELETE sin WHERE borra todos los registros.
+    
+
+### Integridad Referencial:
+
+Cómo el SGBD maneja el borrado de registros que son referenciados por una Clave Foránea (FK).
+
+Opciones de ON DELETE (CASCADE, RESTRICT, SET NULL).
+
+
+### Borrado Lógico (Soft Delete):
+
+En lugar de borrar el registro, se actualiza un campo indicador (ej. esta_activo = FALSE o fecha_eliminacion con un timestamp).
+
+Ventajas: Auditoría y recuperación de datos.
+
+
+## Práctica
+
+Base de Datos	Almacenamiento y SQL nativo	MySQL, PostgreSQL, SQLite
+
+Lenguaje/Framework	Lógica de la aplicación	Python (Flask/Django), Java (Spring Boot), Node.js (Express)
+
+Capa de Abstracción	ORM o Conector de DB	SQLAlchemy, Hibernate, Mongoose
+
+
+1. Crear un modelo simple (ej. Producto o Usuario).
+
+2. Implementar una función/método para cada una de las cuatro operaciones (C, R, U, D) usando el ORM o SQL directo.
+
+3. Desarrollar una interfaz básica (consola o web) para interactuar con estas funciones.
+
+
+
+
+# APIs RESTful
+
+## 1. Fundamentos web y Protocolo HTTP
+
+##### Base sobre la que se construyen las APIs REST.
+
+
+### Arquitectura Cliente-Servidor: Rol del cliente (navegador/aplicación) y del servidor.
+
+
+### Protocolo HTTP:
+
+Conceptos básicos: Solicitud (Request) y Respuesta (Response).
+
+Métodos HTTP (Verbos): GET, POST, PUT, DELETE, PATCH, HEAD, OPTIONS. (Su mapeo a operaciones CRUD).
+
+Códigos de Estado: Familiaridad con las categorías (2xx, 4xx, 5xx) y los códigos clave (200 OK, 201 Created, 400 Bad Request, 401 Unauthorized, 404 Not Found, 500 Internal Server Error).
+
+Headers: Content-Type, Accept, Authorization, Cache-Control, etc.
+
+
+### Formatos de Intercambio de Datos:
+
+JSON (JavaScript Object Notation): Su estructura, tipos de datos y uso dominante en APIs.
+
+XML (Mención breve). 
+
+
+## 2. Fundamentos de REST
+
+##### Filosofía de diseño detrás de las APIs RESTful.
+
+
+### REST (Representational State Transfer):
+
+Definición y su creador (Roy Fielding).
+
+Diferencia entre REST y RESTful. 
+
+
+### Principios de REST:
+
+Uniform Interface: La API debe ser accesible de forma estándar.
+
+Client-Server: Separación de preocupaciones.
+
+Stateless (Sin Estado): El servidor no almacena el estado de la sesión del cliente; cada solicitud contiene toda la información necesaria.
+
+Cacheable: Las respuestas pueden ser almacenadas en caché para mejorar el rendimiento.
+
+Layered System (Sistema en Capas): El cliente no necesita saber si se está comunicando directamente con el servidor final o un intermediario (como un load balancer).
+
+Code on Demand (Opcional): Posibilidad de transferir lógica ejecutable.
+
+
+### Recursos (Resources): La abstracción clave de REST. 
+
+##### !!! Todo se trata como un recurso (ej. /usuarios, /productos/123).
+
+
+## Diseño Práctico de Endpoints
+
+##### Convertir requisitos de negocio en URLs y operaciones.
+
+
+### Nomenclatura de Recursos:
+
+Usar sustantivos en plural para los recursos (ej. /libros, no /libro).
+
+Identificación de recursos individuales con su ID (ej. /libros/10).
+
+Recursos anidados/sub-recursos (ej. /libros/10/autores).
+
+
+### Mapeo de Verbos HTTP a CRUD:
+
+GET /recursos: Leer la colección.
+
+GET /recursos/{id}: Leer un recurso específico.
+
+POST /recursos: Crear un nuevo recurso.
+
+PUT /recursos/{id}: Reemplazar completamente un recurso existente.
+
+PATCH /recursos/{id}: Aplicar cambios parciales a un recurso existente.
+
+DELETE /recursos/{id}: Eliminar un recurso
+
+
+### Manejo de Respuestas:
+
+Devolver el código de estado HTTP apropiado (201 para creación, 200/204 para éxito, 4xx para errores).
+
+Incluir el recurso creado en la respuesta POST junto con el Header Location.
+
+
+## 4. Seguridad y Prácticas Avanzadas
+
+##### Temas esenciales para construir APIs robustas y seguras.
+
+
+### Seguridad:
+
+HTTPS: La necesidad de usar el protocolo seguro (TLS/SSL).
+
+Autenticación:
+
+	Básica: Evitarla para producción.
+
+	Basada en Tokens (JWT): Generación, uso y validación.
+
+	OAuth 2.0: Roles y flujos (solo conceptualmente).
+
+Autorización: Controlar a qué recursos puede acceder un usuario autenticado.
+
+
+### Versionamiento:
+
+Estrategias de versionamiento (en la URL: /v1/recursos, o en los Headers).
+    
+    
+### Filtrado, Ordenación y Paginación:
+
+Uso de Query Parameters (parámetros de consulta) para funcionalidad avanzada (ej. /productos?categoria=electronica&ordenar_por=precio&limite=10).
+
+
+### Idempotencia: Entender qué métodos son idempotentes (GET, PUT, DELETE) y por qué (POST no lo es).
+
+
+## Práctica
+
+1. Elegir un Framework: Seleccionar un lenguaje y framework (ej. Node.js/Express, Python/Flask/Django, Java/Spring Boot) y un SGBD (ej. PostgreSQL, MongoDB).
+
+2. Diseño del Esquema: Diseñar un modelo de datos simple (ej. blog, tienda, lista de tareas).
+
+3. Implementación CRUD: Construir la infraestructura de la API implementando todos los endpoints CRUD para al menos dos recursos, asegurando el correcto uso de métodos y códigos de estado.
+
+4. Implementación de Seguridad: Añadir un sistema de autenticación básica (ej. JWT) a la API para proteger al menos un endpoint.
+
+5. Documentación: Documentar la API usando OpenAPI (Swagger), detallando los endpoints, parámetros, modelos de datos y respuestas.
+
+
+
+
+# Diseño de APIs RESTful
+
+## 1. Cimiento Técnico de toda API REST
+
+### Arquitectura Cliente-Servidor: Entender la comunicación y separación de responsabilidades.
+
+### Protocolo HTTP:
+
+Métodos (Verbos): GET, POST, PUT, DELETE, PATCH. Su propósito y uso correcto.
+
+Códigos de Estado: Conocer las categorías (2xx, 4xx, 5xx) y los códigos esenciales (200, 201, 204, 400, 401, 403, 404, 500).
+
+Cabeceras (Headers): Uso de Content-Type, Accept, Authorization, y Cache-Control.
+
+### Formatos de Datos: Dominio total de JSON (estructura, tipos, payloads) y su papel como estándar de facto.
+
+
+## 2. Principios y Estándares REST
+
+Filosofía que dicta el diseño de una API RESTful.
+
+### Concepto REST: Definición, su creador (Roy Fielding) y el objetivo de la arquitectura.
+
+
+### Principios de Diseño REST:
+
+Interfaz Uniforme: La clave para la simplicidad y visibilidad.
+
+Sin Estado (Stateless): Cada solicitud debe ser independiente; el servidor no debe depender del estado de la sesión.
+
+Sistema en Capas: Permite el uso de proxies, balanceadores de carga y cachés.
+
+Cachable: Capacidad de las respuestas para ser almacenadas y reutilizadas.
+
+
+### Recursos: La abstracción fundamental; todo se modela como un recurso (un sustantivo).
+
+
+## 3. Diseño de Endpoints y Convenciones Prácticas
+
+##### Pasar de un requisito de negocio a un URL concreto y una operación HTTP.
+
+### Nomenclatura de Recursos (URL):
+
+Uso estricto de sustantivos en plural (ej. /clientes, /productos).
+
+Identificación de recursos individuales (ej. /clientes/{id}).
+
+Manejo de Sub-recursos (ej. /clientes/{id}/pedidos).
+
+Evitar verbos en las URLs (la acción está en el método HTTP).
+
+
+### Mapeo CRUD a HTTP:
+
+Creación: POST /recursos
+
+Lectura: GET /recursos o GET /recursos/{id}
+
+Actualización Completa: PUT /recursos/{id} (Idempotente).
+
+Actualización Parcial: PATCH /recursos/{id} (No necesariamente Idempotente).
+
+Borrado: DELETE /recursos/{id} (Idempotente).
+
+
+### Manejo de Errores Estándar: Usar payloads de error consistentes (ej. incluyendo el código de estado, un mensaje descriptivo y, opcionalmente, una URL de documentación).
+
+
+## 4. Funcionalidades Avanzadas de Consulta y Paginación
+
+##### Proporcionar flexibilidad y eficiencia en la recuperación de datos
+
+
+### Filtrado: Uso de Parámetros de Consulta (Query Parameters) para filtrar colecciones (ej. /productos?categoria=electronica).
+
+
+### Ordenación: Parámetros para definir el criterio de ordenación (ej. ?ordenar_por=precio_asc).
+
+
+### Paginación:
+
+Paginación basada en Offset/Limit (ej. ?limite=20&desplazamiento=40).
+
+Paginación basada en Cursor/Keyset para colecciones grandes (más eficiente).
+
+Incluir metadatos de paginación en la respuesta.
+
+
+### Selección de Campos (Field Selection): Permitir al cliente especificar qué campos necesita para reducir el tamaño del payload (ej. ?campos=nombre,precio).
+
+
+### Relaciones e Inclusión (Deep Inclusion): Permitir al cliente incluir recursos relacionados en una sola solicitud (similar a Eager Loading en ORMs) (ej. ?incluir=autor). 
+
+
+## 5. Seguridad y Gobierno de API (API Governance)
+
+##### Asegurar la API y prepararla para la evolución a largo plazo.
+
+### Seguridad del Transporte: Uso obligatorio de HTTPS/TLS.
+
+
+### Autenticación y Autorización:
+
+Tokens Web JSON (JWT): Implementación, claims y manejo de la expiración.
+
+OAuth 2.0: Entender los flujos comunes (Client Credentials, Authorization Code).
+
+Autorización: Uso de roles y permisos para controlar el acceso a endpoints y datos.
+
+
+### Versionamiento:
+
+Estrategias: En la URL (ej. /v1/clientes), o mediante Headers personalizados (Accept o X-API-Version).
+
+Estrategia de deprecación y soporte a versiones antiguas.
+
+
+### Rate Limiting (Limitación de Tasa): Restringir el número de solicitudes por cliente para prevenir abusos.
+
+
+### 6. Documentación y Herramientas
+
+##### La documentación es el contrato de la API.
+
+
+### OpenAPI Specification (OAS / Swagger):
+
+Aprender a definir la estructura de la API, los endpoints, los schemas (modelos) de solicitud y respuesta, y los mecanismos de seguridad.
+
+Uso de herramientas de generación de documentación interactiva (Swagger UI).
+    
+
+### Herramientas de Testing:
+
+Postman/Insomnia: Para testeo manual, colecciones y automatización básica.
+
+Herramientas de testing unitario e integración para verificar el comportamiento del servidor.
+
+
+### HATEOAS (Hypermedia As The Engine Of Application State):
+
+Concepto: Incluir enlaces (hipermedia) en las respuestas para guiar al cliente a las acciones posibles (Ej. un recurso /pedido/123 incluye un enlace a /pedido/123/cancelar).
+
+Implementación y por qué es el nivel más alto de madurez REST (Nivel 3 de Richardson).
+
+
+
+# Diseño de Endpoints
+
+##### Se centra en la uniformidad, el uso correcto de los verbos HTTP, y la estructura URL basada en recursos.
+
+
+## 1. Principio Fundamental: Centrado en Recursos (Sustantivos)
+
+##### Los endpoints deben representar recursos (entidades), no acciones. 
+
+##### Utiliza sustantivos en plural para nombrar las colecciones.
+
+
+Verbos incorrectos 	|  Correctos
+/getAllUsers 		 	/usuarios
+/deleteProduct/123 		/productos/123
+/crearPedido			/pedidos
+
+
+## 2. Mapeo Correcto de Verbos HTTP (CRUD)
+
+##### !!! El método HTTP (verbo) define la acción, mientras que la URL define el recurso.
+
+
+Propósito	Método HTTP	 URL del Endpoint	Código de Respuesta Típico
+
+Crear (C) un nuevo recurso.	POST	/recursos	201 Created
+
+Leer (R) una colección.	GET	/recursos	200 OK
+
+Leer (R) un recurso específico.	GET	/recursos/123	200 OK
+
+Actualizar (U) un recurso completo.	PUT	/recursos/123	200 OK / 204 No Content
+
+Actualizar (U) una parte del recurso.	PATCH	/recursos/123	200 OK / 204 No Content
+
+Borrar (D) un recurso.	DELETE	/recursos/123	204 No Content
+
+
+### PUT vs. PATCH:
+
+PUT es idempotente; reemplaza el recurso completamente. Si envías la misma solicitud dos veces, el resultado es el mismo.
+
+PATCH es para actualizaciones parciales; solo envía los campos a modificar
+    
+    
+## 3. Diseño de Recursos Anidados y Relaciones
+
+Utiliza nested resources (recursos anidados) cuando un recurso existe únicamente dentro del contexto de otro recurso principal
+     
+Ejemplo: Los comentarios existen solo dentro de un post.
+
+GET /posts/456/comentarios: Obtiene todos los comentarios del post 456.
+
+POST /posts/456/comentarios: Crea un nuevo comentario para el post 456.
+
+
+## 4. Uso de Parámetros de Consulta (Query Parameters) para Filtrado y Orden        
+
+Para la funcionalidad avanzada de GET que no identifica un recurso específico, utiliza parámetros de consulta (?key=value).
+
+Filtrado: GET /productos?categoria=electronica
+
+Paginación: GET /productos?limite=20&desplazamiento=40
+
+Ordenación: GET /productos?ordenar_por=precio_desc
+
+
+## 5. Versionamiento (Versioning)
+
+##### Es crucial para asegurar la compatibilidad con clientes existentes al realizar cambios. El método más común es incluir la versión en la URL:
+
+URL Versioning: /v1/usuarios, /v2/usuarios
+
+
+## 6. Manejo de Acciones No CRUD (Custom Actions)
+
+##### Cuando una acción es puramente un procedimiento o no encaja limpiamente en CRUD (ej. "enviar correo" o "cerrar sesión"), hay dos enfoques:
+
+1. Recurso Anidado POST: Tratar la acción como un sub-recurso que se crea.
+
+POST /pedidos/123/cancelacion
+
+2. Verbo + Recurso (Menos RESTful, más claro):
+
+POST /acciones/enviar_correo (Generalmente desaconsejado para diseños estrictamente RESTful).
+
+
+## 7. Codificación de Respuestas y Errores
+
+##### !!! Devuelve JSON para los datos y usa los códigos de estado HTTP para comunicar el resultado de la operación.
+
+Escenario	Código de Estado	Cuerpo de la Respuesta (Ej.)
+
+Éxito (Lectura)	200 OK	{ "id": 123, "nombre": "Widget" }
+
+Éxito (Creación)	201 Created	{ "id": 456, "nombre": "Nuevo Producto" }
+
+Éxito (Borrado)	204 No Content	Cuerpo vacío
+
+Error del Cliente (Datos)	400 Bad Request	{ "codigo": "INVALID_INPUT", "mensaje": "Falta el campo nombre." }
+
+Error del Cliente (Auth)	401 Unauthorized	{ "mensaje": "Token inválido o ausente." }
+
+Recurso No Encontrado	404 Not Found	{ "mensaje": "El recurso solicitado no existe." }
+
+
