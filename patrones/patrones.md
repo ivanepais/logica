@@ -10884,3 +10884,4339 @@ Error del Cliente (Auth)	401 Unauthorized	{ "mensaje": "Token inválido o ausent
 Recurso No Encontrado	404 Not Found	{ "mensaje": "El recurso solicitado no existe." }
 
 
+
+
+# Base de Datos
+
+
+## Diseño de Entidades
+
+Es el primer paso en el Modelado Entidad-Relación (E-R)
+
+##### Una entidad representa un "objeto" o "concepto" del mundo real sobre el que se desea almacenar información.
+
+
+### 1. Identificación de Entidades (Sustantivos Clave)
+
+##### El primer paso es analizar el problema o los requisitos de negocio e identificar los sustantivos importantes.
+
+
+#### Definición de Entidad: Una persona, lugar, cosa, evento o concepto que necesita ser rastreado.
+
+
+#### Criterio de Relevancia: Pregúntate: "¿Necesito almacenar información y realizar seguimiento de instancias individuales de este concepto?" Si la respuesta es sí, es una entidad.
+
+Ejemplo de Requisito: "Una biblioteca necesita rastrear Libros, Autores y Socios que toman prestados esos libros."
+
+Entidades Clave: Libro, Autor, Socio.
+
+
+#### Evitar Ambigüedad: Asegúrate de que la entidad sea lo suficientemente granular. Por ejemplo, en lugar de una entidad "Datos", usa "Cliente", "Producto" o "Pedido".
+
+
+### 2. Definición de Atributos (Propiedades)
+
+##### Una vez identificada la entidad, define sus características, llamadas atributos.
+
+
+#### Identificación: Piensa en las propiedades que describen cada instancia de la entidad.
+
+Entidad Libro: Título, ISBN, Año de Publicación, Número de Páginas.
+
+Entidad Socio: Nombre, Dirección, Teléfono, Fecha de Nacimiento
+
+
+#### Atributos
+
+##### Atómico (Simple): No se puede dividir significativamente (ej. ISBN). Es la forma preferida para la mayoría de los atributos.
+
+##### Compuesto: Se puede subdividir (ej. Dirección se compone de Calle, Ciudad, Código Postal).
+
+##### Multivaluado: Puede tener múltiples valores para un solo registro (ej. Múltiples números de teléfono para un Socio). Nota: Los atributos multivaluados suelen indicar la necesidad de crear una nueva entidad o tabla en el modelo relacional.
+
+##### Derivado: Su valor se puede calcular a partir de otros atributos (ej. Edad se deriva de la Fecha de Nacimiento).
+
+
+### 3. Asignación de Claves (Identificadores)
+
+##### Cada entidad debe tener una manera única de identificar cada instancia.
+
+
+#### Clave Candidata: Cualquier atributo o conjunto de atributos que puede identificar de forma única un registro.
+
+Ejemplo Entidad Libro: ISBN es una clave candidata. (Título, Autor) podría ser otra.
+
+
+#### Clave Primaria (PK): La clave candidata elegida para ser el identificador principal y único de la entidad.
+
+Criterios de Selección: Debe ser única, no nula, estable (su valor no cambia) y mínima (contener el menor número de atributos posible).
+
+
+#### Clave Subrogada (Artificial): Si no existe una clave natural estable, se suele crear un identificador artificial, a menudo un número entero autoincremental (ej. Socio_ID). Esto mejora la estabilidad y el rendimiento, especialmente para las Claves Foráneas.
+
+
+#### 4. Aplicación de Restricciones (Validación)
+
+##### Establecer reglas para garantizar la calidad y la integridad de los datos.
+
+
+#### Restricción de Dominio: Limita el conjunto de valores que puede tomar un atributo (ej. el atributo Estado de un pedido solo puede ser 'Pendiente', 'Enviado' o 'Entregado').
+
+#### Restricción de Unicidad: Garantiza que un atributo o conjunto de atributos tenga valores únicos (ej. el correo electrónico de un Socio debe ser único).
+
+#### Restricción No Nula: Fuerza a que el atributo siempre deba tener un valor (ej. el Título de un Libro no puede ser nulo).
+
+
+### 5. Diagramación Conceptual (E-R)
+
+##### Representar la entidad y sus atributos gráficamente.
+
+```
+Customer
+--------
+customer_id
+--------
+name
+street
+city
+zip
+state
+country
+```
+
+En el diagrama E-R, las convenciones comunes son:
+
+##### Entidades: Se representan con un rectángulo.
+
+##### Atributos: Se representan con un óvalo conectado a la entidad.
+
+##### Clave Primaria: Se subraya el nombre del atributo.
+
+
+Entidad (Rectángulo)	Atributos (Óvalos)
+
+Socio	Socio_ID (PK, Subrayado), Nombre, Dirección, Email (Único), Fecha_Nacimiento.
+
+
+
+## Definición y diseño de las relaciones entre las entidades
+
+Después de identificar las entidades y sus atributos en el Modelado Entidad-Relación (E-R)
+
+
+### 1. Cómo se conectan las entidades 
+
+#### Identificar Relaciones: Determinar las asociaciones significativas que existen entre dos o más entidades (ej. un Profesor imparte un Curso).
+
+#### Asignar Nombres: Dar nombres claros a las relaciones, a menudo usando verbos.
+
+
+#### Definir la Cardinalidad: Establecer el número de instancias de una entidad que pueden estar relacionadas con instancias de otra.
+
+##### Uno a Uno (1:1): Ej. Un Jefe dirige un solo Departamento.
+
+##### Uno a Muchos (1:N): Ej. Un Departamento tiene muchos Empleados.
+
+##### Muchos a Muchos (M:N): Ej. Un Estudiante se inscribe en muchos Cursos.
+
+
+#### Definir la Participación: Indicar si la participación de una entidad en la relación es obligatoria (Total) u opcional (Parcial).
+
+
+### 2. Incorporación de Atributos a las Relaciones
+
+##### En ciertos casos, la relación en sí misma necesita atributos para describirla. 
+
+Ejemplo: En la relación M:N entre Estudiante y Curso (un estudiante se inscribe en un curso), la relación podría tener un atributo llamado Fecha de Inscripción o Calificación
+
+
+### 3. Revisión y Refinamiento del Diagrama
+
+##### Una vez que las entidades, atributos y relaciones están definidas, se revisa y se refina el diagrama.
+
+
+#### Comprobación de Claves: Asegurar que cada entidad tenga una Clave Primaria bien definida.
+
+#### Manejo de la Herencia: Si aplica, modelar la generalización y especialización.
+
+#### Resolución de M:N: En la siguiente fase, el Modelado Lógico, las relaciones M:N siempre deben resolverse creando una nueva Entidad Asociativa (o Tabla de Enlace) para facilitar la implementación en bases de datos relacionales.
+
+
+## Diseño de Relaciones
+
+##### Definir cómo interactúan las entidades en tu modelo de datos.
+
+
+### 1. Identificación y Nomenclatura de la Relación
+
+#### Identificar el Vínculo: Determina qué entidades tienen una interacción significativa que deba ser rastreada (ej. un Profesor se asocia con un Curso).
+
+#### Nomenclatura: Asigna un nombre a la relación, generalmente un verbo o una frase verbal que describa la acción o asociación (ej. IMPARTE, INSCRIBE, PERTENECE_A).
+
+#### Roles: Opcionalmente, define el rol que desempeña cada entidad en la relación, especialmente útil en relaciones reflexivas (ej. en la relación SUPERVISA, un Empleado tiene el rol de Supervisor y otro Empleado tiene el rol de Subordinado).
+
+ 
+### 2. Definición de la Cardinalidad (Máxima)
+
+La cardinalidad especifica el número máximo de instancias de una entidad que pueden estar asociadas con una instancia de la otra entidad. 
+
+Es el aspecto más crítico del diseño.
+
+
+#### Uno a Uno (1:1):
+
+Ejemplo: Un Jefe de Departamento dirige un Departamento, y un Departamento solo tiene un Jefe
+
+##### Implementación: La clave foránea (FK) va en cualquiera de las dos tablas y se le añade una restricción de unicidad (UNIQUE).
+
+
+#### Uno a Muchos (1:N):
+
+Ejemplo: Un Autor escribe muchos Libros, pero un Libro es escrito por un solo Autor.
+ 
+##### Implementación: La clave foránea (FK) se coloca en el lado "Muchos" (la entidad Libro), apuntando a la clave primaria del lado "Uno" (Autor).
+
+
+#### Muchos a Muchos (M:N):
+
+Ejemplo: Un Estudiante se inscribe en muchos Cursos, y un Curso tiene muchos Estudiantes.
+
+##### Implementación (En el Modelo Lógico): Se resuelve creando una tercera entidad (tabla de enlace) cuyas claves primarias son las claves foráneas de las dos entidades originales.
+
+
+### 3. Definición de la Participación (Mínima)
+
+La participación especifica si la existencia de una instancia de una entidad depende de su participación en la relación.
+
+
+#### Participación Total (Obligatoria):
+
+La instancia de la entidad debe participar en la relación.
+
+Ejemplo: Un Pedido debe estar asociado a un Cliente.
+
+##### Implementación: La Clave Foránea (FK) se define como NO NULA (NOT NULL).
+
+
+#### Participación Parcial (Opcional):
+
+La instancia de la entidad puede existir sin participar en la relación.
+
+Ejemplo: Un Empleado puede tener un Vehículo de la empresa (pero no es obligatorio).
+
+##### Implementación: La Clave Foránea (FK) puede ser NULA (NULL).
+
+
+### 4. Asignación de Atributos a la Relación (M:N)
+
+Si la relación tiene propiedades que solo existen cuando las entidades están vinculadas (típicamente en M:N), estos atributos pertenecen a la relación (o a la tabla de enlace que se creará).
+
+Ejemplo: En la relación M:N entre Estudiante y Curso, el atributo Calificación no pertenece al Estudiante ni al Curso por separado, sino a la inscripción del estudiante en ese curso específico.
+
+Solución: Este atributo se coloca en la entidad de enlace (ej. INSCRIPCION) que resuelve el M:N.
+
+
+### 5. Revisión de la Integridad Referencial
+
+##### En el paso de implementación (Modelo Lógico)
+
+##### Definir cómo la base de datos mantendrá la coherencia en las relaciones
+
+##### Utilizando las acciones ON DELETE y ON UPDATE de la FK:
+
+RESTRICT / NO ACTION: (El más seguro) Impide que se borre o actualice la clave primaria si hay registros dependientes.
+
+CASCADE: Propaga la acción (si borras el Cliente, se borran todos sus Pedidos).
+
+SET NULL: Permite el borrado o actualización, pero establece la FK dependiente a nulo (solo si la participación es parcial).
+
+
+## Modelado Lógico
+
+##### El paso donde se transforma el diseño conceptual de Entidad-Relación (E-R) en un esquema relacional concreto
+
+Listo para ser implementado en un Sistema de Gestión de Bases de Datos Relacionales (SGBDR) como MySQL o PostgreSQL.
+
+Este proceso se centra en mapear entidades y relaciones a tablas y claves.
+
+
+### 1. Mapeo de Entidades a Tablas (Creación Base)
+
+##### Cada Entidad fuerte en el modelo E-R se convierte en una Tabla en el modelo relacional.
+
+
+#### 1. Entidad → Tabla: El nombre de la entidad se convierte en el nombre de la tabla (usualmente en plural, por convención).
+
+#### 2. Atributos → Columnas: Cada atributo de la entidad se convierte en una columna de la tabla.
+
+#### 3. Clave Primaria (PK): El atributo identificado como PK en la entidad se designa como la clave primaria de la tabla.
+
+
+##### Modelo E-R -> Modelo Relacional
+
+Entidad LIBRO	Tabla LIBROS
+
+Atributo ISBN	Columna ISBN
+
+PK ISBN	PRIMARY KEY (ISBN)
+
+
+### 2. Mapeo de Relaciones y Cardinalidad a Claves Foráneas (FK)
+
+##### Aquí es donde se resuelven los vínculos entre tablas utilizando Claves Foráneas (FK).
+
+
+#### A. Relaciones Uno a Muchos (1:N) 
+
+##### Regla: La Clave Foránea (FK) se coloca en el lado "Muchos".
+
+##### Implementación: Se añade la PK de la tabla "Uno" como una nueva columna (FK) en la tabla "Muchos".
+
+Ejemplo: DEPARTAMENTO (1) tiene EMPLEADOS (N). 
+
+Resultado: La tabla EMPLEADOS tendrá la columna Departamento_ID (FK) que referencia a la PK de la tabla DEPARTAMENTOS.
+
+
+#### B Relaciones Uno a Uno (1:1)
+
+##### Regla: La FK se puede colocar en cualquiera de las dos tablas. A la columna FK se le debe añadir una restricción de unicidad (UNIQUE).
+
+##### Criterio de Elección: Generalmente, se coloca la FK en la tabla con participación parcial (opcional)
+
+O en la entidad que se consulta con menor frecuencia.
+
+
+#### C Relaciones Muchos a Muchos (M:N) (Resolución Crítica)
+
+##### Regla: Se elimina la relación M:N y se crea una tercera tabla de enlace (o asociativa).
+
+##### Implementación:
+
+1. Crea una nueva tabla (ej. INSCRIPCIONES para ESTUDIANTE y CURSO).
+
+2. Esta nueva tabla contendrá las PKs de las dos entidades originales como Claves Foráneas (FK1, FK2).
+
+3. La Clave Primaria (PK) de la nueva tabla será una clave compuesta formada por la unión de FK1 y FK2.
+
+4. Cualquier atributo propio de la relación M:N (ej. Calificación) se convierte en una columna de esta nueva tabla
+
+
+### 3. Mapeo de Atributos Especiales
+
+#### Atributos Compuestos: Se descomponen en sus partes atómicas.
+
+Ejemplo: El atributo Dirección se convierte en las columnas Calle, Ciudad, Codigo_Postal.
+
+
+#### Atributos Multivaluados: Se resuelven creando una nueva tabla.
+
+Ejemplo: Un EMPLEADO tiene varios Telefonos.
+
+Resultado: Se crea la tabla TELEFONOS con dos columnas: Empleado_ID (FK) y Numero_Telefono. La PK es la clave compuesta de ambas.
+
+
+#### Atributos Derivados: Usualmente no se incluyen en el modelo lógico, ya que pueden calcularse en tiempo de ejecución (ej. Edad se calcula a partir de Fecha_Nacimiento).
+
+
+## 4. Normalización (Refinamiento del Diseño)
+
+Este es el paso final para asegurar la calidad y eficiencia del modelo lógico
+
+Se aplican las Formas Normales para eliminar redundancia e inconsistencias.
+
+
+##### Aplicar 1NF, 2NF, 3NF: Revisar el diseño para asegurarse de que todas las tablas cumplen al menos con la Tercera Forma Normal (3NF).
+
+La normalización a menudo implica descomponer una tabla grande en dos o más tablas y establecer una nueva relación 1:N entre ellas.
+    
+    
+Una vez completados estos pasos, el Esquema Relacional está listo para ser traducido a sentencias DDL (Data Definition Language) como CREATE TABLE en SQL.
+
+
+## Modelo Físico
+
+El Modelo Lógico define qué datos existen y cómo se relacionan (tablas, columnas, claves), independientemente del software
+
+##### El Modelo Físico define cómo y dónde se almacenarán esos datos en un sistema de base de datos específico.
+
+
+### 1. Modelo Físico (Diseño Físico)
+
+Este paso convierte el esquema relacional lógico en código de definición de datos (DDL) e incluye consideraciones específicas de rendimiento y almacenamiento:
+
+
+#### Selección del SGBD: Se elige el Sistema de Gestión de Bases de Datos (ej. PostgreSQL, Oracle, SQL Server).
+
+
+#### Definición de Tipos de Datos: Se seleccionan los tipos de datos exactos (ej. VARCHAR(255), INT, DATE, NUMERIC(10, 2)) y el juego de caracteres apropiado para cada columna, según las limitaciones y características del SGBD elegido.
+
+
+#### Creación de Sentencias DDL: Se escriben las sentencias SQL CREATE TABLE, CREATE INDEX, CREATE VIEW, etc., para construir la base de datos.
+
+
+#### Optimización de Rendimiento:
+
+##### Índices: Se diseñan y crean índices secundarios estratégicos (además de los índices de la Clave Primaria y Foránea) para optimizar la velocidad de consulta (SELECT).
+
+##### Particionamiento: Si la base de datos es muy grande, se puede definir cómo se dividirán las tablas grandes para mejorar la gestión y el rendimiento.
+
+##### Clustering: Se determina cómo se almacenarán físicamente los datos en el disco (ej. tablas clustered o heap).
+
+
+### 2. Implementación y Prueba
+
+Una vez que el Modelo Físico está definido, se procede a la ejecución:
+
+#### Implementación: Se ejecuta el script DDL en el SGBD para crear la estructura de la base de datos vacía.
+
+#### Carga de Datos: Se importan o insertan los datos iniciales.
+
+#### Pruebas: Se realizan pruebas de integridad de datos, rendimiento y funcionalidad para validar que el diseño cumple con los requisitos iniciales.
+
+
+## Implementación y Administración Operacional
+
+##### Una vez que has definido el "cómo" se almacenarán los datos (Modelo Físico)
+
+El proceso se mueve de la fase de diseño a la fase de producción y mantenimiento.
+
+
+### 1. Implementación de la Base de Datos 
+
+En esta fase, el diseño físico se lleva a la práctica en el servidor de base de datos.
+
+
+#### Creación del Esquema: Se ejecutan los scripts de DDL (Data Definition Language) generados en la fase física. Esto incluye la creación de:
+
+Tablas y la asignación de tipos de datos.
+
+Índices (PK, FK y secundarios).
+
+Restricciones (UNIQUE, NOT NULL, CHECK).
+
+Vistas, Stored Procedures y Triggers.
+
+
+### 2. Pruebas y Optimización de Rendimiento
+
+Antes de que la base de datos sea utilizada por la aplicación final, debe ser rigurosamente probada.
+
+Pruebas de Integridad: Verificar que las reglas de negocio (ej. relaciones, restricciones CHECK, unicidad) se cumplen al insertar y modificar datos.
+
+Pruebas de Rendimiento y Carga: Ejecutar consultas complejas y simular la carga de trabajo esperada para identificar cuellos de botella.
+
+Ajuste Fino (Tuning): Basado en las pruebas, se realizan ajustes al modelo físico (ej. modificar o añadir índices adicionales, reescribir consultas complejas) para asegurar tiempos de respuesta óptimos.
+
+
+### 3. Desarrollo de la Aplicación y Conectividad
+
+##### Los desarrolladores de la aplicación conectan la lógica de negocio con la base de datos.
+
+Capa de Acceso a Datos: Se implementa el código de la aplicación (DAO o usando un ORM) que interactúa con el esquema físico.
+
+Integración de CRUD: Se aseguran las operaciones CRUD básicas y las consultas de negocio complejas definidas por los requisitos de la aplicación.
+
+
+### 4. Operación y Mantenimiento (Administración de BD)
+
+Una vez que la base de datos está en producción, la fase de diseño termina y comienza la fase operativa, que es continua.
+
+
+#### Copia de Seguridad y Recuperación (Backup & Recovery): Establecer políticas y procedimientos regulares de backup.
+
+#### Monitoreo y Mantenimiento: Vigilar el rendimiento, el uso de espacio, y ejecutar tareas periódicas de mantenimiento.
+
+#### Seguridad: Administrar permisos de usuario, roles y proteger la base de datos de amenazas externas.
+
+#### Evolución del Esquema: Gestionar los cambios futuros en el diseño (nuevas entidades, nuevos atributos) a través de un proceso controlado de migraciones de esquema.
+
+
+
+## Nomenclatura tablas, entidades y atributos
+
+### 1. Entidades y Tablas (Conceptual y Lógico/Físico)
+
+Las entidades (Modelo Conceptual) se convierten en tablas (Modelos Lógico y Físico).
+
+Se recomienda usar la misma convención para ambos.
+
+
+Regla |	Entidad/Tabla |	Ejemplos |	Razón
+
+Singular o Plural	Plural (Recomendado para Tablas)	CLIENTES, PRODUCTOS	Refleja que la tabla es una colección de registros
+
+Notación	MAYÚSCULAS o Snake Case	PRODUCTO_FINANCIERO	La mayúscula es común en SQL; el snake case (_) mejora la legibilidad.
+
+Evitar Prefijos	Evita prefijos de tipo	CLIENTES (No TBL_CLIENTES)	El SGBD ya sabe que es una tabla.
+
+
+### 2. Nomenclatura para Atributos y Columnas
+
+Los atributos (Modelo Conceptual) se convierten en columnas (Modelo Lógico/Físico).
+
+
+Regla |	Atributo/Columna |	Ejemplos |	Razón
+
+Forma	Singular	nombre, precio, direccion	La columna representa el valor de un solo atributo para un registro
+
+Notación	Snake Case (Recomendado)	fecha_nacimiento, codigo_postal	Altamente legible, preferido en SQL. También se acepta Camel Case (fechaNacimiento) en entornos específicos.
+
+Evitar Espacios	Usa guiones bajos (_)	costo_total (No costo total)	Los espacios son difíciles de manejar en SQL.
+
+
+### Convenciones Específicas para Claves
+
+
+##### Clave Primaria (PK): Usa el formato ID o nombre_entidad_ID.
+
+ID, CLIENTE_ID, LIBRO_ID.
+
+
+#### Clave Foránea (FK): Usa el formato nombre_tabla_singular_ID para indicar la tabla a la que hace referencia.
+
+DEPARTAMENTO_ID (en la tabla EMPLEADOS).
+
+CLIENTE_ID (en la tabla PEDIDOS). 
+
+
+### 3. Nomenclatura para Endpoints RESTful (APIs)
+
+##### Aunque no es parte directa del diseño de la base de datos, es crucial para la capa de API
+
+Elemento	Regla de Nomenclatura	Ejemplos
+
+Recursos (URLs)	Sustantivos en Plural y Minúsculas.	/clientes, /productos, /pedidos
+
+Identificadores	Usar la clave como parte de la ruta.	/clientes/123
+
+Parámetros	Camel Case o Snake Case en query parameters.	/clientes?fecha_creacion=2025
+
+
+### 4. Resumen de Reglas Clave (Consistencia)
+
+Consistencia es Ley: Elige un estándar (Snake Case vs. Camel Case, Singular vs. Plural para tablas) y aplícalo siempre.
+
+Claridad antes que Brevedad: Aunque la concisión es buena, no uses abreviaturas oscuras. fecha_nacimiento es mejor que f_nac.
+
+#### Utiliza Minúsculas: En muchos SGBD (especialmente PostgreSQL), el uso de mayúsculas puede forzar el uso de comillas dobles, lo que complica las consultas. Las minúsculas o mayúsculas consistentes son preferibles.
+
+
+
+# Ej Entidad: desde modelo conceptual, lógico y físico
+
+Entidad Cliente
+
+
+## 1. Modelo Conceptual (Entidad)
+
+Definimos el concepto del mundo real, sus propiedades y su identificador principal, independientemente de la tecnología.
+
+Entidad: CLIENTE
+
+Propósito: Representa a una persona o empresa que realiza pedidos en el sistema.
+
+Atributos:
+
+ID_Cliente​ (Clave Primaria, Subrayado)
+
+Nombre
+
+Apellido
+
+Email (Debe ser único)
+
+Dirección (Atributo compuesto)
+
+Teléfonos (Atributo multivaluado)
+
+
+## 2. Modelo Lógico (Tabla y Esquema Relacional) 
+
+##### Transformamos la entidad en una tabla y sus atributos en columnas.
+
+##### Resolvemos los atributos compuestos y multivaluados, y definimos la normalización (3NF).
+
+##### Los atributos compuestos y multivaluados se resuelven en tablas separadas para alcanzar la 3NF.
+
+
+#### Tabla Principal: CLIENTES
+
+Columna	Tipo de Dato (Conceptual)	Restricciones	Razón
+
+cliente_id	Entero	PK	Identificador único.
+
+nombre	Texto	NOT NULL	Descompuesto del Nombre Completo.
+
+apellido	Texto	NOT NULL	Descompuesto del Nombre Completo.
+
+email	Texto	UNIQUE, NOT NULL	Se convierte en una columna atómica
+
+
+#### Tablas Secundarias (Resolución)
+
+Tabla	Columna (FK)	Razón
+
+DIRECCIONES	cliente_id (FK)	Resuelve el atributo compuesto Dirección (1:N, un cliente tiene muchas direcciones).
+
+TELEFONOS	cliente_id (FK)	Resuelve el atributo multivaluado Teléfonos (M:N resuelto con la tabla de enlace).
+
+
+## 3. Modelo Físico (Implementación SQL)
+
+Definimos los tipos de datos exactos según un SGBD específico (ej. PostgreSQL o MySQL) y se genera el código DDL.
+
+```
+-- Asumiendo PostgreSQL o MySQL
+CREATE TABLE CLIENTES (
+    cliente_id INT GENERATED ALWAYS AS IDENTITY, -- Clave artificial auto-generada
+    nombre VARCHAR(100) NOT NULL,
+    apellido VARCHAR(100) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    
+    -- Definición de la Clave Primaria
+    PRIMARY KEY (cliente_id)
+);
+
+-- Implementación de la tabla de direcciones (relación 1:N)
+CREATE TABLE DIRECCIONES (
+    direccion_id INT GENERATED ALWAYS AS IDENTITY,
+    cliente_id INT NOT NULL, 
+    calle VARCHAR(200) NOT NULL,
+    ciudad VARCHAR(100) NOT NULL,
+    codigo_postal VARCHAR(10),
+
+    PRIMARY KEY (direccion_id),
+    
+    -- Definición de la Clave Foránea con acciones de integridad
+    FOREIGN KEY (cliente_id) REFERENCES CLIENTES(cliente_id)
+        ON DELETE CASCADE -- Si se borra el cliente, se borran sus direcciones
+);
+```
+
+
+
+# Ej Atributos
+
+## 1. Conceptual:
+
+Atributo como una característica de la entidad Cliente
+
+Notarás que la Dirección es un atributo complejo.
+
+
+Entidad: Cliente
+
+Atributo Conceptual: Dirección
+
+#### Tipo: Compuesto. Esto significa que puede descomponerse en partes más pequeñas (Calle, Ciudad, etc.).
+
+Propósito: Almacenar la ubicación geográfica del cliente.
+
+
+## 2. Modelo Lógico (Columnas Atómicas y Normalización)
+
+Los atributos compuestos deben descomponerse en partes atómicas (que no pueden dividirse más).
+
+##### Si la entidad tiene múltiples direcciones (atributo multivaluado), se aplica la normalización creando una nueva tabla.
+
+
+#### A. Si un cliente solo tiene 1 Dirección (1:1)
+
+La Dirección se descompone directamente en la tabla CLIENTES:
+
+
+Columna	Tipo de Dato (Conceptual)	Restricciones	Razón
+
+calle	Texto	NOT NULL (Si es obligatoria)	Parte atómica de la dirección.
+
+ciudad	Texto	NOT NULL	Parte atómica de la dirección
+
+codigo_postal	Texto	NOT NULL	Parte atómica de la dirección.
+
+
+### B. Si un cliente puede tener múltiples Direcciones (1:N) 
+
+Se crea una Tabla de Enlace (DIRECCIONES) para resolver el atributo multivaluado/compuesto, logrando la 3NF.
+
+
+Tabla	Columna	Rol
+
+DIRECCIONES	cliente_id	Clave Foránea (FK).
+
+DIRECCIONES	calle	Columna atómica.
+
+DIRECCIONES	ciudad	Columna atómica.
+
+
+## 3. Modelo Físico (Tipos de Datos y DDL)
+
+Asumiendo que se sigue el escenario B (múltiples direcciones) y se utiliza un SGBD como PostgreSQL o MySQL, definimos los tipos de datos exactos.
+
+```
+-- Definición de la tabla DIRECCIONES para almacenar el atributo "Dirección"
+CREATE TABLE DIRECCIONES (
+    direccion_id INT GENERATED ALWAYS AS IDENTITY,
+    cliente_id INT NOT NULL, 
+    
+    -- Definición de los tipos de datos específicos para cada parte atómica
+    calle VARCHAR(200) NOT NULL,
+    ciudad VARCHAR(100) NOT NULL,
+    codigo_postal VARCHAR(10) NOT NULL,
+    
+    -- PK de la tabla de direcciones
+    PRIMARY KEY (direccion_id),
+    
+    -- FK que vincula la dirección al cliente
+    FOREIGN KEY (cliente_id) REFERENCES CLIENTES(cliente_id)
+        ON DELETE CASCADE 
+);
+```
+
+
+## Atributo Derivado
+
+Conceptual
+
+##### Definimos los atributos que se almacenarán (fecha_nacimiento) y el atributo que se derivará (edad).
+
+Entidad: Empleado
+
+Atributo Almacenado: Fecha_Nacimiento (La fuente de datos que se guarda en la base de datos).
+
+Atributo Derivado: Edad
+
+Tipo: Derivado.
+
+Notación E-R: En muchos diagramas E-R, un atributo derivado se representa con un óvalo discontinuo.
+
+##### Propósito: Almacenar la edad exacta de un empleado en un momento dado es imposible porque cambia constantemente. 
+
+Por ello, se calcula en función de la fecha de nacimiento y la fecha actual.
+
+
+Lógico (Columna y Regla de Negocio)
+
+Incluye la columna que almacena el dato.
+
+#### El atributo derivado se convierte en una regla de negocio que se ejecuta mediante una consulta o lógica de aplicación.
+
+##### Regla: El atributo derivado (Edad) NO se incluye como columna en la tabla lógica para evitar inconsistencias y redundancia de datos.
+
+Tabla Lógica: EMPLEADOS
+
+
+Columna	Tipo de Dato (Conceptual)	Restricciones	Razón
+
+empleado_id	Entero	PK	Identificador único
+
+nombre	Texto	NOT NULL	Atributo base.
+
+fecha_nacimiento	Fecha	NOT NULL	Único atributo almacenado necesario para el cálculo.
+
+edad	N/A	N/A	Se elimina del esquema, se calcula al solicitarlo.
+
+
+Físico: Implementación SQL: Cálculo
+
+En la fase física, se implementa la tabla solo con el atributo almacenado (fecha_nacimiento)
+
+La "Edad" se genera utilizando una función de cálculo específica del SGBD.
+
+
+#### A. Definición de la Tabla (DDL)
+
+```
+-- DDL para la tabla, solo incluye la fecha de nacimiento
+CREATE TABLE EMPLEADOS (
+    empleado_id INT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    fecha_nacimiento DATE NOT NULL
+);
+```
+
+
+#### B. Cálculo en Consulta (SELECT)
+
+El atributo derivado (Edad) se calcula al consultar los datos, asegurando que siempre esté actualizado.
+
+```
+SELECT
+    empleado_id,
+    nombre,
+    fecha_nacimiento,
+    -- La lógica para derivar la edad a partir de la fecha almacenada
+    EXTRACT(YEAR FROM age(CURRENT_DATE, fecha_nacimiento)) AS edad_actual
+FROM 
+    EMPLEADOS;
+```
+
+
+
+# Ej Relación: de conceptual, lógico y físico
+
+## Muchos a Muchos (M:N)" entre ESTUDIANTE y CURSO
+
+
+### 1. Modelo Conceptual: La Relación M:N
+
+Identificamos el vínculo, la cardinalidad y si la relación tiene atributos propios
+
+Entidades Involucradas: ESTUDIANTE y CURSO.
+
+Relación: SE INSCRIBE EN
+
+#### Cardinalidad: Muchos a Muchos (M:N). Un estudiante puede tomar muchos cursos, y un curso tiene muchos estudiantes.
+
+#### Atributo de la Relación: La relación SE INSCRIBE EN tiene un atributo propio: Calificación (la nota que el estudiante obtiene en ese curso específico).
+
+
+### 2. Modelo Lógico: La Resolución de M:N
+
+##### Las relaciones M:N deben resolverse creando una tercera tabla de enlace (o asociativa).
+
+#### La cardinalidad de la relación se transforma en dos relaciones 1:N.
+
+##### Nueva Entidad (Tabla de Enlace): INSCRIPCION.
+
+#### Clave Compuesta: La PK de la nueva tabla se forma por las FKs de las dos tablas originales.
+
+
+Esquema Relacional Lógico
+
+Tabla	Clave Primaria (PK)	Clave(s) Foránea(s) (FK)	Otros Atributos	Razón
+
+ESTUDIANTES	estudiante_id	N/A	nombre, apellido	Entidad base.
+
+CURSOS	curso_id	N/A	nombre_curso, creditos	Entidad base.
+
+INSCRIPCIONES  (estudiante_id, curso_id)  estudiante_id (FK a ESTUDIANTES) y curso_id (FK a CURSOS) calificacion, fecha_inscripcion   Resuelve M:N. La PK asegura que un estudiante solo pueda inscribirse una vez en un curso.
+
+
+### 3. Modelo Físico: Implementación SQL
+
+##### Definimos los tipos de datos específicos (asumiendo PostgreSQL o MySQL) y las sentencias DDL, incluyendo las restricciones de integridad referencial.
+
+```
+-- 1. Creación de la tabla ESTUDIANTES
+CREATE TABLE ESTUDIANTES (
+    estudiante_id INT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    apellido VARCHAR(100) NOT NULL
+);
+
+-- 2. Creación de la tabla CURSOS
+CREATE TABLE CURSOS (
+    curso_id INT PRIMARY KEY,
+    nombre_curso VARCHAR(100) NOT NULL,
+    creditos INT
+);
+
+-- 3. Creación de la tabla de ENLACE (INSCRIPCIONES)
+CREATE TABLE INSCRIPCIONES (
+    -- Claves Foráneas de las tablas originales
+    estudiante_id INT NOT NULL, 
+    curso_id INT NOT NULL, 
+    
+    -- Atributo propio de la relación
+    calificacion NUMERIC(3, 1),
+    fecha_inscripcion DATE NOT NULL,
+
+    -- Definición de la CLAVE COMPUESTA (La unión de las dos FKs)
+    PRIMARY KEY (estudiante_id, curso_id),
+    
+    -- Definición de las FKs y las acciones de integridad
+    FOREIGN KEY (estudiante_id) REFERENCES ESTUDIANTES(estudiante_id)
+        ON DELETE CASCADE, -- Si se borra el estudiante, se borran sus inscripciones
+
+    FOREIGN KEY (curso_id) REFERENCES CURSOS(curso_id)
+        ON DELETE RESTRICT -- No permite borrar un curso si tiene inscripciones
+);
+```
+
+1. Conceptual: Relación M:N (SE INSCRIBE EN) con un atributo.
+
+2. Lógico: Transformada en una tabla de enlace (INSCRIPCIONES) con dos relaciones 1:N.
+
+3. Físico: Implementada con la tabla INSCRIPCIONES, utilizando una Clave Compuesta para su PK y Claves Foráneas con acciones ON DELETE definidas
+
+
+
+# Ej Módelo Conceptual
+
+Representación más abstracta de los requisitos de una base de datos.
+
+Su objetivo es identificar las entidades principales, sus atributos y las relaciones entre ellas, sin considerar el software ni la estructura física de las tablas.
+
+El modelo más utilizado a nivel conceptual es el Diagrama Entidad-Relación (E-R).
+
+
+## Modelar Sistema de Biblioteca
+
+Modelar una base de datos para una pequeña biblioteca.
+
+
+1. Entidades (Rectángulos)
+
+#### Identificamos los sustantivos clave sobre los que necesitamos almacenar información:
+
+Entidad	Propósito
+
+LIBRO	La pieza central del inventario.
+
+AUTOR	La persona que escribió los libros
+
+SOCIO	La persona que toma prestados los libros.
+
+PRÉSTAMO	La transacción que registra el préstamo de un libro
+
+
+2. Atributos (Óvalos)
+
+##### Definimos las propiedades para cada entidad
+
+#### Incluyendo la Clave Primaria (PK), que se subraya.
+
+LIBRO: ISBN​, Título, Año de Publicación, Número de Páginas.
+
+AUTOR: ID_Autor​, Nombre, Apellido, Nacionalidad.
+
+SOCIO: ID_Socio​, Nombre, Email (Uˊnico), Teléfono (Multivaluado).
+
+PRÉSTAMO: ID_Preˊstamo​, Fecha de Préstamo, Fecha de Devolución
+
+
+3. Relaciones (Rombos) y Cardinalidad
+
+#### Definimos cómo se conectan las entidades y qué tipo de vínculo existe (cardinalidad).
+
+Relación	Entidades	Cardinalidad	Razón
+
+ESCRIBE	AUTOR y LIBRO	M:N	Un Autor puede escribir muchos libros, y un Libro puede tener varios autores.
+
+REALIZA	SOCIO y PRÉSTAMO	1:N	Un Socio puede realizar muchos préstamos, pero un Préstamo pertenece a un solo socio.
+
+INVOLUCRA	LIBRO y PRÉSTAMO	1:1	Un Préstamo registra un solo libro, y ese libro está involucrado en ese préstamo en ese momento
+
+
+
+# Ej Módelo Lógico
+
+Traduce el diseño conceptual (E-R) en un esquema relacional formal
+
+#### Definiendo las tablas, columnas y las claves necesarias para la implementación.
+
+##### Relaciones complejas (como M:N) y se establecen las Claves Foráneas (FK).
+
+##### Se definen las tablas, sus atributos atómicos y las restricciones de claves primarias y foráneas.
+
+
+1. Tablas Base (Entidades Fuertes)
+
+#### Las entidades SOCIO, AUTOR y LIBRO se convierten en tablas
+
+
+Tabla	Columnas (Atributos Atómicos)	Restricciones Clave
+
+SOCIOS	socio_id (PK), nombre, email (UNIQUE), telefono (Separado en tabla TELEFONOS)	PRIMARY KEY (socio_id)
+
+AUTORES	autor_id (PK), nombre, apellido, nacionalidad	PRIMARY KEY (autor_id)
+
+LIBROS	isbn (PK), titulo, año_publicacion	PRIMARY KEY (isbn)
+
+
+2. Resolución de Relaciones M:N (Tabla de Enlace)
+
+La relación M:N entre AUTOR y LIBRO (un libro puede tener varios autores) 
+
+#### Se resuelve mediante una tabla de enlace, AUTOR_LIBRO.
+
+
+Tabla	Columnas (Atributos Atómicos)	Restricciones Clave
+
+AUTOR_LIBRO,"autor_id (FK), isbn (FK)","PRIMARY KEY (autor_id, isbn)  FOREIGN KEY (autor_id) REFERENCES AUTORES(autor_id)  FOREIGN KEY (isbn) REFERENCES LIBROS(isbn)"
+
+
+3. Relaciones 1:N y Entidades Transaccionales
+
+#### La entidad PRÉSTAMO y la tabla de enlace (AUTOR_LIBRO) establecen las relaciones 1:N y M:N.
+
+
+Tabla	Columnas (Atributos Atómicos)	Restricciones Clave
+
+PRESTAMOS,"prestamo_id (PK), socio_id (FK), isbn (FK), fecha_prestamo, fecha_devolucion",PRIMARY KEY (prestamo_id)  FOREIGN KEY (socio_id) REFERENCES SOCIOS(socio_id)  FOREIGN KEY (isbn) REFERENCES LIBROS(isbn)
+
+TELEFONOS,"socio_id (FK), numero (PK compuesto)","PRIMARY KEY (socio_id, numero)  FOREIGN KEY (socio_id) REFERENCES SOCIOS(socio_id)"
+
+
+El modelo lógico se puede resumir mostrando las tablas y sus dependencias:
+
+1. SOCIOS (socio_id​, nombre, email)
+
+2. AUTORES (autor_id​, nombre, apellido)
+
+3. LIBROS (isbn​, titulo, año_publicacion)
+
+4. TELEFONOS (socio_id, numero​, FK a SOCIOS)
+
+5. AUTOR_LIBRO (autor_id, isbn​, FK a AUTORES, FK a LIBROS)
+
+6. PRESTAMOS (prestamo_id​, socio_id (FK), isbn (FK), fecha_prestamo)
+
+
+
+
+# Ej Módelo Fisico
+
+Implementación SQL
+
+Se toma el esquema relacional lógico
+
+Detalles específicos necesarios para el SGBD
+
+Tipos de datos, índices en sintaxis SGBD
+
+
+El Modelo Físico se centra en tres aspectos principales:
+
+### 1. Tipos de Datos: Elegir el tipo de dato exacto para cada columna (VARCHAR, INT, DATE, etc.).
+
+### 2. Restricciones Específicas: Definir NOT NULL, UNIQUE, la Clave Primaria (PK) y las Claves Foráneas (FK).
+
+### 3. Rendimiento: Implementar índices adicionales para acelerar las consultas.
+
+
+Tabla SOCIOS
+
+Aquí se implementan las convenciones de almacenamiento (ej. VARCHAR con longitudes específicas).
+
+```
+CREATE TABLE SOCIOS (
+    socio_id INT GENERATED ALWAYS AS IDENTITY, -- Tipo serial/autoincremental para PK
+    nombre VARCHAR(100) NOT NULL,
+    apellido VARCHAR(100) NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,      -- Restricción de unicidad para el email
+    fecha_registro DATE NOT NULL DEFAULT CURRENT_DATE,
+    
+    -- Definición de la Clave Primaria
+    PRIMARY KEY (socio_id)
+);
+
+-- DISEÑO DE RENDIMIENTO: Índice para búsquedas frecuentes por apellido
+CREATE INDEX idx_socios_apellido ON SOCIOS (apellido);
+```
+
+
+Definición de la Tabla PRESTAMOS
+
+Esta tabla implementa una Clave Foránea (FK) para SOCIOS y define las reglas de integridad referencial.
+
+```
+CREATE TABLE PRESTAMOS (
+    prestamo_id INT GENERATED ALWAYS AS IDENTITY,
+    socio_id INT NOT NULL,      -- Columna FK a la tabla SOCIOS
+    isbn VARCHAR(13) NOT NULL,   -- Columna FK a la tabla LIBROS (asumida)
+    fecha_prestamo DATE NOT NULL,
+    fecha_devolucion_prevista DATE NOT NULL,
+    fecha_devolucion_real DATE,   -- Permite NULL si el libro aún no se ha devuelto
+    
+    -- Definición de la Clave Primaria
+    PRIMARY KEY (prestamo_id),
+    
+    -- Restricción 1: Un socio no puede tener el mismo libro prestado dos veces al mismo tiempo
+    UNIQUE (socio_id, isbn) WHERE (fecha_devolucion_real IS NULL),
+
+    -- Clave Foránea a SOCIOS: ON DELETE CASCADE (Si se borra el socio, se borran sus préstamos)
+    FOREIGN KEY (socio_id) REFERENCES SOCIOS(socio_id)
+        ON DELETE CASCADE,
+
+    -- Clave Foránea a LIBROS (Asumiendo que existe una tabla LIBROS)
+    FOREIGN KEY (isbn) REFERENCES LIBROS(isbn)
+        ON DELETE RESTRICT -- Impide borrar un libro si tiene préstamos activos
+);
+
+-- DISEÑO DE RENDIMIENTO: Índice para consultas que buscan préstamos por la fecha de devolución prevista
+CREATE INDEX idx_prestamos_fecha_prevista ON PRESTAMOS (fecha_devolucion_prevista);
+```
+
+
+
+# Relación uno a uno
+
+Tipo de vínculo más restrictivo
+
+#### Una instancia de la Entidad A se relaciona con, como máximo, una instancia de la Entidad B, y viceversa
+
+Ej: Un Empleado tiene un Pasaporte, y ese Pasaporte pertenece solo a ese Empleado.
+
+##### Restricción de Unicidad: Para asegurar la cardinalidad 1:1, se debe aplicar una restricción UNIQUE a la columna de la FK
+
+##### Garantizando que una instancia de la segunda tabla solo pueda ser referenciada una vez.
+
+
+Si decidimos colocar la FK en la tabla PASAPORTES:
+
+##### Tabla EMPLEADOS: Contiene la Clave Primaria (empleado_id).
+
+Tabla PASAPORTES:
+
+Contiene la Clave Primaria (numero_pasaporte).
+
+##### Contiene la Clave Foránea (empleado_id) que referencia a EMPLEADOS.
+
+A la columna empleado_id se le añade la restricción UNIQUE.
+
+```
+CREATE TABLE PASAPORTES (
+    numero_pasaporte VARCHAR(50) PRIMARY KEY,
+    empleado_id INT UNIQUE NOT NULL, -- Clave Foránea con la restricción UNIQUE
+    fecha_emision DATE,
+    
+    FOREIGN KEY (empleado_id) REFERENCES EMPLEADOS(empleado_id)
+);
+```
+
+
+### Usos del diseño 1:1
+
+Aunque a menudo se pueden combinar en una sola tabla, la relación 1:1 se utiliza por razones de diseño y rendimiento:
+
+
+#### Separación de Datos Voluminosos: Se utiliza para separar atributos que son consultados con poca frecuencia (ej. una biografía larga) de los atributos que se consultan a menudo (ej. el nombre).
+
+Esto optimiza el rendimiento al mantener la tabla principal más pequeña.
+
+
+#### Seguridad: Permite segregar la información sensible (ej. detalles de nómina o historial médico) en una tabla separada con permisos de acceso más estrictos.
+
+
+#### Datos Opcionales (Participación Parcial): Si muchos registros de la Entidad A no tienen datos para la Entidad B, separarlos evita tener muchas columnas con valores NULL en la tabla principal.
+
+
+
+
+# Relación uno a Muchos (1:n)
+
+Tipo de vínculo más común y fundamental
+
+#### Una instancia de la Entidad A puede relacionarse con cero, una o varias instancias de la Entidad B
+
+##### Pero cada instancia de la Entidad B se relaciona con una única instancia de la Entidad A. 
+
+
+#### Establece una jerarquía donde la entidad del lado "Uno" es la principal
+
+##### La entidad del lado "Muchos" es la dependiente.
+
+Lado "Uno" (Entidad Principal): Puede tener muchos registros relacionados.
+
+Ejemplo: Un Departamento puede tener muchos empleados
+
+
+Lado "Muchos" (Entidad Dependiente): Solo puede estar asociado con uno de los registros de la entidad principal.
+
+Ejemplo: Un Empleado solo puede pertenecer a un departamento.
+    
+    
+### Modelo Lógico (Clave Foránea)
+
+Implementación directa y siempre sigue la misma regla
+
+##### Regla: La Clave Foránea (FK) se coloca en la tabla del lado "Muchos".
+
+##### Mecanismo: La FK en la tabla del lado "Muchos" hace referencia a la Clave Primaria (PK) de la tabla del lado "Uno".
+
+
+Ej: DEPARTAMENTOS y EMPLEADOS
+
+Tabla	Columna de la Clave	Rol de la Columna
+
+DEPARTAMENTOS (Lado Uno),departamento_id,Clave Primaria (PK)
+EMPLEADOS (Lado Muchos),empleado_id,Clave Primaria (PK)
+EMPLEADOS (Lado Muchos),departamento_id,Clave Foránea (FK) que apunta a la PK de DEPARTAMENTOS.
+
+```
+CREATE TABLE EMPLEADOS (
+    empleado_id INT PRIMARY KEY,
+    nombre VARCHAR(100),
+    departamento_id INT,  -- Columna que actúa como FK
+
+    -- Restricción de la Clave Foránea
+    FOREIGN KEY (departamento_id) REFERENCES DEPARTAMENTOS(departamento_id)
+);
+
+```
+
+
+### Usos Comunes
+
+##### La relación 1:N es crucial para:
+
+#### Eliminar Redundancia: Almacenar la información del departamento una sola vez en la tabla DEPARTAMENTOS
+
+##### Simplemente referenciarla desde múltiples empleados, lo cual es la base de la normalización (3NF).
+
+
+#### Mantener la Integridad Referencial: La FK asegura que no se pueda asignar un empleado a un departamento_id que no existe en la tabla DEPARTAMENTOS.
+
+
+
+
+# Relación muchos a muchos (M:N)
+
+#### Una instancia de la Entidad A puede relacionarse con múltiples instancias de la Entidad B, y viceversa.
+
+##### No puede ser implementada directamente en un esquema relacional sin un paso intermedio.
+
+##### La relación M:N es vital para representar vínculos donde la interacción es recíproca y múltiple.
+
+
+Relación entre Estudiantes y Cursos.
+
+##### Un Estudiante se puede inscribir en muchos cursos.
+
+##### Un Curso tiene matriculados a muchos estudiantes.
+
+
+##### Si intentáramos implementar la relación M:N directamente, nos encontraríamos con problemas de redundancia masiva:
+
+Opción A (FK en ESTUDIANTES): Necesitarías múltiples columnas de curso_id en la tabla ESTUDIANTES (ej. curso_id_1, curso_id_2, etc.), lo cual es un mal diseño (violando 1NF) e inflexible.    
+
+Opción B (FK en CURSOS): El mismo problema, pero con múltiples estudiante_id en la tabla CURSOS.
+
+
+### Resolución en el Modelo Lógico (Tabla de Enlace)
+
+La relación M:N, se utiliza la técnica de descomposición creando una tercera tabla
+
+Conocida como Tabla de Enlace, Tabla Asociativa o Tabla Pivote. Esta tabla transforma la relación M:N en dos relaciones 1:N.
+
+#### Esta tabla transforma la relación M:N en dos relaciones 1:N.
+
+#### Solución
+
+1. Crea una nueva tabla (ej. INSCRIPCIONES).
+
+2. Esta nueva tabla contendrá las Claves Primarias (PK) de las dos entidades originales como Claves Foráneas (FK).
+
+3. La Clave Primaria de la tabla de enlace es una clave compuesta formada por ambas FKs (asegurando que cada par estudiante-curso sea único).
+
+Tabla Clave Primaria (PK) Clave(s) Foránea(s) (FK)
+
+ESTUDIANTES,estudiante_id,N/A
+CURSOS,curso_id,N/A
+INSCRIPCIONES,"(estudiante_id, curso_id)",FK a ESTUDIANTES y FK a CURSOS
+
+
+### Atributos de la Relación (Payload)
+
+#### Cualquier atributo que describa la relación en sí mismo
+
+##### en lugar de a las entidades individuales, debe colocarse en la Tabla de Enlace.
+
+Ejemplo: La Calificación que un estudiante obtiene en un curso específico, o la Fecha de Inscripción.
+
+Estos atributos se almacenan directamente en la tabla INSCRIPCIONES.
+
+
+## Ej: Estudiantes y Cursos.
+
+Entidad A (Estudiante): Un estudiante individual.
+
+Entidad B (Curso): Un curso académico específico.
+
+
+La relación es M:N porque:
+
+Un solo Estudiante puede inscribirse en Múltiples Cursos.
+
+Un solo Curso puede tener matriculados a Múltiples Estudiantes.
+
+
+Si intentaras resolver esto simplemente añadiendo una clave foránea (curso_id) a la tabla Estudiantes
+
+La columna tendría que almacenar múltiples valores por fila, lo cual viola la Primera Forma Normal (1NF) y es imposible de implementar en un modelo relacional.
+
+
+### Solución
+
+Mediante la creación de una tercera tabla, conocida como Tabla de Enlace
+
+Descompone la relación M:N en dos relaciones Uno a Muchos (1:N).
+
+
+INSCRIPCIONES
+
+Tabla (Entidad) | Rol,Claves Primarias y Foráneas
+
+ESTUDIANTES,"Principal (Lado ""Uno"")",estudiante_id (PK)
+CURSOS,"Principal (Lado ""Uno"")",curso_id (PK)
+INSCRIPCIONES,"Enlace (Lado ""Muchos"")","estudiante_id (FK), curso_id (FK)"
+
+#### El lado "Muchos" de la relación ahora apunta a la tabla de enlace:
+
+ESTUDIANTES (1) se relaciona con INSCRIPCIONES (N).
+
+CURSOS (1) se relaciona con INSCRIPCIONES (N).
+
+
+### Atributos de la Relación
+
+INSCRIPCIONES
+
+También almacena atributos que solo tienen sentido en el contexto de la relación.
+
+calificacion
+
+fecha_inscripcion
+
+
+#### La tabla de enlace utiliza las claves de las tablas principales para formar su propia Clave Primaria Compuesta (PK).
+
+```
+CREATE TABLE INSCRIPCIONES (
+    -- Claves Foráneas
+    estudiante_id INT NOT NULL, 
+    curso_id INT NOT NULL, 
+    
+    -- Atributos de la relación
+    calificacion NUMERIC(3, 1),
+    fecha_inscripcion DATE NOT NULL,
+
+    -- Clave Compuesta: Asegura que un estudiante solo puede inscribirse una vez en un curso.
+    PRIMARY KEY (estudiante_id, curso_id),
+    
+    -- Definición de las referencias (relaciones 1:N)
+    FOREIGN KEY (estudiante_id) REFERENCES ESTUDIANTES(estudiante_id),
+    FOREIGN KEY (curso_id) REFERENCES CURSOS(curso_id)
+);
+```
+
+
+# PK
+
+#### Primary Key es atributo (o un conjunto de atributos)
+
+##### Se utiliza para identificar de forma única cada registro (fila o tupla) dentro de una tabla.
+
+
+#### La PK actúa como la identidad principal de un registro
+ 
+crucial para mantener la integridad de los datos.
+
+
+### Identificación Única: El valor de la PK nunca puede repetirse dentro de la misma tabla.
+
+##### Si conoces el valor de la PK, puedes recuperar un registro específico sin ambigüedad.
+
+
+### Integridad de Entidad: La PK garantiza que cada entidad (registro) sea única y válida.
+
+
+### No Nulidad: El valor de la PK nunca puede ser nulo (NULL). 
+
+##### Un registro debe tener siempre un identificador.
+
+
+### Estabilidad: Idealmente, el valor de la PK nunca debe cambiar a lo largo del tiempo
+
+##### Ya que otras tablas (a través de las Claves Foráneas) pueden hacer referencia a ella.
+
+
+### Tipos de Claves Primarias
+
+Tipo de Clave	Definición	Ejemplo
+
+
+#### Clave Natural
+
+##### Utiliza un atributo que ya existe en el mundo real y es intrínsecamente único.
+
+El ISBN de un libro o el Número de Seguridad Social de un empleado.
+
+
+#### Clave Subrogada (Artificial)
+
+Un identificador artificial, a menudo un número entero generado automáticamente por el sistema.
+
+Un campo ID o empleado_id autoincremental.
+
+
+#### Clave Compuesta
+
+Una PK formada por la combinación de dos o más atributos.
+
+En una tabla de enlace (INSCRIPCIONES), la PK es (estudiante\_id, curso\_id).
+
+
+#### En el diseño moderno, las claves subrogadas (ej. IDs autoincrementales) son generalmente preferidas porque son más pequeñas, estables y no contienen lógica de negocio que pueda cambiar.
+
+
+### Relación con la Clave Foránea (FK)
+
+#### La PK es el objetivo o el punto de referencia de todas las Claves Foráneas (FK) en el esquema.
+
+##### Cuando defines una relación, la PK de la tabla principal se inserta como una FK en la tabla dependiente para establecer el vínculo 1:N o 1:1.
+
+##### La FK asegura que solo se puedan referenciar valores de la PK que realmente existen, manteniendo la integridad referencial.
+
+
+
+# FK
+
+Foreign Key es un atributo o conjunto de atributos
+
+#### Se utiliza para establecer y hacer cumplir un vínculo entre los datos de dos tablas.
+
+Actúa como un puntero que garantiza la integridad referencial dentro del modelo relacional.
+
+
+### Proposito
+
+Vínculo Relacional: La FK es el mecanismo físico que implementa las relaciones (1:N, 1:1) definidas en el modelo conceptual y lógico
+
+Referencia: Una FK en la tabla hija (dependiente) hace referencia a la Clave Primaria (PK) de la tabla padre (principal).
+
+#### Integridad Referencial: Es la regla de oro de la FK. Asegura que no se puedan crear registros huérfanos.
+
+##### Todo valor en la columna FK debe existir como valor en la PK de la tabla padre, o ser NULL (si la participación es opcional).
+
+
+### Ej: DEPARTAMENTOS y EMPLEADOS.
+
+Tabla Padre (Principal): DEPARTAMENTOS (Contiene la PK: departamento_id).
+
+Tabla Hija (Dependiente): EMPLEADOS (Contiene la FK: departamento_id).
+
+EMPLEADOS,empleado_id (PK),nombre,departamento_id (FK)
+101,Juan Pérez,Ventas,3
+102,Ana García,Marketing,1
+103,Pedro López,NULL,5 (Error: No existe)
+
+
+Si el departamento_id 5 no existe en la tabla DEPARTAMENTOS
+
+La base de datos rechazará la inserción del registro 103 para mantener la integridad referencial.
+
+
+### Implementación
+
+#### Se define mediante la restricción FOREIGN KEY en SQL
+
+##### Un aspecto crucial del diseño físico es definir cómo debe reaccionar el sistema cuando se intenta modificar o eliminar un registro en la tabla padre.
+
+
+Acción DDL	Tabla Padre (PK)	Tabla Hija (FK)
+
+ON DELETE CASCADE	Se borra la fila.	Se borran automáticamente todas las filas relacionadas en la tabla hija.
+
+ON DELETE RESTRICT	Se intenta borrar la fila.	Se rechaza la eliminación si existen filas dependientes en la tabla hija. (El comportamiento más seguro).
+
+ON DELETE SET NULL	Se borra la fila.	El valor de la FK en la tabla hija se establece en NULL. (Solo si la FK puede ser nula).
+
+
+
+
+# Indices
+
+#### Estructuras de datos especiales asociadas a las tablas de una base de datos
+
+##### Diseñadas para acelerar la recuperación de datos.
+
+Funcionan de manera muy similar al índice alfabético de un libro.
+
+
+### 1. Funcionamiento
+
+#### Copia de una o más columnas de una tabla, junto con la dirección física (puntero) de dónde se almacena el registro completo en el disco.
+
+Sin Índice (Escaneo de Tabla): Para encontrar un registro, la base de datos tendría que leer y examinar cada fila de la tabla, de principio a fin (similar a leer cada página de un libro para encontrar un tema).
+
+Esto se conoce como escaneo secuencial o Table Scan.
+
+
+Con Índice: La base de datos primero busca el valor deseado en la estructura del índice (que está optimizada para la búsqueda rápida, generalmente un árbol B o B+).
+
+La base de datos primero busca el valor deseado en la estructura del índice (que está optimizada para la búsqueda rápida, generalmente un árbol B o B+).
+
+Una vez encontrado el valor, el índice proporciona la dirección exacta en el disco para acceder a la fila completa de la tabla de forma inmediata.
+
+
+### 2. Tipos Principales de Índices
+
+Los dos tipos principales de índices son:
+
+
+Índice Clustered (Agrupado)
+
+Determina el orden físico en el que se almacenan las filas de datos en el disco.
+
+Es decir, las filas de la tabla se almacenan físicamente en el orden de las claves del índice.
+
+
+Restricción: Solo puede haber un índice clustered por tabla, ya que los datos solo pueden ordenarse de una manera física.
+
+
+##### Uso Común: La Clave Primaria (PK) de una tabla a menudo se implementa automáticamente como un índice clustered (especialmente en SQL Server y MySQL/InnoDB).
+
+
+B. Índice Non-Clustered (No Agrupado)
+
+Es una estructura de índice separada de la tabla de datos
+
+El orden de los datos en el disco no se ve afectado.
+
+Una tabla puede tener múltiples índices non-clustered.
+
+Funcionamiento: Contiene el valor de la columna indexada y un puntero a la fila de datos real.
+
+
+### Ventajas y desventajas
+
+Búsqueda (SELECT)
+
+Ventaja: Acelera drásticamente las consultas SELECT con cláusulas WHERE, ORDER BY, y JOIN que utilizan la columna indexada.
+
+No desventaja.
+
+
+Almacenamiento
+
+Desventaja: Los índices son estructuras de datos que requieren espacio adicional en el disco para almacenarse.
+
+No ventaja.
+
+
+Modificación (CRUD)
+
+Ralentizan las operaciones INSERT, UPDATE y DELETE, ya que cada vez que se modifica la tabla, el SGBD también debe actualizar todas las estructuras de índice asociadas.
+
+No ventaja
+
+
+### Cuando indexar
+
+#### Indexa de forma estratégica, no excesiva
+
+
+Candidatos Clave
+
+Claves Primarias (PK): Siempre deben estar indexadas (generalmente clustered).
+
+Claves Foráneas (FK): Indexar las FKs es crucial para acelerar las operaciones JOIN.
+
+Columnas usadas frecuentemente en la cláusula WHERE (filtros).
+
+Columnas usadas frecuentemente en la cláusula ORDER BY (ordenación).
+
+
+Evitar Indexar Columnas:
+
+Columnas con muy pocos valores únicos (baja cardinalidad), como un campo booleano (es_activo).
+
+Tablas que tienen muy pocas filas.
+
+Columnas que se actualizan muy a menudo.
+
+
+
+## Ej Índice Non-Clustered (No Agrupado)
+
+Gran tabla de CLIENTES que contiene millones de filas.
+
+
+Sin indice
+
+Si ejecutas esta consulta sin un índice en la columna email:
+
+```
+SELECT nombre, telefono FROM CLIENTES WHERE email = 'ana.garcia@ejemplo.com';
+```
+
+El SGBD (Sistema de Gestión de Bases de Datos) tendría que realizar un escaneo secuencial o Table Scan.
+
+Esto significa que lee fila por fila, desde el inicio hasta el final de la tabla, hasta que encuentra la dirección de correo electrónico, lo cual es muy lento en una tabla grande.
+
+
+Escenario: Búsqueda con Índice
+
+#### Para acelerar la búsqueda, creamos un índice en la columna email.
+
+```
+CREATE UNIQUE INDEX idx_clientes_email ON CLIENTES (email);
+```
+
+
+### Importancia de la Unicidad
+
+#### En este ejemplo, definimos el índice como UNIQUE (CREATE UNIQUE INDEX...). Esto tiene dos funciones:
+
+Acelera la Búsqueda: Sigue siendo un índice que acelera la consulta SELECT.
+
+Garantiza la Integridad: El SGBD ahora forzará que no existan dos clientes con el mismo correo electrónico, asegurando la unicidad del dato (similar a una PK, pero sin ser el identificador principal de la tabla).
+
+
+
+
+# Transacciones ACID
+
+##### Conjunto de reglas fundamentales que garantizan que las transacciones de bases de datos se procesen de manera confiable
+
+##### Una transacción es una secuencia lógica de una o más operaciones que se ejecutan como una sola unidad atómica.
+
+El cumplimiento de ACID es crucial para la integridad de los datos en sistemas críticos (como la banca o el comercio electrónico).
+
+
+## Las 4 propiedades 
+
+### 1. Atomicidad: Todo o Nada
+
+#### Garantiza que una transacción se complete por completo (COMMIT) o que falle por completo (ROLLBACK).
+
+##### Transferencia de dinero: Si la deducción falla, el depósito no se realiza.
+
+
+### 2. Consistencia: Mantenimiento de Reglas
+
+#### Asegura que la base de datos solo pasa de un estado válido a otro estado válido
+
+Esto se mantiene a través de reglas predefinidas (restricciones NOT NULL, FKs, etc.).
+
+##### Un balance de cuenta nunca puede ser negativo (si hay una regla de BD que lo impide).
+
+
+### 3. Islamiento: Independencia
+
+Garantiza que la ejecución concurrente de múltiples transacciones dé como resultado un estado de la base de datos que sería el mismo que si las transacciones se hubieran ejecutado una tras otra (serialmente).
+
+##### Dos usuarios accediendo al mismo stock de productos; cada uno ve el stock correcto sin interferencia del otro.
+
+
+### 4. Durabilidad: Permanencia
+
+#### Una vez que una transacción ha sido confirmada (COMMIT), sus cambios son permanentes y persistirán incluso en caso de fallos del sistema (como un corte de energía o un crash del servidor).
+
+##### Confirmar una compra. Aunque el servidor se apague, el pedido permanece registrado.
+
+
+Ejemplo de Transacción
+
+Imagina una transferencia bancaria de 100 de la Cuenta A a la Cuenta B.
+
+Operación 1: Restar 100 de la Cuenta A.
+
+Operación 2: Sumar 100 a la Cuenta B.
+
+
+Si la Operación 1 se ejecuta con éxito, pero la Operación 2 falla (ej. por un error de disco)
+
+La propiedad de Atomicidad asegura que la Operación 1 se deshaga (ROLLBACK),
+
+La Cuenta A vuelva a su estado original, manteniendo la Consistencia general del sistema bancario.
+
+
+## Ej: Transacción - Operación Updates
+
+Transferencia de dinero entre dos cuentas bancarias.
+    
+Se ejecutarán las dos operaciones (update/s) o ninguna
+
+
+Tabla llamada CUENTAS con las columnas cuenta_id (PK) y saldo.
+
+Queremos transferir 100.00 de la Cuenta 1001 a la Cuenta 2002.
+
+
+1. Comenzamos la transacción para marcar el punto donde comienza la unidad atómica de trabajo.
+
+```
+START TRANSACTION; 
+-- O BEGIN TRANSACTION; (Dependiendo del SGBD, ej. SQL Server)
+-- O BEGIN; (Común en PostgreSQL)
+```
+
+
+2. Operaciones Atómicas (ACID)
+
+Se ejecutan las operaciones
+
+Si una de ellas falla (por ejemplo, por falta de fondos o un error de conexión), todo el bloque se revertirá.
+
+
+Restar el Saldo (Cuenta Origen)
+
+```
+-- 1. Restar 100.00 de la cuenta de origen (1001)
+UPDATE CUENTAS
+SET saldo = saldo - 100.00
+WHERE cuenta_id = 1001;
+```
+
+
+Sumar el Saldo (Cuenta Destino)
+
+```
+-- 2. Sumar 100.00 a la cuenta de destino (2002)
+UPDATE CUENTAS
+SET saldo = saldo + 100.00
+WHERE cuenta_id = 2002;
+```
+
+
+3. Finalización de la Transacción
+
+Aquí decidimos si los cambios deben ser permanentes o descartados.
+
+
+Escenario	Sentencia SQL	Resultado	Propiedad ACID
+
+Éxito: Ambas operaciones se ejecutaron correctamente.	COMMIT;	Los cambios son permanentes en la base de datos (Durabilidad).
+
+Fallo: La cuenta 1001 no tenía fondos o hubo un error en la segunda operación.	ROLLBACK;	Todos los cambios realizados desde START TRANSACTION se deshacen (Atomicidad).
+
+
+```
+START TRANSACTION;
+
+-- Declarar una variable o realizar una consulta para chequear el saldo.
+-- Supongamos que aquí se verifica que la cuenta 1001 tiene al menos 100.00.
+
+-- Simulación de las operaciones:
+UPDATE CUENTAS SET saldo = saldo - 100.00 WHERE cuenta_id = 1001;
+UPDATE CUENTAS SET saldo = saldo + 100.00 WHERE cuenta_id = 2002;
+
+-- Lógica de COMMIT/ROLLBACK:
+-- Si el chequeo de saldo original falla o el SGBD reporta un error:
+-- ROLLBACK;
+
+-- Si todo está bien:
+COMMIT;
+```
+
+
+## Buenas prácticas
+
+Las transacciones son cruciales para garantizar la integridad de los datos y el rendimiento
+
+
+### 1. Atomicidad y Control de Flujo (El Enfoque "Todo o Nada")
+
+#### Usar COMMIT y ROLLBACK explícitamente: Siempre envuelve las operaciones relacionadas dentro de bloques transaccionales (START TRANSACTION/BEGIN). 
+
+Usa COMMIT solo si todas las operaciones tuvieron éxito y ROLLBACK inmediatamente si ocurre algún error.
+
+##### Ejemplo: Al transferir dinero, si la segunda actualización falla, el código debe ejecutar ROLLBACK para deshacer la primera.    
+    
+
+#### Manejar Errores: Implementa bloques de captura de excepciones (try-catch) en tu código de aplicación y base de datos 
+
+Para asegurar que cualquier fallo inesperado dispare un ROLLBACK
+
+
+### 2. Consistencia (Integridad del Dato)
+
+#### Confiar en las Restricciones de BD: Haz que la base de datos fuerce la consistencia siempre que sea posible. 
+
+Utiliza FOREIGN KEYs, restricciones UNIQUE, NOT NULL, y CHECK en el DDL.
+
+##### Razón: Si la lógica de la aplicación falla, la BD es la última línea de defensa para prevenir datos inválidos.
+
+
+#### Pre-validación: Antes de iniciar una transacción costosa
+
+valida las reglas de negocio críticas (ej. saldo disponible, existencia de usuario) en la capa de aplicación.
+
+
+### 3. Aislamiento y Concurrencia (Rendimiento)
+
+#### Mantener las Transacciones Cortas: Las transacciones largas mantienen recursos bloqueados, lo que reduce la concurrencia y puede causar deadlocks. 
+
+Ejecuta solo las operaciones esenciales (INSERT, UPDATE, DELETE) dentro del bloque transaccional.
+
+Ejemplo: No inicies la transacción al inicio del formulario web, sino justo antes de realizar la operación de escritura en la BD.
+
+
+#### Evitar Bloqueos Innecesarios: No realices operaciones de entrada/salida (I/O) externas
+
+(ej. llamadas a APIs externas, envío de emails)
+
+Dentro de una transacción, ya que demoran la finalización y mantienen los bloqueos.
+
+
+#### Usar Niveles de Aislamiento Adecuados: Entiende y configura el nivel de aislamiento de tu SGBD
+
+(ej. READ COMMITTED es común, SERIALIZABLE es más seguro pero más lento).
+
+No uses un nivel más estricto del necesario para optimizar el rendimiento.
+
+
+
+### 4. Durabilidad (Persistencia)
+
+#### Verificación de COMMIT: Asegúrate de que tu aplicación reciba la confirmación (COMMIT) del SGBD
+
+antes de considerar que la transacción ha tenido éxito
+
+Si la aplicación cae después de enviar el COMMIT pero antes de la confirmación, la BD aún debe asegurar la persistencia.
+
+
+#### Configuración del SGBD: Asegúrate de que la configuración de tu SGBD priorice la durabilidad
+
+(ej. configurando correctamente el write-ahead logging o journaling).
+
+Esto suele ser la configuración predeterminada en entornos de producción.
+
+
+### Regla de Oro: "Read outside, Write inside." (Lee fuera, Escribe dentro.)
+    
+#### Las operaciones de lectura (SELECT) que no necesiten datos perfectamente consistentes o que no interfieran con la escritura
+
+##### Deben realizarse fuera del bloque BEGIN/COMMIT para evitar mantener bloqueos innecesarios.
+
+
+#### Solo las operaciones de escritura (INSERT, UPDATE, DELETE)
+
+##### que deben ser atómicas deben realizarse dentro del bloque transaccional.
+
+
+## Casos de uso
+
+### 1. Sistemas Financieros y Contabilidad
+
+##### Donde la Atomicidad y la Durabilidad son no negociables.
+
+
+#### Transferencia de Fondos: Mover dinero de la Cuenta A a la Cuenta B requiere dos operaciones: la deducción y la adición
+
+Ambas deben ocurrir o ninguna. 
+
+Si solo ocurre la deducción, el sistema queda inconsistente.
+
+
+#### Actualización de Inventario por Venta: Cuando un cliente compra un producto:
+
+Se reduce la cantidad disponible en la tabla INVENTARIO.
+
+Se registra el nuevo pedido en la tabla PEDIDOS. Si el registro del pedido falla, la reducción del inventario debe revertirse (ROLLBACK).
+
+
+### 2. Comercio Electrónico y Gestión de Pedidos
+
+Las transacciones garantizan que el cliente no pague por algo que no está disponible o que un pedido pagado se pierda.
+
+
+#### Procesamiento de Pedidos: Una transacción agrupa:
+
+1. Bloquear o reducir el stock de los productos.
+
+2. Crear el registro en la tabla ORDENES.
+
+3. Registrar el pago en la tabla TRANSACCIONES_PAGO
+
+
+#### Reservas de Asientos/Boletos: Al reservar un asiento en un cine o avión, la transacción asegura que:
+
+1. Se actualice el estado del asiento a "Reservado".
+
+2. Se asigne el asiento al USUARIO. 
+
+Esto previene que dos usuarios simultáneos (gracias al Aislamiento) reserven el mismo asiento.
+    
+
+### 3. Sistemas de Gestión de Contenido y Colaboración (CMS)
+
+##### Las transacciones son vitales para manejar cambios complejos que afectan a múltiples estructuras.
+
+
+#### Publicación de Contenido: Cuando un usuario publica un nuevo artículo:
+
+1. Se inserta la entrada principal en la tabla ARTICULOS.
+
+2. Se actualiza el contador de la tabla AUTORES.
+
+3. Se insertan las etiquetas en la tabla ETIQUETAS_DE_ARTICULO (tabla de enlace M:N). Si alguna inserción falla (ej. una restricción de clave foránea en las etiquetas), el artículo completo no se publica
+
+
+#### Actualización de Perfiles de Usuario: Cambiar la información de un usuario que está distribuida en varias tablas
+
+(ej. USUARIO, DIRECCIONES, PERMISOS)
+
+Todos los cambios se aplican simultáneamente.
+
+
+### 4. Sistemas de Recursos Humanos (RRHH)
+
+Asegurar que los cambios de personal que afectan a múltiples áreas se apliquen sin dejar datos incompletos.
+
+#### Cambio de Departamento de Empleado:
+
+1. Actualizar el departamento_id en la tabla EMPLEADOS.
+
+2. Registrar la fecha de cambio en la tabla HISTORIAL_DE_DEPARTAMENTOS. Ambas acciones deben ocurrir para mantener un registro de auditoría coherente.
+    
+
+### Principio general: Si la falla de una operación deja el sistema en un estado ilógico o incoherente, se necesita una transacción.
+
+#### Ej aplicando buenas prácticas
+
+```
+DO $$
+DECLARE
+    cantidad_a_transferir DECIMAL := 250.00;
+    cuenta_origen INT := 101;
+    cuenta_destino INT := 202;
+    saldo_actual DECIMAL;
+BEGIN
+    -- 1. Iniciar la Transacción
+    -- En muchos SGBD y bloques DO/BEGIN, la transacción comienza implícitamente aquí.
+
+    -- 2. VERIFICACIÓN DE CONSISTENCIA (Buena Práctica: Leer fuera/Revisar dentro)
+    -- Obtener el saldo actual de la cuenta de origen (101)
+    SELECT saldo INTO saldo_actual
+    FROM Cuentas
+    WHERE cuenta_id = cuenta_origen
+    FOR UPDATE; -- Buena Práctica: Bloquea la fila temporalmente para garantizar Aislamiento
+
+    IF saldo_actual >= cantidad_a_transferir THEN
+        -- 3. OPERACIONES DE ESCRITURA (Si la condición es válida)
+        
+        -- Restar de la cuenta de origen
+        UPDATE Cuentas
+        SET saldo = saldo - cantidad_a_transferir
+        WHERE cuenta_id = cuenta_origen;
+
+        -- Sumar a la cuenta de destino
+        UPDATE Cuentas
+        SET saldo = saldo + cantidad_a_transferir
+        WHERE cuenta_id = cuenta_destino;
+        
+        -- 4. ÉXITO: Confirmar la Transacción (Durabilidad)
+        COMMIT;
+        RAISE NOTICE 'Transferencia Exitosa: % de % a %', cantidad_a_transferir, cuenta_origen, cuenta_destino;
+
+    ELSE
+        -- 4. FALLO LÓGICO: Revertir la Transacción (Atomicidad)
+        -- Si no hay fondos suficientes, aseguramos que ningún cambio (incluyendo el FOR UPDATE) sea permanente.
+        ROLLBACK;
+        RAISE NOTICE 'Transferencia Fallida: Saldo insuficiente en cuenta %', cuenta_origen;
+
+    END IF;
+    
+EXCEPTION
+    -- 5. FALLO TÉCNICO: Manejo de Errores
+    WHEN others THEN
+        -- Si ocurre cualquier error de BD (ej. violación de FK, deadlock), revertimos.
+        ROLLBACK;
+        RAISE NOTICE 'Error inesperado durante la transacción. Revertiendo cambios.';
+END $$;
+```
+
+1. Atomicidad (COMMIT vs. ROLLBACK): La lógica IF/ELSE asegura que las dos operaciones de UPDATE se ejecutan juntas (en el bloque COMMIT) o se anulan ambas (ROLLBACK).
+
+2. Consistencia: El chequeo IF saldo_actual >= cantidad_a_transferir evita que el saldo de la cuenta sea negativo (manteniendo la regla de negocio).
+
+3. Aislamiento: La cláusula FOR UPDATE en la consulta SELECT es una práctica avanzada que bloquea la fila de la cuenta_origen hasta que la transacción finalice. Esto previene que un segundo proceso lea un saldo incorrecto o intente actualizar la cuenta al mismo tiempo (evitando race conditions).
+
+4. Manejo de Excepciones: El bloque EXCEPTION captura fallos no planeados del sistema (como un error de disco o deadlock), asegurando que un ROLLBACK se ejecute incluso en caso de fallos técnicos.
+
+
+
+
+# CRUD
+
+En el contexto de bases de datos y APIs (Interfaces de Programación de Aplicaciones)
+
+##### Representa las cuatro funciones básicas que se consideran necesarias para trabajar con datos persistentes
+
+##### Datos que se almacenan y se pueden recuperar.
+
+
+Operación	Significado	 Descripción  Equivalente SQL (típico)	Equivalente HTTP (típico)
+
+C	Create (Crear)	Generar un nuevo registro o recurso en la base de datos o sistema.	INSERT	POST
+
+R	Read (Leer/Recuperar)	Obtener y mostrar los datos existentes, ya sea un registro específico o una lista de ellos.	SELECT	GET
+
+U	Update (Actualizar)	Modificar los datos de un registro ya existente.	UPDATE	PUT o PATCH
+
+D	Delete (Borrar/Eliminar)	Eliminar un registro o recurso del sistema.	DELETE	DELETE
+
+
+### Representan acciones
+
+Como al gestionar una lista de contactos en tu teléfono o en una hoja de cálculo.
+
+Create (Crear): Añades un nuevo contacto con su nombre y número.
+
+Read (Leer): Buscas un contacto específico para ver su número, o ves la lista completa de tus contactos.
+
+Update (Actualizar): Un amigo cambia de número y edita su información en su contacto existente.
+
+Delete (Borrar): Eliminas un contacto que ya no necesitas
+
+
+#### CRUD define el ciclo de vida básico de los datos dentro de una aplicación
+
+
+
+## Ciclo de vida 
+
+1. Creación (C - Create)
+
+Función: Iniciar la existencia del dato.
+    
+Operación que toma nueva información (por ejemplo, los campos de un formulario)
+
+La inserta como un nuevo registro en el almacenamiento persistente (la base de datos).
+
+El registro pasa de no existir a ser una entidad guardada.
+
+
+2. Lectura (R - Read)
+
+Función: Acceder y utilizar el dato
+    
+Una vez que el dato existe, esta operación es esencial para recuperarlo y mostrarlo al usuario o a otra parte del sistema
+
+Permite la consulta del registro para la visualización, el procesamiento o la toma de decisiones.
+
+Es la operación más frecuente.
+
+
+3. Actualización (U - Update)
+
+##### Función: Mantener la relevancia y la precisión del dato.
+
+##### Los datos raramente son estáticos
+
+Esta operación permite modificar uno o varios campos del registro existente sin eliminarlo ni crear uno nuevo
+
+Es crucial para reflejar cambios en la vida real (por ejemplo, un cambio de dirección o de estado).
+
+
+4. Eliminación (D - Delete)
+
+Función: Finalizar la existencia del dato.
+
+Esta operación elimina el registro permanentemente (o lo marca como eliminado, lo que se conoce como "soft delete") del sistema de almacenamiento
+
+Marca el final del ciclo de vida del dato.
+
+
+
+## Persistencia
+
+##### La persistencia de datos es el objetivo, y CRUD es el lenguaje universal o el conjunto de comandos que se utilizan para interactuar con cualquier sistema de almacenamiento persistente
+
+#### Bases de datos relacionales: Usando INSERT, SELECT, UPDATE, DELETE (el equivalente SQL de CRUD).
+
+#### Bases de datos NoSQL: Usando métodos como save, find, updateOne, remove.
+
+#### Sistemas de archivos: Usando funciones de escritura, lectura, modificación y borrado de archivos.
+
+
+#### Sin estas cuatro operaciones (CRUD), un sistema no podría garantizar que los datos creados se conserven, modifiquen o consulten a largo plazo, lo cual es la definición misma de almacenamiento duradero.
+
+
+
+## Persistencia y Sesión
+
+### Persistencia
+
+Se refiere a que los datos sobrevivan al proceso o aplicación que los creó.
+
+Duradero (Largo plazo). El dato existe hasta que se elimina explícitamente (operación D de CRUD).
+
+Almacenamiento no volátil (Bases de datos, discos duros, archivos permanentes, la nube).
+
+Las 4 operaciones (C, R, U, D) están orientadas a gestionar estos datos.
+
+
+#### La persistencia es el objetivo de las operaciones CRUD.
+
+##### Garantizar que las acciones del usuario se mantengan.
+
+Cuando un usuario realiza una operación C (Crear), U (Actualizar) o D (Eliminar) en una aplicación
+
+El objetivo es que ese cambio se refleje en el almacenamiento persistente (la base de datos),
+
+De modo que si el usuario regresa al día siguiente o reinicia el sistema, el dato siga ahí.
+
+
+### Sesión
+
+Se refiere al estado temporal de la interacción de un usuario con una aplicación durante un período de tiempo definido.
+
+Temporal (Corto plazo). El dato se pierde cuando el usuario cierra sesión, el servidor se reinicia, o expira por inactividad
+
+Almacenamiento volátil (Memoria del servidor, cookies, almacenamiento local del navegador, caché).
+
+Generalmente solo involucra operaciones de Read (lectura) y Update (actualización) del estado temporal, y a veces Create/guardado inicial.
+
+
+#### La sesión es un mecanismo para mejorar la experiencia del usuario y evitar acceder constantemente a la persistencia.
+
+##### Mantener el estado de la interacción del usuario (por ejemplo, el usuario logueado, los artículos en un carrito de compras, o los filtros aplicados) entre diferentes solicitudes o páginas web.
+
+##### En el contexto de CRUD, los datos de persistencia a menudo se cargan en la memoria de la sesión (operación R)
+
+Para que la aplicación pueda acceder a ellos rápidamente mientras el usuario está activo.
+
+Si el usuario realiza cambios (operación U o C) en los datos cargados en la sesión, esos cambios deben sincronizarse con la capa de persistencia (la base de datos) antes de que la sesión finalice
+
+Si no se graban en la persistencia, se perderán.
+
+
+
+## CRUD, los Métodos HTTP y SQL/Bases de Datos
+
+Actúa como un modelo conceptual universal
+
+##### Se implementa de manera específica en estas dos tecnologías diferentes para lograr la persistencia de datos en aplicaciones web.
+
+
+### 1. Mapeo de operaciones
+
+##### Cada acción CRUD se mapea directamente a una acción de base de datos (SQL) y a un método de comunicación web (HTTP)
+
+Estableciendo un lenguaje coherente a través de las diferentes capas de una aplicación:
+
+
+Operación CRUD (Concepto)	Propósito (Ciclo de Vida del Dato)	Equivalente SQL (Base de Datos)	Equivalente HTTP (API Web)
+
+Create (Crear)	Insertar un nuevo registro de datos.	INSERT INTO	POST
+
+Read (Leer)	Recuperar datos para su visualización.	SELECT FROM	GET
+
+Update (Actualizar)	Modificar los datos de un registro existente.	UPDATE ... SET	PUT o PATCH
+
+Delete (Eliminar)	Remover permanentemente un registro.	DELETE FROM	DELETE
+
+
+#### 1. CRUD como Modelo Conceptual: Marco de trabajo abstracto que define las funcionalidades mínimas necesarias para gestionar un recurso o registro de
+
+
+#### 2. SQL / Bases de Datos (La Capa de Persistencia): Bases de datos (SQL o NoSQL) son el destino final donde residen los datos de forma duradera.
+
+#### SQL proporciona el lenguaje técnico (INSERT, SELECT, UPDATE, DELETE)
+
+##### Para ejecutar las operaciones CRUD directamente en el motor de la base de datos.
+
+Cuando una aplicación necesita persistir un dato, traduce la intención CRUD a comandos SQL.
+
+
+#### 3. Métodos HTTP (La Capa de Interfaz/Comunicación)
+
+##### Los Métodos HTTP (especialmente en arquitecturas RESTful) son el protocolo de comunicación que se utiliza para que un cliente
+
+navegador o una aplicación móvil
+
+##### Solicite que se ejecuten las operaciones CRUD en un servidor.
+
+
+##### Implementación: El servidor expone endpoints (URLs) que mapean un Método HTTP recibido a la operación CRUD correspondiente.
+
+Un cliente envía un GET (Read) al endpoint /usuarios/10
+
+Para solicitar que el servidor ejecute un SELECT (Read) en la base de datos
+
+Y le devuelva la información del usuario con ID 10.
+
+
+CRUD es la idea, los Métodos HTTP son la forma de solicitar esa idea a través de internet, y SQL es la forma de ejecutar esa idea en la capa de almacenamiento de datos.
+
+
+
+## Flujo de trabajo entre CRUD, Métodos HTTP y SQL/Base de Datos
+
+Describe cómo se gestiona un dato
+
+Desde que el cliente interactúa con una aplicación
+
+Gasta que el cambio se persiste en el almacenamiento, y viceversa
+
+##### Este flujo generalmente sigue una arquitectura de tres capas: Cliente, Servidor (API) y Base de Datos.
+
+
+### 1. Create (Crear)
+
+Etapa	1. Operación (Cliente)	 2. Protocolo (HTTP)	3. Lógica (Servidor/API)	4. Persistencia (SQL/BD)
+
+Flujo:
+
+1. Un usuario completa un formulario (ej. registro de nuevo usuario) y pulsa "Enviar".
+
+2. El cliente envía una solicitud POST al endpoint del servidor (ej. /api/usuarios).
+
+3. El servidor valida los datos recibidos y construye la consulta de base de datos.
+
+4. El servidor ejecuta la sentencia INSERT INTO, creando el nuevo registro de forma persistente.
+
+
+
+### 2. Read
+
+1. Un usuario navega a una página o hace clic en un enlace para ver un recurso (ej. un perfil).
+
+2. El cliente envía una solicitud GET al endpoint del servidor (ej. /api/usuarios/123).
+
+3. El servidor recibe la solicitud y construye la consulta de base de datos basándose en los parámetros.
+
+4. El servidor ejecuta la sentencia SELECT FROM y recupera el registro solicitado. El dato se envía de vuelta al cliente.
+
+
+### 3. Update (Actualizar)
+
+1. Un usuario edita un campo existente en un formulario y pulsa "Guardar".
+
+2. El cliente envía una solicitud PUT o PATCH al endpoint del servidor (ej. /api/usuarios/123).
+
+3. El servidor verifica la identidad y permisos del usuario, y construye la consulta con los datos modificados.
+
+4. El servidor ejecuta la sentencia UPDATE ... SET, modificando el registro existente.
+
+
+### 4. Delete (Eliminar)
+
+1. Un usuario hace clic en el botón "Eliminar" en un recurso.
+
+2. El cliente envía una solicitud DELETE al endpoint del servidor (ej. /api/usuarios/123).
+
+3. El servidor verifica que la eliminación sea segura y construye la consulta de base de datos.
+
+4. El servidor ejecuta la sentencia DELETE FROM, eliminando el registro de la persistencia.
+
+
+### Flujo Cliente-Servidor: Front (Solicitud) - API - SQL - Servidor (respuesta) 
+
+1. El Cliente (Frontend) usa la operación CRUD como una intención (ej. "Quiero Crear un usuario").
+
+2. Traduce esa intención al Método HTTP (ej. POST) y lo envía al Servidor (API).
+
+3. El Servidor (Backend) recibe la solicitud HTTP y mapea el método a la función CRUD que debe ejecutar.
+
+4. El Servidor ejecuta el comando SQL (ej. INSERT) en la Base de Datos para persistir el cambio.
+
+5. La Base de Datos procesa el SQL y devuelve un resultado al Servidor.
+
+6. El Servidor genera una respuesta HTTP (ej. código 201 Created) y la envía de vuelta al Cliente.
+
+
+
+## Ej CRUD
+
+### Create
+
+CRUD	Create	Intención de ingresar un producto nuevo.
+
+Método HTTP	POST	El navegador envía datos (nombre, precio, stock) a la API: POST /api/productos.
+
+SQL/BD	INSERT	La API ejecuta este comando en la BD: INSERT INTO Productos (Nombre, Precio, Stock) VALUES ('Portátil X', 1200.00, 5);.
+
+Resultado	El producto ahora existe persistentemente en la tabla Productos.
+
+
+### READ (Ver la Lista de Productos)
+
+CRUD	Read	Intención de obtener la lista de productos
+
+Método HTTP	GET	El navegador solicita la lista: GET /api/productos.
+
+SQL/BD	SELECT	La API ejecuta el comando para recuperar datos: SELECT ID, Nombre, Precio, Stock FROM Productos;.
+
+Resultado	La BD devuelve la lista de productos al Servidor, que la envía como JSON al navegador para mostrarla
+
+
+## UPDATE (Actualizar el Precio de un Producto)
+
+CRUD	Update	Intención de cambiar el precio del "Portátil X" (ID=1).
+
+Método HTTP	PUT o PATCH	El navegador envía la solicitud: PUT /api/productos/1 con el nuevo precio (1150.00).
+
+SQL/BD	UPDATE	La API ejecuta este comando: UPDATE Productos SET Precio = 1150.00 WHERE ID = 1;.
+
+Resultado	El precio del producto con ID=1 se modifica permanentemente en la BD.
+
+
+### DELETE (Eliminar un Producto)
+
+CRUD	Delete	Intención de eliminar el producto obsoleto
+
+Método HTTP	DELETE	El navegador envía la solicitud de eliminación: DELETE /api/productos/1.
+
+SQL/BD	DELETE	La API ejecuta este comando: DELETE FROM Productos WHERE ID = 1;.
+
+Resultado	El registro del producto se elimina permanentemente de la tabla Productos.
+
+
+
+## Código CRUD 
+
+Conexión a la db
+
+```
+// SIMULACIÓN DE LA CONEXIÓN A LA BASE DE DATOS
+const db = {
+    query: (sql, params) => {
+        // En una aplicación real, esto ejecutaría el SQL en la DB.
+        console.log(`\nEJECUTANDO SQL: ${sql}`);
+        console.log(`Parámetros: ${params ? JSON.stringify(params) : 'Ninguno'}`);
+        // Simulación de resultados para las operaciones
+        if (sql.startsWith('SELECT')) return [{ id: 1, titulo: 'Cien Años', autor: 'G. García' }];
+        if (sql.startsWith('INSERT')) return { insertId: 2 };
+        return { affectedRows: 1 };
+    }
+};
+
+const app = require('express')(); // Asumimos que 'app' es una instancia de Express
+app.use(require('express').json());
+```
+
+
+Create/POST
+
+```
+// CRUD: CREATE
+app.post('/api/libros', (req, res) => {
+    // 1. Obtener datos del cuerpo de la solicitud (p.ej., { "titulo": "El Aleph", "autor": "Borges" })
+    const { titulo, autor } = req.body;
+
+    // 2. Construir la sentencia SQL (INSERT)
+    const sql = "INSERT INTO Libros (titulo, autor) VALUES (?, ?)";
+    const params = [titulo, autor];
+
+    // 3. Ejecutar SQL en la Base de Datos
+    db.query(sql, params)
+        .then(result => {
+            // 4. Enviar respuesta HTTP
+            res.status(201).json({ 
+                message: "Libro creado con éxito", 
+                id: result.insertId 
+            });
+        })
+        .catch(err => res.status(500).send(err));
+});
+```
+
+
+Read/GET
+
+```
+// CRUD: READ
+app.get('/api/libros/:id', (req, res) => {
+    // 1. Obtener ID de los parámetros de la URL
+    const libroId = req.params.id;
+
+    // 2. Construir la sentencia SQL (SELECT)
+    const sql = "SELECT * FROM Libros WHERE id = ?";
+    const params = [libroId];
+
+    // 3. Ejecutar SQL en la Base de Datos
+    db.query(sql, params)
+        .then(results => {
+            if (results.length === 0) {
+                // 4. Enviar respuesta HTTP 404 si no se encuentra
+                return res.status(404).send("Libro no encontrado");
+            }
+            // 4. Enviar respuesta HTTP 200 con el dato
+            res.status(200).json(results[0]);
+        })
+        .catch(err => res.status(500).send(err));
+});
+```
+
+
+Update/Put
+
+```
+// CRUD: READ
+app.get('/api/libros/:id', (req, res) => {
+    // 1. Obtener ID de los parámetros de la URL
+    const libroId = req.params.id;
+
+    // 2. Construir la sentencia SQL (SELECT)
+    const sql = "SELECT * FROM Libros WHERE id = ?";
+    const params = [libroId];
+
+    // 3. Ejecutar SQL en la Base de Datos
+    db.query(sql, params)
+        .then(results => {
+            if (results.length === 0) {
+                // 4. Enviar respuesta HTTP 404 si no se encuentra
+                return res.status(404).send("Libro no encontrado");
+            }
+            // 4. Enviar respuesta HTTP 200 con el dato
+            res.status(200).json(results[0]);
+        })
+        .catch(err => res.status(500).send(err));
+});
+```
+
+
+DELETE
+
+```
+// CRUD: UPDATE
+app.put('/api/libros/:id', (req, res) => {
+    // 1. Obtener ID y nuevos datos
+    const libroId = req.params.id;
+    const { titulo, autor } = req.body;
+
+    // 2. Construir la sentencia SQL (UPDATE)
+    const sql = "UPDATE Libros SET titulo = ?, autor = ? WHERE id = ?";
+    const params = [titulo, autor, libroId];
+
+    // 3. Ejecutar SQL en la Base de Datos
+    db.query(sql, params)
+        .then(result => {
+            if (result.affectedRows === 0) {
+                return res.status(404).send("Libro no encontrado para actualizar");
+            }
+            // 4. Enviar respuesta HTTP 200/204
+            res.status(204).send(); // 204 No Content: Éxito, pero sin cuerpo de respuesta
+        })
+        .catch(err => res.status(500).send(err));
+});
+```
+
+
+## Características de CREATE/POST/INSERT INTO
+
+#### 1. Recibir datos nuevos y válidos de la capa de aplicación (por ejemplo, a través de un formulario web o una solicitud API).
+
+#### 2. Asignar un identificador único (ID) a este nuevo registro, que servirá como su dirección permanente en el sistema.
+
+#### 3. Almacenar el nuevo registro de forma duradera para que pueda ser recuperado más tarde.
+
+
+Método HTTP: Se mapea a la solicitud POST.
+
+Sentencia SQL: Se traduce a INSERT INTO.
+
+
+### Cuerpo de la solicitud: Incluir los datos a crear en el cuerpo de la solicitud, generalmente en formato JSON o XML.
+
+### Validación de datos: Realizar validaciones en el servidor para asegurarse de que los datos proporcionados sean correctos y consistentes
+
+### Código de estado HTTP: Devolver un código de estado HTTP adecuado, como 201 Created, para indicar que el recurso ha sido creado con éxito.
+
+### Código de estado HTTP: Devolver un código de estado HTTP adecuado, como 201 Created, para indicar que el recurso ha sido creado con éxito.
+
+
+### Ejemplos
+
+#### Gestión de Usuarios y Perfiles
+
+Registro de usuario: Cuando un nuevo usuario se registra, se ejecuta una operación Create para insertar su nombre, correo electrónico y contraseña (hash) en la tabla de usuarios.
+
+Creación de perfil: Crear un perfil de negocio, una cuenta de cliente, o un perfil de juego.
+
+
+#### En sistemas CMS (Sistemas de Gestión de Contenidos) y plataformas sociales.
+
+Publicar contenido: Crear una nueva publicación de blog, un tweet, un estado de Facebook, o una respuesta en un foro.
+
+Subida de archivos: Crear un registro en la base de datos que referencia la ubicación de un archivo recién subido (imagen, video, documento).
+
+
+#### Transacciones y Documentos
+
+En sistemas de comercio electrónico, banca o contabilidad.
+
+Realizar un pedido: Cuando un cliente finaliza la compra, se crea un nuevo registro de Pedido que detalla los artículos y el total.
+
+Crear una factura o recibo: Generar un documento financiero con un ID único.
+
+
+####  Configuraciones y Relaciones
+
+En el lado del backend para definir la estructura de la aplicación.
+
+Añadir un producto: En un sistema de inventario, se utiliza 'Create' para dar de alta un nuevo producto con su descripción y precio.
+
+##### Crear una relación: Insertar un registro en una tabla intermedia (de muchos a muchos), como cuando un usuario "sigue" a otro o se asigna una etiqueta a una tarea.
+
+
+
+## Características de READ/GET/SELECT FROM
+
+Obtener los datos que previamente fueron insertados (usando Create)
+
+1. Consulta: Recibir parámetros de búsqueda o filtrado de la capa de aplicación.
+
+2. Recuperación: Buscar y extraer el conjunto de datos que coincida con la consulta en la base de datos.
+
+3. Visualización: Devolver los datos recuperados a la aplicación para que puedan ser mostrados, analizados o utilizados.
+
+
+Método HTTP: Se mapea a la solicitud GET.
+
+Sentencia SQL: Se traduce a SELECT FROM.
+
+
+### Parámetros de consulta: Utilizar parámetros de consulta en la URL para especificar los datos que se desean obtener, como filtros, ordenación y paginación.
+
+### Retorno de información: Devolver la información solicitada en un formato adecuado, como JSON o XML.
+
+### Código de estado HTTP: Devolver un código de estado HTTP adecuado, como 200 OK, para indicar que la solicitud ha sido procesada con éxito
+
+### Manejo de errores: Manejar errores y excepciones adecuadamente, devolviendo información útil sobre el error y un código de estado HTTP correspondiente (por ejemplo, 404 Not Found o 500 Internal Server Error).
+
+### Cacheabilidad: Permitir que la respuesta sea cacheada por el navegador o un proxy inverso para mejorar el rendimiento y reducir la carga en el servidor.
+
+### Seguridad: Asegurarse de que la información sensible no sea expuesta a través de la operación GET
+
+##### Ya que los datos se envían en la URL y pueden ser visibles en el historial del navegador y en los registros del servidor.
+
+
+### Ejemplos
+
+#### Visualización de Recursos Individuales (Detail View)
+
+Este es el caso de uso para recuperar un único registro específico utilizando su identificador único (ID).
+
+Ver un perfil de usuario: Cargar la información de un usuario específico al hacer clic en su nombre.
+
+Ver los detalles de un producto: Mostrar la página de detalles completa de un solo artículo en una tienda en línea.
+
+Leer un artículo: Recuperar el contenido completo de una publicación de blog.
+
+
+#### Visualización de Colecciones o Listas (List View)
+
+Este caso de uso recupera múltiples registros, a menudo con la aplicación de filtros, ordenación o paginación.
+
+Página de inicio/feed: Mostrar una lista de publicaciones recientes o relevantes (como un timeline de redes sociales).
+
+Resultados de búsqueda: Recuperar y mostrar una lista de productos o documentos que coinciden con un término de búsqueda.
+
+Listado de inventario: Mostrar una tabla con todos los productos, posiblemente ordenados por precio o stock.
+    
+
+#### Generación de Reportes y Análisis
+
+Aquí, la operación 'Read' se utiliza para realizar cálculos y agregaciones sobre grandes conjuntos de datos.
+
+Reportes financieros: Calcular la suma total de ventas del mes, usando la cláusula SUM en SQL.
+
+Métricas del sistema: Contar el número total de usuarios registrados (usando COUNT).
+
+Gráficos de datos: Recuperar datos agrupados por categoría para generar un gráfico de barras o circular.
+
+
+
+## UPDATE/PUT(todo)/PATCH(parcial)/UPDATE SET
+
+Modificar o cambiar los valores de uno o más campos en un registro de datos ya existente
+
+1. Identificación: Localizar el registro específico que necesita ser modificado, generalmente usando su identificador único (ID).
+
+2. Modificación: Aplicar los nuevos valores a los campos seleccionados.
+
+3. Persistencia del cambio: Asegurar que los datos actualizados se guarden de forma duradera, sobrescribiendo el estado anterior.
+
+
+Método HTTP: Se mapea a PUT (para reemplazar todo el recurso) o PATCH (para aplicar una modificación parcial).
+
+Sentencia SQL: Se traduce a UPDATE ... SET.
+
+
+### PATCH y PUT
+
+#### Método HTTP: Utilizar el método HTTP PATCH para actualizar parcialmente un recurso existente.
+
+#### Cuerpo de la solicitud: Incluir solo los campos que se desean actualizar en el cuerpo de la solicitud, generalmente en formato JSON o XML.
+
+#### Método HTTP: Utilizar el método HTTP PUT para actualizar completamente un recurso existente.
+
+#### Cuerpo de la solicitud: Incluir todos los campos del recurso en el cuerpo de la solicitud, generalmente en formato JSON o XML.
+
+#### Identificador del recurso: Incluir el identificador único (ID) del recurso a actualizar en la URL o como parámetro de consulta.
+
+#### Validación de datos: Realizar validaciones en el servidor para asegurarse de que los datos proporcionados sean correctos y consistentes
+
+#### Retorno de información: Devolver información relevante sobre el recurso actualizado, como su estado actual.
+
+#### Código de estado HTTP: Devolver un código de estado HTTP adecuado, como 200 OK o 204 No Content, para indicar que la actualización ha sido procesada con éxito.
+
+#### Manejo de errores: Manejar errores y excepciones adecuadamente, devolviendo información útil sobre el error y un código de estado HTTP correspondiente (por ejemplo, 400 Bad Request o 404 Not Found).
+
+#### Idempotencia: Asegurarse de que la operación sea idempotente, es decir, que realizar la misma solicitud varias veces tenga el mismo efecto que realizarla una sola vez.
+
+
+##### PUT requiere que se proporcionen todos los campos del recurso
+
+##### Puede ser menos eficiente si solo se necesita actualizar un campo específico.
+
+
+### Ejemplos
+
+#### Edición de Información y Perfiles
+
+Es el uso más directo, donde los usuarios o administradores cambian datos personales o de configuración.
+
+Cambio de información personal: Un usuario edita su nombre, dirección, número de teléfono o contraseña en su perfil.
+
+Edición de contenido: Un autor revisa y guarda una versión corregida de una publicación de blog o un documento.
+
+Modificación de configuraciones: Cambiar las preferencias de notificación de una aplicación o la configuración de privacidad
+
+
+#### Gestión de Estados y Cantidades
+
+Fundamental en sistemas transaccionales y de inventario, donde los valores cambian constantemente.
+
+Actualización de inventario (Stock): Cuando se vende un producto, la cantidad en stock de ese producto debe reducirse (por ejemplo, SET Stock = Stock - 1).
+
+Cambio de estado de un pedido: Un pedido pasa de estar "Pendiente" a "Procesando", "Enviado" o "Entregado".
+
+Contadores: Incrementar o decrementar el número de "me gusta" o vistas de una publicación.
+
+
+#### Tareas Administrativas y de Mantenimiento
+
+Utilizado por la lógica del sistema o por los administradores para mantener la integridad de los datos.
+
+Corrección de errores: Un administrador corrige un precio mal ingresado o una descripción incorrecta de un producto.
+
+Asignación de roles: Cambiar el rol de un usuario de "Miembro" a "Administrador".
+
+Timestamps: Actualizar automáticamente el campo fecha_modificacion o ultima_conexion en un registro cada vez que se produce un cambio
+
+
+## Características de DELETE/DELETE FROM
+
+Remover permanentemente uno o más registros de datos
+
+##### Esta operación es definitiva y debe manejarse con cuidado, ya que su objetivo es liberar recursos y eliminar datos obsoletos o incorrectos.
+
+1. Identificación: Localizar el registro específico que se debe eliminar, generalmente mediante su identificador único (ID).
+
+2. Remoción: Eliminar el registro y sus posibles referencias en tablas relacionadas (dependiendo de las reglas de la base de datos).
+
+3. Finalización: Marcar el dato como no recuperable, a menos que existan copias de seguridad.
+
+
+Método HTTP: Se mapea a la solicitud DELETE.
+
+Sentencia SQL: Se traduce a DELETE FROM.
+
+
+### Método HTTP: Utilizar el método HTTP DELETE para eliminar un recurso existente.
+
+### Identificador del recurso: Incluir el identificador único (ID) del recurso a eliminar en la URL o como parámetro de consulta.
+
+### Validación de permisos: Verificar que el usuario tenga los permisos necesarios para eliminar el recurso.
+
+### Retorno de información: Devolver información relevante sobre el resultado de la eliminación, como un mensaje de confirmación o un código de estado HTTP adecuado.
+
+### Código de estado HTTP: Devolver un código de estado HTTP adecuado, como 204 No Content o 200 OK, para indicar que la eliminación ha sido procesada con éxito.
+
+### Manejo de errores: Manejar errores y excepciones adecuadamente, devolviendo información útil sobre el error y un código de estado HTTP correspondiente (por ejemplo, 404 Not Found si el recurso no existe).
+
+### Idempotencia: Asegurarse de que la operación sea idempotente, es decir, que realizar la misma solicitud varias veces tenga el mismo efecto que realizarla una sola vez (en este caso, el recurso ya está eliminado después de la primera solicitud).
+
+### Confirmación: Considerar implementar una confirmación adicional antes de eliminar el recurso, especialmente si la eliminación es irreversible.
+
+
+### Ejemplos
+
+Los casos de uso de 'Delete' se centran en la limpieza, la privacidad y la gestión de la obsolescencia de los datos.
+
+
+#### Eliminación Definitiva de Datos (Hard Delete)
+
+Este es el 'Delete' tradicional que elimina físicamente el registro de la tabla.
+
+Cierre de cuenta: Cuando un usuario solicita el borrado de su cuenta, sus datos y perfil se eliminan de la base de datos (por razones de privacidad y cumplimiento).
+
+Eliminar contenido propio: Un usuario borra un post, una foto o un comentario que ya no quiere que esté visible.
+
+Limpieza de inventario/registros: Eliminar un producto que ha sido descontinuado o borrar facturas y registros de log muy antiguos que ya no son necesarios (siguiendo políticas de retención).
+    
+
+#### Eliminación Suave o Lógica (Soft Delete)
+
+En lugar de eliminar físicamente el registro, se utiliza la operación Update para simular la eliminación.
+
+Marcar como inactivo: El registro no se elimina de la base de datos, sino que se actualiza un campo booleano, como is_deleted = TRUE o status = 'Inactivo'.
+
+Ventajas: Esto permite que el sistema:
+
+Recupere el dato si fue eliminado por error.
+
+Mantenga la integridad referencial para auditorías o historial, ya que las claves foráneas siguen apuntando a un registro que existe, aunque esté inactivo.
+
+Caso de Uso: Desactivar un usuario en lugar de borrarlo, para mantener su historial de transacciones intacto.         
+
+
+#### Eliminación por Cascading
+
+Se refiere a la eliminación automática de registros relacionados cuando se elimina el registro primario.
+
+Eliminar un pedido completo: Si se borra un registro de Pedido, los registros relacionados en la tabla Ítems_del_Pedido (que contienen los productos específicos de ese pedido) deben eliminarse automáticamente para evitar datos huérfanos.
+
+
+
+## INSERT INTO 
+
+Dos formatos principales
+
+Dependiendo de si especificas los nombres de las columnas
+
+O si asumes el orden de la tabla:
+
+
+1. Especificando Columnas (Recomendado)
+
+Este formato es el más seguro porque no depende del orden de las columnas en la tabla
+
+##### Te permite omitir columnas que aceptan valores por defecto (DEFAULT) o nulos (NULL).
+
+```
+INSERT INTO nombre_tabla (columna1, columna2, columna3, ...)
+VALUES (valor1, valor2, valor3, ...);
+```
+
+
+2. Asumiendo el Orden de las Columnas
+
+Este formato solo funciona si proporcionas valores para todas las columnas de la tabla y en el orden exacto en que fueron definidas.
+
+```
+INSERT INTO nombre_tabla
+VALUES (valor1, valor2, valor3, ...);
+```
+
+
+### Ej: tabla llamada Empleados con las siguientes columnas: ID, Nombre, Departamento y Salario.
+
+1. Inserción Específica
+
+Para añadir un nuevo empleado, especificando solo el nombre y el departamento (y asumiendo que ID es autoincremental y Salario tiene un valor por defecto de 0):
+
+```
+INSERT INTO Empleados (Nombre, Departamento)
+VALUES ('Ana Gómez', 'Ventas');
+```
+
+
+2. Inserción Completa
+
+Para añadir un empleado proporcionando valores para todas las columnas excepto ID:
+
+```
+INSERT INTO Empleados (Nombre, Departamento, Salario)
+VALUES ('Luis Pérez', 'Marketing', 55000.00);
+```
+
+
+### Inserción multiples filas
+
+Insertar varios registros con una sola sentencia
+
+Separando cada conjunto de valores con una coma:
+
+```
+INSERT INTO Empleados (Nombre, Departamento)
+VALUES 
+('Carlos Ruiz', 'IT'),
+('Elena Sanz', 'RRHH');
+```
+
+
+### Inserción desde una Consulta (INSERT INTO SELECT)
+
+##### Forma poderosa de copiar datos de una tabla a otra, o de archivar datos
+
+La sentencia toma el resultado de una consulta SELECT y lo inserta en la nueva tabla.
+
+```
+INSERT INTO Empleados_Archivados (Nombre, Departamento)
+SELECT Nombre, Departamento
+FROM Empleados
+WHERE Salario < 30000;
+```
+
+##### Esta sentencia insertaría en la tabla Empleados_Archivados todos los empleados con un salario inferior a $30,000.
+
+#### INSERT INTO es la puerta de entrada para que los datos pasen de ser volátiles (en la memoria de una aplicación) a ser persistentes
+
+
+
+## CREATE e INSERT INTO
+
+Creando una base de datos para una pequeña librería y queremos una tabla para registrar a los autores.
+
+
+1. CREATE TABLE (Definir la Estructura)
+
+##### Esta sentencia Crea la tabla Autores y define sus columnas y tipos de datos
+
+```
+CREATE TABLE Autores (
+    AutorID INT PRIMARY KEY AUTO_INCREMENT, -- Clave primaria autoincremental
+    Nombre VARCHAR(100) NOT NULL,          -- Nombre completo del autor
+    Nacionalidad VARCHAR(50),              -- País de origen
+    FechaNacimiento DATE                   -- Fecha de nacimiento
+);
+```
+
+##### Hemos definido el recurso (el Autor) y las reglas de los datos que puede contener. 
+
+La tabla existe, pero está vacía.
+
+
+ 2. INSERT INTO (Crear los Registros)
+
+Ahora, usamos INSERT INTO para ejecutar la operación Create (CRUD), añadiendo registros a la tabla que acabamos de definir.
+
+Un Registro: 
+
+```
+INSERT INTO Autores (Nombre, Nacionalidad, FechaNacimiento)
+VALUES ('Gabriel García Márquez', 'Colombia', '1927-03-06');
+```
+
+Multiples registros:
+
+```
+INSERT INTO Autores (Nombre, Nacionalidad, FechaNacimiento)
+VALUES 
+('Isabel Allende', 'Chile', '1942-08-02'),
+('Haruki Murakami', 'Japón', '1949-01-12');
+```
+
+Después de ejecutar estas sentencias, la tabla Autores ahora contiene los siguientes datos persistentes:
+
+AutorID	Nombre	Nacionalidad	FechaNacimiento
+
+1	Gabriel García Márquez	Colombia	1927-03-06
+
+2	Isabel Allende	Chile	1942-08-02
+
+3	Haruki Murakami	Japón	1949-01-12
+
+
+#### CREATE TABLE es un comando de Definición de Datos (DDL) que sienta las bases
+
+#### INTO es un comando de Manipulación de Datos (DML)
+
+##### Ejecuta la operación 'Create' de CRUD, poblando la tabla con información.
+
+
+
+## Select
+
+Es la instrucción más importante y más utilizada en SQL (Structured Query Language).
+
+#### Su función principal es implementar la operación Read (Leer) del modelo CRUD,
+
+
+#### SELECT permite especificar qué información quieres y de dónde la quieres obtener.
+
+```
+SELECT columnas
+FROM tabla;
+```
+
+SELECT columnas: Indica qué columnas quieres ver.
+
+Puedes listar los nombres de las columnas que te interesan (ej: Nombre, Salario).
+
+##### Puedes usar el asterisco (*) para seleccionar todas las columnas de la tabla (ej: SELECT *).
+
+
+FROM tabla: Indica de dónde vas a recuperar esos datos (el nombre de la tabla).
+
+
+#### El verdadero poder de SELECT reside en las cláusulas que puedes añadir para filtrar, ordenar y agrupar los datos
+
+### 1. Cláusula WHERE (Filtrado)
+
+Aplicar filtros a los datos, de modo que solo se recuperen las filas que cumplen una determinada condición.
+
+Caso de Uso: Recuperar solo los productos con un precio superior a 50.
+
+```
+SELECT Nombre, Precio 
+FROM Productos 
+WHERE Precio > 50.00;
+```
+
+
+### 2. Cláusula ORDER BY (Ordenación)
+
+Se utiliza para ordenar el conjunto de resultados por una o más columnas
+
+De forma ascendente (ASC, por defecto) o descendente (DESC).
+
+Caso de Uso: Listar los empleados ordenados por apellido, de la A a la Z.
+
+```
+SELECT Nombre, Apellido 
+FROM Empleados 
+ORDER BY Apellido ASC;
+```
+
+
+### 3. Cláusula GROUP BY (Agrupación)
+
+#### Se utiliza en combinación con funciones de agregación (como COUNT, SUM, AVG, MAX, MIN) para agrupar las filas que tienen el mismo valor en una columna.
+
+Caso de Uso: Contar cuántos empleados hay en cada departamento.
+
+```
+SELECT Departamento, COUNT(EmpleadoID) AS TotalEmpleados 
+FROM Empleados 
+GROUP BY Departamento;
+```
+
+
+### Cláusula JOIN (Combinación de Tablas)
+
+Permite combinar filas de dos o más tablas en función de una columna relacionada entre ellas (claves foráneas).
+
+Caso de Uso: Listar el título de cada libro junto con el nombre de su autor.
+
+```
+SELECT L.Titulo, A.Nombre 
+FROM Libros AS L
+JOIN Autores AS A ON L.AutorID = A.AutorID;
+```
+
+
+
+## WHERE
+
+#### La función principal de WHERE es aplicar una condición lógica a cada fila de una tabla (o el resultado de un join).
+
+##### Solo las filas para las cuales la condición se evalúa como verdadera (TRUE) se incluyen en el resultado de la operación.
+
+WHERE siempre sigue a las cláusulas FROM o JOIN:
+
+```
+SELECT columna1, columna2 
+FROM nombre_tabla 
+WHERE condicion_de_filtrado;
+```
+
+
+### Operadores en WHERE
+
+##### La condición dentro de la cláusula WHERE se construye utilizando operadores de comparación y operadores lógicos.
+
+
+#### Comparación
+
+```
+=	Igual a	WHERE Ciudad = 'Madrid'
+
+>	Mayor que	WHERE Edad > 30
+
+<	Menor que	WHERE Salario < 50000
+
+>=	Mayor o igual que	WHERE Stock >= 10
+
+<=	Menor o igual que	WHERE Puntuacion <= 5
+
+<> o !=	Diferente de	WHERE Estado != 'Inactivo'
+```
+
+
+#### Lógicos (Combinación de Condiciones)
+
+##### Combinar múltiples condiciones de filtrado
+
+```
+AND	Ambas condiciones son verdaderas.	WHERE Edad > 18 AND Pais = 'España'
+
+OR	Al menos una condición es verdadera.	WHERE Departamento = 'Ventas' OR Departamento = 'Marketing'
+
+NOT	Niega la condición (la invierte).	WHERE NOT Pais = 'Francia'
+```
+
+
+#### Operadores Especiales
+
+```
+BETWEEN	Valor dentro de un rango inclusivo.	WHERE Precio BETWEEN 10 AND 20
+
+LIKE	Coincidencia de patrones (con % y _).	WHERE Nombre LIKE 'A%' (Nombres que empiezan con A)
+
+IN	Valor coincide con cualquiera de los valores de una lista.	WHERE ID IN (101, 105, 110)
+
+IS NULL	El valor de la columna es nulo.	WHERE Email IS NULL
+```
+
+
+### WHERE en CRUD
+
+1. READ (Lectura - SELECT): Para recuperar el subconjunto exacto de datos que el usuario necesita ver.
+
+Ejemplo: SELECT * FROM Usuarios WHERE UltimaConexion < '2025-01-01';
+
+
+2. UPDATE (Actualización - UPDATE): Para especificar qué filas deben ser modificadas. 
+
+#### Si olvidas el WHERE, ¡modificarías todos los registros de la tabla!
+
+Ejemplo: UPDATE Productos SET Precio = Precio * 1.10 WHERE Categoria = 'Electrónica';
+
+
+3. DELETE (Eliminación - DELETE): Para especificar qué filas deben ser eliminadas. 
+
+#### Si olvidas el WHERE, ¡eliminarías toda la tabla!
+
+Ejemplo: DELETE FROM Logs WHERE Fecha < '2024-01-01';
+
+
+##### WHERE es el control de acceso a nivel de fila en SQL
+
+
+
+## OR y AND
+
+operadores lógicos (o booleanos)
+
+#### Combinar múltiples condiciones de filtrado
+
+##### Permite refinar y especificar con precisión los registros que deseas seleccionar, actualizar o eliminar.
+
+
+1. Objetivo: Obtener a todos los empleados que trabajan en el departamento de 'Ventas' Y ganan un salario mayor a $60,000.
+
+```
+SELECT Nombre, Salario, Departamento
+FROM Empleados
+WHERE Departamento = 'Ventas' AND Salario > 60000;
+```
+
+#### AND: Solo los registros que cumplen ambas condiciones serán devueltos.
+
+
+2. Objetivo: Obtener a todos los productos cuya categoría sea 'Electrónica' O cuyo precio sea menor a $20.
+
+```
+SELECT Nombre, Categoria, Precio
+FROM Productos
+WHERE Categoria = 'Electrónica' OR Precio < 20;
+``` 
+
+#### OR: Los registros que cumplen la condición de categoría, la condición de precio, o ambas, serán devueltos.
+
+
+Objetivo: Obtener clientes que vivan en 'Madrid' Y que tengan el estado de cuenta 'Activo', O simplemente obtener cualquier cliente que viva en 'Barcelona'.
+
+Con paréntesis (correcto y claro):
+
+```
+SELECT * FROM Clientes
+WHERE (Ciudad = 'Madrid' AND Estado = 'Activo') OR Ciudad = 'Barcelona';
+-- SQL evalúa el grupo entre paréntesis primero.
+```
+
+Los paréntesis son esenciales para asegurar que el motor de la base de datos interprete las condiciones exactamente como lo deseas.
+
+##### AND tiene mayor precedencia que OR. Esto significa que SQL evaluará las condiciones conectadas por AND primero.
+
+
+## LIKE
+
+#### Operador de comparación utilizado en la cláusula WHERE
+
+##### Para buscar patrones específicos en datos de texto (cadenas de caracteres).
+
+A diferencia del operador de igualdad (=), que requiere una coincidencia exacta
+
+##### LIKE permite realizar búsquedas parciales o difusas.
+
+
+#### Es indispensable para realizar búsquedas flexibles donde no se conoce la cadena completa
+
+##### o se quiere encontrar un valor basado en su estructura.
+
+```
+SELECT columna1, columna2
+FROM tabla
+WHERE columna_texto LIKE 'patron_de_busqueda';
+```
+
+
+### Caracteres Comodín (Wildcards): Para construir el patrón de búsqueda
+
+LIKE utiliza dos caracteres comodín principales que representan caracteres desconocidos:
+
+
+1. Porcentaje (%)
+Representa cero, uno o múltiples caracteres de cualquier tipo. Es el comodín más usado.
+
+Ejemplo:
+
+'A%': Busca cualquier valor que empiece con la letra 'A'.
+
+'%man%': Busca cualquier valor que contenga la secuencia 'man' en cualquier posición.
+
+'%s' : Busca cualquier valor que termine con la letra 's'.
+
+
+2. Guion bajo (_)
+Representa exactamente un solo carácter de cualquier tipo.
+
+Ejemplo:
+
+'_a_a' : Busca cadenas de cuatro letras que tengan una 'a' en la segunda y cuarta posición (ej., 'data', 'casa').
+
+
+### Usos
+
+Nombres que empiezan con "Jo"	WHERE Nombre LIKE 'Jo%'	Encontraría: José, John, Joaquina.
+
+Nombres que terminan en "ez"	WHERE Nombre LIKE '%ez'	Encontraría: Pérez, Rodríguez, González.
+
+Nombres que tienen "an" en el medio	WHERE Nombre LIKE '%an%'	Encontraría: Juan, Manuel, Santiago.
+
+##### Nombres de exactamente 5 letras que terminan en "o"	WHERE Nombre LIKE '____o'	Encontraría: Carlos (si fuera 5 letras), Ricardo.
+
+Nombres que tienen una "a" en la segunda posición	WHERE Nombre LIKE '_a%'	Encontraría: Laura, Pablo, Camilo.
+
+
+### LIKE vs. Igualdad
+
+WHERE Columna = 'Madrid' requiere que el valor sea exactamente "Madrid".
+
+WHERE Columna LIKE 'Madrid' es equivalente a la anterior (sin comodines).
+
+WHERE Columna LIKE 'Madri%' permite que la cadena contenga "Madrid" al principio y cualquier cosa después (ej., Madrid Central).
+
+
+#### El rendimiento de las consultas con LIKE puede ser más lento que el de las consultas con =
+
+##### Especialmente cuando el comodín % se usa al principio del patrón, ya que impide que la base de datos utilice índices de manera eficiente.
+    
+
+### Uso de %
+
+Representa cero, uno o múltiples caracteres de cualquier tipo.
+
+Caso de Uso: Se usa para buscar coincidencias de cualquier longitud antes, después o en medio de una parte conocida de la cadena.
+
+'A%'	Empieza con 'A'.	Ana, Abraham, A
+'%ta'	Termina con 'ta'.	Venta, Carta, Testa
+'%an%'	Contiene 'an' en cualquier lugar.	Espana, Januario, plano
+'L%s'	Empieza con 'L' y termina con 's'.	Luis, Lápices, Lámparas
+
+
+### Uso de _
+
+Representa una coincidencia posicional.
+
+Significado: Representa exactamente un único carácter de cualquier tipo.
+
+Caso de Uso: Se usa para forzar una longitud específica o para buscar patrones donde solo una posición es variable.
+
+```
+'C_sa'	Empieza con 'C', un carácter cualquiera, y termina con 'sa'.	Casa, Cosa, C_sa
+'____'	Exactamente cuatro caracteres.	mesa, azul, cama
+'___@%.com'	Dominio con exactamente tres letras antes del '@'.	abc@mail.com, xyz@web.com
+```
+
+Uso con LIKE: Los comodines solo son funcionales cuando se utilizan con el operador LIKE (o NOT LIKE para buscar lo que no coincide con el patrón).
+
+Mayúsculas/Minúsculas: La coincidencia de patrones puede ser sensible o no a mayúsculas y minúsculas, dependiendo de la configuración de la base de datos 
+
+Por ejemplo, MySQL suele ser insensible a mayúsculas/minúsculas por defecto
+
+Mientras que PostgreSQL puede ser sensible.
+
+
+
+## ORDER BY
+
+Fundamental para la operación Read (Leer) de CRUD
+
+Para especificar el orden en el que se deben presentar los registros de un conjunto de resultados de una consulta SELECT.
+
+
+Cuando ejecutas una consulta SELECT simple, la base de datos devuelve las filas en el orden en que las encuentra
+
+A menudo es el orden físico en que fueron insertadas, o un orden indefinido.
+
+
+#### ORDER BY te permite forzar un orden lógico que sea significativo para el usuario.
+
+```
+SELECT columna1, columna2, ...
+FROM nombre_tabla
+WHERE condicion_filtrado
+ORDER BY columna_ordenacion [ASC | DESC];
+```
+
+##### ORDER BY: Se coloca al final de la sentencia SELECT (después de FROM y WHERE).
+
+columna_ordenacion: Es el nombre de la columna por la cual deseas ordenar los resultados.
+
+##### [ASC | DESC]: Indica la dirección de la ordenación:
+
+ASC (Ascendente): Es el valor por defecto. Ordena de menor a mayor (A a Z, 1 a 10, fechas más antiguas a más recientes).
+
+DESC (Descendente): Ordena de mayor a menor (Z a A, 10 a 1, fechas más recientes a más antiguas).
+
+
+### Ordenación Multi-Nivel
+
+Una de las características más útiles de ORDER BY
+
+La base de datos aplica el orden de la primera columna
+
+y si dos o más filas tienen el mismo valor en esa columna (un "empate")
+
+utiliza la segunda columna para desempatar, y así sucesivamente.
+
+
+#### Ej: Objetivo: Listar a los empleados, primero ordenados por Departamento (alfabéticamente) y, dentro de cada departamento, ordenados por Salario de forma descendente (el más alto primero).
+
+```
+SELECT Nombre, Departamento, Salario
+FROM Empleados
+ORDER BY Departamento ASC, Salario DESC;
+```
+
+1. Agrupa y ordena todos los empleados por su Departamento (A-Z).
+
+2. Dentro del grupo de 'Marketing', ordena a esos empleados por Salario, de mayor a menor.
+
+3. Luego, dentro del grupo de 'Ventas', ordena a esos empleados por Salario, de mayor a menor, y así sucesivamente.
+
+
+
+### Casos de uso
+
+Aplicaciones Web: Mostrar resultados de búsqueda por relevancia, publicaciones por fecha de creación
+(más recientes primero, usando DESC), o listas de precios (más baratos primero, usando ASC).
+
+Informes: Organizar datos por categorías, zonas geográficas, o totales para facilitar la lectura y el análisis
+
+##### Limitación: A menudo se combina con la cláusula LIMIT para obtener, por ejemplo, los 10 productos más caros (ORDER BY Precio DESC LIMIT 10).
+
+
+
+## GROUP BY
+
+Implementa la operación Read (Leer) de CRUD
+
+#### Enfocada en el análisis y resumen de datos
+
+##### Su función principal es agrupar filas que tienen el mismo valor en una o más columnas
+
+Permitiendo aplicar funciones de agregación a cada uno de esos grupos.
+
+
+#### El propósito de GROUP BY es transformar un conjunto de filas detalladas en un conjunto de filas resumidas.
+
+```
+SELECT columna_agrupacion, funcion_agregacion(columna_calculo)
+FROM nombre_tabla
+WHERE condicion_filtrado
+GROUP BY columna_agrupacion
+HAVING condicion_grupo
+ORDER BY columna_ordenacion;
+```
+
+1. Agrupación: La cláusula GROUP BY toma todas las filas de la tabla y las organiza en grupos
+Todas las filas que tienen el mismo valor en la columna_agrupacion se colocan en el mismo grupo.
+
+2. Agregación: La sentencia SELECT luego aplica una función de agregación (como COUNT, SUM, AVG, MAX, MIN) a cada uno de esos grupos.
+
+
+### Ej: tabla Pedidos con miles de ventas.
+
+##### Objetivo: ¿Cuál fue el total de ventas por cada Cliente?
+
+```
+SELECT 
+    ClienteID,                      -- Columna de Agrupación
+    SUM(Monto) AS TotalVendido      -- Función de Agregación
+FROM Pedidos
+GROUP BY ClienteID;
+```
+
+Sin GROUP BY: Obtendrías el SUM(Monto) de todos los pedidos juntos.
+
+Con GROUP BY: El sistema crea un grupo para el ClienteID 1, calcula la suma de sus montos; luego crea un grupo para el ClienteID 2, calcula la suma de sus montos, y así sucesivamente.
+
+
+### Funciones de Agregación
+
+##### Solo tienen sentido cuando se usan con o sin GROUP BY, ya que operan sobre conjuntos de datos:
+
+COUNT(): Cuenta el número de filas en el grupo.
+
+SUM(): Calcula la suma total de valores numéricos en el grupo.
+
+AVG(): Calcula el promedio (media aritmética) de los valores en el grupo.
+
+MAX(): Encuentra el valor máximo en el grupo.
+
+MIN(): Encuentra el valor mínimo en el grupo.
+
+
+### HAVING: se utiliza exclusivamente con GROUP BY.
+
+```
+SELECT ClienteID, SUM(Monto) AS TotalVendido
+FROM Pedidos
+GROUP BY ClienteID
+HAVING SUM(Monto) > 1000;
+```
+
+##### WHERE no funcionaría aquí, ya que el filtro se aplica sobre el resultado de la función SUM(), no sobre los datos individuales.
+
+
+#### GROUP BY es la columna vertebral de la inteligencia de negocios y el análisis de datos en SQL, permitiendo la consolidación y el resumen de grandes volúmenes de información.
+
+
+
+## JOIN: una de las herramientas más cruciales
+
+#### Su función es combinar filas de dos o más tablas
+
+##### Basándose en una columna relacionada: un campo que existe en ambas tablas, como una clave primaria y una clave foránea
+
+##### Sin JOIN, solo podrías recuperar datos de una tabla a la vez
+
+##### Limitaría la capacidad de obtener una visión completa de la información relacionada.
+
+
+### Claves Relacionadas
+
+##### En una base de datos relacional, la información se divide en tablas separadas
+
+Para evitar redundancia
+
+JOIN se encarga de "reunir" esa información.
+
+Tabla A (e.g., Autores) tiene una Clave Primaria (AutorID).
+
+#### Tabla B (e.g., Libros) tiene una Clave Foránea (AutorID) que apunta a la Tabla A.
+
+##### JOIN utiliza estas dos columnas (AutorID) para emparejar cada libro con su autor correcto.
+
+
+### Tipos de JOIN
+
+##### Cada uno con una regla diferente sobre cómo manejar las filas que no tienen una coincidencia en la otra tabla.
+
+1. INNER JOIN (La Intersección)
+
+Función: Devuelve solo las filas que tienen coincidencias en ambas tablas.
+
+Caso de Uso: Es el más común. Por ejemplo, si quieres listar solo los autores que tienen libros registrados y solo los libros que tienen un autor asignado.
+
+```
+SELECT L.Titulo, A.Nombre 
+FROM Libros AS L
+INNER JOIN Autores AS A ON L.AutorID = A.AutorID;
+```
+
+Muestra solo los libros que tienen un autor y solo los autores que tienen al menos un libro. Las filas sin coincidencias en ambos lados se excluyen.
+
+
+2. LEFT JOIN (Preservar la Izquierda)
+
+Función: Devuelve todas las filas de la tabla izquierda (la primera tabla nombrada en la cláusula FROM) y las filas coincidentes de la tabla derecha.
+
+Si no hay coincidencia en la tabla derecha, las columnas de la derecha mostrarán el valor NULL.
+
+Caso de Uso: Por ejemplo, si quieres ver todos los autores, incluso aquellos que aún no tienen ningún libro registrado. 
+
+```
+SELECT A.Nombre, L.Titulo
+FROM Autores AS A -- Tabla Izquierda (preservada)
+LEFT JOIN Libros AS L ON A.AutorID = L.AutorID;
+```
+
+Resultado: Muestra todos los autores. Si un autor no tiene libros, su Titulo de libro aparecerá como NULL.
+
+
+3. RIGHT JOIN (Preservar la Derecha)
+
+Función: Devuelve todas las filas de la tabla derecha y las filas coincidentes de la tabla izquierda.
+
+Si no hay coincidencia en la tabla izquierda, las columnas de la izquierda mostrarán NULL.
+
+Caso de Uso: Es similar al LEFT JOIN, pero invertido. Por ejemplo, ver todos los libros, incluso si (por error de datos) no tienen un autor asignado
+
+```
+SELECT A.Nombre, L.Titulo
+FROM Autores AS A
+RIGHT JOIN Libros AS L ON A.AutorID = L.AutorID; -- Tabla Derecha (preservada)
+```
+
+Resultado: Muestra todos los libros. Si un libro no tiene autor, el Nombre del autor aparecerá como NULL.
+
+
+4. FULL OUTER JOIN (Unión Completa)
+
+Función: Devuelve las filas cuando hay una coincidencia en una de las tablas. Es la combinación del LEFT JOIN y el RIGHT JOIN.
+
+Caso de Uso: Se utiliza para encontrar registros que tienen coincidencias y para identificar registros que no tienen ninguna coincidencia en la tabla relacionada (es decir, autores sin libros Y libros sin autor).
+
+```
+SELECT A.Nombre, L.Titulo
+FROM Autores AS A
+FULL OUTER JOIN Libros AS L ON A.AutorID = L.AutorID;
+```
+
+Resultado: Incluye todos los autores, todos los libros, y coloca NULL en los lados donde no hay coincidencia. 
+
+##### (No todas las bases de datos SQL soportan FULL OUTER JOIN).
+
+
+
+## Paginación
+
+##### Técnica esencial utilizada para limitar la cantidad de filas que se devuelven en una consulta SELECT
+
+##### Su objetivo es dividir un conjunto grande de resultados en páginas más pequeñas y manejables
+
+Fundamental para el rendimiento y la experiencia del usuario en aplicaciones web.
+
+
+#### La paginación te permite pedir, por ejemplo, los registros del 1 al 20 (Página 1),
+
+Luego los registros del 21 al 40 (Página 2), y así sucesivamente.
+
+Se logra en SQL usando dos cláusulas clave, aunque la sintaxis específica varía según el sistema de gestión de bases de datos (DBMS):
+
+
+1. LIMIT (Limite): Especifica el número máximo de filas que deben devolverse.
+
+2. OFFSET (Desplazamiento): Especifica cuántas filas deben saltarse desde el inicio del conjunto de resultados antes de comenzar a contarlas con LIMIT.
+
+```
+SELECT columna1, columna2
+FROM nombre_tabla
+ORDER BY columna_ordenacion -- ¡Crucial para la paginación!
+LIMIT numero_filas
+OFFSET desplazamiento_filas;
+```
+
+
+### Ej: mostrar 25 resultados por página (el límite) y el usuario quiere ver la tercera página:
+
+1. Página 1: Filas 1-25. Se salta 0 filas.
+
+```
+... LIMIT 25 OFFSET 0;
+```
+
+2. Página 2: Filas 26-50. Se salta 25 filas.
+
+```
+... LIMIT 25 OFFSET 25;
+```
+
+3. Página 3: Filas 51-75. Se salta 50 filas.
+
+```
+... LIMIT 25 OFFSET 50;
+```
+
+
+#### Fórmula de Paginación
+
+Para obtener la página N con un tamaño de página P:
+
+```
+OFFSET=(N−1)×P
+```
+
+
+### La Importancia de ORDER BY
+
+#### La cláusula ORDER BY es obligatoria para una paginación correcta.
+
+##### Si no especificas un orden, el orden en que la base de datos devuelve las filas es indefinido.
+
+Podría causar que:
+
+Una fila aparezca en la Página 1 una vez y luego en la Página 2 otra vez (duplicados).
+
+Una fila sea omitida por completo
+
+ORDER BY garantiza que la lista de resultados sea estable y consistente, de modo que el OFFSET siempre salte las mismas filas.
+
+
+
+## LIMIT
+
+Utilizada en la sentencia SELECT para restringir el número de filas que se devuelven en el conjunto de resultados.
+
+La función principal de LIMIT es controlar el tamaño de la respuesta de la base de datos
+
+
+La cláusula LIMIT se coloca al final de la consulta SELECT, después de las cláusulas FROM, WHERE, GROUP BY y ORDER BY.
+
+```
+SELECT columna1, columna2 
+FROM nombre_tabla
+-- ... otras cláusulas (WHERE, GROUP BY, etc.)
+ORDER BY columna_ordenacion 
+LIMIT numero_maximo_filas;
+```
+
+
+### Ej: Si tienes una tabla con miles de productos y solo quieres ver los primeros 10:
+
+```
+SELECT Nombre, Precio
+FROM Productos
+LIMIT 10;
+```
+
+##### El sistema deja de procesar y devolver resultados tan pronto como alcanza las 10 filas.
+
+
+### Casos de uso 
+
+1. Obtener los Registros Principales (Top N)
+
+Para que LIMIT sea significativo, casi siempre debe usarse en conjunto con ORDER BY.
+
+Esto garantiza que obtengas los registros más relevantes (los "mejores", los "más caros", los "más recientes", etc.).
+
+Ejemplo: Encontrar el producto más caro.
+
+```
+SELECT Nombre, Precio
+FROM Productos
+ORDER BY Precio DESC  -- Ordenar del más caro al más barato
+LIMIT 1;              -- Tomar solo el primero
+```
+
+
+2. Paginación
+
+Junto con la cláusula OFFSET (Desplazamiento), LIMIT permite implementar la paginación, dividiendo grandes resultados en páginas más pequeñas
+
+Ejemplo: Mostrar la segunda página con 20 resultados por página.
+
+LIMIT 20: Indica que quieres 20 resultados.
+
+OFFSET 20: Indica que quieres saltar los primeros 20 resultados (la primera página).
+
+```
+SELECT Nombre
+FROM Clientes
+ORDER BY ClienteID
+LIMIT 20 OFFSET 20;
+```
+
+
+3. Pruebas y Desarrollo
+
+Durante el desarrollo, usar LIMIT te permite probar consultas complejas o potencialmente lentas sin sobrecargar la base de datos ni tu red, al limitar la cantidad de datos que se transfieren. 
+
+Aunque LIMIT y OFFSET son la forma estándar en MySQL, PostgreSQL y SQLite, otros sistemas como SQL Server u Oracle usan cláusulas específicas como TOP o FETCH NEXT ... ROWS ONLY para lograr el mismo efecto.
+
+
+
+## OFFSET
+
+Instrucción que se utiliza en conjunto con LIMIT para implementar la paginación.
+
+#### Especificar cuántas filas se deben omitir o saltar desde el inicio del conjunto de resultados
+
+##### Antes de que la base de datos comience a seleccionar las filas que serán devueltas.
+
+
+#### Se coloca al final de la consulta SELECT y requiere que los datos estén ordenados para ser funcional.
+
+```
+SELECT columna1, columna2
+FROM nombre_tabla
+ORDER BY columna_ordenacion -- ¡Crucial!
+LIMIT numero_filas 
+OFFSET desplazamiento_filas;
+```
+
+OFFSET desplazamiento_filas: El número entero que indica cuántas filas al principio del conjunto ordenado deben ser ignoradas.
+
+
+Imagina que estás mostrando 15 resultados por página y quieres obtener los registros de la cuarta página.
+
+Página	4
+
+Límite (LIMIT)	15 	Indica cuántas filas traer (las 15 de esa página).
+
+Desplazamiento (OFFSET)	45 	(4 - 1) x 15  Indica cuántas filas ignorar (las 15 de la Pág 1, las 15 de la Pág 2 y las 15 de la Pág 3).
+
+
+La consulta para obtener la cuarta página sería:
+
+```
+SELECT Nombre, FechaPublicacion
+FROM Articulos
+ORDER BY FechaPublicacion DESC
+LIMIT 15 OFFSET 45
+```
+
+##### Esto recupera 15 artículos, empezando por el artículo número 46 de la lista ordenada.
+
+
+#### Importancia de la Ordenación
+
+LIMIT, OFFSET depende absolutamente de que haya una cláusula ORDER BY bien definida
+
+Si no ordenas los resultados, la base de datos decidirá arbitrariamente el orden
+
+El offset saltará filas diferentes en cada ejecución, lo que resultaría en:
+
+
+Duplicación de registros entre páginas.
+
+Omisión de registros
+
+
+ORDER BY garantiza que el conjunto de resultados es siempre el mismo, permitiendo que OFFSET siempre salte el número correcto de filas anteriores
+
+
+
+## UPDATE
+
+##### Utilizada para implementar la operación Update (Actualizar) del modelo CRUD
+
+##### Su función es modificar los valores existentes en una o más columnas dentro de las filas de una tabla.
+
+
+#### Tiene dos componentes cruciales: SET para especificar los cambios y la cláusula WHERE para especificar qué filas se deben modificar.
+
+```
+UPDATE nombre_tabla
+SET columna1 = nuevo_valor1, columna2 = nuevo_valor2, ...
+WHERE condicion_filtrado;
+```
+
+UPDATE nombre_tabla: Indica la tabla en la que deseas realizar las modificaciones.
+
+SET columna1 = nuevo_valor1: Indica qué columnas deben ser modificadas y qué nuevos valores deben recibir. Puedes actualizar una o varias columnas a la vez.
+
+WHERE condicion_filtrado: Esta es la cláusula más importante. Define qué filas específicas serán afectadas por la actualización.
+
+
+### Regla Crítica: Usar la Cláusula WHERE
+
+##### Si omites la cláusula WHERE en una sentencia UPDATE, el motor de la base de datos aplicará los cambios a TODOS los registros de la tabla
+
+##### Lo cual casi siempre resulta en una pérdida de datos catastrófica.
+
+
+Sin WHERE: Se actualizarían todas las filas.
+
+#### Con WHERE: Solo se actualizan las filas que cumplen la condición.
+
+
+### Ej
+
+1. Actualizar un Registro Específico
+
+Objetivo: Cambiar el precio de un producto específico (con ID 10) que estaba mal catalogado.
+
+```
+UPDATE Productos
+SET Precio = 25.99
+WHERE ProductoID = 10;
+```
+
+Solo se modifica la fila cuyo ProductoID es igual a 10.
+
+
+2. Actualizar Múltiples Registros (Actualización Masiva)
+
+Objetivo: Aplicar un aumento salarial del 5% a todos los empleados del departamento de 'Ventas'.
+
+```
+UPDATE Empleados
+SET Salario = Salario * 1.05
+WHERE Departamento = 'Ventas';
+```
+
+Se utiliza el valor existente de la columna (Salario) para calcular el nuevo valor
+
+Se aplica el cambio a todas las filas que cumplen la condición del WHERE.
+
+
+3. Actualizar Múltiples Columnas
+
+Objetivo: Cambiar el estado y la fecha de última modificación de una tarea que acaba de ser completada.
+
+```
+UPDATE Tareas
+SET Estado = 'Completada', FechaUltimaModificacion = CURRENT_DATE()
+WHERE TareaID = 5;
+```
+
+#### Ambas columnas se modifican simultáneamente en la misma fila.
+
+
+
+## SET 
+
+Componente fundamental de la sentencia UPDATE
+
+#### Su única función es especificar los cambios que se deben realizar en las columnas de los registros seleccionados.
+
+##### SET indica al motor de la base de datos qué columna va a ser modificada y cuál será su nuevo valor.
+
+La sintaxis siempre sigue el formato de asignación: columna = valor.
+
+```
+UPDATE nombre_tabla
+SET columna1 = nuevo_valor1, columna2 = nuevo_valor2, ...
+WHERE condicion;
+```
+
+UPDATE nombre_tabla: Indica la tabla que se va a modificar.
+
+SET: Introduce la lista de asignaciones de valor.
+
+columna = nuevo_valor: Define la nueva información que se grabará. Puedes asignar valores fijos, resultados de expresiones o el valor de otra columna.
+
+
+### Casos de uso
+
+1. Asignar un Valor Fijo
+
+El uso más directo es establecer un valor literal para una o más columnas.
+
+Objetivo: Cambiar la Categoría de un producto a 'Oferta Especial'.
+
+```
+UPDATE Productos
+SET Categoria = 'Oferta Especial'
+WHERE ID = 5;
+```
+
+
+2. Usar una Expresión o Cálculo
+
+Puedes usar el valor actual de una columna para calcular el nuevo valor, lo cual es muy común para incrementos o decrementos.
+
+Objetivo: Aumentar el Precio de todos los productos en un 10%.
+
+```
+UPDATE Productos
+SET Precio = Precio * 1.10
+WHERE Categoria = 'Electrónica';
+```
+
+
+3. Asignar Múltiples Columnas a la Vez
+
+Puedes modificar varias columnas en la misma operación UPDATE, separándolas por comas.
+
+Objetivo: Marcar una tarea como completada y registrar la fecha de finalización
+
+```
+UPDATE Tareas
+SET Estado = 'Completada', FechaFinalizacion = CURRENT_DATE()
+WHERE TareaID = 10;
+```
+
+
+4. Asignar un Valor Nulo
+
+Puedes usar SET para establecer el valor de una columna como NULL (siempre y cuando la columna no esté definida como NOT NULL).
+
+Objetivo: Eliminar el Email del cliente ID 15.
+
+```
+UPDATE Clientes
+SET Email = NULL
+WHERE ClienteID = 15;
+```
+
+
+### UPDATE Condicional
+
+Sentencia UPDATE junto con la cláusula WHERE
+
+Y construcciones lógicas para modificar solo un subconjunto específico de filas que cumplen ciertas condiciones.
+
+
+La Cláusula WHERE (La Condición)
+
+Define el criterio de filtrado que debe cumplir una fila para ser seleccionada. La fila solo se actualiza si la condición se evalúa como verdadera (TRUE).
+
+
+La Cláusula SET (El Cambio)
+
+Define los nuevos valores que se aplicarán a las columnas de las filas que pasaron el filtro WHERE.
+
+```
+UPDATE Productos
+SET Descuento = 0.15          -- Cambio: Aplicar 15% de descuento
+WHERE Categoria = 'Verano';   -- Condición: Solo a productos de 'Verano'
+```
+
+Solo las filas donde Categoria es igual a 'Verano' serán modificadas.
+
+
+#### Las actualizaciones condicionales pueden ser mucho más complejas, utilizando operadores lógicos (AND, OR), operadores de comparación (>, <, LIKE), y funciones de agregación.
+
+1. Basado en Múltiples Criterios (AND/OR)
+
+Permite aplicar el cambio solo si se cumplen dos o más condiciones simultáneamente.
+
+Objetivo: Aumentar el salario solo a los empleados del departamento 'Marketing' Y que ganen menos de $50,000.
+
+```
+UPDATE Empleados
+SET Salario = Salario * 1.10
+WHERE Departamento = 'Marketing' AND Salario < 50000;
+```
+
+
+2. Actualización Basada en el Valor Actual
+
+La condición se basa en el valor que el registro ya contiene.
+
+Objetivo: Reducir el stock de los productos que tienen más de 100 unidades, para moverlos a almacén. 
+
+```
+UPDATE Productos
+SET Stock = Stock - 10
+WHERE Stock > 100;
+```
+
+3. Actualización Condicional con Valores Diferentes (CASE)
+
+A veces, no solo quieres seleccionar las filas con condiciones
+
+##### sino que quieres aplicar diferentes cambios a diferentes grupos dentro de la misma sentencia UPDATE.
+
+Objetivo: Dar una bonificación diferente según el cargo del empleado.
+
+Si es 'Gerente', dar $500 de bono.
+
+Si es 'Supervisor', dar $200 de bono.
+    
+```
+UPDATE Empleados
+SET Salario = Salario +
+    CASE 
+        WHEN Cargo = 'Gerente' THEN 500
+        WHEN Cargo = 'Supervisor' THEN 200
+        ELSE 0 -- Si no cumple ninguna, no se le da bono (Salario + 0)
+    END
+WHERE Departamento IN ('Ventas', 'Marketing'); -- Condición de filtro inicial
+```
+
+
+## Funciones 
+
+##### Son bloques de código predefinidos o definidos por el usuario que toman una entrada (argumentos o valores)
+
+Realizan una acción o cálculo, y devuelven un resultado.
+
+Son esenciales para procesar y manipular datos de manera eficiente.
+
+
+### 1. Funciones de Agregación (Aggregate Functions)
+
+##### Operan sobre un conjunto de filas (a menudo un grupo definido por GROUP BY)
+
+Devuelven un único valor de resumen para ese grupo o conjunto. 
+
+Son cruciales para el análisis de datos.
+
+```
+COUNT()	Cuenta el número de filas o valores no nulos.	SELECT COUNT(PedidoID) FROM Pedidos;
+
+SUM()	Calcula la suma total de un conjunto de valores numéricos.	SELECT SUM(Salario) FROM Empleados;
+
+AVG()	Calcula el promedio (media) de un conjunto de valores numéricos.	SELECT AVG(Precio) FROM Productos;
+
+MAX()	Devuelve el valor más grande en el conjunto.	SELECT MAX(FechaNacimiento) FROM Clientes;
+
+MIN()	Devuelve el valor más pequeño en el conjunto.	SELECT MIN(Stock) FROM Inventario;
+```
+
+
+### 2. Funciones Escalares (Scalar Functions)
+
+Operan sobre un valor de entrada y devuelven un único valor de salida por cada fila procesada.
+
+Se utilizan para manipular, formatear o calcular valores dentro de una columna.
+
+
+#### A. Funciones de Cadenas (Strings)
+
+Manipulan datos de texto:
+
+LENGTH()	Devuelve la longitud de una cadena.	SELECT LENGTH(Nombre) FROM Usuarios;
+
+UPPER()/LOWER()	Convierte el texto a mayúsculas/minúsculas.	SELECT UPPER(Apellido) FROM Empleados;
+
+SUBSTRING()	Extrae una subcadena de una cadena.	SELECT SUBSTRING(Email, 1, 5) FROM Clientes;
+
+CONCAT()	Concatena (une) dos o más cadenas.	SELECT CONCAT(Nombre, ' ', Apellido) FROM Empleados;
+
+
+#### Funciones Numéricas
+
+Realizan cálculos matemáticos:
+
+ROUND()	Redondea un número a un número específico de decimales.	SELECT ROUND(Precio, 2) FROM Productos;
+
+CEIL()/FLOOR()	Redondea al entero inmediatamente superior/inferior.	SELECT CEIL(3.14);
+
+ABS()	Devuelve el valor absoluto de un número.	SELECT ABS(-100);
+
+
+
+#### C. Funciones de Fecha y Hora
+
+Manipulan valores de fecha y hora:
+
+NOW()	Devuelve la fecha y hora actual del sistema.	INSERT INTO Logs (Fecha) VALUES (NOW());
+
+DATE_ADD()	Añade un intervalo de tiempo a una fecha.	SELECT DATE_ADD(FechaEnvio, INTERVAL 7 DAY);
+
+DATEDIFF()	Calcula la diferencia entre dos fechas.	SELECT DATEDIFF(FechaFin, FechaInicio);
+
+
+### Alias: AS
+
+Es una práctica común usar AS (Alias) con funciones para darle un nombre descriptivo a la columna de resultado
+
+El nombre de la columna original sería el nombre de la función:
+
+```
+SELECT AVG(Salario) AS SalarioPromedio
+FROM Empleados;
+```
+
+#### Las funciones son esenciales para realizar cualquier tipo de transformación de datos 
+
+##### o análisis resumido directamente dentro de la base de datos, lo cual reduce la carga de procesamiento en la capa de aplicación.
+
+
+
+## DELETE
+
+##### DELETE es simple, pero su uso requiere la máxima precaución, ya que la acción de eliminación es, por defecto, permanente y puede ser irreversible sin copias de seguridad. 
+
+```
+DELETE FROM nombre_tabla
+WHERE condicion_filtrado;
+```
+
+DELETE FROM nombre_tabla: Indica la tabla de la cual deseas eliminar registros.
+
+WHERE condicion_filtrado: Esta es la cláusula más importante. Define qué filas específicas serán eliminadas.
+
+
+### Regla Crítica: Usar la Cláusula WHERE
+
+Al igual que con UPDATE, si omites la cláusula WHERE en una sentencia DELETE, la base de datos asumirá que deseas eliminar TODAS las filas de la tabla, vaciándola por completo.
+
+Con WHERE: Solo se eliminan las filas que cumplen la condición.
+
+##### Sin WHERE: Se eliminan todos los datos de la tabla (similar a un TRUNCATE TABLE, aunque TRUNCATE es más rápido y no genera logs de transacción en algunos sistemas).
+
+
+### Ej
+
+1. Eliminar un Registro Específico
+
+Objetivo: Eliminar el registro de un cliente específico utilizando su identificador único (ID 105).
+
+```
+DELETE FROM Clientes
+WHERE ClienteID = 105;
+```
+
+Solo se elimina la fila cuya ClienteID es igual a 105.
+
+
+2. Eliminación Masiva Condicional
+
+Objetivo: Eliminar todos los registros de logs (historial) que sean anteriores al 1 de enero de 2024.
+
+```
+DELETE FROM Logs
+WHERE FechaRegistro < '2024-01-01';
+```
+
+Se eliminan todas las filas que cumplen la condición de fecha.
+
+
+3. Eliminar Todos los Registros
+
+Objetivo: Vaciar completamente la tabla ProductosTemporales.
+
+```
+DELETE FROM ProductosTemporales;
+```
+
+##### Advertencia: Esta sentencia eliminará todas las filas de la tabla.
+
+
+### Soft Delete vs. Hard Delete
+
+#### En el desarrollo profesional, rara vez se usa el DELETE físico directo (llamado Hard Delete).
+
+En su lugar, a menudo se usa un Soft Delete
+
+##### Soft Delete: En lugar de usar la sentencia DELETE, se usa UPDATE para establecer un campo booleano, como EstaEliminado a TRUE.
+
+```
+UPDATE Productos SET EstaEliminado = TRUE WHERE ProductoID = 20;
+```
+
+##### Ventaja: Los datos permanecen en la base de datos para auditorías o recuperación, pero son ignorados por la lógica de la aplicación (que filtra con WHERE EstaEliminado = FALSE).
+
+
+## Integridad Referencial
+
+##### Garantiza que las relaciones entre las tablas permanezcan válidas y consistentes.
+
+Se basa en el uso de claves foráneas (Foreign Keys) para mantener vínculos precisos entre los datos
+
+```
+Un valor en una columna de una tabla (la clave foránea o FK)
+
+que hace referencia a la clave primaria (PK) de otra tabla
+
+debe existir en esa clave primaria o ser nulo.
+```
+
+No puedes hacer referencia a algo que no existe.
+
+
+### Ej: dos tablas: Autores (tabla principal) y Libros (tabla dependiente).
+
+1. La tabla Autores tiene la Clave Primaria (PK): AutorID.
+
+2. La tabla Libros tiene la Clave Foránea (FK): AutorID.
+
+#### La Integridad Referencial asegura que cada AutorID listado en la tabla Libros
+
+##### debe corresponder a un AutorID real y existente en la tabla Autores.
+
+
+### Restricciones que Aplica
+
+#### La Integridad Referencial impide tres tipos de operaciones que podrían romper la consistencia de los datos:
+
+1. Insertar Datos Huérfanos: No permite insertar un libro en la tabla Libros con un AutorID que no existe en la tabla Autores
+Esto evitaría que un libro sea asignado a un autor inexistente.
+
+2. Eliminar Registros Referenciados: No permite eliminar un autor de la tabla Autores si todavía hay libros que hacen referencia a ese AutorID.
+
+3. Actualizar Claves Referenciadas: No permite cambiar el AutorID de un autor si existen libros que dependen de ese ID antiguo.
+
+
+### Acciones Referenciales (ON DELETE / ON UPDATE)
+
+#### Para manejar los casos 2 y 3 sin rechazar la operación por completo
+
+##### Los SGDB ofrecen Acciones Referenciales que se definen en la clave foránea:
+
+
+1. ON DELETE CASCADE
+
+Si se elimina el registro principal (el autor), se eliminan automáticamente todos los registros dependientes (sus libros).
+
+Relaciones fuertes (ej. una línea de pedido con su cabecera).
+
+
+2. ON DELETE SET NULL
+
+Si se elimina el registro principal, la clave foránea en los registros dependientes se establece como NULL.
+
+Relaciones donde el dependiente puede existir sin el principal (ej. un empleado sin supervisor asignado).
+
+
+3. ON DELETE RESTRICT
+
+(Valor por defecto) La operación de eliminación en la tabla principal falla si hay registros dependientes.
+
+Para proteger datos sensibles.
+
+
+
+## Manejo de registros que son referenciados por una clave foránea (FK)
+
+#### Las operaciones CRUD afectan a la tabla principal (la que contiene la Clave Primaria, PK)
+
+##### Cuando es referenciada por otra tabla (la que contiene la Clave Foránea, FK).
+
+
+1. Inserción (CRUD: Create)
+
+La clave foránea actúa como un filtro de existencia durante la inserción.
+
+Regla: El valor que se intenta insertar en la columna FK de la tabla dependiente debe existir como PK en la tabla principal.
+
+Ejemplo: Si intentas insertar un Libro con un AutorID = 99, pero no hay un Autor con AutorID = 99 en la tabla Autores, la base de datos rechazará la inserción.
+
+Manejo: Asegúrate de que los datos de la tabla principal se inserten antes que los datos de las tablas dependientes.
+
+    
+2. Actualización (CRUD: Update)
+
+La clave foránea puede imponer restricciones en la tabla principal y en la tabla dependiente.
+
+A. Actualización en la Tabla Dependiente (FK)
+
+Regla: Se permite actualizar la FK en un registro dependiente, siempre que el nuevo valor exista en la PK de la tabla principal.
+
+Ejemplo: Puedes cambiar el AutorID de un Libro de 1 a 2, siempre y cuando el AutorID = 2 exista en la tabla Autores.
+
+
+B. Actualización en la Tabla Principal (PK)
+
+Regla: El SGDB verifica las Acciones Referenciales definidas en la clave foránea (ON UPDATE).
+
+Manejo de ON UPDATE:
+
+CASCADE: Si actualizas el AutorID de 1 a 10 en la tabla Autores, el sistema actualizará automáticamente todos los Libros que referencian al AutorID = 1 a AutorID = 10.
+
+RESTRICT / NO ACTION: El sistema rechazará la actualización en la tabla Autores si existen registros dependientes en la tabla Libros.
+
+SET NULL: Si actualizas el AutorID en Autores, el sistema establecerá a NULL el AutorID en los Libros relacionados (solo si la columna FK acepta nulos)    
+
+
+3. Eliminación (CRUD: Delete)
+
+La eliminación es la operación más crítica y se gestiona mediante las Acciones Referenciales (ON DELETE) definidas en la FK.
+
+Regla: El SGDB verifica si existen registros dependientes antes de permitir la eliminación en la tabla principal.
+
+Manejo de ON DELETE:
+
+CASCADE: Si eliminas un Autor de la tabla Autores, el sistema eliminará automáticamente todos los Libros escritos por ese autor. Esto es muy útil, pero peligroso si no se hace con precaución.
+
+RESTRICT / NO ACTION (Por defecto): El sistema rechazará la eliminación del Autor si existen Libros que lo referencian. La aplicación debe primero eliminar los Libros y luego eliminar el Autor.
+
+SET NULL: Si eliminas el Autor, el sistema establecerá el campo AutorID a NULL en los Libros relacionados (asumiendo que la columna AutorID en Libros permite valores nulos).
+
+
+### Buenas Prácticas
+
+#### 1. Prioriza RESTRICT o NO ACTION (Por defecto): Esto te da el mayor control. 
+
+Obliga a tu código de aplicación a decidir qué eliminar o modificar primero, evitando eliminaciones o cambios accidentales en cascada.
+
+
+#### 2. Usa CASCADE con Cuidado: Solo úsalo para relaciones donde la entidad dependiente no tiene sentido sin la entidad principal
+
+(e.g., líneas de pedido que no sirven sin la cabecera del pedido).
+
+
+#### 3. Encapsula en Transacciones: Cuando uses eliminaciones o actualizaciones masivas en tu código de aplicación
+
+(especialmente cuando tienes que eliminar registros en la tabla dependiente antes de eliminar en la principal)
+
+##### usa transacciones (BEGIN TRANSACTION, COMMIT, ROLLBACK) para asegurar la atomicidad de la operación.
+
+
+## ON DELETE 
+
+Cuando hay FK
+
+##### Su propósito es especificar la Acción Referencial que la base de datos debe tomar en los registros de la tabla dependiente cuando se intenta eliminar el registro referenciado en la tabla principal.
+
+
+Hay cuatro acciones principales que puedes definir con ON DELETE:
+
+1. RESTRICT (o NO ACTION)
+
+Comportamiento: Impide la eliminación del registro en la tabla principal si existe al menos una fila en la tabla dependiente que lo referencia.
+
+Uso Típico: Es el comportamiento por defecto en muchos SGDB y el más seguro. Obliga a la aplicación a eliminar primero los registros dependientes.
+
+Ejemplo: No puedes eliminar un Autor si todavía tiene Libros asociados
+    
+    
+2. CASCADE
+
+Comportamiento: Si se elimina el registro en la tabla principal, el SGDB automáticamente elimina todos los registros dependientes que lo referencian.
+
+Uso Típico: Se usa para relaciones donde la entidad dependiente no tiene sentido sin la entidad principal (ej., eliminar una cabecera de pedido elimina todas sus líneas de detalle).
+
+Ejemplo: Si eliminas un Autor, todos sus Libros se eliminan automáticamente de la tabla Libros. (Usar con extrema precaución).
+
+
+3. SET NULL
+
+Comportamiento: Si se elimina el registro en la tabla principal, la clave foránea en todos los registros dependientes se establece en NULL.
+
+Requisito: La columna de la clave foránea en la tabla dependiente debe estar definida para aceptar valores nulos (NULL).
+
+Uso Típico: Se usa para relaciones opcionales donde el registro dependiente puede existir sin la referencia.
+
+Ejemplo: Si eliminas un Supervisor, el campo SupervisorID de todos los Empleados que supervisaba se establece en NULL.
+
+
+4. SET DEFAULT
+
+Comportamiento: Si se elimina el registro principal, la clave foránea en los registros dependientes se establece a su valor por defecto predefinido.
+
+Requisito: La columna de la clave foránea debe tener un valor por defecto definido.
+
+Uso Típico: Menos común, se usa para reasignar automáticamente los registros a una categoría genérica.
+
+    
+##### La cláusula ON DELETE se define cuando se crea la clave foránea:
+
+```
+CREATE TABLE Libros (
+    LibroID INT PRIMARY KEY,
+    Titulo VARCHAR(255),
+    AutorID INT,
+    -- Definición de la clave foránea y la acción ON DELETE
+    FOREIGN KEY (AutorID) 
+        REFERENCES Autores(AutorID) 
+        ON DELETE CASCADE -- Se define la acción aquí
+);
+```
+
+
+### CASCADE
+
+##### Se utiliza en dos contextos principales dentro de la definición de una clave foránea
+
+#### ON DELETE CASCADE y ON UPDATE CASCADE
+
+
+En ambos casos, el comportamiento es:
+
+##### La acción realizada en la tabla principal (la que contiene la Clave Primaria, PK)
+
+##### Se replica automáticamente en las filas dependientes de la tabla que contiene la Clave Foránea (FK).
+
+
+1. ON DELETE CASCADE (El más común)
+
+Significado: Si eliminas un registro en la tabla principal, el sistema automáticamente eliminará todos los registros dependientes que lo referencien.
+    
+Ejemplo: Tienes una tabla Clientes (PK: ClienteID) y una tabla Pedidos (FK: ClienteID).
+
+Si eliminas un cliente de la tabla Clientes, todos los pedidos asociados a ese cliente en la tabla Pedidos serán eliminados inmediatamente.    
+
+
+2. ON UPDATE CASCADE
+
+Significado: Si actualizas el valor de la clave primaria en la tabla principal, el sistema automáticamente actualizará ese valor en todas las filas dependientes.
+
+Ejemplo: Si cambias el AutorID de '1' a '100' en la tabla Autores, el campo AutorID de todos los Libros escritos por ese autor será actualizado automáticamente de '1' a '100' en la tabla Libros.
+
+
+La acción CASCADE se especifica al momento de crear la clave foránea:
+
+```
+CREATE TABLE Pedidos (
+    PedidoID INT PRIMARY KEY,
+    ClienteID INT,
+    FOREIGN KEY (ClienteID) 
+        REFERENCES Clientes(ClienteID)
+        ON DELETE CASCADE   -- Si el cliente se va, sus pedidos se borran.
+        ON UPDATE CASCADE   -- Si el ClienteID cambia, los pedidos lo reflejan.
+);
+```
+
+CASCADE debe usarse con mucha cautela debido a su naturaleza destructiva.
+
+Ventaja: Garantiza una integridad de datos perfecta y reduce el trabajo de codificación en la aplicación, ya que no tienes que escribir código extra para gestionar las eliminaciones y actualizaciones de la tabla dependiente.
+
+Desventaja (Peligro): Si eliminas accidentalmente un registro en la tabla principal, puedes provocar una eliminación masiva de datos en múltiples tablas sin posibilidad de recuperación fácil, ya que el efecto es inmediato y sin confirmación adicional.
+
+##### ON DELETE CASCADE se reserva para relaciones donde el registro dependiente no tiene sentido sin el registro principal (por ejemplo, los detalles de una factura no pueden existir sin la cabecera de la factura).  
+
+
+#### Para datos sensibles (como cuentas de usuario), a menudo se prefiere ON DELETE RESTRICT
+
+#### o la técnica de Soft Delete (eliminación suave) mediante la actualización de un indicador de estado.
+
+
+
+## Soft Delete
+
+En lugar de usar la sentencia SQL DELETE FROM (que realiza un Hard Delete o Eliminación Dura), el Soft Delete se implementa usando la sentencia UPDATE para modificar el estado de un registro.
+
+
+### Componentes Clave
+
+#### Para implementar el Soft Delete, la tabla debe contener al menos una columna de indicador de estado:
+
+
+1. Columna Indicadora: Un campo booleano o de fecha que marca el estado de eliminación. Los nombres comunes son:
+
+```
+EstaEliminado (o IsDeleted): Tipo booleano (TRUE o 1).
+
+FechaEliminacion (o DeletedAt): Tipo DATETIME o DATE.
+```
+
+2. Operación: La operación Delete (CRUD) se convierte en una operación Update (CRUD).
+
+
+### Ej
+
+#### A. Definición de la Columna
+
+Añadir la columna a la tabla Productos:
+
+```
+ALTER TABLE Productos 
+ADD COLUMN EstaEliminado BOOLEAN DEFAULT FALSE;
+```
+
+#### B. Ejecución del "Delete" Lógico (UPDATE)
+
+Para "eliminar" el producto con ID 10:
+
+```
+UPDATE Productos
+SET EstaEliminado = TRUE
+WHERE ProductoID = 10;
+```
+
+
+#### C. Lógica de Lectura (Filtro READ)
+
+##### Para que el sistema funcione correctamente, todas las consultas SELECT (Read) deben ser modificadas para excluir los registros marcados como eliminados:
+
+```
+SELECT Nombre, Precio 
+FROM Productos 
+WHERE EstaEliminado = FALSE; -- ¡Siempre hay que filtrar!
+```
+
+
+### Casos de Uso
+
+##### El Soft Delete es la práctica preferida en sistemas transaccionales o legales por sus múltiples ventajas:
+
+Recuperación	Permite restaurar un registro instantáneamente (cambiando EstaEliminado a FALSE) sin necesidad de copias de seguridad.
+
+Auditoría/Legal	Los datos históricos y transaccionales se conservan, lo cual es vital para el cumplimiento normativo (GDPR, Sarbanes-Oxley, etc.).
+
+Integridad Referencial	Evita problemas de ON DELETE RESTRICT o CASCADE. Las claves foráneas no se rompen porque el registro PK sigue existiendo, aunque esté marcado como inactivo.
+
+Historial	Permite mantener el historial de pedidos o transacciones vinculadas al registro "eliminado"
+
+
+#### Ej: Caso de Uso: Un cliente cierra su cuenta (Soft Delete), pero sus pedidos (que son referencias de FK) deben permanecer en la base de datos para fines contables y de auditoría.
+
+
+
+# APIs RESTfull
+
+
+
+
+# Catching
