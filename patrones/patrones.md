@@ -15214,9 +15214,1674 @@ Historial	Permite mantener el historial de pedidos o transacciones vinculadas al
 
 
 
+
 # APIs RESTfull
+
+##### Es una interfaz de programación de aplicaciones que adhiere a los principios de diseño arquitectónico REST (Representational State Transfer)
+
+Definida por Roy Fielding en el año 2000.
+
+El objetivo principal de REST es permitir que los sistemas distribuidos se comuniquen de manera simple, escalable y sin estado a través del protocolo HTTP estándar.
+
+
+## Componentes
+
+1. Recursos (Resources)
+
+##### REST gira en torno a los recursos, que son cualquier entidad o información a la que se puede acceder.
+
+Ejemplo: En una API de una tienda, los recursos podrían ser /productos, /usuarios, o /pedidos.
+
+Cada recurso tiene un identificador único (URI/URL): /api/v1/productos/105.
+
+
+2. Uso de HTTP (Métodos)
+
+##### REST utiliza los métodos HTTP estándar (CRUD/Post, Get, Put/Patch, Delete) 
+
+Para realizar acciones sobre esos recursos. 
+
+##### La acción se define por el método HTTP, no por la URL.
+
+Create	POST	Crea un nuevo recurso.	POST /productos
+
+Read	GET	Recupera la representación del recurso.	GET /productos/105
+
+Update	PUT/PATCH	Modifica el recurso existente.	PUT /productos/105
+
+Delete	DELETE	Elimina el recurso.	DELETE /productos/105
+
+
+
+3. Comunicación sin Estado (Stateless)
+
+##### Cada solicitud del cliente al servidor debe contener toda la información necesaria para que el servidor la entienda y la procese
+
+El servidor no almacena información de la sesión del cliente entre peticiones.
+
+##### Si un cliente necesita estar autenticado, debe enviar un token de autenticación en cada solicitud.
+
+Esto simplifica la escalabilidad, ya que cualquier servidor puede manejar cualquier solicitud.
+
+
+4. Representaciones
+
+Cuando un cliente solicita un recurso (GET /productos/105)
+
+#### El servidor envía una representación del estado de ese recurso.
+
+##### Esta representación es típicamente un archivo JSON (JavaScript Object Notation), aunque también puede ser XML.
+
+
+## Ventajas
+
+Simplicidad: Utiliza el protocolo HTTP estándar, que es fácil de entender e implementar.
+
+Escalabilidad: Al ser stateless, es fácil distribuir las solicitudes entre múltiples servidores.
+
+Flexibilidad: Permite que clientes y servidores evolucionen de forma independiente (desacoplamiento).
+
+Un cliente móvil, una aplicación web y un sistema de terceros pueden usar la misma API.
+
+
+## Fundamentos Web
+
+
+### 1. Pilares/Front-end
+
+##### Esta capa se enfoca en todo lo que el usuario final ve e interactúa en el navegador.
+
+
+#### HTML (HyperText Markup Language): Es el esqueleto o la estructura de cualquier página web.
+
+Define el contenido (texto, imágenes, enlaces, videos) y organiza su jerarquía (títulos, párrafos, listas).
+
+Es la base innegociable de la web.
+
+
+#### CSS (Cascading Style Sheets): Es la apariencia o la presentación
+
+Controla el diseño, la tipografía, los colores, la separación, y la adaptabilidad de los elementos HTML a diferentes tamaños de pantalla (diseño responsive).
+
+
+#### JavaScript (JS): Es el comportamiento o la interactividad
+
+Permite que la página web responda a las acciones del usuario, manipule el contenido dinámicamente (DOM manipulation), valide formularios, y comunique con servidores sin recargar la página (AJAX).
+
+
+### 2. Protocolos y Redes (Comunicación)
+
+##### Definen cómo se solicitan, se encuentran y se transfieren los datos.
+
+
+#### 1. HTTP/HTTPS (HyperText Transfer Protocol): Es el idioma o el protocolo que utilizan los navegadores y los servidores para comunicarse
+
+##### Define el formato de los mensajes (requests y responses).
+
+HTTPS es la versión segura que utiliza cifrado SSL/TLS para proteger la transferencia de datos.
+
+
+#### 2. DNS (Domain Name System): Es el directorio telefónico de Internet.
+
+##### Traduce los nombres de dominio legibles por humanos (ej., google.com) a direcciones IP numéricas (ej., 142.250.72.78) que las computadoras necesitan para localizar los servidores.
+
+
+#### 3. URLs (Uniform Resource Locators): Es la dirección o la ubicación de un recurso específico en la web (ej., una página, un archivo).
+
+
+### 3. Arquitectura y Almacenamiento (El Servidor)
+
+##### Esta capa maneja la lógica de negocio, la persistencia de datos y la entrega de contenido.
+
+
+#### 1. Servidores Web (Backend): Software que escucha las solicitudes HTTP entrantes y responde con los recursos solicitados
+
+Utiliza lenguajes como Python, Node.js, PHP, o Java para ejecutar la lógica de la aplicación.
+
+
+#### 2. Bases de Datos (DB): Se encargan de la persistencia de los datos.
+
+Gestionan el almacenamiento, recuperación, actualización y eliminación de información de manera estructurada (SQL, NoSQL), implementando el modelo CRUD.
+
+
+#### 3. APIs (Application Programming Interfaces) y REST: Son la puerta de entrada estandarizada al servidor
+
+##### Una API RESTful permite que el cliente (Front-end) solicite y manipule los recursos del servidor utilizando los métodos HTTP estándar (GET, POST, PUT, DELETE).
+
+
+#### Estos tres grupos de fundamentos forman un ciclo completo
+
+##### el Cliente (Front-end) solicita recursos al Servidor (Backend) a través de los Protocolos (HTTP), y el Servidor usa la Base de Datos para gestionar la información y responder al Cliente.
+
+
+
+## Protocolos de Red
+
+##### Conjunto de reglas, convenciones y procedimientos formalmente definidos que rigen cómo los dispositivos (computadoras, servidores, routers, smartphones) se comunican e intercambian datos a través de una red.
+
+Garantizando que los datos enviados por un dispositivo puedan ser interpretados correctamente por el dispositivo receptor.
+
+
+### Componentes y Funciones
+
+1. Formato de Datos: Cómo se empaquetan los datos (tamaño del paquete, campos de encabezado).
+
+2. Detección de Errores: Métodos para verificar si los datos se corrompieron durante la transmisión.
+
+3. Encaminamiento (Routing): Cómo los paquetes encuentran su camino de la fuente al destino a través de múltiples redes.
+
+4. Establecimiento de Conexión: Los pasos para iniciar, mantener y finalizar una sesión de comunicación.
+
+
+### Protocolos Fundamentales de Internet (TCP/IP)
+
+##### El modelo de Internet se basa principalmente en la pila de protocolos TCP/IP, que es la base de toda la comunicación web moderna.
+
+1. IP (Internet Protocol)
+
+##### El protocolo IP es el responsable de la identificación y el direccionamiento.
+
+Función: Proporciona un sistema de direccionamiento único a cada dispositivo conectado a la red, conocido como Dirección IP (ej., 192.168.1.1).
+
+##### Encaminamiento: Se encarga de tomar los paquetes de datos (llamados datagramas IP)
+
+y asegurarse de que sean entregados al destino correcto, posiblemente a través de varias redes.
+
+
+2. TCP (Transmission Control Protocol)
+
+##### Es responsable de la entrega confiable y ordenada de los datos.
+
+##### Función: Establece una conexión entre dos dispositivos (un handshake o "apretón de manos")
+
+##### Divide los datos en segmentos, garantiza que todos los segmentos lleguen y se reordenen correctamente en el destino, y solicita la retransmisión de segmentos perdidos.
+
+Naturaleza: Es un protocolo orientado a la conexión; es lento, pero fiable.
+
+
+### Protocolos de Aplicación/Web
+
+##### Estos protocolos se ejecutan sobre TCP/IP y son los que utilizamos a diario para interactuar con servicios específicos:
+
+1. HTTP(S): HyperText Transfer Protocol (Secure)
+
+Es el protocolo base para la Web.
+
+##### Define cómo se formatean y transmiten los mensajes entre navegadores y servidores. 
+
+##### HTTPS añade la capa de cifrado SSL/TLS.
+
+
+2. FTP	File Transfer Protocol:
+
+Utilizado para la transferencia de archivos entre un cliente y un servidor
+
+
+3. SMTP	Simple Mail Transfer Protocol
+
+El protocolo estándar para enviar correo electrónico entre servidores.
+
+
+4. DNS	Domain Name System
+
+Traduce nombres de dominio legibles por humanos (ej., google.com) a direcciones IP.
+
+
+5. SSH	Secure Shell
+
+##### Utilizado para establecer conexiones remotas seguras y cifradas a servidores 
+ 
+
+
+## Protocolo HTTP
+
+HyperText Transfer Protocol permite la comunicación de datos en la World Wide Web
+
+Es el lenguaje que utilizan los navegadores web (clientes) y los servidores web para intercambiar información
+
+
+1. Modelo Cliente-Servidor
+
+HTTP opera bajo un modelo de solicitud-respuesta (request-response):
+
+Cliente (Navegador): Envía una solicitud HTTP (request) al servidor.
+
+Servidor Web: Procesa la solicitud y devuelve una respuesta HTTP (response) al cliente.
+
+
+2. Protocolo sin Estado (Stateless)
+
+HTTP es inherentemente sin estado. Esto significa que:
+
+##### El servidor no guarda información sobre la sesión anterior de un cliente entre solicitudes.
+
+##### Cada solicitud es independiente y contiene toda la información necesaria (autenticación, headers, datos) para que el servidor la procese.
+
+##### Manejo del estado: Para mantener una sesión (como un inicio de sesión o un carrito de compras), se utilizan mecanismos externos, principalmente cookies o tokens enviados en los headers.
+
+
+3. Mensajes
+
+##### La comunicación HTTP se realiza mediante mensajes de texto simples estructurados en tres partes:
+
+#### Línea de Inicio: Indica el método HTTP (GET, POST, etc.) en la solicitud o el código de estado en la respuesta.
+
+#### Cabeceras (Headers): Contienen metadatos sobre la solicitud o respuesta (ej., tipo de contenido, longitud del cuerpo, información de autenticación, cookies).
+
+#### Cuerpo (Body): Contiene los datos reales que se envían (ej., datos de un formulario POST) o los datos que se reciben (ej., el contenido HTML de una página o un objeto JSON).
+
+
+### Métodos HTTP (Verbos)
+
+##### Definen la acción que el cliente quiere realizar sobre un recurso identificado por la URL:
+
+Método -> CRUD
+
+GET	Solicita datos de un recurso. No debe tener efectos secundarios.	Read (Leer)
+
+POST	Envía datos para crear un nuevo recurso o realizar una acción compleja.	Create (Crear)
+
+PUT	Reemplaza completamente un recurso con los nuevos datos.	Update (Actualizar)
+
+PATCH	Aplica modificaciones parciales a un recurso existente.	Update (Actualizar)
+
+DELETE	Elimina el recurso especificado.	Delete (Eliminar)
+
+
+### Códigos de Estado (Status Codes)
+
+##### El servidor incluye un código de estado en su respuesta para indicarle al cliente el resultado de la solicitud:
+
+#### 1xx (Informativo): La solicitud fue recibida y se continúa el proceso.
+
+#### 2xx (Éxito): La solicitud fue recibida, entendida y aceptada. Ej.: 200 OK, 201 Created.
+
+#### 3xx (Redirección): Se requiere acción adicional para completar la solicitud. Ej.: 301 Moved Permanently.
+
+#### 4xx (Error del Cliente): La solicitud contiene sintaxis incorrecta o no puede ser cumplida. Ej.: 404 Not Found, 403 Forbidden.
+
+#### 5xx (Error del Servidor): El servidor falló al completar la solicitud. Ej.: 500 Internal Server Error.
+
+
+### HTTPS (HTTP Seguro)
+
+##### HTTPS es simplemente la capa de aplicación HTTP funcionando sobre una capa de seguridad SSL/TLS
+
+##### Cifra la comunicación completa, protegiendo los datos (contraseñas, números de tarjeta) de ser interceptados o manipulados. 
+
+Es el estándar actual para toda la navegación web
+
+
+## Arquitectura Cliente-Servidor 
+
+Modelo fundamental de networking distribuido
+
+En el que las responsabilidades y tareas de una aplicación se dividen entre dos tipos de componentes
+
+los Clientes y los Servidores
+
+
+Este modelo se basa en la idea de que los dispositivos o programas solicitan servicios (los Clientes)
+
+y otros dispositivos o programas proporcionan esos servicios (los Servidores).
+
+
+1. El Cliente (Solicitante)
+
+El Cliente es generalmente el dispositivo o programa que inicia la solicitud de un servicio y es el punto de interacción con el usuario.
+
+Función: Solicitar datos, enviar comandos, y presentar la información al usuario.
+
+Ejemplos: Un navegador web (solicitando una página), una aplicación móvil, o un cliente de correo electrónico.
+
+Recursos: Utiliza los recursos del usuario (pantalla, teclado, CPU local).
+
+
+2. El Servidor (Proveedor)
+
+El Servidor es la entidad que espera pasivamente las solicitudes, almacena los recursos y proporciona las funcionalidades o datos solicitados.
+
+Función: Almacenar datos centralmente, gestionar la lógica de negocio, procesar solicitudes (como consultas SQL) y enviar las respuestas.
+
+Ejemplos: Un servidor web (sirviendo páginas HTML), un servidor de base de datos (gestionando datos), o un servidor de archivos.
+
+Recursos: Gestiona los recursos centrales (base de datos, archivos, etc).
+
+
+### Proceso de Solicitud-Respuesta
+
+La comunicación entre el Cliente y el Servidor ocurre a través de una red (como Internet) y sigue un ciclo simple:
+
+1. Solicitud (Request): El Cliente envía un mensaje al Servidor utilizando un protocolo de red (como HTTP, FTP o TCP/IP), pidiendo una acción específica o un recurso.
+
+2. Procesamiento: El Servidor recibe la solicitud, la procesa (ejecuta código, accede a la base de datos) y prepara el resultado.
+
+3. Respuesta (Response): El Servidor envía la respuesta de vuelta al Cliente, que puede ser la página web solicitada, un objeto JSON con datos, o un código de estado (ej., 200 OK).
+
+
+La arquitectura Cliente-Servidor es el modelo dominante en la web debido a sus beneficios:
+
+Centralización: Los datos se almacenan en un único lugar (el servidor), lo que facilita la administración, la seguridad y las copias de seguridad.
+
+Escalabilidad: Se puede mejorar el rendimiento simplemente actualizando o añadiendo más servidores, sin necesidad de modificar el hardware de cada cliente.
+
+Fácil Mantenimiento: La lógica del negocio se aloja en el servidor. Las actualizaciones solo necesitan instalarse en el servidor.
+
+Seguridad: El servidor puede implementar controles de acceso y autenticación estrictos para proteger los recursos.
+
+    
+### Tipos de Arquitecturas Cliente-Servidor
+
+1. 2 Capas:	Se comparte entre el Cliente y el Servidor.	
+
+Aplicaciones de escritorio con bases de datos internas.
+
+
+2. 3 Capas (o N-Capas): La lógica de negocio está en una capa intermedia separada (Servidor de Aplicaciones).
+
+Aplicaciones web modernas y APIs RESTful, donde la capa de datos, la lógica de negocio y la presentación están separadas.
+
+
+
+
+
+## Request/Response: Solicitud y Respuesta
+
+Describen el ciclo de comunicación en la mayoría de las arquitecturas de red, especialmente en la web, que se basa en el Protocolo HTTP.
+
+En la arquitectura Cliente-Servidor, este ciclo define la interacción básica
+
+
+### 1. Request (Solicitud)
+
+Es un mensaje enviado por el Cliente (típicamente un navegador o una aplicación) al Servidor para pedir un servicio o una acción sobre un recurso.
+
+
+Componentes:
+
+#### 1. Método HTTP (Verbo): Indica la acción deseada (ej., GET, POST, PUT, DELETE).
+
+#### 2. URI/URL: La dirección del recurso sobre el que se quiere actuar (ej., /api/v1/productos/10).
+
+#### 3. Encabezados (Headers): Proporcionan metadatos sobre la solicitud. Incluyen información como el tipo de contenido que el cliente espera (Accept: application/json), credenciales de autenticación (tokens), o cookies.
+
+#### 4. Cuerpo (Body): Contiene los datos que el cliente desea enviar al servidor. Se utiliza principalmente con los métodos POST y PUT (ej., el contenido de un formulario o el objeto JSON de un nuevo registro).
+
+Ejemplo: Cuando haces clic en un enlace, tu navegador envía una solicitud GET a la URL de esa página.
+
+
+2. Response (Respuesta)
+
+##### Mensaje que el Servidor devuelve al Cliente después de haber procesado la solicitud.
+
+
+Componentes: 
+
+#### 1. Código de Estado (Status Code): Un código numérico que indica el resultado de la solicitud 
+
+(ej., 200 OK, 404 Not Found, 500 Internal Server Error).
+
+
+#### 2. Encabezados (Headers): Proporcionan metadatos sobre la respuesta
+
+##### (ej., tipo de contenido del cuerpo, fecha, cookies a almacenar).
+
+
+#### 3. Cuerpo (Body): Contiene los datos reales solicitados o el resultado de la operación.
+
+##### Puede ser HTML, un objeto JSON, una imagen, o un mensaje de error.
+
+
+##### Ejemplo: Si el servidor procesa tu solicitud con éxito, devuelve una respuesta con el código 200 OK
+
+##### y, en el cuerpo, el contenido de la página web que pediste.
+
+
+## GET
+
+Solicitar y recuperar una representación de un recurso específico identificado por una URI (Uniform Resource Identifier).
+
+
+1. Propósito: El cliente (normalmente un navegador web o una aplicación) lo utiliza para pedir datos a un servidor.
+
+
+2. Seguridad e Idempotencia:
+
+Seguro: Una solicitud GET nunca debe tener efectos secundarios en el servidor
+
+No debe modificar el estado del servidor
+
+Usar GET para cambiar datos es una mala práctica de diseño API.
+
+
+##### Idempotente: Ejecutar la misma solicitud GET varias veces seguidas tendrá el mismo resultado.
+
+
+3. Caché: Las respuestas a las solicitudes GET son cacheables
+
+Permite que el navegador o los proxies almacenen la respuesta para servirla más rápido en futuras solicitudes.
+
+
+### Componentes de GET
+
+#### 1. Envío de Parámetros
+
+Los datos o parámetros necesarios para filtrar o especificar la solicitud se envían a través de la URL
+
+en la cadena de consulta (query string).
+
+Ejemplo: Para buscar productos con una categoría específica, los parámetros van después del signo de interrogación (?):
+
+```
+GET /api/v1/productos?categoria=electronica&limite=10
+```
+
+Limitación: Dado que los datos se envían en la URL, las solicitudes GET tienen un límite de longitud
+
+aunque es grande, varía según el navegador/servidor)
+
+y no deben usarse para enviar información sensible (como contraseñas)
+
+ya que la URL se registra en el historial.
+
+
+#### 2. Ausencia de Cuerpo (Body)
+
+Una solicitud GET no debe contener un cuerpo (body).
+
+##### Toda la información de la solicitud se debe incluir en la URL o en los headers.
+
+
+### Casos de uso: GET se utiliza para cualquier operación de lectura:
+
+Recuperar toda la colección: GET /usuarios (Recuperar la lista completa de usuarios).
+
+Recuperar un recurso específico: GET /usuarios/42 (Recuperar los datos del usuario con ID 42).
+
+Filtrado y Búsqueda: GET /pedidos?estado=pendiente (Recuperar los pedidos que están en estado pendiente).
+
+
+
+## POST
+
+Se utiliza para implementar la operación Create (Crear) del modelo CRUD en la arquitectura web.
+
+##### Enviar datos al servidor para crear un nuevo recurso en el recurso de destino.
+
+
+1. Propósito: El cliente (navegador o aplicación) lo usa para enviar información que el servidor procesará y almacenará
+
+##### Se utiliza típicamente para crear nuevos registros en una base de datos.
+
+
+2. No Idempotencia: Las solicitudes POST no son idempotentes
+
+Esto significa que si envías la misma solicitud varias veces, el servidor creará múltiples nuevos recursos
+
+(ej., si haces clic dos veces en "Enviar" un formulario, se pueden crear dos registros idénticos).
+
+##### Por esta razón, los navegadores suelen advertir antes de reenviar datos POST.
+
+
+3. No Cacheable: 
+
+#### Las respuestas a las solicitudes POST no se almacenan en caché, ya que la acción resulta en un cambio en el servidor.
+
+
+### Componentes de un POST
+
+#### 1. Envío de Datos en el Cuerpo (Body)
+
+##### A diferencia de GET, la información (la carga útil o payload) se envía en el cuerpo de la solicitud HTTP.
+
+Ventaja: Esto permite enviar grandes cantidades de datos (ej., archivos subidos o largos formularios) y es el lugar adecuado para enviar información sensible (contraseñas, datos de tarjetas de crédito),
+
+ya que no se expone en la URL ni en los logs de red.
+
+##### Formato: Los datos se suelen enviar en formato JSON (en APIs RESTful), XML, o como datos de formularios (application/x-www-form-urlencoded o multipart/form-data).
+
+
+#### 2. La URI como Colección
+
+##### La URI de destino generalmente apunta a una colección o al punto final (endpoint) que gestiona la creación de ese tipo de recurso.
+
+El servidor se encarga de asignar el nuevo ID al recurso creado.
+
+Ejemplo: Para crear un nuevo producto, el URI es el punto final de la colección:
+
+```
+POST /api/v1/productos
+```
+
+##### El cuerpo contendría los datos del nuevo producto (nombre, precio, etc.).
+
+
+### Código de respuesta
+
+#### Cuando un servidor recibe y procesa con éxito una solicitud POST para crear un nuevo recurso, suele responder con el código de estado 201 Created.
+
+##### La respuesta a menudo incluye un header Location que apunta a la URI completa del recurso recién creado (ej., /api/v1/productos/55), o incluye el objeto del nuevo recurso en el cuerpo de la respuesta.
+
+
+
+## PUT
+
+Operación Update (Actualizar) del modelo CRUD
+
+La función principal de PUT es reemplazar completamente la representación del recurso de destino con la nueva representación enviada en el cuerpo de la solicitud.
+
+
+1. Propósito: El cliente lo usa para modificar un recurso existente
+
+o, si el recurso no existe, para crear uno nuevo con esa URI. 
+
+
+2. Idempotencia: Las solicitudes PUT son idempotentes
+
+##### Esto significa que si envías la misma solicitud PUT varias veces, el resultado final en el servidor será el mismo (solo una versión del recurso).
+
+Esto es una diferencia clave con POST.
+
+
+3. Uso Típico: Se usa para actualizar todos los campos de un recurso conocido.
+
+
+### Componentes de PUT
+
+#### 1. Envío de Datos en el Cuerpo (Body)
+
+##### Al igual que POST, los datos que reemplazan al recurso se envían en el cuerpo de la solicitud, típicamente en formato JSON.
+
+Importante: Con PUT, el cliente debe enviar la representación completa del recurso
+
+incluyendo los campos que no desea modificar
+
+Si omite un campo, el servidor lo establecerá a su valor por defecto o a NULL (dependiendo de la lógica del servidor).
+
+
+#### 2. URI como Recurso Específico
+
+##### La URI de destino debe apuntar al recurso específico que se quiere reemplazar.
+
+Ejemplo: Para actualizar el producto con ID 55:
+
+```
+PUT /api/v1/productos/55
+```
+
+
+### PUT vs. PATCH vs. POST
+
+Característica	PUT	PATCH	POST
+
+CRUD	Update (Reemplazo Total)	Update (Modificación Parcial)	Create (Creación)
+
+Idempotencia	Sí	No (Generalmente)	No
+
+Cuerpo (Body)	Representación Completa del recurso	Solo los campos a modificar	Datos del nuevo recurso a crear
+
+URI	Apunta al Recurso específico (/productos/55)	Apunta al Recurso específico (/productos/55)	Apunta a la Colección (/productos)
+
+
+
+## DELETE
+
+Implementar la operación Delete (Eliminar) del modelo CRUD en una API RESTful.
+
+
+1. Propósito: El cliente (una aplicación o navegador) envía una solicitud DELETE para pedir al servidor que elimine el recurso específico identificado por la URI.
+
+
+2. Idempotencia: Las solicitudes DELETE son idempotentes
+
+Esto significa que si envías la misma solicitud DELETE varias veces, el resultado final en el servidor será el mismo
+
+el recurso estará eliminado (o no existirá).
+
+
+3. Seguridad: Al igual que POST y PUT, DELETE no es un método seguro, ya que modifica el estado del servidor (elimina datos).
+
+
+### Componentes de Delete
+
+#### 1. URI Específica
+
+La URI de destino debe apuntar al recurso específico que se quiere eliminar.
+
+Ejemplo: Para eliminar al usuario con ID 42:
+
+```
+DELETE /api/v1/usuarios/42
+```
+
+##### Advertencia: Si un endpoint acepta DELETE sin un ID específico (ej., DELETE /api/v1/usuarios), esto podría interpretarse como una solicitud para eliminar toda la colección de usuarios, lo cual es extremadamente peligroso y raramente implementado.
+
+
+### 2. Cuerpo Vacío (Body)
+
+Una solicitud DELETE no debe incluir un cuerpo (body). 
+
+##### La información necesaria para identificar el recurso a eliminar ya se encuentra en la URI.
+
+
+### Código de respuesta del servidor
+
+Cuando un servidor procesa una solicitud DELETE, puede responder con varios códigos de estado:
+
+200 OK (Éxito): El recurso ha sido eliminado y la respuesta incluye información de estado (o quizás el recurso eliminado).
+    
+
+204 No Content (Éxito): El recurso ha sido eliminado con éxito, pero la respuesta no contiene cuerpo.
+
+Este es un código de estado muy común para DELETE.
+
+
+202 Accepted: La solicitud de eliminación ha sido aceptada para procesamiento
+
+pero la acción aún no se ha completado (común para operaciones de eliminación que tardan mucho tiempo o se ejecutan en segundo plano).
+
+
+404 Not Found: El recurso que se intentó eliminar no existe.
+
+
+
+## PATCH
+
+### No idempotencia (Generalmente): Las solicitudes PATCH no son consideradas idempotentes por defecto.
+
+##### Si envías la misma solicitud varias veces, el resultado final puede variar si la operación se basa en el estado actual del servidor
+
+(ej., sumar 5 al campo contador).
+
+Por lo tanto, se requiere un manejo cuidadoso.
+
+Seguridad: Modifica el estado del servidor, por lo que no es un método seguro.
+
+
+Envío de Datos Parciales
+
+##### Los datos se envían en el cuerpo (body) de la solicitud, conteniendo únicamente el subconjunto de campos que deben ser modificados.
+
+Ejemplo: Si un recurso Usuario tiene nombre, email y direccion, y solo quieres cambiar el email:
+
+Cuerpo de PATCH (JSON):
+
+```
+{
+  "email": "nuevo.email@ejemplo.com"
+}
+```
+
+El servidor aplicará este cambio y dejará nombre y direccion intactos.
+
+
+URI como Recurso Específico
+
+La URI de destino debe apuntar al recurso específico que se quiere modificar.
+
+Ejemplo: Para aplicar el parche al usuario con ID 42:
+
+PATCH /api/v1/usuarios/42
+
+
+### PATCH vs PUT
+
+Cuerpo de la Solicitud	Solo los campos a modificar.	Representación COMPLETA del recurso.
+
+##### Acción del Servidor	Aplica los cambios enviados.	Borra el estado anterior y usa los datos del body.
+
+Idempotencia	No (A menos que se diseñe con cuidado).	 Sí.
+
+Uso Ideal	Cambiar un estado (ej., es_activo: true), actualizar un email.	Actualizar un documento completo donde todos los campos son necesarios.
+
+
+PATCH cuando el cliente quiere hacer una edición ligera sin tener que gestionar o enviar todos los datos del recurso completo.
+
+
+## HEAD 
+
+
+## OPTIONS
+
+### Uso Crucial: CORS (Cross-Origin Resource Sharing)
+
+Cuando una aplicación web (por ejemplo, JavaScript que se ejecuta en un navegador) intenta hacer una solicitud HTTP a un dominio diferente al que sirvió la página (una solicitud cross-origin), el navegador utiliza OPTIONS como un mecanismo de pre-verificación.
+
+Este proceso se llama Preflight Request (Solicitud Previa) y funciona así:
+
+1. Cliente Envía OPTIONS: Antes de enviar la solicitud real (ej., un POST o PUT), el navegador envía una solicitud OPTIONS a la URL de destino.
+
+2. El Request Incluye Cabeceras: La solicitud OPTIONS incluye cabeceras especiales (como Access-Control-Request-Method y Access-Control-Request-Headers) para preguntar si el servidor está dispuesto a aceptar la solicitud real.
+
+3. Servidor Responde con Permisos: El servidor responde a la solicitud OPTIONS con cabeceras Access-Control-Allow-* si acepta el origen:
+
+	Access-Control-Allow-Methods: Lista los métodos HTTP permitidos (ej., GET, POST, OPTIONS).
+
+	Access-Control-Allow-Headers: Lista las cabeceras personalizadas permitidas.
+
+4. Ejecución de la Solicitud Real: Si la respuesta OPTIONS del servidor es satisfactoria, el navegador procede a enviar la solicitud original (POST, PUT, etc.). Si no, el navegador bloquea la solicitud por seguridad
+
+
+ 
+## Headers
+
+Son metadatos esenciales en la comunicación HTTP
+
+Son líneas de texto que se incluyen al inicio de un mensaje de Solicitud (Request) o Respuesta (Response)
+
+##### Contienen información clave sobre el mensaje, su cuerpo, o la conexión en sí.
+
+Los headers permiten que el cliente y el servidor se comuniquen más allá de la simple acción (el método HTTP) y el cuerpo del mensaje (los datos).
+
+
+### Estructura y función
+
+Un header siempre tiene el formato Nombre-de-la-Cabecera: Valor.
+
+
+#### 1. Headers de Solicitud (Request Headers)
+
+##### Son enviados por el cliente para informar al servidor sobre la solicitud, el cliente, o las preferencias del cliente.
+
+Host	Indica el nombre de dominio del servidor al que se dirige la solicitud.	Host: www.ejemplo.com
+
+User-Agent	Identifica el software que hace la solicitud (navegador, bot, etc.).	User-Agent: Mozilla/5.0...
+
+Accept	Indica los tipos de contenido que el cliente puede procesar (ej., JSON, HTML).	Accept: application/json
+
+Cookie	Contiene datos de estado (como una ID de sesión) almacenados previamente por el servidor.	Cookie: sessionID=abc123
+
+Authorization	Contiene credenciales para autenticar al cliente (ej., un token JWT).	Authorization: Bearer <token
+
+
+#### 2. Headers de Respuesta (Response Headers)
+
+##### Son enviados por el servidor para proporcionar información sobre la respuesta y el servidor.
+
+Content-Type	Indica el formato de datos del cuerpo de la respuesta.	Content-Type: application/json
+
+Content-Length	Indica el tamaño del cuerpo del mensaje en bytes.	Content-Length: 512
+
+Date	La fecha y hora en que se originó la respuesta.	Date: Tue, 18 Nov 2025...
+
+Set-Cookie	Indica al cliente que almacene una cookie para futuras solicitudes.	Set-Cookie: userID=99
+
+Access-Control-Allow-Origin	Clave en CORS; indica qué dominios externos pueden acceder al recurso.	Access-Control-Allow-Origin: `*`
+
+
+#### 3. Headers de Entidad (Entity Headers)
+
+##### Estos headers describen las propiedades del contenido del cuerpo del mensaje. Aunque se utilizan tanto en solicitudes como en respuestas, son más comunes en respuestas.
+
+Content-Type: Ya mencionado, vital para que el receptor sepa cómo interpretar el body.
+
+Content-Encoding: Indica si el contenido ha sido comprimido (ej., gzip).
+
+
+### Importancia en la Práctica
+
+Los headers son esenciales para la seguridad, la autenticación, el rendimiento y la correcta interpretación de los datos en la web moderna
+
+##### Por ejemplo, sin el header Content-Type, el navegador no sabría si el cuerpo de la respuesta es un texto simple, una página HTML o un objeto JSON.
+    
+
+
+## Tipos de datos de JSON
+
+### 1. Objetos ({}) - Estructura de Entidades
+
+Uso: Representan una entidad única o una estructura de datos compleja.
+
+##### Regla: El cuerpo de una respuesta GET para un solo recurso o el cuerpo de una solicitud POST o PUT debe ser un objeto JSON.
+
+Convención de Claves:
+
+Utiliza camelCase (ej., nombreUsuario, fechaCreacion) para nombrar las claves, ya que es la convención dominante en JavaScript, que es el lenguaje principal que consume JSON en el navegador
+
+
+Creación	POST /productos	El Request Body es un objeto que contiene los datos del producto.
+
+Respuesta	GET /productos/105	El Response Body es un objeto que representa al producto 105.
+
+Error	400 Bad Request	El Response Body es un objeto que contiene detalles del error (ej., {"codigo": "400", "mensaje": "Datos faltantes"}).
+
+
+2. Arreglos - Colecciones y Listas
+
+Uso: Representan una lista ordenada de entidades del mismo tipo.
+
+##### Regla: El cuerpo de una respuesta GET para una colección de recursos (ej., todos los productos) debe ser un arreglo que contenga objetos.
+
+Paginación: Si la colección es grande, el response puede ser un Objeto que contenga el arreglo de datos y los metadatos de paginación:
+
+```
+{
+  "totalRegistros": 500,
+  "pagina": 1,
+  "data": [
+    { /* Objeto Producto 1 */ },
+    { /* Objeto Producto 2 */ }
+  ]
+}
+```
+
+
+### 3. Strings (Cadenas) - Identificadores, Fechas y Textos
+
+Uso: Textos, URLs, correos electrónicos y, críticamente, Fechas y Horas.
+
+Regla para Fechas: Aunque podrías usar números para timestamps (sellos de tiempo), la convención RESTful moderna y recomendada es utilizar Strings que sigan el formato ISO 8601 (ej., 2025-11-18T19:16:55Z). Esto mantiene la legibilidad y garantiza la precisión horaria.
+
+Uso de UUIDs: Los identificadores universales únicos (UUIDs) deben ser devueltos como Strings (ej., "a1b2c3d4-e5f6-..."), no como números.
+    
+
+### 4. Numbers (Números) - Cantidades y Moneda
+
+Uso: Cantidades exactas que requieren cálculos matemáticos (edad, stock, latitud/longitud).
+
+Regla para Moneda: Ten cuidado al manejar valores monetarios o financieros. Debido a que JSON utiliza números de punto flotante de doble precisión (IEEE 754), puede haber problemas de precisión con números decimales grandes.
+
+##### Mejor Práctica: Para datos financieros críticos, usa enteros que representen la cantidad en la unidad más pequeña (ej., centavos). $45.99 se representaría como 4599. Si se requiere la precisión decimal, algunos equipos optan por enviarlo como String y realizar la conversión y cálculo en el lado del cliente/servidor    
+
+
+### 5. 5. Boolean (Booleanos) - Banderas de Estado
+
+Uso: Representar estados binarios.
+
+Regla: Utiliza los literales true o false de JSON sin comillas.
+
+##### Convención: Nombra las claves usando prefijos como is, has, o es (ej., isActive, hasPermission).
+
+    
+### 6. Null (Nulo) - Ausencia de Valor
+
+Uso: Indica que un campo opcional está presente en el esquema, pero actualmente no tiene un valor aplicable.
+
+##### Regla: Utiliza el literal null sin comillas.
+
+Dato Faltante:	Enviar null si el campo es opcional.
+
+Dato Requerido:	No envíes null. Si el campo es obligatorio y falta, el servidor debe responder con un error 400 Bad Request.
+
+
+
+## Fundamentos filosóficos de REST (Representational State Transfer) 
+
+Provienen directamente de la arquitectura y la evolución de la World Wide Web
+
+REST no es un protocolo, sino un estilo arquitectónico basado en un conjunto de principios de diseño que buscan replicar la manera en que el navegador y el servidor interactúan para lograr escalabilidad, eficiencia y simplicidad.
+
+El principal arquitecto de REST fue Roy Fielding en su tesis doctoral del año 2000, donde definió las restricciones clave.
+
+
+### Fundamentos
+
+Se basa en tratar el sistema como una colección de recursos accesibles a través de una interfaz uniforme, tal y como lo hace la web
+
+### 1. Modelo de Recursos (Resource-Oriented)
+
+#### Concepto: Todo lo que necesita ser expuesto o compartido en el sistema se modela como un Recurso
+
+##### Un recurso es una entidad conceptual con la que se interactúa
+
+no una tabla de base de datos o un método de programación
+
+
+#### Filosofía: El enfoque se pone en el qué (el recurso, identificado por su URI) 
+
+en lugar de el cómo (la acción o método).
+
+Esto promueve el desacoplamiento entre el cliente y el servidor.
+
+
+#### Ejemplo: En lugar de llamar a una función crearPedido()
+
+##### interactúas con el recurso /pedidos usando el método POST.
+
+
+### 2. Interfaz Uniforme (Uniform Interface)
+
+Este es el principio más importante de REST y asegura que la aplicación sea simple, visible y desacoplada
+
+Se logra a través de cuatro restricciones:
+
+
+#### Identificación de Recursos: Cada recurso se identifica por un URI único (como una URL).
+
+Manipulación de Recursos a través de Representaciones: Cuando un cliente tiene una representación de un recurso (ej., un objeto JSON)
+
+tiene suficiente información para modificar o eliminar el recurso en el servidor.
+
+
+#### Mensajes Autodescriptivos: Cada mensaje HTTP (solicitud o respuesta) debe contener suficiente información para ser interpretado completamente
+
+incluyendo el Método HTTP (la intención, ej., GET, POST) y el Código de Estado (el resultado).
+
+
+#### HATEOAS (Hypermedia As The Engine Of Application State): Este es el principio más estricto y a menudo menos implementado.
+
+##### Postula que el cliente debe navegar la aplicación usando enlaces proporcionados por el servidor dentro de las representaciones de los recursos
+
+Sin necesidad de URLs codificadas (hard-coded).
+
+Filosofía: El cliente se comporta como un humano navegando la web; solo hace clic en los enlaces que el servidor le presenta.
+
+
+### 3. Comunicación sin Estado (Statelessness)
+
+Concepto: El servidor no debe almacenar información sobre el estado de la sesión o la conversación del cliente entre solicitudes
+
+Filosofía: Cada solicitud HTTP debe ser completamente independiente y debe contener toda la información necesaria para que el servidor la procese.
+
+Ventaja: Esto facilita la escalabilidad horizontal. Cualquier solicitud puede ser manejada por cualquier servidor en un cluster, ya que no hay dependencias de sesión. 
+
+Si un servidor falla, no afecta las sesiones de los usuarios.
+
+
+### 4. Capas (Layered System)
+
+Concepto: La arquitectura puede estar compuesta por múltiples capas intermedias (servidores proxy, load balancers, cachés) entre el cliente y el servidor final.
+
+##### Filosofía: Ni el cliente ni el servidor final necesitan saber si se están comunicando directamente o a través de intermediarios. 
+
+Esto mejora el rendimiento a través del caching y aumenta la seguridad.
+
+
+
+## REST vs RESTful
+
+##### REST es el estilo arquitectónico o el conjunto de reglas
+
+##### RESTful es el servicio o la API que implementa y sigue esas reglas.
+
+
+REST
+
+1. Modelo Cliente-Servidor: Separación de preocupaciones.
+
+2. Sin Estado (Stateless): Cada solicitud debe ser independiente; el servidor no almacena información de sesión entre solicitudes.
+
+3. Almacenable en Caché (Cacheable): Las respuestas deben declarar si son almacenables en caché y por cuánto tiempo.
+
+4. Sistema de Capas (Layered System): El cliente no necesita saber si se conecta al servidor final o a un intermediario (proxy o load balancer).
+
+5. Código bajo Demanda (Opcional): Permite al servidor extender la funcionalidad del cliente a través de código ejecutable.
+
+6. Interfaz Uniforme: El principio más importante, basado en la identificación de recursos (URI) y el uso de métodos HTTP estándar (GET, POST, etc.).
+
+
+RESTful (Representational State Transfer-ful)
+
+Es el adjetivo que describe una API o un servicio web que ha sido diseñado implementando y adhiriéndose a las restricciones del estilo arquitectónico REST.
+
+1. Utiliza URI: Identifica los recursos de manera clara (ej., /api/v1/usuarios/10).
+
+2. Utiliza Métodos HTTP: Usa los verbos estándar (GET, POST, PUT, DELETE) para las operaciones CRUD.
+
+3. Utiliza Códigos de Estado: Responde con los códigos HTTP estándar (200 OK, 404 Not Found, 500 Internal Server Error).
+
+4. Utiliza Representaciones: Intercambia datos en formatos estandarizados como JSON o XML.
+    
+    
+
+## Recursos/URIs
+
+##### Un recurso es la abstracción conceptual de cualquier información que pueda ser nombrada
+
+#### No son Tablas de Base de Datos: Un recurso no es necesariamente una tabla SQL
+
+#### Es la entidad de negocio con la que el cliente interactúa.
+
+##### Por ejemplo, un "Pedido" es un recurso
+
+##### aunque en la base de datos se almacene en tres tablas diferentes (Pedidos, LineasDePedido, HistorialDePago).
+
+
+#### Identificación Única: Cada recurso debe tener un identificador único
+
+#### En la web, esta identificación se logra a través del URI (Uniform Resource Identifier)
+
+##### Es la dirección que usa el cliente para interactuar con él
+
+
+#### Representación: Un recurso puede tener múltiples representaciones (formatos de datos).
+
+##### Cuando un cliente solicita un recurso, el servidor le envía una representación de su estado actual (típicamente en JSON o XML).
+
+
+### Impementación en APIs RESTful
+
+Nomenclatura Basada en Recursos (URIs)
+
+Las APIs RESTful se caracterizan por el uso de URIs
+
+#### Identifican a los recursos de manera jerárquica y con sustantivos en plural.
+
+Tipo de Recurso	URI Ejemplo	Descripción
+Colección	/api/v1/productos	Una lista de recursos (el conjunto de todos los productos).
+Elemento	/api/v1/productos/42	Un recurso individual específico (el producto con ID 42).
+Relación	/api/v1/productos/42/reviews	Una colección de recursos relacionados con otro recurso (las reviews del producto 42).
+
+
+### Interacción Uniforme (Métodos HTTP)
+
+#### La clave RESTful es que la acción a realizar sobre el recurso está determinada por el Método HTTP (el verbo), no por el nombre del recurso.
+
+Esto se conoce como Interfaz Uniforme.
+
+GET	Recuperar el recurso o la colección.	GET /productos/42 (Leer el recurso 42).
+POST	Crear un nuevo recurso dentro de la colección.	POST /productos (Crear un nuevo producto).
+PUT	Reemplazar completamente el recurso existente.	PUT /productos/42 (Actualizar completamente el recurso 42).
+DELETE	Eliminar el recurso.	DELETE /productos/42 (Eliminar el recurso 42).
+
+
+El Recurso es el sujeto, la entidad sobre la que opera el sistema
+
+Al centralizar el diseño alrededor de sustantivos (Recursos) en lugar de verbos (acciones)
+
+las APIs se vuelven predecibles, escalables y fáciles de consumir.
+
+
+
+## Endpoint
+
+#### Punto de acceso específico en un servidor donde los clientes pueden acceder a los recursos o ejecutar una función particular de la API.
+
+Es la combinación de dos elementos clave:
+
+1. La URI (Uniform Resource Identifier): La ruta única del recurso.
+
+2. El Método HTTP: El verbo que define la acción a realizar (GET, POST, DELETE, etc.).
+
+#### Un endpoint es la dirección exacta (la URI)
+
+##### La instrucción de qué hacer allí (el método HTTP). 
+
+
+### Estructura de un Endpoint
+
+URI del Recurso	Método HTTP	Acción y Endpoint
+/api/v1/usuarios	GET	Endpoint para obtener la lista de todos los usuarios.
+/api/v1/usuarios	POST	Endpoint para crear un nuevo usuario.
+/api/v1/usuarios/{id}	GET	Endpoint para obtener los detalles del usuario {id}.
+/api/v1/usuarios/{id}	DELETE	Endpoint para eliminar el usuario {id}.
+
+
+### URI vs. Endpoint
+
+URI (Uniform Resource Identifier): Es solo la dirección o la ruta (ej., /api/v1/productos).
+
+Endpoint: Es la interacción completa con esa dirección. La URI /api/v1/productos puede ser parte de dos endpoints diferentes (uno para GET y otro para POST).
+
+"Llamar a un endpoint", se refiere a realizar una solicitud HTTP a una URI específica con un método HTTP determinado para obtener o modificar un recurso.
+
+
+
+## Diseño de Endpoints
+
+### 1. Principios de Nomenclatura (URIs)
+
+El diseño de la URI (endpoint sin el método HTTP) debe ser predecible y centrado en los recursos.
+
+
+#### A. Utiliza Sustantivos en Plural
+
+##### Los endpoints deben representar colecciones de recursos, no acciones específicas. 
+
+##### Esto mantiene la consistencia con el concepto REST de recursos. 
+
+Recomendado	Evitar	Razón
+/productos	/obtenerTodosLosProductos	El método HTTP (GET) ya implica la acción "obtener".
+/usuarios/105	/usuario105	La URL debe ser uniforme y usar plurales para colecciones.
+
+
+#### B. Manten la Consistencia y Jerarquía
+
+##### Utiliza la estructura de directorios para mostrar las relaciones entre recursos.
+
+Colección: /recursos
+
+Recurso Específico: /recursos/{id}
+
+Recursos Relacionados (anidados): /recursos/{id}/subrecursos
+
+
+Ejemplo: Para obtener los comentarios de un producto específico:
+
+```
+GET /productos/45/comentarios
+```
+
+
+#### C. Utiliza Minúsculas y Guiones
+
+##### Mantente en minúsculas para los nombres de los recursos. 
+
+##### Usa guiones bajos (_) o medios (-) para separar palabras en la URI. 
+
+##### El guion medio (-) es preferido por legibilidad.
+
+Recomendado		Evitar
+/usuarios-activos	/UsuariosActivos
+/productos/10/fecha-entrega	/productos/10/FechaEntrega
+
+
+### 2. Uso Correcto de Métodos HTTP (Interfaz Uniforme)
+
+#### La acción del endpoint la define el método HTTP, no la URI.
+
+CRUD	Método HTTP	URI Ejemplo	Propósito
+Create	POST	/productos	Crea un nuevo producto en la colección.
+Read	GET	/productos	Obtiene la lista de productos.
+Read	GET	/productos/45	Obtiene los detalles del producto 45.
+Update	PUT	/productos/45	Reemplaza completamente el producto 45.
+Update	PATCH	/productos/45	Modifica parcialmente el producto 45.
+Delete	DELETE	/productos/45	Elimina el producto 45.
+
+
+### 3. Manejo de Funcionalidades Especiales
+
+##### A veces, se necesitan endpoints para acciones que no encajan en el CRUD puro (ej., cerrar una sesión, publicar un artículo).
+
+
+#### A. Acciones CRUD Inusuales (Preferido)
+
+##### Intenta, siempre que sea posible, modelar la acción como una manipulación de un recurso.
+
+En lugar de: POST /productos/45/publicar
+
+Mejor: PATCH /productos/45 con un body {"estado": "publicado"}. 
+
+(Estás actualizando el estado, no realizando una acción nueva).
+
+
+#### B. Funciones que no son CRUD (Excepción)
+
+##### Cuando la acción no modifica un recurso específico, sino que ejecuta una función o un proceso, se puede usar un sustantivo para la función.
+
+Ejemplo: POST /sesion/cerrar o POST /acciones/iniciar-proceso
+
+#### Regla: Utiliza POST para estas acciones de "función", ya que son destructivas o modifican el estado.
+
+    
+### 4. Filtrado, Ordenamiento y Paginación
+
+#### Para las solicitudes GET a colecciones grandes, utiliza parámetros de consulta (query parameters) en lugar de incluir la información en la URI.
+
+Filtrado: GET /productos?categoria=electronica&stockMin=10
+
+Búsqueda: GET /productos?q=laptop
+
+Paginación: GET /productos?page=2&limit=50
+
+Ordenamiento: GET /productos?sort=-precio (el - indica descendente).
+
+
+### 5. Versionamiento (Versioning)
+
+##### Es crucial para evitar romper las aplicaciones existentes cuando se realizan cambios mayores en la API.
+
+#### Práctica Estándar: Incluir la versión en el primer segmento de la URI.
+
+Ejemplo: /api/v1/usuarios, /api/v2/usuarios.
+
+Esto permite que los clientes antiguos sigan usando la versión v1 mientras introduces cambios que rompen la compatibilidad en la v2.
+
+
+
+## Convertir requisitos de negocio en Recursos
+
+1. Identificar los Recursos (Los Sustantivos)
+
+El primer paso es analizar el requisito de negocio e identificar las entidades de negocio principales que serán manipuladas. Estos serán tus recursos.
+
+Requisito de Negocio: El usuario debe poder consultar los detalles de las Facturas y añadir nuevos Productos al sistema.
+
+Recursos Identificados:
+
+Facturas
+
+Productos
+
+Estos recursos se convierten en las bases de tus URLs, utilizando sustantivos en plural:
+
+/facturas
+
+/productos
+
+
+2. Definir las Operaciones (Los Verbos)
+
+Una vez que tienes los recursos, identifica las acciones que deben realizarse sobre ellos
+
+Estas acciones se mapean directamente a los métodos HTTP estándar (la Interfaz Uniforme de REST).
+
+Requisito de Negocio: El sistema debe Crear, Leer, Actualizar y Eliminar (CRUD) productos, y solo Leer facturas.
+
+Acción Requerida	Método HTTP	Recurso de la Colección	Recurso Específico
+Crear	POST	/productos	N/A
+Leer (Lista)	GET	/facturas, /productos	N/A
+Leer (Detalle)	GET	N/A	/productos/{id}
+Actualizar	PUT/PATCH	N/A	/productos/{id}
+Eliminar	DELETE	N/A	/productos/{id}
+
+
+### 3. Manejar Relaciones y Funciones Complejas
+
+#### Los requisitos a menudo implican la interacción entre varios recursos o acciones que van más allá del CRUD básico.
+
+
+#### A. Relaciones Anidadas
+
+##### Si un requisito implica un recurso que pertenece a otro, se usa una URL anidada para mostrar la jerarquía.
+
+Requisito: Obtener todos los comentarios de un Producto específico.
+
+Conversión: La URL anida la colección de comentarios bajo el producto:
+
+```
+GET /productos/{id}/comentarios     
+```        
+
+
+#### B. Funciones que no son CRUD Pura
+
+Para funciones que desencadenan un proceso o una acción específica que no es simplemente modificar el estado de un recurso, se recomienda usar POST con una URL que se parezca más a una función
+
+Sin embargo, siempre se debe intentar modelar la acción como una actualización de estado (PATCH).
+
+Requisito	Opción RESTful (PATCH)	Opción de Función (POST)
+Publicar un artículo.	PATCH /articulos/{id} con {"estado": "publicado"}	POST /articulos/{id}/publicar
+Pagar una factura.	PATCH /facturas/{id} con {"estado_pago": "pagada"}	POST /facturas/{id}/pagar
+
+#### La opción PATCH es generalmente preferida porque mantiene la interfaz uniforme.
+
+
+### Objetivo
+
+El objetivo final es crear un conjunto de endpoints que sean:
+
+1. Intuitivos: La estructura de la URL tiene sentido para el consumidor.
+
+2. Consistentes: Se sigue la convención de sustantivos en plural.
+
+3. Predictibles: El consumidor sabe qué método usar (GET para leer, POST para crear, etc.) antes de mirar la documentación.
+
+
+
+## Manejo de Solicitud
+
+Proceso completo que ocurre en el servidor desde el momento en que se recibe una solicitud HTTP del cliente hasta que la API genera la respuesta
+
+
+### 1. Ciclo de Vida de la Solicitud
+
+##### La solicitud pasa por una serie de capas o "filtros" en el servidor antes de llegar a la lógica de negocio final.
+
+
+#### A. Capa de Red y Firewall
+
+TLS/SSL (HTTPS): La solicitud debe ser recibida a través de HTTPS para garantizar que el contenido esté cifrado.
+
+Firewall/WAF (Web Application Firewall): Bloquea inmediatamente el tráfico malicioso conocido (ej., inyecciones SQL obvias).
+
+    
+#### B. Gateway / Load Balancer
+
+Rate Limiting: Se verifica si el cliente ha excedido el límite de solicitudes. Si es así, se rechaza con 429 Too Many Requests.
+
+Versionamiento: Se dirige la solicitud a la versión correcta de la API (ej., a la lógica que maneja /v1/ o /v2/).
+
+
+### 2. Validación de Seguridad y Cabeceras
+
+##### Una vez que la solicitud entra al backend de la API, se aplican las restricciones de seguridad y el cumplimiento de protocolos.
+
+
+#### A. Autenticación (Authentication)
+
+Verificación de Identidad: Se extrae el token JWT (Bearer) del header Authorization.
+
+Validación: Se verifica la firma, el tiempo de expiración (exp) y la validez del token.
+
+Fallo: Si el token es inválido o falta, se devuelve 401 Unauthorized.
+
+
+#### B. Autorización (Authorization)
+
+Verificación de Permisos: Se comprueba si el usuario autenticado (identificado por el token) tiene los roles o permisos para realizar la acción solicitada (GET, POST, etc.) en ese recurso específico.
+
+Fallo: Si el usuario no tiene permiso, se devuelve 403 Forbidden.
+
+
+#### C. Cabeceras Obligatorias
+
+##### Content-Type: Para solicitudes POST, PUT o PATCH, se verifica que la cabecera sea application/json para asegurar que el cuerpo del mensaje sea interpretable.
+
+
+### 3. Procesamiento y Lógica de Negocio
+
+##### Esta es la fase donde los datos se manipulan.
+
+
+#### A. Validación de Datos (Input Validation)
+
+Formato y Tipos de Datos: Se verifica que los datos del Request Body (o Query Parameters) cumplan con las reglas de formato (ej., el email es un formato válido, la edad es un número).
+
+Campos Requeridos: Se asegura que todos los campos obligatorios para el POST o PUT estén presentes.
+
+Fallo: Si la validación falla, se responde con 400 Bad Request y un cuerpo de error estructurado que detalla los campos inválidos.
+
+    
+#### B. Ejecución de la Lógica
+
+Mapeo a CRUD: Se mapea el Método HTTP a la operación de base de datos o lógica de negocio (CRUD).
+
+Transacciones: Si la operación involucra múltiples pasos o el cambio de varios recursos, se debe manejar dentro de una transacción para garantizar que o se completa todo, o no se hace nada (atomicidad).    
+
+
+### 4. Generación de la Respuesta
+
+Finalmente, se construye y se envía la respuesta al cliente (Manejo de Respuestas).
+
+Códigos de Éxito: Se selecciona el código 2xx apropiado (200 OK, 201 Created, 204 No Content).
+
+Cuerpo JSON: Se serializa el objeto o arreglo de recursos en JSON.
+
+Cabeceras de Respuesta: Se añaden las cabeceras esenciales (Content-Type: application/json, Cache-Control, Location si es un 201).
+
+Logging: Se registra la solicitud, el tiempo de procesamiento y el resultado para la monitorización.
+
+
+
+## Manejo de Respuesta 
+
+Proceso que el servidor utiliza para estructurar, formatear y devolver el resultado de la solicitud de un cliente
+
+Es crucial para garantizar que el cliente (aplicación móvil o navegador) pueda entender y utilizar la información de manera eficiente y predecible.
+
+#### Una respuesta bien manejada se centra en tres componentes clave de la respuesta HTTP: Códigos de Estado, Cabeceras (Headers) y el Cuerpo (Body).
+
+
+Códigos de Estado (Status Codes): La Intención
+
+El servidor debe elegir el código de estado más preciso para comunicar el resultado de la solicitud, incluso si ocurrió un error. Esto permite al cliente saber inmediatamente la naturaleza de la respuesta.
+
+Código	Clase	Propósito y Uso Típico
+200 OK	Éxito	Solicitud exitosa. Común para GET, PUT, PATCH. El cuerpo contiene el recurso o la confirmación.
+201 Created	Éxito	Recurso creado. Se utiliza con POST. La respuesta debe contener el nuevo recurso y el header Location.
+204 No Content	Éxito	Solicitud exitosa sin cuerpo de respuesta. Ideal para DELETE o PUT/PATCH cuando el cliente no necesita el recurso actualizado.
+400 Bad Request	Error Cliente	Datos inválidos o sintaxis incorrecta. El cliente debe corregir los datos enviados en el Request Body.
+401 Unauthorized	Error Cliente	Autenticación fallida. El cliente debe proveer credenciales (token).
+403 Forbidden	Error Cliente	Acceso denegado. El cliente está autenticado, pero carece de permisos para el recurso.
+404 Not Found	Error Cliente	Recurso no existe. La URI es válida, pero el ID del recurso no se encuentra.
+500 Internal Server Error	Error Servidor	Fallo genérico del servidor. Un error no manejado en el backend.
+
+
+Cabeceras (Headers) de Respuesta: Los Metadatos
+
+El servidor utiliza las cabeceras para proporcionar metadatos esenciales sobre la respuesta y el recurso.
+
+Content-Type: Obligatorio. Debe ser application/json para las APIs RESTful que usan JSON, asegurando que el cliente interprete el cuerpo correctamente.
+
+Cache-Control: Instruye al cliente y a los proxies sobre la política de caché (ej., max-age=3600 o no-store). Crucial para el rendimiento.
+
+Location: Debe incluirse en la respuesta 201 Created para proporcionar la URI completa del nuevo recurso creado, permitiendo al cliente acceder a él de inmediato.
+
+ETag: Un identificador único de la versión del recurso. Utilizado para la revalidación de caché (junto con If-None-Match en el lado del cliente).
+
+    
+Cuerpo (Body) de la Respuesta: El Contenido
+
+El cuerpo contiene los datos reales solicitados o información estructurada sobre el error. Debe estar formateado de manera consistente (generalmente JSON).
+
+
+A. Estructura de Éxito (2xx)
+
+#### Para GET (recurso único o colección): El cuerpo debe contener el objeto JSON o el arreglo de objetos JSON.
+
+#### Para POST (201 Created): El cuerpo debe devolver el objeto completo del nuevo recurso (incluyendo el ID y cualquier campo de fecha/hora generado por el servidor).
+
+#### Para DELETE/PUT (204 No Content): El cuerpo debe estar vacío
+
+
+B. Estructura de Errores (4xx y 5xx)
+
+#### Para cualquier código de error (excepto 204), el cuerpo de la respuesta debe contener un objeto de error estructurado en JSON, que sea útil para el programador del cliente.
+
+Convención para el Objeto de Error:
+
+status (o code): El código de estado HTTP (ej., 400).
+
+message: Una descripción del error legible por el usuario final (ej., "Email ya registrado.").
+
+details (u errors): Una lista (arreglo) de objetos que especifica qué campos de la solicitud fallaron y por qué (común para 400 Bad Request)
+
+```
+{
+  "status": 400,
+  "message": "La solicitud falló la validación.",
+  "details": [
+    {
+      "campo": "nombre",
+      "error": "El nombre es obligatorio."
+    },
+    {
+      "campo": "email",
+      "error": "El formato del email es inválido."
+    }
+  ]
+}
+```
+
+
+
+## Query Parameters
+
+##### Un mecanismo fundamental en las APIs RESTful para que el cliente personalice las solicitudes, especialmente las de lectura (GET).
+
+#### Los parámetros de consulta son pares de clave-valor que el cliente adjunta a la URL para pasar datos opcionales al servidor.
+
+
+### 1. Ubicación y Sintaxis
+
+Los parámetros de consulta se encuentran después del signo de interrogación (?) en la URI. Si hay múltiples parámetros, se separan con el signo ampersand (&).
+
+```
+$$\text{[http://servidor.com/recursos?clave1=valor1&clave2=valor2](http://servidor.com/recursos?clave1=valor1&clave2=valor2)}$$
+```
+
+Ejemplo:
+
+```
+GET /productos?categoria=electronica&limit=10&sort=-precio
+```
+
+Componente	Valor	Propósito
+URI Base	/productos	Identifica el recurso (la colección de productos).
+?	Separador	Indica el inicio de los parámetros de consulta.
+Parámetros	categoria=electronica	Filtra los resultados.
+Parámetros	limit=10	Controla la paginación.
+Parámetros	sort=-precio	Define la ordenación.  
+
+
+### 2. Principio REST
+
+##### Los Query Parameters se utilizan para modificar la consulta sobre el recurso identificado por la URI (ej., /productos), no para cambiar la identidad del recurso en sí. Son una parte crucial del concepto de Negociación de Contenido y Control de la Colección.
+
+
+### Usos Típicos
+ 
+Los parámetros de consulta son la herramienta estándar para implementar funcionalidades que controlan cómo se obtienen las colecciones grandes de datos:
+
+
+A. Filtrado (Filtering)
+
+Permite al cliente obtener solo los recursos que cumplen criterios específicos.
+
+Uso	Ejemplo de URI	Descripción
+Valor Exacto	GET /pedidos?estado=pendiente	Pedidos con estado 'pendiente'.
+Rango	GET /productos?precio_min=100	Productos con precio de 100 o más.
+Búsqueda	GET /usuarios?q=juan	Búsqueda de texto libre.
+
+
+B. Paginación (Pagination)
+
+Controla el tamaño y el desplazamiento de las páginas de datos.
+
+Uso	Ejemplo de URI	Descripción
+Offset/Limit	GET /articulos?page=3&limit=25	La página 3, con un máximo de 25 artículos.
+
+
+C. Ordenación (Sorting)
+
+Especifica el orden de los resultados.
+
+Uso	Ejemplo de URI	Descripción
+Campo Único	GET /productos?sort=nombre	Ordenado por nombre (ascendente por defecto).
+Descendente	GET /productos?sort=-fecha	Ordenado por fecha (descendente).
+
+
+D. Inclusión de Recursos Relacionados
+
+Permite al cliente solicitar que el servidor incluya datos anidados o relacionados en la respuesta.
+
+Ejemplo: GET /pedidos/123?include=cliente,items (Devuelve el pedido 123 e incluye los objetos cliente y la lista de items relacionados).
+    
+    
+    
+### Mejores Prácticas
+
+#### 1. Solo para GET (y HEAD): Los parámetros de consulta no deben usarse para modificar el estado del servidor (eso es trabajo de POST, PUT, DELETE). Se utilizan para modificar la consulta de lectura.
+
+#### 2. Idempotencia y Caching: Las solicitudes GET con Query Parameters son cacheables. Si el servidor recibe la misma URI (incluyendo los parámetros), puede servir la respuesta desde la caché.
+
+#### 3. Seguridad: Evita poner información sensible (como tokens o contraseñas) en los parámetros de consulta, ya que quedan registrados en los logs del servidor y del navegador. Los tokens deben ir en el header Authorization.
+
+#### 4. Codificación de URL: El cliente debe asegurarse de que los valores de los parámetros de consulta estén correctamente codificados con URL encoding (ej., los espacios se convierten en %20) para evitar errores.
+
+
+
+## Rate limit
+
+
+1. Diseñando la Estrategia de Conteo
+
+El primer paso es definir qué métricas se usarán para rastrear y limitar las solicitudes.
+
+
+A. Identificador del Cliente
+
+Debes decidir qué entidad vas a limitar. Lo más común es:
+
+Usuario Autenticado: Utiliza el ID de Usuario extraído del token JWT. (Este es el mejor método, ya que es preciso y difícil de falsear).
+
+Clave de API: Utiliza el valor de la API Key enviada en el header.
+
+Dirección IP: Utiliza la dirección IP de origen de la solicitud (generalmente extraída de los headers X-Forwarded-For o X-Real-IP si estás detrás de un proxy o load balancer).
+
+
+B. Ventana de Tiempo
+
+Define el período durante el cual se aplicará el límite. Las ventanas comunes son:
+
+Tipo de Ventana	Ejemplo	Uso Recomendado
+Por Minuto	100 solicitudes / 60 segundos	Tráfico normal y protección contra bursts.
+Por Hora	1000 solicitudes / 1 hora	Para clientes que hacen un uso intensivo pero esporádico.
+
+
+C. Umbrales (Límites)
+
+Establece los límites en función del costo del endpoint:
+
+Endpoints Ligeros (Lectura/GET): Límites altos (ej., 500/min).
+
+Endpoints Pesados (Creación/POST, Búsquedas Complejas): Límites estrictos (ej., 50/min).
+
+Endpoints Críticos (Login): Límites muy bajos para evitar ataques de fuerza bruta (ej., 5/min por IP).
+    
+ 
+    
+Mecanismo de Implementación (Algoritmos)
+
+Aunque hay varios algoritmos, los más comunes son:
+
+
+A. Ventana Fija (Fixed Window)
+
+Lógica: Se resetea el contador exactamente al inicio de cada ventana de tiempo (ej., cada minuto exacto).
+
+Riesgo: Permite un "doble burst" si un cliente agota el límite justo antes de que se reinicie la ventana y lo vuelve a agotar inmediatamente después.    
+
+
+B. Cubeta de Fichas (Token Bucket)
+
+Lógica: El cliente tiene una "cubeta" de capacidad fija (el límite). Se añaden fichas a la cubeta a una tasa constante.
+
+Beneficio: Permite bursts (ráfagas cortas) de tráfico si la cubeta está llena, pero asegura que el tráfico promedio se mantenga bajo. Es más flexible que la ventana fija.
+
+
+Manejo de la Respuesta (Obligatorio)
+
+Cuando se excede el límite, la API debe responder de manera estándar para que el cliente pueda reaccionar.
+
+
+A. Código de Estado
+
+Utiliza el código de estado estándar HTTP:
+
+429 Too Many Requests
+
+
+B. Cabeceras de Respuesta
+
+Incluye las siguientes cabeceras HTTP en cada respuesta (incluso si la solicitud fue exitosa) para que el cliente pueda rastrear su estado:
+
+Cabecera	Propósito	Ejemplo
+X-RateLimit-Limit	Límite de solicitudes permitido en la ventana.	100
+X-RateLimit-Remaining	Número de solicitudes restantes en la ventana actual.	45
+Retry-After	Obligatorio en 429. Tiempo (en segundos) hasta que se reinicie el contador.	30
+
+
+C. Cuerpo de Error
+
+Asegúrate de que el cuerpo del error 429 contenga un mensaje estructurado consistente con tu manejo de errores, indicando la razón del rechazo.
+
+Ejemplo de Respuesta 429:
+
+```
+HTTP/1.1 429 Too Many Requests
+Content-Type: application/json
+X-RateLimit-Limit: 100
+X-RateLimit-Remaining: 0
+Retry-After: 60
+
+{
+  "status": 429,
+  "message": "Ha excedido el límite de tasa permitido. Intente de nuevo en 60 segundos."
+}
+```
+
+
+Consideraciones Operacionales
+
+Almacenamiento Rápido: El contador de solicitudes debe almacenarse en una memoria rápida y distribuida, como Redis, no en la base de datos principal, para evitar cuellos de botella.
+
+#### Estrategia de Vencimiento: Utiliza la función de vencimiento (TTL - Time To Live) de Redis para que las claves del contador expiren exactamente al final de la ventana de tiempo.
+
+Ubicación: Implementa el Rate Limiting lo antes posible en la ruta de la solicitud (idealmente en un API Gateway o Load Balancer) antes de que la solicitud llegue a la lógica de la aplicación.
+
+Clientes Prioritarios: Considera la posibilidad de establecer límites más altos o exenciones para clientes internos o partners con acuerdos de nivel de servicio (SLA).
+
+
+
+## Autentication
+
 
 
 
 
 # Catching
+
+
+
