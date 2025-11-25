@@ -16883,5 +16883,163 @@ Clientes Prioritarios: Considera la posibilidad de establecer límites más alto
 
 # Catching
 
+Fundamental para el rendimiento y la escalabilidad
+
+#### Reduce la latencia, el costo de la base de datos y la carga del servidor.
+
+
+## 1. Teoría
+
+
+### Vocabulario y los principios detrás del cache
+
+A. Métricas Esenciales	Cache Hit (acierto), Cache Miss (fallo), Hit Ratio (relación de aciertos).	Saber medir la efectividad de una caché.
+
+B. Ciclo de Vida	TTL (Time-To-Live): El tiempo que un dato es válido en la caché.	Definir cuándo y por cuánto tiempo un dato puede estar "viejo".
+
+C. Políticas de Desalojo	LRU (Least Recently Used), LFU (Least Frequently Used).	Entender qué datos se eliminan cuando la caché está llena.
+
+D. Invalidez de Caché	Principios de Invalidez Distribuida y el problema de "Two Hard Things" (nombrar cosas y invalidar cachés).	Minimizar la entrega de datos obsoletos.
+
+
+
+## 2. Capas de Caching (Dónde Cachear)
+
+#### Un backend moderno utiliza múltiples capas de caché, cada una con un propósito específico.
+
+#### A. Caché del Navegador	El cliente (Frontend).	Encabezados HTTP: Cache-Control, Expires, ETag.
+
+#### B. CDN (Content Delivery Network)	Servidores geográficamente distribuidos.	Almacenar activos estáticos (imágenes, CSS, JS) y contenido dinámico en el "borde".
+
+#### C. Proxy Inverso / Gateway	Frente a los servidores de aplicación.	Varnish o Nginx (usando proxy_cache). Caching de respuestas HTTP completas.
+
+#### D. Caché en Memoria (In-Memory)	Dentro del proceso del servidor de aplicación.	Uso de estructuras de datos nativas del lenguaje para caché local (rápido pero no compartido).
+
+#### E. Caché Distribuida	Servidor dedicado y centralizado.	Redis o Memcached. La capa clave para la escalabilidad horizontal.
+
+#### F. Caché de Base de Datos	Motor de DB (SQL/NoSQL).	Pools de conexiones, query caches (a menudo desaconsejado o automatizado).
+
+
+## 3. Herramientas Esenciales (Distributed Caching)
+
+El principal desafío en un Backend moderno (escalado horizontal) es la capa distribuida 
+
+Redis es el estándar de facto.
+
+#### Redis	Estructuras de datos (Strings, Hashes, Lists, Sets).	Uso como caché: Comandos SET, GET, EX (TTL).
+
+#### Redis Sentinel o Redis Cluster.	Configurar alta disponibilidad y partición de datos (sharding).
+
+#### Redis Cluster.	Configurar alta disponibilidad y partición de datos (sharding).
+
+#### Pub/Sub (Publish/Subscribe).	Usar Pub/Sub para invalidar cachés en múltiples instancias de aplicación de forma reactiva.
+
+#### Integración con el Framework	Librerías de cliente.	Implementar la conexión de la aplicación con el servidor Redis (ej. redis-py, node-redis).
+
+#### Docker y Contenedores	Despliegue.	Configurar Redis en un contenedor Docker y vincularlo al Backend.
+
+
+## 4. Patrones y Estrategias de Caching
+
+La forma en que el código interactúa con la caché define su estrategia de lectura y escritura.
+
+
+#### A. Estrategias de Lectura
+
+### Cache-Aside (Lazy Loading)
+
+La aplicación es responsable de leer/escribir
+
+Si hay un miss, la aplicación lee de la DB y luego escribe en la caché.
+
+Ventajas y desventajas: 
+
+Más simple de implementar
+
+Puede causar latencia en el primer miss.
+
+
+### Read-Through
+
+La aplicación solo lee de la caché.
+
+Si hay un miss, la caché (o un componente intermedio) es responsable de leer la DB y rellenarse.
+
+Ventajas y desventajas: 
+
+La aplicación no tiene lógica de miss de caché.
+
+Más complejo de configurar
+
+
+#### B. Estrategias de Escritura y Actualización
+
+### Write-Through
+
+La aplicación escribe datos primero a la caché y luego a la DB (simultáneamente o en secuencia).
+
+Invalidez:
+
+Ideal para consistencia inmediata; el dato está fresco en ambas fuentes.
+
+
+### Write-Back
+
+La aplicación escribe solo a la caché.
+
+La caché escribe a la DB más tarde (asincrónicamente).
+
+Invalidez:
+
+Muy alta velocidad de escritura. Riesgo de pérdida de datos si la caché falla antes de escribir en la DB.
+
+
+### Refresh Ahead
+
+La caché actualiza los datos caducados antes de que el cliente los solicite, basándose en patrones de uso.
+
+Mantiene el rendimiento óptimo, pero es difícil de predecir.
+
+
+#### C. Desafios y Soluciones
+
+### Cache Stampede
+
+Múltiples solicitudes golpean la caché simultáneamente después de que caduca un valor popular, lo que sobrecarga la DB.
+
+Solución:
+
+Locking Distribuido (solo un proceso regenera el valor) o Jittering (agregar una pequeña aleatoriedad al TTL).
+
+ 
+### Datos Obsoletos
+
+Los datos de la caché no coinciden con la DB.
+
+Solución: 
+
+Usar el patrón Write-Through junto con TTL muy cortos o invalidación forzada vía Pub/Sub.
+
+
+## 5. DevOps Caching
+
+##### El caching debe ser probado y monitoreado rigurosamente.
+
+A. Implementación de Pruebas
+
+Pruebas Unitarias: Probar la capa de Repositorio/Servicio para verificar que la lógica de Cache-Aside se ejecute correctamente (llamando a la caché antes de la DB).
+
+Pruebas de Carga: Usar herramientas (como JMeter o Locust) para simular tráfico pesado y medir la reducción de latencia con y sin caché.
+
+ 
+B. Monitorización Esencial
+
+Hit Ratio: Es la métrica más importante. Debe ser lo más alta posible (idealmente > 85-90%). Una caída indica un problema de TTL o desalojo.
+
+Uso de Memoria: Monitorear el consumo de memoria en el servidor de caché (Redis/Memcached) para evitar el desalojo prematuro o la saturación.
+
+Latencia de Redis: Medir el tiempo de respuesta de Redis. Una alta latencia de la caché significa que la capa rápida ya no es rápida.
+
+
 
 
