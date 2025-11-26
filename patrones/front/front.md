@@ -4724,8 +4724,6 @@ path="perfil" → Renderiza <Perfil> dentro del <Outlet> de LayoutDashboard.
 
 El componente ProtectedRoute es un ejemplo perfecto de esto.
 
-El componente ProtectedRoute es un ejemplo perfecto de esto.
-
 ProtectedRoute (el padre) compone la lógica de autenticación alrededor de todas sus rutas hijas, protegiéndolas.
 
 ```
