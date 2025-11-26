@@ -1060,8 +1060,6 @@ Beneficio: Permite aislar la lógica del ciclo de vida y la interfaz de usuario.
 
 Un HOC es una función que toma un componente y devuelve un nuevo componente mejorado.
 
-Un HOC es una función que toma un componente y devuelve un nuevo componente mejorado
-
 Ej: Un withAuthentication(Component) que añade comprobación de usuario autenticado.
 
 Aunque todavía se usan, los Custom Hooks son la forma moderna y preferida de compartir lógica en componentes funcionales.
