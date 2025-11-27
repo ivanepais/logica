@@ -36,9 +36,329 @@ Usted realiza cambios en su propia copia y luego envía esos cambios nuevamente 
 Hay otras alternativas como GitLab que puedes probar, y también puedes intentar configurar tu propio servidor Git y usarlo en lugar de GitHub.
 
 
-## 
+## git:
+
+flow: 
+git init
+git status
+git add nombre_archivo || git add . (todos los archivos)
+git log
+git diff
+(untracked) no git add, no figura en el repo/direc/proyect 
+(cambios locales de prueba, descarte, para nosotros, 
+para no incluir, ignorar.)
+git commit
+
+revertir commit para incluir cambios olvidados: 
+git add archivo
+git commit --amend
+
+stage:
+git checkout -- archivo (antes git add, untracked)
+
+git log --oneline
+git log --oneline | cat
+7 números del hash
+
+git reset --hard 7numero_commit
+git reset --soft 7numero_commit
+
+git revert
+git diff numero_commit1 numero_commit2
+git log --onelne --decorate
+git diff HEAD~1 (un commit antes)
+git diff HEAD~2 (dos commit antes)
+
+git diff HEAD~1 HEAD 
+git revert numero_commit
+git revert HEAD
+git revert --no commit HEAD
+git revert --no commit HEAD~1
+git revert --continue
+(mensaje sobre cuales commits quitamos)
+git log --oneline --graph
+(commits anterior-sucesor)
+git log --oneline --graph --decorate (punteros/rama)
+
+git branch (lista ramas)
+git branch nombre_rama
+git branch/git status (muestra ramas)
+git checkout nombre_rama (cambio rama)
+git checkout -b nombre_rama (nueva rama y cambiar directo)
+git branch -m nombre_rama nuevo_nombre_rama
+git branch -d nombre_rama, eliminamos la rama
+git branch -h (lista comandos para branch)
+
+git merge: 
+git add archivo // git add . 
+git commit
+(mensaje)
+git log --oneline --decorate 
+git checkout feature
+o
+git checkout -b feature
+git add archivo
+git commit
+git checkout master 
+git merge feature
+git checkout -b new-feature (desde master)
+git add archivo
+git commit 
+(mensaje)
+git log --oneline --decorate --all --graph
+
+1) fusionamos donde esta head
+fast foward
+2) fusionamos rama intermedia 
+recursividad, nuevo commit 
+3) creamos dos ramas desde master para realizar cambios 
+dejamos intacto master
+eliminamos las marcas de git y dejamos el contenido correcto. 
+
+escenarios:  
+1) master/main destino limpio
+fast foward
+2) origen y destino con commits
+recursividad
+3)conflicto cuando dos personas modifiquen. 
+En ramas distintas la misma linea del mismo archivo. 
+abrir archivo y eliminar contendio
+ 4) misma linea y contenido
+llegamos a una solucion comun (elegimos un commit, u otro, o uno que incluya los dos)
+o git merge --abort
+y se quedara con el ultimo merge master y ramaXyz
+siempre comunicado con el equipo. 
+
+git stash
+modificaciones
+git add archivo
+git status (opcional)
+git stash 
+git status
+
+modificaciones
+git stash save "mensaje"
+
+remote workflow: 
+crear repo en servicio alojamiento
+git remote add origin https-dir
+modificaciones
+git add archivo / git add . 
+git commit 
+git push origin master 
+git clone https-dir 
+(modificaciones)
+git add archivo / git add . 
+git commit 
+(mensaje)
+git push origin master 
+git pull origin master
+va a hacer dos operaciones fetch y merge
+
+o podemos hacer: 
+git fetch siempre antes de hacer commits 
+git fetch origin master
+git merge origin master
+
+o podemo hacer: 
+git pull --rebase
 
 
+
+branches por funcionalidad:
+feature/login-page
+bugfix/fix-login-issue
+hotfix/crash-on-startup
+
+(Git Flow):
+modelo de branching
+main: Contiene el código listo para producción.
+develop: Código en desarrollo, donde se integran todas las características antes de fusionarlas en main.
+feature/*: Ramas para desarrollar nuevas funcionalidades.
+hotfix/*: Ramas para corregir errores en producción.
+release/*: Ramas para preparar una nueva versión de producción.
+
+commits pequeños y atómicos:
+Cada commit cambios que realicen una tarea específica y completa
+permiten revertir o aplicar cambios con precisión
+evitar cambios no relacionados con la implementación
+
+mensajes claros y descriptivos:
+ej:
+Agregar funcionalidad de autenticación de usuarios//linea1
+//l2 vacía
+- Se implementó login y registro de usuarios.//l3 descrip x l
+- Se agregaron pruebas unitarias para la autenticación.//l4
+- Se mejoró el manejo de excepciones en el proceso de registro.
+
+Realiza un rebasing interactivo para reescribir el historial:
+cuando trabajas en una rama con varios commits que no agregan mucho valor
+puedes usar rebase -i (interactivo) para limpiar el historial y fusionar (squash) commits redundantes.
+
+hooks de Git cuando sea necesario:
+Git ofrece hooks que permiten automatizar tareas
+como la ejecución de pruebas antes de hacer
+pre-commit
+pre-push
+
+etiquetas (tags) para versiones:
+marcar versiones importantes o lanzamientos en producción
+
+revisiones de código
+Antes de fusionar ramas en main o develop
+realiza revisiones de código a través de Pull Requests (PRs
+git checkout -b feature/login-page
+fusiona la rama de trabajo
+mediante un Pull Request (PR) o Merge Request (MR),
+idealmente tras una revisión de código
+
+
+
+## Prácticas
+
+commits pequeños y atómicos:
+Cada commit cambios que realicen una tarea específica y completa
+permiten revertir o aplicar cambios con precisión.
+enfocarse:
+corregir un error, implementar una nueva func, hacer un refactor
+Evita agregar cambios no relacionados en un mismo commit
+
+mensajes claros y descriptivos:
+crucial para entender el historial de cambios del proyecto
+formato:
+Línea 1: Un resumen conciso de los cambios (menos de 50 caracteres).
+Línea 2: (En blanco)
+Línea 3 y más: Una descripción detallada del commit, si es necesario.
+ej:
+Agregar funcionalidad de autenticación de usuarios
+
+- Se implementó login y registro de usuarios.
+- Se agregaron pruebas unitarias para la autenticación.
+- Se mejoró el manejo de excepciones en el proceso de registro.
+
+ramas (branches) desarrollar func y err:
+Evita trabajar main o master
+ramas para cada nueva funcionalidad. corrección de errores
+o mejora.
+git checkout -b feature/login-page
+fusiona la rama de trabajo
+mediante un Pull Request (PR) o Merge Request (MR),
+idealmente tras una revisión de código
+
+flujo de trabajo de ramas (Git Flow):
+modelo de branching desarrollo colaborativo y la entrega continua
+main: Contiene el código listo para producción.
+develop: Código en desarrollo, donde se integran todas las características antes de fusionarlas en main.
+feature/*: Ramas para desarrollar nuevas funcionalidades.
+hotfix/*: Ramas para corregir errores en producción.
+release/*: Ramas para preparar una nueva versión de producción.
+
+Haz rebase en lugar de merge cuando sea apropiado:
+rebase permite mantener un historial lineal y limpio, evitando los "commits de merge" innecesarios
+úsalo solo para commits locales que no se hayan compartido con otros colaboradores.
+# Para rebasar tu rama actual en la rama develop
+git checkout feature/new-feature
+git rebase develop
+
+Evita force push en ramas compartidas:
+git push --force puede sobrescribir el trabajo de otros,
+causando pérdida de commits.
+si es necesario, trata de usar git push --force-with-lease
+seguro porque verifica si la rama ha cambiado desde tu último fetch
+
+.gitignore adecuado:
+evitar que archivos innecesarios, sensibles o generados
+automáticamente sean añadidos al repositorio.
+incluye archivos de configuración local, binarios, dependencias, etc.
+
+```
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+
+# Node.js
+node_modules/
+npm-debug.log
+
+# Editor/IDE
+.vscode/
+.idea/
+
+# Logs
+*.log
+```
+
+Revisa tu código antes de commit:
+usando git diff o git status
+a verificar que solo estás agregando los cambios correctos.
+git status   # Ver el estado de los archivos modificados
+git diff     # Ver los cambios detallados en los archivos
+
+Squash commits:
+Si tienes muchos commits pequeños y sin importancia 
+en una rama de características
+puedes squashear (combinar) estos commits
+antes de fusionar la rama en main o develop.
+mantiene un historial de commits más limpio.
+git rebase -i HEAD~n   # 'n' es el número de commits a revisar
+Elige squash para combinar los commits y escribir un mensaje de commit coherente.
+
+revisiones de código
+Antes de fusionar ramas en main o develop
+realiza revisiones de código a través de Pull Requests (PRs
+ayudan a identificar errores y aseguran la calidad del código
+fomentar el intercambio de conocimientos entre los miembros del equipo
+
+etiquetas (tags) para versiones:
+marcar versiones importantes o lanzamientos en producción
+git tag -a v1.0.0 -m "Lanzamiento de la versión 1.0.0"
+git push origin v1.0.0
+
+Sincroniza tu repositorio frecuentemente:
+Antes de comenzar a trabajar en una nueva rama o continuar con tu trabajo
+asegúrate de que tienes la última versión del código desde el repositorio remoto:
+git fetch origin
+git pull origin develop  # O la rama con la que estés trabajando
+evitas problemas de integración o conflictos más adelante.
+
+conflictos de forma adecuada:
+surgen conflictos al fusionar ramas
+asegúrate de revisarlos y resolverlos de manera consciente
+No elimines cambios sin revisar ni uses
+la opción --ours o --theirs
+
+branches por funcionalidad:
+feature/login-page
+bugfix/fix-login-issue
+hotfix/crash-on-startup
+
+Restaurar versiones anteriores:
+revertir un cambio específico o volver a una 
+versión anterior del código
+git revert o git reset
+Revertir: Crea un commit que deshace un cambio
+específico sin perder el historial.
+git revert <commit_id>
+Reset: Reajusta el estado del código a un commit anterior
+pérdida potencial de cambios si no se usa correctamente).
+git reset --hard <commit_id>
+
+hooks de Git cuando sea necesario:
+Git ofrece hooks que permiten automatizar tareas
+como la ejecución de pruebas antes de hacer
+commit o push, o formatear código automáticamente
+hooks útiles:
+pre-commit: 
+Para validar el código antes de permitir un commit
+(por ejemplo, ejecutando linters).
+pre-push: Para ejecutar pruebas antes de permitir un push.
+configurar los hooks en el directorio .git/hooks/.
+
+Realiza un rebasing interactivo para reescribir el historial:
+cuando trabajas en una rama con varios commits que no agregan mucho valor
+puedes usar rebase -i (interactivo) para limpiar el historial y fusionar (squash) commits redundantes.
 
 
 
