@@ -769,32 +769,1033 @@ useEffect(() => {
 
 
 
+## Custom Hook 
+
+Función js, su nombre siempre empieza con use
+Permitirte reutilizar lógica de estado o de efectos entre múltiples componentes, evitando la duplicación de código
+
+forma de abstraer lógica compleja que utiliza los Hooks internos de React
+(useState, useEffect, useContext, useCallback, etc.)
+presentar esa lógica de manera limpia y reusable a cualquier componente que lo necesite.
+
+única regla estricta: usar otros Hooks dentro
+
+Resuelven el problema de compartir lógica de estado de una manera muy elegante:
+
+1. Aislamiento de Lógica: Toda la lógica compleja se encapsula dentro del Custom Hook.
+2. Devolución de Valores: El Custom Hook puede devolver cualquier cosa que el componente necesite
+estado, funciones setter, o funciones manejadoras
+3. Independencia: Cuando llamas a un Custom Hook en dos componentes diferentes
+cada componente obtiene una copia completamente independiente de ese estado y de esa lógica
+El estado no se comparte entre ellos; solo se comparte la lógica de cómo se gestiona ese estado.
+
+### Ej: lógica para un contador que quieres usar en muchos lugares.
+
+1. Definición del Custom Hook (useContador.js)
+
+```
+import { useState, useCallback } from 'react';
+
+// El nombre empieza con 'use'
+const useContador = (initialValue = 0) => {
+  const [contador, setContador] = useState(initialValue);
+
+  // Usa useCallback para garantizar que la función es estable
+  const incrementar = useCallback(() => {
+    setContador(prevContador => prevContador + 1);
+  }, []);
+
+  const decrementar = useCallback(() => {
+    setContador(prevContador => prevContador - 1);
+  }, []);
+
+  const reset = useCallback(() => {
+    setContador(initialValue);
+  }, [initialValue]); // Dependencia: initialValue
+
+  // Devuelve el estado y las funciones que los componentes usarán
+  return { contador, incrementar, decrementar, reset };
+};
+
+export default useContador;
+```
+
+2. Uso 
+cualquier componente puede consumir esta lógica
+manteniendo su propio estado de contador.
+
+```
+import useContador from './useContador';
+
+function BotonesContador() {
+  // Llama al hook como si fuera una función normal
+  const { contador, incrementar, decrementar, reset } = useContador(10); // Estado inicial 10
+
+  return (
+    <div>
+      <h3>Valor: {contador}</h3>
+      <button onClick={incrementar}>+1</button>
+      <button onClick={decrementar}>-1</button>
+      <button onClick={reset}>Reset</button>
+    </div>
+  );
+}
+```
+
+uso de custom hook 
+reutilizar la misma lógica de estado y efectos en dos o más componentes.
+aislar la lógica compleja (como el data fetching o la validación de formularios) de los componentes de UI
+componente sea agnóstico a la implementación de su estado
+(solo le importa el resultado final, no cómo se calculó).
+
+
+practicas: 
+
+Convención de Nombres (use...)
+debe describir claramente la intención de la lógica que encapsula
+
+Devuelve un Objeto o Arreglo Bien Definido
+Decide si el Hook devolverá un arreglo o un objeto, y sé consistente
+
+array: Similar a useState, fácil de desestructurar con cualquier nombre
+El orden es importante: Si añades o cambias un valor, puedes romper el código de los consumidores.
+Úsalo para casos muy simples o cuando hay un par estado/setter claro (ej: useContador).
+
+objeto: No depende del orden, puedes desestructurar solo lo que necesitas (ej: { estado, isLoading }).
+Requiere usar el mismo nombre en la desestructuración
+Úsalo para devolver múltiples valores 
+o o para devolver funciones manejadoras (lo más común).
+
+```
+// Objeto (Recomendado para Hooks complejos)
+return { estado, isLoading, setError, fetchData };
+
+// Arreglo (Solo para casos simples)
+return [contador, incrementar];
+```
+
+Encapsula lógica: 
+Si la lógica de un useEffect o useState se usa en múltiples componentes,
+muévela completamente dentro del Custom Hook.
+
+El componente que consume el Hook debe ser agnóstico a la implementación interna
+Solo debe preocuparse por renderizar la UI con los valores que recibe.
+
+Acepta Argumentos y Configuración:
+tu Hook verdaderamente reusable, debe ser configurable
+Permite que los consumidores pasen valores iniciales, parámetros de API, o funciones de callback.
+
+```
+// Permite configurar la URL y las opciones de fetch
+const useFetch = (url, options = {}) => { /* ... */ };
+
+// Permite configurar el valor inicial del contador
+const useContador = (initialValue = 0, step = 1) => { /* ... */ };
+```
+
+Estabilizar Funciones y Valores con useCallback y useMemo
+
+##### Si tu Custom Hook devuelve funciones, envuélvelas en useCallback
+##### Si devuelve valores complejos que son costosos de calcular, envuélvelos en useMemo.
+garantiza que las funciones y objetos devueltos no cambien en cada renderizado del componente consumidor
+ayuda a evitar ciclos de renderizado innecesarios en useEffect
+y optimiza el rendimiento de los componentes hijos que usan React.memo.
+
+```
+// useContador.js
+// La función incrementar es estable y solo se crea una vez
+const incrementar = useCallback(() => {
+    setContador(prevContador => prevContador + 1);
+}, []); // Array de dependencias vacío, solo se crea al montar
+
+return { contador, incrementar };
+```
+
+Documentación: 
+¿Qué devuelve? Describe cada valor devuelto por el Hook.
+¿Qué argumentos toma? Describe los tipos y si son opcionales.
+Ejemplos de Uso: Muestra un fragmento de código simple donde se consume el Hook.
+
+
+
 ## useReducer
 Alternativa de React a useState para manejar la lógica de estado más compleja
 cuando el estado de tu componente es un objeto complejo o un arreglo
 cuando las actualizaciones de ese estado dependen de múltiples sub-valores
-o implican lógica intrincada.
+o implican lógica intrincada, basado en el patrón reducer
+
+1. Estado: valor que deseas manejar, similar al estado de useState. 
+Suele ser un objeto o arreglo.
+
+2. Acción: objeto simple que describe qué sucedió
+tiene dos propiedades:
+
+type: string que describe el tipo de cambio que debe ocurrir
+(ej: 'INCREMENTAR', 'AÑADIR_TAREA', 'CERRAR_MODAL').
+Es obligatorio.
+
+payload: Opcional, Contiene los datos que son necesarios para realizar la actualización
+(ej: el nuevo valor del input, el ID del ítem a eliminar).
+
+3. Función Reductora (Reducer)
+función pura que toma el estado actual actual y una acción y devuelve un nuevo estado.
+
+(currentState,action)→newState
+
+siempre debe ser inmutable: nunca debe modificar el currentState directamente
+debe devolver un objeto o arreglo completamente nuevo.
+
+Sintaxis: 
+
+En lugar de devolver solo el estado y un setter
+devuelve el estado y una función dispatch.
+
+```
+const [state, dispatch] = useReducer(reducer, initialState);
+```
+
+state	El valor actual del estado
+dispatch	Una función para enviar una acción al Reducer.
+
+reducer	La función que contiene la lógica para calcular el nuevo estado.
+initialState	El valor inicial del estado
+
+
+Ej: gestionar el estado de una lista de tareas:
+
+1. Estado Inicial y la Función Reductora
+
+```
+// Estado inicial: un arreglo de objetos de tareas
+const initialState = [];
+
+// Función Reductora
+function todoReducer(state, action) {
+  switch (action.type) {
+    case 'AÑADIR_TAREA':
+      // Actualización inmutable: crea un nuevo arreglo
+      return [
+        ...state,
+        {
+          id: Date.now(),
+          texto: action.payload, // El dato que necesitamos añadir
+          completada: false,
+        },
+      ];
+    case 'TOGGLE_TAREA':
+      // Actualización inmutable: usa map para devolver un nuevo arreglo
+      return state.map(tarea =>
+        tarea.id === action.payload
+          ? { ...tarea, completada: !tarea.completada }
+          : tarea
+      );
+    case 'ELIMINAR_TAREA':
+      // Actualización inmutable: usa filter para devolver un nuevo arreglo
+      return state.filter(tarea => tarea.id !== action.payload);
+    default:
+      return state;
+  }
+}
+```
+
+2. Uso en el Componente
+
+```
+import React, { useReducer } from 'react';
+
+function TodoList() {
+  const [tareas, dispatch] = useReducer(todoReducer, initialState);
+  
+  const handleAñadir = (texto) => {
+    // Envía una acción que el Reducer sabe cómo manejar
+    dispatch({
+      type: 'AÑADIR_TAREA',
+      payload: texto, // El texto de la nueva tarea
+    });
+  };
+
+  const handleToggle = (id) => {
+    dispatch({
+      type: 'TOGGLE_TAREA',
+      payload: id, // El ID de la tarea a marcar/desmarcar
+    });
+  };
+
+  return (
+    <div>
+      {/* ... Lógica de input para llamar a handleAñadir ... */}
+      {tareas.map(tarea => (
+        <div key={tarea.id}>
+          <span 
+            onClick={() => handleToggle(tarea.id)}
+            style={{ textDecoration: tarea.completada ? 'line-through' : 'none' }}
+          >
+            {tarea.texto}
+          </span>
+          {/* ... Botón de eliminar, etc. ... */}
+        </div>
+      ))}
+    </div>
+  );
+}
+```
+
+Uso: 
+
+useState
+Estado: simple; booleanos, números, strings.
+Lógica actualización: simple; una sola función de setter es suficiente.
+funciones: Menos óptimo si necesitas pasar el setter a muchos componentes hijos
+(puede causar problemas de re-renderizado).
+escala: Componentes pequeños y con poca lógica de estado.
+
+useReducer:
+Estado: complejo; objetos con muchos campos, arreglos anidados
+Lógica actualización: Múltiples actualizaciones de estado relacionadas
+o cuando el nuevo estado depende del estado anterior de manera compleja.
+funciones: Ideal para pasar la función dispatch a componentes hijos
+dispatch es estable y no se recrea en cada renderizado.
+escala: Aplicaciones de tamaño medio a grande donde se prefiere una estructura de estado predecible y centralizada.
+
+
+Prácticas para useReducer
+
+Usa Constantes para action.type:
+Define los tipos de acción como constantes de string fuera del componente
+para evitar errores de tipeo y hacer el código más legible y refactorizable.
+
+```
+const ACTION_TYPES = {
+  FETCH_START: 'FETCH_START',
+  FETCH_SUCCESS: 'FETCH_SUCCESS',
+  FETCH_ERROR: 'FETCH_ERROR',
+};
+// Luego lo usas: dispatch({ type: ACTION_TYPES.FETCH_SUCCESS, ... })
+```
+
+Convención type y payload:
+La acción debe ser un objeto con una propiedad type que describe lo que sucedió
+opcionalmente un payload que lleva los datos necesarios para realizar el cambio.
+
+```
+// Buena Práctica
+dispatch({ type: 'AÑADIR_TAREA', payload: { texto: 'Comprar leche' } });
+
+// Mala Práctica (No descriptivo)
+dispatch({ texto: 'Comprar leche' });
+```
+
+Reducer como una Función Pura:
+No debe tener efectos secundarios: llamadas a API, modificar variables, etc
+determinista: misma entrada (state y action), misma salida (newState)
+
+```
+// Correcto (Inmutable y Puro)
+case 'AÑADIR_TAREA':
+  return [...state, action.payload]; // Devuelve un nuevo arreglo
+
+// Incorrecto (Mutación, no puro)
+case 'AÑADIR_TAREA':
+  state.push(action.payload); // Mutación: MALA PRÁCTICA
+  return state;
+```
+
+Lógica Compleja Fuera del Reducer (Idealmente):
+El Reducer idealmente solo debe preocuparse por cómo transicionar de un estado a otro
+Si necesitas hacer cálculos complejos o manejar la lógica de la API
+hazlo en los manejadores de eventos o dentro de la función que llama a dispatch.
+
+Ejemplo: generar un ID, hazlo antes de llamar a dispatch y pásalo en el payload.
+
+```
+// Componente
+const handleAñadir = (texto) => {
+  const nuevaTarea = { id: Date.now(), texto, completada: false }; // Lógica de ID aquí
+  dispatch({ type: 'AÑADIR_TAREA', payload: nuevaTarea });
+};
+
+// Reducer (solo recibe el objeto y lo añade)
+case 'AÑADIR_TAREA':
+  return [...state, action.payload];
+```
+
+sub-reducers: Estados Complejos
+
+useReducer para Lógica de Estado en useEffect
+
+Inicialización Perezosa (Lazy Initialization
+Reducers y Custom Hook
+
 
 
 ## Context API
 
+##### Mecanismo que permite que los componentes compartan datos o estado
+sin tener que pasarlos explícitamente a través de cada nivel del árbol de componentes
+(prop drilling)
+
+solución de React para la inyección de dependencias
+y para la gestión de estado simple a mediano que necesita ser accesible globalmente o por muchos componentes.
+
+Si tienes un dato (como la configuración del tema o la información de un usuario autenticado)
+en la parte superior de tu aplicación y lo necesita un componente muy profundo
+tienes que pasarlo como prop a través de cada componente intermedio, incluso si esos componentes intermedios no lo usan.
+
+Context API
+Permite que un componente en la cima "provea" el valor, y cualquier componente hijo
+sin importar cuán profundo esté, puede "consumir" lo directamente.
+
+1. React.createContext (Creación objeto context)
+
+```
+// userContext.js
+import React from 'react';
+
+// El valor pasado aquí ('null' o { username: 'Invitado' }) es el valor por defecto
+// y solo se usa si un componente consumidor no tiene un Provider encima.
+const UserContext = React.createContext(null); 
+
+export default UserContext;
+```
+
+2. Provider (La Fuente)
+Cada objeto Context viene con un componente Provider (UserContext.Provider).
+Este es el componente que envuelve a la parte del árbol de la aplicación que necesita acceso a los datos.
+
+Acepta una prop llamada value, que contiene los datos reales que se van a compartir.
+Cuando el valor de esta prop cambia, todos los componentes que consumen este Context se vuelven a renderizar.
+
+```
+import UserContext from './userContext';
+import { useState } from 'react';
+
+function App() {
+  const [usuario, setUsuario] = useState({ id: 1, nombre: 'Alice' });
+
+  return (
+    // Todos los componentes dentro de este Provider tendrán acceso a 'usuario'
+    <UserContext.Provider value={usuario}>
+      <ComponenteSuperior />
+    </UserContext.Provider>
+  );
+}
+```
+
+3. Consumer (Receptor)
+
+### Existen dos formas modernas de que un componente consuma el valor de Context: useContext (moderno), Consumer (clásico) 
+
+1. useContext
+forma más limpia y moderna de consumir el Context.
+
+```
+import React, { useContext } from 'react';
+import UserContext from './userContext';
+
+function ComponenteNieto() {
+  // Engancha el Context y obtén el valor directamente
+  const usuario = useContext(UserContext); 
+
+  return <h2>Bienvenido, {usuario.nombre}</h2>;
+}
+```
+
+2. Consumer Clásico 
+
+sintaxis verbosa
+
+```
+// ...
+function ComponenteNieto() {
+  return (
+    <UserContext.Consumer>
+      {(usuario) => <h2>Bienvenido, {usuario.nombre} (Clásico)</h2>}
+    </UserContext.Consumer>
+  );
+}
+```
+
+Uso Context API
+Temas de UI (claro/oscuro).
+Información de usuario autenticado y funciones de logout.
+Configuración de idioma/localización.
+##### Datos que rara vez cambian pero que se necesitan en muchos lugares.
+
+
+Context API vs. Soluciones de Estado Global (Redux, Zustand)
+
+Context API
+Complejidad: Baja a media. Fácil de configurar.
+Propósito: Inyección de dependencias y compartir datos que no cambian a menudo.
+Rendimiento: Puede causar problemas de rendimiento si el value del Provider cambia con frecuencia, ya que todos los consumidores se vuelven a renderizar.
+
+Usar Context API cuando solo necesitas evitar el prop drilling y la lógica de actualización del estado es simple.
+Si tu estado es grande, con lógica de negocio compleja o asíncrona
+considera combinarlo con useReducer o usar una librería dedicada como Redux.
+
+
 
 ## useContext
+
+Permite a los componentes funcionales suscribirse y acceder al valor proporcionado por un Context Provider
+
+Sintaxis: 
+solo toma el objeto Context que creaste con React.createContext() como único argumento
+devuelve el valor actual de ese Context.
+
+```
+import { useContext } from 'react';
+import MiContexto from './MiContexto'; // El objeto creado con createContext()
+
+function ComponenteHijo() {
+  // El hook devuelve el valor que fue pasado al Provider
+  const valorDelContexto = useContext(MiContexto); 
+  
+  // Ahora puedes usar el valor:
+  return <h1>El tema actual es: {valorDelContexto.theme}</h1>;
+}
+```
+
+Mecanismo de Suscripción
+
+En useContext(MiContexto)
+ComponenteHijo se suscribe automáticamente a los cambios en el Context.
+React busca el Provider más cercano en el árbol que corresponda a ese MiContexto.
+Si ese Provider cambia su prop value
+React automáticamente vuelve a renderizar (dibuja de nuevo) el componente que usa useContext
+
+
+Ej: Tema
+
+1. Contexto 
+
+```
+// ThemeContext.js
+import { createContext } from 'react';
+export const ThemeContext = createContext(null);
+```
+
+2. Provider
+
+```
+// App.jsx
+import { useState } from 'react';
+import { ThemeContext } from './ThemeContext';
+import BotonCambio from './BotonCambio';
+
+function App() {
+  const [theme, setTheme] = useState('light');
+  const toggleTheme = () => setTheme(theme === 'light' ? 'dark' : 'light');
+
+  return (
+    // Provee el valor del tema y la función para cambiarlo
+    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+      <header className={theme}>
+        <h1>Mi Aplicación</h1>
+        <BotonCambio /> 
+      </header>
+    </ThemeContext.Provider>
+  );
+}
+```
+
+3. consumir contexto (useContext)
+
+```
+// BotonCambio.jsx
+import { useContext } from 'react';
+import { ThemeContext } from './ThemeContext';
+
+function BotonCambio() {
+  // Aquí usamos el hook
+  const { theme, toggleTheme } = useContext(ThemeContext); 
+
+  return (
+    <button onClick={toggleTheme}>
+      Cambiar a {theme === 'light' ? 'Oscuro' : 'Claro'}
+    </button>
+  );
+}
+```
+
+Cada vez que se llama a toggleTheme, el value del Provider cambia, y el BotonCambio
+(y cualquier otro componente que use useContext(ThemeContext))
+se vuelve a renderizar con el nuevo valor.
+
+
+prácticas: 
+Separa la Creación del Contexto y el Proveedor
+MiContexto.js (La Definición)
+MiProveedor.jsx (El Componente Lógico):
+gestiona el estado (usando useState o useReducer) y lo pasa en la prop value.
+
+Si el objeto pasado a la prop value del Provider cambia
+React re-renderizará a todos los componentes que consumen ese Context
+incluso si solo cambió una parte del objeto que no utilizan.
+
+Usa useMemo para estabilizar el value:
+
+```
+const contextoValue = useMemo(() => ({ estado, setEstado }), [estado, setEstado]);
+
+<MiContexto.Provider value={contextoValue}> 
+  {children}
+</MiContexto.Provider>
+```
+
+Crea un Custom Hook para Consumir el Contexto
+Para limpiar la sintaxis de consumo y proporcionar manejo de errores
+crea un Custom Hook para cada Context.
+
+Posición del Provider en el Árbol
+Contextos Globales: Los Providers que contienen datos globales (como el tema, el usuario) 
+deben envolver el componente App en el nivel superior para que todos los componentes tengan acceso.
+    
+Contextos de Componente: Si un Context solo se necesita dentro de un módulo específico (ej. un wizard o formulario grande), envuelve solo ese módulo
+minimiza el impacto en el rendimiento del resto de la aplicación.
+
+Si necesitas múltiples Providers, puedes anidarlos:
+```
+<ThemeProvider>
+  <AuthProvider>
+    <MiApp />
+  </AuthProvider>
+</ThemeProvider>
+```
+
+o crear un componente Providers para limpiar la anidación:
+
+```
+// ...
+<TodosLosProviders>
+  <MiApp />
+</TodosLosProviders>
+```
+
+
+
+## React.memo
+
+Herramienta de optimización de rendimiento de React que se utiliza para componentes funcionales
+Su propósito es evitar que un componente se vuelva a renderizar (dibujar) cuando sus props no han cambiado.
+
+Es un concepto de "memorización" (de ahí el nombre memo) aplicado a nivel de componente.
+
+React.memo es una función de orden superior (Higher-Order Component - HOC)
+toma un componente funcional y le añade una lógica de optimización
+
+Por defecto, cuando el componente padre de un componente funcional se renderiza
+React también renderiza todos sus hijos, incluso si las props de esos hijos no han cambiado
+
+Esto es normal y suele ser rápido pero en aplicaciones grandes o con listas muy extensas, este re-renderizado innecesario puede degradar el rendimiento.
+
+React.memo envuelve el componente
+renderizar este componente
+compara las props nuevas con las props viejas
+Si todas son iguales, salta la renderización y reutiliza el resultado del renderizado anterior."
+Si las props son diferentes, entonces el componente se renderiza normalmente.
+
+Sintaxis:
+Simplemente envuelve tu componente funcional con React.memo:
+
+```
+import React from 'react';
+
+// 1. Define tu componente normalmente
+function ComponenteHijo({ nombre, edad }) {
+  console.log('Componente Hijo Renderizado');
+  return (
+    <div>
+      <p>Hola, me llamo {nombre} y tengo {edad} años.</p>
+    </div>
+  );
+}
+
+// 2. Exporta el componente envuelto en React.memo
+export default React.memo(ComponenteHijo);
+```
+
+
+Comparación de Props (Shallow Comparison):
+Por defecto, React.memo realiza una comparación superficial (shallow comparison) de las props
+Para valores primitivos (strings, numbers, booleans): Compara los valores (ej: 5 === 5 o 'A' === 'B').
+Para objetos y funciones (No primitivos): Compara las referencias de memoria (ej: objetoNuevo === objetoViejo).
+Si el padre crea un nuevo objeto o función en cada renderizado
+(aunque contengan los mismos datos)
+la comparación superficial fallará y el componente hijo se renderizará
+
+Prácticas
+No lo Uses Universalmente
+React.memo no siempre es una mejora. 
+La comparación de props en sí misma consume tiempo. 
+
+Solo úsalo cuando:
+El componente se re-renderiza con frecuencia.
+El componente recibe las mismas props la mayoría de las veces.
+El componente es computacionalmente caro (tarda mucho en renderizarse).
+
+##### En componentes sencillos, el costo de la comparación puede ser mayor que el costo de la renderización.
+
+
+Estabiliza las Props No Primitivas:
+##### Punto de conflito/errores: Si tu componente envuelto recibe objetos o funciones, debes estabilizarlos para que React.memo funcione correctamente.
+
+Para Objetos/Arreglos: Usa el hook useMemo en el componente padre para estabilizar los objetos/arreglos pasados como props.
+
+```
+// En el componente padre
+const datosUsuarioEstables = useMemo(() => ({
+  email: user.email,
+  id: user.id
+}), [user.email, user.id]);
+
+<ComponenteHijo datos={datosUsuarioEstables} />
+```
+
+Para Funciones: Usa el hook useCallback en el componente padre para estabilizar las funciones pasadas como props.
+
+```
+// En el componente padre
+const handleClickEstable = useCallback(() => {
+  // lógica
+}, []); 
+
+<ComponenteHijo onClick={handleClickEstable} />
+```
+
+##### Si no usas useCallback, cada vez que el padre se renderiza, crea una nueva instancia de la función lo que hace que la comparación en el hijo falle y el hijo se re-renderice innecesariamente.
+
+
+Personaliza la Comparación (Tercer Argumento):
+
+Si la comparación superficial no es suficiente, React.memo acepta un segundo (tercer en el orden de argumentos si cuentas el componente) argumento opcional: una función que define cómo comparar las props viejas y las nuevas
+La función recibe (prevProps, nextProps) y debe devolver true si las props son iguales (y quieres saltar el renderizado) o false si son diferentes (y quieres que se renderice).
+
+```
+function sonPropsIguales(prevProps, nextProps) {
+  // Retorna true si quieres SALTAR el renderizado
+  // Retorna false si quieres FORZAR el renderizado
+  return prevProps.edad === nextProps.edad && prevProps.nombre === nextProps.nombre;
+}
+
+export default React.memo(ComponenteHijo, sonPropsIguales);
+```
+
+##### React.memo es una herramienta poderosa, pero su efectividad depende de que uses los Hooks de memorización (useMemo y useCallback) en el componente padre para garantizar que
+
+
+### React.memo vs useMemo
+
+React.memo
+Memoriza: Un Componente Funcional completo (el resultado de su renderizado).
+Uso: evitar que un componente se re-renderice innecesariamente cuando sus props no han cambiado.
+SintaxisEs una función de orden superior (HOC) que envuelve el componente.
+Entrada	El componente que recibe props (y la lógica de comparación).
+
+useMemo:
+Valor Específico (el resultado de una función).
+evitar re-calcular un valor costoso innecesariamente.
+hook que se llama dentro de un componente funcional.
+Una función de cálculo y un arreglo de dependencias
 
 
 
 ## useMemo
 
+Herramienta fundamental de optimización.
+Memorizar un valor para evitar que se recalcule innecesariamente en cada renderizado del componente.
+
+useMemo toma dos argumentos
+1. función de cálculo (factory function).
+2. arreglo de dependencias (dependency array).
+
+Cuando el componente se renderiza por primera vez, React ejecuta la función de cálculo
+y almacena el valor resultante en la memoria (lo "memoriza").
+
+En renderizados subsiguientes, React verifica los valores en el arreglo de dependencias:
+Si ninguna de las dependencias ha cambiado
+React devuelve el valor memorizado sin volver a ejecutar la función de cálculo.
+
+Si alguna de las dependencias ha cambiado
+React ejecuta la función de cálculo, devuelve el nuevo valor y lo memoriza para la próxima vez
+
+##### Esto ahorra el costo de volver a realizar cálculos complejos o construir estructuras de datos grandes si la entrada (las dependencias) sigue siendo la misma.
+
+Sintaxis:
+
+##### El valor devuelto por useMemo es el valor de retorno de la función de cálculo.
+
+```
+const valorMemorizado = useMemo(() => {
+  // Función de cálculo costosa
+  return funcionCostosa(dep1, dep2);
+}, [dep1, dep2]); // Arreglo de dependencias
+```
+
+##### Uso: relacionadas con la optimización de cálculos y la estabilización de referencias
+
+1. Optimizar Cálculos Costosos
+Función que realiza un cálculo que consume muchos recursos
+y que solo necesita ejecutarse cuando ciertos datos cambian, useMemo es ideal.
+
+```
+function Listado({ items, filtro }) {
+  // El filtrado solo se ejecuta si 'items' o 'filtro' cambian.
+  const itemsFiltrados = useMemo(() => {
+    console.log('Filtrando items...');
+    return items.filter(item => item.nombre.includes(filtro));
+  }, [items, filtro]); // Dependencias: Si cambian, se recalcula
+
+  return (
+    // ... Renderizado de itemsFiltrados
+  );
+}
+```
+
+2. Estabilizar Referencias (Objetos y Arreglos)
+Uso vital para el rendimiento, especialmente cuando se trabaja con React.memo o con useEffect.
+En JavaScript, los objetos y arreglos son tipos de referencia
+Si creas un objeto {} o un arreglo directamente dentro del cuerpo de un componente
+se crea una nueva referencia de memoria en cada renderizado, incluso si su contenido es idéntico.
+
+##### Si pasas esta nueva referencia a un componente hijo optimizado con React.memo, la comparación de props fallará, forzando un re-renderizado innecesario. useMemo evita esto.
+
+Problema:
+
+```
+// El objeto 'estilos' se crea de nuevo en cada renderizado del Padre
+const estilos = { color: 'blue' }; 
+<ComponenteMemoizado estilos={estilos} /> // Componente Memoizado se renderiza siempre
+```
+
+useMemo:
+
+```
+// El objeto 'estilosEstables' mantiene la misma referencia
+const estilosEstables = useMemo(() => ({
+  color: 'blue' 
+}), []); // Array vacío: la referencia NUNCA cambia
+
+<ComponenteMemoizado estilos={estilosEstables} /> // Componente Memoizado no se re-renderiza
+```
+
+Costos de useMemo:
+Costo de la Comparación: Usar useMemo implica un costo de memoria y el costo de verificar las dependencias
+Si el cálculo es trivialmente simple (ej. a + b), el costo de useMemo puede ser mayor que el costo de simplemente recalcular el valor.
+
+Solo para Componentes Lentos: Resérvalo para valores que son costosos de calcular
+##### o para estabilizar referencias que se pasan a componentes que tú sabes que son lentos o que están optimizados con React.memo
+
+
 
 ## useCallback
 
+Herramienta de optimización diseñada para memorizar funciones.
+##### Su objetivo es evitar que se creen nuevas instancias de funciones en cada renderizado
+ayuda a prevenir re-renderizados innecesarios de componentes hijos.
 
-## React.memo
+useCallback toma dos argumentos
+1. función callback
+2. arreglo de dependencias (dependency array).
+
+Cuando el componente se renderiza por primera vez, React ejecuta la función useCallback y almacena la referencia de la función resultante en la memoria (la "memoriza").
+
+En renderizados subsiguientes, React verifica los valores en el arreglo de dependencias:
+Si ninguna de las dependenciaSi alguna de las dependencias ha cambiado, React crea una nueva versión de la función, la devuelve y la memoriza para la próxima vez.s ha cambiado, React devuelve la misma referencia de la función que memorizó antes.
+
+Problema: Estabilidad de Referencias
+En JavaScript, las funciones son objetos
+Si defines una función dentro del cuerpo de un componente funcional
+esa función se re-crea completamente (obteniendo una nueva referencia de memoria) en cada renderizado
+
+##### Si pasas esa función como prop a un componente hijo optimizado con React.memo
+la comparación de props en el hijo siempre fallará porque la función es "nueva" cada vez
+forzando al hijo a re-renderizarse innecesariamente
+
+##### useCallback resuelve esto: garantiza que la función mantenga la misma referencia entre renderizados a menos que sus dependencias internas cambien.
+
+```
+const funcionMemorizada = useCallback(() => {
+  // Lógica de la función
+  console.log(`El contador actual es: ${contador}`); 
+}, [contador]); // Arreglo de dependencias: La función solo cambia si 'contador' cambia
+```
+
+El uso principal de useCallback es para estabilizar las funciones que se pasan como props a componentes hijos que están envueltos en React.memo.
+
+```
+// Componente Hijo optimizado (solo se renderiza si sus props cambian)
+const BotonMemorizado = React.memo(({ onClick, children }) => {
+  console.log(`Renderizando Botón: ${children}`);
+  return <button onClick={onClick}>{children}</button>;
+});
+
+function ComponentePadre() {
+  const [contador, setContador] = useState(0);
+
+  // Sin useCallback: La referencia de esta función cambia en cada renderizado del Padre
+  // const handleClick = () => { setContador(c => c + 1); };
+
+  // Con useCallback: La referencia de esta función es estable
+  const handleClick = useCallback(() => {
+    setContador(c => c + 1);
+  }, []); // Dependencia: [] -> La referencia NUNCA cambia (es estable)
+
+  return (
+    <div>
+      <p>Contador: {contador}</p>
+      {/* Si handleClick fuera inestable, BotonMemorizado se renderizaría innecesariamente */}
+      <BotonMemorizado onClick={handleClick}>Incrementar</BotonMemorizado> 
+      <button onClick={() => setContador(c => c + 1)}>Renderizar Padre (sin usar prop)</button>
+    </div>
+  );
+}
+```
+
+La función handleClick mantiene su referencia de memoria estable
+Por lo tanto, BotonMemorizado (que usa React.memo) no se re-renderizará cuando cambie cualquier estado no relacionado en ComponentePadre.
 
 
-## Eventos
+### useMemo vs useCallback
+useCallback: Memoriza la función en sí misma, dándote una referencia estable.
+Estabilizar funciones para pasarlas a componentes hijos memorizados.
+
+useMemo: Ejecuta la función y memoriza el valor devuelto por ella.
+Estabilizar objetos/arreglos y optimizar cálculos costosos.
 
 
+##### La memorización tiene un costo de tiempo de CPU y de memoria (el hook debe almacenar la función y comparar las dependencias).
+
+Usa useCallback solo cuando sepas o sospeches que un componente hijo se está re-renderizando innecesariamente
+y has determinado que la causa es una función que se pasa como prop.
+
+Si tienes dudas, no lo uses.
+React es extremadamente rápido, y la mayoría de los problemas de rendimiento provienen de componentes que renderizan grandes listas o realizan cálculos complejos
+Enfócate primero en esos cuellos de botella.
+
+
+### useCallback en Custom Hooks
+
+Custom Hook que devuelve funciones (por ejemplo, useToggle, useContador), siempre envuelve esas funciones en useCallback
+Razón: Garantizas que las funciones devueltas por tu Hook sean estables
+Esto permite que los componentes que consumen tu Custom Hook puedan optimizar sus propios componentes hijos sin preocuparse por la inestabilidad.
+
+
+## Estabilidad de Referencias
+
+1. Prioriza el Valor sobre la Referencia: Siempre que uses un hook de memorización, pregúntate: "¿El cálculo es costoso?" o "¿Voy a pasar esta referencia a un componente memorizado?".
+Si la respuesta es no, no uses la memorización.
+
+2. No uses useMemo o useCallback para cada objeto o función. El hook tiene un costo de CPU y memoria (almacenar el valor y comparar las dependencias). 
+Solo úsalo cuando hayas identificado un cuello de botella de rendimiento o una falla de optimización (un componente memoizado que se renderiza cuando no debería).
+
+
+Cálculos Caros y Filtros
+Cuando la función de cálculo dentro de useMemo es intensiva en recursos
+ej. filtrado, clasificación, transformación de datos grandes)
+La estabilidad asegura que el cálculo no se repita a menos que las dependencias cambien.
+
+Escenario: Tienes un arreglo de 10,000 ítems y necesitas filtrarlo o clasificarlo antes de mostrarlo.
+Recomendación: Envuelve la lógica de filtrado en useMemo.
+
+
+### Custom Hooks y estabilidad
+
+Si un Custom Hook devuelve objetos o funciones (lo más habitual), debe garantizar su estabilidad.
+Escenario: Tu Custom Hook useForm devuelve un objeto { values, handlers } y funciones como handleSubmit.
+
+Recomendación: Usa useMemo para el objeto de valores y useCallback para las funciones manejadoras (handleSubmit). 
+Esto asegura que el Hook sea "consumible" de manera segura por componentes optimizados que lo utilicen.
+
+Las recomendaciones se centran en cómo construir Custom Hooks que devuelvan valores estables para que los componentes que los consumen puedan optimizarse con React.memo.
+
+Un Custom Hook puede ser una función sencilla que solo use useState y no devuelva ninguna función ni objeto complejo, en cuyo caso la estabilidad no es una preocupación crítica.
+
+Sin embargo, en el contexto de las buenas prácticas y la optimización, se considera que deben ir juntos porque la estabilidad es lo que hace que los Custom Hooks sean realmente reusables y seguros para el rendimiento.
+
+
+### Estabilidad Obligatoria
+
+Escenario	Herramienta de Estabilidad Requerida
+
+Devuelve Funciones	useCallback (Para handlers, toggle, submit, etc.)
+
+Devuelve Objetos/Arreglos	useMemo (Para errors, config, objetos de state complejos)
+
+Lógica Interna con Dependencias	useCallback / useMemo (Si una variable interna del hook se usa como dependencia en un useEffect o en otro hook memorizado).
+
+Integración con useContext	useCallback (Para funciones de Context: login, logout)
+
+
+Un Custom Hook simple que solo devuelve un valor primitivo (useMiHook que devuelve un string) no necesita estabilidad explícita
+Sin embargo, cualquier Custom Hook que gestione lógica de aplicación real o que devuelva valores de referencia para ser consumidos por un árbol de componentes grande debe usar estabilidad para ser considerado una buena práctica y una herramienta robusta.
+
+
+
+
+## Eventos sintéticos
+
+Son un wrapper sobre los eventos nativos del navegador que aseguran un comportamiento consistente entre diferentes navegadores y sistemas.
+
+eventos de ratón
+onClick	Se dispara cuando el usuario hace clic con el ratón sobre un elemento.
+onDoubleClick	Se dispara cuando el usuario hace doble clic sobre un elemento.
+onMouseDown	Se dispara cuando se presiona un botón del ratón sobre un elemento.
+onMouseUp	Se dispara cuando se suelta un botón del ratón sobre un elemento.
+onMouseEnter	Se dispara cuando el cursor entra en el área de un elemento. No burbujea (a diferencia de onMouseOver).
+onMouseLeave	Se dispara cuando el cursor sale del área de un elemento. No burbujea (a diferencia de onMouseOut).
+onMouseMove	Se dispara cuando el cursor se mueve sobre un elemento.
+onMouseOver	Se dispara cuando el cursor se mueve sobre un elemento o uno de sus descendientes. (Burbujea).
+onMouseOut	Se dispara cuando el cursor sale de un elemento o se mueve hacia uno de sus descendientes. (Burbujea).
+onContextMenu	Se dispara cuando el usuario intenta abrir el menú contextual (típicamente con el clic derecho).
+
+
+Teclado
+onKeyDown	Se dispara cuando se presiona una tecla.
+onKeyPress	Obsoleto en React y en el estándar. Se usaba para teclas que producían un valor de carácter. (Mejor usar onKeyDown).
+onKeyUp	Se dispara cuando se suelta una tecla.
+
+
+Forms
+onChange	Se dispara inmediatamente cuando el valor de un elemento de formulario (<input>, <select>, <textarea>) es modificado por el usuario.
+onInput	Similar a onChange, pero se usa para detectar cuando el valor de un campo de entrada (<input>) ha sido modificado por el usuario. (React prefiere onChange).
+onSubmit	Se dispara cuando un usuario intenta enviar un formulario (por ejemplo, al hacer clic en un botón de tipo submit).
+onReset	Se dispara cuando un usuario hace clic en el botón de tipo reset de un formulario.
+onFocus	Se dispara cuando un elemento recibe el foco (ej. haciendo clic o navegando con la tecla Tab).
+onBlur	Se dispara cuando un elemento pierde el foco.
+onInvalid	Se dispara cuando un campo de formulario no cumple con las restricciones de validación (ej. un campo requerido está vacío).
+
+
+Foco
+relacionados con onFocus y onBlur pero tienen un comportamiento diferente con respecto a la propagación del foco entre un padre y un hijo:
+
+onFocusCapture	Captura el foco en la fase de captura (antes de que llegue al elemento objetivo).
+onBlurCapture	Captura la pérdida de foco en la fase de captura
+
+
+Portapapeles
+onCopy	Se dispara cuando el usuario copia contenido al portapapeles.
+onCut	Se dispara cuando el usuario corta contenido.
+onPaste	Se dispara cuando el usuario pega contenido desde el portapapeles.
+
+
+Medios
+Utilizados principalmente en elementos de audio (<audio>) y video (<video>):
+onPlay	Se dispara cuando el medio ha comenzado a reproducirse.
+onPause	Se dispara cuando la reproducción del medio es pausada.
+onEnded	Se dispara cuando la reproducción del medio termina.
+onLoadedData	Se dispara cuando los datos de la fuente actual están cargados lo suficiente para que el medio comience a reproducirse.
+onVolumeChange	Se dispara cuando el volumen o la propiedad muted del medio cambian.
+
+
+Otros
+onScroll	Se dispara cuando el usuario desplaza el contenido de un elemento.
+onWheel	Se dispara cuando se utiliza la rueda del ratón sobre un elemento.
+onDragStart	Se dispara cuando un elemento empieza a ser arrastrado (drag).
+onDrop	Se dispara cuando un elemento arrastrado se suelta sobre una zona de destino.
+onToggle	Se dispara cuando el estado abierto/cerrado del elemento nativo <details> cambia.
+onLoad	Se dispara cuando un recurso (como una imagen o script) termina de cargar.
+onError	Se dispara cuando un recurso falla al cargar (ej. una imagen con URL incorrecta).
 
 ## Actualización funcional
 
@@ -1729,3 +2730,429 @@ const MiModal = () => {
 
 
 ## Diseño responsivo
+
+
+
+## Diseño de capas
+
+Lógica de la Interfaz de Usuario (UI)
+Lógica de la Aplicación
+Gestión del Estado
+
+
+1. UI
+
+Se enfoca exclusivamente en cómo se ve la aplicación
+Contiene los componentes más genéricos, reusables y que no contienen lógica de negocio.
+
+Sub-capa 1: 
+Componentes Atómicos/Presentacionales (Dumb/Tontos)
+##### Piezas básicas de la UI (botones, inputs, tarjetas, iconos).
+Reciben datos y funciones solo a través de props.
+No conocen el estado global ni hacen llamadas a API.
+
+Tech: Solo React, CSS/Styled-Components.
+
+Sub-capa 2:
+Páginas/Diseños
+##### Componentes que definen la estructura principal de la aplicación (layouts).
+Orquestan los componentes atómicos y contenedores
+Su lógica es mínima.
+
+Tech: React, React Router.
+
+
+2. Lógica de la Aplicación y Estado (Contenedores)
+
+Se enfoca en qué hace la aplicación y en la lógica de negocio
+
+Sub-capa 1:
+Componentes Contenedor/Inteligentes (Smart):
+##### Componentes que son responsables de la lógica de negocio
+La gestión de estado y la comunicación con las capas de datos
+Pasan los datos y las funciones a los componentes presentacionales.
+
+React, Hooks (useState, useReducer)
+Context API, Redux/Zustand.
+
+Sub-capa 2:
+Custom Hooks
+##### Encapsulan la lógica de estado y efectos (data fetching, timers, validación) para hacerla reusable
+aislando la lógica de negocio de la UI.
+
+useReducer, useMemo, useCallback, useEffect.
+
+
+3. Gestión de Datos (Servicios/APIs)
+
+Capa encargada de la comunicación con el exterior y de la transformación de dato
+Aísla tu frontend de los detalles de la fuente de datos.
+
+Sub-capa 1:
+Servicios / API Clients
+##### Contiene funciones para hacer llamadas HTTP (GET, POST, etc.) a tu backend
+Se encarga de la configuración de headers, tokens, y maneja errores de red.
+
+fetch, Axios, RTK Query, React Query/TanStack Query.
+
+Sub-capa 2: 
+Modelos/Tipos
+##### Define la estructura de los datos esperados
+Vital para la robustez y el tipado (TypeScript).
+TypeScript, Zod.
+
+
+Directorios: 
+
+Basada en características/funcionalidad (features)
+
+##### Reflejar el diseño de capas en los directorios y archivos
+##### Reflejar el modelo en el código
+
+Ej 1:
+
+```
+/src
+├── /api                 <-- 3. Capa de Gestión de Datos (API Clients)
+│   └── productosService.js
+│   └── authService.js
+├── /hooks               <-- 2. Capa de Lógica (Custom Hooks)
+│   └── useAuth.js
+│   └── useFetch.js
+├── /components
+│   ├── /ui              <-- 1. Capa de UI (Componentes Atómicos/Tontos)
+│   │   └── Boton.jsx
+│   │   └── Input.jsx
+│   └── /feature         <-- 2. Capa de Lógica (Componentes Contenedores)
+│       └── /ListaProductos
+│           ├── ListaProductos.jsx  (Contenedor: hace fetch, gestiona estado)
+│           └── ProductoCard.jsx    (Presentacional: recibe props)
+├── /pages               <-- 1. Capa de UI (Páginas/Rutas)
+│   └── HomePage.jsx
+│   └── ProfilePage.jsx
+└── /store               <-- 2. Capa de Lógica (Estado Global)
+    └── authSlice.js
+```
+
+##### Mantenimiento: Si cambias tu backend (ej. cambias de API REST a GraphQL), solo tienes que modificar la Capa de Gestión de Datos, sin tocar la lógica de la UI o de la aplicación
+
+
+Ej 2:
+
+```
+/src
+├── /api
+│   └── index.js             // Configuración de la instancia de Axios/fetch
+│   └── authService.js       // Funciones para llamadas a API de autenticación
+│   └── productosService.js  // Funciones para llamadas a API de productos
+│
+├── /assets                  // Recursos estáticos (imágenes, fuentes, videos)
+│
+├── /components              // 1. CAPA DE INTERFAZ DE USUARIO (UI)
+│   ├── /ui                  // Componentes Atómicos/Presentacionales (Tontos)
+│   │   └── Boton.jsx        // <Boton onClick={...} color="primary" />
+│   │   └── Input.jsx        // <Input type="text" label="Email" />
+│   │   └── Card.jsx
+│   │   └── Icono.jsx
+│   │
+│   └── /layouts             // Componentes que definen la estructura (ej. Cabecera, Pie de página)
+│       └── MainLayout.jsx
+│       └── Header.jsx
+│
+├── /features                // 2. CAPA DE LÓGICA Y ESTADO (Por Característica)
+│   ├── /auth                // Módulo de Autenticación
+│   │   └── components
+│   │   │   └── LoginForm.jsx // Contenedor (maneja la lógica de envío)
+│   │   └── hooks
+│   │   │   └── useLogin.js   // Custom Hook para la lógica de login/fetch
+│   │   └── pages
+│   │       └── LoginPage.jsx // Página que usa el Contenedor
+│   │
+│   └── /productos           // Módulo de Productos
+│       └── components
+│       │   └── ListaProductos.jsx // Contenedor (hace fetch, filtra)
+│       │   └── ProductoCard.jsx   // Presentacional (recibe producto por prop)
+│       └── hooks
+│           └── useProductos.js // Custom Hook de fetching y estado
+│       └── pages
+│           └── ProductsPage.jsx
+│
+├── /hooks                   // 2. CAPA DE LÓGICA (Custom Hooks Globales)
+│   └── useLocalStorage.js   // Ej. Lógica reutilizable por toda la app
+│   └── useToggle.js
+│
+├── /store                   // 2. CAPA DE LÓGICA (Estado Global - Redux/Context)
+│   └── authSlice.js         // Reducer/Slice para el estado de autenticación
+│   └── productsSlice.js
+│   └── context              // Alternativa para Context API
+│       └── AuthContext.js
+│
+├── /utils                   // Funciones de ayuda sin lógica de React
+│   └── formatters.js        // Funciones de formato de fechas, monedas
+│   └── validators.js        // Funciones de validación de datos
+│
+├── App.jsx                  // Punto de entrada principal (manejo de rutas y Providers)
+└── main.jsx                 // Montaje de la aplicación (entry point)
+``` 
+
+
+
+## Git
+
+### Git/github flow: Feature Branching
+
+##### Se basa en mantener una rama central (main o master) siempre estable y lista para producción.
+
+1. Clonar y Mantener la Rama Principal
+
+Rama main (o master) es la fuente de la verdad y representa el código de producción.
+
+Clonar el proyecto
+git clone url
+
+Asegurar rama principal
+git checkout main
+Siempre trabaja sobre la versión más reciente.
+
+Actualizar main
+git pull origin main
+##### Siempre haz un pull antes de crear una rama nueva.
+
+
+2. Crear y Trabajar en rama Feature
+
+##### Cada nueva tarea, corrección de bug o característica debe tener su propia rama de corta duración.
+
+Crear y cambiar
+git checkout -b feature/nombre-de-la-tarea
+Usa prefijos (ej. feature/, bugfix/) y nombres descriptivos y concisos.
+
+Hacer cambios
+(Modifica archivos, escribe código)
+Trabaja de forma aislada.
+
+Hacer commits
+git commit -am "feat: mensaje descriptivo conciso"
+
+
+-a / --all: Esta opción prepara automáticamente todos los archivos modificados y eliminados con seguimiento antes de la confirmación
+Combina eficazmente git add -u con git commit. 
+Los archivos sin seguimiento no se incluyen
+
+git add -A = git add . + git add -u
+
+git add .
+agrega todos los archivos (existentes, modificados y nuevos) al área de almacenamiento temporal
+pero no elimina los archivos que se han eliminado del disco.
+
+git add -u
+solo agrega los archivos rastreados actualmente (que han sido modificados) al área de preparación
+y también verifica si se han eliminado (en caso afirmativo, se eliminan del área de preparación)
+Esto significa que no prepara los archivos nuevos.
+
+
+Enviar cambios
+git push origin feature/nombre-de-la-tarea
+Haz push con frecuencia como backup y para colaborar.
+
+
+3. Sincronización y Preparación del Pull Request (PR)
+
+##### Antes de fusionar tus cambios, debes asegurarte de que tu rama está actualizada con main.
+
+Volver al main
+git checkout main
+Navega a la rama base.
+
+Actualizar main
+git pull origin main
+Descarga los últimos cambios de otros.
+
+Volver a tu feature
+git checkout feature/nombre-de-la-tarea
+Regresa a tu rama.
+
+
+Integrar main
+git rebase main
+Recomendación: rebase ofrece un historial limpio y lineal.
+
+Alternativamente, usa git merge main si prefieres mantener los commits de fusión.
+
+Forzar push
+git push --force-with-lease
+Solo si usaste rebase y tu rama ya estaba en el remote
+El flag --force-with-lease es más seguro que --force.
+
+
+4. Revisión, Fusión y Limpieza
+
+##### Una vez que los cambios están listos y revisados, se fusionan y la rama se elimina.
+
+Crear PR
+(Usar GitHub/GitLab/Bitbucket UI)
+Siempre solicita una revisión de código (Code Review).
+
+Fusionar
+(Usar el botón Squash and Merge en la UI)
+Recomendación: Squash and Merge comprime todos los commits de tu feature en un solo commit limpio en main.
+
+Eliminar rama local
+git branch -d feature/nombre-de-la-tarea
+Limpia tu entorno. 
+Usa -D si hay commits sin fusionar.
+
+Eliminar rama remota
+git push origin --delete feature/nombre-de-la-tarea
+Limpia el servidor remoto.
+
+
+
+### Prácticas
+
+1. Mensajes de Commit Limpios
+
+Imperativo y Conciso: "Fix: corrige el error de cálculo"
+
+Convencional: Usa prefijos estándar:
+feat: Nueva característica.
+fix: Corrección de un bug.
+docs: Cambios en la documentación.
+refactor: Refactorización sin cambio de funcionalidad.
+chore: Mantenimiento (ej. actualización de dependencias).
+
+
+2. .gitignore
+
+##### Excluye siempre: Archivos de build (/dist, /build), carpetas de dependencias (/node_modules), credenciales y configuraciones locales (.env).
+Comando: Crea un archivo .gitignore en la raíz del proyecto.
+
+
+3. rebase vs merge
+
+git rebase (Recomendado):
+Mueve tu rama feature encima de main
+Crea un historial limpio, lineal y fácil de leer.
+
+##### Nunca hagas `rebase` en ramas compartidas o públicas
+
+git merge (Alternativa):
+Fusiona las ramas, manteniendo un commit de fusión y un historial no lineal
+##### Es más seguro para ramas compartidas.
+
+
+4. Limpieza del historial local
+
+git commit --amend
+Útil para modificar el último commit
+cambiar el mensaje o añadir un archivo olvidado
+antes de hacer push.
+
+git reset
+Útil para deshacer o mover el HEAD (usar con cuidado).
+
+git reset HEAD~1: Deshace el último commit, manteniendo los cambios en tu área de staging.
+
+git reset --hard commit-hash: Borra permanentemente todos los cambios locales hasta el commit especificado.
+
+
+
+
+### Conventional Commits
+
+
+
+## Entorno local/vars (.env)
+
+##### Cruciales para gestionar configuraciones que cambian entre los diferentes entornos de despliegue
+(desarrollo, staging, producción) sin modificar el código fuente.
+
+### 1. Variables para Entornos y Rutas
+##### Estas variables definen cómo se comporta la aplicación en diferentes entornos.
+
+Variable Valor
+
+NODE_ENV | valor: development / production
+Obligatoria
+Define el entorno actual (development, production, o test).
+React y muchas librerías la usan para activar optimizaciones o logging
+
+REACT_APP_API_URL | http://localhost:8080/api/v1
+La URL base de tu servicio backend o API REST
+Permite cambiar el entorno de API (local, staging, producción) sin recompilar el código.
+
+REACT_APP_WEBSOCKET_URL | ws://localhost:8080/ws
+URL base para la conexión de WebSockets (si se utiliza).
+
+PUBLIC_URL | /mi-app/
+A menudo configurada por la herramienta de build
+Ruta base donde se sirve la aplicación
+(útil para despliegues en subdirectorios).
+
+
+### 2. Variables de Claves y Servicios Externos
+
+##### Estas variables contienen las claves públicas necesarias para interactuar con servicios de terceros.
+React expone estas variables al navegador
+##### Nunca almacenes claves secretas de servidor
+(como SECRET_KEY de Stripe o contraseñas de bases de datos)
+##### en el frontend, solo claves públicas.
+
+REACT_APP_AUTH_CLIENT_ID | 12345-abcdefg.apps.googleusercontent.com
+ID de cliente público de un servicio de autenticación
+(ej. Google Auth, Auth0, Cognito).
+
+REACT_APP_MAPS_API_KEY | AIzaSyB-xxxxxx
+Clave pública para servicios de mapas
+(ej. Google Maps, Mapbox).
+
+REACT_APP_ANALYTICS_ID | UA-12345678-1
+ID de seguimiento para herramientas de análisis
+(ej. Google Analytics, Plausible).
+
+REACT_APP_SENTRY_DSN | https://xxxxxx.sentry.io/xxxxxx
+Clave de DSN para el seguimiento de errores de runtime
+(ej. Sentry).
+
+
+### 3. Variables de Configuración de la Aplicación
+
+##### Parámetros que modifican el comportamiento o las características de la aplicación.
+
+REACT_APP_FEATURE_BETA | true / false
+Flags para habilitar o deshabilitar ciertas funcionalidades que están en prueba (Feature Flags).
+
+REACT_APP_TIMEOUT_MS | 5000
+Tiempo de espera máximo (en milisegundos) para las solicitudes a la API.
+
+REACT_APP_CACHE_DURATION_HRS | 24
+Duración del cache para ciertos datos persistentes en el navegador (si se usa).
+
+REACT_APP_VERSION | 1.5.3
+Versión de la aplicación que se está ejecutando
+(útil para debugging o para mostrar en el footer).
+
+
+### Configuración en React
+
+1. Prefijo Obligatorio
+
+En las configuraciones de build más comunes de React como Vite
+##### Solo se exponen las variables de entorno al código fuente
+##### si comienzan con un prefijo específico, generalmente REACT_APP_.
+
+REACT_APP_API_URL: Accesible en código como: 
+process.env.REACT_APP_API_URL.
+
+API_URL: No accesible en código (permanece solo a nivel del servidor de build).
+
+
+2. Múltiples Archivos .env
+
+##### Para gestionar diferentes entornos, es una buena práctica usar archivos .env específicos: 
+
+.env	Valores por defecto que se aplican a todos los entornos (siempre se carga).
+.env.development	Sobrescribe valores solo para el entorno de desarrollo (NODE_ENV=development).
+.env.production	Sobrescribe valores solo para el entorno de producción (NODE_ENV=production).
+##### .env.local	Configuración personal que nunca debe ser subida a Git (útil para credenciales locales o configuraciones específicas de la máquina).
+
