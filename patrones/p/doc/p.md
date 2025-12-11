@@ -9155,3 +9155,753 @@ Fácil mantenimiento: Los mocks son simples, solo devuelven lo que la prueba nec
 #### Assertions (except()), Matchers
 
 #### Mock (test case/test suite)
+
+
+
+
+# NVM
+
+cmmand -v nvm
+
+nvm ls-remote
+
+nvm instal --lts
+
+nvm use --lts
+
+
+npm create vite@latest
+
+
+cd mi-proyecto-react
+
+
+npm install
+
+
+npm run dev
+
+...
+npm init
+
+
+## .nvmrc y git: node local
+
+garantiza que todos los desarrolladores y entornos de despliegue utilicen exactamente la misma versión de Node
+
+Archivo .nvmrc:
+En la raíz crear el archivo, comienza con .
+
+Especificar la versión de Node:
+en el archivo, introducir la versión exacta
+
+1. Usar la versión actual (recomendado):
+Si ya estás usando una versión específica (por ejemplo, 18.18.2) y quieres que el proyecto use esa, puedes obtener la versión con:
+
+```
+node -v > .nvmrc
+```
+en -v se pone v18.18.2 por ej.
+
+
+2. Escribir la versión manualmente:
+
+`lts/gallium`
+
+O una versión específica: `18.18.2`
+
+Asegúrate de que el archivo .nvmrc esté incluido en tu sistema de control de versiones (como Git) para que todos los colaboradores lo reciban.
+
+
+Versión Local con nvm:
+Una vez que el archivo .nvmrc existe en la raíz de tu proyecto, cualquiera puede navegar a la carpeta e introducir el siguiente comando:
+
+```
+nvm use
+```
+
+nvm busca el archivo .nvmrc en el directorio actual.
+Lee la versión especificada (ej: 18.18.2).
+Si la versión no está instalada, te preguntará si quieres instalarla.
+Cambia la versión de Node.js que está activa en tu terminal solo para esa sesión, asegurando que el proyecto se ejecute con la versión correcta.
+
+Esto establece efectivamente a Node.js como una "dependencia local" en términos de ambiente de ejecución.
+
+
+Script node y nvm:
+script para que la versión de Node se cargue automáticamente
+Para una configuración de desarrollo robusta.
+
+Aprovechar una característica del shell (como Bash o Zsh) y complementarlo con los scripts de package.json.
+nvm exec y package.json
+
+modificar el script de inicio de tu proyecto en package.json
+para que siempre use la versión definida en el .nvmrc cuando ejecutes npm run dev.
+
+1. Modificar el Archivo package.json
+En "scripts" del package
+Modifica el comando dev (o cualquier otro comando de inicio) para usar nvm exec
+
+Antes:
+
+```
+"scripts": {
+  "dev": "vite",
+  "build": "vite build",
+  "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
+  "preview": "vite preview"
+},
+```
+
+Con nvm exec:
+
+```
+"scripts": {
+  "dev": "nvm exec npm run _dev_internal",
+  "build": "nvm exec npm run _build_internal",
+  "lint": "nvm exec npm run _lint_internal",
+  
+  "_dev_internal": "vite",
+  "_build_internal": "vite build",
+  "_lint_internal": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
+
+  "preview": "vite preview"
+},
+```
+
+"dev": `"nvm exec npm run _dev_internal"`: 
+Cuando ejecutas npm run dev, primero se ejecuta nvm exec.
+
+nvm exec: Este comando lee la versión de Node.js del archivo .nvmrc
+ejecuta el comando que le sigue `npm run _dev_internal`
+usando esa versión específica de Node.js.
+
+"_dev_internal": "vite":
+comando original de Vite ha sido movido a un script "interno"
+usando el prefijo '_' para indicar que no está diseñado para ser llamado directamente
+
+cuando cualquier desarrollador ejecute npm run dev o npm run build
+nvm se asegurará automáticamente de que la versión de Node.js sea la correcta
+sin que el desarrollador tenga que escribir nvm use manualmente.
+
+
+Alternativa Avanzada: Configuración del Shell (para uso general)
+nvm use automatico cada vez que entras a la carpeta de tu proyecto en la terminal
+requiere una configuración en tu archivo de inicio del shell (como .bashrc, .zshrc, o .profile).
+
+1. Agregar la función al archivo de configuración del shell 
+archivo de configuración (~/.zshrc o ~/.bashrc) y agrega esta función al final:
+
+```
+# Función para usar la versión de Node.js definida en .nvmrc automáticamente
+cd() {
+    builtin cd "$@"
+    if [ -f .nvmrc ]; then
+        nvm use > /dev/null 2>&1
+    fi
+}
+```
+
+2. Reiniciar el Shell
+Guarda el archivo y aplica los cambios (o abre una nueva terminal):
+
+```
+source ~/.zshrc  # O la ruta de tu archivo
+```
+
+cada vez que uses el comando cd para entrar al directorio de tu proyecto
+automáticamente se ejecutará nvm use y cargará la versión de Node.js especificada en el .nvmrc.
+
+
+
+# Scripts Vite
+
+1. Desarrollo y Build
+comandos esenciales para la mayoría de los proyectos
+
+"start":	
+npm run dev
+Alias para iniciar el servidor de desarrollo
+
+dev":
+vite
+Inicia el servidor de desarrollo en modo hot module replacement (HMR). 
+¡Muy rápido!
+
+"build":	
+vite build
+Compila y empaqueta la aplicación para producción, generando los archivos optimizados en la carpeta dist.
+
+"preview":
+vite preview
+Sirve la carpeta dist localmente para una prueba rápida de producción antes del despliegue
+No es para uso en producción.
+
+
+2. Calidad de Código (Linting y Formato)
+mantener la consistencia y detectar errores tempranamente
+
+"lint":
+eslint . --ext js,jsx,ts,tsx
+Ejecuta ESLint para revisar el código JS/TS/JSX/TSX en el directorio actual en busca de errores y problemas de estilo.
+
+"lint:fix":
+eslint . --ext js,jsx,ts,tsx --fix
+Mismo que lint, pero intenta corregir automáticamente los problemas de estilo que puede solucionar.
+
+"format":
+prettier --write "src/**/*.{js,jsx,ts,tsx,json,css,md}"
+Ejecuta Prettier para formatear y reescribir (limpiar) archivos de código, JSON, CSS y Markdown.
+
+
+3. Testing
+Con Vitest podemos definir:
+
+"test":
+vitest
+Ejecuta las pruebas unitarias y de integración en modo watch (observación), por defecto.
+
+"test:run":
+vitest run
+Ejecuta todas las pruebas una sola vez y sale (ideal para CI/CD).
+
+"test:coverage":
+vitest run --coverage
+Ejecuta las pruebas y genera un informe de cobertura de código.
+
+
+4. Pre-deploy: pre-deploy
+útil para asegurar la calidad antes de realizar el build final
+
+"prebuild":
+npm run lint && npm run test:run
+No necesita ser ejecutado directamente
+NPM lo ejecuta automáticamente antes del script "build".
+Garantiza que el código pasa el linting y las pruebas antes de compilarlo.
+
+```
+"scripts": {
+  "start": "npm run dev",
+  "dev": "vite",
+  "build": "vite build",
+  "preview": "vite preview",
+  
+  "lint": "eslint . --ext js,jsx,ts,tsx",
+  "lint:fix": "eslint . --ext js,jsx,ts,tsx --fix",
+  "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,json,css,md}\"",
+
+  "test": "vitest",
+  "test:run": "vitest run",
+  "test:coverage": "vitest run --coverage",
+
+  "prebuild": "npm run lint && npm run test:run" 
+}
+```
+
+
+# Dev Dep, prod
+
+Prod:
+parte del bundle final
+
+React Core: react, react-dom
+
+Routing: react-router-dom
+
+Gestión de Estado: Librerías para manejar el estado complejo a nivel global.
+redux, zustand, recoil
+
+Llamadas a API:
+Clientes HTTP para realizar peticiones a backends.
+axios, fetch (si se usa un polyfill), react-query / tanstack-query
+
+UI/Estilos:
+styled-components, emotion, material-ui (MUI), bootstrap
+
+Ej: json
+
+```
+"dependencies": {
+  "react": "^18.2.0",
+  "react-dom": "^18.2.0",
+  "react-router-dom": "^6.20.0",
+  "axios": "^1.6.2",
+  "styled-components": "^6.1.1"
+}
+```
+
+dev dep:
+construir, probar o mejorar la calidad del código de la aplicación
+no requeridas en el entorno de ejecución
+Cuando se crea el paquete final para producción (npm run build), estas dependencias se ignoran.
+
+Build Tool:
+Herramienta que compila, transpila y minifica el código (ej. de JSX/TS a JS).
+vite, webpack, rollup
+
+Transpilador/Lenguaje:
+Convierte código moderno (ES6+, TypeScript) a un formato compatible con navegadores antiguos.
+@babel/core, @babel/preset-react, typescript
+
+Linters y Formatters:
+Mantienen la calidad del código, detectan errores y aplican estilos consistentes.
+eslint, prettier
+
+Testing:
+Frameworks y utilidades para ejecutar pruebas unitarias, de integración y end-to-end.
+jest, @testing-library/react, cypress, vitest
+
+Utilidades CLI:
+Scripts de ayuda, como hot-reloading o servidor de desarrollo.
+nodemon, concurrently
+
+```
+"devDependencies": {
+  "@types/react": "^18.2.37",
+  "@types/react-dom": "^18.2.15",
+  "@vitejs/plugin-react": "^4.2.0",
+  "eslint": "^8.53.0",
+  "prettier": "^3.1.0",
+  "vite": "^5.0.0",
+  "jest": "^29.7.0"
+}
+```
+
+Cuando se instala el proyecto en el servidor de producción o en un entorno de CI/CD para el build final
+se suele ejecutar npm install --production
+o npm install si se usa package-lock.json y el entorno lo soporta
+Esto solo descarga las dependencias de producción.
+
+
+
+
+# Docker
+
+Tecnología de DevOps
+
+
+## 1. Fundamentos y Uso Local
+
+Docker, Contenedores, Imágenes, Dockerfile, Comandos CLI.
+
+Diferencia entre una máquina virtual y un contenedor
+
+Manejar los comandos básicos.
+
+
+Esenciales:
+
+1. Contenedores vs. Máquinas Virtuales (VM):
+Los contenedores son más ligeros y rápidos (aislamiento a nivel del SO, no de hardware).
+
+2. Imágenes (Images): 
+Plantillas inmutables y la base de los contenedores.
+
+3. Contenedores (Containers):
+tancias ejecutables de una imagen.
+
+4. Docker Engine:
+Arquitectura de Docker (Cliente, Servidor/Daemon, Registros).
+
+
+CLI y Flujo de Trabajo:
+
+1. Instalación: Docker Desktop o Docker Engine
+
+2. Gestión de Imágenes: 
+docker pull: Descargar imágenes.
+docker images: Listar imágenes.
+docker rmi: Eliminar imágenes.
+
+3. Gestión de Contenedores:
+docker run: Crear y ejecutar un contenedor a partir de una imagen.
+docker ps: Listar contenedores en ejecución.
+docker stop, docker start, docker restart, docker rm.
+docker exec: Ejecutar un comando dentro de un contenedor en ejecución (ej: entrar con bash).
+docker logs: Ver la salida de un contenedor.
+
+
+Creación de Imágenes con Dockerfile:
+
+1. Sintaxis Dockerfile
+2. Instrucciones clave: FROM, RUN, CMD, ENTRYPOINT, WORKDIR.
+3. Construir la imagen: docker build.
+4. Publicar la imagen: docker tag y docker push a Docker Hub.
+
+
+
+## 2. Entornos
+
+Crear entornos de desarrollo y producción multifase y multi-servicio.
+
+Docker Compose, Redes, Volúmenes, Builds eficientes
+
+
+Entornos de Múltiples Servicios:
+Orquestar múltiples contenedores que interactúan (ej. una app web y una base de datos) usando Docker Compose
+
+1. Archivo docker-compose.yml:
+Estructura YAML (versión, services, networks, volumes).
+
+2. Comandos principales:
+docker compose up
+docker compose down
+docker compose ps
+docker compose logs
+
+3. Creación de un Stack:
+Contenerizar una aplicación con una db
+
+ 
+Almacenamiento y Networking:
+
+1. Volúmenes (Volumes):
+Cómo la información persiste fuera del contenedor (para datos de bases de datos).
+Crear y usar Volúmenes Nombrados.
+Usar Bind Mounts (para desarrollo local, mapeando código).
+
+2. Redes (Networking):
+Red predeterminada (Bridge) de Compose.
+Redes Definidas por el Usuario para un mejor aislamiento.
+Descubrimiento de Servicios: Los contenedores en la misma red se encuentran por nombre de servicio.
+
+
+Optimización de Builds:
+
+1. Multistage Builds (Construcciones Multifase):
+Usar múltiples sentencias FROM en un solo Dockerfile
+Para separar el entorno de build (compilación) del entorno final de runtime (ejecución)
+Resultando en imágenes mucho más pequeñas y seguras.
+
+2. dockerignore: Excluir archivos innecesarios para acelerar el build.
+
+3. Caching: cómo Docker almacena en caché las capas para hacer builds incrementales rápidos.
+
+
+
+## 3. Avanzado
+
+Llevar los contenedores a entornos de producción, manejar clusters y automatizar el despliegue.
+
+Despliegue en entornos de alta disponibilidad y orquestación
+
+Swarm, Kubernetes (Conceptos), CI/CD, Seguridad.
+
+
+Orquestación y Escalabilidad:
+
+1. Docker Swarm:
+Inicialización del Swarm: docker swarm init.
+Creación de Servicios (Services) y escalado: docker service create, docker service scale.
+Conceptos de Nodos (Managers y Workers).
+
+2. Introducción a Kubernetes (K8s): 
+Necesidad de una orquestación más robusta.
+Conceptos clave: Pods, Deployments, Services, Namespaces
+K8s es el siguiente paso natural en la orquestación
+
+
+CI/CD y Automatización:
+
+1. Integrar Docker en un flujo de Integración Continua / Despliegue Continuo (CI/CD).
+GitHub Actions / GitLab CI / Jenkins: Configurar pipelines que construyan la imagen, la prueben y la suban al registro de contenedores (Docker Hub, AWS ECR, GCR).
+
+
+Seguridad y Monitoreo:
+
+1. Prácticas de Seguridad (Security Best Practices):
+No correr contenedores como root.
+Usar imágenes base minimalistas (ej. Alpine o Distroless).
+Manejo de secretos (Secrets) en Docker Swarm o Kubernetes.
+
+2. Monitoreo y Logging: Configurar herramientas para ver métricas y logs de los contenedores en producción (ej. Prometheus y Grafana).
+
+
+## Doc y Práctica
+
+1. Documentación Oficial de Docker
+
+2. Contenerizar una app que ya tengas.
+Crear una stack de Compose con tres servicios (Frontend, Backend, DB).
+Implementar un Multistage Build para reducir el tamaño de la imagen
+Implementar un Multistage Build para reducir el tamaño de la imagen.
+
+
+
+
+# Kubernetes
+
+Gestionar aplicaciones en entornos de producción a gran escala
+
+Es el estándar de la industria para la orquestación de contenedores.
+
+
+## 1. Fundamentos
+
+Arquitectura y los objetos fundamentales de K8s.
+
+Clúster, Control Plane, Nodos, Pods, YAML.
+
+
+Arquitectura y Fundamentos:
+Estructura de un clúster de K8s y el objeto más pequeño y fundamental: el Pod.
+
+Conceptos:
+
+1. Kubernetes:
+su rol como orquestador y su diferencia con Docker Swarm.
+
+2. Arquitectura del Clúster:
+Control Plane (Plano de Control): Componentes clave (API Server, etcd, Scheduler, Controller Manager).
+Worker Nodes (Nodos Trabajadores): Componentes clave (Kubelet, Kube-proxy, Container Runtime como Docker o containerd).
+
+3. Instalación Local: Configurar un clúster local para práctica (Minikube o Kind).
+
+
+Comandos y Objetos Clave:
+
+1. kubectl: Dominar la herramienta de línea de comandos
+básicos: kubectl apply, kubectl get, kubectl describe, kubectl delete.
+
+2. Pods: El objeto más pequeño
+Definición en YAML: Comprender la estructura de apiVersion, kind, metadata y spec.
+Creación de Pods simples y multi-container (Patrón Sidecar).
+
+
+
+## 2. Despliegue y Gestión
+
+Despliegue y gestión del tráfico de aplicaciones
+ 
+Deployments, Services, Ingress, ConfigMaps, Secrets
+
+Desplegar aplicaciones de manera reproducible y hacer que sean accesibles (interna y externamente).
+
+
+Despliegues y ReplicaSets:
+
+1. ReplicaSets: Entender cómo se asegura el número deseado de copias de un Pod.
+
+2. Deployments: El objeto que gestiona la actualización y el rollback de las aplicaciones de forma declarativa.
+Estrategias de actualización: Rolling Update y Recreate.
+
+3. Namespaces: Usar Namespaces para organizar y aislar recursos dentro del clúster (ej. dev, staging, production).
+
+
+Descubrimiento de Servicios (Services):
+
+1. Services: Abstracción esencial para el descubrimiento de servicios y el balanceo de carga interno.
+
+2. Tipos de Services:
+ClusterIP: Solo accesible dentro del clúster (por defecto).
+NodePort: Expone el servicio en un puerto de cada Nodo (útil para pruebas).
+LoadBalancer: Proporciona un Load Balancer externo del proveedor de la nube (AWS, GCP, Azure).
+
+
+Configuración y Tráfico Externo:
+
+1. ConfigMaps y Secrets: Separar la configuración (variables de entorno, archivos de configuración) y la información sensible (contraseñas, tokens) del código del Pod.
+
+2. Ingress: Gestionar el acceso externo a los servicios del clúster, ofreciendo routing basado en host o path, y terminación SSL.
+Necesidad de un Ingress Controller (ej. NGINX Ingress Controller). 
+
+
+
+## 3. Avanzado
+
+Almacenamiento, configuración avanzada y persistencia
+
+Volumes, StatefulSets, RBAC, Affinity, Helm.
+
+Gestionar aplicaciones con estado, manejar configuraciones complejas y empaquetar aplicaciones para su distribución.
+
+
+Almacenamiento Persistente:
+
+1. Volumes: Los mecanismos de almacenamiento de K8s.
+
+2. PV (PersistentVolume): Recurso de almacenamiento en el clúster.
+
+3. PVC (PersistentVolumeClaim): Solicitud de almacenamiento por parte de un Pod.
+
+4. StorageClass: Configuración para el aprovisionamiento dinámico de almacenamiento.
+
+
+Aplicaciones con Estado:
+
+1. StatefulSets: Para gestionar aplicaciones que requieren identidad única y almacenamiento persistente estable (ej. bases de datos, brokers de mensajes).
+Diferencia clave con los Deployments
+
+
+Gestión Declarativa Avanzada:
+
+1. DaemonSets: Garantizar que un Pod se ejecute en todos o en un subconjunto específico de Nodos
+(ej. agentes de monitoreo, log collectors).
+
+2. Jobs y CronJobs: Para ejecutar tareas que terminan (Jobs) o tareas programadas (CronJobs).
+
+3. Helm: El gestor de paquetes de facto para K8s.
+instalar aplicaciones con Charts de Helm.
+propio Chart para empaquetar tu aplicación.
+
+
+
+## 4. Pro: Operaciones y Observabilidad
+
+Administración de Clústeres y Observabilidad.
+
+Kubeadm, Logging/Monitoring, Seguridad, Redes CNI.
+
+Cómo se mantiene, se protege y se escala un clúster en un entorno de producción real.
+
+
+Administración del Clúster:
+
+1. Herramientas de Provisionamiento: Entender cómo provisionar un clúster desde cero (ej. kubeadm).
+
+2. CKS (Cloud Kubernetes Service): Conocer las diferencias y vendor lock-in de los principales servicios en la nube (EKS en AWS, GKE en GCP, AKS en Azure). 
+
+3. Etiquetado y Selectores: Uso avanzado de etiquetas para programación de Pods
+(Node Selectors, Node Affinity, Taints y Tolerations).
+
+
+Seguridad y Acceso:
+
+1. RBAC (Role-Based Access Control):
+Definir quién (Usuario o Servicio)
+puede hacer qué (Ver, Crear, Eliminar)
+en qué recursos del clúster (Role, ClusterRole, RoleBinding, ClusterRoleBinding).
+
+2. NetworkPolicy: Definir reglas de Firewall a nivel de Pod (quién puede comunicarse con quién).
+
+
+Observabilidad:
+
+1. Logging: Centralizar los logs de los Pods (Patrón de la pila ELK/EFK).
+
+2. Monitoring: Recolección de métricas (Prometheus, Kube-state-metrics).
+
+3. Visualización: Crear dashboards con herramientas como Grafana.
+
+
+
+# Docker
+
+## 1. Guía rapida contenerizar una app
+
+Crear una Imagen Docker a partir de tu código
+El proceso se centra en crear el archivo Dockerfile y luego construir la imagen.
+
+1. Crear el Archivo .dockerignore
+Antes de empezar, crea un archivo llamado .dockerignore en la raíz de tu proyecto.
+Este archivo es crucial para acelerar la construcción y mantener la imagen pequeña
+Le dice a Docker qué archivos y carpetas no debe copiar al contexto de la construcción.
+
+Contenido Típico de .dockerignore:
+
+```
+# Directorios de dependencias
+node_modules
+
+# Archivos de build y cache
+dist
+build
+.git
+.gitignore
+.DS_Store
+npm-debug.log*
+yarn-error.log*
+```
+
+
+2. Crear el Dockerfile
+El Dockerfile contiene las instrucciones para construir la imagen. Utilizaremos el patrón de Construcción Multifase (Multi-Stage Build)
+Es la mejor práctica para aplicaciones Frontend/Backend, ya que separa el entorno de compilación (grande) del entorno de ejecución (pequeño y seguro).
+
+Ej Dockerfile: para Node/React
+
+```
+# ----------------------------------------------------------------------
+# FASE 1: BUILDER (Compilación de la app)
+# Esta fase usa una imagen grande para instalar dependencias y compilar.
+# ----------------------------------------------------------------------
+FROM node:20-slim AS builder
+
+# 1. Directorio de trabajo: Todos los comandos se ejecutan aquí.
+WORKDIR /app
+
+# 2. Copia los archivos de configuración de dependencias primero.
+# Esto optimiza el caching de Docker: si estos archivos no cambian,
+# no se reinstalan las dependencias.
+COPY package.json package-lock.json ./
+
+# 3. Instala todas las dependencias (incluyendo devDependencies).
+RUN npm install
+
+# 4. Copia el resto del código fuente.
+COPY . .
+
+# 5. Compila la aplicación (ej. React/Vite/Next.js/etc.).
+# El resultado final (dist, build, etc.) estará listo.
+RUN npm run build
+
+
+# ----------------------------------------------------------------------
+# FASE 2: RUNTIME (Ejecución y Despliegue)
+# Esta fase usa una imagen minúscula y solo copia los archivos compilados
+# de la fase anterior. ¡Esto reduce drásticamente el tamaño final!
+# ----------------------------------------------------------------------
+FROM nginx:alpine AS runner
+
+# 1. Copia los archivos compilados (de la FASE 1) a la carpeta de Nginx.
+# Cambia /app/dist por la ruta de salida de tu build (ej: /app/build).
+COPY --from=builder /app/dist /usr/share/nginx/html
+
+# 2. Expone el puerto por defecto de Nginx.
+EXPOSE 80
+
+# 3. Comando de inicio: Nginx iniciará el servidor web.
+CMD ["nginx", "-g", "daemon off;"]
+```
+
+
+3. Construir la Imagen Docker
+
+Una vez que tienes tu Dockerfile en la raíz del proyecto, usa el siguiente comando para construir la imagen.
+
+Abre tu terminal en el directorio raíz donde se encuentra el Dockerfile.
+
+Ejecuta el comando de construcción:
+
+```
+docker build -t mi-app-react:1.0 .
+```
+
+docker build: El comando para construir.
+-t mi-app-react:1.0: La etiqueta (tag) que le das a tu imagen. Úsalo como nombre-de-tu-app:version.
+.: Indica que el contexto de construcción es el directorio actual.
+
+
+4. Ejecutar el Contenedor (Prueba)
+
+prueba que tu imagen funciona correctamente ejecutándola localmente:
+
+```
+docker run -p 8080:80 -d mi-app-react:1.0
+```
+-p 8080:80: Mapea el puerto 80 del contenedor (expuesto por Nginx) al puerto 8080 de tu máquina local.
+-d: Ejecuta el contenedor en modo detached (en segundo plano).
+
+Ahora deberías poder acceder a tu aplicación en tu navegador visitando http://localhost:8080.
+
+
+
+
+
+## 2. Crear una stack de Compose
+
+
+## 3. Implementar un Multistage Build 
+
+
+
