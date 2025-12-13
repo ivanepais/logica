@@ -1797,6 +1797,8 @@ onToggle	Se dispara cuando el estado abierto/cerrado del elemento nativo <detail
 onLoad	Se dispara cuando un recurso (como una imagen o script) termina de cargar.
 onError	Se dispara cuando un recurso falla al cargar (ej. una imagen con URL incorrecta).
 
+
+
 ## Actualización funcional
 
 ```
@@ -2894,6 +2896,720 @@ Ej 2:
 ├── App.jsx                  // Punto de entrada principal (manejo de rutas y Providers)
 └── main.jsx                 // Montaje de la aplicación (entry point)
 ``` 
+
+
+### Global Theme
+
+Elementos:
+
+1. Colores (colors)
+Define toda la paleta de colores de la aplicación
+Organizada por su función.
+
+Primarios: Los colores principales de la marca.
+Secundarios: Colores complementarios.
+Neutros/Grises: Para fondos, bordes, texto de bajo contraste, etc.
+Funcionales/Estado:
+	success (éxito)
+	warning (advertencia)
+	danger o error (peligro/error)
+	info (información)
+Texto: Colores específicos para el texto (primario, secundario, deshabilitado).
+Fondo: Colores para los fondos de la página y los componentes.
+
+```
+// Ejemplo de estructura de colores
+colors: {
+  primary: '#0070f3',
+  secondary: '#1a1a1a',
+  background: '#ffffff',
+  text: {
+    default: '#333333',
+    disabled: '#aaaaaa',
+  },
+  status: {
+    success: '#10b981',
+    error: '#ef4444',
+  },
+}
+```
+
+
+2. Tipografía (typography o font)
+Define las fuentes y sus propiedades.
+
+Familias de Fuente: La fuente principal 
+(e.g., 'Roboto', sans-serif).
+Tamaños de Fuente (fontSizes): Tamaños predefinidos 
+(e.g., sm, md, lg o usando valores en píxeles/rems) 
+para mantener una escala tipográfica.
+Pesos de Fuente (fontWeights): Grosores de fuente 
+(e.g., regular: 400, bold: 700).
+Alturas de Línea (lineHeights): Para asegurar una legibilidad consistente.
+Estilos de Cabecera: Propiedades combinadas para h1, h2, p, etc.
+
+
+3. Espaciado (spacing)
+Define una escala consistente para márgenes, paddings y espaciado entre elementos
+Esto se suele hacer con múltiplos (e.g., múltiplos de 4px u 8px) para crear un ritmo vertical y horizontal armonioso.
+
+```
+// Ejemplo de escala de espaciado
+spacing: {
+  xs: '4px',
+  sm: '8px',
+  md: '16px',
+  lg: '24px',
+  xl: '32px',
+}
+```
+ 
+
+4. Breakpoints (breakpoints)
+Define los puntos donde el diseño debe cambiar para adaptarse a diferentes tamaños de pantalla (diseño responsive).
+
+sm (e.g., 640px)
+md (e.g., 768px)
+lg (e.g., 1024px)
+xl (e.g., 1280px)
+
+
+5. Propiedades de Componentes (components o sizes)
+Define propiedades que son comunes a muchos componentes.
+
+Radios de Borde (borderRadius): Para esquinas redondeadas 
+(e.g., none, sm, full).
+Sombras (shadows): Para elevar visualmente los componentes 
+(e.g., para tarjetas o modales).
+Tiempos de Transición (transitions): Duración de las animaciones 
+(e.g., fast, normal).
+Alturas/Anchos de Elementos Comunes: Altura estándar de botones, barras de navegación, campos de entrada, etc.
+
+
+React y Context API:
+
+1. Creación del Objeto Tema: Definir el objeto JavaScript que contiene todos los elementos descritos anteriormente.
+2. ThemeProvider: Envolver la aplicación con un componente llamado ThemeProvider (suministrado por la librería de estilos) que recibe el objeto tema como una prop.
+3. Acceso al Tema: Dentro de cualquier componente, se accede a las variables del tema mediante hooks
+(e.g., useTheme() en Styled Components/Emotion) o a través de las props si el componente ha sido estilado.
+
+Ej con styled 
+
+```
+// Styled Components
+const StyledButton = styled.button`
+  background-color: ${(props) => props.theme.colors.primary};
+  color: ${(props) => props.theme.colors.text.default};
+  padding: ${(props) => props.theme.spacing.md};
+  border-radius: ${(props) => props.theme.borderRadius.sm};
+`;
+```
+
+Modo Oscuro y Múltiple temas:
+
+1. Temas Múltiples: Crear dos objetos de tema separados (lightTheme y darkTheme) y cambiar el que se pasa al ThemeProvider.
+
+2. Tokens Semánticos: Definir tokens de color basados en su rol (e.g., color-background-default, color-text-primary)
+luego mapear esos tokens a valores hexadecimales diferentes para el modo claro y el modo oscuro
+
+
+Librerías CSS-in-JS (Ej. Styled Components, Emotion)
+
+```
+const theme = {
+  colors: {
+    primary: '#0070f3',
+  },
+  spacing: {
+    md: '16px',
+  },
+};
+```
+
+Mecanismo: El tema se inyecta en el árbol de componentes usando el ThemeProvider y el React Context API.
+Acceso: Accedes al objeto directamente en JavaScript dentro de tus archivos de estilos de componente (que son archivos .js o .jsx)
+Ventaja: El acceso es directo al objeto de JavaScript
+Puedes usar lógica de JavaScript (condicionales, interpolación) para aplicar estilos.
+
+```
+// Button.js (Usando Styled Components)
+import styled from 'styled-components';
+
+const StyledButton = styled.button`
+  background-color: ${(props) => props.theme.colors.primary}; 
+  padding: ${(props) => props.theme.spacing.md};
+`;
+```
+
+
+#### CSS Modules
+Si bien los CSS Modules son archivos .css (o .scss/.less) puros
+el objetivo de tener un "tema global" sigue siendo válido
+Sin embargo, no puedes acceder a un objeto de JavaScript directamente desde un archivo .css.
+
+Para usar valores de tema en CSS Modules, debes convertir tu objeto JavaScript en Variables CSS (Custom Properties).
+
+1. Convertir el Objeto a Variables CSS
+La mejor manera de lograr un tema global para CSS Modules
+inyectar el tema como variables CSS en el elemento raíz (:root) de tu aplicación.
+
+Transformación: Tienes que escribir una pequeña lógica en React que lea tu objeto theme y lo convierta en una lista de variables CSS (e.g., --color-primary: #0070f3;).
+Inyección: Estas variables se inyectan en una etiqueta <style> o directamente en el style del <body> o <html>.
+
+```
+// ThemeInjector.jsx
+function ThemeInjector({ theme }) {
+  // Función para aplanar el objeto y generar el string de CSS
+  const cssVars = Object.entries(theme.colors).map(([key, value]) => (
+    `--color-${key}: ${value};`
+  )).join(' ');
+
+  return <div style={{...}} dangerouslySetInnerHTML={{ __html: `:root {${cssVars}}` }} />;
+}
+
+// Resultado en el navegador:
+// :root {
+//   --color-primary: #0070f3;
+//   --spacing-md: 16px;
+// }
+```
+
+
+2. Acceder a las Variables en el Módulo CSS
+Una vez inyectadas como variables CSS, tus CSS Modules pueden acceder a ellas
+directamente usando la sintaxis estándar de CSS: var(--nombre-variable).
+
+```
+/* Button.module.css */
+.button {
+  background-color: var(--color-primary); /* Acceso desde el CSS Module */
+  padding: var(--spacing-md);
+  border: 1px solid var(--color-primary);
+}
+```
+
+Aspecto	
+CSS-in-JS (Styled Components)	
+CSS Modules (con Variables CSS)
+
+Fuente del Tema	
+Objeto JavaScript	
+Objeto JavaScript
+
+Mecanismo	
+React Context (ThemeProvider)	
+Variables CSS (Custom Properties)
+
+Acceso al Valor	
+Directo en JS: props.theme.colors.primary	
+En CSS: var(--color-primary)
+
+Flexibilidad	
+Alta (lógica JS en estilos)
+Limitada (solo valores estáticos de CSS)
+ 
+
+### Objeto y valores de CSS
+
+#### 1. CSS Modules 
+
+Permite escribir CSS de forma local por defecto.
+
+1. Alcance Local (Scoping): Convierte automáticamente los nombres de clases y animaciones en cadenas únicas y específicas para el componente
+
+2. Archivos: Se escriben en archivos .css (o preprocesadores como .scss) normales
+Con una convención de nomenclatura específica: `[NombreComponente].module.css`.
+
+3. React: Se importan como objetos de JavaScript, permitiendo acceder a los nombres de clase únicos.
+
+
+Build en React:
+
+1. Archivo CSS Original: Defines una clase simple.
+
+```
+/* Button.module.css */
+.btnPrimary {
+  background-color: #0070f3;
+  color: white;
+}
+```
+
+2. Importación en React: Importas el archivo CSS como si fuera un objeto:
+
+```
+// Button.jsx
+import styles from './Button.module.css';
+console.log(styles); // { btnPrimary: "Button_btnPrimary__a1b2c" }
+```
+
+3. Navegador:
+La construcción reescribe el nombre de la clase en el CSS final inyectado 
+
+```
+<button class="Button_btnPrimary__a1b2c">
+  Botón
+</button>
+```
+
+El nombre de clase único generado (Button_btnPrimary__a1b2c)
+se basa típicamente en el nombre del archivo, el nombre de la clase y un hash aleatorio.
+
+
+React:
+
+1. Crear el Archivo de Módulo CSS
+usar la convención .module.css.
+
+```
+/* src/components/Button/Button.module.css */
+.container {
+  display: flex;
+  justify-content: center;
+}
+
+.btnPrimary {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+```
+
+2. Importar y Usar en el Componente React
+
+```
+Importa el archivo y usa la sintaxis de corchetes para acceder a los nombres de clase.
+```
+
+
+Clases múltiples y condicionales:
+combinar varias clases usando template literals o concatenación de strings
+
+```
+// Button.jsx (con una clase condicional 'disabled')
+const isDanger = true;
+const combinedClasses = `${styles.btnPrimary} ${isDanger ? styles.btnDanger : ''}`;
+
+return (
+  <button className={combinedClasses}>
+    {children}
+  </button>
+);
+```
+
+
+Composición/composes:
+heredar estilos de una clase en otra
+
+```
+/* BaseButton.module.css */
+.base {
+  padding: 10px;
+  border-radius: 4px;
+}
+
+/* Button.module.css */
+.btnPrimary {
+  /* 1. Heredar todos los estilos de .base */
+  composes: base from './BaseButton.module.css'; 
+  background-color: #0070f3;
+  color: white;
+}
+```
+
+
+Clases Globales:
+Estilos que intencionalmente afecten a toda la aplicación
+Puedes declararlos explícitamente como globales:
+
+```
+/* GlobalStyles.module.css */
+:global(.global-class-name) {
+  /* Estos estilos serán globales y no se renombrarán */
+  font-family: 'Arial', sans-serif;
+}
+```
+
+
+#### Tema Global
+
+
+
+#### 2. Styled Components
+
+Styled Components:
+CSS-in-JS técnica para escribir estilos de CSS usando JavaScript
+En lugar de escribir el código CSS en archivos .css separados
+Los estilos se definen directamente en los componentes de React.
+
+Se implementa usando Tagged Template Literals (las backticks en JS).
+
+1. Scoping Automático:
+estilos automáticamente únicos y limitados al componente
+
+2. JS: 
+usar props, state y lógica de JavaScript directamente dentro de tus estilos
+
+3. no config de loaders
+
+
+Instalación:
+
+```
+npm install styled-components
+# o
+yarn add styled-components
+```
+
+Creación del Componente Estilizado:
+objeto styled importado
+seguido del elemento HTML que quieres estilizar (div, button, p, etc.).
+Luego, se usan template literals para escribir el CSS.
+
+```
+// 1. Importar 'styled'
+import styled from 'styled-components';
+
+// 2. Crear un componente estilizado
+const StyledButton = styled.button`
+  background-color: #0070f3;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+`;
+
+// 3. Usar el componente como cualquier otro
+const MyComponent = () => (
+  <StyledButton onClick={() => alert('¡Hiciste clic!')}>
+    Haz Clic
+  </StyledButton>
+);
+``` 
+
+
+Styled Components toma el CSS que escribiste, lo serializa, genera un nombre de clase único (ej: sc-a1b2c)
+inyecta ese nombre de clase en tu componente React
+inyecta el CSS real con ese nombre de clase en una etiqueta <style> en el <head> del HTML.
+
+
+Props y Lógica JS:
+Hacer que los estilos dependan directamente de las props de React.
+
+1. Estilos Basados en Props
+Funciones JS dentro de los template literals
+Estasreciben las props del componente como argumento.
+
+```
+// Ejemplo: Cambiar el color basado en la prop 'primary'
+const StyledButton = styled.button`
+  /* Usa una función que recibe 'props' */
+  background-color: ${(props) => (props.primary ? '#ff4d4f' : '#0070f3')};
+  color: white;
+  padding: 10px 20px;
+  /* ...otros estilos */
+`;
+
+// Uso en React
+<StyledButton>Botón Azul</StyledButton>
+<StyledButton primary>Botón Rojo</StyledButton> // Pasa la prop 'primary=true'
+```
+
+
+2. Tema Global
+facilita el uso de un tema global a través del componente
+Con ThemeProvider y el hook useTheme.
+
+```
+// 1. Envolver la aplicación con el ThemeProvider
+import { ThemeProvider } from 'styled-components';
+import theme from './theme'; // Nuestro objeto de tema
+
+const App = () => (
+  <ThemeProvider theme={theme}>
+    <MyComponent />
+  </ThemeProvider>
+);
+
+// 2. Acceder al tema dentro de los estilos
+const StyledBox = styled.div`
+  background-color: ${(props) => props.theme.colors.background};
+  padding: ${(props) => props.theme.spacing.lg};
+`;
+```
+
+
+Avanzado:
+
+1. Estilización de Otros Componentes
+estilizar un componente de React que ya fue creado
+incluso si no fue estilizado con Styled Components
+usando styled()
+
+```
+// Estiliza un componente <Input> existente
+const StyledInput = styled(Input)`
+  border-color: #0070f3;
+  &:focus {
+    box-shadow: 0 0 0 2px rgba(0, 112, 243, 0.2);
+  }
+`;
+```
+
+
+2. Herencia y Extensión (extend / css)
+
+Extender Componentes: 
+Crear un nuevo componente basado en uno existente, añadiendo o sobrescribiendo estilos.
+
+```
+const BaseButton = styled.button` /* ...estilos base */ `;
+
+const SecondaryButton = styled(BaseButton)`
+  background-color: gray; /* Sobrescribe el color */
+  font-weight: bold;      /* Añade un estilo */
+`;
+```
+
+
+Bloques de Estilo Reutilizables:
+Usar la utility css para crear fragmentos de estilo que se pueden incluir en varios componentes.
+
+```
+import { css } from 'styled-components';
+
+const transitionStyles = css`
+  transition: all 0.3s ease-in-out;
+  &:hover {
+    opacity: 0.8;
+  }
+`;
+
+const ButtonWithEffect = styled.button`
+  ${transitionStyles} /* Se inyecta el bloque de estilos */
+  /* ...otros estilos */
+`;
+```
+
+
+
+##### Tema global
+
+
+
+
+#### 3. Emotion
+
+Permite definir estilos utilizando objetos de JavaScript o cadenas de CSS (con template literals)
+luego los inyecta dinámicamente en tu aplicación.
+
+Flexibilidad (Cero Abstracción): 
+Ofrece varias APIs para escribir estilos, permitiendo elegir la que mejor se adapte a tu estilo de programación.
+
+Scoping Automático: 
+Al igual que Styled Components, genera nombres de clase únicos para evitar colisiones globales.
+
+
+Emotion ofrece dos paquetes principales para trabajar:
+
+@emotion/react:
+contiene las utilidades para el runtime de React y la API principal
+
+@emotion/styled:
+permite usar la misma sintaxis de Tagged Template Literals que Styled Components.
+
+
+Instalación:
+
+```
+npm install @emotion/react @emotion/styled
+```
+
+
+Tres sintaxis:
+
+1. Prop css (directo)
+permite pasar una prop llamada css a cualquier componente
+forma más "pura" de CSS-in-JS de Emotion.
+
+Activación:
+envolver tu aplicación con un ThemeProvider o un CacheProvider
+clave para el rendimiento y la inyección
+
+Uso:
+La prop css acepta un objeto de JavaScript o un array de objetos.
+
+```
+/** @jsxImportSource @emotion/react */ // Requiere esta directiva en Babel/JSX
+
+import { css } from '@emotion/react';
+
+const primaryColor = '#10b981';
+
+const Button = ({ children, isBig }) => {
+  // Objeto de estilos JS
+  const buttonStyles = css({
+    backgroundColor: primaryColor,
+    color: 'white',
+    padding: isBig ? '16px 32px' : '8px 16px',
+    borderRadius: '4px',
+    '&:hover': {
+      backgroundColor: '#059669',
+    },
+  });
+  
+  return (
+    <button css={buttonStyles}>
+      {children}
+    </button>
+  );
+};
+```
+
+
+2. Hook css (Para Objetos Dinámicos)
+para generar estilos basados en props o state.
+
+```
+import { useTheme, css } from '@emotion/react';
+
+const Header = ({ title }) => {
+  const theme = useTheme(); // Acceder al tema global
+
+  const headerStyle = css`
+    background-color: ${theme.colors.primary};
+    color: ${theme.colors.text};
+    font-size: ${theme.typography.h1};
+    border-bottom: 2px solid ${theme.colors.secondary};
+  `;
+
+  return (
+    <header css={headerStyle}>
+      <h1>{title}</h1>
+    </header>
+  );
+};
+```
+
+
+3. styled 
+
+sintaxis Tagged Template Literals importando desde @emotion/styled
+
+```
+import styled from '@emotion/styled';
+
+// Exactamente la misma sintaxis que Styled Components
+const StyledCard = styled.div`
+  background-color: white;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  
+  /* Uso de props para estilos condicionales */
+  border-left: 5px solid ${(props) => (props.active ? '#0070f3' : 'transparent')};
+`;
+
+const CardComponent = () => (
+  <StyledCard active>
+    Contenido de la tarjeta activa.
+  </StyledCard>
+);
+```
+
+
+Tema Global con Emotion:
+mismo concepto de ThemeProvider que Styled Components
+inyectar un objeto de tema a través del React Context API.
+
+1. Crear objeto tema
+
+```
+// theme.js
+const theme = {
+  colors: {
+    primary: '#0070f3',
+    text: '#333333',
+  },
+  spacing: { md: '16px' },
+};
+export default theme;
+```
+
+2. Envolver la Aplicación: Se utiliza el ThemeProvider de @emotion/react.:
+
+```
+import { ThemeProvider } from '@emotion/react';
+import theme from './theme';
+
+const App = () => (
+  <ThemeProvider theme={theme}>
+    <MyComponent />
+  </ThemeProvider>
+);
+```
+
+3. Acceso al Tema: Se accede al tema con el hook useTheme().
+
+```
+import { useTheme } from '@emotion/react';
+
+const Footer = () => {
+  const theme = useTheme();
+
+  // Accediendo al color primario del objeto theme
+  const footerStyle = css`
+    background-color: ${theme.colors.primary};
+    color: white;
+    padding: ${theme.spacing.md};
+  `;
+
+  return <footer css={footerStyle}>Pie de página</footer>;
+};
+```
+
+
+Estilos Globales y Clases por Lotes:
+
+1. Estilos Globales (Global)
+componente Global para inyectar estilos que afectan a toda la aplicación
+(p. ej., resetear estilos del navegador o definir estilos para body y html).
+
+```
+import { Global, css } from '@emotion/react';
+
+const GlobalStyles = () => (
+  <Global
+    styles={css`
+      /* Estilos aplicados a todo el documento */
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Arial', sans-serif;
+      }
+      a {
+        text-decoration: none;
+        color: inherit;
+      }
+    `}
+  />
+);
+```
+
+
+2. Estilos por Lotes (jsx):
+permite usar la prop css en cualquier elemento HTML o componente que hayas configurado
+se conoce como la pragmatic jsx o @emotion/babel-plugin-jsx-pragmatic.
+
+
+
+##### Tema global
+
+
+
 
 
 
@@ -9161,7 +9877,7 @@ Fácil mantenimiento: Los mocks son simples, solo devuelven lo que la prueba nec
 
 # NVM
 
-cmmand -v nvm
+command -v nvm
 
 nvm ls-remote
 

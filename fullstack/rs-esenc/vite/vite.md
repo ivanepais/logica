@@ -1723,6 +1723,7 @@ Imagínese que ya tiene una API JSON y una maqueta de un diseñador.
 La API JSON devuelve algunos datos que se parecen a esto:
 
 ```
+[
   { category: "Fruits", price: "$1", stocked: true, name: "Apple" },
   { category: "Fruits", price: "$1", stocked: true, name: "Dragonfruit" },
   { category: "Fruits", price: "$2", stocked: false, name: "Passionfruit" },
@@ -1730,7 +1731,6 @@ La API JSON devuelve algunos datos que se parecen a esto:
   { category: "Vegetables", price: "$4", stocked: false, name: "Pumpkin" },
   { category: "Vegetables", price: "$1", stocked: true, name: "Peas" }
 ]
-
 ```
 
 La maqueta se ve así:
@@ -2426,6 +2426,7 @@ export default function App() {
 }
 
 ```
+
 
 # React TS
 
