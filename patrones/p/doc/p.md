@@ -3301,7 +3301,7 @@ Hacer que los estilos dependan directamente de las props de React.
 
 1. Estilos Basados en Props
 Funciones JS dentro de los template literals
-Estasreciben las props del componente como argumento.
+Estas reciben las props del componente como argumento.
 
 ```
 // Ejemplo: Cambiar el color basado en la prop 'primary'
