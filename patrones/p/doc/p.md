@@ -9877,14 +9877,16 @@ Fácil mantenimiento: Los mocks son simples, solo devuelven lo que la prueba nec
 
 # NVM
 
-command -v nvm
+install: curl
 
-nvm ls-remote
+command -v nvm
+nvm ls-remote (versiones para instalar)
 
 nvm instal --lts
-
 nvm use --lts
 
+nvm ls (nuestras versiones instaladas)
+nvm use 21 (cambiar version)
 
 npm create vite@latest
 

@@ -4234,101 +4234,103 @@ No debería saber nada sobre el id del usuario que lo está presionando.
 
 
 
-# Cod
+# Smart Components
+
+Container Components: gestionar los datos, el estado y la lógica de negocio
+##### Un componente es "Smart" cuando sabe de dónde vienen los datos y qué debe pasar cuando el usuario interactúa con la interfaz.
+
+1. Gestionan el Estado: Usan useState, useReducer o se conectan a un estado global (Redux, Context, Zustand).
+2. Manejan Efectos: Realizan llamadas a APIs o suscripciones dentro de useEffect.
+3. Orquestan la Lógica: Contienen los handlers que procesan la información antes de pasarla hacia abajo.
+4. Pasan Props: Su salida principal no es HTML complejo, sino otros componentes (generalmente Dumb) a los que les pasan datos y funciones.
+
+Smart vs Dumb:
+
+Smart:
+API: sabe a qué endpoint llamar.
+Store: usa useSelector o Context.
+Estilos: Mínimos (layout básico).
+Reutilización: Baja (está atado a una lógica).
+
+Dumb:
+API: solo recibe datos por props
+Store: independiente del estado global.
+Estilos: Muchos (es su especialidad)
+Reutilización: Muy alta.
 
 
-## Arq
-
-Data: 
-
-person:
-name, surname, profession, pic, bio, proj/links 
-
-proj:
-yourPortfolio, aiState...
-
-widget:
-date
-time
-wheater
-
-person has projects
-
-```
-				App
-(widget)		(proj)			(person)
-date			ProjectsInfo	bio
-time				links		pic
-wheater			 	SocialMedia
-```
-
-
+Código:
 
 ```
- src/
-1.		features
-			profile
-				components
-					profile.jsx
-				hooks
-				profile.js
-			widget
-				components
-				widget.js				
-2. shared
-		components
-			btn
-			main 
-			section
-			aside
-			article
-			footer
-			time
-			img
-			link
-			embed
-			pic
-			source
-		hooks
-		utils
-		
-		
-3. store/globalState
+import { useState, useEffect } from 'react';
+import { TodoList } from './components/TodoList'; // Un Dumb Component
+import { todoService } from './services/todoService';
 
-4. api
+export function TodoContainer() {
+  const [todos, setTodos] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-5. pages
+  // 1. Lógica de obtención de datos
+  useEffect(() => {
+    todoService.getAll().then(data => {
+      setTodos(data);
+      setLoading(false);
+    });
+  }, []);
 
-6. style
-		theme
-		global
-7. app.js
-``` 
+  // 2. Lógica de negocio (handler)
+  const handleToggle = async (id) => {
+    const updatedTodo = await todoService.toggleStatus(id);
+    setTodos(prev => prev.map(t => t.id === id ? updatedTodo : t));
+  };
+
+  // 3. Renderiza componentes Dumb pasando la "inteligencia" como props
+  return (
+    <TodoList 
+      items={todos} 
+      onItemClick={handleToggle} 
+      isLoading={loading} 
+    />
+  );
+}
+```
 
 
-dumb, smart, hook:
-hook -> rtn obj/estados
-smrt -> rtn dumb le pasa obj/custom hook
-dumb -> rtn elemHtml/presen usando info smrt
+Smart y Custom Hook
 
+##### Mover la "inteligencia" fuera del componente y llevarla a un Custom Hook
+Hace que el componente Smart sea mucho más limpio y la lógica sea reutilizable.
 
-comp components: 
-app: (div)
-wid (art) , proj (main), pers (aside)
+```
+// useTodos.js (La "inteligencia" ahora es un hook)
+export function useTodos() {
+  const [todos, setTodos] = useState([]);
+  // ... lógica de fetch y handlers aquí ...
+  return { todos, loading, handleToggle };
+}
 
-pers: 
-pic/img
-bio(p)
+// TodoPage.jsx (Sigue siendo Smart, pero mucho más legible)
+export function TodoPage() {
+  const { todos, loading, handleToggle } = useTodos();
 
-proj:
-p/a/links
-icons/a/links
+  return (
+    <main>
+      <h1>Mis Tareas</h1>
+      <TodoList items={todos} onItemClick={handleToggle} isLoading={loading} />
+    </main>
+  );
+}
+```
 
-wid:
-art:
-date, time, wheater
+Uso: de Smart Component
 
-dumb: children (span, p, li, h1..., a)
+1. Necesites conectar una parte de la UI con una fuente de datos (API o base de datos).
+2. Tengas lógica que deba persistir o compartirse entre varios componentes pequeños.
+3. Necesites manejar un flujo de pasos (como un formulario de varios niveles).
+
+##### Mantén los Smart Components lo más arriba posible en el árbol.
+Si empiezas a tener Smart Components dentro de Smart Components muy profundos, tu aplicación se volverá difícil de rastrear.
+##### Lo ideal es tener una "Página" o "Contenedor" inteligente y muchos componentes hijos "tontos".
 
 
 
@@ -4772,6 +4774,2556 @@ fuentes de Google.
 ```
 <link rel="stylesheet" href="estilos.css">
 ```
+
+
+
+# Cod
+
+## Config
+
+nvm install --lts
+nvm use --lts
+
+npm create vite@latest my-app -- --template react
+
+Si elegimos no a "install with npm and start"
+npm install
+npm run dev 
+
+
+### Dep y devDep
+
+dep: 
+Routing: react-router-dom
+Estado: redux
+Apis: axios
+UI: styled-components
+
+devDep: 
+typescript
+prettier
+testing
+Utilidades CLI:
+
+
+### Env
+
+
+### Scripts
+
+npm, npx
+
+npm run dev
+
+
+
+### nvm
+
+Requisitos del proyecto:
+En package.json o busca un archivo llamado .nvmrc.
+Instala si no la tienes: nvm install 20.
+Verifica: Escribe node -v para confirmar que estás en la versión correcta.
+
+Si creas un archivo llamado .nvmrc en la carpeta raíz de tu proyecto y dentro solo escribes el número de versión (ej. 18.15.0)
+cualquier otro desarrollador podrá simplemente escribir nvm use en esa carpeta y NVM cambiará automáticamente a la versión correcta.
+
+Crear en la raíz: .nvmrc
+Escribir: únicamente el número de versión
+Ej: 20, 18.15.0, --lts (más reciente)
+
+Desde la terminal con un solo comando: 
+
+```
+node -v > .nvmrc
+```
+
+Tomará la versión de Node que estás usando actualmente y la guardará en el archivo.
+
+Una vez que el archivo existe en la carpeta, cuando tú o cualquier compañero de equipo entre al proyecto, solo tienen que ejecutar:
+
+```
+nvm use
+```
+
+Si no la tiene instalada: nvm install
+
+
+Cambio automatico al entrar a la carpeta/raiz del proyecto
+
+
+
+# Terminal
+
+
+
+
+# UI
+
+## Atomic, container, etc
+
+Composición de Componentes, componentes reutilizables
+desacoplados de cualquier gestión de estado o API
+
+1. Dumb/present:
+Reciben datos y funciones de callback, no tienen estado
+Ej: Boton, Tarjeta, Modal
+
+2. Smart/conten:
+Lógica y el estado, uso de hooks
+Ej: ContenedorProductos, PerfilUsuarioPage
+
+
+Organización: 
+components/ui/ o components/atoms/: Para componentes presentacionales genéricos y reutilizables (ej. Boton, Input, Icono).
+components/layouts/ o components/templates/: Para estructuras de alto nivel (ej. Header, Sidebar, Footer).
+pages/ o views/: Componentes contenedores que generalmente están conectados al router y manejan la lógica de la vista (ej. LoginPage, DashboardPage).
+
+
+SRP:
+
+1. Componente de Estado de Carga
+Práctica: Crea un componente presentacional dedicado (ej. <Loading /> o <Spinner />) y un componente de error (<ErrorMessage />).
+Razón: La lógica que decide si mostrar el contenido, el spinner o el error es lógica de renderizado
+debe estar separada de la lógica de negocio y presentación del contenido principal.
+
+2. Lógica de Presentación en Custom Hooks
+Práctica: Si tienes una lógica de UI reutilizable (ej. lógica de paginación, alternar un modal),
+extráela a un Custom Hook (ej. usePagination, useToggle).
+Razón: Deja el componente principal limpio y fácil de leer, y permite la reutilización de esa lógica
+
+```
+// Custom Hook para lógica de UI
+const useToggle = (initialValue = false) => {
+  const [value, setValue] = useState(initialValue);
+  const toggle = useCallback(() => setValue(prev => !prev), []);
+  return [value, toggle];
+};
+
+// Componente de UI limpio
+const MiModal = () => {
+  const [isOpen, toggleOpen] = useToggle(false); // Lógica de UI abstraída
+  // ...
+};
+```
+
+
+1. Atoms:
+Indivisibles y representan la unidad mínima de la UI.
+botón (<Button>)
+una etiqueta de texto (<Label>)
+un campo de entrada (<Input>), un icono (<Icon>)
+o un color específico
+
+Una única etiqueta HTML y reciben la mayoría de su estilo a través de props.
+
+
+2. Molecules:
+Combinación de varios Átomos
+Adquieren una propiedad o lógica de propósito
+Pueden contener algo de lógica de manejo de estado simple 
+(ej. si un campo de búsqueda está enfocado).
+Ejemplos: Un campo de búsqueda completo (un <Input> + un <Button> + un <Label>), una barra de navegación simple.
+Agrupar Átomos para realizar una tarea específica.
+
+
+3. Organisms:
+grupos de Moléculas y/o Átomos
+Forman una sección compleja y distintiva de la interfaz
+Representan componentes de UI más grandes
+Componentes que ensamblan Moléculas
+Sin lógica, se enfocan en la coordinación de componentes hijos
+Cabecera completa del sitio (<Header>), una tarjeta de producto compleja (<ProductCard>), una tabla de datos completa (<DataTable>).
+Responsabilidad: Mostrar una sección del contenido o una funcionalidad del sistema.
+
+
+4. Templates
+Componentes que definen el esqueleto o layout de la página
+Compuestos por Organismos y definen la estructura del contenido, pero no el contenido final.
+layouts o "Wireframes" sin datos.
+Reciben Organismos y deciden dónde se colocan en la página 
+(ej. Header arriba, Sidebar a la izquierda, Footer abajo).
+Ejemplos: LoginPageTemplate, DashboardLayout, ArticlePageTemplate.
+Responsabilidad: Definir las relaciones entre los Organismos y el layout global.
+Utilizan la prop children extensamente.
+
+
+5. Pages
+Instancias específicas de las Plantillas
+Se introduce el contenido real y la lógica de negocio o de recuperación de datos.
+Los componentes de nivel superior que se conectan con el enrutamiento (ej. React Router).
+Son los componentes Contenedor (Containers) definitivos.
+Ejemplos: HomePage, UserProfilePage, ProductListingPage.
+Responsabilidad: Pasar datos reales (obtenidos de APIs) a las Plantillas y a los Organismos, y gestionar la lógica de nivel de aplicación.
+
+
+### Atoms
+
+1. Acción y Control
+Componentes con los que el usuario interactúa directamente
+
+Button: El átomo por excelencia. Incluye sus variantes (primario, secundario, peligro).
+IconButton: Un botón que solo contiene un icono.
+Checkbox: El cuadro de selección individual.
+Radio Button: La opción de selección única.
+Switch / Toggle: El interruptor de encendido/apagado.
+Link: Un hipervínculo estilizado
+
+
+2. Entradas de Datos (Inputs) 
+
+Campo donde el usuario introduce información
+
+TextInput: Un campo de texto simple.
+TextArea: Campo para textos largos.
+Select: El menú desplegable (solo el campo, sin la lógica de búsqueda compleja).
+Checkbox / Radio: (También entran aquí como controles de formulario).
+Slider: Deslizador para rangos numéricos
+
+
+3. Visuales y de Texto
+
+Sirven para mostrar contenido o dar estructura visual
+
+Icon: El glifo individual (SVG o fuente de iconos).
+Label: El texto que acompaña a un input.
+Heading: Títulos de diferentes niveles (h1, h2, etc.).
+Paragraph: Bloque de texto básico.
+Badge: Una pequeña etiqueta de estado (ej: "Nuevo", "Pendiente").
+Avatar: Una imagen de perfil circular (solo la imagen).
+Spinner / Loader: El indicador de carga.
+
+
+4. Estructura y Separación
+
+Ayudan a organizar el espacio.
+
+Divider: Una línea horizontal o vertical para separar contenido.
+Spacer: Un componente invisible que solo añade margen o espacio.
+Skeleton: La versión "en carga" de un texto o imagen
+
+
+Atomo: 
+Si divido este componente, las partes resultantes siguen siendo útiles por sí solas?
+
+Ejemplo del Buscador:
+Un buscador tiene un Input y un Button.
+Si quitas el botón, el input sigue siendo un input.
+Por lo tanto, el Buscador es una Molécula y el Input/Button son Átomos.
+
+```
+src/components/atoms/
+├── Button/
+├── Input/
+├── Icon/
+├── Typography/
+└── Badge/
+```
+
+
+### Molecules
+Unión de dos o más Átomos que trabajan juntos para cumplir una función simple
+Un Átomo es genérico, una molecule tiene una intencionalidad clara.
+
+1. Form
+Un Átomo de entrada por sí solo no sirve de mucho si no tiene contexto.
+
+FormField: La unión de un Label + Input + ErrorMessage.
+SearchInput: Un Input + un Button (a veces con un Icon).
+Input con Icono: Un Input que tiene un Icon dentro (como el de una contraseña o un calendario).
+Select Group: El elemento Select junto con su etiqueta y descripción.
+
+
+2. Informativos
+Pequeños grupos de datos que muestran información específica.
+
+UserBadge: Un Avatar junto a un Text (el nombre del usuario).
+Breadcrumbs: Una serie de Links separados por un Icon o Divider.
+ListItem: Un Icon seguido de un Text (usado en listas de beneficios o menús).
+StatCard: Un Heading (el número) y un Paragraph (la descripción), como "1.2k Seguidores".
+
+
+3. Controles de Navegación y UI
+Unidades que permiten al usuario moverse o cambiar estados
+
+Tabs: Un grupo de Buttons estilizados que funcionan juntos.
+Pagination: Botones de "Anterior", "Siguiente" y los números de página.
+Stepper: El indicador de pasos (1, 2, 3) con sus etiquetas.
+Dropdown Menu: El botón que, al hacer clic, despliega una lista de enlaces (átomos).
+
+
+4. Bloques de Contenido simple
+
+Componentes que agrupan multimedia y texto básico.
+
+MediaObject: Una Image a la izquierda y un bloque de Typography a la derecha.
+HeroHeader: Un Heading grande y un Button de llamada a la acción (CTA).
+Alert: Un contenedor con un Icon, un Text y un Button para cerrar.
+
+
+Molécula:
+Este componente necesita de otros componentes más pequeños para tener sentido
+pero sigue siendo una pieza 'pequeña'?"
+
+Diferencia con organismo:
+Una Molécula es simple y hace una sola cosa (ej. buscar).
+Un Organismo es una sección de la interfaz (ej. el Header completo, que contiene el logo, el menú y el buscador).
+
+```
+src/components/molecules/
+├── SearchBar/
+├── FormField/
+├── UserProfileSummary/
+├── TabGroup/
+└── AlertBox/
+```
+
+
+Patrón Smart/Dumb:
+Las moléculas son 90% Dumb. 
+Reciben los datos por props y emiten eventos (como onSubmit o onClick).
+##### No deberían hacer llamadas a la API por su cuenta; eso se lo dejamos a los Organismos o las Páginas
+
+
+
+### Organism
+
+Unión de Moléculas (y a veces Átomos)
+Forman una sección compleja, distinta y funcional de la interfaz
+A diferencia de las moléculas, los organismos suelen representar una unidad de negocio
+O una parte completa de la página que el usuario puede identificar como una "sección".
+
+1. Estructuras Globales (Layout Sections)
+Componentes que se repiten en varias páginas y definen la navegación y la identidad.
+
+Header: Contiene el logo (Átomo), el menú de navegación (Molécula) y un buscador (Molécula).
+Footer: Grupos de enlaces, información de contacto, redes sociales y copyright.
+Sidebar: Navegación lateral que incluye perfiles de usuario, menús desplegables y botones de acción
+
+
+2. Listas y Grillas Complejas
+Cuando una lista deja de ser solo texto y se convierte en una colección de tarjetas interactivas
+
+ProductGrid: Una cuadrícula que muestra múltiples ProductCard (Moléculas).
+UserTable: Una tabla con cabeceras, filas con avatares, estados y botones de acción.
+CommentSection: Un grupo de comentarios que incluye el formulario para escribir (Molécula) y la lista de comentarios publicados.
+
+
+3. Formularios de Negocio
+A diferencia de un FormField (Molécula), el organismo es el formulario completo que cumple una función.
+
+RegistrationForm: Incluye múltiples campos de datos, validaciones visuales y el botón de envío.
+CheckoutForm: Gestión de dirección de envío, método de pago y resumen de compra.
+FilterPanel: Un panel lateral con múltiples categorías de filtros (Checkboxes, Sliders de precio, Selects).
+
+
+4. Secciones de Contenido (Blocks)
+Bloques grandes que suelen ocupar el ancho de la pantalla y tienen una función promocional o informativa.
+
+HeroSection: Imagen de fondo, título gigante, descripción y botones de llamada a la acción (CTA).
+Carousel / Slider: Un componente complejo que gestiona la transición de múltiples diapositivas de contenido.
+VideoPlayer: El reproductor con sus controles, lista de reproducción y descripción.
+
+
+Organism:
+Si quito este componente de la página
+queda un hueco gigante que representa una sección completa?
+
+Contexto:
+Molécula (SearchBar) es genérica y puede estar en el Header o en el Footer.
+Organismo (Header) es una pieza de rompecabezas que define la estructura de la aplicación.
+
+
+Smart o Dumb: Dilema del Organismo
+
+1. Organismos Puros (Dumb): Son solo contenedores
+Reciben una lista de datos por props y los mapean
+(ej: una ProductGrid que recibe un array de productos).
+
+2. Organismos Autónomos (Smart): A veces, para evitar pasar demasiadas props desde la página, un organismo se conecta a un Contexto o Global Store 
+(ej: un Navbar que sabe por sí solo si el usuario está logueado).
+
+```
+src/components/organisms/
+├── Header/
+├── ProductGrid/
+├── CheckoutForm/
+├── Sidebar/
+└── Table/
+```
+
+Jerarquía:
+Átomo: Un botón de "Comprar".
+Molécula: El botón + un selector de cantidad.
+Organismo: La tarjeta del producto (Imagen + Nombre + Precio + Molécula de compra).
+Plantilla: El diseño de la página donde se colocan la grilla de productos y el header.
+
+
+
+### Templates
+
+Nivel donde dejamos de pensar en componentes individuales y empezamos a pensar en el layout (la estructura de la página).
+##### Su función principal es definir la rejilla (grid) y la disposición de los organismos, pero —y esto es clave— sin contenido real
+Son "esqueletos" que usan datos ficticios o simplemente cajas grises (placeholders) para mostrar cómo se verá el diseño final.
+
+1. Estructuras de Página (Page Layouts)
+Esqueletos base sobre los que se construye todo el sitio
+
+Dashboard Template: Define un Sidebar fijo a la izquierda, un Header superior y un área central de contenido que se desplaza.
+Landing Page Template: Una estructura vertical con secciones para un Hero, una rejilla de Features, Testimonios y un Footer.
+Auth Template: Una estructura centrada para formularios de login o registro, a menudo con una imagen de fondo o un diseño dividido (Split Screen).
+
+
+2. Plantillas de Contenido Específico
+
+Estructuras diseñadas para tipos de datos particulares.
+
+Product Detail Template: Define dónde va la galería de imágenes, dónde la descripción y dónde la barra lateral de compra.
+Article/Blog Template: Un diseño centrado con espacio para el título, la imagen destacada, el cuerpo del texto y una sección de comentarios al final.
+Search Results Template: Una estructura que incluye un FilterPanel lateral y una ResultsGrid central
+
+
+3. Estados de Visualización
+
+Ayudan a definir cómo se ve la página en diferentes situaciones.
+
+Empty State Template: Define cómo se ve una página (como el carrito de compras) cuando no hay datos.
+Loading/Skeleton Template: La estructura de la página llena de Skeletons (bloques grises animados) que imitan la posición de los futuros organismos mientras se cargan los datos
+
+
+Regla:
+Template es un "plano", no el "edificio".
+1. No tiene lógica de negocio: No hace fetch a la base de datos.
+2. Usa Placeholders: En lugar de una foto real del usuario, usa un círculo gris. En lugar de un nombre real, usa "Lorem Ipsum".
+3. Define el Responsive: Es aquí donde decides que el Sidebar desaparece en móviles y se convierte en un menú hamburguesa
+
+
+Templates y Pages:
+Propósitos distintos
+
+Template: Es lo que le entregas al diseñador o al cliente para validar la estructura. 
+Ejemplo: "Aquí irá el banner, aquí los 3 productos destacados".
+
+Página: Es la instancia del Template con datos reales
+Ejemplo: "Aquí está el banner de Navidad y estos son los 3 iPhones que tenemos en stock".
+
+
+Ej: Dumb Template
+
+```
+// src/components/templates/MainLayout.jsx
+export function MainLayout({ header, sidebar, content, footer }) {
+  return (
+    <S.PageWrapper>
+      <S.TopSection>{header}</S.TopSection>
+      <S.MiddleSection>
+        <S.Aside>{sidebar}</S.Aside>
+        <S.MainContent>{content}</S.MainContent>
+      </S.MiddleSection>
+      <S.BottomSection>{footer}</S.BottomSection>
+    </S.PageWrapper>
+  );
+}
+```
+
+
+
+### Pages
+
+Etapa final 
+Dejamos de hablar de componentes "abstractos" y empezamos a hablar de la aplicación real.
+Instancia de un Template inyectada con datos reales
+Donde el diseño se encuentra con la API.
+
+1. Flujo Principal (Core Business)
+Rutas principales de tu aplicación donde sucede la acción
+
+HomePage: La página de aterrizaje con banners reales, productos en oferta y noticias actuales.
+ProductDetailsPage: La vista específica de un producto que obtiene el ID de la URL y busca sus datos (precio, stock, reseñas).
+CheckoutPage: El proceso de pago final con los datos del carrito del usuario y la pasarela de pagos.
+UserProfilePage: La página personal del usuario con su foto, nombre y configuración real de su cuenta.
+
+
+2. Páginas de Administración y Gestión
+Vistas orientadas a la manipulación de datos (CRUD).
+
+UserDashboard: El panel de control con métricas reales y gráficos sincronizados con la base de datos.
+SettingsPage: La sección donde el usuario cambia su contraseña, email o preferencias de notificación.
+AdminInventory: Una lista de productos real con botones que ejecutan acciones como "Eliminar" o "Editar" en el servidor.
+
+
+3. Páginas de Estado y Error
+
+Vistas que responden a situaciones específicas del sistema
+
+NotFoundPage (404): La página que se muestra cuando una ruta no existe.
+ServerErrorPage (500): La vista de error cuando algo falla en el backend.
+SuccessPage: La pantalla de confirmación tras una compra o un registro exitoso.
+
+
+Página y Template:
+La Página es el "Smart Component" definitivo
+El Template solo dice "aquí va un título", la Página dice: "Llama a la API, trae el nombre del usuario y ponlo en ese título".
+
+
+1. Template (Plano)
+
+Datos:
+Placeholders (Lorem Ipsum)
+
+Lógica:	
+Ninguna (solo visual
+
+Estado:	
+Estático
+
+
+2. Page
+
+Datos:
+Datos reales de la API / Base de datos.
+
+Lógica: 
+Ninguna (solo visual)
+Manejo de errores, carga (loading) y redirecciones.
+
+Estado: 
+Dinámico (reacciona a clicks, inputs y timers).
+
+
+Flujo: De la Página al Átomo
+
+1. Página: CartPage llama al useCart() para obtener los productos.
+2. Template: Recibe los productos y los coloca en una cuadrícula predefinida.
+3. Organismo: CartList recorre los productos y renderiza tarjetas.
+4. Molécula: QuantitySelector (dentro de la tarjeta) permite cambiar la cantidad.
+5. Átomo: Button (dentro del selector) ejecuta el incremento.
+
+
+Código page
+
+```
+// src/pages/ProductPage.jsx
+import { useEffect, useState } from 'react';
+import { ProductTemplate } from '../components/templates/ProductTemplate';
+import { api } from '../services/api';
+
+export function ProductPage() {
+  const [product, setProduct] = useState(null);
+
+  useEffect(() => {
+    // Aquí vive la "Inteligencia" (Smart Logic)
+    api.getProduct(123).then(data => setProduct(data));
+  }, []);
+
+  if (!product) return <LoadingPage />; // Otro template/página
+
+  // La página INYECTA los datos reales en el TEMPLATE
+  return (
+    <ProductTemplate 
+      title={product.name}
+      price={product.price}
+      description={product.desc}
+      image={product.imageUrl}
+      onAddToCart={() => console.log('Añadido!')}
+    />
+  );
+}
+```
+
+
+
+## Uniones en Atomic Design
+
+### 1. Átomo y una Molécula
+
+Aplicando composición
+El Átomo debe ser lo más genérico posible
+La Molécula debe darle un contexto o propósito específico.
+
+Ej: SearchBar (Molécula) utilizando un Input y un Button (Átomos).
+
+1. Átomos
+Solo reciben estilos y props básicas.
+
+```
+// src/components/atoms/Input.styles.js
+import styled from 'styled-components';
+
+export const StyledInput = styled.input`
+  padding: ${({ theme }) => theme.spacing.md};
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  flex: 1; /* Para que ocupe el espacio disponible en la molécula */
+`;
+
+// src/components/atoms/Button.styles.js
+import styled from 'styled-components';
+
+export const StyledButton = styled.button`
+  padding: ${({ theme }) => theme.spacing.md};
+  background-color: ${({ theme, $variant }) => 
+    $variant === 'primary' ? theme.colors.primary : '#666'};
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+`;
+```
+
+
+2. Molécula (Unión con Contexto)
+
+Donde los átomos se unen para formar una unidad funcional: el SearchBar 
+La molécula define cómo se alinean los átomos y qué sucede cuando interactúan.
+
+```
+// src/components/molecules/SearchBar/SearchBar.jsx
+import { StyledInput } from '../../atoms/Input.styles';
+import { StyledButton } from '../../atoms/Button.styles';
+import styled from 'styled-components';
+
+// Estilo local de la molécula para definir el layout
+const SearchContainer = styled.form`
+  display: flex;
+  gap: 8px;
+  width: 100%;
+  max-width: 400px;
+`;
+
+export function SearchBar({ onSearch, placeholder = "Buscar..." }) {
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const query = e.target.search.value;
+    onSearch(query);
+  };
+
+  return (
+    <SearchContainer onSubmit={handleSubmit}>
+      {/* Átomo 1: Input */}
+      <StyledInput 
+        name="search" 
+        placeholder={placeholder} 
+        type="text" 
+      />
+      
+      {/* Átomo 2: Button */}
+      <StyledButton $variant="primary" type="submit">
+        Buscar
+      </StyledButton>
+    </SearchContainer>
+  );
+}
+```
+
+Reutilización: Puedes usar el mismo StyledButton en un formulario de contacto, en el carrito de compras o en el login
+El botón no sabe que está en un buscador.
+
+Responsabilidad Única: El Input solo se encarga de recibir texto
+El Button solo se encarga de ser clickeable.
+La Molécula (SearchBar) es la única que sabe que al presionar el botón se debe enviar el texto del input.
+
+Mantenimiento: Si decides que todos los inputs de tu app deben tener bordes redondeados, solo cambias el Átomo, y tu Molécula se actualiza automáticamente.
+
+
+Uso en una Página
+
+```
+function HomePage() {
+  const handleSearch = (query) => {
+    console.log("Buscando productos para:", query);
+  };
+
+  return (
+    <nav>
+      <h1>Mi Tienda</h1>
+      {/* Usamos la molécula */}
+      <SearchBar onSearch={handleSearch} placeholder="Busca tu iPhone..." />
+    </nav>
+  );
+}
+```
+
+
+### 2. Molecula y organismo
+
+Insertar la molécula SearchBar que creamos antes dentro de un Organismo: el Navbar (Barra de Navegación).
+Un organismo se diferencia de una molécula porque gestiona múltiples grupos de funciones
+Suele tener una estructura de layout más definida
+
+1. Piezas (Moléculas y Átomos)
+
+Para NavBar:
+Logo (Átomo/Imagen).
+NavLinks (Molécula: una lista de enlaces).
+SearchBar (Molécula que creamos en el paso anterior).
+UserMenu (Molécula: avatar + nombre).
+
+
+2. Organismo (Navbar.jsx) 
+
+Ensamblaje: el organismo se encarga de la disposición espacial (el "layout") de estas piezas.
+
+```
+// src/components/organisms/Navbar/Navbar.styles.js
+import styled from 'styled-components';
+
+export const NavContainer = styled.header`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: ${({ theme }) => theme.spacing.md} ${({ theme }) => theme.spacing.lg};
+  background-color: white;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+`;
+
+export const NavGroup = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.lg};
+`;
+
+// src/components/organisms/Navbar/Navbar.jsx
+import { NavContainer, NavGroup } from './Navbar.styles';
+import { SearchBar } from '../../molecules/SearchBar/SearchBar';
+import { NavLinks } from '../../molecules/NavLinks/NavLinks';
+import { UserMenu } from '../../molecules/UserMenu/UserMenu';
+
+export function Navbar({ user, onSearch, links }) {
+  return (
+    <NavContainer>
+      {/* Grupo Izquierdo: Logo y Enlaces */}
+      <NavGroup>
+        <img src="/logo.svg" alt="Logotipo" width="40" />
+        <NavLinks items={links} />
+      </NavGroup>
+
+      {/* Centro: La Molécula SearchBar */}
+      <SearchBar onSearch={onSearch} />
+
+      {/* Grupo Derecho: Acciones de usuario */}
+      <NavGroup>
+        <UserMenu user={user} />
+      </NavGroup>
+    </NavContainer>
+  );
+}
+```
+
+Complejidad: Contiene varias moléculas independientes (SearchBar, UserMenu, NavLinks) que podrían funcionar por separado en otros lugares.
+
+Identidad de Sección: El Navbar es una sección clara y distinta de la página. Si lo quitas, la página pierde su sistema de navegación principal
+
+Independencia de Negocio: El organismo suele representar un bloque completo que un diseñador puede arrastrar y soltar en diferentes Templates.
+
+
+Uso en un Template
+
+```
+// src/components/templates/MainLayout.jsx
+export function MainLayout({ children, user, onSearch }) {
+  const links = [{ label: 'Inicio', href: '/' }, { label: 'Tienda', href: '/shop' }];
+
+  return (
+    <>
+      {/* Insertamos el Organismo */}
+      <Navbar 
+        user={user} 
+        onSearch={onSearch} 
+        links={links} 
+      />
+      
+      <main>
+        {children}
+      </main>
+      
+      {/* Aquí podría ir otro organismo: Footer */}
+    </>
+  );
+}
+```
+
+Conexión:
+Átomo: El botón de "Buscar".
+Molécula: El SearchBar (Input + Botón).
+Organismo: El Navbar (Logo + Enlaces + SearchBar + Perfil).
+
+
+## 3. Organismo y template 
+
+El Template no tiene lógica de datos (no sabe quién es el usuario)
+Pero sí sabe dónde debe ir cada Organismo.
+
+Ej: DashboardTemplate que utiliza el organismo Navbar y otros bloques para definir el diseño de una aplicación de administración.
+
+1. Organismo (Sidebar.jsx)
+Además del Navbar, necesitamos otro organismo para que el Template tenga sentido
+
+```
+// src/components/organisms/Sidebar/Sidebar.jsx
+import styled from 'styled-components';
+
+const SidebarContainer = styled.aside`
+  width: 250px;
+  height: 100vh;
+  background: ${({ theme }) => theme.colors.textMain};
+  color: white;
+  padding: 20px;
+`;
+
+export function Sidebar({ menuItems }) {
+  return (
+    <SidebarContainer>
+      <nav>
+        {menuItems.map(item => (
+          <div key={item.id} style={{ padding: '10px 0' }}>{item.label}</div>
+        ))}
+      </nav>
+    </SidebarContainer>
+  );
+}
+```
+
+
+2. Template (DashboardTemplate.jsx)
+Componente que define la rejilla (grid).
+Recibe los organismos como props (esto se llama Component Injection o Slots)
+lo que lo hace totalmente reutilizable.
+
+```
+// src/components/templates/DashboardTemplate.styles.js
+import styled from 'styled-components';
+
+export const LayoutGrid = styled.div`
+  display: grid;
+  grid-template-columns: 250px 1fr; /* Sidebar y Contenido */
+  grid-template-rows: auto 1fr;    /* Navbar y Cuerpo */
+  height: 100vh;
+`;
+
+export const HeaderArea = styled.div`
+  grid-column: 2 / 3;
+`;
+
+export const MainArea = styled.main`
+  grid-column: 2 / 3;
+  padding: ${({ theme }) => theme.spacing.lg};
+  background-color: #f5f5f5;
+  overflow-y: auto;
+`;
+
+// src/components/templates/DashboardTemplate.jsx
+import { LayoutGrid, HeaderArea, MainArea } from './DashboardTemplate.styles';
+
+export function DashboardTemplate({ navbar, sidebar, content }) {
+  return (
+    <LayoutGrid>
+      {/* El sidebar ocupa la primera columna y ambas filas si se desea */}
+      <div style={{ gridRow: '1 / 3' }}>
+        {sidebar}
+      </div>
+
+      <HeaderArea>
+        {navbar}
+      </HeaderArea>
+
+      <MainArea>
+        {content}
+      </MainArea>
+    </LayoutGrid>
+  );
+}
+```
+
+
+Template:
+
+Es un cascarón vacío: Si miras el código, el Template no decide qué enlaces van en el Sidebar ni qué usuario aparece en el Navbar. 
+Solo dice: "El Sidebar va a la izquierda".
+
+Usa "Slots": En lugar de importar los organismos directamente, los recibe como props (navbar, sidebar).
+Esto permite que la Página decida qué versión del Navbar o Sidebar usar.
+
+Abstracción Visual: Aquí es donde manejas el Responsive Design (por ejemplo, ocultar el sidebar en móviles).
+
+
+Ensamblaje en Page:
+
+Donde los datos reales se encuentran con la estructura
+
+```
+// src/pages/AdminDashboard.jsx
+import { DashboardTemplate } from '../components/templates/DashboardTemplate';
+import { Navbar } from '../components/organisms/Navbar/Navbar';
+import { Sidebar } from '../components/organisms/Sidebar/Sidebar';
+
+export function AdminDashboard() {
+  // Aquí obtendríamos datos reales de un Hook o Contexto
+  const user = { name: "Admin", avatar: "/avatar.png" };
+  
+  return (
+    <DashboardTemplate 
+      navbar={
+        <Navbar 
+          user={user} 
+          onSearch={(q) => console.log(q)} 
+        />
+      }
+      sidebar={
+        <Sidebar 
+          menuItems={[{ id: 1, label: 'Reportes' }, { id: 2, label: 'Usuarios' }]} 
+        />
+      }
+      content={
+        <div>
+          <h1>Bienvenido al Panel de Control</h1>
+          <p>Aquí van tus gráficas y estadísticas reales...</p>
+        </div>
+      }
+    />
+  );
+}
+```
+
+Organismo: Navbar (Pieza compleja funcional).
+Template: DashboardTemplate (Plano arquitectónico que ubica el Navbar).
+Página: AdminDashboard (La aplicación en ejecución con datos reales).
+
+
+
+### 3. Template y page
+
+La Página le da vida al Template
+Componente Smart: maneja el estado
+Hace peticiones a la API y gestiona errores
+Template es Dumb: solo recibe piezas de UI y las organiza en el espacio.
+
+1. Template (ProductLayoutTemplate.jsx)
+
+Componente define dónde va cada cosa
+No sabe qué producto se está vendiendo, solo sabe que hay una imagen a la izquierda y detalles a la derecha
+
+```
+// src/components/templates/ProductLayoutTemplate.jsx
+import styled from 'styled-components';
+
+const Layout = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+`;
+
+export function ProductLayoutTemplate({ image, info, reviews, relatedProducts }) {
+  return (
+    <Layout>
+      <section>{image}</section>
+      <section>
+        {info}
+        <hr />
+        {reviews}
+      </section>
+      <footer style={{ gridColumn: '1 / -1' }}>
+        {relatedProducts}
+      </footer>
+    </Layout>
+  );
+}
+```
+
+
+2. Página (ProductPage.jsx)
+Donde conectamos con la realidad
+Esta página extrae el ID de la URL, pide los datos al servidor y decide qué mostrar.
+
+```
+// src/pages/ProductPage.jsx
+import { useParams } from 'react-router-dom';
+import { useProductData } from '../hooks/useProductData'; // Custom Hook (Smart Logic)
+import { ProductLayoutTemplate } from '../components/templates/ProductLayoutTemplate';
+import { ProductImage } from '../components/organisms/ProductImage';
+import { ProductInfo } from '../components/organisms/ProductInfo';
+import { RelatedProducts } from '../components/organisms/RelatedProducts';
+
+export function ProductPage() {
+  const { id } = useParams();
+  const { product, isLoading, error } = useProductData(id);
+
+  // Manejo de estados de carga (puedes usar un Template de Skeleton aquí)
+  if (isLoading) return <p>Cargando producto...</p>;
+  if (error) return <p>Error al cargar el producto.</p>;
+
+  return (
+    <ProductLayoutTemplate
+      image={
+        <ProductImage src={product.mainImage} alt={product.name} />
+      }
+      info={
+        <ProductInfo 
+          title={product.name} 
+          price={product.price} 
+          description={product.description} 
+        />
+      }
+      reviews={
+        <div>
+          <h3>Reseñas de la comunidad</h3>
+          {/* Aquí iría una molécula o lista de reseñas */}
+        </div>
+      }
+      relatedProducts={
+        <RelatedProducts category={product.category} />
+      }
+    />
+  );
+}
+```
+
+Prop Drilling vs. Slots: En lugar de pasar el objeto product al template y que este lo reparta (Prop Drilling)
+la Página reparte los datos directamente a los Organismos y los inyecta en los "huecos" (slots) del Template.
+
+Independencia: Si quieres probar cómo se ve el diseño con un producto que no tiene imagen
+Puedes crear una "Página de prueba" que use el mismo Template pero pase un placeholder, sin tocar la lógica de la API.
+
+SEO y Side Effects: La Página es el lugar donde gestionas el título de la pestaña (document.title)
+El envío de analíticas o la redirección si el producto no existe.
+
+Átomo		Unidad básica	Button, Input, Icon
+Molécula	Función simple	SearchBar (Input + Button)
+Organismo	Sección compleja	Navbar, ProductCard, Footer
+Template	Plano/Estructura	DashboardLayout, AuthLayout
+Página		Realidad/Datos	ProfilePage, SettingsPage
+
+
+
+## BEM (Block, Element, Modifier): metodología de nomenclatura para CSS 
+
+1. Bloque: Componente principal (ej., card).
+2. Elemento: Parte del Bloque (ej., card__title).
+3. Modificador: Variación del Bloque o Elemento (ej., card--dark).
+4. Excelente para prevenir conflictos de CSS y para que los desarrolladores entiendan instantáneamente la relación entre los diferentes elementos de un componente
+
+
+### Bloque (Block): Entidad independiente que tiene significado por sí misma
+Ejemplos: header, container, menu, button, form.
+Nomenclatura: Nombre descriptivo 
+Ej: `.card, .nav-menu`.
+
+### Elemento (Element): una parte de un bloque que no tiene significado independiente
+Semánticamente atada a su bloque.
+Se une al bloque con dos guiones bajos `__`.
+Ejemplos: `.card__title, .card__image, .nav-menu__item`.
+
+### Modificador (Modifier): "bandera" o flag que se usa para cambiar la apariencia, el estado o el comportamiento de un bloque o elemento.
+Se une con dos guiones medios `--`.
+Ejemplos: `.button--large, .button--disabled, .card__title--highlighted``.
+
+
+### Ej: Card
+
+Maquetando una tarjeta de perfil, aplicando BEM
+
+```
+<div class="card">
+  <img src="..." class="card__image" />
+  
+  <div class="card__content">
+    <h2 class="card__title">Juan Pérez</h2>
+    
+    <button class="card__button card__button--active">Seguir</button>
+  </div>
+</div>
+```
+
+CSS: 
+
+```
+.card { ... }
+.card__image { ... }
+.card__title { font-size: 20px; }
+.card__button { background: gray; }
+
+/* El modificador solo cambia lo necesario */
+.card__button--active { background: blue; }
+```
+
+### Reglas de BEM: 
+
+1. Solo Clases:
+Nunca uses IDs o etiquetas (div, h1) en tu CSS.
+BEM se basa exclusivamente en clases para mantener la especificidad baja.
+
+2. No anidación profunda: 
+Evita nombres como card__content__title.
+La estructura debe ser plana: card__title.
+No importa qué tan profundo esté el HTML, el elemento siempre pertenece al bloque.
+
+3. Independencia:
+Un bloque debe poder moverse a cualquier parte de la página sin romperse.
+
+
+### BEM y Styled Components
+
+Aunque Styled Components genera nombres de clase aleatorios y evita colisiones automáticamente
+
+1. Arquitectura Mental: BEM te enseña a pensar en "componentes" y "sub-piezas", lo cual es la base de React.
+
+2. Legibilidad en el DOM: Cuando inspeccionas el código en el navegador, ver clases como sc-button no ayuda, pero ver Button__StyledButton--large
+(usando el plugin de styled-components) hace que debugear sea un sueño.
+
+3. Proyectos Legacy: Te encontrarás con BEM en el 90% de los proyectos que usan SASS o CSS puro.
+
+
+### Errores con BEM
+
+Confundir Elementos con Bloques: Si un elemento empieza a ser demasiado complejo, quizás deba convertirse en un nuevo Bloque
+
+Modificadores solos: Nunca escribas <button class="--large">. Un modificador siempre debe acompañar a la clase base
+
+```
+<button class="button button--large">.
+```
+
+Tip Pro: BEM se lleva de maravilla con SASS gracias al selector de padre (&).
+
+```
+.card {
+  &__title { color: black; }
+  &--dark { background: #333; }
+}
+```
+
+
+
+## Design Tokens
+
+Fuente de verdad para los valores de diseño (colores, tipografía, espaciado, sombras).
+En lugar de usar el valor #FFFFFF en CSS directamente, se usa un token semántico como color-surface-light.
+Fundamental para proyectos que requieren cambios de tema (ej., modo oscuro, marca blanca) y garantiza una consistencia perfecta en todo el stack.
+
+Son los "átomos" de un sistema de diseño.
+Son variables visuales que almacenan decisiones de diseño de forma agnóstica a la plataforma, como colores, tipografía, espaciado o sombras
+
+En lugar de escribir valores fijos (como #3498db o 16px) directamente en el código
+Utilizamos nombres semánticos que representan la intención del diseño.
+
+1. Tokens
+Imagina que el color de tu marca cambia ligeramente
+Tendrías que buscar y reemplazar ese color en cientos de archivos CSS
+Con tokens, solo cambias el valor en un lugar.
+
+Tipo	Valor (Hardcoded)	Nombre del Token
+
+Color	#F39C12	color-brand-primary
+Espaciado	16px	spacing-medium
+Fuente	700	font-weight-bold
+Sombra	0 4px 6px ...	shadow-card-elevation
+
+
+2. Niveles de Tokens
+Un sistema profesional suele organizar los tokens en tres capas para mantener el control y la flexibilidad
+
+### Tokens Globales (Primitivos)
+Paleta base de valores crudos. No tienen un uso específico asignado.
+Ejemplo: color-blue-500: #2196F3
+
+
+### Tokens de Alias (Semánticos)
+Relacionan un token global con un contexto o intención
+Aquí es donde ocurre la magia del "Modo Oscuro".
+Ejemplo: color-background-action: {color-blue-500}
+Si cambias a modo oscuro, el token global cambia, pero el nombre semántico sigue siendo el mismo.
+
+
+### Tokens de Componente
+Específicos para un componente y suelen heredar de los semánticos
+Ejemplo: button-primary-bg: {color-background-action}
+
+
+### React (JSON -> Theme)
+
+1. Los tokens se exportan desde herramientas de diseño como Figma en formato JSON.
+2. Luego, los usamos en nuestro ThemeProvider (que vimos al inicio).
+
+Archivo tokens.json:
+
+```
+{
+  "spacing": {
+    "sm": "8px",
+    "md": "16px"
+  },
+  "colors": {
+    "brand": {
+      "primary": "#007bff"
+    }
+  }
+}
+```
+
+Styled Components:
+
+```
+const Button = styled.button`
+  padding: ${props => props.theme.spacing.md};
+  background-color: ${props => props.theme.colors.brand.primary};
+`;
+```
+
+Uso: 
+
+#### 1. Consistencia Multiplataforma: 
+Los mismos tokens (JSON) pueden alimentar una web en React, una App en Flutter y una App en Swift
+
+#### 2. Fuente Única de Verdad (Single Source of Truth):
+El equipo de diseño y el de desarrollo hablan el mismo idioma.
+Si el diseñador dice "usa spacing-lg", el desarrollador sabe exactamente qué variable usar.
+
+#### 3. Mantenimiento Masivo: Cambiar la identidad visual de toda una empresa se vuelve una tarea de minutos, no de semanas.
+
+#### 4. Facilita el Dark Mode: Solo necesitas cambiar el "mapeo" de los tokens semánticos a nuevos valores globales.
+
+
+
+### Responsive ui
+
+1. Flexible Grids:
+unidades relativas (como %, vw, fr o rem) para el ancho y el alto
+permite que el layout se estire o contraiga de manera fluida con el tamaño del viewport.
+
+2. Flexible Images:
+Las imágenes y otros medios deben escalar dentro de sus contenedores sin desbordarse
+Esto se logra típicamente con reglas CSS como max-width: 100% y height: auto;.
+
+3. Media Queries:
+reglas CSS que aplican estilos específicos solo cuando se cumplen ciertas condiciones, como un rango de ancho de pantalla.
+
+Ej: 
+
+```
+// Ejemplo con Styled Components
+const StyledCard = styled.div`
+  background: white;
+  padding: 20px;
+  
+  // Estilos para móvil por defecto
+  width: 100%;
+
+  // Media Query dentro del componente (desktop)
+  @media (min-width: 768px) {
+    width: 45%;
+    margin: 10px;
+  }
+`;
+```
+
+
+useState y useEffect (Lógica Responsiva):
+
+Hook Personalizado para Tamaño de Pantalla:
+Custom Hook que te devuelva el tamaño actual del viewport:
+
+ ```
+ import { useState, useEffect } from 'react';
+
+const useViewportWidth = () => {
+  // Inicializa el estado con el ancho de la ventana
+  const [width, setWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    // Handler para actualizar el estado cuando se redimensiona
+    const handleResize = () => setWidth(window.innerWidth);
+
+    // Adjuntar el listener de evento al montar
+    window.addEventListener('resize', handleResize);
+
+    // Limpiar el listener al desmontar
+    return () => window.removeEventListener('resize', handleResize);
+  }, []); // Array de dependencia vacío: solo al montar y desmontar
+
+  return width;
+};
+```
+
+
+Aplicación de lógica responsiva:
+Usar este Hook para decidir qué renderizar o qué lógica ejecutar dentro de tu componente.
+
+```
+const Navbar = () => {
+  const width = useViewportWidth();
+  const isMobile = width < 768; // Punto de corte lógico
+  
+  return (
+    <nav>
+      {/* Si es móvil, renderiza un componente de menú desplegable */}
+      {isMobile ? (
+        <MobileMenu />
+      ) : (
+        // Si no es móvil, renderiza el menú completo en línea
+        <DesktopMenu />
+      )}
+    </nav>
+  );
+};
+```
+
+
+Prácticas:
+
+1. Prioridad Móvil (Mobile-First)
+Flujo de Estilos: Escribe el CSS de tu componente primero para las pantallas móviles (más pequeñas).
+Media Queries: Luego, utiliza media queries para agregar estilos y layouts adicionales solo para las pantallas más grandes (tablets, desktop).
+
+2. Unidades Flexibles y Relativas
+Evita depender de unidades fijas (como px) para dimensiones o espaciados principales.
+Tamaños y Espaciado: Utiliza rem para el espaciado (márgenes, padding) y tamaños de fuente, ya que se escalan con el tamaño de fuente raíz del usuario.
+Anchos y Tamaños de Viewport: Utiliza %, vw (viewport width) o vh (viewport height) para los anchos, asegurando que los elementos se escalen fluidamente.
+
+3. Lógica Responsiva con Custom Hooks
+Lógica de renderizado (no solo el estilo)
+cambie según el tamaño de la pantalla, encapsula la funcionalidad en un Custom Hook.
+useViewportWidth (o similar): Crea un hook reutilizable que rastree el ancho y proporcione puntos de corte booleanos 
+(ej. isMobile, isTablet). 
+
+SRP, manteniendo la lógica de tamaño de pantalla fuera de la lógica de presentación de la interfaz de usuario.
+
+4. Imágenes y Medios
+max-width: 100%;: Asegura que las imágenes no desborden sus contenedores.
+Imágenes Condicionales: Utiliza useEffect o los media queries para cargar imágenes de menor resolución en dispositivos móviles
+y de mayor resolución en desktop (<picture> tag o la propiedad srcset).
+
+
+
+# Atomic Design, Smart Component y Dumb Component
+
+### Atomic Design: Anatomía
+Organiza los componentes de lo más pequeño a lo más grande
+
+1. Átomos: La unidad mínima (un input, un label, un button). 
+No funcionan solos.
+
+2. Moléculas: Unión de átomos (un SearchField = input + botón).
+
+3. Organismos: Grupos de moléculas que forman una sección compleja (una Navbar o un UserCardList).
+
+4. Plantillas (Templates): Estructuras de página (Layouts) que dicen dónde va cada cosa, pero aún no tienen datos reales
+
+5. Páginas (Pages): La instancia final donde las plantillas se llenan con datos reales 
+
+
+Por regla general, cuanto más pequeño es el componente, más "tonto" debe ser
+
+Nivel	Tipo	Razón 
+
+Átomos: 100% Dumb
+Deben ser ultra-reutilizables
+Solo reciben props de estilo y texto.
+
+Moléculas: 95% Dumb
+Manejan lógica de UI (ej: abrir un dropdown)
+pero no lógica de negocio.
+
+Organismos: Híbrido
+Algunos son puros (Dumb)
+otros están conectados a un contexto (Smart) para ser autónomos.
+
+Plantillas: 100% Dumb
+Son esqueletos visuales.
+Solo pasan children o props a los huecos.
+
+Páginas: 100% Smart
+Son los Contenedores.
+Aquí se hace el fetch
+se llama a Redux
+se gestiona el estado.
+
+
+### Flujo de Datos: Atomic, dumb y smart
+
+1. La Página (Smart) obtiene los datos de la API.
+2. La Página los pasa hacia abajo a los Organismos y Moléculas (Dumb). 
+3. Los Átomos reciben las props finales (un string para un texto, una función para un click).
+
+##### Regla de Oro: Los Átomos y Moléculas nunca deberían saber que existe una API o un Global Store.
+Si un Button (Átomo) sabe que existe store.dispatch, ya no puedes usar ese botón en otro proyecto. Se ha vuelto "impuro".
+
+
+### Estructura de archivo
+
+```
+src/
+├── components/           # Todos estos son mayormente DUMB
+│   ├── atoms/            # Button, Input, Icon
+│   ├── molecules/        # SearchBar, FormField
+│   └── organisms/        # Header, Sidebar, UserTable
+├── pages/                # Todos estos son SMART
+│   ├── Home.jsx          # Llama al hook useHomeData()
+│   └── Dashboard.jsx     # Gestiona el estado de los widgets
+├── hooks/                # Aquí vive la "Inteligencia" (Smart Logic)
+├── styles/               # GlobalStyles y ThemeProvider
+└── services/             # Llamadas a APIs (Axios/Fetch)
+```
+
+Beneficio: 
+
+1. Reutilización: Puedes llevarte tu carpeta atoms a cualquier otro proyecto y funcionará igual.
+2. Testing: Los tests de los Átomos son sencillos (visuales), mientras que los tests de las Páginas se enfocan en los datos.
+3. Escalabilidad: Si el equipo crece, un desarrollador puede estar creando nuevos Átomos en Storybook mientras otro conecta las Páginas a la base de datos sin estorbarse.
+
+
+
+# Styled, BEM y Tokens
+
+1. Adiós a BEM (Nomenclatura automática)
+La razón principal por la que nació BEM fue para evitar que las clases de CSS chocaran entre sí (especificidad).
+Styled Components soluciona esto por defecto generando nombres de clase aleatorios y únicos (ej: sc-hSskS).
+
+BEM: Usa nombres largos como .button--large para evitar conflictos.
+Styled Components: Encapsula el estilo dentro del componente. Ya no necesitas llamar a una clase card__title, simplemente creas un componente llamado Title dentro de tu archivo Card
+
+El "espíritu" de BEM vive en las Props:
+Aunque no escribas nombres de clases BEM, usas la lógica de Modificadores a través de las props de React:
+
+```
+// En BEM: <button class="button button--large">
+// En Styled Components usamos Props:
+const Button = styled.button`
+  background: blue;
+  
+  /* Esto es el equivalente al "Modifier" de BEM */
+  ${props => props.large && `
+    padding: 20px;
+    font-size: 20px;
+  `}
+`;
+```
+
+
+2. Método ideal: Design Tokens + ThemeProvider
+Styled Components brilla cuando se usa con Design Tokens
+Es el método estándar para aplicaciones profesionales.
+
+En lugar de poner valores fijos en tus componentes, inyectas un objeto de "Tema" (tus tokens) en la raíz de la aplicación
+Esto permite que cualquier componente acceda a los colores, espaciados o fuentes oficiales de la marca
+
+```
+// 1. Tus Design Tokens
+const theme = {
+  colors: {
+    primary: '#007bff',
+    error: '#ff0000'
+  },
+  spacing: {
+    md: '16px'
+  }
+};
+
+// 2. Uso en el componente
+const Card = styled.div`
+  padding: ${props => props.theme.spacing.md};
+  border: 1px solid ${props => props.theme.colors.primary};
+`;
+```
+
+
+3. Component-Based Styling (Estilo Basado en Componentes)
+
+### Enfoque en Props: En lugar de cambiar clases CSS (.is-active), cambias el comportamiento visual basándote en las props de React (isActive={true}).
+
+### Colocación (Colocation): El estilo vive en el mismo archivo que el componente (o en uno muy cercano).
+No hay un archivo styles.css global gigante.
+
+### Extensión Dinámica: Puedes heredar estilos de un componente a otro fácilmente usando styled(BaseComponent).
+
+
+## Uso en Styled Components: BEM, TOKENS
+
+BEM: Como lógica. Los "Modifiers" se convierten en Props.
+Tokens: Indispensable. Para mantener la consistencia visual y facilitar el Dark Mode.
+Utility-First:	Rara vez. sto es más propio de Tailwind. En Styled Components se prefiere el estilo semántico
+
+
+##### Usar Design Tokens para los valores base (colores, sombras, gaps) y Props de React para manejar las variaciones visuales (los antiguos "modificadores" de BEM).
+
+
+## Ej Styled Components: props y tokens
+
+1. Tokens (El Tema)
+
+Definimos nuestro objeto de tema que contiene las decisiones de diseño.
+
+```
+// theme.js
+export const theme = {
+  colors: {
+    primary: '#4F46E5',
+    secondary: '#10B981',
+    danger: '#EF4444',
+    white: '#FFFFFF',
+    textMain: '#1F2937'
+  },
+  spacing: {
+    sm: '8px',
+    md: '16px',
+    lg: '24px'
+  },
+  borderRadius: {
+    round: '8px',
+    circle: '50%'
+  }
+};
+```
+
+
+2. Componente Styled con Props y Tokens
+
+Usamos una función dentro del template literal para acceder tanto a las props que le enviamos al componente como al theme inyectado.
+
+```
+import styled from 'styled-components';
+
+// Usamos "$" (Transient Props) para que la prop no se renderice en el HTML final
+export const StyledButton = styled.button`
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  
+  /* Acceso a TOKENS de espaciado */
+  border-radius: ${props => props.theme.borderRadius.round};
+  
+  /* Lógica de PROPS para el tamaño */
+  padding: ${props => props.$size === 'small' 
+    ? props.theme.spacing.sm 
+    : props.theme.spacing.md};
+
+  /* Lógica de PROPS para la variante de color */
+  background-color: ${props => {
+    switch (props.$variant) {
+      case 'secondary': return props.theme.colors.secondary;
+      case 'danger': return props.theme.colors.danger;
+      default: return props.theme.colors.primary;
+    }
+  }};
+
+  color: ${props => props.theme.colors.white};
+
+  &:hover {
+    filter: brightness(1.1);
+    transform: translateY(-1px);
+  }
+
+  &:disabled {
+    background-color: #D1D5DB;
+    cursor: not-allowed;
+  }
+`;
+```
+
+
+3. Implementación
+
+Para que esto funcione, debemos envolver nuestra aplicación con el ThemeProvider.
+
+```
+import { ThemeProvider } from 'styled-components';
+import { theme } from './theme';
+import { StyledButton } from './Button.styles';
+
+function App() {
+  return (
+    <ThemeProvider theme={theme}>
+      <div style={{ display: 'flex', gap: '10px', padding: '20px' }}>
+        
+        {/* Botón Primario (Default) */}
+        <StyledButton>
+          Enviar
+        </StyledButton>
+
+        {/* Botón de Peligro Pequeño */}
+        <StyledButton $variant="danger" $size="small">
+          Eliminar
+        </StyledButton>
+
+        {/* Botón Secundario Deshabilitado */}
+        <StyledButton $variant="secondary" disabled>
+          Guardando...
+        </StyledButton>
+
+      </div>
+    </ThemeProvider>
+  );
+}
+```
+
+Características:
+
+1. Transient Props ($variant): Al usar el símbolo $, Styled Components sabe que esa prop es solo para el estilo
+No debe intentar ponerla en la etiqueta <button> del DOM (lo que causaría un error de consola).
+
+2. Escalabilidad: Si mañana el cliente pide que los bordes sean más redondeados
+Solo cambias theme.borderRadius.round en un archivo y todos tus botones se actualizan.
+
+3. Legibilidad: El componente es "tonto". Solo recibe instrucciones visuales y las ejecuta
+No hay condicionales de clases de CSS mezcladas con lógica de React.
+
+
+
+## Lógica de Props
+
+La lógica de las props y el objeto theme funcionan en dos "canales" diferentes
+
+la función ${props => ...} es un puente que recibe una maleta llena de información.
+
+1. Compartimento theme: Contiene los Design Tokens que inyectaste globalmente con el ThemeProvider
+
+2. Compartimento de Props: Contiene las variables que le pasaste directamente al componente (como $variant, $size, disabled, etc.).
+
+
+La lógica se activa cada vez que el componente se renderiza
+
+Styled Components ejecuta la función y mira qué hay dentro de la maleta props.
+
+
+#### Acceso directo al Theme (Tokens)
+
+Aquí no estamos condicionando nada, solo "leyendo" un valor fijo del catálogo
+
+```
+// Se activa porque el componente necesita saber qué color usar de la paleta global
+color: ${props => props.theme.colors.white};
+```
+
+
+#### Lógica basada en Props (Modificadores)
+
+Creas la lógica
+
+El componente mira si la prop existe y, dependiendo de su valor, decide qué hacer.
+
+```
+// Se activa comparando el valor que le pasaste al componente ($variant)
+background-color: ${props => props.$variant === 'danger' 
+    ? props.theme.colors.danger 
+    : props.theme.colors.primary};
+```
+
+
+Flujo de ejecución
+
+1. Llamada: escribes <StyledButton $variant="danger" />.
+
+2. Inyección: Styled Components toma ese $variant="danger" y le suma el objeto theme que viene del ThemeProvider.
+
+3. Cálculo: Se ejecutan todas las funciones ${...} dentro de tu CSS
+Qué hay en props.$variant? Hay "danger".
+Qué hay en props.theme.colors.danger? Hay "#EF4444".
+
+4. Resultado: El CSS final que llega al navegador es background-color: #EF4444;.
+
+
+Definición y cambio
+
+props.theme:
+ThemeProvider (Global).
+Cuando cambias de tema (ej: Dark Mode).
+
+props.anyValue:
+dev, al usar el componente (Local).
+Cuando quieres que ese botón específico se vea distinto a los demás.
+
+
+#### Desestructurar props
+
+Para no escribir props. 
+
+```
+const StyledButton = styled.button`
+  /* Sacamos 'theme' y '$variant' de la maleta 'props' */
+  background: ${({ theme, $variant }) => 
+    $variant === 'danger' ? theme.colors.danger : theme.colors.primary
+  };
+`;
+```
+
+
+
+
+## Prácticas de Styled en un componente
+
+1. Separación de Archivos (El patrón .styles.js)
+Nunca definas tus Styled Components en el mismo archivo que la lógica de React si el componente tiene más de 20 líneas.
+Mal: UserCard.jsx tiene 50 líneas de CSS arriba y luego la lógica abajo.
+Bien: Crea un archivo hermano llamado UserCard.styles.js.
+
+```
+UserCard/
+├── UserCard.jsx        (Lógica y Estructura)
+├── UserCard.styles.js  (Solo Estilos)
+└── UserCard.test.jsx   (Tests)
+```
+
+
+2. Uso de "Transient Props" ($)
+Si pasas una prop a un Styled Component que solo sirve para el CSS, ponle un prefijo $
+Evita que React intente renderizar esa prop en el HTML real (lo que ensucia el DOM y lanza advertencias en la consola).
+
+```
+// BIEN: El navegador solo verá <div class="sc-xyz"></div>
+const Container = styled.div`
+  opacity: ${props => (props.$isLoading ? 0.5 : 1)};
+`;
+
+// Uso:
+<Container $isLoading={true} />
+```
+
+
+3. Nomenclatura Semántica (Evita el "Wrapper")
+Evita llamar a todo Wrapper, Container1, Container2
+Usa nombres que describan qué es el elemento, no qué hace visualmente.
+
+Nombres Semánticos:
+CardLayout
+CardBody
+Username
+ErrorMessage
+
+
+4. Agrupar Estilos con el Objeto S
+
+Para evitar colisiones de nombres y saber rápidamente qué es un componente de React y qué es un Styled Component, muchos equipos usan el objeto S.
+
+En UserCard.styles.js:
+
+```
+import styled from 'styled-components';
+
+export const S = {
+  Card: styled.article` ... `,
+  Title: styled.h2` ... `,
+  Avatar: styled.img` ... `
+};
+```
+
+En UserCard.jsx:
+
+```
+import { S } from './UserCard.styles';
+
+function UserCard() {
+  return (
+    <S.Card>
+      <S.Avatar src="..." />
+      <S.Title>Juan Pérez</S.Title>
+    </S.Card>
+  );
+}
+```
+
+Esto hace que sea obvio que todo lo que empieza con S. es puramente visual.
+
+
+5. Single Responsibility
+No intentes que un solo Styled Component haga todo mediante 20 props
+Si un componente cambia demasiado, es mejor crear dos componentes distintos.
+
+Mal: Un botón que tiene props $isLogin, $isHeader, $isFooter, $isAdmin.
+Bien: Crea componentes base y extiéndelos
+
+```
+const Button = styled.button` ... styles base ... `;
+
+// Extender estilos
+const AdminButton = styled(Button)`
+  border: 2px solid gold;
+`;
+```
+
+
+6. Manejo de estados complejos con CSS Helper
+
+Si tienes que aplicar muchos estilos basados en una sola prop, no uses 10 funciones ${props => ...}. Usa el helper css para agruparlos.
+
+```
+import styled, { css } from 'styled-components';
+
+const Banner = styled.div`
+  padding: 10px;
+  
+  ${props => props.$variant === 'warning' && css`
+    background: yellow;
+    color: black;
+    border: 1px solid orange;
+    font-weight: bold;
+  `}
+`;
+```
+
+
+7. Evitar la anidación profunda
+Aunque Styled Components permite anidar como SASS (& div > p), abusa de ello rompe el propósito de los componentes.
+Si necesitas darle estilo a un p dentro de un div, convierte ese p en su propio Styled Component en lugar de seleccionarlo desde el padre.
+
+
+## Styled Completo
+
+Dumb Components, Styled Components, Feature-Based Architecture
+
+1. Archivo de Estilos: UserCard.styles.js
+
+Aplicamos el objeto S, Transient Props ($) y el uso de Tokens (asumiendo que vienen del theme).
+
+```
+import styled, { css } from 'styled-components';
+
+export const S = {
+  Card: styled.article`
+    background: ${({ theme }) => theme.colors.white};
+    border-radius: ${({ theme }) => theme.borderRadius.round};
+    padding: ${({ theme }) => theme.spacing.lg};
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: ${({ theme }) => theme.spacing.md};
+    border: 2px solid transparent;
+
+    /* Lógica de Props: Si es 'active', resaltamos el borde */
+    ${({ $isActive, theme }) => $isActive && css`
+      border-color: ${theme.colors.primary};
+      background: #f0f7ff;
+    `}
+  `,
+
+  Avatar: styled.img`
+    width: 80px;
+    height: 80px;
+    border-radius: ${({ theme }) => theme.borderRadius.circle};
+    object-fit: cover;
+    border: 3px solid ${({ theme }) => theme.colors.secondary};
+  `,
+
+  Info: styled.div`
+    text-align: center;
+  `,
+
+  Name: styled.h3`
+    margin: 0;
+    color: ${({ theme }) => theme.colors.textMain};
+    font-size: 1.2rem;
+  `,
+
+  Role: styled.span`
+    color: #666;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  `,
+
+  Button: styled.button`
+    background: ${({ theme }) => theme.colors.primary};
+    color: white;
+    border: none;
+    padding: ${({ theme }) => `${theme.spacing.sm} ${theme.spacing.md}`};
+    border-radius: 4px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+
+    &:hover {
+      opacity: 0.9;
+    }
+  `
+};
+```
+
+
+2. Componente UserCard.jsx: dumb
+
+No hay lógica de negocio, solo recibe datos y funciones por props.
+
+```
+import { S } from './UserCard.styles';
+
+// Es un "Dumb Component": No sabe nada de APIs ni de Global State
+export function UserCard({ name, role, imageUrl, isActive, onProfileClick }) {
+  return (
+    <S.Card $isActive={isActive}>
+      <S.Avatar src={imageUrl} alt={`Foto de ${name}`} />
+      
+      <S.Info>
+        <S.Name>{name}</S.Name>
+        <S.Role>{role}</S.Role>
+      </S.Info>
+
+      <S.Button onClick={onProfileClick}>
+        Ver Perfil
+      </S.Button>
+    </S.Card>
+  );
+}
+```
+
+
+3. Contenedor UserList.jsx: smart
+
+Vive en un nivel superior y es el que tiene la "inteligencia
+
+```
+import { UserCard } from './UserCard';
+import { useUsers } from '../../hooks/useUsers'; // Lógica externa (Smart)
+
+export function UserList() {
+  const { users, loading, selectUser, activeUserId } = useUsers();
+
+  if (loading) return <p>Cargando usuarios...</p>;
+
+  return (
+    <section style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px' }}>
+      {users.map(user => (
+        <UserCard
+          key={user.id}
+          name={user.fullName}
+          role={user.jobTitle}
+          imageUrl={user.avatar}
+          isActive={user.id === activeUserId}
+          onProfileClick={() => selectUser(user.id)}
+        />
+      ))}
+    </section>
+  );
+}
+```
+
+Legibilidad extrema: El archivo .jsx se lee casi como lenguaje natural.
+
+Mantenibilidad: Si quieres cambiar el diseño del botón, vas directo a S.Button en el archivo de estilos.
+
+Encapsulamiento: El uso de S. nos asegura que no confundiremos un componente de UI con un componente de lógica.
+
+Resiliencia: Si la API cambia el campo jobTitle a position, solo actualizas el Smart Component (o un mapper), y el UserCard (Dumb) sigue funcionando perfecto.
+
+
+
+
+## Syled Simple
+
+1. Archivo de estilos (Alert.styles.js)
+
+Definimos el "look" de la alerta. 
+Usamos $type para decidir el color.
+
+```
+import styled from 'styled-components';
+
+export const StyledAlert = styled.div`
+  padding: 15px 20px;
+  border-radius: 8px;
+  border: 1px solid;
+  font-family: sans-serif;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  /* Lógica simple: si la prop $type es 'error', usa rojo. Si no, verde. */
+  background-color: ${props => props.$type === 'error' ? '#fde8e8' : '#eafaf1'};
+  color: ${props => props.$type === 'error' ? '#c81e1e' : '#2d7a4d'};
+  border-color: ${props => props.$type === 'error' ? '#f8b4b4' : '#bc9'};
+`;
+
+export const CloseButton = styled.button`
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  color: inherit; /* Hereda el color del padre (rojo o verde) */
+`;
+```
+
+
+2. Componente React (Alert.jsx)
+
+```
+import { StyledAlert, CloseButton } from './Alert.styles';
+
+export function Alert({ message, type = 'success', onClose }) {
+  return (
+    <StyledAlert $type={type}>
+      <span>{message}</span>
+      {onClose && <CloseButton onClick={onClose}>×</CloseButton>}
+    </StyledAlert>
+  );
+}
+```
+
+
+3. Uso en app
+
+Usar el mismo componente para distintas situaciones solo cambiando una palabra.
+
+```
+function App() {
+  return (
+    <div style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+      
+      {/* Alerta de éxito (default) */}
+      <Alert message="¡Cuenta creada con éxito!" />
+
+      {/* Alerta de error */}
+      <Alert 
+        message="Hubo un problema al enviar el formulario." 
+        type="error" 
+        onClose={() => alert('Cerrado')}
+      />
+      
+    </div>
+  );
+}
+```
+
+
+
+
+# Storybook 
+
+Desarrollar componentes de UI (interfaz de usuario) de manera aislada
+Con Atomic Design y Dumb, Storybook es el "catálogo" o "showroom" donde esos componentes viven y se prueban antes de ser usados en la aplicación real.
+
+### Aislamiento con Storybook
+
+Normalmente, para ver un botón que solo aparece en el tercer paso de un formulario
+Tendrías que levantar toda tu app, loguearte y navegar hasta ese paso.
+
+Con Storybook, puedes renderizar ese botón (o cualquier componente) de forma totalmente independiente, en una URL separada, sin necesidad de ejecutar el resto de la lógica de la aplicación o las APIs.
+
+
+### Story
+
+Representa un estado específico de un componente
+Ejemplo, para un componente de Botón, podrías tener las siguientes historias:
+
+Botón Primario.
+Botón Deshabilitado.
+Botón con icono.
+Botón en estado de carga.
+
+#### Ej: Button.stories.jsx
+
+```
+import { Button } from './Button';
+
+export default {
+  title: 'Atoms/Button', // Dónde aparecerá en el menú lateral
+  component: Button,
+};
+
+// Historia del botón primario
+export const Primary = {
+  args: {
+    label: 'Click aquí',
+    variant: 'primary',
+  },
+};
+
+// Historia del botón de error
+export const Danger = {
+  args: {
+    label: 'Eliminar',
+    variant: 'danger',
+  },
+};
+```
+
+
+Interfaz de Storybook:
+
+Ejecutar Storybook: npm run storybook
+Se abre una página web local
+
+Sidebar:Organiza tus componentes siguiendo tu estructura de Atomic Design.
+
+Canvas (Centro): Muestra el componente renderizado.
+
+Controls (Abajo): Un panel interactivo donde puedes cambiar las props del componente en tiempo real
+(cambiar el texto, el color, activar un booleano) para ver cómo reacciona la UI sin tocar el código.
+
+
+Documentación Viva:	El equipo de diseño y otros desarrolladores pueden ver qué componentes ya existen y cómo se usan.
+Testing Visual: Permite detectar errores visuales rápidamente en diferentes estados o tamaños de pantalla (Responsive).
+Desarrollo más rápido: No dependes de que el Backend esté listo. Puedes crear toda la UI con datos "mock" (falsos).
+Colaboración: Puedes publicar tu Storybook (con herramientas como Chromatic o Vercel) para que los diseñadores revisen los componentes sin necesidad de instalar el entorno de desarrollo
+
+
+Storybook + Dumb:
+Funciona mejor con Dumb Components porque estos solo dependen de props.
+Intentar poner un Smart Component en Storybook es difícil porque tendrías que simular (mockear) toda la API, el Contexto y el Global Store dentro de Storybook.
+
+La práctica es: Desarrolla tus Átomos, Moléculas y Organismos en Storybook
+Luego conéctalos a la lógica (Smart) en tu aplicación de React.
+
+
+Flujo: 
+
+1. Creas un Átomo (ej: un Input).
+2. Creas su archivo de Stories.
+3. Pruebas todos los estados en Storybook (vacío, error, completado).
+4. Cuando el diseño es perfecto, lo importas en tu Página (Smart Component) y le pasas los datos reales.
+
+
+Arquitectura Limpia:
+
+Dumb Components: Protagonistas, componentes que solo dependen de props.
+Atomic Design: Storybook hereda esta estructura para organizar el menú lateral (Atoms, Molecules, Organisms).
+ThemeProvider: Se puede configurar para que Storybook aplique tu tema global a todos los componentes.
+Smart Components: Son difíciles de llevar a Storybook porque requieren "mockear" APIs y estados complejos.
+
+
+### Setup Storybook 
+
+En un proyecto comenzado
+
+```
+npx storybook@latest init
+```
+
+Detectará tu configuración, instalará las dependencias y creará una carpeta de ejemplos para que veas cómo funciona.
+
+
+### Dependency
+
+devDependency:
+Cuando construyes tu aplicación para producción (npm run build)
+El empaquetador (Vite o Webpack) ignora por completo los archivos .stories.jsx y la configuración de Storybook
+
+En Desarrollo: Usas Storybook para crear y probar componentes de forma aislada
+En Producción: Solo se incluye el código de los componentes reales que el usuario necesita
+
+package.json
+
+```
+{
+  "name": "mi-proyecto-react",
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "styled-components": "^6.0.0"
+  },
+  "devDependencies": {
+    "@storybook/addon-essentials": "^7.0.0",
+    "@storybook/react": "^7.0.0",
+    "@storybook/react-vite": "^7.0.0",
+    "storybook": "^7.0.0",
+    "vitest": "^0.34.0"
+  }
+}
+```
+
+
+Despliegue:
+
+No va dentro de la app: desplegar Storybook como una página web estática independiente
+##### Para que los diseñadores o clientes puedan ver el catálogo de componentes en una URL (como design-system.tu-empresa.com). 
+Para esto, Storybook tiene su propio comando de construcción:
+
+```
+npm run build-storybook
+```
+
+Genera una carpeta (normalmente storybook-static)
+Contiene solo el HTML/JS/CSS necesario para ver el catálogo
+totalmente separado de tu aplicación principal.
+
+
+### Instalación Storybook 
+
+```
+npm install -D storybook
+npm install --save-dev storybook
+```
+
+Si simplemente haces npm install storybook, npm la colocará en la sección de dependencies (producción).
+Consecuencias negativas:
+
+1. Peso del Bundle
+El empaquetador podría intentar incluir partes de esa librería en el código final que envías al usuario, haciendo que tu web cargue más lento.
+
+2. Confusión en el equipo
+Otros desarrolladores verán Storybook mezclado con React o Styled Components y no sabrán qué es esencial y qué es herramienta de apoyo.
+
+3. Errores en el Servidor (CI/CD)
+Muchos servidores de despliegue (como Vercel o AWS) ejecutan npm install --production.
+Si Storybook está en dependencies, el servidor perderá tiempo instalándolo aunque no lo necesite para servir la web.
+
+
+#### Mover librería de dev a devDepen
+Si ya instalaste algo mal, no hace falta borrarlo a mano del package.json.
+Puedes simplemente volver a ejecutar el comando con el flag correcto:
+
+```
+npm install -D nombre-de-la-libreria
+```
+
+
+#### Librerías en Producción
+
+Cuando haces: npm install, al descargar un proyecto
+instala todas las librerías
+
+Si quieres simular cómo se vería en producción
+(solo lo esencial), puedes ejecutar:
+
+```
+npm install --production
+```
+
+Esto ignorará Storybook, Vitest y todo lo que esté en devDependencies.
+
+
+
+
+
+# Clean Architecture 
+
+Busca separar la lógica de negocio de los detalles de implementación
+Clean Architecture propone que si decides cambiar React por otro framework, o Axios por Fetch
+La lógica central de tu aplicación debería permanecer intacta.
+
+1. Las Capas de la Cebolla
+La regla de oro es la Regla de Dependencia: las dependencias solo pueden apuntar hacia adentro
+Las capas internas no saben nada de las externas.
+
+### 1. Capa de Dominio: Corazón
+Capa más interna, Contiene las reglas de negocio puras
+#### Entities: Interfaces o clases que definen tus objetos de negocio (ej: User, Product).
+#### Use Cases: Acciones específicas que el usuario puede realizar (ej: LoginUser, AddToCart). Lógica pura, sin React.
+
+### 2. Capa de Adaptadores (Data / Infrastructure)
+Donde conectas tu lógica con el mundo exterior.
+#### Repositories: Define cómo se obtienen los datos (pero no de dónde).
+#### Mappers: Funciones que transforman la respuesta "sucia" de una API en una entidad "limpia" de tu dominio.
+
+### 3. Capa de Presentación (React)
+Aquí es donde vive el framework
+Es la capa más externa y "volátil".
+
+#### Components: (Dumb components).
+#### Hooks / Controllers: (Smart components) que ejecutan los Use Cases.
+
+
+2. Estructura de Carpetas
+La carpeta src se organiza por capas, no por tipo de archivo:
+
+```
+src/
+├── core/                 # Capa de Dominio
+│   ├── entities/         # Interfaces (User.ts)
+│   └── use-cases/        # Lógica pura (LoginUser.ts)
+├── data/                 # Capa de Infraestructura
+│   ├── repositories/     # Implementación de llamadas API
+│   ├── mappers/          # Transformadores de datos
+│   └── sources/          # Axios instances, Firebase, etc.
+├── presentation/         # Capa de React
+│   ├── components/       # UI (Atoms, Molecules)
+│   ├── hooks/            # Smart Logic / Controllers
+│   └── pages/            # Vistas principales
+```
+
+
+### Mapper
+##### Un pilar de la Clean Architecture es que tu UI no debe adaptarse a la API; la API debe adaptarse a tu UI.
+Problema: La API devuelve user_first_name, pero tu app usa firstName
+
+Solución (Mapper):
+
+```
+// data/mappers/userMapper.js
+export const userMapper = (apiUser) => ({
+  id: apiUser.id,
+  firstName: apiUser.user_first_name, // Mapeo de nombre
+  email: apiUser.contact_email,
+});
+```
+
+
+### Data Flow
+
+1. UI (Component): El usuario hace clic en "Comprar".
+2. Hook (Controller): Llama al Use Case ExecutePurchase.
+3. Use Case (Domain): Valida las reglas de negocio (¿tiene saldo?). Si todo ok, llama al Repository.
+4. Repository (Data): Hace el fetch a la API, recibe la respuesta "sucia".
+5. Mapper: Limpia la respuesta.
+6. UI: Recibe el resultado final y se actualiza.
+
+
+Ventajas y Desventajas:
+Independencia del Framework: Podrías mover tus Use Cases a React Native o Node.js fácilmente.
+Testeabilidad: Puedes testear tu lógica de negocio (Use Cases) sin renderizar componentes.
+Mantenimiento: Los cambios en la API no rompen la UI.
+
+Boilerplate: Requiere crear más archivos y carpetas desde el inicio.
+Curva de aprendizaje: Es más difícil de entender para desarrolladores junior.
+Overkill: No se recomienda para aplicaciones pequeñas o prototipos rápidos.
+
+
+
+## Arquitectura para para aplicaciones pequeñas o prototipos rápidos
+Para proyectos pequeños, MVPs o prototipos rápidos, la Clean Architecture suele ser contraproducente porque añade demasiada ceremonia y archivos (boilerplate) para una lógica que aún está cambiando
+Se recomiendan arquitecturas más planas y ágiles que priorizan la velocidad de desarrollo sin sacrificar totalmente el orden.
+
+1. Feature-Based Architecture (Arquitectura por Funcionalidades)
+
+En lugar de separar por "tipo de archivo" (capas de cebolla), separas por módulos de negocio
+Es la arquitectura más recomendada por la comunidad de React hoy en día.
+
+##### Cada carpeta dentro de features/ es un pequeño "micro-mundo" que contiene todo lo necesario para esa funcionalidad
+
+src/features/auth/: Contiene sus propios componentes, hooks, servicios y tipos.
+src/features/shopping-cart/: Ídem
+
+Si decides borrar la funcionalidad de "Comentarios", solo borras una carpeta. No tienes que andar buscando archivos repartidos por todo el proyecto.
+
+
+2. Patrón "Fat Hooks, Slim Components"
+
+Versión simplificada de los Smart/Dumb components.
+
+Slim Components: El componente .jsx solo contiene el HTML (JSX) y estilos.
+Fat Hooks: Toda la lógica (estado, llamadas a API, validaciones) vive en un Custom Hook que lleva el mismo nombre que el componente.
+
+```
+// ProductCard.jsx (Slim)
+const { product, addToCart } = useProduct(id);
+return <button onClick={addToCart}>{product.name}</button>;
+
+// useProduct.js (Fat Hook)
+// Aquí va toda la "suciedad" de la lógica.
+```
+
+
+3. Arquitectura Basada en Librerías de Estado del Servidor
+
+Para prototipos, el 80% de la complejidad es manejar los datos que vienen del servidor (loading, error, caché).
+##### Si usas una librería como TanStack Query (React Query) o SWR, puedes eliminar casi toda la capa de "Data" y "Repositories" de la Clean Architecture
+Estas librerías gestionan la caché por ti, permitiéndote llamar a la API directamente desde tus Hooks con confianza
+
+
+4. Carpetas "Agile"
+
+Para un prototipo rápido, esta estructura es el equilibrio perfecto entre orden y velocidad
+
+```
+src/
+├── components/     # Componentes compartidos (Botones, Inputs)
+├── features/       # Lógica por módulos (Login, Dashboard, Profile)
+│   └── login/
+│       ├── LoginView.jsx
+│       ├── useLogin.js
+│       └── loginService.js
+├── hooks/          # Hooks globales (useAuth, useTheme)
+├── services/       # Clientes de API (axiosInstance.js)
+└── utils/          # Funciones puras de ayuda
+```
+
+
+### Clean Architecture vs Feature-Based
+
+Tiempo de Setup:
+Alto (horas/días)
+Bajo (minutos)
+
+Curva de Aprendizaje:
+Alta
+Muy Baja
+
+Facilidad de Cambio:
+Rígida pero segura
+Muy flexible
+
+Ideal: 
+Apps bancarias, Enterprise
+Startups, MVPs, Prototipos
+
+
+### Prototipos: 'Colocation'
+
+Colocation dice: "Mantén las cosas lo más cerca posible de donde se usan".
+
+##### Si un componente solo se usa dentro de la página de Profile, no lo pongas en src/components/.
+Ponlo dentro de src/features/profile/components/.
+Solo mueve algo a la carpeta global cuando realmente veas que se está repitiendo en 3 o más lugares
+No abstraigas antes de tiempo.
+
+
+
+
+# Feature-Based Architecture
+
+Una de las formas más eficientes de organizar proyectos en React
+##### Agrupa el código según "lo que hace" (el dominio de negocio) en lugar de "qué tipo de archivo es".
+
+En una arquitectura tradicional (basada en capas o tipos), tienes carpetas como /components, /hooks y /services que crecen hasta volverse inmanejables.
+En la basada en funciones, todo lo relacionado con una característica vive en un solo lugar.
+
+
+1. Capas vs. Funcionalidades
+
+Capas: Si quieres cambiar algo en el "Carrito", tienes que abrir 5 carpetas distintas en tu editor para encontrar el componente, el hook, el servicio y los estilos.
+Por Funcionalidades: Abres la carpeta features/shopping-cart y ahí tienes todo lo necesario.
+
+
+2. Estructura
+
+```
+src/
+├── components/           # Componentes globales y genéricos (Botones, Inputs)
+├── features/             # EL CORAZÓN DE LA APP
+│   ├── auth/             # Módulo de Autenticación
+│   │   ├── api/          # Llamadas al backend (login, register)
+│   │   ├── components/   # LoginForm, RegisterForm
+│   │   ├── hooks/        # useAuth, useUser
+│   │   ├── types/        # Interfaces de TypeScript
+│   │   └── index.js      # Punto de entrada (Public API)
+│   ├── product-catalog/  # Módulo de Catálogo
+│   └── shopping-cart/    # Módulo de Carrito
+├── hooks/                # Hooks globales (useTheme, useLocalStorage)
+├── pages/                # Vistas que ensamblan las features
+└── utils/                # Funciones de ayuda globales
+```
+
+
+3. Public API: index.js
+
+Regla de oro: Cada carpeta de feature debe tener un archivo index.js.
+##### Solo lo que se exporta en ese archivo puede ser usado fuera de la carpeta.
+
+Ej: Si la feature/auth tiene 10 componentes internos pero solo exportas el LoginForm en el index.js,
+evitas que otros desarrolladores importen cosas privadas de ese módulo
+Mantiene el código desacoplado y fácil de refactorizar.
+
+```
+// src/features/auth/index.js
+export * from './components/LoginForm';
+export * from './hooks/useUser';
+// Los componentes internos o utilidades de auth NO se exportan aquí.
+```
+
+### Feature-Based es lo suficientemente flexible para permitirte prototipar rápido sin crear capas de abstracción innecesarias (como mappers o use-cases) a menos que realmente los necesites.
+##### No anides features dentro de otras features
+##### Si el shopping-cart necesita algo de product-catalog, impórtalo a través de su Public API, pero no metas una carpeta dentro de la otra
+##### Si dos features comparten mucho código, quizás ese código deba extraerse a la carpeta global src/components o src/hooks.
+
+
+
+
+
+
+
+
+
+
+
+
+# Code 
+
+## Arq
+
+Data: 
+
+person:
+name, surname, profession, pic, bio, proj/links 
+
+proj:
+yourPortfolio, aiState...
+
+widget:
+date
+time
+wheater
+
+person has projects
+
+```
+				App
+(widget)		(proj)			(person)
+date			ProjectsInfo	bio
+time				links		pic
+wheater			 	SocialMedia
+```
+
+
+
+```
+ src/
+1.		features
+			profile
+				components
+					profile.jsx
+				hooks
+				profile.js
+			widget
+				components
+				widget.js				
+2. shared
+		components
+			btn
+			main 
+			section
+			aside
+			article
+			footer
+			time
+			img
+			link
+			embed
+			pic
+			source
+		hooks
+		utils
+		
+		
+3. store/globalState
+
+4. api
+
+5. pages
+
+6. style
+		theme
+		global
+7. app.js
+``` 
+
+
+dumb, smart, hook:
+hook -> rtn obj/estados
+smrt -> rtn dumb le pasa obj/custom hook
+dumb -> rtn elemHtml/presen usando info smrt
+
+
+comp components: 
+app: (div)
+wid (art) , proj (main), pers (aside)
+
+pers: 
+pic/img
+bio(p)
+
+proj:
+p/a/links
+icons/a/links
+
+wid:
+art:
+date, time, wheater
+
+dumb: children (span, p, li, h1..., a)
+
 
 
 
