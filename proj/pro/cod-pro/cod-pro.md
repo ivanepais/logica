@@ -2377,12 +2377,6 @@ function App() {
 
 
 
-
-## Código atoms
-
-
-
-
 # TypeScript
 
 Escribir contratos al principio parece más lento porque debes ser específico, pero evita que todo se derrumbe cuando el proyecto crece.
@@ -2529,4 +2523,1594 @@ Render (JSX): El return.
 4. Estilos (si no van en archivo aparte): Al final del archivo
 
 
+
+# Elementos 
+
+## href, link, a
+
+Tienen que ver con conectar archivos o páginas
+
+<a>: enlace interactivo
+crea hipervínculos
+Es lo que el usuario ve y en lo que hace clic para ir a otra parte.
+Navegar entre páginas web, secciones de la misma página o descargar archivos.
+
+```
+<a href="https://www.google.com">Ir a Google</a>
+```
+
+href: dirección
+atributo (prop)/Hypertext Reference
+destino: Le dice al navegador a qué dirección exacta debe ir.
+Se usa dentro de las etiquetas <a> y <link>.
+Sin el href, un enlace no sabría a dónde llevarte.
+
+
+<link>: conexión interna
+no es clicable para el usuario
+Se coloca casi siempre dentro del <head> de tu código HTML.
+relación entre el documento actual y un recurso externo.
+Vincular hojas de estilo (CSS)
+añadir el icono de la pestaña (favicon)
+fuentes de Google.
+
+```
+<link rel="stylesheet" href="estilos.css">
+```
+
+
+
+# Arq
+
+Data: 
+
+person:
+name, surname, profession, pic, bio, proj/links 
+
+proj:
+yourPortfolio, aiState...
+
+widget:
+date
+time
+wheater
+
+person has projects
+
+```
+				App
+(widget)		(proj)			(person)
+date			ProjectsInfo	bio
+time				links		pic
+wheater			 	SocialMedia
+```
+
+
+```
+ src/
+1.		features
+			profile
+				components
+					profile.jsx
+				hooks
+				profile.js
+			widget
+				components
+				widget.js				
+2. shared
+		components
+			btn
+			main 
+			section
+			aside
+			article
+			footer
+			time
+			img
+			link
+			embed
+			pic
+			source
+		hooks
+		utils
+		
+		
+3. store/globalState
+
+4. api
+
+5. pages
+
+6. styles
+		theme
+		global
+7. provider
+8. app.js
+``` 
+
+
+dumb, smart, hook:
+hook -> rtn obj/estados
+smrt -> rtn dumb le pasa obj/custom hook
+dumb -> rtn elemHtml/presen usando info smrt
+
+
+comp components: 
+app: (div)
+wid (art) , proj (main), pers (aside)
+
+pers: 
+pic/img
+bio(p)
+
+proj:
+p/a/links
+icons/a/links
+
+wid:
+art:
+date, time, wheater
+
+dumb: children (span, p, li, h1..., a)
+
+
+Component:
+
+```
+src/components/Button/
+├── index.ts              // Archivo de barril (exporta todo)
+├── Button.tsx            // Solo la estructura JSX y conexión
+├── Button.styles.ts      // Estilos (Styled Components)
+├── Button.types.ts       // Interfaces y Types de TS
+└── Button.test.ts        // Pruebas unitarias
+```
+
+
+
+
+Providers:
+
+1. AppProviders.js
+
+```
+// src/providers/AppProviders.js
+import React from 'react';
+import { ThemeProvider } from 'styled-components';
+import { lightTheme } from '../styles/theme';
+import { GlobalStyle } from '../styles/GlobalStyle';
+
+// 'children' representa a toda tu aplicación (App.js)
+const AppProviders = ({ children }) => {
+  return (
+    <ThemeProvider theme={lightTheme}>
+      <GlobalStyle />
+      {/* Aquí podrías añadir más como <AuthProvider> o <CartProvider> */}
+      {children}
+    </ThemeProvider>
+  );
+};
+
+export default AppProviders;
+```
+
+2. Envolvemos la App (index.js)
+
+Punto de entrada, antes de renderizar la App, asegúrate de que tenga todos estos servicios disponibles
+
+```
+// src/index.js
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import App from './App';
+import AppProviders from './providers/AppProviders';
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+
+root.render(
+  <AppProviders>
+    <App />
+  </AppProviders>
+);
+```
+
+
+
+theme provider:
+
+```
+import { ThemeProvider } from 'styled-components';
+import { lightTheme } from '../styles/theme';
+import { GlobalStyle } from '../styles/GlobalStyle';
+import { Button } from './components/Button';
+
+function App() {
+  return (
+    // 3. Envolver la aplicación y pasar el objeto como prop 'theme'
+    <ThemeProvider theme={defaultTheme}>
+      <GlobalStyles /> {/* Asegúrate de que los estilos globales usan el tema */}
+      
+      {/* Todo lo que esté aquí dentro tiene acceso al tema */}
+      <Router /> 
+    </ThemeProvider>
+  );
+}
+```
+
+
+default theme:
+
+theme.js:
+
+```
+export const defaultTheme = {
+  colors: {
+    primary: '#3b82f6',
+    secondary: '#64748b',
+    white: '#ffffff',
+  },
+  spacing: {
+    padding: '12px 24px',
+    borderRadius: '8px',
+  },
+  shadows: {
+    button: '0 4px 6px rgba(0, 0, 0, 0.1)',
+  }
+};
+```
+
+
+atom:
+
+```
+// Button.js
+import styled from 'styled-components';
+
+export const Button = styled.button`
+  /* No hay importaciones de archivos de estilo aquí */
+  background-color: ${props => props.theme.colors.primary};
+`;
+```
+
+
+barril: 
+
+```
+// src/components/index.js
+
+export { Button } from './Button';
+export { Title } from './Title';
+export { Card } from './Card';
+```
+
+Importación limpia
+Cualquier parte de tu aplicación, puedes importar todo lo que necesites en una sola línea:
+
+```
+// src/App.js
+
+import { Button, Title, Card, Input } from './components';
+```
+
+Ej con carpeta styles
+
+```
+// src/styles/index.js
+export { lightTheme, darkTheme } from './theme';
+export { GlobalStyle } from './GlobalStyle';
+```
+
+Y en tu AppProviders.js lo usarías así:
+
+```
+import { lightTheme, GlobalStyle } from '../styles';
+```
+
+
+
+# Código
+
+```
+ src/
+1.		features
+			profile
+				components
+					profile.jsx
+				hooks
+				profile.js
+			widget
+				components
+				widget.js				
+2. shared
+		components
+		
+			atoms
+				btn
+				main 
+				section
+				aside
+				article
+				footer
+				time
+				img
+				link
+				embed
+				pic
+				source
+			hooks
+			utils
+		
+		
+3. store/globalState
+
+4. api
+
+5. pages
+
+6. styles
+		theme
+		global
+7. app.js
+``` 
+
+
+## atoms
+
+
+
+
+
+# Testing
+
+1. Unit Testing
+
+Unitarias:
+Asegurar que la función, dado un input, produce el output correcto o el efecto secundario esperado.
+
+Mocks, Spies y Stubs:
+Mocks: Objetos falsos que reemplazan dependencias externas (ej. llamadas a APIs, acceso a bases de datos) para aislar la unidad bajo prueba.
+Spies: Observadores que envuelven una función existente para rastrear si fue llamada, cuántas veces y con qué argumentos.
+Uso de jest.fn(), jest.mock(), y jest.spyOn().
+
+Setup y Teardown:
+Uso de funciones de hook (beforeAll, beforeEach, afterEach, afterAll) para inicializar y limpiar el estado antes y después de las pruebas.
+
+
+2. Integration Testing
+Probar la interacción entre dos o más unidades (ej. un controlador y un servicio, un componente y una tienda de estado).
+
+Integración de Servicios (Back-End):
+Probar endpoints de API utilizando herramientas como supertest para simular solicitudes HTTP (GET, POST, etc.) y verificar las respuestas.
+Trabajar con una base de datos de pruebas separada.
+
+Integración de Componentes (Front-End):
+Probar cómo interactúan componentes hermanos o padre-hijo (ej. un formulario que pasa datos a un botón).
+Simular el rendering y eventos del usuario.
+
+
+3. E2E
+
+Pruebas de Componentes (ej. con React Testing Library o Vue Test Utils):
+Enfoque en las pruebas de comportamiento del usuario en lugar de los detalles internos del componente.
+Uso de selectores accesibles (getByRole, getByText).
+Disparo de eventos del usuario (fireEvent o userEvent).
+
+Pruebas End-to-End (E2E):
+Herramientas: Cypress o Playwright.
+Simular un flujo completo del usuario en un navegador real o headless (ej. "Navegar a la página de inicio, iniciar sesión, agregar un artículo al carrito y finalizar la compra").
+Configuración y fixtures (datos de prueba).
+
+
+
+## Jest/Vitest
+
+1. Asertions
+
+valor que recibes
+"matcher" (el comparador)
+valor esperado.
+
+```
+expect(resultado).toBe(esperado);
+//      ^           ^        ^
+//    Valor       Matcher   Valor 
+//    Actual                Esperado
+```
+
+
+2. Test suite y Test case
+
+1. Test Case (Caso de Prueba)
+Es la unidad de prueba más pequeña y atómica
+Es un escenario de prueba individual que verifica una única pieza de funcionalidad o una condición específica
+
+Alcance: 
+Un Test Case se enfoca en un único resultado
+"Verificar que la función de suma devuelve el valor correcto para números positivos".
+
+Estructura: Típicamente consta de tres pasos (el patrón AAA: Arrange, Act, Assert):
+Arrange (Preparar): Configurar los datos de entrada.
+Act (Actuar): Ejecutar el código que se está probando.
+Assert (Aserción): Declarar si el resultado real coincide con el esperado (usando expect().toBe()).
+
+Sintaxis Común: Se define usando test() o it().
+
+
+2. Test Suite
+
+Contenedor lógico que agrupa una colección de Test Cases relacionados.
+
+Alcance:
+Se enfoca típicamente en un componente, un módulo o una característica completa del sistema.
+Agrupa casos de prueba que interactúan con el mismo código.
+
+Propósito: Proporciona contexto
+Cuando ves el reporte de pruebas, la Suite te dice qué parte del sistema fue probada.
+
+Hooks:
+Las Suites a menudo definen hooks de configuración y limpieza
+(ej. beforeAll, afterEach) que se ejecutan antes o después de los casos de prueba dentro de esa Suite.
+
+Sintaxis Común: Se define usando describe().
+
+En el código: 
+La relación es jerárquica
+una Test Suite contiene uno o más Test Cases
+Esta organización refleja el código de producción.
+
+Ej: Módulo Calculadora.js
+
+Jerarquía	Elemento	Propósito	Sintaxis de Jest/Mocha
+
+Contenedor:
+Test Suite
+Prueba toda la funcionalidad de la Calculadora.
+`describe('Calculadora', ...)`
+
+Unidad:
+Test Case
+Prueba la función sumar con dos números positivos.
+`test('debe sumar dos números', ...)`
+
+Unidad:
+Test Case
+Prueba la función dividir entre cero (esperando un error).
+```
+test('debe lanzar error al dividir por cero', ...)
+```
+
+Ej de código testing
+
+```
+// La Suite de Pruebas: describe el módulo que estamos probando.
+describe('Validación de Usuario', () => { 
+    // Hooks: Se ejecuta una vez antes de todos los Test Cases en esta Suite.
+    beforeAll(() => {
+        // Inicializar una conexión a la base de datos de prueba
+    });
+
+    // Test Case 1: Prueba si la contraseña es demasiado corta.
+    test('debe fallar si la contraseña tiene menos de 8 caracteres', () => { 
+        // ARRANGE, ACT, ASSERT...
+        expect(validar('abc')).toBe(false); 
+    });
+
+    // Test Case 2: Prueba si el usuario existe.
+    test('debe devolver un error si el nombre de usuario ya está tomado', async () => { 
+        // ARRANGE, ACT, ASSERT...
+        await expect(registrarUsuario('admin')).rejects.toThrow('Usuario ya existe');
+    });
+    
+    // Test Case 3: Prueba el caso exitoso.
+    test('debe pasar con credenciales válidas', () => {
+        expect(validar('Usuario123')).toBe(true);
+    });
+});
+```
+
+La claridad en esta estructura te permite ejecutar solo las pruebas relevantes y comprender inmediatamente, al leer el reporte de la consola, qué funcionalidad ha fallado.
+
+
+3. Ej Matchers: 
+La sintaxis de Jest es muy declarativa y fácil de leer:
+
+```
+const calculadora = require('./calculadora');
+
+// Define la Test Suite
+describe('Pruebas de Suma', () => { 
+
+    // Define el Test Case
+    test('La suma de 1 + 2 debe ser 3', () => { 
+        const resultado = calculadora.sumar(1, 2);
+        
+        // La aserción: expect(valor_real).toBe(valor_esperado)
+        expect(resultado).toBe(3); 
+    });
+
+    // Otro Test Case
+    test('Debe lanzar un error si se pasa un string', () => {
+        // Usamos el matcher toThrow para verificar la excepción
+        expect(() => calculadora.sumar('a', 2)).toThrow(); 
+    });
+});
+```
+
+
+4. Describe: 
+Organización y el contexto de tus pruebas.
+Sirve para definir una Test Suite (Suite de Pruebas).
+
+1. Propósito: Agrupar y Contextualizar
+agrupar una colección de pruebas relacionadas, convirtiéndose en el contenedor lógico de tus Test Cases (test() o it()).
+
+Organización Estructural:
+describe() crea una jerarquía
+Cada describe() se utiliza para
+
+Un Módulo o Componente Completo:
+Ej: describe('Componente de Carrito de Compras').
+
+Clase o Función Específica:
+Ej: describe('Clase Usuario').
+
+Grupo de funciones relacionadas: 
+describe('Manejo de Errores de API').
+
+
+Contexto en el Reporte:
+Los nombres que introduces en describe() se usan para dar contexto al reporte de la consola
+Crucial cuando una prueba falla, ya que te dice exactamente qué parte del sistema falló.
+
+Ej: Reporte (sin y con describe):
+Sin describe: ✗ debe devolver 5
+##### Con describe: ✗ Componente de Carrito de Compras > al añadir 2 productos debe devolver 5
+
+
+2. Sintaxis y Parámetros
+describe() es muy simple y requiere dos argumentos
+
+name (string): Una cadena de texto que describe el grupo de pruebas
+(Ej. 'Módulo de Autenticación').
+
+##### fn (función): Una función callback que contiene todos los Test Cases (test() o it()) y potencialmente otros bloques describe() anidados
+
+```
+// Sintaxis básica
+describe(name, fn);
+```
+
+Ej: 
+
+```
+// Archivo: calculadora.test.js
+
+describe('Funciones Matemáticas Básicas', () => { // <--- Test Suite Principal
+    
+    // Test Case 1
+    test('sumar debe devolver el resultado correcto', () => {
+        expect(sumar(5, 3)).toBe(8);
+    });
+
+    // Test Case 2
+    test('restar debe devolver un número negativo si el segundo es mayor', () => {
+        expect(restar(5, 10)).toBe(-5);
+    });
+});
+```
+
+
+3. Hooks y Anidamiento
+
+Configuración de Hooks:
+describe() es el único lugar donde puedes definir Hooks (ganchos) de configuración y limpieza que se aplican a las pruebas dentro de esa suite
+
+beforeAll(fn): Se ejecuta una vez antes de todos los test() dentro de la describe() actual.
+(Ideal para inicializar una DB de prueba).
+
+beforeEach(fn): Se ejecuta antes de cada test() individual dentro de la describe() actual.
+(Ideal para reiniciar variables de estado).
+
+afterAll(fn) / afterEach(fn): Hacen lo opuesto a sus contrapartes before.
+
+
+Anidamiento de Bloques (Nested describe):
+
+Puedes anidar bloques describe() para crear una estructura de pruebas aún más detallada
+Es excelente para probar diferentes "estados" o "contextos" de un componente.
+
+```
+describe('Clase Cuenta Bancaria', () => { // Nivel 1: Clase
+    
+    // Hook que afecta a todos los tests en Nivel 1 y 2
+    beforeEach(() => { /* Configuración para cada prueba */ });
+
+    // Test Case del Nivel 1
+    test('debe inicializar el saldo en cero', () => { ... });
+
+    describe('cuando el saldo es insuficiente', () => { // Nivel 2: Contexto Específico
+        
+        // Test Case del Nivel 2
+        test('debe lanzar un error al intentar retirar', () => {
+            // ...
+        });
+        
+        // Test Case del Nivel 2
+        test('el saldo no debe cambiar después de un fallo', () => {
+            // ...
+        });
+    });
+});
+```
+
+Al anidar, el reporte de Jest combinará los nombres, resultando en algo como
+Clase Cuenta Bancaria > cuando el saldo es insuficiente > debe lanzar un error al intentar retirar
+Proporciona una claridad absoluta.
+
+
+5. Test
+
+Prueba Individual:
+Es definir un escenario específico para verificar una única pieza de funcionalidad o una condición de tu código.
+
+Definición de Test Case: Cada test() es un Caso de Prueba que se ejecuta de forma aislada.
+Si un test() falla, no afecta a la ejecución de otros test() en el mismo archivo.
+
+Contiene la Lógica AAA: El cuerpo de la función test() contiene los tres pasos críticos de cualquier prueba:
+1. Arrange (Preparar): Inicializar datos, mocks y variables.
+2. Act (Actuar): Ejecutar la función o el código que se está probando.
+3. Assert (Aserción): Usar expect() y matchers para verificar el resultado.
+
+Sintaxis y Parámetros
+Requiere dos argumentos principales:
+
+name (string): Una cadena de texto que describe qué se está probando y cuál es el resultado esperado.
+Debe ser legible y claro, a menudo comenzando con verbos como "debe", "debería", o "no debe".
+
+fn (función): Una función callback donde resides el código real de la prueba, incluyendo la lógica AAA
+Esta función puede ser asíncrona (async/await) si la lógica a probar lo requiere. 
+
+```
+// Sintaxis básica
+test(name, fn); 
+// Alias
+it(name, fn);
+```
+
+
+Ej: Síncrono 
+
+```
+const sumar = (a, b) => a + b;
+
+// Test Case Síncrono
+test('debe devolver la suma correcta de dos números positivos', () => {
+    // Act
+    const resultado = sumar(5, 7); 
+    
+    // Assert
+    expect(resultado).toBe(12);
+});
+```
+
+
+Asíncrono (async/await)
+Una de las grandes ventajas de Jest es su excelente soporte para pruebas asíncronas
+Si la función que estás probando devuelve una Promesa, simplemente declaras la función callback del test() como async y usas await para esperar la resolución.
+
+```
+// Función que devuelve una Promesa
+async function obtenerDatos() {
+  return new Promise(resolve => setTimeout(() => resolve({ id: 1 }), 100));
+}
+
+// Test Case Asíncrono
+test('debe devolver un objeto con la propiedad id después de un retraso', async () => {
+    // Act (Usamos await para esperar que la promesa se resuelva)
+    const datos = await obtenerDatos(); 
+    
+    // Assert
+    expect(datos).toEqual({ id: 1 });
+});
+```
+
+
+6. Aserciones: expect y matchers
+
+Describir el valor real que estás probando.
+expect() toma el resultado de tu código y te permite encadenar un Matcher para verificar si cumple con la condición esperada
+
+1. .not:
+Modificar casi cualquier matcher
+ 
+2. Comprobaciones (Match-making):
+Determina la forma en que Jest compara los valores.
+
+Igualdad Estricta (.toBe)
+Igualdad Profunda (.toEqual)
+
+3. Comprobación de Propiedades (Asíncrono):
+expect() también se usa para manejar resultados asíncronos y errores:
+
+.resolves
+Se utiliza para esperar que una Promesa se resuelva antes de aplicar un matcher.
+
+```
+await expect(fetchData()).resolves.toBeDefined();
+```
+
+.rejects
+Se utiliza para esperar que una Promesa sea rechazada
+
+```
+await expect(fetchData()).rejects.toThrow('No encontrado');
+```
+
+.toThrow()
+Se usa en funciones síncronas para verificar que se lance un error.
+
+```
+expect(() => dividir(1, 0)).toThrow();
+```
+
+
+### Unit Testing
+
+Puede ser:
+
+1. Una función individual (ej. sumar(a, b)).
+2. Un método dentro de una clase.
+3. Una clase completa. 
+4. Un módulo que realiza una tarea específica.
+
+El objetivo es confirmar que cada componente individual de tu sistema funciona correctamente según lo diseñado
+bajo diversas condiciones de entrada.
+
+Una prueba unitaria no debe depender de recursos externos.
+No debe interactuar con la red, la base de datos, el sistema de archivos, o servicios externos (APIs de terceros).
+
+Si una unidad depende de otra unidad (ej. Función A llama a Función B)
+La dependencia se reemplaza por un mock o spy (simulación)
+para garantizar que solo se pruebe la lógica de la unidad A.
+
+
+Se adhiere al patrón AAA (Arrange, Act, Assert):
+
+```
+// Función a probar (la "unidad")
+function calcularDescuento(precio, porcentaje) {
+  if (porcentaje >= 1) { // Lógica de negocio
+    return precio;
+  }
+  return precio * (1 - porcentaje);
+}
+
+// Prueba Unitaria con Jest
+test('debe aplicar un 10% de descuento correctamente', () => {
+  // 1. ARRANGE (Preparar)
+  const precioOriginal = 100;
+  const descuento = 0.10;
+  
+  // 2. ACT (Actuar)
+  const precioFinal = calcularDescuento(precioOriginal, descuento);
+  
+  // 3. ASSERT (Aserción)
+  expect(precioFinal).toBe(90); // Verificar el resultado esperado
+});
+```
+
+
+
+### Mock
+
+Simulacros, permiten aislar la unidad de código que estás probando
+Reemplazando sus dependencias externas con sustitutos controlados.
+
+objeto o una función simulada que imita el comportamiento real de una dependencia
+Su propósito es doble:
+
+1. Aislamiento: Evitar que la unidad de código a probar interactúe con el mundo exterior (bases de datos, APIs de red, sistema de archivos).
+2. Control: Permitir que el desarrollador defina exactamente qué resultado debe producir esa dependencia simulada
+(ej. "cuando llames a la API, devuelve este error" o "devuelve estos datos específicos").
+
+Ej: Función obtenerPost():
+
+```
+function obtenerPost(id) {
+  // Llama a una API real (DEPENDENCIA EXTERNA)
+  return fetch(`/api/posts/${id}`); 
+}
+```
+
+Reemplazas la función fetch por un mock que, al ser llamado, devuelve una respuesta falsa e instantánea.
+
+
+Mock:
+Simular la implementación.
+Permite definir qué debe devolver la función simulada y, opcionalmente, verificar que fue llamada.
+
+Spy (Espía):
+Observar sin modificar.
+Envuelve una función real y registra si fue llamada, con qué argumentos y cuántas veces, pero deja que la función real se ejecute.
+
+Stub:
+Sustituir la implementación.
+Es una implementación mínima que siempre devuelve una respuesta codificada (hardcoded) para evitar que se ejecute la lógica real.
+
+##### En Jest, la herramienta nativa jest.fn() actúa como una combinación muy flexible de los tres.
+
+
+1. Mockear Funciones Individuales (jest.fn())
+Se usa para reemplazar funciones que están pasando como argumentos o que declaras tú mismo.
+
+```
+test('la función callback debe ser llamada una vez', () => {
+    // 1. Arrange: Creamos un Mock
+    const mockCallback = jest.fn(); 
+    
+    // 2. Act: Llamamos a la función que usa el callback
+    ejecutarCallback(mockCallback);
+    
+    // 3. Assert: Verificamos si el Mock fue llamado
+    expect(mockCallback).toHaveBeenCalledTimes(1); 
+});
+```
+
+2. Mockear Implementaciones Específicas (.mockReturnValue())
+Defines qué valor debe devolver la función simulada al ser llamada.
+
+```
+test('debe usar el valor simulado', () => {
+    const mockObtenerPrecio = jest.fn();
+    
+    // El Mock siempre devolverá 100
+    mockObtenerPrecio.mockReturnValue(100); 
+    
+    // Act: La función a probar llamará al Mock
+    const precioFinal = procesarPrecio(mockObtenerPrecio); 
+    
+    expect(precioFinal).toBe(100); 
+});
+```
+
+3. Mockear Módulos Enteros (jest.mock())
+Se usa para simular módulos externos (ej. una librería de HTTP, un utility file).
+
+```
+// Archivo: __tests__/post.test.js
+// Esto reemplaza el módulo 'axios' en cualquier sitio donde se importe
+jest.mock('axios'); 
+
+test('debe devolver los datos del post simulado', async () => {
+    // Definimos qué debe devolver axios.get cuando sea llamado
+    axios.get.mockResolvedValue({ data: { titulo: 'Simulado' } });
+
+    const post = await obtenerPost(1);
+    
+    expect(post.titulo).toBe('Simulado');
+    expect(axios.get).toHaveBeenCalledWith('/api/posts/1'); // Spy check
+});
+```
+
+
+### Setup y Teardown
+
+Uso de funciones de hook (beforeAll, beforeEach, afterEach, afterAll) para inicializar y limpiar el estado antes y después de las pruebas.
+
+Ejecutar código antes o después de la ejecución de tus Test Suites (describe) o Test Cases (test).
+
+1. Propósito: 
+Las pruebas, especialmente las unitarias y de integración, deben ser independientes
+El resultado de una prueba no debe influir en el resultado de otra.
+Los Hooks se aseguran de esto:
+
+Configuración (Setup): Poner el entorno en el estado inicial requerido
+(ej. crear un objeto de prueba, inicializar una base de datos simulada).
+
+Limpieza (Teardown): Devolver el entorno a un estado limpio después de que las pruebas han terminado
+(ej. eliminar datos creados, cerrar conexiones).
+
+
+2. Tipos de Hooks
+Jest proporciona cuatro funciones de hook principales
+diferenciadas por si se ejecutan una vez (a nivel de Suite)
+o antes/después de cada prueba (a nivel de Case).
+
+Hook	Ejecución	Nivel de Ejecución	Uso Común
+
+beforeAll(fn):
+Una vez antes de que comience el primer test() de la Suite.
+Suite (describe)
+Inicializar recursos caros que pueden ser reutilizados, como crear una base de datos simulada o configurar un servidor de prueba
+
+afterAll(fn):
+Una vez después de que todos los test() de la Suite hayan finalizado
+Suite (describe)
+Tareas de limpieza pesadas, como apagar el servidor de prueba o cerrar la base de datos
+
+beforeEach(fn):
+Antes de cada test() individual dentro de la Suite.
+Case (test)
+Restablecer el estado de las variables, limpiar mocks o inicializar un componente de UI para que cada prueba comience desde cero
+
+afterEach(fn):
+Después de cada test() individual dentro de la Suite.
+Case (test)
+Limpiar mocks específicos o restaurar el estado global
+(ej. restaurar la implementación de console.log).
+
+
+Ej: Imagina que estás probando una clase Carrito y necesitas asegurarte de que cada prueba comienza con un carrito vacío:
+
+```
+// La clase de producción a probar
+class Carrito {
+    constructor() {
+        this.items = [];
+    }
+    agregar(item) {
+        this.items.push(item);
+    }
+    total() {
+        return this.items.length;
+    }
+}
+
+describe('Funcionalidad del Carrito de Compras', () => {
+    let carrito; // Variable que queremos inicializar antes de cada prueba
+
+    // HOOK beforeEach: Garantiza un estado limpio para cada test
+    beforeEach(() => {
+        // Ejecutado antes del Test 1, antes del Test 2, etc.
+        carrito = new Carrito(); 
+        console.log("-> Carrito reiniciado."); 
+    });
+
+    test('El carrito debe estar vacío al inicio', () => {
+        expect(carrito.total()).toBe(0); // Pasa porque beforeEach lo vació
+    });
+
+    test('debe agregar un artículo correctamente', () => {
+        carrito.agregar('manzana');
+        expect(carrito.total()).toBe(1); // Este test se ejecuta con un carrito vacío, gracias al beforeEach
+    });
+    
+    // El Test 3 también se ejecutará con un carrito vacío.
+    test('no debe afectar a otras pruebas', () => {
+        expect(carrito.items).toEqual([]);
+    });
+
+});
+```
+
+
+Hooks en Estructuras Anidadas:
+Los hooks operan en el ámbito (scope) del describe() en el que están definidos
+Si anidas describe(), los hooks del nivel superior se ejecutan para todos los niveles inferiores.
+
+Si tienes un beforeEach en el describe externo, se ejecutará antes de cada prueba, incluso las que están en el describe anidado.
+
+Esta característica te permite configurar un entorno general (con beforeAll externo)
+Luego afinar el estado para subgrupos de pruebas con beforeEach en un describe anidado.
+
+
+
+### Vitest
+
+```
+npm install -D vitest
+```
+
+script: 
+
+```
+{
+  "scripts": {
+    "test": "vitest",
+    "test:ui": "vitest --ui"
+  }
+}
+```
+
+Si ya tienes un archivo de configuración de Vite, solo necesitas añadir la referencia a Vitest
+
+Si prefieres un archivo separado, crea uno llamado vitest.config.ts.
+
+```
+import { defineConfig } from 'vitest/config'
+
+export default defineConfig({
+  test: {
+    // Permite usar 'describe', 'it', etc. sin importarlos en cada archivo
+    globals: true,
+    // Define el entorno (node por defecto, usa 'jsdom' para React/Vue)
+    environment: 'node',
+  },
+})
+```
+
+Test: 
+
+Convención: deben terminar en .test.ts o .spec.ts.
+
+math.ts:
+
+```
+export const sumar = (a: number, b: number) => a + b;
+```
+
+math.test.ts:
+
+```
+import { describe, it, expect } from 'vitest';
+import { sumar } from './math';
+
+describe('Pruebas en math.ts', () => {
+  it('debería sumar dos números correctamente', () => {
+    const resultado = sumar(2, 3);
+    expect(resultado).toBe(5);
+  });
+
+  it('debería fallar si la suma es incorrecta', () => {
+    expect(sumar(1, 1)).not.toBe(3);
+  });
+});
+```
+
+Comandos:
+
+npm run test
+Ejecuta los tests en modo Watch 
+(se quedan esperando cambios).
+
+npx vitest run
+Ejecuta los tests una sola vez 
+(ideal para CI/CD).
+
+npm run test:ui 
+Abre una interfaz gráfica increíble en el navegador para ver tus tests.
+
+npx vitest --coverage
+Genera un reporte de qué tanto código estás probando.
+
+Para coverage Vitest pedirá instalar @vitest/coverage-v8
+Apretar y
+
+Vitest vs Jest
+
+Transformación	
+Nativa vía Vite (Instantánea) 
+Vía Babel/ts-jest (Más lenta)
+
+Modo Watch:
+Muy optimizado y granular
+Estándar
+
+TypeScript:
+Nativo (no requiere config)
+Requiere configuración extra
+
+ESM:
+Soporte completo nativo
+A veces problemático
+
+
+#### Mock con Vitest
+
+1. vi.fn(): Para simular funciones.
+
+```
+const miMock = vi.fn(() => 'Hola');
+miMock();
+expect(miMock).toHaveBeenCalled();
+```
+
+
+2. Snapshots: 
+Para asegurarte de que un objeto o componente no cambie accidentalmente.
+
+```
+expect(miObjeto).toMatchSnapshot();
+```
+
+
+3. Hooks: 
+Controla el ciclo de vida del test.
+beforeEach: Se ejecuta antes de cada test.
+afterAll: Se ejecuta una vez al final de todos los tests.
+
+
+Cuando una función es demasiado peligrosa, lenta o impredecible
+Ponemos a un doble en su lugar para que haga el trabajo de forma controlada.
+
+Ej: función que calcula el total de una compra y luego envía un correo de confirmación.
+No quieres que cada vez que corras tus tests se envíe un correo real.
+Reemplazas la función de enviar correo por un "Mock" que solo anote: "Sí, me llamaron con estos datos".
+
+
+Los 3 pilares del Mocking:
+Vitest utiliza el objeto vi para gestionar todo lo relacionado con simulaciones
+
+1. vi.fn()
+Función ficticia para probar callbacks
+
+```
+import { vi, expect, it } from 'vitest';
+
+it('debería ejecutar el callback', () => {
+  const miMock = vi.fn(); // Creamos el "doble"
+  
+  // Imaginemos que una función recibe este callback y lo ejecuta
+  miMock('Hola Mundo');
+
+  // Podemos preguntar: ¿Te llamaron?
+  expect(miMock).toHaveBeenCalled();
+  // ¿Con qué argumentos te llamaron?
+  expect(miMock).toHaveBeenCalledWith('Hola Mundo');
+});
+```
+
+
+2. vi.spyOn()
+Observar el comportamiento de un método que ya existe en un objeto o clase
+Sin necesariamente romper su funcionalidad original (aunque puedes cambiarla).
+
+```
+import { vi, it, expect } from 'vitest';
+
+const calculadora = {
+  sumar: (a: number, b: number) => a + b
+};
+
+it('debería espiar el método sumar', () => {
+  const espia = vi.spyOn(calculadora, 'sumar');
+
+  calculadora.sumar(2, 2);
+
+  expect(espia).toHaveBeenCalledTimes(1);
+});
+```
+
+
+3. vi.mock(): Simular un módulo completo
+Sirve para reemplazar una librería entera (como axios o un archivo propio).
+Ej: Simulando una llamada a una API
+
+```
+// api.ts
+export const obtenerUsuario = () => fetch('/usuario').then(res => res.json());
+
+// api.test.ts
+import { vi, it, expect } from 'vitest';
+import { obtenerUsuario } from './api';
+
+// Reemplazamos el módulo entero
+vi.mock('./api', () => ({
+  obtenerUsuario: vi.fn(() => ({ id: 1, nombre: 'Juan' }))
+}));
+
+it('debería retornar el usuario simulado', async () => {
+  const usuario = await obtenerUsuario();
+  expect(usuario.nombre).toBe('Juan');
+});
+```
+
+Una vez que tienes un mock, usas estos "matchers" de Vitest para verificar qué pasó:
+
+
+#### Matchers de mocks
+
+toHaveBeenCalled()
+Verifica si la función fue llamada al menos una vez.
+
+toHaveBeenCalledTimes(n)	
+Verifica si fue llamada exactamente n veces
+
+toHaveBeenCalledWith(arg)	
+Verifica los parámetros exactos de la llamada.
+
+toHaveReturnedWith(val)	
+Verifica si la función devolvió un valor específico.
+
+
+#### Memoria de los mocks
+Los mocks guardan el historial de cuántas veces han sido llamados. Si corres varios tests seguidos
+El contador de llamadas puede acumularse y darte errores falsos.
+
+##### Limpia tus mocks antes de cada test en tu archivo de configuración o dentro del test:
+
+```
+import { beforeEach, vi } from 'vitest';
+
+beforeEach(() => {
+  vi.clearAllMocks(); // Borra el historial de llamadas, pero mantiene la implementación
+});
+```
+
+
+Ej: Llamada a una api
+No queremos que nuestros tests dependan de si el servidor está caído o de si el internet funciona
+Queremos probar que nuestro código sabe manejar la respuesta (o el error) que reciba.
+
+1. userService.ts
+
+```
+import axios from 'axios';
+
+export const getUserName = async (id: number) => {
+  const response = await axios.get(`https://api.ejemplo.com/users/${id}`);
+  return response.data.name;
+};
+```
+
+2. userService.test.ts
+
+```
+import { vi, it, expect, describe } from 'vitest';
+import axios from 'axios';
+import { getUserName } from './userService';
+
+// 1. Le decimos a Vitest que reemplace "axios" por una versión controlada
+vi.mock('axios');
+
+describe('getUserName', () => {
+  it('debería retornar el nombre del usuario cuando la API responde con éxito', async () => {
+    // 2. Definimos qué debe devolver el mock de axios.get
+    // Usamos mockResolvedValue porque axios.get es una Promesa (async)
+    const mockUser = { data: { id: 1, name: 'Gemini' } };
+    vi.mocked(axios.get).mockResolvedValue(mockUser);
+
+    // 3. Ejecutamos la función real
+    const nombre = await getUserName(1);
+
+    // 4. Verificaciones (Assertions)
+    expect(nombre).toBe('Gemini');
+    expect(axios.get).toHaveBeenCalledWith('https://api.ejemplo.com/users/1');
+  });
+
+  it('debería manejar errores de la API', async () => {
+    // Simulamos un error 404 (Not Found)
+    vi.mocked(axios.get).mockRejectedValue(new Error('User not found'));
+
+    // Verificamos que la función lance el error esperado
+    await expect(getUserName(99)).rejects.toThrow('User not found');
+  });
+});
+```
+
+
+#### Herramientas de mocks:
+
+vi.mock('axios')	
+"Secuestra" el módulo axios. A partir de aquí, axios.get ya no hace peticiones reales.
+
+vi.mocked(axios.get)
+Para que el editor sepa que axios.get ahora tiene métodos de mock (como mockResolvedValue).
+
+.mockResolvedValue()	
+Simula una respuesta exitosa (Promise.resolve).
+
+.mockRejectedValue()
+Simula un fallo de red o un error del servidor (Promise.reject).
+
+
+##### vi.mocked
+
+Si usas TypeScript, verás que si intentas hacer axios.get.mockResolvedValue
+TS se quejará diciendo que get no tiene esa propiedad. Usar vi.mocked(axios.get)
+Simplemente "le avisa" a TypeScript: 'Esto es axios, pero ahora es un mock de Vitest, así que déjame usar sus funciones especiales'.
+
+
+#### Limpieza de mocks
+
+##### Limpiar los mocks entre cada test para que los resultados de uno no afecten al otro
+Ejemplo, el contador de llamadas.
+
+```
+import { beforeEach, vi } from 'vitest';
+
+beforeEach(() => {
+  vi.restoreAllMocks(); // Resetea el historial y las implementaciones de los mocks
+});
+```
+
+
+
+
+## RTL
+
+1. Consultas y Matchers
+
+Tipos de Queries:
+getBy...: Para elementos que deben estar ahí (falla si no se encuentran).
+queryBy...: Para elementos que no deberían estar ahí (devuelve null).
+findBy...: Elementos asíncronos (devuelven una promesa).
+
+Prioridad de Selección:
+preferir getByRole o getByText
+
+Jest-DOM Matchers:
+usar .toBeInTheDocument(), .toHaveStyle(), .toBeDisabled().
+
+
+2. Interacciones del Usuario:
+
+Un componente no es estático. Debes simular que alguien lo usa.
+
+user-event vs fireEvent:
+user-event es superior: simula eventos reales como keydown y mousedown
+fireEvent ignora eventos como keydown y mousedown
+
+Simulación de inputs:
+Escribir en formularios
+marcar checkboxes
+seleccionar opciones de un dropdown
+
+Clicks y Focus:
+Validar que los botones disparen acciones y que el foco se mueva correctamente.
+
+
+3. Clean Testing: Queries y Prioridades
+
+Una parte vital de RTL es saber cómo buscar los elementos
+RTL te obliga a pensar como un usuario.
+
+Jerarquía de búsqueda recomendada:
+
+getByRole: (Preferida) Busca por función de accesibilidad (button, heading, link).
+getByText: Busca por el contenido visual.
+getByLabelText: Ideal para formularios (inputs).
+getByTestId: (Último recurso) Solo si no hay forma de encontrarlo por accesibilidad. 
+
+
+### Prácticas
+
+1. Granularidad
+
+Dividimos el comportamiento en pruebas pequeñas
+Si el sistema de "deshabilitar botón" se rompe, solo fallará ese test
+mientras que el de "escribir en el input" seguirá pasando.
+
+```
+describe('ContactForm', () => {
+  it('debe permitir escribir en el campo de nombre', async () => {
+    render(<ContactForm />);
+    const input = screen.getByLabelText(/nombre/i);
+    await userEvent.type(input, 'Juan');
+    expect(input.value).toBe('Juan');
+  });
+
+  it('debe deshabilitar el botón de envío tras hacer clic', async () => {
+    render(<ContactForm />);
+    const button = screen.getByRole('button');
+    await userEvent.click(button);
+    expect(button).toBeDisabled();
+  });
+
+  it('debe mostrar un mensaje de éxito al enviar', async () => {
+    render(<ContactForm />);
+    await userEvent.click(screen.getByRole('button'));
+    expect(screen.getByText(/gracias por tu mensaje/i)).toBeInTheDocument();
+  });
+});
+```
+
+
+2. Aserciones
+
+Son el veredicto del test: Afirmas que algo debe ser de cierta manera
+Si la aserción se cumple, el test pasa
+si no, el test falla y te explica por qué.
+
+En React (Vitest/Jest), las aserciones siempre empiezan con la función expect().
+
+1. Elementos de una Aserción
+Se divide en tres partes:
+
+1. el valor que recibes
+2. el "matcher" (el comparador)
+3. el valor esperado.
+
+```
+expect(resultado).toBe(esperado);
+//      ^           ^        ^
+//    Valor       Matcher   Valor 
+//    Actual                Esperado
+```
+
+
+3. Matchers Generales (Vitest / Jest)
+Se usan para lógica pura, funciones y tipos de datos básicos.
+
+.toBe():
+primitivos (strings, números) o misma referencia.
+expect(1+1).toBe(2)
+
+.toEqual():
+Para comparar objetos o arrays (compara el contenido).
+expect({a:1}).toEqual({a:1})
+
+.toBeTruthy():
+Verifica que el valor sea "verdadero" (en sentido JS).
+expect(user).toBeTruthy()
+
+.toBeFalsy():
+Verifica que el valor sea "falso" (null, undefined, 0, false).
+expect(error).toBeFalsy()
+
+.toContain():
+Verifica si un array o string contiene un elemento.
+expect(list).toContain('React')
+
+.toHaveLength():
+Verifica el tamaño de un array o string.
+expect(arr).toHaveLength(3)
+
+
+4. Matchers de DOM (jest-dom)
+Cuando testeas componentes con RTL, los matchers generales se quedan cortos
+Necesitas los de @testing-library/jest-dom, que entienden el HTML.
+
+Más usados:
+
+1. expect(el).toBeInTheDocument():
+El más importante.
+Verifica que el elemento realmente exista en el DOM.
+
+2. expect(el).toBeVisible():
+Verifica que el elemento no solo exista, sino que el usuario pueda verlo
+(que no tenga display: none o opacity: 0).
+
+3. expect(el).toBeDisabled():
+Ideal para formularios
+Verifica si un botón o input tiene el atributo disabled.
+
+4. expect(el).toHaveValue('...'):
+Verifica el contenido de un input o textarea.
+
+5. expect(el).toHaveClass('active'):
+Verifica si un elemento tiene una clase CSS específica.
+
+
+5. Aserciones Negativas (.not)
+Asegurar que algo no suceda: simplemente agregas .not antes del matcher.
+
+Ej:
+
+```
+// Verifica que un mensaje de error NO esté en la pantalla
+const errorMessage = screen.queryByText(/error/i);
+expect(errorMessage).not.toBeInTheDocument();
+
+// Verifica que el botón NO esté deshabilitado
+expect(button).not.toBeDisabled();
+```
+
+
+6. Prácticas
+
+1. Prefiere matchers específicos
+Evita usar .toBe(true) para todo: Es mejor usar matchers que den mensajes de error claros.
+
+```
+// Mal
+expect(button.disabled).toBe(true);
+
+// Bien
+expect(button).toBeDisabled();
+```
+
+Ventaja: los mensajes de error
+Si falla, el segundo te dirá: "Expected element to be disabled but it was not", mientras que el primero solo dirá "Expected true but got false".
+
+
+2. Múltiple expect con sentido
+"un test, una razón", puedes tener varios expect si validan el mismo concepto.
+
+```
+it('debe limpiar el formulario tras enviar', async () => {
+  render(<CommentForm />);
+  const input = screen.getByRole('textbox');
+  
+  await userEvent.type(input, 'Gran post');
+  await userEvent.click(screen.getByRole('button'));
+
+  // Ambas aserciones validan el concepto de "limpieza"
+  expect(input).toHaveValue('');
+  expect(input).toHaveFocus();
+});
+```
+
+
+3. Aserciones Asíncronas
+Si estás esperando que algo aparezca tras una llamada a la API, usa findBy y await:
+
+```
+const successMessage = await screen.findByText(/enviado con éxito/i);
+expect(successMessage).toBeInTheDocument();
+```
+
+
+
+## Config
+
+```
+"scripts": {
+  "test": "vitest",
+  "test:ui": "vitest --ui",
+  "coverage": "vitest run --coverage"
+}
+```
+
+
+1. RTL y Vitest:
+
+```
+npm install -D vitest @testing-library/react @testing-library/jest-dom @testing-library/user-event jsdom
+```
+
+2. vite.config.js (o .ts):
+
+```
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+
+export default defineConfig({
+  plugins: [react()],
+  test: {
+    globals: true,           // Permite usar 'describe', 'it', 'expect' sin importarlos
+    environment: 'jsdom',    // Simula el DOM del navegador
+    setupFiles: './src/setupTests.js', // Archivo de configuración inicial
+  },
+})
+```
+
+
+3. setup.js
+archivo src/setupTests.js.
+
+```
+import '@testing-library/jest-dom';
+```
+
+
+4. Test
+
+Dumb Component como: src/components/Greeting.jsx
+
+```
+export function Greeting({ name }) {
+  return (
+    <div>
+      <h1>Hola, {name}!</h1>
+      <button>Click aquí</button>
+    </div>
+  );
+}
+```
+
+Creamos el test: src/components/Greeting.test.jsx
+
+```
+import { render, screen } from '@testing-library/react';
+import { Greeting } from './Greeting';
+
+describe('Greeting Component', () => {
+  it('debe renderizar el nombre correctamente', () => {
+    // 1. Renderizar el componente
+    render(<Greeting name="Gemini" />);
+
+    // 2. Buscar el elemento (usando Roles para accesibilidad)
+    const title = screen.getByRole('heading', { name: /hola, gemini!/i });
+
+    // 3. Aserción (lo que esperamos que pase)
+    expect(title).toBeInTheDocument();
+  });
+
+  it('debe contener un botón', () => {
+    render(<Greeting name="Gemini" />);
+    const button = screen.getByRole('button');
+    expect(button).toBeInTheDocument();
+  });
+});
+```
 
