@@ -4031,7 +4031,7 @@ expect(successMessage).toBeInTheDocument();
 
 
 
-## Config
+## Config vitest
 
 ```
 "scripts": {
@@ -4114,3 +4114,162 @@ describe('Greeting Component', () => {
 });
 ```
 
+
+# Code
+
+
+## Vite
+
+```
+nvm use
+
+npm run dev
+```
+
+
+Vitest:
+
+```
+npm install -D vitest @testing-library/react @testing-library/jest-dom @testing-library/user-event jsdom
+```
+
+vitest: El corredor de tests (reemplaza a Jest).
+@testing-library/react: Herramientas para renderizar componentes.
+jsdom: Simula un navegador en Node.js.
+@testing-library/jest-dom: Añade "matchers" personalizados como .toBeInTheDocument().
+
+
+Config Vite
+Uso de vitest y el entorno de pruebas deba ser navegador simulado
+
+vite.config.js (o .ts):
+
+```
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+
+export default defineConfig({
+  plugins: [react()],
+  test: {
+    globals: true,           // Permite usar 'describe', 'it', 'expect' sin importarlos
+    environment: 'jsdom',    // Simula el DOM del navegador
+    setupFiles: './src/setupTests.js', // Archivo de configuración inicial
+  },
+})
+```
+
+Setup (setupTests.js)
+Crea el archivo src/setupTests.js.
+se ejecutará antes de cada test para extender las capacidades de Vitest con las de RTL.
+
+```
+import '@testing-library/jest-dom';
+```
+
+
+styled:
+
+```
+npm install styled-components
+```
+
+
+
+## Arq
+
+Data: 
+
+person:
+name, surname, profession, pic, bio, proj/links 
+
+proj:
+yourPortfolio, aiState...
+
+widget:
+date
+time
+wheater
+
+person has projects
+
+```
+				App
+(widget)		(proj)			(person)
+date			ProjectsInfo	bio
+time				links		pic
+wheater			 	SocialMedia
+```
+
+
+
+```
+ src/
+1.		features
+			profile
+				components
+					profile.jsx
+				hooks
+				profile.js
+			widget
+				components
+				widget.js				
+2. shared
+		components
+			ui
+			  btn
+			  main 
+			  section
+			  aside
+			  article
+			  footer
+			  time
+			  img
+			  link
+			  embed
+			  pic
+			  source
+		hooks
+		utils
+		
+		
+3. store/globalState
+
+4. api
+
+5. pages
+
+6. style
+		theme
+		global
+7. app.js
+``` 
+
+
+dumb, smart, hook:
+hook -> rtn obj/estados
+smrt -> rtn dumb le pasa obj/custom hook
+dumb -> rtn elemHtml/presen usando info smrt
+
+
+comp components: 
+app: (div)
+wid (art) , proj (main), pers (aside)
+
+pers: 
+pic/img
+bio(p)
+
+proj:
+p/a/links
+icons/a/links
+
+wid:
+art:
+date, time, wheater
+
+dumb: children (span, p, li, h1..., a)
+
+
+# Todo
+
+provider, theme, test
