@@ -1582,6 +1582,10 @@ El resto de tu App no se entera del cambio.
 
 3. Organización: Te permite ver de un vistazo qué componentes están "públicos" para ser usados en el proyecto.
 
+4. Encapsulamiento: Puedes tener archivos internos de apoyo dentro de la carpeta ui que no quieres que el resto de la app use. 
+Si no los pones en el index.js, permanecen "ocultos".
+
+5. Facilidad de refactorización: Si mañana decides mover el archivo Button.js a otra subcarpeta, solo cambias la ruta en el archivo barril y no en las 50 pantallas donde usaste el botón.
 
 Ej con carpeta styles
 
@@ -4115,6 +4119,778 @@ describe('Greeting Component', () => {
 ```
 
 
+
+## export y export default
+
+Vite utiliza ES Modules
+
+1. Nombrada (export):
+Cuando quieres exportar varias cosas de un mismo archivo 
+(funciones, constantes, componentes).
+
+Exportación: 
+export justo antes de la declaración.
+
+Importación: 
+obligatorio usar llaves {}
+el nombre debe ser exactamente el mismo. 
+
+ej: utils.js
+
+```
+export const sumar = (a, b) => a + b;
+export const restar = (a, b) => a - b;
+```
+
+Uso: 
+
+```
+import { sumar, restar } from './utils';
+```
+
+
+2. por Defecto (export default) 
+cuando un archivo representa una sola cosa principal
+(ej, componente)
+
+Exportación: 
+export default
+
+Importación: 
+No se usan llaves
+nombre que quieras al importar
+
+Ej: Button.jsx
+
+```
+const Button = () => <button>Click</button>;
+
+export default Button;
+```
+
+Uso: 
+
+```
+import MiBotonPersonalizado from './Button'; 
+// El nombre puede cambiar
+```
+
+
+export:
+Infinitos por archivo
+import { Nombre } from '...'
+Llaves necesarias
+Renombrado: Requiere as, ej: { Original as Nuevo }
+
+export default:
+Solo uno por archivo
+import CualquierNombre from '...'
+No se usan llaves
+Se renombra directamente al importar
+
+
+Vite usa algo llamado Fast Refresh para actualizar tu navegador al instante cuando guardas
+Para que esto funcione de forma óptima, hay un par de reglas no escritas:
+
+1. Componentes en archivos separados:
+Es mejor que cada componente de React sea el export default de su propio archivo
+Ayuda a que Vite sepa exactamente qué parte de la pantalla refrescar sin recargar toda la página.
+
+2. Archivos de lógica (estilos, utilidades, constantes):
+Mejor usar exportaciones nombradas
+Así, cuando importas una utilidad, el autocompletado de VS Code te ayuda mejor y el código es más fácil de rastrear.
+
+3. Evita mezclar
+Aunque puedes tener un export default y varios export nombrados en el mismo archivo
+Puede confundir al sistema de tipos (TypeScript) o a otros desarrolladores.
+
+Si es un componente de React, usa export default
+Si es una función de ayuda o un objeto de configuración (como tu theme), usa export nombrado.
+
+
+
+# Librería Interna
+
+Organizar código como si fuera un paquete profesional
+Ej librería de componentes UI limpia y escalable:
+
+1. Estructura de carpetas:
+Lo ideal es que cada componente tenga su propia "caja" (carpeta).
+Permite que cada componente tenga su lógica, sus estilos y sus pruebas por separado.
+
+```
+src/shared/components/ui/
+├── index.js          <-- El "punto de venta" (Barril)
+├── Button/
+│   ├── Button.jsx    <-- Lógica/Estructura
+│   └── index.js      <-- Re-exportación local
+├── Input/
+│   ├── Input.jsx
+│   └── index.js
+```
+
+
+2. Componentes individuales
+Dentro de cada carpeta, usamos export default para el componente principal
+Pieza única de ese archivo.
+
+Button/Button.jsx
+```
+import styled from 'styled-components';
+
+const StyledButton = styled.button`
+  background: ${props => props.theme.colors.primary};
+  /* ... tus estilos */
+`;
+
+export default function Button({ children, ...props }) {
+  return <StyledButton {...props}>{children}</StyledButton>;
+}
+```
+
+Barril local: Button/index.js
+
+```
+export { default } from './Button';
+```
+
+
+3. Archivo barril central: Librería
+archivo src/shared/components/ui/index.js
+"registras" todo lo que quieres que el resto de tu app pueda usar
+
+```
+// Importamos y exportamos con un nombre específico
+export { default as Button } from './Button';
+export { default as Input } from './Input';
+export { default as Card } from './Card';
+```
+
+
+4. Uso
+Importar componentes sin navegar por carpetas profundas
+
+App.jsx
+
+```
+import { Button, Input, Card } from './shared/components/ui';
+
+function App() {
+  return (
+    <AppProvider>
+       <Card>
+         <h1>Formulario</h1>
+         <Input placeholder="Nombre..." />
+         <Button>Enviar</Button>
+       </Card>
+    </AppProvider>
+  );
+}
+```
+
+Ventajas: 
+Escalabilidad: Si cambias el nombre de una carpeta interna, solo actualizas el index.js de la librería.
+IDE: Al escribir import { y presionar Ctrl + Espacio, VS Code te sugiere todos los componentes disponibles en tu librería.
+Encapsulamiento: tener archivos como ButtonUtils.js dentro de la carpeta del botón, y como no lo pones en el index.js, nadie fuera de esa carpeta puede usarlo por error.
+
+
+
+# Componente y estilo separado
+
+1. Carpeta
+
+```
+Button/
+├── Button.jsx         (Estructura y Lógica)
+├── Button.styles.js   (Estilos con Styled Components)
+└── index.js           (El Barril que exporta el componente)
+```
+
+
+2. Archivo de Estilos: Button.styles.js
+Exportaciones nombradas para cada pieza visual
+
+```
+import styled from 'styled-components';
+
+export const StyledButton = styled.button`
+  background-color: ${({ theme }) => theme.colors.primary};
+  border-radius: ${({ theme }) => theme.spacing.borderRadius};
+  padding: 10px 20px;
+  color: white;
+  border: none;
+`;
+
+export const IconWrapper = styled.span`
+  margin-right: 8px;
+`;
+```
+
+
+3. Componente: Button.jsx)
+Importamos los estilos
+Una técnica es usar import * as S (la "S" de Styles).
+Hace que sea súper claro qué es un componente de estilo y qué es un componente de React.
+
+```
+import * as S from './Button.styles'; // Importamos todos los estilos como el objeto 'S'
+
+export default function Button({ children, icon, ...props }) {
+  return (
+    <S.StyledButton {...props}>
+      {icon && <S.IconWrapper>{icon}</S.IconWrapper>}
+      {children}
+    </S.StyledButton>
+  );
+}
+```
+
+
+4. Archivo Barril (index.js)
+No cambia, simplemente sirve de "puente" para que cuando alguien importe desde la carpeta Button, obtenga el componente por defecto.
+
+```
+export { default } from './Button';
+```
+
+import * as S:
+
+Legibilidad: Si ves <S.StyledButton>, sabes instantáneamente que es un componente de estilo que viene de tu archivo .styles.js
+Si ves <Button>, sabes que es un componente con lógica.
+##### Sin colisiones: Evitas que un nombre de estilo choque con un nombre de componente de React o de alguna librería externa
+
+En .styles.js: Usas export const ... (Nombrado).
+En .jsx: Usas export default function ... (Por defecto).
+En index.js: Usas export { default } ... para exponer el componente.
+
+
+
+# Componentes Flexibles
+
+operador de propagación (spread operator)
+cumplen funciones distintas según dónde se usen.
+
+1. Rest/recolector en Params
+
+```
+export default function Button({ children, icon, ...props }) { ... }
+```
+
+Dentro de las llaves de los argumentos de la función, se llama Rest Parameter
+
+Extrae children e icon y todo lo demás que le pasen 
+Lo guarda dentro del objeto props
+
+```
+<Button icon="🔥" onClick={handleClick} type="submit" className="btn-main">
+  Enviar
+</Button>
+```
+
+La función recibirá:
+
+1. children: "Enviar"
+2. icon: "🔥"
+3. props: { onClick: handleClick, type: "submit", className: "btn-main" } (un objeto con lo sobrante).
+
+
+2. renderizado: El "Distribuidor" (Spread Attributes)
+
+```
+<S.StyledButton {...props}>
+```
+
+Dentro de una etiqueta JSX, se llama Spread Attributes
+Toma el objeto props que habiamos llenado y "desparrama" todas sus propiedades como si las hubieras escrito una por una en el componente de Styled Components.
+
+En lugar de escribir manualmente:
+
+```
+<S.StyledButton onClick={props.onClick} type={props.type} className={props.className}>
+```
+
+Simplemente escribes {...props} y React se encarga de pasar cada atributo automáticamente.
+
+
+Se conoce como Prop Forwarding (Reenvío de propiedades).
+
+1. Atributos Estándar: Tu componente Button es, en el fondo, un botón de HTML
+. Al usar ...props, permites que quien use tu componente pueda pasarle cualquier atributo válido de un botón
+(type, disabled, onMouseEnter, id, title, etc.)
+sin que tú tengas que definirlos todos manualmente en tu código.
+
+2. Librerías de Terceros: Si usas librerías como Framer Motion o React-Hook-Form, estas suelen pasar props especiales a los inputs o botones
+Con ...props, te aseguras de que esas props lleguen a donde deben.
+
+3. Código Limpio: Tu componente solo se preocupa por las props que le dan su identidad (como el icon o el children),
+delega el resto al elemento HTML.
+
+
+El orden importa:
+Si pones {...props} antes de una propiedad manual, la propiedad manual ganará.
+
+```
+// Aquí, aunque pases un 'type' por props, siempre será 'button' porque está después.
+<S.StyledButton {...props} type="button">
+```
+
+
+## Desestructuración de Objetos
+
+Al usar el botón:
+
+```
+<Button primary type="submit">Hola</Button>
+```
+
+
+1. En el Componente (Button.jsx)
+Se usa la desestructuración para separar lo que el componente necesita para su lógica de lo que debe seguir bajando
+
+```
+export default function Button({ children, icon, ...props }) {
+  // children = "Hola"
+  // icon = undefined (porque no lo pasamos)
+  // props = { primary: true, type: "submit" } <-- El resto se empaquetó aquí
+  
+  return (
+    <S.StyledButton {...props}> {/* Aquí "desparramas" primary y type */}
+      {children}
+    </S.StyledButton>
+  );
+}
+```
+
+
+2. Estilo (Button.styles.js)
+StyledButton recibe ese objeto props
+Cuando haces ${(props) => ...}
+estás accediendo a lo que el componente le "inyectó" 
+en el paso anterior.
+
+```
+// Opción A: Sin desestructurar (recibes todo el objeto)
+background-color: ${(props) => (props.primary ? 'red' : 'blue')};
+
+// Opción B: Desestructurando (solo sacas lo que vas a usar para el CSS)
+background-color: ${({ primary }) => (primary ? 'red' : 'blue')};
+```
+
+
+La principal diferencia es qué hay dentro del objeto props en cada paso
+
+1. En el Componente:
+El objeto props contiene todo lo que el padre (App.jsx) envió
+Al usar { children, ...props }, estás "limpiando" el objeto.
+
+2. En el Styled Component:
+El objeto props contiene lo que tú le pases explícitamente más lo que venga en el {...props}.
+
+Detalle: 
+
+Si en Button.jsx haces:
+
+```
+{ primary, ...props } = allProps
+```
+
+La variable primary ya no está dentro de ...props.
+
+Si quieres que el estilo la vea, tendrías que pasarla manualmente
+
+```
+<S.StyledButton primary={primary} {...props}>
+```
+
+
+## Combinar desestructuración y theme
+
+Componente que maneja el tema y sus propias props:
+
+Button.styles.js
+
+```
+export const StyledButton = styled.button`
+  /* 1. Usamos el tema (desestructurando theme) */
+  border-radius: ${({ theme }) => theme.spacing.borderRadius};
+  
+  /* 2. Usamos una prop propia (desestructurando primary) */
+  background-color: ${({ primary, theme }) => 
+    primary ? theme.colors.primary : 'gray'};
+`;
+```
+
+
+Button.jsx
+
+```
+export default function Button({ children, primary, ...props }) {
+  return (
+    // Pasamos 'primary' explícitamente y el resto (type, onClick, etc.) vía spread
+    <S.StyledButton primary={primary} {...props}>
+      {children}
+    </S.StyledButton>
+  );
+}
+```
+
+
+# Agrupar Estilos con el Objeto S
+Para evitar colisiones de nombres y saber rápidamente qué es un componente de React y qué es un Styled Component, muchos equipos usan el objeto S.
+
+En UserCard.styles.js:
+
+```
+import styled from 'styled-components';
+
+export const S = {
+  Card: styled.article` ... `,
+  Title: styled.h2` ... `,
+  Avatar: styled.img` ... `
+};
+```
+
+En UserCard.jsx:
+
+```
+import { S } from './UserCard.styles';
+
+function UserCard() {
+  return (
+    <S.Card>
+      <S.Avatar src="..." />
+      <S.Title>Juan Pérez</S.Title>
+    </S.Card>
+  );
+}
+```
+
+Esto hace que sea obvio que todo lo que empieza con S. es puramente visual.
+
+
+
+
+
+# Custom hooks 
+
+
+## 1. Gestión de Estado y UI
+
+Ayudan a manejar comportamientos visuales repetitivos
+
+1. useToggle:
+Ideal para manejar estados binarios como mostrar/ocultar un modal
+abrir un menú lateral o cambiar entre "Modo Oscuro" y "Modo Claro"
+Centraliza la lógica de cambiar el valor booleano.
+
+2. useForm:
+Gestiona el estado de los campos de un formulario, la validación y el envío
+Evita tener que crear múltiples useState para cada input de texto.
+
+3. useOnClickOutside:
+Muy útil para componentes como menús desplegables o modales
+Detecta si el usuario hace clic fuera de un elemento específico para cerrarlo automáticamente
+
+
+## 2. Interacción con el Navegador (Web APIs)
+
+Permiten que React "escuche" lo que pasa en el entorno del navegador de forma eficiente
+
+1. useLocalStorage:
+Sincroniza un estado de React con el localStorage
+Permite que los datos (como las preferencias de usuario)
+Persistan incluso si se refresca la página.
+
+2. useWindowSize:
+Rastrea el ancho y alto de la ventana del navegador en tiempo real.
+Fundamental para ejecutar lógica de JavaScript basada en el diseño
+como renderizar una lista diferente en móviles vs. escritorio).
+
+3. useMediaQuery:
+Similar al anterior, pero devuelve un valor booleano si la pantalla cumple con una regla de CSS específica
+Ej, min-width: 768px
+
+
+## 3. Manejo de Datos y Efectos
+
+Se encargan de la comunicación con servidores o de controlar el tiempo de ejecución de las funciones.
+
+1. useFetch: 
+Encapsula la lógica de las peticiones HTTP.
+Maneja automáticamente el estado de carga (loading)
+Los datos (data) y los errores (error)
+Evitando repetir el bloque try/catch en cada componente.
+
+2. useDebounce:
+Retrasa la actualización de un valor hasta que haya pasado un tiempo determinado desde la última vez que cambió
+Es esencial para buscadores que filtran resultados mientras el usuario escribe, evitando peticiones excesivas a la API.
+
+3. useThrottle:
+Similar al debounce, pero asegura que una función se ejecute como máximo una vez cada cierto intervalo
+Muy útil para eventos que se disparan muchas veces por segundo, como el scroll.
+
+
+## 4. Utilidades Avanzadas
+
+Hooks que resuelven problemas específicos de sincronización o ciclos de vida.
+
+1. usePrevious:
+Permite acceder al valor que tenía una variable en el renderizado anterior
+Es útil para comparar cambios y disparar acciones solo cuando un valor específico ha mutado de cierta forma
+
+2. useInterval:
+Una versión "amigable con React" de setInterval.
+Se encarga de limpiar el intervalo cuando el componente se desmonta
+evitando fugas de memoria (memory leaks).
+
+3. useIsMounted:
+Ayuda a verificar si un componente todavía está presente en el DOM antes de actualizar su estado tras una operación asíncrona
+evitando errores en la consola
+
+
+Ventajas: 
+
+Reutilización:
+Escribes la lógica una vez y la usas en diez proyectos diferentes.
+
+Testeabilidad:
+Puedes probar la lógica del hook de forma aislada sin necesidad de renderizar toda la interfaz.
+
+
+
+## Componente descoplado al máximo:
+
+### Fetch
+
+Extraer lógica de un componente smart/contenedor con Custom Hook
+
+La lógica de la llamada a la API y el manejo del estado (isLoading, error, user)
+Se encapsulan y se vuelven portátiles.
+
+Custom Hook: función js cuyo nombre comienza con use
+Puede llamar a otros Hooks de React (como useState y useEffect).
+
+
+1. Crear el custom hook 
+
+useUser.js que contendrá la lógica de obtención de datos. 
+
+```
+// useUser.js (Custom Hook: Responsabilidad Única: Gestión de Datos)
+import { useState, useEffect } from 'react';
+import axios from 'axios';
+
+// El hook acepta el ID del recurso que necesita (userId)
+const useUser = (userId) => {
+  const [user, setUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    // Definimos la función de fetch dentro del efecto
+    const fetchUser = async () => {
+      setIsLoading(true);
+      setError(null); // Limpiar errores anteriores
+
+      try {
+        const response = await axios.get(`/api/users/${userId}`);
+        setUser(response.data);
+      } catch (err) {
+        setError(err.message || "Error al obtener los datos del usuario.");
+        setUser(null);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (userId) {
+      fetchUser();
+    }
+  }, [userId]); // Dependencia del hook: se re-ejecuta si el ID cambia
+
+  // El hook retorna un objeto con el estado actual
+  return { user, isLoading, error };
+};
+
+export default useUser;
+```
+
+
+2. Componente contenedor
+
+UserProfileContainer consumidor de lógica
+
+enfocado en el renderizado condicional, sin useState ni useEffect
+
+```
+// UserProfileContainer.jsx (Refactorizado: Solo Consumo de Lógica y Renderizado Condicional)
+import React from 'react';
+import useUser from './useUser'; // Importa el Custom Hook
+import UserDetails from './UserDetails'; // Importa el Presentacional
+
+const UserProfileContainer = ({ userId }) => {
+  // 1. Llama al Custom Hook para obtener la lógica y el estado
+  const { user, isLoading, error } = useUser(userId);
+
+  // 2. Renderizado Condicional
+  if (isLoading) {
+    return <p>Cargando perfil...</p>;
+  }
+
+  if (error) {
+    return <div className="error-message">Error: {error}</div>;
+  }
+  
+  if (!user) {
+    return <p>Usuario no encontrado.</p>;
+  }
+
+  // 3. Pasa los datos limpios al Componente Presentacional
+  return <UserDetails user={user} />;
+};
+
+export default UserProfileContainer;
+```
+
+
+3. Componente presentacional
+
+```
+const UserDetails = ({ user }) => {
+  return (
+    <div className="profile-card">
+      <img src={user.avatarUrl} alt={`Avatar de ${user.name}`} className="avatar" />
+      <h2>{user.name}</h2>
+      <p>Email: {user.email}</p>
+      <div className="details">
+        {user.bio ? <p>{user.bio}</p> : <p>Sin biografía.</p>}
+      </div>
+    </div>
+  );
+};
+
+export default UserDetails;
+```
+
+ 
+### Card
+
+1. Dumb Component (UserCard.jsx): No sabe de dónde vienen los datos
+
+```
+// Solo UI. Reutilizable en cualquier parte.
+export function UserCard({ name, onEdit, isLoading }) {
+  if (isLoading) return <p>Cargando...</p>;
+
+  return (
+    <div className="card">
+      <h1>{name}</h1>
+      <button onClick={onEdit}>Editar</button>
+    </div>
+  );
+}
+```   
+
+
+2. Smart Component o Hook (useUser.js): Maneja la lógica
+
+```
+// Se encarga de la data.
+function UserProfileContainer({ id }) {
+  const { user, loading } = useFetchUser(id); // Lógica externa
+
+  const handleEdit = () => {
+    console.log("Lógica compleja de edición aquí");
+  };
+
+  return (
+    <UserCard 
+      name={user?.name} 
+      isLoading={loading} 
+      onEdit={handleEdit} 
+    />
+  );
+}
+```
+
+
+### Todo
+
+Hook: 
+
+```
+// useTodos.js (La "inteligencia" ahora es un hook)
+export function useTodos() {
+  const [todos, setTodos] = useState([]);
+  // ... lógica de fetch y handlers aquí ...
+  return { todos, loading, handleToggle };
+}
+
+```
+
+Smart: 
+
+```
+import { TodoList } from './components/TodoList'; // Un Dumb Component
+import { todoService } from './services/todoService';
+
+// TodoPage.jsx (Sigue siendo Smart, pero mucho más legible)
+export function TodoPage() {
+  const { todos, loading, handleToggle } = useTodos();
+
+  return (
+    <main>
+      <h1>Mis Tareas</h1>
+      <TodoList items={todos} onItemClick={handleToggle} isLoading={loading} />
+    </main>
+  );
+}
+```
+
+ui: 
+
+```
+const TodoList ({ items, onItemClick, isLoading }) {
+	return (
+		...
+	);
+}
+```
+
+
+# Use State
+
+
+# Use Effect
+
+
+# Context Api
+
+
+
+# Use Reducer
+
+
+
+# Use callback
+
+
+
+# Use Memo
+
+
+
+
+# Routing
+
+
+
+
+
+# Eventos 
+
+
+
 # Code
 
 
@@ -4270,6 +5046,259 @@ date, time, wheater
 dumb: children (span, p, li, h1..., a)
 
 
+
+## Esqueleto
+
+### 1. Vite
+
+main jsx:
+
+```
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+import './index.css'
+import App from './App.jsx'
+
+createRoot(document.getElementById('root')).render(
+  <StrictMode>
+    <App />
+  </StrictMode>,
+)
+```
+
+
+app.jsx:
+
+```
+import { ThemeProvider } from 'styled-components';
+import { theme } from './styles/theme/theme';
+import { Button } from './shared/components/ui/button/Button';
+
+function App() {
+
+  return (
+    <ThemeProvider theme={theme}>
+        <p>Hola</p>
+        <Button>Botón </Button>
+    </ThemeProvider>
+
+  );
+}
+
+export default App
+```
+
+
+
+### 2. React
+
+```
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import './index.css'
+import App from './App.jsx'
+
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+)
+```
+
+
+### 3. index.html
+
+```
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+```
+
+
+
+### 4. Estilo: 
+
+1. Styled: 
+Si falla el objeto (por logica o sintaxis) al usarlo o construirlo
+no renderizará la app
+
+theme.js:
+
+```
+export const theme = {
+  colors: {
+    primary: '#3b82f6',
+  },
+  spacing: {
+    borderRadius: '2em',
+  },
+}
+```
+
+Button.js
+
+```
+import styled from 'styled-components';
+
+export const Button = styled.button`
+  border-radius: ${({ theme }) => theme.spacing.borderRadius};
+  border-color: ${({ theme }) => theme.colors.primary}
+`;
+```
+
+
+Button.jsx:
+
+```
+
+```
+
+
+### 5. setupTest y vite.config js
+
+
+1. Sin vitest y rtl 
+
+viteconfig.js
+
+```
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+
+// https://vite.dev/config/
+export default defineConfig({
+  plugins: [react()],
+	/*
+	
+	*/
+})
+```
+
+
+
+2. Con vitest y rtl
+
+setupTest.js:
+
+```
+import '@testing-library/jest-dom';
+```
+
+vite.config.js:
+
+```
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+
+// https://vite.dev/config/
+export default defineConfig({
+  plugins: [react()],
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: './src/setupTests.js',
+  }
+})
+
+```
+
+
+### 6. barril 
+
+componente:
+
+```
+import styled from 'styled-components';
+
+export const Button = styled.button`
+  border-radius: ${({ theme }) => theme.spacing.borderRadius};
+  border-color: ${({ theme }) => theme.colors.primary}
+`; 
+```
+
+index:
+
+```
+export { Button } from './button/Button'; 
+```
+
+app:
+
+```
+import { ThemeProvider } from 'styled-components';
+import { theme } from './styles/theme/theme';
+import { Button } from './shared/components/ui';
+
+
+function App() {
+
+  return (
+    <ThemeProvider theme={theme}>
+        <p>Hola</p>
+        <Button>Botón </Button>
+    </ThemeProvider>
+  );
+}
+
+export default App 
+```
+
+
+### 7. provider
+
+provider:
+children para renderear componentes
+
+```
+import { ThemeProvider } from 'styled-components';
+import { theme } from '../styles/theme/theme';
+
+const AppProviders = ({ children }) => {
+  return (
+    <ThemeProvider theme={theme}>
+      {children}
+    </ThemeProvider>
+  );
+};
+
+export default AppProviders;
+```
+
+app:
+Importar componentes a usar
+
+```
+import AppProviders from './providers/AppProviders';
+import { Button } from './shared/components/ui';
+
+function App() {
+
+  return (
+    <AppProviders>
+        <p>Hola</p>
+        <Button>Botón </Button>
+    </AppProviders>
+  );
+}
+
+export default App
+```
+
+
+
 # Todo
 
-provider, theme, test
+1. provider, theme (hecho/funciona)
+
+2. test y config/organización (hecho)
+
+3. archivos y carpetas separados (style y provider) (hecho)
+
+4. global styles
+
+5. objetos/entidades y componentes
+
+
+
+

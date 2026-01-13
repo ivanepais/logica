@@ -362,5 +362,163 @@ puedes usar rebase -i (interactivo) para limpiar el historial y fusionar (squash
 
 
 
+### Git/github flow: Feature Branching
+
+##### Se basa en mantener una rama central (main o master) siempre estable y lista para producción.
+
+1. Clonar y Mantener la Rama Principal
+
+Rama main (o master) es la fuente de la verdad y representa el código de producción.
+
+Clonar el proyecto
+git clone url
+
+Asegurar rama principal
+git checkout main
+Siempre trabaja sobre la versión más reciente.
+
+Actualizar main
+git pull origin main
+##### Siempre haz un pull antes de crear una rama nueva.
+
+
+2. Crear y Trabajar en rama Feature
+
+##### Cada nueva tarea, corrección de bug o característica debe tener su propia rama de corta duración.
+
+Crear y cambiar
+git checkout -b feature/nombre-de-la-tarea
+Usa prefijos (ej. feature/, bugfix/) y nombres descriptivos y concisos.
+
+Hacer cambios
+(Modifica archivos, escribe código)
+Trabaja de forma aislada.
+
+Hacer commits
+git commit -am "feat: mensaje descriptivo conciso"
+
+
+-a / --all: Esta opción prepara automáticamente todos los archivos modificados y eliminados con seguimiento antes de la confirmación
+Combina eficazmente git add -u con git commit. 
+Los archivos sin seguimiento no se incluyen
+
+git add -A = git add . + git add -u
+
+git add .
+agrega todos los archivos (existentes, modificados y nuevos) al área de almacenamiento temporal
+pero no elimina los archivos que se han eliminado del disco.
+
+git add -u
+solo agrega los archivos rastreados actualmente (que han sido modificados) al área de preparación
+y también verifica si se han eliminado (en caso afirmativo, se eliminan del área de preparación)
+Esto significa que no prepara los archivos nuevos.
+
+
+Enviar cambios
+git push origin feature/nombre-de-la-tarea
+Haz push con frecuencia como backup y para colaborar.
+
+
+3. Sincronización y Preparación del Pull Request (PR)
+
+##### Antes de fusionar tus cambios, debes asegurarte de que tu rama está actualizada con main.
+
+Volver al main
+git checkout main
+Navega a la rama base.
+
+Actualizar main
+git pull origin main
+Descarga los últimos cambios de otros.
+
+Volver a tu feature
+git checkout feature/nombre-de-la-tarea
+Regresa a tu rama.
+
+
+Integrar main
+git rebase main
+Recomendación: rebase ofrece un historial limpio y lineal.
+
+Alternativamente, usa git merge main si prefieres mantener los commits de fusión.
+
+Forzar push
+git push --force-with-lease
+Solo si usaste rebase y tu rama ya estaba en el remote
+El flag --force-with-lease es más seguro que --force.
+
+
+4. Revisión, Fusión y Limpieza
+
+##### Una vez que los cambios están listos y revisados, se fusionan y la rama se elimina.
+
+Crear PR
+(Usar GitHub/GitLab/Bitbucket UI)
+Siempre solicita una revisión de código (Code Review).
+
+Fusionar
+(Usar el botón Squash and Merge en la UI)
+Recomendación: Squash and Merge comprime todos los commits de tu feature en un solo commit limpio en main.
+
+Eliminar rama local
+git branch -d feature/nombre-de-la-tarea
+Limpia tu entorno. 
+Usa -D si hay commits sin fusionar.
+
+Eliminar rama remota
+git push origin --delete feature/nombre-de-la-tarea
+Limpia el servidor remoto.
+
+
+
+### Prácticas
+
+1. Mensajes de Commit Limpios
+
+Imperativo y Conciso: "Fix: corrige el error de cálculo"
+
+Convencional: Usa prefijos estándar:
+feat: Nueva característica.
+fix: Corrección de un bug.
+docs: Cambios en la documentación.
+refactor: Refactorización sin cambio de funcionalidad.
+chore: Mantenimiento (ej. actualización de dependencias).
+
+
+2. .gitignore
+
+##### Excluye siempre: Archivos de build (/dist, /build), carpetas de dependencias (/node_modules), credenciales y configuraciones locales (.env).
+Comando: Crea un archivo .gitignore en la raíz del proyecto.
+
+
+3. rebase vs merge
+
+git rebase (Recomendado):
+Mueve tu rama feature encima de main
+Crea un historial limpio, lineal y fácil de leer.
+
+##### Nunca hagas `rebase` en ramas compartidas o públicas
+
+git merge (Alternativa):
+Fusiona las ramas, manteniendo un commit de fusión y un historial no lineal
+##### Es más seguro para ramas compartidas.
+
+
+4. Limpieza del historial local
+
+git commit --amend
+Útil para modificar el último commit
+cambiar el mensaje o añadir un archivo olvidado
+antes de hacer push.
+
+git reset
+Útil para deshacer o mover el HEAD (usar con cuidado).
+
+git reset HEAD~1: Deshace el último commit, manteniendo los cambios en tu área de staging.
+
+git reset --hard commit-hash: Borra permanentemente todos los cambios locales hasta el commit especificado.
+
+
+
 
 
