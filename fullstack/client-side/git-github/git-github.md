@@ -520,5 +520,476 @@ git reset --hard commit-hash: Borra permanentemente todos los cambios locales ha
 
 
 
+## Nomenclatura Brances, Commits
+
+### Branches 
+
+Patrón de prefijos:
+permite agrupar las ramas lógicamente y facilita el uso de herramientas de automatización
+
+Formato:
+categoría/ticket-id-breve-descripcion
+
+Categorias:
+
+1. feature/: Para el desarrollo de nuevas funcionalidades.
+(Ej: feature/login-oauth).
+
+2. bugfix/: Para corregir errores en ramas de desarrollo.
+(Ej: bugfix/header-mobile-overlap).
+
+3. hotfix/: Reparaciones críticas urgentes que van directo a producción (main o master).
+
+4. release/: Preparación de una nueva versión oficial.
+(Ej: release/v1.2.0).
+
+5. docs/: Cambios exclusivamente en la documentación.
+
+6. refactor/: Cambios en el código que no añaden funciones ni arreglan bugs
+solo mejoran la estructura.
+
+Usa siempre minúsculas y separa las palabras con guiones (-),
+
+
+### Commits
+
+Conventional Commits:
+conjunto de reglas para crear un historial de commits explícito y fácil de leer
+
+Estructura:
+<tipo>(alcance opcional): <descripción>
+
+Tipo | Caso de uso
+
+1. feat:
+Una nueva característica para el usuario.
+
+2. fix:
+Solución a un error.
+
+3. docs:
+Cambios en la documentación.
+
+4. style:
+Cambios de formato (espacios, comas) que no afectan el código.
+
+5. refactor:
+Cambio de código que no corrige un error ni añade una función.
+
+6. perf:
+Mejora de rendimiento.
+
+7. test:
+Añadir o corregir pruebas existentes.
+
+8. chore:
+Tareas rutinarias (actualizar dependencias, configurar builds).
+
+Ej:
+
+feat(auth): add google login integration
+
+fix(api): resolve null pointer exception on user profile
+
+docs: update readme with installation steps
+
+
+### Historial Limpio
+
+1. Imperativo
+commit como si estuvieras dando una orden
+
+Mal: "I added the search bar" o "Adding search bar".
+Bien: "add search bar".
+
+2. Sin punto final
+La primera línea es un título, no llevan punto.
+
+3. Límite de 50 caracteres
+mensaje principal breve
+Si necesitas explicar más, deja una línea en blanco y escribe un párrafo detallado abajo.
+
+4. Commits atómicos
+Un commit debe hacer una sola cosa
+Si arreglaste un bug y además cambiaste el color de un botón
+haz dos commits
+
+
+
+## Git Rebase flow
+
+Evitar los "merge commits":
+mensajes automáticos de "Merge branch 'main' into feature/...")
+ensucian el historial
+
+Rebase mantiene una línea de tiempo lineal y limpia.
+
+
+Ej: Sacar una rama feature desde main
+Mientras otros suben cambios a main
+
+En lugar de hacer un merge (que crea un "nudo" en el historial)
+el rebase toma tus commits, los levanta un momento
+pone los nuevos cambios de main debajo
+y vuelve a soltar tus commits encima
+
+
+1. Actualiza base local
+Rama principal esté al día.
+
+```
+git checkout main
+git pull origin main
+```
+
+2. Iniciar el Rebase en tu rama
+En la rama de trabajo
+"rebasar" tus cambios sobre el nuevo main.
+
+```
+git checkout feature/mi-tarea
+git rebase main
+```
+
+3. Resolución de conflictos (Si los hay)
+Si hay conflictos, Git se detendrá
+
+Identifica y arregla los archivos marcados
+Añade los cambios: `git add .`
+Continúa el proceso: `git rebase --continue` (Nunca hagas commit aquí).```
+
+4. Sube los cambios (El "Force Push")
+
+```
+git push origin feature/mi-tarea --force-with-lease
+```
+
+`--force-with-lease`:
+versión "educada" de force push
+no sobreescribirá el trabajo de otros si alguien más subió algo a esa rama remota por accidente
+
+##### Regla para Rebase: Nunca hagas rebase en ramas públicas o compartidas
+Si estás trabajando en una rama donde hay más personas colaborando
+el rebase les romperá el historial a todos
+Úsalo solo en tus ramas de funciones personales antes de integrarlas al proyecto principal.
+
+Merge:
+Historial: Preserva la historia real y cronológica
+Trazabilidad: Fácil ver cuándo se integró una rama
+Conflictos: Se resuelven todos de una vez en un commit
+Riesgo: Muy bajo.
+
+Rebase:
+Crea un historial lineal y estético
+Difícil ver cuándo ocurrió la integración.
+Se resuelven paso a paso (commit por commit).
+Medio (si se usa en ramas compartidas).
+
+
+#### Rebase Interactivo (-i)
+
+Si tienes 10 commits de "fix", "typo", "fix again
+puedes usar git rebase -i HEAD~10 para hacer squash (combinarlos)
+en un solo commit limpio antes de enviarlo a revisión
+
+
+## Proyecto
+
+1. Git Init
+preparar el terreno localmente antes de subirlo a la nube
+(GitHub, GitLab, Bitbucket).
+
+```
+git init
+```
+
+2. Crear archivo .gitignore:
+No querrás subir carpetas pesadas como node_modules
+archivos de configuración personal o ejecutables
+
+Puedes usar `gitignore.io` para generar uno según tu lenguaje o framework
+
+3. Initial Commit
+
+```
+git add .
+git commit -m "chore: initial commit with readme and gitignore"
+```
+
+
+### Remote
+
+Conexión al mundo:
+Una vez tienes tu historial local, necesitas un lugar donde respaldarlo
+
+1. Crear repo remoto
+
+2. Vincula repo local con el remoto
+
+```
+git remote add origin https://github.com/usuario/tu-proyecto.git
+```
+
+3. Subir rama principal
+
+```
+git branch -M main  # Asegura que la rama se llame 'main'
+git push -u origin main
+```
+
+
+### Feature Branch Workflow
+
+Nunca se trabaja directamente sobre main
+
+1. Sincronización
+Antes de empezar algo nuevo
+asegúrate de tener lo último de tus compañeros
+
+```
+git checkout main
+git pull origin main
+```
+
+2. Creación de rama
+Rama descriptiva para tu tarea
+
+```
+git checkout -b feature/login-integration
+```
+
+3. Trabajo y Commits
+Hacer cambios pequeños y frecuentes siguiendo la nomenclatura
+feat:, fix:, etc
+
+```
+git add .
+git commit -m "feat: add login service with jwt"
+```
+
+4. Rebase y Limpieza
+haz un rebase con main antes de enviar tu trabajo
+
+```
+git fetch origin
+git rebase origin/main
+```
+
+5. Publicación y Pull Request (PR)
+Sube tu rama y abre una solicitud de cambios en una plataforma
+para que alguien revise tu código
+
+```
+git push origin feature/login-integration
+```
+
+#### Comandos esenciales
+
+`git status` Ver qué archivos has modificado y qué está listo para commit.
+`git log --oneline` Ver un resumen rápido y bonito de la historia.
+`git diff` Ver exactamente qué líneas de código cambiaste.
+`git remote -v` Verificar a qué repositorio remoto estás conectado.
+
+
+#### README
+Un proyecto debe tener un README.md
+No solo para que otros lo lean, sino para que sepas cómo instalarlo
+
+Qué hace el proyecto?
+¿Cómo se instala? (npm install, pip install -r requirements.txt, etc.)
+¿Cómo se ejecuta?
+
+
+# Versiones
+
+Semantic Versioning (SemVer) como estándar
+Le dice a otros desarrolladores exactamente qué esperar de una actualización antes de que instalen nada
+
+## 1. MAJOR.MINOR.PATCH
+
+Ej: 2.4.1. Cada número tiene un significado
+
+Incremento e Impacto
+
+MAJOR (X.0.0):
+Cuando haces cambios incompatibles
+(Breaking Changes)
+Requiere que los usuarios cambien su código
+
+MINOR (0.X.0):
+Cuando añades funcionalidad nueva que no rompe nada previo
+Nuevas funciones, pero todo sigue funcionando
+
+PATCH (0.0.X):
+Cuando corriges errores o haces ajustes internos (Bugs).
+Seguro de actualizar sin pensarlo.
+
+
+### Casos especiales (Pre-releases):
+
+Lanzar versiones de prueba
+Se añade un guion después del parche
+
+1.0.0-alpha.1: Para pruebas internas iniciales.
+
+1.0.0-beta.2: Para pruebas externas con usuarios seleccionados.
+
+1.0.0-rc.1: (Release Candidate) Todo parece listo para lanzarse.
+
+
+## 2. Calendar Versioning (CalVer)
+
+Algunos proyectos prefieren basarse en el tiempo en lugar de en la compatibilidad del código
+común en sistemas operativos o apps como Ubuntu o JetBrains
+
+Formatos comunes:
+YYYY.MM.Micro (Ej: 2024.03.1)
+YY.MM (Ej: 24.04 - como Ubuntu)
+
+##### Si estás creando una librería o API, usa SemVer
+##### Si es un producto final o software de usuario, CalVer puede ser más intuitivo
+
+
+
+## 3. Git Tags
+
+Crear una versión:
+
+1. Estar en main:
+
+```
+git checkout main
+```
+
+2. Crear tag anotado:
+ -a permite poner un mensaje descriptivo
+
+ ```
+git tag -a v1.2.0 -m "Release v1.2.0: add dark mode and fix login bug"
+ ```
+
+3. subir tag al servidor
+Git no sube los tags automáticamente con push
+
+```
+git push origin v1.2.0
+```
+
+
+## 4. Archivo CHANGELOG.md
+
+Versión profesional con un historial de cambios
+Estándar `Keep a Changelog`
+
+
+### Categorías de cambios
+
+En cada version
+
+`Added`: Nuevas funcionalidades
+`Changed`: Cambios en funciones existentes.
+`Deprecated`: Funciones que se eliminarán pronto.
+`Removed`: Funciones eliminadas.
+`Fixed`: Corrección de errores.
+`Security`: En caso de vulnerabilidades.
+
+
+# Desarrollo
+
+1. Desarrollas en ramas feature/.
+2. Haces merge a main.
+3. Cuando tienes suficientes cambios, actualizas el número de versión en el código (ej: package.json).
+4. Creas el git tag.
+5. Documentas en el CHANGELOG.md.
+
+
+# CHANGELOG.md 
+
+Diario de vida del proyecto, escrito para que otros humanos lo entiendan
+
+Mientras que el historial de Git es un registro técnico de cada paso
+El Changelog es un resumen curado de los hitos importantes
+
+
+## 4 Mandamientos
+
+1. Hecho para humanos: No es un volcado de git log
+Evita mensajes como "fix typo" o "update index.js".
+
+2. Agrupado por categorías: Los cambios deben estar clasificados para que el usuario encuentre rápido lo que busca
+
+3. Orden cronológico inverso: versión más reciente siempre va arriba del todo.
+
+4. Enlaces a versiones: Es ideal poner enlaces que comparen la versión actual con la anterior
+(usando las URLs de comparación de GitHub/GitLab).
+
+
+## Estructura Estándar
+
+Cada versión debe dividirse en categorías específicas para que sea escaneable:
+
+Added: Para nuevas funcionalidades.
+Changed: Para cambios en funcionalidades existentes.
+Deprecated: Para funciones que pronto serán eliminadas.
+Removed: Para funciones eliminadas en esta versión.
+Fixed: Para cualquier corrección de errores.
+Security: En caso de vulnerabilidades de seguridad
+
+
+## Ejemplo
+
+archivo en la raíz de tu proyecto
+
+```
+# Changelog
+
+Todos los cambios notables en este proyecto serán documentados en este archivo.
+
+El formato está basado en [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
+y este proyecto se adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [1.1.0] - 2026-02-22
+
+### Added
+- Nuevo sistema de autenticación biométrica para la app móvil.
+- Soporte para exportación de reportes en formato Excel.
+
+### Fixed
+- Error de desbordamiento en el dashboard al usar pantallas de 13 pulgadas.
+- El botón de "Cerrar sesión" no funcionaba en Safari.
+
+### Changed
+- El proceso de registro ahora requiere validación de email obligatoria.
+
+---
+
+## [1.0.1] - 2026-01-15
+
+### Fixed
+- Error de conexión con la base de datos en entornos de staging.
+
+## [1.0.0] - 2026-01-01
+
+### Added
+- Lanzamiento inicial del proyecto con módulos de Usuario, Ventas y Reportes.
+```
+
+##### El Changelog dice qué valor aporta ese cambio o qué impacto tiene en el usuario
+Un commit dice qué cambió técnicamente
+git log está lleno de "oops", "forgot a semicolon" o "fix test".
+A tu usuario final eso no le aporta nada
+
+
+### Automatización
+
+Si usas Conventional Commits, existen herramientas que pueden generar el borrador
+
+Standard Version: Genera el tag, sube la versión en el package.json y actualiza el CHANGELOG.md automáticamente
+Release It!: Una herramienta muy potente para manejar todo el flujo de lanzamiento.
+
+
+##### No esperes a acumular 20 versiones para empezar el Changelog
+Es mucho más fácil escribir 3 líneas justo después de hacer el merge a main
+que intentar recordar qué hiciste hace 6 meses.
 
 

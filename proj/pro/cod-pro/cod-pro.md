@@ -4858,13 +4858,1032 @@ const TodoList ({ items, onItemClick, isLoading }) {
 ```
 
 
+
 # Use State
+
+Retorna un array con dos elementos
+1. El valor actual del estado.
+2. Una función para actualizar ese estado
+
+```
+const [estado, setEstado] = useState(valorInicial);
+
+```
+
+estado: es la variable que contiene el valor actual.
+setEstado: es la función que se usa para actualizar el estado.
+valorInicial: es el valor con el que se inicia el estado (puede ser un número, cadena, objeto, array, etc.).
+
+Cada actualización de estado provoca que el componente se vuelva a renderizar, mostrando el nuevo valor
+
+1. Re-renderizado: 
+Cada vez que actualizas el estado con setEstado, React vuelve a renderizar el componente, reflejando los cambios en la interfaz.
+
+2. Inmutabilidad: 
+Aunque actualizas el estado, no debes mutar el valor original directamente. 
+Usa la función setEstado para garantizar la inmutabilidad, lo cual es esencial para que React detecte los cambios.
+
+3. Funciones como actualización: 
+
+##### Si el nuevo estado depende del estado anterior, es recomendable usar una función en setEstado para asegurarte de que usas el valor más reciente:
+
+```
+setContador(prevContador => prevContador + 1);
+
+```
+
+Múltiples estados:
+Puedes usar varios para manejar diferentes piezas de estado
+en el mismo componente.
+
+
+##### Actualización sin funcion
+
+1. 
+
+```
+function MyButton() {
+  const [count, setCount] = useState(0);
+  // ...
+```
+
+Obtendrás dos cosas de useState: el estado actual (count) y la función que te permite actualizarlo (setCount). 
+
+```
+function MyButton() {
+  const [count, setCount] = useState(0);
+
+  function handleClick() {
+    setCount(count + 1);
+  }
+
+  return (
+    <button onClick={handleClick}>
+      Clicked {count} times
+    </button>
+  );
+}
+```
+
+2. 
+Renderizar el componente varias veces: 
+Cada uno tendrá su contador
+
+```
+import { useState } from 'react';
+
+export default function MyApp() {
+  return (
+    <div>
+      <h1>Counters that update separately</h1>
+      <MyButton />
+      <MyButton />
+    </div>
+  );
+}
+
+function MyButton() {
+  const [count, setCount] = useState(0);
+
+  function handleClick() {
+    setCount(count + 1);
+  }
+
+  return (
+    <button onClick={handleClick}>
+      Clicked {count} times
+    </button>
+  );
+}
+```
+
+
+## Objetos/arrays en useState
+
+```
+import React, { useState } from 'react';
+
+const Usuario = () => {
+  const [user, setUser] = useState({ nombre: 'Juan', edad: 25 });
+
+  const actualizarEdad = () => {
+    // Siempre se recomienda mantener la inmutabilidad usando el spread operator
+    setUser(prevUser => ({ ...prevUser, edad: prevUser.edad + 1 }));
+  };
+
+  return (
+    <div>
+      <h2>{user.nombre}</h2>
+      <p>Edad: {user.edad}</p>
+      <button onClick={actualizarEdad}>Cumplir años</button>
+    </div>
+  );
+};
+
+export default Usuario;
+
+```
+
+Se usa un objeto para representar un usuario, y se actualiza una de sus propiedades sin modificar las demás
+
+
+## Prácticas useState
+
+Gestionar el estado no se trata solo de cambiar valores
+sino de hacerlo de forma predecible y eficiente
+
+1. Nomenclatura
+la consistencia es clave
+
+Usa siempre la desestructuración de arreglos con el patrón `[algo, setAlgo]`.
+
+```
+Mal: const [data, updateData] = useState([]);
+Bien: const [users, setUsers] = useState([]);
+```
+
+2. Actualizaciones Basadas en el Estado Anterior
+Si tu nuevo estado depende del valor del estado anterior
+(como un contador o un toggle), siempre usa una función de actualización
+
+React procesa las actualizaciones en lotes y confiar en el valor directo puede causar errores en condiciones de carrera.
+
+```
+// Potencialmente problemático
+setCount(count + 1);
+
+// Seguro y confiable
+setCount(prevCount => prevCount + 1);
+```
+
+3. Lazy Initialization
+Si el valor inicial de tu estado proviene de una función costosa
+(como leer de localStorage o un cálculo complejo)
+pásale una función a useState
+
+Esto evita que la función costosa se ejecute en cada renderizado.
+
+```
+// Se ejecuta solo una vez al montar el componente
+const [token, setToken] = useState(() => {
+  return localStorage.getItem('auth-token') || '';
+});
+```
+
+4. Estado Único o Múltiples Estados
+##### regla de oro: Agrupa el estado solo si los valores cambian al mismo tiempo
+
+Inputs de un formulario: Objeto único
+Suelen actualizarse y enviarse juntos.
+
+Variables independientes (ej: isModalOpen, searchQuery):
+Múltiples useState
+Evitas re-renders innecesarios y simplificas la lógica.
+
+5. Evita el Estado Redundante (Estado Derivado)
+##### Si puedes calcular un valor a partir de las props o de otro estado, no lo guardes en un useState
+Esto evita inconsistencias
+
+Error común: Guardar fullName en el estado cuando ya tienes firstName y lastName.
+Mejor práctica: Calcúlalo directamente en el cuerpo del componente.
+
+```
+const [firstName, setFirstName] = useState('Jane');
+const [lastName, setLastName] = useState('Doe');
+
+// Esto es estado derivado, no necesita un useState propio
+const fullName = `${firstName} ${lastName}`;
+```
+
+6. No Modifiques el Estado Directamente (Inmutabilidad)
+Nunca intentes cambiar una propiedad de un objeto o un elemento de un arreglo directamente
+React detecta cambios comparando referencias de memoria.
+
+```
+// Error: React no se enterará del cambio
+user.name = 'Carlos'; 
+
+// Correcto: Crea una copia nueva
+setUser({ ...user, name: 'Carlos' });
+```
+
+7. useReducer
+Si tu lógica de estado se vuelve compleja (por ejemplo, muchas propiedades que dependen unas de otras
+otras o múltiples formas de actualizar el mismo objeto), useState puede quedarse corto
+En esos casos, useReducer suele ser una opción más limpia y fácil de testear.
+
+
+### useReducer
+
+useState es un interruptor de luz (encendido/apagado)
+useReducer es el tablero eléctrico
+más complejo de configurar, pero te permite gestionar circuitos complicados
+
+Componentes:
+
+1. Estado (state): Los ingredientes actuales en la cocina.
+2. Acción (action): El pedido del cliente (ej: "Quiero una hamburguesa").
+3. Despacho (dispatch): El camarero que lleva el pedido a la cocina.
+4. Reductor (reducer): El chef, que recibe el pedido y los ingredientes,
+y decide cómo transformar esos ingredientes en un plato nuevo.
+
+
+Ej: Contador Avanzado
+No solo suma, sino que también resta y reinicia.
+
+```
+import React, { useReducer } from 'react';
+
+// 1. Definimos el estado inicial
+const initialState = { count: 0 };
+
+// 2. El Reducer: La función "cerebro" que decide qué cambia
+// Recibe el estado actual y una acción
+function reducer(state, action) {
+  switch (action.type) {
+    case 'increment':
+      return { count: state.count + 1 };
+    case 'decrement':
+      return { count: state.count - 1 };
+    case 'reset':
+      return initialState;
+    default:
+      throw new Error('Acción no reconocida');
+  }
+}
+
+function Contador() {
+  // 3. Inicializamos useReducer
+  const [state, dispatch] = useReducer(reducer, initialState);
+
+  return (
+    <div style={{ textAlign: 'center' }}>
+      <h1>Cuenta: {state.count}</h1>
+      
+      {/* 4. Usamos dispatch para enviar "órdenes" */}
+      <button onClick={() => dispatch({ type: 'decrement' })}>-</button>
+      <button onClick={() => dispatch({ type: 'increment' })}>+</button>
+      <button onClick={() => dispatch({ type: 'reset' })}>Reset</button>
+    </div>
+  );
+}
+```
+
+Más código:
+tres useState es más corto, pero useReducer brilla por:
+
+1. Lógica Centralizada:
+Toda la lógica de "cómo cambia el estado"
+está en una sola función (reducer) fuera del componente."
+
+2. Previsibilidad:
+Al usar un switch, evitas cambios accidentales.
+El estado solo cambia de formas predefinidas."
+
+3. Facilidad de Testeo:
+Como el reducer es una "función pura" (mismos inputs = mismos outputs)
+es facilísima de testear sin necesidad de React.
+
+4. Escalabilidad:
+Si mañana quieres añadir "multiplicar por 2"
+solo añades un case en el reducer."
+
+
+#### Aplicar useReducer
+
+1. Cuando tienes un objeto de estado con más de 3 o 4 propiedades.
+2. Cuando la lógica de actualización es compleja (ej: si cambias A, también debe cambiar B).
+3. Si te encuentras pasando muchas funciones de actualización de estado (setAlgo) a través de varios niveles de componentes
+
+
+
+### Casos de uso de useReducer
+
+
 
 
 # Use Effect
 
+Permite realizar efectos secundarios en componentes funcionales
+
+Obtener datos (fetch)
+Suscribirse a eventos
+Manipulación directa del DOM
+Configuración y limpieza de recursos (timers, listeners, etc.)
+
+##### Cada vez que un componente se renderiza, useEffect se ejecuta después del renderizado
+##### Puedes controlar cuándo se ejecuta pasando un array de dependencias
+
+1. Sin array de dependencias:
+Se ejecuta después de cada renderizado
+
+```
+useEffect(() => {
+  // Se ejecuta en cada renderizado
+  console.log("Renderizado o actualización");
+});
+
+```
+
+2. Array de dependencias vacío `([])`:
+Se ejecuta solo una vez, similar a componentDidMount
+
+```
+useEffect(() => {
+  // Se ejecuta solo al montar el componente
+  console.log("Componente montado");
+}, []);
+
+```
+
+3. Dependencias específicas:
+Se ejecuta cuando alguna de las dependencias cambia
+
+```
+useEffect(() => {
+  // Se ejecuta cuando 'count' cambia
+  console.log(`El contador cambió a ${count}`);
+}, [count]);
+
+```
+
+
+Ej: Actualizar el título del documento cada vez que cambie un contador:
+
+```
+import React, { useState, useEffect } from "react";
+
+const ContadorConEfecto = () => {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    // Actualiza el título del documento usando la API del navegador
+    document.title = `Has clickeado ${count} veces`;
+  }, [count]); // Se ejecuta cada vez que 'count' cambia
+
+  return (
+    <div>
+      <p>Has clickeado {count} veces</p>
+      <button onClick={() => setCount(count + 1)}>Incrementar</button>
+    </div>
+  );
+};
+
+export default ContadorConEfecto;
+
+```
+
+## Limpieza de Efectos
+##### Algunos efectos requieren una limpieza para evitar fugas de memoria o comportamientos no deseados
+##### Por ejemplo, cuando se crea un timer o se suscribe a un evento, se recomienda limpiar en la función de retorno del efecto:
+
+```
+import React, { useState, useEffect } from "react";
+
+const Reloj = () => {
+  const [time, setTime] = useState(new Date());
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTime(new Date());
+    }, 1000);
+
+    // Función de limpieza: se ejecuta antes de desmontar el componente
+    return () => clearInterval(timer);
+  }, []); // Se ejecuta solo una vez al montar
+
+  return <div>{time.toLocaleTimeString()}</div>;
+};
+
+export default Reloj;
+
+```
+
+
+Claves:
+useEffect es esencial para manejar operaciones asíncronas y efectos secundarios en componentes funcionales de React
+Con el manejo correcto de las dependencias y la limpieza, puedes asegurarte de que tu componente se comporte de forma predecible y eficiente
+
+
+## Prácticas para useEffect
+
+1. Dependencias
+El error número uno es mentirle al arreglo de dependencias `[]`.
+Si usas una variable dentro del efecto, debe estar en el arreglo.
+
+problema: Si omites una dependencia, el efecto usará valores "viejos" (stale closures) y tu app se comportará de forma errática.
+solución: Confía en el linter (eslint-plugin-react-hooks). Si te da un aviso, hazle caso.
+
+2. Limpieza
+Muchos olvidan que useEffect puede devolver una función
+##### Esta función es vital para evitar fugas de memoria (memory leaks).
+Úsala siempre que
+
+Inicies un setInterval o setTimeout.
+Añadas un addEventListener.
+Te suscribas a un WebSocket
+
+```
+useEffect(() => {
+  const timer = setInterval(() => console.log('Tick'), 1000);
+
+  // Función de limpieza: se ejecuta antes de desmontar 
+  // o antes de volver a ejecutar el efecto
+  return () => clearInterval(timer);
+}, []);
+```
+
+3. No usar useEffect para transformar datos
+Si puedes calcular algo durante el renderizado (basado en props o state), no uses un efecto
+Esto solo causa renderizados extra e innecesarios
+
+Ej: Usar un efecto para actualizar un totalPrice cuando cambia el cart.
+solución: Calcular el totalPrice directamente en el cuerpo de la función
+(o usar useMemo si el cálculo es muy costoso).
+
+4. Evita las "Race Conditions" en Fetching
+Cuando pides datos a una API, el orden en que llegan las respuestas no está garantizado
+Si el usuario cambia de página rápido, una petición vieja podría sobrescribir los datos nuevos.
+
+Tip: Usa una variable de control o un AbortController
+
+```
+useEffect(() => {
+  let active = true;
+
+  fetchData(id).then(data => {
+    if (active) setData(data);
+  });
+
+  return () => { active = false; }; // Cancela la actualización si el id cambia
+}, [id]);
+```
+
+5. SRP
+No intentes meter toda la lógica de tu componente en un solo useEffect gigante
+Es mejor tener varios efectos pequeños, cada uno encargado de una sola cosa.
+
+Efectos pequeños:
+Más fácil de leer y testear.
+
+Funciones fuera:
+Si una función no usa nada del componente, muévela fuera para que no sea una dependencia.
+
+Primitive dependencies:
+Intenta que las dependencias sean strings o numbers, no objetos/arreglos (a menos que uses useMemo).
+
+
+Error común: Objetos como dependencias
+Si pasas un objeto {} o un arreglo `[]` directamente en las dependencias
+el efecto se ejecutará en cada render
+porque en JavaScript `[] === []` es false (tienen referencias distintas).
+
+useEffect no es para manejar eventos de usuario (como clics)
+es para sincronizar tu componente con algo externo
+
+
+## Solicitudes API
+
+Forma más común de usar useEffect
+##### La clave está en gestionar no solo los datos, sino también el tiempo (la espera) y los errores
+
+Los 3 componentes del Estado de una API:
+Necesitas rastrear tres cosas en el estado:
+
+1. data: El resultado de la API (inicialmente null o un arreglo vacío).
+2. loading: Un booleano para saber si la petición sigue en curso.
+3. error: Para capturar si algo salió mal (problemas de red, 404, etc.). 
+
+Ej: traer una lista de usuarios desde una API pública al cargar el componente
+
+```
+import React, { useState, useEffect } from 'react';
+
+function UserList() {
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    // Definimos la función dentro del efecto
+    const fetchUsers = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch('https://jsonplaceholder.typicode.com/users');
+        
+        if (!response.ok) {
+          throw new Error('Error al conectar con el servidor');
+        }
+
+        const data = await response.json();
+        setUsers(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUsers();
+  }, []); // [] significa que solo se ejecuta una vez al montar
+
+  // 1. Caso de Carga
+  if (loading) return <p>Cargando usuarios...</p>;
+
+  // 2. Caso de Error
+  if (error) return <p>Hubo un error: {error}</p>;
+
+  // 3. Caso de Éxito
+  return (
+    <ul>
+      {users.map(user => (
+        <li key={user.id}>{user.name}</li>
+      ))}
+    </ul>
+  );
+}
+```
+
+##### 1. Uso de async/await: Es mucho más legible que los .then() encadenados.
+
+##### 2. Bloque try/catch/finally
+try: Intentas la operación.
+catch: Atrapas el error si la API falla.
+finally: Apagas el estado de carga sin importar si la petición fue exitosa o no
+
+##### 3. Validación response.ok: fetch no lanza un error automáticamente si el servidor responde con un 404 o 500
+solo falla si hay un problema de red. Por eso debemos verificarlo manualmente
+
+Flujo:
+
+1. Inicio: Se monta el componente
+loading: true
+
+2. Petición: fetch está en camino
+"El usuario ve un "Cargando...""
+
+3. Éxito: Llegan los datos
+loading: false, `users: [...]`
+
+Fallo: El servidor falla
+loading: false, error: "Mensaje""
+
+
+##### Funciona bien para cosas simples, pero tiene problemas si el usuario navega rápido entre páginas
+##### Pueden ocurrir fugas de memoria o actualizaciones de estado en componentes desmontados
+
+
+### Solicitud Avanzada
+
+sincronización
+En aplicaciones reales, los usuarios hacen clic rápido,
+cambian de pestaña o cierran modales antes de que la API responda.
+
+si no los gestionas aparecen:
+Race Conditions (Condiciones de carrera): La respuesta de una búsqueda vieja llega después de la nueva y sobrescribe los datos correctos
+Memory Leaks (aunque menos críticos hoy): Intentar actualizar el estado de un componente que ya no existe.
+
+Herramientas:
+
+1. AbortController
+interfaz nativa de JS
+permite cancelar peticiones web a mitad de camino
+
+```
+useEffect(() => {
+  const controller = new AbortController();
+  const signal = controller.signal; // Este es el "tique" de cancelación
+
+  const fetchData = async () => {
+    try {
+      const response = await fetch(url, { signal }); // Pasamos la señal al fetch
+      const data = await response.json();
+      setResponse(data);
+    } catch (err) {
+      if (err.name === 'AbortError') {
+        console.log('Petición cancelada con éxito');
+      } else {
+        setError(err.message);
+      }
+    }
+  };
+
+  fetchData();
+
+  // LIMPIEZA: Si el componente se desmonta o el ID cambia,
+  // se ejecuta esta función y cancela la petición en curso.
+  return () => controller.abort();
+}, [url]);
+```
+
+2. Patrón "Custom Hook" (useFetch)
+Escribir toda esa lógica cada vez es agotador y ensucia el código
+La mejor práctica es encapsular todo en un Custom Hook
+Esto separa la lógica de negocio de la interfaz.
+
+```
+// useFetch.js
+import { useState, useEffect } from 'react';
+
+export function useFetch(url) {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    setLoading(true);
+
+    fetch(url, { signal: controller.signal })
+      .then(res => res.json())
+      .then(setData)
+      .catch(err => {
+        if (err.name !== 'AbortError') setError(err);
+      })
+      .finally(() => setLoading(false));
+
+    return () => controller.abort();
+  }, [url]);
+
+  return { data, loading, error };
+}
+```
+
+3. Situaciones:
+
+Race Condition
+Si el usuario busca "A" y luego "B"
+el efecto de "A" se cancela antes de que "B" empiece
+Solo verás el resultado de "B".
+
+Componentes Desmontados:
+React 18+ ya no lanza el famoso aviso de "cannot update state on unmounted component"
+pero cancelar la petición ahorra ancho de banda y CPU.
+
+Limpieza de Código:
+Tu componente principal pasa de tener 20 líneas de lógica de una API
+a solo una: const { data } = useFetch(url);
+
+
+4. El estado de la industria
+
+TanStack Query (React Query):
+Maneja caché, reintentos automáticos, cancelación y estados de carga de forma nativa
+
+SWR: Una alternativa más ligera creada por Vercel
+
+
+
+
+
+
+### Solicitud Compleja
+
+
+
+## Solicitud Con Axios
+
+`npm install axios o yarn add axios`
+
+1. JSON Automático: No necesitas hacer el tedioso .json().
+Axios asume que la respuesta es JSON y te la entrega lista en la propiedad .data.
+
+2. Manejo de Errores Intuitivo: Con fetch, un error 404 no entra en el bloque catch.
+Con Axios, cualquier código de estado fuera del rango 2xx dispara el catch automáticamente
+
+3. Soporte de Navegadores: Tiene mejor compatibilidad con navegadores antiguos (aunque hoy en día esto es menos crítico).
+
+Ej: Lista de Posts
+componente que pida datos a una API
+el código queda más limpio que con fetch.
+
+```
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+
+function PostList() {
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    // 1. Creamos el AbortController para evitar fugas de memoria
+    const controller = new AbortController();
+
+    const fetchPosts = async () => {
+      try {
+        setLoading(true);
+        
+        // 2. Axios recibe la señal de cancelación en su configuración
+        const response = await axios.get('https://jsonplaceholder.typicode.com/posts?_limit=5', {
+          signal: controller.signal
+        });
+
+        // 3. Los datos están directamente en response.data
+        setPosts(response.data);
+        setError(null);
+      } catch (err) {
+        // Ignoramos el error si fue por cancelar la petición
+        if (axios.isCancel(err)) {
+          console.log('Petición cancelada');
+        } else {
+          setError("No pudimos cargar los posts. Inténtalo más tarde.");
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPosts();
+
+    // 4. Limpieza: Cancelamos la petición si el componente se desmonta
+    return () => controller.abort();
+  }, []);
+
+  if (loading) return <p>Cargando contenido...</p>;
+  if (error) return <p style={{ color: 'red' }}>{error}</p>;
+
+  return (
+    <div>
+      <h2>Últimos Posts</h2>
+      {posts.map(post => (
+        <article key={post.id} style={{ borderBottom: '1px solid #ccc', margin: '1rem 0' }}>
+          <h3>{post.title}</h3>
+          <p>{post.body}</p>
+        </article>
+      ))}
+    </div>
+  );
+}
+
+export default PostList;
+```
+
+Claves:
+
+1. axios.get(url, { signal }): Pasamos la señal del AbortController
+Si el usuario sale de esta página antes de que lleguen los posts, Axios detiene la descarga inmediatamente
+
+2. axios.isCancel(err): Esta es una función utilitaria de Axios muy útil
+Nos permite saber si el error fue porque nosotros cancelamos la petición
+(lo cual es normal) o si fue un error real del servidor
+
+3. response.data: Nota que no hay un await response.json().
+Axios ya hizo ese trabajo por nosotros detrás de escena.
+
+
+## Solicitud Avanzada
+
+No se trata solo de la llamada en sí, sino de la arquitectura que rodea a esa llamada
+En lugar de hacer axios.get dispersos por toda la app
+Implica crear instancias personalizadas, hooks reutilizables y un manejo refinado de errores
+
+1. Instancia ( "Client")
+En lugar de usar el paquete axios directamente
+creamos un archivo (ej: api.js)
+donde configuramos una instancia
+Esto centraliza la URL base y los tiempos de espera.
+
+```
+// api.js
+import axios from 'axios';
+
+const apiClient = axios.create({
+  baseURL: 'https://api.tu-app.com/v1',
+  timeout: 10000, // 10 segundos antes de abortar por lentitud
+  headers: {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json'
+  }
+});
+
+export default apiClient;
+```
+
+2. Custom Hook "Todo-en-Uno"
+la petición debe estar encapsulada en un hook que maneje la lógica de cancelación, estados y hasta la re-ejecución manual (refetch).
+
+```
+// useApi.js
+import { useState, useCallback, useEffect } from 'react';
+import apiClient from './api';
+import axios from 'axios';
+
+export const useApi = (url, method = 'get') => {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  // Usamos useCallback para que la función no cambie en cada render
+  const execute = useCallback(async (body = null, params = null) => {
+    const controller = new AbortController();
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await apiClient({
+        url,
+        method,
+        data: body,
+        params,
+        signal: controller.signal
+      });
+      setData(response.data);
+      return response.data;
+    } catch (err) {
+      if (axios.isCancel(err)) return; // Silenciamos si fue cancelado
+      
+      // Manejo avanzado de errores por código de estado
+      const message = err.response?.data?.message || "Error inesperado";
+      setError({
+        message,
+        status: err.response?.status,
+        details: err.response?.data
+      });
+      throw err; // Re-lanzamos para que el componente pueda reaccionar
+    } finally {
+      setLoading(false);
+    }
+  }, [url, method]);
+
+  return { data, loading, error, execute };
+};
+```
+
+3. Implementación en el Componente
+Lo limpio que queda el componente ahora.
+Solo se preocupa por qué datos quiere y cómo mostrarlos
+
+```
+function UserProfile({ userId }) {
+  // Solo definimos el hook
+  const { data: user, loading, error, execute } = useApi(`/users/${userId}`);
+
+  // Ejecutamos la petición al montar o cuando cambie el userId
+  useEffect(() => {
+    execute();
+  }, [execute]);
+
+  if (loading) return <Spinner />;
+  if (error) return <ErrorMessage message={error.message} />;
+  if (!user) return null;
+
+  return (
+    <div>
+      <h1>{user.name}</h1>
+      {/* Botón para re-intentar o actualizar datos manualmente */}
+      <button onClick={() => execute()}>Actualizar</button>
+    </div>
+  );
+}
+```
+
+Claves:
+
+1. Configuración Centralizada: Si mañana la API cambia de v1 a v2
+solo cambias una línea en tu instancia apiClient
+
+2. Manejo de Tiempos de Espera (timeout): Evitas que la app se quede "colgada" infinitamente si el servidor no responde
+
+3. Desacoplamiento: El componente no sabe nada de Axios
+solo sabe que llama a una función execute y recibe datos.
+
+4. Flexibilidad de Métodos: El mismo hook te sirve para un GET de carga
+o para un POST al hacer clic en un botón de "Guardar".
+
+5. Información de Error Detallada: No solo guardamos un string, guardamos el código de estado
+(401, 403, 500) para mostrar mensajes específicos (ej: "Tu sesión expiró" o "No tienes permisos").
+
+
+## Interceptores en Axios
+
+a veces necesitas que el apiClient sepa automáticamente cuándo añadir el Token de seguridad (JWT)
+sin que tú lo pases manualmente en cada llamada.
+
+configurar los Interceptores de Axios para inyectar el token de autenticación
+y manejar el refresco de sesiones de forma invisible
+
+Los interceptores son como las aduanas en un aeropuerto
+Antes de que una maleta (petición) salga del país o entre en él
+debe pasar por un control que puede revisarla, añadirle una etiqueta o rechazarla
+
+En Axios, esto te permite ejecutar código automáticamente
+cada vez que haces una petición o recibes una respuesta
+sin tener que escribirlo manualmente en cada componente.
+
+1. Interceptor de Petición (Request)
+Se usa principalmente para inyectar el Token de Autenticación (JWT).
+Así, el resto de tu app no tiene que preocuparse por saber si el usuario está logueado o no al llamar a la API
+
+```
+// En tu archivo api.js (donde creaste la instancia)
+
+apiClient.interceptors.request.use(
+  (config) => {
+    // Obtenemos el token (de localStorage, cookies o un store)
+    const token = localStorage.getItem('token');
+    
+    if (token) {
+      // "Inyectamos" el token en las cabeceras
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+```
+
+2. Interceptor de Respuesta (Response)
+útil para el manejo global de errores
+Si el servidor responde con un 401 Unauthorized (sesión expirada)
+puedes redirigir al usuario al login automáticamente desde aquí.
+
+```
+apiClient.interceptors.response.use(
+  (response) => {
+    // Si la respuesta es exitosa (2xx), simplemente la devolvemos
+    return response;
+  },
+  (error) => {
+    // Si el error es 401, el token probablemente ya no sirve
+    if (error.response && error.response.status === 401) {
+      console.warn("Sesión expirada. Redirigiendo...");
+      localStorage.removeItem('token');
+      window.location.href = '/login'; 
+    }
+
+    // Puedes manejar otros errores como 403 (Prohibido) o 500
+    return Promise.reject(error);
+  }
+);
+```
+
+Ventajas:
+
+1. DRY (Don't Repeat Yourself):
+No escribes headers: { Authorization: ... } en las 50 llamadas de tu app.
+
+2. Seguridad Centralizada:
+Si decides cambiar de "Bearer" a otro tipo de esquema, solo tocas una línea de código.
+
+3. UX Fluida:
+El usuario no ve errores extraños si su sesión expira
+el interceptor lo saca de la página protegida al instante.
+
+4. Transformación de Datos:
+Podrías usar un interceptor para convertir todas las claves de la respuesta
+de snake_case (API) a camelCase (JS) automáticamente
+
+Ej config completa:
+
+```
+import axios from 'axios';
+
+const api = axios.create({
+  baseURL: 'https://api.ejemplo.com',
+});
+
+// REQUEST: Añadir Token
+api.interceptors.request.use(config => {
+  const token = localStorage.getItem('token');
+  if (token) config.headers.token = token;
+  return config;
+});
+
+// RESPONSE: Manejar Errores
+api.interceptors.response.use(
+  res => res,
+  err => {
+    if (err.response?.status === 401) {
+      // Lógica de logout
+    }
+    return Promise.reject(err);
+  }
+);
+
+export default api;
+```
+
+
+
+
+## Solicitud Compleja
+
+
+
+# Memory leaks en solicitud
+
+
+
+
+
 
 # Context Api
+
+
 
 
 
@@ -4872,7 +5891,9 @@ const TodoList ({ items, onItemClick, isLoading }) {
 
 
 
+
 # Use callback
+
 
 
 
@@ -4889,6 +5910,2195 @@ const TodoList ({ items, onItemClick, isLoading }) {
 
 # Eventos 
 
+
+
+
+
+# Arquitecturas dentro del project
+
+1. Patrón de Servicios (Service/Repository Pattern)
+paso lógico después de crear tu apiClient
+En lugar de llamar a Axios en el componente, creas archivos que representan tus dominios
+(ej: userService.js, orderService.js).
+
+Abstraes las rutas y métodos en funciones puras
+El componente no sabe cuál es la URL ni los parámetros
+solo llama a una función.
+
+Ideal en proyectos medianos que quieren mantener las URLs fuera de los componentes.
+
+2. Gestión de Estado Global (Redux / Zustand)
+Aquí, los datos de la API no viven en el componente
+sino en una "fuente de la verdad" externa
+
+La respuesta de la API se guarda en un Store (almacén).
+Cualquier componente de la app puede acceder a esos datos sin que se los pasen por props.
+
+Ideal en apps grandes donde muchas partes de la interfaz necesitan los mismos datos
+(ej: el perfil del usuario, el carrito de compras).
+
+3. Server-State Management (React Query / SWR)
+Es la arquitectura "moderna" por excelencia
+Cambia el paradigma: ya no "traes y guardas" datos
+sino que sincronizas la UI con el servidor
+
+Estas librerías manejan automáticamente:
+el caché, los reintentos si falla el internet
+la actualización en segundo plano y los estados de carga.
+
+En apps profesional orra escribir el 80% de los useEffect y useState vistos.
+
+4. Arquitectura de Contenedores y Presentación (Container/Presenter)
+Patrón "clásico", se sigue usando para separar la lógica visual de la lógica de datos.
+
+Container: Se encarga del fetch, el loading y la lógica de Axios
+Presenter: Es un componente "tonto" que solo recibe los datos por props y los pinta con CSS bonito.
+
+En equipos donde unos diseñan la UI y otros programan la lógica. Facilita mucho los tests unitarios
+
+Comparativa:
+
+Arquitectura | Dificultad | Escalabilidad | Mantenimiento
+Service Pattern | Baja | Media | Excelente | (URLs centralizadas)
+Global Store | Alta | Muy Alta | Pesado (mucho código extra)
+Server-State | Media | Muy Alta | Increíble (menos código propio)
+Container/Presenter | Baja | Media | Bueno para tests
+
+Combinación híbrida:
+
+1. Instancia de Axios con interceptores
+2. Service Pattern para definir tus endpoints
+3. React Query para ejecutar esos servicios y manejar el caché
+
+
+## Service pattern
+
+organizado por carpetas para que el proyectos sea ordenado
+sería el "plaono arquitectónico" de la carpeta source
+
+El objetivo es que los componentes componentes no sepan cómo se obtienen los datos
+solo qué datos están disponibles
+
+Si mañana cambias de Axios a Fetch
+o si la URL de /users pasa a ser /profiles
+solo tocas un archivo
+
+1. Estructura
+Para app organizada
+
+```
+src/
+├── api/
+│   └── apiClient.js       <-- Aquí vive la instancia de Axios con interceptores
+├── services/
+│   ├── userService.js     <-- Lógica para el dominio de Usuarios
+│   ├── authService.js     <-- Lógica para Login/Registro
+│   └── productService.js  <-- Lógica para el catálogo
+└── components/
+    └── UserList.jsx       <-- Solo consume los servicios
+```
+
+
+2. Implementando un Servicio (userService.js)
+En lugar de exportar funciones sueltas
+se exporta un objeto que agrupe los métodos
+hace que el autocompletado sea fenomenal
+
+```
+// src/services/userService.js
+import api from '../api/apiClient';
+
+const userService = {
+  // Obtener todos los usuarios
+  getAll: async (params = {}) => {
+    const response = await api.get('/users', { params });
+    return response.data;
+  },
+
+  // Obtener un usuario por ID
+  getById: async (id) => {
+    const response = await api.get(`/users/${id}`);
+    return response.data;
+  },
+
+  // Crear un nuevo usuario
+  create: async (userData) => {
+    const response = await api.post('/users', userData);
+    return response.data;
+  },
+
+  // Actualizar parcialmente (PATCH)
+  update: async (id, userData) => {
+    const response = await api.patch(`/users/${id}`, userData);
+    return response.data;
+  }
+};
+
+export default userService;
+```
+
+3. Consumo en el Componente
+El componente ya no tiene URLs pegadas ni configuraciones de axios
+es puramente declarativ
+
+```
+import { useEffect, useState } from 'react';
+import userService from '../services/userService';
+
+function UserProfile({ id }) {
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const loadUser = async () => {
+      try {
+        // El componente solo pide el dato, no sabe cómo llega
+        const data = await userService.getById(id);
+        setUser(data);
+      } catch (error) {
+        console.error("Error cargando perfil");
+      }
+    };
+
+    loadUser();
+  }, [id]);
+
+  if (!user) return <p>Cargando...</p>;
+
+  return <h1>{user.name}</h1>;
+}
+```
+
+Ventajas:
+
+1. Centralización
+Si la API cambia la versión (ej: de /v1/users a /v2/users)
+solo cambias el archivo userService.js.
+
+2. Testeo
+Puedes probar userService.js de forma aislada
+sin necesidad de renderizar componentes de React
+
+3. Documentación
+Al abrir la carpeta services, cualquier programador nuevo
+entiende inmediatamente qué operaciones permite tu backend.
+
+4. Mantenibilidad
+Evitas que los componentes tengan cientos de líneas dedicadas a la lógica de red. 
+
+
+## Custom hooks
+
+Envolvemos los servicios en custom hooks, como un useUser
+permite inyectar el estado de loading y error automáticamente.
+
+combinar el Service Pattern con Custom Hooks
+creas una capa de abstracción limpia
+los componentes solo se encargan de la interfaz.
+
+1. Arquitectura de Flujo
+Antes del código, visualiza el camino que recorre el dato:
+`Componente ➔ Custom Hook ➔ Service ➔ Axios Instance ➔ API`
+
+2. Hook Genérico (useFetch)
+creamos un hook "maestro" que maneje los estados comunes
+(data, loading, error), evita repetir el mismo useState
+
+```
+// src/hooks/useFetch.js
+import { useState, useCallback } from 'react';
+
+export const useFetch = (apiFunction) => {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const execute = useCallback(async (...args) => {
+    try {
+      setLoading(true);
+      setError(null);
+      const result = await apiFunction(...args);
+      setData(result);
+      return result;
+    } catch (err) {
+      setError(err.message || "Algo salió mal");
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }, [apiFunction]);
+
+  return { data, loading, error, execute };
+};
+```
+
+3. Hook de Dominio (useUsers)
+aplicamos el hook genérico a nuestro servicio de usuarios
+esto nos da un control total y específico
+
+```
+// src/hooks/useUsers.js
+import { useEffect } from 'react';
+import { useFetch } from './useFetch';
+import userService from '../services/userService';
+
+export const useUsers = () => {
+  // Enlazamos el hook genérico con el método del servicio
+  const { data, loading, error, execute } = useFetch(userService.getAll);
+
+  // Cargamos los usuarios automáticamente al usar el hook
+  useEffect(() => {
+    execute();
+  }, [execute]);
+
+  return { users: data, loading, error, refetch: execute };
+};
+```
+
+4. Componente "Zen"
+No hay Axios, no hay try/catch, no hay lógica de red.
+Solo UI.
+
+```
+import { useUsers } from '../hooks/useUsers';
+
+function UserDirectory() {
+  const { users, loading, error, refetch } = useUsers();
+
+  if (loading) return <Spinner />;
+  if (error) return <ErrorMessage message={error} />;
+
+  return (
+    <div>
+      <button onClick={refetch}>Actualizar Lista</button>
+      <ul>
+        {users?.map(user => <li key={user.id}>{user.name}</li>)}
+      </ul>
+    </div>
+  );
+}
+```
+
+Ventajas:
+
+1. Separación de preocupaciones
+Si la API cambia, tocas el Service
+Si la lógica de carga cambia, tocas el Hook
+Si el diseño cambia, tocas el Componente
+
+2. Reutilización
+¿Necesitas la lista de usuarios en otra pantalla?
+Solo importas useUsers y listo
+
+3. Legibilidad
+Cualquier persona que lea el componente entiende qué hace en 5 segundos
+
+4. Manejo de Errores
+El error se gestiona en un solo lugar
+pero se muestra donde tú decidas
+
+
+## Contenedores y Presentación
+
+Aunque hoy en día los Custom Hooks han absorbido gran parte de esta responsabilidad
+sigue siendo una forma fantástica de separar la lógica de negocio del diseño visual
+Objetivo: un componente se encarga de pensar y el otro de pintar.
+
+1. Smart vs. Dumb
+
+Container:
+Cómo funcionan las cosas
+Hace el fetch, gestiona el estado, maneja los errores
+Presentación: No tiene estilos CSS (normalmente).
+comunicación: Pasa datos y funciones al presentador
+
+Presenter:
+Cómo se ven las cosas
+No sabe nada de APIs ni de lógica global
+Tiene todo el JSX, el CSS y los elementos visuales
+Recibe datos por props y emite eventos mediante funciones recibidas
+
+2. Ej: Lista de Usuarios
+Tomando el ejemplo de usuarios, ahora bajo smart vs dumb
+
+### Presentador:
+componente puro visual
+Si le pasas una lista vacía, no se queja
+si le pasas datos, los pinta
+altamente reutilizable
+
+```
+// UserListView.jsx
+import React from 'react';
+import './UserList.css'; // Aquí vive todo el diseño
+
+function UserListView({ users, isLoading, error, onRetry }) {
+  if (isLoading) return <div className="skeleton">Cargando...</div>;
+  if (error) return <button onClick={onRetry}>Error: {error}. Reintentar</button>;
+
+  return (
+    <section className="user-grid">
+      {users.map(user => (
+        <div key={user.id} className="user-card">
+          <img src={user.avatar} alt={user.name} />
+          <h3>{user.name}</h3>
+          <p>{user.email}</p>
+        </div>
+      ))}
+    </section>
+  );
+}
+
+export default UserListView;
+```
+
+### Contenedor
+Cerebro donde usamos el Custom Hook creado anteriormente
+Su única función es conectar la lógica con la vista
+
+```
+// UserListContainer.jsx
+import React from 'react';
+import { useUsers } from '../hooks/useUsers';
+import UserListView from './UserListView';
+
+function UserListContainer() {
+  // Consumimos la lógica (Hook + Service)
+  const { users, loading, error, refetch } = useUsers();
+
+  // "Inyectamos" la lógica en el presentador
+  return (
+    <UserListView 
+      users={users} 
+      isLoading={loading} 
+      error={error} 
+      onRetry={refetch} 
+    />
+  );
+}
+
+export default UserListContainer;
+```
+
+Ventajas:
+
+1. Diseño independiente:
+desarrollador frontend/maquetador puede trabajar en UserListView.jsx
+sin romper la lógica de la API.
+
+2. Storybook / Testing:
+fácil testear el componente de presentación
+Solo le pasas props falsas (mock data)
+verificas que se vea bien, sin necesidad de simular llamadas a red.
+
+3. Reutilización
+Podrías usar el mismo UserListView para mostrar "Usuarios Sugeridos
+simplemente pasándole un arreglo diferente desde otro contenedor
+ 
+##### Para evitar demasiados archivos, hoy en día se prefiere meter la lógica directamente en el componente usando Custom Hooks
+si tu componente visual es muy complejo (más de 100 líneas)
+separarlo en un Presenter es buena decision
+
+
+Si notas que solo estás pasando props de un nivel a otro
+sin hacer nada más (Prop Drilling)
+es señal de que quizás el patrón es demasiado pesado para esa tarea específica
+un Custom Hook simple bastaría
+
+
+
+# React Query (TanStack)
+Todo lo que acabamos de construir manualmente (estados de carga, errores, hooks, caché básico) es lo que hace tanstack
+Agrega manejo de caché global, reintentos automáticos si se cae el Wi-Fi, y sincronización entre pestañas
+
+Nos ahorraremos el archivo useFetch.js
+No es solo una librería para hacer peticiones
+es un gestor de estado del servidor
+
+Olvídate de casi todos los useEffect, useState de carga y AbortController manuales que escribimos antes
+React Query se encarga de todo eso y añade superpoderes como caché, reintentos automáticos y sincronización en segundo plano.
+
+1. Poderes
+En el enfoque manual, tú "traes" los datos
+En React Query, tú "te suscribes" a los datos.
+Si dos componentes necesitan la misma lista de usuarios
+React Query hace una sola petición y reparte el resultado a ambos
+
+Si el usuario cambia de pestaña y vuelve
+la librería detecta el foco y actualiza los datos por si algo cambió en el servidor
+
+2. Config inicial
+ 
+Primero, envuelves tu aplicación en un Provider
+Esto crea el "almacén" donde se guardará la caché
+
+```
+// App.js
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+const queryClient = new QueryClient();
+
+function App() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <UserList />
+    </QueryClientProvider>
+  );
+}
+```
+
+3. Ejemplo Básico: useQuery
+Seguiremos usando userService.js
+Pero se reduce su código
+
+```
+import { useQuery } from '@tanstack/react-query';
+import userService from './services/userService';
+
+function UserList() {
+  // 1. Definimos la consulta
+  const { data, isLoading, isError, error, refetch } = useQuery({
+    queryKey: ['users'], // El "ID" único de estos datos en la caché
+    queryFn: userService.getAll, // La función que trae los datos
+  });
+
+  if (isLoading) return <p>Cargando...</p>;
+  if (isError) return <p>Error: {error.message}</p>;
+
+  return (
+    <div>
+      <button onClick={() => refetch()}>Forzar actualización</button>
+      <ul>
+        {data.map(user => <li key={user.id}>{user.name}</li>)}
+      </ul>
+    </div>
+  );
+}
+```
+
+4. Los 3 pilares de React Query (TanStack)
+
+queryKey:
+Es un array que identifica de forma única la petición
+Si cambias la clave (ej: `['users', userId]`)
+React Query entiende que es otra petición y gestiona su propia caché.
+
+staleTime:
+Define cuánto tiempo consideras que el dato está "fresco".
+Durante ese tiempo (ej: 5 min)
+React Query no volverá a llamar a la API aunque montes y desmontes el componente.
+
+cacheTime:
+Cuánto tiempo permanecen los datos en memoria antes de ser borrados si nadie los está usando.
+
+5. Ganancias: UX
+
+Caché Instantánea:
+Si el usuario navega de la página A a la B y vuelve a la A,
+los datos aparecen al instante porque ya están en caché
+mientras la librería los actualiza silenciosamente en segundo plano.
+
+Reintentos (Retries):
+Si el Wi-Fi del usuario parpadea
+React Query reintenta la petición 3 veces automáticamente antes de mostrar un error.
+
+Sincronización de Ventana:
+Si el usuario está en otra pestaña y vuelve a tu app
+los datos se refrescan para asegurar que ve la información más reciente
+
+DevTools:
+Tiene una herramienta de inspección
+permite ver exactamente qué hay en tu caché en tiempo real.
+
+6. Guardado de datos (POST/PUT/DELETE)
+Usamos useMutation, diseñado para acciones que modifican datos
+Lo mejor de las mutaciones es que puedes decirle a React:
+Al crear un usuario nuevo, "por favor invalida la caché de
+'users' para que se vuelva a pedir la lista actualizada"
+
+```
+const mutation = useMutation({
+  mutationFn: userService.create,
+  onSuccess: () => {
+    // Invalida y refresca la lista de usuarios automáticamente
+    queryClient.invalidateQueries({ queryKey: ['users'] });
+  },
+});
+```
+
+
+
+# Clasificación de app
+
+Según su complejidad de su lógica, la cantidad de datos que maneja y el tamaño del equipo que la mantienen
+
+1. Pequeña: mvp o proyecto personal
+app que puedes mantener solo
+El objetivo es la velocidad de entrega
+
+Pantallas: De 1 a 5 rutas (vistas).
+Estado: Se maneja localmente con useState o un useContext muy simple.
+No necesita Redux ni librerías complejas.
+API: Consumo de una o dos fuentes de datos sencillas.
+Arquitectura: Hooks y componentes en una estructura de carpetas plana.
+Ejemplo: Un portfolio, una landing page interactiva, o una herramienta de notas
+
+2. Mediana: producto de crecimiento
+Ya no puedes tener todo en la cabeza y necesitas reglas de arquitectura claras
+para que otros o uno mismo entiendan el código en algunos meses
+
+Pantallas: De 5 a 20 rutas.
+Estado: Empieza a haber datos que se comparten en muchos lugares.
+Se suele usar Zustand o React Query para no perder el control.
+API: Integración con múltiples servicios (Auth, Pagos, Base de datos).
+Arquitectura: Patrón de Servicios, Custom Hooks obligatorios y quizás una carpeta de "Features" o módulos.
+Testing: Ya hay pruebas unitarias para la lógica más crítica.
+Ejemplo: Un eCommerce local, un dashboard de administración para una empresa, o una app de gestión de turnos
+
+3. Grande / Enterprise
+Suelen estar divididas por equipos y el enfoque principal es la mantenibilidad y la escalabilidad
+
+Pantallas: Más de 50 rutas o micro-frontends.
+Estado: Gestión de estado global ultra compleja (Redux Toolkit) con persistencia de datos y normalización de caché.
+API: Orquestación de microservicios, quizás usando GraphQL para optimizar las peticiones.
+Arquitectura: Clean Architecture, Monorepos (TurboRepo/Nx) o Micro-frontends.
+Tienen su propio Design System (librería de componentes propia).
+Infraestructura: CI/CD robusto, múltiples entornos (Staging, Pre-prod, Prod), y monitoreo de errores en tiempo real (Sentry).
+Ejemplo: Netflix, Airbnb, o el panel de control de un banco
+
+
+
+# App mantenible
+
+## Pequeña
+
+arquitectura equilibrada: Servicios + Custom Hooks
+
+la arquitectura Container/Presentation pura suele ser demasiado pesada
+terminas con el doble de archivos de los que necesitas
+
+1. Cliente: Base
+instancia centralizada de axios, no suelto
+permite escalar a interceptores (auth) en un minuto sin tocar el resto de la app.
+
+2. Services: Mapa
+capa de servicios que solo contenga funciones que devuelven promesas.
+Hace que tu lógica sea testeable fuera de React
+puedes testear un servicio con Jest sin montar componentes
+
+3. Custom Hooks: Smart moderno
+En lugar de un componente "Contenedor"
+El Custom Hook se usa para manejar el estado y la lógica de carga
+más flexible que un contenedor
+permite que tus componentes de React se enfoquen solo en el JSX/presentacion 
+
+Estructura:
+
+```
+src/
+├── api/
+│   └── client.js        # Configuración de Axios
+├── services/
+│   └── users.js         # Endpoints: getAll(), getById(), etc.
+├── hooks/
+│   └── useUsers.js      # Lógica: loading, error, data fetching
+└── components/
+    ├── common/          # Componentes tontos/reutilizables (Dumb)
+    └── features/        # Componentes de UI específicos de la lógica
+```
+
+Orden	Cada cosa tiene su lugar: el "qué" (Service), el "cómo" (Hook) y el "ver" (Component).
+Mantenibilidad	Si cambias la URL de la API, solo tocas el Service.
+Si cambias el diseño, solo el Component.
+Testeabilidad	Puedes hacer Unit Tests de tus Services sin React y de tus Hooks con react-hooks-testing-library.
+Escalabilidad	Si la app crece, puedes meter React Query dentro de tus Hooks sin cambiar ni una línea de tus componentes
+
+Al usar Custom Hooks, el hook actúa como el "Cerebro" (Smart)
+el componente donde lo llamas actúa como la "Cara" (Presenter).
+No añadas Redux ni Zustand a menos que tengas un estado
+que realmente necesite ser compartido por toda la app
+como un carrito o una sesión de usuario
+
+
+
+# Routing
+
+vistas/páginas
+directores de orquesta que deciden qué se muestra en pantalla según la URL
+
+Para una app pequeña, la mejor forma de encajarlas:
+crear una carpeta pages/ (o views/).
+
+```
+src/
+├── api/          # La instancia de Axios (cartero)
+├── services/     # Funciones de API (mapa)
+├── hooks/        # Lógica de estado (cerebro)
+├── components/   # UI reutilizable: Botones, Cards, Inputs (ladrillos)
+├── pages/        # Vistas completas: Home, Login, Dashboard (directores)
+└── App.jsx       # Configuración de Rutas (El controlador de tráfico)
+```
+
+2. Flujo de datos: Servicio a la Pantalla
+
+`URL (Router) ➔ Page (Contenedor) ➔ Hook ➔ Service ➔ UI Component`
+
+3. Ej: Página de Detalle de Usuario
+usuario entra en /users/123
+
+### 1. Router (App.jsx)
+Define quién responde a cada URL
+
+### 2. Página (pages/UserPage.jsx)
+Objetivo: extraer el ID de la URL, llamar al Hook y pasarle los datos a los componentes de UI.
+
+```
+import { useParams } from 'react-router-dom';
+import { useUserDetail } from '../hooks/useUserDetail';
+import UserCard from '../components/UserCard';
+
+function UserPage() {
+  const { id } = useParams(); // Saca el ID de la URL
+  const { user, loading, error } = useUserDetail(id); // Usa el Cerebro (Hook)
+
+  if (loading) return <p>Cargando perfil...</p>;
+  if (error) return <p>Error al cargar usuario</p>;
+
+  // Retorna la vista usando componentes de UI (Ladrillos)
+  return (
+    <main>
+      <h1>Perfil de Usuario</h1>
+      <UserCard user={user} />
+    </main>
+  );
+}
+```
+
+Page:
+Manejar la estructura de la página
+leer parámetros de la URL (useParams).
+No debe tener lógica de Axios ni cálculos matemáticos complejos
+
+Hook:
+Gestionar el estado (loading, data)
+llamar al servicio
+No debe tener código CSS ni HTML pesado (JSX).
+
+Componente:
+Recibir props y pintar HTML/CSS
+No debe saber nada de la URL ni de la API.
+
+
+## Layouts
+
+En todas las páginas un mismo componente como:
+barra de navegación, pie de página
+Con el objetivo de no sin repetir código en cada una
+
+esqueleto de la app, sin ellos terminarías copiando y pegando el código del Navbar y el Footer en cada página
+Algo poco mantenible, si cambias un link del menú, tendrías que editar 10 archivos
+
+usando react-router-dom
+la forma más elegante de manejar esto es mediante Rutas Anidadas
+y el componente <Outlet />
+
+1. Outlet (cascarón)
+Si la app fuera un cuadro, el layout es el marco
+Navbar, Sidebar, Footer nunca cambiarián
+el <Outlet /> es el lienzo en blanco donde se "pintan" las diferentes páginas según la URL
+
+2. Componente Layout
+archivo en src/components/layouts/MainLayout.jsx.
+
+```
+import { Outlet, Link } from 'react-router-dom';
+import './MainLayout.css';
+
+function MainLayout() {
+  return (
+    <div className="layout-container">
+      <header className="navbar">
+        <nav>
+          <Link to="/">Inicio</Link>
+          <Link to="/users">Usuarios</Link>
+        </nav>
+      </header>
+
+      <main className="content">
+        {/* Aquí es donde React inyectará la página actual */}
+        <Outlet />
+      </main>
+
+      <footer className="footer">
+        <p>© 2026 - Mi App Pro</p>
+      </footer>
+    </div>
+  );
+}
+
+export default MainLayout;
+```
+
+3. Rutas en App.jsx
+Envolvemos las rutas de las páginas dentro de la ruta del Layout
+
+```
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import MainLayout from './components/layouts/MainLayout';
+import HomePage from './pages/HomePage';
+import UserPage from './pages/UserPage';
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        {/* Ruta "Padre" que contiene el Layout */}
+        <Route path="/" element={<MainLayout />}>
+          
+          {/* Rutas "Hijas" que se verán DENTRO del Outlet */}
+          <Route index element={<HomePage />} /> {/* El 'index' es la ruta base / */}
+          <Route path="users" element={<UserListContainer />} />
+          <Route path="users/:id" element={<UserPage />} />
+          
+        </Route>
+      </Routes>
+    </BrowserRouter>
+  );
+}
+```
+
+Ventajas:
+
+1. Persistencia de Estado
+Si tienes un reproductor de música o una barra de búsqueda en el Navbar, esta no se reiniciará cuando navegues entre páginas
+el componente MainLayout nunca se desmonta.
+
+2. Transiciones Suaves
+Puedes añadir animaciones en el CSS del Layout
+para que las páginas entren con un efecto de fade-in
+
+3. Layouts Múltiples
+Puedes tener un MainLayout para la app pública
+un AdminLayout (con sidebar) para el panel de control
+Solo tienes que crear otro grupo de rutas
+
+Arquitectura:
+
+En client, service y hooks, el layout es visual
+Es el lugar para colocar:
+
+1. Contextos Globales
+Autenticación o el tema Oscuro/Claro
+
+2. Toasts/Notificaciones
+Para que los mensajes de error de tus Hooks se vean siempre arriba de todo
+
+3. Breadcrumbs
+para que el usuario sepa dónde está.
+
+
+api/: Axios Config.
+services/: Endpoints (GET /users).
+hooks/: Lógica (useUsers).
+components/: "Botones, Cards, Inputs."
+layouts/: "Navbar, Footer, Outlet."
+pages/: Páginas que se inyectan en el Outlet.
+
+
+
+# Forms
+
+Puedes usar un useState para cada input
+o una librería como React Hook Form (RHF)
+
+1. RHF
+ligero, evita renderizados innecesarios
+se integra de maravilla con los servicees
+
+Rendimiento: Con useState, cada tecla que presionas vuelve a renderizar todo el formulario
+Con RHF, los inputs son "no controlados"
+el componente solo se renderiza cuando es estrictamente necesario
+
+Validación: Te permite definir reglas complejas
+email, longitud, patrones; sin llenar tu JSX de if/else
+
+Menos código: Reduce drásticamente la cantidad de líneas para manejar errores y valores
+
+2. Flujo: Pantalla al Servidor
+
+`Input del Usuario ➔ React Hook Form (Validación) ➔ Service (Axios) ➔ API`
+
+3. Ej: Registro de Usuario
+
+instalamos:
+
+```
+npm install react-hook-form zod @hookform/resolvers
+
+```
+
+Usaremos Zod para definir el "esquema" (reglas de validación).
+
+1. Definir Esquema de Validación
+
+```
+import { z } from 'zod';
+
+// Esto define cómo DEBE ser el objeto que enviamos
+export const userSchema = z.object({
+  name: z.string().min(3, "El nombre debe tener al menos 3 caracteres"),
+  email: z.string().email("Formato de email inválido"),
+  password: z.string().min(6, "Mínimo 6 caracteres")
+});
+```
+
+2. Componente de Formulario
+conectamos la UI con el servicio userService.create que definimos antes
+
+```
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { userSchema } from './userSchema';
+import userService from '../services/userService';
+
+function UserForm() {
+  const { 
+    register, 
+    handleSubmit, 
+    formState: { errors, isSubmitting } 
+  } = useForm({
+    resolver: zodResolver(userSchema) // Conecta la validación
+  });
+
+  const onSubmit = async (data) => {
+    try {
+      await userService.create(data); // Llamada a nuestra capa de Service
+      alert("Usuario creado con éxito");
+    } catch (error) {
+      alert("Error al enviar el formulario");
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <div>
+        <input {...register("name")} placeholder="Nombre" />
+        {errors.name && <p className="error">{errors.name.message}</p>}
+      </div>
+
+      <div>
+        <input {...register("email")} placeholder="Email" />
+        {errors.email && <p className="error">{errors.email.message}</p>}
+      </div>
+
+      <button type="submit" disabled={isSubmitting}>
+        {isSubmitting ? "Enviando..." : "Registrar"}
+      </button>
+    </form>
+  );
+}
+```
+
+Ventajas:
+
+1. Validación Declarativa
+Gracias a Zod, las reglas de validación viven fuera del componente
+Son fáciles de leer y testear.
+
+2. Estado de Envío
+RHF te da isSubmitting automáticamente
+No tienes que crear un `const [loading, setLoading] = useState(false)`
+manual para cada formulario
+
+3. Sincronización con el Service
+El objeto data que entrega onSubmit ya está limpio y validado
+listo para que tu userService lo mande a la API.
+
+
+Errores globales:
+Si la API devuelve un error, por ejemplo, "El email ya existe"
+puedes usar una función de RHF llamada setError
+para mostrar ese error directamente en el input correspondiente
+aunque el error venga del servidor.
+
+
+
+# Mutaciones de React Query (TanStack)
+
+Mientras que useQuery se encarga de "traer" (GET)
+useMutation se encarga de "cambiar" (POST, PUT, DELETE).
+
+Pero su verdadero poder no es solo enviar los datos
+sino decirle a la caché qué hacer después
+
+Imagina que creas un usuario: lo lógico es que la lista de usuarios se actualice automáticamente para mostrar al nuevo integrante
+Sin React Query, tendrías que recargar la página o manejar estados globales complejos
+con React Query, es un "inválidalo y listo"
+
+1. Ciclo de vida de la Mutación:
+ocurre un flujo de eventos que puedes controlar paso a paso 
+
+1. onMutate: Se ejecuta antes de la petición
+(ideal para "Actualizaciones Optimistas").
+
+2. onSuccess: La API respondió bien
+Es el momento de limpiar la caché.
+
+3. onError: Algo falló.
+manejas el feedback al usuario.
+
+4. onSettled: Se ejecuta siempre, sin importar si falló o no
+(útil para apagar loaders).
+
+2. Ej: Crear un Usuario e Invalidar la Caché
+
+En la arquitectura Service + React Query
+así se vería la implementación en un componente o Custom Hook:
+
+```
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import userService from '../services/userService';
+
+export function useCreateUser() {
+  const queryClient = useQueryClient(); // El "mando a distancia" de la caché
+
+  return useMutation({
+    mutationFn: (newUserData) => userService.create(newUserData),
+    
+    // Aquí ocurre la magia
+    onSuccess: () => {
+      // Le decimos a React Query: "La lista de 'users' ya no es confiable (está vieja)"
+      // Esto hará que useQuery(['users']) pida los datos de nuevo automáticamente.
+      queryClient.invalidateQueries({ queryKey: ['users'] });
+    },
+    
+    onError: (error) => {
+      console.error("Error al crear usuario:", error.message);
+    }
+  });
+}
+```
+
+3. Implementación en el Formulario
+Usando RHF, encajamos la mutación
+
+```
+function UserForm() {
+  const { register, handleSubmit, reset } = useForm();
+  const { mutate, isPending } = useCreateUser(); // Usamos nuestro hook de mutación
+
+  const onSubmit = (data) => {
+    mutate(data, {
+      onSuccess: () => {
+        reset(); // Limpiamos el formulario solo si la API respondió OK
+        alert("¡Usuario creado!");
+      }
+    });
+  };
+
+  return (
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <input {...register("name")} placeholder="Nombre" />
+      <button type="submit" disabled={isPending}>
+        {isPending ? "Guardando..." : "Crear Usuario"}
+      </button>
+    </form>
+  );
+}
+```
+
+Ventajas:
+
+Sincronización Total:
+Al usar invalidateQueries
+cualquier componente en cualquier parte de la app
+Al usar invalidateQueries
+
+Estado de UI Simplificado:
+No necesitas un useState manual para el loading del botón
+isPending te lo da la mutación
+
+Desacoplamiento:
+El componente no sabe cómo se actualiza la lista
+solo sabe que llama a mutate().
+
+
+## Actualizaciones Optimistas
+
+Si quieres que tu app se sienta ultra rápida
+puedes usar Actualizaciones Optimistas
+significa que añades el usuario a la lista antes de que la API responda.
+Si la API falla, React Query hace un "rollback" (vuelve atrás) automáticamente
+Las mutaciones son lo que separa a una web estática de una aplicación web dinámica que se siente fluida y moderna.
+
+
+
+# Testing
+
+En la arquitectura Client + Service + Hooks + Forms
+el testing se vuelve mucho más sencillo
+cada pieza tiene una responsabilidad única.
+
+Nos enfocamos en tres niveles principales:
+Unitarios, Integración y E2E.
+
+1. Pirámide
+No todos los tests valen lo mismo
+idea es tener muchos tests pequeños (rápidos)
+pocos tests grandes (lentos pero realistas).
+
+2. Testeando Services 
+Lógica pura, como tus servicios son funciones de JavaScript puro que usan Axios
+no necesitas "renderizar" nada.
+
+Usamos Vitest y un mock de Axios.
+Verificamos que se llama a la URL correcta y se procesan bien los datos.
+
+```
+// userService.test.js
+import { describe, it, expect, vi } from 'vitest';
+import userService from './userService';
+import api from '../api/apiClient';
+
+vi.mock('../api/apiClient'); // Simulamos el cliente de axios
+
+describe('userService', () => {
+  it('debería obtener la lista de usuarios correctamente', async () => {
+    const mockUsers = [{ id: 1, name: 'John Doe' }];
+    api.get.mockResolvedValue({ data: mockUsers });
+
+    const result = await userService.getAll();
+    
+    expect(api.get).toHaveBeenCalledWith('/users', { params: {} });
+    expect(result).toEqual(mockUsers);
+  });
+});
+```
+
+3. Testing de Custom Hooks
+usamos @testing-library/react-hooks
+Si los hooks usan React Query, necesitamos envolver el test en un QueryClientProvider
+
+Verificar que el estado pasa de 'loading: true' a tener datos
+
+```
+// useUsers.test.js
+const wrapper = ({ children }) => (
+  <QueryClientProvider client={new QueryClient()}>{children}</QueryClientProvider>
+);
+
+it('debería cargar usuarios exitosamente', async () => {
+  const { result } = renderHook(() => useUsers(), { wrapper });
+
+  expect(result.current.loading).toBe(true);
+  
+  await waitFor(() => expect(result.current.users).not.toBeNull());
+  
+  expect(result.current.users[0].name).toBe('John Doe');
+  expect(result.current.loading).toBe(false);
+});
+```
+
+4. Testing de Componentes (Integración)
+usamos React Testing Library (RTL)
+Se testea lo que el usuario ve, no la implementación (state/props)
+
+```
+// UserForm.test.js
+it('debería mostrar un mensaje de error si el email es inválido', async () => {
+  render(<UserForm />);
+  
+  const emailInput = screen.getByPlaceholderText(/email/i);
+  fireEvent.change(emailInput, { target: { value: 'email-invalido' } });
+  
+  fireEvent.click(screen.getByRole('button', { name: /registrar/i }));
+
+  const errorMessage = await screen.findByText(/formato de email inválido/i);
+  expect(errorMessage).toBeInTheDocument();
+});
+```
+
+Herramientas:
+
+vitest: motor de ejecución
+RTL: interactuar con los componentes como un usuario real
+MSW (Mock Service Worker): interceptar llamadas de red a nivel de navegador/nodo
+mejor que vi.mock porque simula una API real
+Playwright: tests E2E (punta a punta)
+Graba al navegador haciendo clics reales.
+
+Se testean los sevices para asegurar la comunicación
+los Hooks para asegurar la lógica de estado.
+los Componentes enfocándote en la accesibilidad y el flujo del usuario.
+
+
+## Mock Service Worker
+Mock Service Worker, MSW levanta un servidor "fantasma" que responde a tus peticiones
+permite que tus tests de componentes prueben el flujo completo
+Componente -> Hook -> Service -> Axios, sin tocar la API real
+Es una forma más robusta de testear
+
+
+
+# Arquitecturas Servidores
+
+1. Pequeñas (Velocidad y Bajo Costo)
+Objetivo: No-Ops, no config servidores, db e infra compleja
+
+Arquitectura: BaaS (Backend as a Service) o Monolito Simple
+Herramientas Clave: Supabase / Firebase, te dan base de datos, autenticación y almacenamiento con una sola librería
+El "servidor" es una API que ellos gestionan.
+Vercel / Netlify: Despliegue con un clic y funciones Serverless para lógica mínima.
+Framework: Vite (spa), Next.js (client components)
+
+2. Medianas (Rendimiento y Control)
+necesitas reglas de negocio complejas
+optimización para SEO y una gestión de datos más robusta
+El servidor empieza a hacer el "trabajo sucio"
+para que el móvil del usuario no sufra
+
+Arquitectura: Full-stack Frameworks (SSR / ISR).
+
+Herramientas:
+
+Next.js (App Router): El estándar.
+Mezcla componentes de servidor para cargar datos rápido
+componentes de cliente para la interfaz.
+
+Remix: Increíble para apps que dependen mucho de formularios y estados de red
+maneja las mutaciones de servidor de forma nativa.
+
+Prisma / Drizzle:
+ORMs para hablar con tu base de datos de forma segura desde el servidor de React.
+
+Framework: Next.js o TanStack Start.
+
+3. Grandes / Enterprise: Escalabilidad y Desacoplamiento
+Los datos reales viven en microservicios escritos en otros lenguajes
+(Go, Java, Node/NestJS)
+
+Arquitectura: RSC (React Server Components) + Microservicios + Edge Computing.
+
+Herramientas:
+GraphQL (Apollo / Yoga): Para unificar múltiples fuentes de datos en una sola consulta.
+NestJS: Si necesitas un backend de Node.js ultra estructurado y robusto que sirva a tu app de React
+Redis: Para caché agresiva y que el servidor no trabaje doble.
+Docker / Kubernetes: Para que el servidor de React pueda escalar horizontalmente según el tráfico.
+
+Estrategia: Se usa Edge Rendering para que el servidor responda desde la ciudad más cercana al usuario
+reduciendo la latencia a milisegundos.
+
+S: Serverless / BaaS,SDK Directo (Supabase),Vercel / Netlify
+M: SSR / Server Actions,ORM (Prisma/Drizzle),VPS (DigitalOcean) o Vercel
+L: RSC / BFF / GraphQL,Microservicios / API,AWS / GCP / Azure
+
+Guia:
+
+Ej: empezando un proyecto y no sabes cuántos usuarios tendrás
+Empieza con Next.js. Es el más flexible
+puede actuar como una app pequeña y escalar a una gigante sin cambiar de framework.
+
+ORM (como Drizzle:
+permite moverte entre bases de datos fácilmente.
+
+Un "Monolito Modular" en Next.js aguanta muchísimo tráfico.
+
+
+
+# Monolito simple
+
+Monolito Modular, aplicar Clean Architecture, Arquitectura Hexagonal
+La idea es que todo viva en un mismo proyecto y se despliegue junto
+pero que por dentro las piezas estén tan bien separadas
+si algún día necesitas extraer una parte a un microservicio, sea como desconectar un Lego
+
+1. Capas
+Se divide en capas de responsabilidad
+las capas externas conocen a las internas
+pero las internas no saben nada de las externas.
+
+1. Capa de Dominio: Corazón
+residen las reglas de negocio puras
+No hay mención a bases de datos ni a librerías externas.
+
+Entidades: Objetos que representan conceptos del negocio
+(ej: User, Order, Product).
+
+Value Objects: Pequeños objetos que no tienen identidad pero sí lógica
+(ej: un Email que se valida a sí mismo).
+
+2. Capa de App: casos de uso
+director de orquesta, definen los procesos de la app
+
+Servicios de App: Funciones como CreateOrder o RegisterUser
+
+Interfaces (Ports): Definiciones de lo que la aplicación necesita
+(ej: "Necesito algo que guarde usuarios", sin decir si es MongoDB o PostgreSQL).
+
+3. Capa de Infraestructura (Detalles)
+código al mundo real
+
+Repos: Implementaciones reales de las interfaces (ej: SqlUserRepository).
+Servicios Externos: Adaptadores para enviar emails (SendGrid), procesar pagos (Stripe) o loguear errores.
+
+4. Capa de Interfaz / API:
+Cómo el mundo exterior habla con tu monolito.
+
+Controllers: Reciben peticiones HTTP, validan el formato y llaman a la Capa de Aplicación.
+DTOs (Data Transfer Objects): Esquemas que definen qué datos entran y salen.
+
+2. Organización por Módulos (Vertical Slicing)
+En lugar de organizar tus carpetas solo por "capas"
+(todos los controllers juntos, todos los servicios juntos)
+un monolito moderno se organiza por Funcionalidades (Features).
+
+```
+src/
+├── modules/
+│   ├── users/           Todo lo relacionado a usuarios
+│   │   ├── domain/
+│   │   ├── application/
+│   │   ├── infrastructure/
+│   │   └── api/
+│   ├── catalog/         Todo lo relacionado a productos
+│   └── sales/           Todo lo relacionado a pedidos
+├── shared/              Código que todos usan (utilidades, logger)
+└── main.ts              Punto de entrada
+```
+
+3. Mecanismo de Comunicación: Inyección de Dependencias
+Para que las capas estén desacopladas, usamos la Inyección de Dependencias (DI).
+
+En lugar de que tu servicio haga const db = new PostgresDB()
+el servicio pide "algo que cumpla con la interfaz de DB"
+el sistema se lo entrega al arrancar.
+hace que tu código sea 100% testeable
+en los tests puedes inyectar una "base de datos de mentira" (mock).
+
+4. Ventajas
+
+Baja Cognición:
+desarrollador nuevo solo necesita mirar el módulo users para entender cómo funcionan los usuarios
+
+Refactorización Segura:
+Puedes cambiar PostgreSQL por MongoDB
+solo tocando la capa de infrastructure de un módulo
+
+Preparado para Escalar:
+Si el módulo sales recibe demasiado tráfico, puedes copiar esa carpeta
+pegarla en un proyecto nuevo y ¡listo, tienes un microservicio!
+
+Cons: La db
+Si todos los módulos tocan las mismas tablas sin orden
+el monolito se vuelve "peligroso"
+
+Un monolito bien estructurado intenta que cada módulo sea dueño de sus propias tablas (o esquemas).
+
+
+
+# Patrones en Backend: Controller + Service + Repository
+
+NestJS ya viene con una estructura de "módulos"
+pero para que no se convierta en un caos
+aplicamos una versión simplificada de Arquitectura Hexagonal.
+
+1. Responsabilidades
+
+Controller: 
+Recibe la petición (HTTP)
+valida que los datos (DTO) vengan bien
+devuelve la respuesta
+(equivalente página/vista)
+
+Service:
+lógica de negocio. Decide qué pasa
+(ej: "Si el usuario es VIP, dale un 10%").
+No sabe nada de bases de datos.
+(equivalente Custom Hook)
+
+Repository:
+Es el único que toca la base de datos (Prisma, TypeORM, etc.).
+Si cambias de base de datos, solo tocas esto.
+(equivalente service (axios))
+
+
+2. Estructura modular
+organizamos cada funcionalidad (ej: users) así:
+
+```
+src/users/
+├── dto/                 Los "contratos" de entrada (CreateUserDto)
+├── entities/            El modelo de datos (Cómo luce en la DB)
+├── users.controller.ts  El portero (HTTP)
+├── users.service.ts     El cerebro (Lógica)
+├── users.repository.ts  El bibliotecario (DB)
+└── users.module.ts      El pegamento
+```
+
+3. Código: flujo
+La info fluye de forma limpia
+
+1. Repo (Capa de Datos)
+clase que envuelve a tu ORM (ej: Prisma).
+
+```
+@Injectable()
+export class UsersRepository {
+  constructor(private prisma: PrismaService) {}
+
+  async save(data: CreateUserDto) {
+    return this.prisma.user.create({ data });
+  }
+}
+```
+
+2. Servicio (Capa de Lógica)
+servicio nunca hace un query directo
+Llama al repositorio
+
+```
+@Injectable()
+export class UsersService {
+  constructor(private readonly repository: UsersRepository) {}
+
+  async register(data: CreateUserDto) {
+    // 1. Lógica de negocio: ¿Ya existe el email?
+    const existing = await this.repository.findByEmail(data.email);
+    if (existing) throw new ConflictException('Email en uso');
+
+    // 2. Hashear password, enviar email de bienvenida, etc.
+    return this.repository.save(data);
+  }
+}
+```
+
+3. Controller (Capa de Entrada)
+
+```
+@Controller('users')
+export class UsersController {
+  constructor(private readonly usersService: UsersService) {}
+
+  @Post()
+  async create(@Body() createUserDto: CreateUserDto) {
+    return this.usersService.register(createUserDto);
+  }
+}
+```
+
+4. Testing
+
+Unit Tests del Servicio:
+Puedes testear la lógica de register sin tener una base de datos real.
+Simplemente le pasas un "Repository de mentira" (Mock).
+
+Mantenibilidad:
+Si mañana decides cambiar de TypeORM a Prisma
+tus servicios y controladores ni se enteran
+Solo cambias el código dentro de users.repository.ts
+
+Validación Limpia:
+Usando class-validator en los DTOs
+el Controller rechaza peticiones basura antes de que lleguen siquiera a tu lógica.
+
+
+5. Shared
+En NestJS tendrás un módulo Common o Shared para:
+
+Filters: Para atrapar errores y devolverlos siempre en el mismo formato.
+
+Interceptors: Para transformar las respuestas
+(ej: quitar el password antes de enviarlo al front).
+
+Guards: Para manejar la autenticación (JWT).
+
+
+## Comienzo Con Nest.js
+
+Si la app es pequeña, NestJS ya te da los `Services` por defecto
+Muchos desarrolladores meten los queries de la DB ahí mismo
+Pero no se hace.
+Crea la capa de Repository desde el día 1
+
+
+
+
+# Arquitectura Hexagonal
+
+
+
+
+# Backend as a Service
+
+Una plataforma en la nube se encarga de toda la infraestructura del lado del servidor
+base de datos, autenticación, almacenamiento de archivos, seguridad
+El desarrollo se centra en el frontend
+
+Backend Tradicional (Custom):
+Desarrollo: Creas la API, el servidor (Node, Go, Python) y la DB.
+Autenticación: Programas el JWT, el login, el registro y el envío de emails
+Escalabilidad: Tú configuras Docker, Kubernetes o servidores
+Tiempo: Semanas o meses de configuración
+
+BaaS:
+SDK (librería) para hablar con la nube
+activas "Login con Google" en un panel
+La plataforma escala automáticamente según el tráfico
+Minutos u horas.
+
+Pilares:
+Proveedores de BaaS (como Supabase, Firebase o Appwrite) ofrecen estas cuatro herramientas listas para usar
+
+1. Base de Datos en Tiempo Real:
+No necesitas crear tablas y endpoints manualmente
+Guardas un objeto JSON y, mágicamente
+todos los clientes conectados ven el cambio al instante
+(WebSockets automáticos).
+
+2. Autenticación:
+Gestión de usuarios, recuperación de contraseñas y login social
+(Google, GitHub, Apple) resuelto con un par de clics
+
+3. Storage:
+Lugar seguro para que tus usuarios suban fotos o videos
+Sin que tengas que configurar servidores de archivos o S3 de AWS.
+
+4. Edge Functions (Serverless):
+Si necesitas una lógica que no puede ir en el frontend
+(como procesar un pago con Stripe)
+escribes una pequeña función que se ejecuta en la nube.
+
+Ej: Superbase
+un BaaS como Supabase (Open Source y PostgreSQL)
+La capa de service que diseñamos antes se simplifica drásticamente
+
+```
+// src/services/userService.js
+import { supabase } from '../api/supabaseClient';
+
+const userService = {
+  // En lugar de axios.get('/users'), usas el SDK del BaaS
+  getAll: async () => {
+    const { data, error } = await supabase
+      .from('users')
+      .select('*')
+      .order('name');
+      
+    if (error) throw error;
+    return data;
+  },
+
+  create: async (userData) => {
+    const { data, error } = await supabase
+      .from('users')
+      .insert([userData]);
+      
+    if (error) throw error;
+    return data;
+  }
+};
+```
+
+
+Uso:
+Creando un MVP (Producto Mínimo Viable)
+desarrollador independiente o un equipo pequeño
+app es de contenido (redes sociales, notas, eCommerce sencillo).
+
+Cons si:
+
+Necesitas un control total sobre el rendimiento de la base de datos
+o consultas ultra-complejas.
+
+empresa tiene políticas de datos muy estrictas
+donde no puedes usar nubes de terceros
+
+costo: a medida que tu app crece a millones de usuarios
+un BaaS puede ser más caro que mantener tu propio servidor
+
+La arquitectura Hooks + React Query + Services sigue siendo válida
+Lo único que cambia es que dentro de tus Services
+en lugar de llamar a axios.get()
+llamas a supabase.from().select()
+
+
+
+# Clean Code
+
+Cómo se podría aplicar "Clean Code" en React?
+
+# SOLID
+Cómo se podría aplicar "SOLID" en React?
+
+
+
+# Problemas/memory leaks
+
+
+
+
+
+
+# Uso de Arrays
+
+
+## Intro a arrays
+
+
+
+## Estado con array
+
+Puedes manejar arreglos en el estado
+
+```
+const ListaTareas = () => {
+  const [tareas, setTareas] = useState(["Estudiar", "Comprar"]);
+
+  const agregarTarea = () => {
+    setTareas([...tareas, "Nueva Tarea"]); // Agregar al final
+  };
+
+  return (
+    <div>
+      <ul>
+        {tareas.map((tarea, index) => (
+          <li key={index}>{tarea}</li>
+        ))}
+      </ul>
+      <button onClick={agregarTarea}>Agregar Tarea</button>
+    </div>
+  );
+};
+
+```
+
+tareas almacena una lista de strings.
+
+```setTareas([...tareas, "Nueva Tarea"])``` crea un nuevo array con la tarea agregada.
+
+Se usa map para renderizar las tareas dinámicamente.
+
+
+
+
+
+## Array de Objetos
+
+Listas/array: con for, map(), etc
+
+```
+const products = [
+  { title: 'Cabbage', id: 1 },
+  { title: 'Garlic', id: 2 },
+  { title: 'Apple', id: 3 },
+];
+```
+
+Con map():
+transformar una matriz de productos 
+en una matriz de elementos <li>
+
+```
+const listItems = products.map(product =>
+  <li key={product.id}>
+    {product.title}
+  </li>
+);
+
+return (
+  <ul>{listItems}</ul>
+);
+```
+
+##### Key de arr:
+<li> tiene un atributo key para cada elemento de la lista 
+cadena o numero de identificación unica para cada hermano
+la key debe provenir de tus datos
+Ej: como un ID de base de datos
+React usa tus claves para saber qué sucedió 
+si luego insertas, eliminas o reordenas los elementos.
+
+Ej: 
+
+```
+const products = [
+  { title: 'Cabbage', isFruit: false, id: 1 },
+  { title: 'Garlic', isFruit: false, id: 2 },
+  { title: 'Apple', isFruit: true, id: 3 },
+];
+
+export default function ShoppingList() {
+  const listItems = products.map(product =>
+    <li
+      key={product.id}
+      style={{
+        color: product.isFruit ? 'magenta' : 'darkgreen'
+      }}
+    >
+      {product.title}
+    </li>
+  );
+
+  return (
+    <ul>{listItems}</ul>
+  );
+}
+```
+
+
+## Manejar colecciones de datos estructurados
+permite a React renderizar listas dinámicas y contenido repetitivo.
+
+colección de ítems con atributos definidos
+como una tabla de base de datos o una hoja de cálculo, pero en JavaScript.
+
+1. Renderizado de Listas Dinámicas (principal)
+renderizar cualquier lista de elementos repetitivos en la ui
+
+Se usa map() dentro de jsx
+##### Por cada objeto en el array, se crea un componente React o un elemento HTML.
+
+Ej:
+Una lista de productos en una tienda.
+Una lista de comentarios en un blog.
+Los ítems en una barra de navegación.
+Una lista de tareas pendientes (todos).
+
+```
+const productos = [
+  { id: 1, nombre: 'Laptop', precio: 1200, stock: 5 },
+  { id: 2, nombre: 'Monitor', precio: 300, stock: 12 },
+  { id: 3, nombre: 'Teclado', precio: 75, stock: 20 },
+];
+
+function ListaProductos() {
+  return (
+    <ul>
+      {/* Usamos .map() para iterar sobre el array de objetos */}
+      {productos.map(producto => (
+        <li key={producto.id}> {/* Siempre usar la key única! */}
+          <strong>{producto.nombre}</strong> - ${producto.precio} 
+          ({producto.stock} en stock)
+        </li>
+      ))}
+    </ul>
+  );
+}
+```
+
+
+2. Gestión del Estado de Componentes (State Management)
+
+##### Los arrays de objetos se utilizan para almacenar datos que cambian con el tiempo, gestionados por el hook useState.
+
+Uso: Cuando un usuario añade un nuevo ítem (p. ej., una nueva tarea),
+se crea un nuevo objeto y se añade al array de estado, forzando a React a re-renderizar la lista.
+
+Regla: para actualizar un estado que es un array
+siempre debes crear un nuevo array (inmutabilidad).
+
+```
+// Asumiendo que 'tareas' es el array de objetos en el estado
+const [tareas, setTareas] = useState([
+  { id: 1, texto: 'Comprar leche', completada: false }
+]);
+
+const handleAddTask = (nuevaTareaTexto) => {
+  const nuevaTarea = {
+    id: Date.now(), // ID único
+    texto: nuevaTareaTexto,
+    completada: false,
+  };
+  
+  // Creamos un nuevo array con las tareas existentes + la nueva
+  setTareas(prevTareas => [...prevTareas, nuevaTarea]); 
+};
+```
+
+
+3. Propiedades de Componentes (Passing Props)
+
+pasar un conjunto completo de datos de un componente padre a un componente hijo para que este lo renderice.
+
+```
+// Componente Padre
+function App() {
+  const users = [{ id: 1, name: 'Alice' }, { id: 2, name: 'Bob' }];
+  return <UserList data={users} />; // Pasar el array como una prop
+}
+
+// Componente Hijo
+function UserList({ data }) {
+  // El componente hijo mapea el array de objetos recibido
+  return (
+    <ul>
+      {data.map(user => (
+        <li key={user.id}>{user.name}</li>
+      ))}
+    </ul>
+  );
+}
+```
+
+
+4. Definición de Configuración (Estática)
+
+##### Los arrays de objetos se usan para definir la estructura estática de la UI
+como menús, tablas o formularios, que luego se mapean.
+
+Ej:
+
+Definir las columnas de una tabla:
+cada objeto especifica el encabezado, el campo de datos y el renderizador.
+
+Definir los enlaces de un menú:
+cada objeto tiene el label y la ruta (path).
+
+```
+const navLinks = [
+  { label: 'Inicio', path: '/' },
+  { label: 'Productos', path: '/products' },
+  { label: 'Contacto', path: '/contact' },
+];
+
+function NavBar() {
+  return (
+    <nav>
+      {navLinks.map(link => (
+        <a key={link.label} href={link.path}>{link.label}</a>
+      ))}
+    </nav>
+  );
+}
+```
+
+
+## Key en arrays
+
+Operación fundamental y crítica con useState o reducers
+garantiza que React detecte correctamente los cambios y se re-renderice solo cuando es necesario
+
+Los arrays y objetos en JavaScript son tipos de referencia
+Con una copia superficial solo copia la referencia de la memoria.
+
+React y Detección de Cambios: React compara las referencias de memoria del estado anterior y del nuevo estado.
+
+Mutación (Mala): Si modificas el array o el objeto directamente (ej: array.push(newItem)), la referencia de memoria sigue siendo la misma
+React piensa que el estado no ha cambiado y no se re-renderiza la interfaz, causando bugs sutiles.
+
+
+
+## Inmutabilidad en arrays
+
+Si creas una copia nueva del array y del objeto modificado, la referencia de memoria es nueva
+React detecta el cambio y realiza el re-renderizado.
+
+Para array de objetos:
+1. Copiar el Array Externo (el contenedor).
+2. Copiar el Objeto Interno que va a ser modificado.
+
+Operaciones Inmutables Comunes:
+Añadir, Eliminar, Actualizar de forma inmutable
+
+
+Operaciones Inmutables Comunes:
+Añadir, Eliminar, Actualizar de forma inmutable
+
+### 1. Añadir un Nuevo Objeto (Add)
+solo necesitas copiar el array externo, ya que el ítem que añades es un nuevo objeto por sí mismo.
+
+Método: Operador de propagación (...)
+
+```
+const [items, setItems] = useState([{ id: 1, text: 'Old Item' }]);
+
+const handleAddItem = (newItemText) => {
+  const newItem = {
+    id: Date.now(),
+    text: newItemText
+  };
+
+  // Crea un NUEVO array con los items anteriores + el nuevo item
+  setItems(prevItems => [...prevItems, newItem]);
+};
+```
+
+
+### 2. Eliminar un Objeto (Delete)
+eliminar un ítem: crear un nuevo array que contenga solo aquellos ítems que deseas conservar.
+
+Método: filter()
+
+```
+const handleRemoveItem = (itemIdToRemove) => {
+  // Crea un NUEVO array que excluye el ítem con el ID coincidente
+  const newItems = items.filter(item => item.id !== itemIdToRemove);
+
+  setItems(newItems);
+};
+```
+
+
+### 3. Actualizar un Objeto Existente (Update) 
+operación más compleja, requiere una doble copia inmutable:
+
+1. Copiar el Array Externo (usando map).
+2. Copiar el Objeto Interno que se está modificando.
+3. map() + Operador de propagación (...)
+
+```
+const [items, setItems] = useState([
+  { id: 1, text: 'Comprar leche', done: false },
+  { id: 2, text: 'Pagar luz', done: false },
+]);
+
+const handleToggleDone = (itemIdToUpdate) => {
+  // 1. Usar .map() para iterar y crear un NUEVO array
+  const updatedItems = items.map(item => {
+    
+    // Si encontramos el ítem a actualizar:
+    if (item.id === itemIdToUpdate) {
+      // 2. Copiar el OBJETO y solo modificar la propiedad deseada
+      return { 
+        ...item, // Copia todas las propiedades del objeto original
+        done: !item.done // Sobreescribe la propiedad 'done'
+      };
+    }
+    
+    // Si no es el ítem, lo devolvemos sin cambios (importante)
+    return item; 
+  });
+
+  setItems(updatedItems);
+};
+```
+
+
+### 4. Insertar en una Posición Específica (Insert/Reorder)
+
+Si necesitas insertar un ítem en una posición que no sea el final
+puedes combinar el operador de propagación con slice().
+
+Método: slice() + Operador de propagación (...)
+
+```
+const handleInsertAtIndex = (newItem, index) => {
+  setItems(prevItems => [
+    // 1. Elementos antes del índice
+    ...prevItems.slice(0, index), 
+    // 2. El nuevo ítem
+    newItem,
+    // 3. Elementos después del índice
+    ...prevItems.slice(index) 
+  ]);
+};
+```
+
+Regla:
+##### Para modificar un array/objeto, NO lo cambies directamente
+##### crea una copia del contenedor inmediato (array) y luego aplica los cambios a ese nuevo contenedor
+##### Si el cambio afecta un objeto dentro del array, también debes COPIAR ese objeto antes de modificarlo.
+
+
+
+# Uso de Objetos
+
+
+# Intro a objetos en React
+
+
+## Estado con Objetos
+
+El estado puede almacenar objetos en lugar de valores simples
+
+```
+const Usuario = () => {
+  const [usuario, setUsuario] = useState({ nombre: "Juan", edad: 25 });
+
+  const cambiarNombre = () => {
+    setUsuario({ ...usuario, nombre: "Carlos" }); // Se mantiene la edad
+  };
+
+  return (
+    <div>
+      <p>Nombre: {usuario.nombre}</p>
+      <p>Edad: {usuario.edad}</p>
+      <button onClick={cambiarNombre}>Cambiar Nombre</button>
+    </div>
+  );
+};
+
+```
+
+usuario es un objeto { nombre, edad }.
+
+### setUsuario({ ...usuario, nombre: "Carlos" }) usa spread operator (...usuario) para evitar perder la edad al actualizar el nombre
+
+
+
+
+
+
+## Objetos con Arrays
+
+organización, categorización y procesamiento de datos en React.
+
+##### Se utiliza cuando los datos se agrupan lógicamente bajo diferentes categorías o claves.
+
+Objetos con propiedades que tienen un array
+
+```
+{clave1: [a, b], clave2: [c, d, e]}
+```
+
+agrupar ítems relacionados
+acceso rápido y una iteración organizada por categoría.
+
+1. Datos Categorizados o Agrupados
+presentar contenido organizado en secciones o pestañas
+cada clave del objeto es la categoría
+el array es la lista de ítems dentro de esa categoría.
+
+Menús/Navegación: 
+`links: { 'principal': [...], 'legal': [...], 'social': [...] }`
+
+Productos por Tipo:
+`productos: { 'electrónica': [...], 'ropa': [...], 'libros': [...] }`
+
+Permisos de Usuario: 
+`permisos: { 'admin': ['crear', 'editar', 'eliminar'], 'lector': ['ver', 'descargar'] }`
+
+Ej: menú por categoría
+
+```
+const menuData = {
+  // Objeto con Arrays
+  platosFuertes: [
+    { id: 101, nombre: 'Salmón Grillado', precio: 25 },
+    { id: 102, nombre: 'Pasta Alfredo', precio: 18 },
+  ],
+  postres: [
+    { id: 201, nombre: 'Tiramisú', precio: 8 },
+    { id: 202, nombre: 'Brownie', precio: 7 },
+  ],
+};
+
+function MenuComponente() {
+  return (
+    <div>
+      {/* 1. Iterar sobre las claves del Objeto (platosFuertes, postres) */}
+      {Object.entries(menuData).map(([categoria, items]) => (
+        <section key={categoria}>
+          <h2>{categoria.toUpperCase()}</h2>
+          <ul>
+            {/* 2. Iterar sobre el Array de ítems para renderizar */}
+            {items.map(item => (
+              <li key={item.id}>{item.nombre} - ${item.precio}</li>
+            ))}
+          </ul>
+        </section>
+      ))}
+    </div>
+  );
+}
+```
+
+
+2. Datos de Forms con Múltiples Campos
+gestionar el estado de un formulario complejo
+donde varias claves (arrays) representan la misma categoría de información
+ejemplo, una lista de tags, o múltiples opciones seleccionadas
+
+Selección de Tags:
+`formState: { tags: ['react', 'vite', 'css'], selectedUsers: ['user1', 'user2'] }`
+
+Múltiples Archivos:
+`uploadState: { archivosAdjuntos: [...], archivosCargados: [...] }`
+
+
+3. Index y Búsqueda (Acceso Rápido)
+El objeto con arrays es superior cuando necesitas acceder a un grupo completo de datos de forma muy rápida utilizando el nombre de la clave.
+
+##### Ventaja: Si tu array tiene miles de ítems y solo quieres buscar los ítems de la categoría "libros"
+accedes directamente a productos.libros en lugar de mapear y filtrar el array completo (O(1) vs O(N)).
+
+
+4. Traducciones y Localización (i18n)
+##### Los objetos con arrays son comunes para almacenar datos de traducción cuando se agrupan por pantalla o componente
+y el array contiene las frases o variables para ese grupo.
+
+Estructura:
+```
+{ home: ['welcome_msg', 'login_btn'], profile: ['user_info', 'edit_profile'] }
+```
+
+
+5. Gestión de Estado Centralizada (Reducers/Context)
+
+Redux o Context API:
+##### El store o estado global a menudo utiliza esta estructura para organizar las diferentes "entidades" de la aplicación.
+
+Ej: store que separa los usuarios, los posts y los comentarios
+
+```
+const appStore = {
+  usuarios: [/* array de objetos de usuario */],
+  posts: [/* array de objetos de post */],
+  comentarios: [/* array de objetos de comentario */],
+  // ... más entidades
+};
+```
+
+
+## Inmutabilidad en Objetos 
+
+Cuando se trabaja con el estado de React (useState), es crucial mantener la inmutabilidad
+
+Si necesitas modificar un array dentro de tu objeto:
+1. Copia el Array: Crea un nuevo array.
+2. Copia el Objeto: Crea un nuevo objeto que contenga la versión actualizada del array.
+
+```
+// Ejemplo: Añadir un nuevo plato fuerte sin mutar el estado original
+const handleAddPlatoFuerte = (nuevoPlato) => {
+  setMenuData(prevMenu => ({
+    ...prevMenu, // Copia todas las otras claves del objeto (postres, etc.)
+    platosFuertes: [...prevMenu.platosFuertes, nuevoPlato], // Crea un nuevo array para esta clave
+  }));
+};
+```
+
+
+### Copia inmutable de un objeto con arrays
+debemos crear nuevas referencias de memoria para los contenedores que cambian.
+Crear una nueva copia del objeto externo
+Y una nueva copia del array interno que se modifica.
+
+Ej: estado es un objeto que agrupa listas de tareas por prioridad
+
+```
+const initialTasks = {
+  alta: [
+    { id: 1, text: 'Llamar al cliente' }
+  ],
+  media: [
+    { id: 2, text: 'Revisar emails' }
+  ],
+  baja: [
+    { id: 3, text: 'Organizar escritorio' }
+  ],
+};
+// const [tasksByPriority, setTasksByPriority] = useState(initialTasks);
+```
+
+1. Añadir un Ítem a un Array Específico
+añadir una nueva tarea a la categoría alta
+Operación: Copia del Objeto + Copia del Array (usando ...).
+
+```
+const handleAddTask = (priority, text) => {
+  const newTask = { id: Date.now(), text };
+
+  // 1. Crear un NUEVO objeto de estado
+  setTasksByPriority(prevTasks => ({
+    // Copia todas las otras categorías (media, baja)
+    ...prevTasks, 
+    
+    // 2. Sobreescribe la clave de la categoría 'priority'
+    [priority]: [
+      // 3. Crea un NUEVO array de la categoría, añadiendo el nuevo ítem
+      ...prevTasks[priority], 
+      newTask 
+    ]
+  }));
+};
+```
+
+2. Eliminar un Ítem de un Array Específico
+eliminar una tarea por su id de la categoría baja
+Operación: Copia del Objeto + Filtrado del Array (usando filter()).
+
+```
+const handleRemoveTask = (priority, taskIdToRemove) => {
+  // 1. Filtrar el array de esa categoría para obtener un NUEVO array
+  const newArrayForPriority = tasksByPriority[priority].filter(
+    task => task.id !== taskIdToRemove
+  );
+  
+  // 2. Crear un NUEVO objeto de estado
+  setTasksByPriority(prevTasks => ({
+    ...prevTasks, // Copia las categorías no modificadas
+    [priority]: newArrayForPriority // Usamos el array recién filtrado
+  }));
+};
+
+// Ejemplo de llamada: handleRemoveTask('baja', 3);
+```
+
+
+3. Actualizar un Ítem en un Array Específico
+Ej: Queremos cambiar el texto de una tarea en la categoría media.
+Operación: Copia del Objeto + Mapeo del Array (usando map()) + Copia del Objeto Interno (usando ...).
+
+```
+const handleUpdateTaskText = (priority, taskIdToUpdate, newText) => {
+  
+  // 1. Crear un NUEVO array mapeando
+  const updatedArray = tasksByPriority[priority].map(task => {
+    
+    if (task.id === taskIdToUpdate) {
+      // 2. Copiar el OBJETO INTERNO y actualizar el texto
+      return { 
+        ...task, 
+        text: newText 
+      };
+    }
+    
+    return task; // Devolver los objetos no modificados
+  });
+
+  // 3. Crear un NUEVO objeto de estado
+  setTasksByPriority(prevTasks => ({
+    ...prevTasks, // Copia las otras categorías
+    [priority]: updatedArray // Reemplaza la categoría modificada
+  }));
+};
+
+// Ejemplo de llamada: handleUpdateTaskText('media', 2, 'Revisar emails URGENTE');
+```
+
+
+4. Mover un Ítem entre Arrays (Cambiar Categoría)
+operación compuesta que requiere Eliminar de un array y Añadir a otro.
+Operación: Doble Copia del Objeto + Doble Operación en Arrays.
+
+```
+const handleMoveTask = (taskId, oldPriority, newPriority) => {
+  // 1. Encontrar el ítem a mover (requiere una copia para evitar mutación indirecta)
+  const taskToMove = tasksByPriority[oldPriority].find(t => t.id === taskId);
+  if (!taskToMove) return;
+
+  setTasksByPriority(prevTasks => ({
+    ...prevTasks,
+    
+    // 2. Copia inmutable: Eliminar de la antigua categoría
+    [oldPriority]: prevTasks[oldPriority].filter(t => t.id !== taskId),
+    
+    // 3. Copia inmutable: Añadir a la nueva categoría
+    [newPriority]: [...prevTasks[newPriority], taskToMove]
+  }));
+};
+
+// Ejemplo de llamada: handleMoveTask(3, 'baja', 'media');
+```
+
+Cuando trabajas con un objeto que tiene claves variables (como priority), recuerda la sintaxis del operador de propagación con corchetes en JavaScript:
+
+```
+const newObject = {
+  ...oldObject, // Copia todas las propiedades de oldObject
+  [dynamicKey]: newValue // Usa el valor de la variable como nombre de propiedad
+};
+```
 
 
 # Code
@@ -5244,6 +8454,13 @@ function App() {
 export default App 
 ```
 
+error de ruta y componente:
+
+```
+import { Button } from './shared/components/ui';
+```
+falta '/button/Button'
+
 
 ### 7. provider
 
@@ -5301,4 +8518,1070 @@ export default App
 
 
 
+
+# Client, service y hooks
+
+```
+src/
+├── api/
+│   └── apiClient.js       <-- Aquí vive la instancia de Axios con interceptores
+├── services/
+│   ├── userService.js     <-- Lógica para el dominio de Usuarios
+│   ├── authService.js     <-- Lógica para Login/Registro
+│   └── productService.js  <-- Lógica para el catálogo
+└── components/
+    └── UserList.jsx       <-- Solo consume los servicios
+```
+
+```
+src/
+├── api/
+│   └── client.js        # Configuración de Axios
+├── services/
+│   └── users.js         # Endpoints: getAll(), getById(), etc.
+├── hooks/
+│   └── useUsers.js      # Lógica: loading, error, data fetching
+└── components/
+    ├── common/          # Componentes tontos/reutilizables (Dumb)
+    └── features/        # Componentes de UI específicos de la lógica
+
+```
+
+## Providers
+
+## styles
+
+## layout, pages
+
+
+
+# Renderizar objeto
+
+## Destructuring: acceso directo
+
+Si sabes exactamente qué propiedades tiene el objeto, la forma más limpia y "React-ish" es desestructurar el objeto.
+Esto evita que tu código se llene de usuario.nombre, usuario.apellido, etc.
+
+```
+const DetalleUsuario = ({ usuario }) => {
+  const { nombre, edad, profesion } = usuario;
+
+  return (
+    <div>
+      <h2>{nombre}</h2>
+      <p>Edad: {edad}</p>
+      <p>Trabajo: {profesion}</p>
+    </div>
+  );
+};
+```
+
+
+## Mapping de objeto dinamico
+
+A diferencia de los arrays, los objetos no tienen un método .map().
+Si necesitas iterar sobre todas las propiedades
+(por ejemplo, para una tabla de especificaciones)
+usa Object.entries().
+devuelve un array de pares `[clave, valor]`.
+
+```
+<ul>
+  {Object.entries(configuracion).map(([key, value]) => (
+    <li key={key}>
+      <strong>{key}:</strong> {value.toString()}
+    </li>
+  ))}
+</ul>
+```
+
+## Cargar desde una API: Renderizado Condicional y Optional Chaining
+
+es muy común que el objeto llegue null o undefined mientras se carga desde una API
+Para que tu app no explote, usa el Optional Chaining (?.)
+
+Mal: {usuario.direccion.calle} (Si direccion no existe, crash).
+Bien: {usuario?.direccion?.calle || "Dirección no disponible"}.
+
+
+## Debugg objeto
+
+etiqueta <pre> junto con JSON.stringify
+ver que tiene el objeto sin formatear
+El tercer argumento (2) es la clave
+le da indentación y lo hace legible
+
+```
+<pre>
+  {JSON.stringify(miObjeto, null, 2)}
+</pre>
+```
+
+
+
+# Componentes dedicados para objetos
+
+Separar un objeto complejo en componentes dedicados
+lo vuelve mucho más fácil de mantener y escalar
+
+SRP: Cada componente se encarga de una sola cosa
+Un componente Avatar solo se preocupa de mostrar la imagen
+mientras que un UserBio solo formatea el texto
+
+Reutilización: Si creas un componente <Badge label={usuario.rol} />
+luego puedes usar ese mismo Badge para mostrar categorías,
+estados de pago o cualquier otra etiqueta en otra parte de la app
+
+Testing: probar un componente pequeño que recibe dos props que uno gigante
+
+Optimización (Memoización): Si una parte del objeto cambia pero el resto no
+React puede evitar re-renderizar los componentes cuyas props no han variado (usando React.memo).
+
+Ej objeto:
+
+```
+const post = {
+  id: 1,
+  titulo: "React es genial",
+  autor: { nombre: "Alex", foto: "url..." },
+  estadisticas: { likes: 150, shares: 30 }
+};
+```
+
+Componente gigante:
+
+```
+//Difícil de leer y reutilizar
+const Post = ({ post }) => (
+  <div>
+    <h1>{post.titulo}</h1>
+    <img src={post.autor.foto} alt={post.autor.nombre} />
+    <span>{post.autor.nombre}</span>
+    <div>Likes: {post.estadisticas.likes}</div>
+  </div>
+);
+```
+
+Componentes dedicados
+
+```
+// Modular y profesional
+const Post = ({ post }) => (
+  <article>
+    <Header title={post.titulo} />
+    <AuthorInfo user={post.autor} />
+    <Stats likes={post.estadisticas.likes} shares={post.estadisticas.shares} />
+  </article>
+);
+```
+
+
+### Evitar Prop Drilling
+
+Si empiezas a separar componentes demasiado
+por ejemplo, Post -> AuthorInfo -> Avatar -> Image
+
+Si un dato lo necesitan muchos componentes en niveles muy distintos
+quizás es hora de usar Context API o un estado global
+Pero para mostrar los datos de un solo objeto, pasar props es lo ideal
+
+### Creación componente especifico
+
+Si lo vas a usar más de una vez
+o si el JSX de tu componente principal ya mide más de 50 líneas, sepáralo
+
+
+
+# Componentes de ui 
+
+Siguiendo Atomic Design
+
+1. Componentes de Entrada (Inputs)
+permiten al usuario interactuar y enviar datos
+donde ocurre la "conversación" usuario-app.
+
+Button: El rey de la acción. Dispara eventos (enviar, borrar, abrir).
+Input / Text Area: Campos para escribir texto corto o largo.
+Select / Dropdown: Una lista desplegable para elegir una o varias opciones.
+Checkbox / Radio: Para selecciones binarias o elegir una opción entre varias visibles.
+Switch / Toggle: Un interruptor (on/off), ideal para configuraciones.
+
+2. Componentes de Navegación
+Ayudan al usuario a saber dónde está y a moverse por la aplicación
+
+Navbar: La barra superior con los enlaces principales.
+Sidebar: Menú lateral, común en dashboards o paneles de control.
+Tabs: Pestañas para cambiar de contenido dentro de una misma vista.
+Breadcrumbs: (Migas de pan) Indican la ruta jerárquica (ej: Inicio > Ajustes > Perfil).
+Pagination: Para dividir listas largas en páginas manejables.
+
+3. Componentes de Visualización y Datos
+Su función es presentar la información de forma estructurada y estética.
+
+Card: Un contenedor que agrupa información relacionada (ej: foto, título y precio de un producto).
+Table: Para mostrar datos crudos y comparables en filas y columnas.
+Badge / Tag: Etiquetas pequeñas para mostrar estados o categorías (ej: "Nuevo", "Vendido").
+Avatar: Representación visual (imagen o iniciales) de un usuario.
+List / Accordion: Listas de elementos que pueden expandirse para mostrar más detalle
+
+4. Componentes de Feedback y Estado
+Le dicen al usuario qué está pasando "detrás de escena".
+
+Modal / Dialog: Ventanas que flotan sobre la interfaz y requieren atención inmediata
+Toast / Alert: Mensajes temporales (normalmente en una esquina) que confirman acciones ("Guardado con éxito").
+Loader / Spinner: El indicador de carga para que el usuario no piense que la web se rompió.
+Tooltip: Ese mensajito que sale cuando dejas el ratón encima de algo para explicar qué hace
+
+5. Componentes de Layout/Estructura
+Son invisibles para el usuario final, pero son los que mantienen todo en su sitio.
+
+Container: Define el ancho máximo y centra el contenido.
+Grid / Stack: Controlan el espaciado y la alineación de los componentes hijos (filas y columnas).
+Divider: Una línea simple para separar secciones visualmente.
+
+Entrada: TextField: Cuando necesitas que el usuario te dé información.
+Navegación: Navbar: Cuando el usuario necesita moverse a otra sección.
+Visualización: Card: Cuando quieres destacar un objeto de tu base de datos.
+Feedback: Modal: Cuando necesitas interrumpir al usuario para una decisión.
+Estructura: Box / Flex: Cuando los elementos están desordenados y necesitan aire.
+
+
+
+# Componentes y estructura de HTML
+
+Integrar tus componentes de React con etiquetas semánticas de HTML
+(<main>, <article>, <aside>, etc.)
+para una web profesional, accesible y optimizada para SEO.
+
+
+## 1. Componente Envoltorio (Wrapper)
+
+Creas un componente de React cuyo único propósito es renderizar una etiqueta semántica
+dentro de ella colocar sus hijos (children).
+
+```
+const MainLayout = ({ children }) => {
+  return (
+    <>
+      <header>
+        <Navbar /> {/* Componente de Navegación */}
+      </header>
+      
+      <main>
+        {children} {/* Aquí va el contenido dinámico */}
+      </main>
+      
+      <aside>
+        <Sidebar /> {/* Componente de Visualización */}
+      </aside>
+      
+      <footer>
+        <FooterLinks />
+      </footer>
+    </>
+  );
+};
+```
+
+
+## 2. Mapeo Semántico por Propósito
+
+Cada categoría de componente e un "hogar natural" en el HTML semántico
+
+<header>:
+Navbar, Logo, SearchBar
+Es la introducción de la página o sección.
+
+<nav>:
+Menu, Breadcrumbs, Tabs
+Contiene enlaces de navegación primaria.
+
+<main>:
+El contenido central de la ruta actual
+Solo debe haber uno por página
+
+<article>:
+Card de blog, Post, ProductDetail
+Contenido que tiene sentido por sí mismo.
+
+<section>:
+Agrupadores de Lists, Grids
+Temas genéricos dentro del main
+
+<aside>:
+Widgets, Ads, RelatedLinks
+Información relacionada pero no principal
+
+<footer>:
+Copyright, SocialLinks
+Información de cierre o legal.
+
+
+## 3. Componentes Polimórficos
+
+En librería propia de componentes, puedes usar la propiedad as.
+Esto permite que un mismo componente de UI
+(como un Box o un Container)
+se comporte como cualquier etiqueta HTML según lo necesites.
+
+```
+// Un componente flexible que acepta la prop "as"
+const Box = ({ as: Component = 'div', children, ...props }) => {
+  return <Component {...props}>{children}</Component>;
+};
+
+// Uso en la App:
+function App() {
+  return (
+    <Box as="main" className="p-4">
+       <Box as="article" className="card">
+          <h2>Título del Post</h2>
+          <p>Contenido...</p>
+       </Box>
+    </Box>
+  );
+}
+```
+
+Ventajas:
+
+Accesibilidad (A11y): lectores de pantalla para personas con discapacidad visual usan estas etiquetas para saltar rápidamente al contenido principal o a la navegación
+SEO: Google entiende mejor de qué trata tu página si sabe qué es un artículo (<article>) y qué es simplemente publicidad lateral (<aside>).
+Mantenibilidad: Es mucho más fácil leer un árbol de componentes que dice <header> que uno que tiene 50 <div> anidados
+
+
+
+# SEO
+
+1. Caos de los Encabezados (<h1> a <h6>)
+Los buscadores usan los encabezados para entender la jerarquía de tu contenido
+
+error: Saltarse niveles (pasar de un <h1> a un <h3> porque el <h3> se ve más pequeño y te gusta el estilo).
+castigo: Los lectores de pantalla se confunden y Google penaliza la estructura de tu página porque no "entiende" qué secciones son subtemas de cuáles.
+
+Regla: Usa CSS para el tamaño, pero mantén la jerarquía lógica (h1 -> h2 -> h3).
+Solo debe haber un solo <h1> por página.
+
+2. "Div-itis" (Botones que no son botones)
+tentador poner un onClick en un <div> o un <span>
+porque es más fácil de estilizar que un <button>.
+
+error: <div onClick={hacerAlgo}>Click aquí</div>.
+castigo: usuario que usa la tecla Tab para navegar nunca podrá "llegar" a ese div.
+SEO: Google no identifica ese elemento como una interacción importante.
+
+solución: Usa siempre <button type="button">.
+Si necesitas que parezca un texto normal, quítale los estilos con CSS.
+
+3. "Inception" de Enlaces (<a> dentro de <a>)
+Al igual que el botón dentro de un enlace, poner un link dentro de otro es un desastre técnico
+
+error: Un Card completo que es un <a> y dentro tiene un enlace al perfil del autor.
+castigo: El navegador intenta "corregir" el HTML rompiendo tu estructura.
+Si inspeccionas el código en el navegador, verás que ha cerrado el primer enlace antes de empezar el segundo
+destruyendo tu diseño.
+
+4. Listas huérfanas (<li> sin <ul> o <ol>)
+Las etiquetas de lista tienen una relación de "padre e hijo" obligatoria.
+
+error: Usar <li> directamente dentro de un <nav> o un <div> solo porque te gusta el puntito que pone el navegador
+castigo: Los motores de búsqueda no reconocen el grupo como una lista de elementos relacionados
+diluye la importancia de esos datos (especialmente malo en menús de navegación).
+
+5. Etiquetas de Formulario sin Identidad
+error: Usar un <p> o un <span> para poner el nombre de un campo de texto en lugar de un <label>.
+castigo: Si un usuario hace clic en el texto, el cursor no saltará al input automáticamente (pérdida de UX).
+Además, los algoritmos de autocompletado de los navegadores fallan al intentar ayudar al usuario.
+
+<a> dentro de <a>: El navegador rompe el DOM y el SEO se confunde. Usa un div con un evento o posiciona los links por separado.
+<h1> múltiple: Google no sabe cuál es el tema principal. "Un solo <h1>, varios <h2>."
+Tablas para Layout: Pésimo para dispositivos móviles y lectores. Usa Flexbox o CSS Grid.
+Img sin alt: Google Imágenes no te encuentra y es inaccesible. "Siempre pon un alt="""" (aunque sea vacío)."
+
+Herramientas como eslint-plugin-jsx-a11y
+
+
+## Tipos de errores SEO - Navegador
+
+1. Errores de Jerarquía y Estructura (Golpe Directo al SEO
+confunden a los bots de Google sobre de qué trata realmente tu página.
+
+Múltiples <h1>: El <h1> es el título del libro
+Tener cinco títulos en una sola página diluye la relevancia.
+
+Saltos de nivel en encabezados: Pasar de un <h1> a un <h4> rompe el esquema lógico.
+Es como leer un índice de un libro donde faltan los capítulos 2 y 3.
+
+Contenido importante en <iframe>: Los buscadores suelen ignorar lo que hay dentro de un frame
+Si tu texto clave está ahí, para Google no existe.
+
+Listas sin contenedores: Usar <li> fuera de un <ul> o <ol>.
+Esto rompe la estructura de datos que los bots usan para generar "fragmentos destacados" (featured snippets).
+
+2. Errores de Interactividad (Castigo en Accesibilidad y UX)
+Si un componente no se puede usar con el teclado o no anuncia qué hace
+estás excluyendo a usuarios y perdiendo puntos en las métricas de "Core Web Vitals".
+
+Botones "Fantasma" (div con onClick): si no es un <button>, el navegador no lo incluye en el orden del tabulador
+
+Enlaces sin texto (Iconos solos):
+Un <a> que solo tiene un icono de Instagram dentro, sin texto oculto (aria-label)
+es un enlace ciego para los lectores de pantalla y para Google.
+
+Formularios sin label: Usar un placeholder como si fuera una etiqueta
+Cuando el usuario escribe, el placeholder desaparece y se pierde el contexto
+Además, el navegador no sabe qué datos pedir para el autocompletado
+
+3. Errores de Anidamiento Inválido (Conflictos del Navegador)
+el navegador se rinde y empieza a "inventar" código para que la página no se rompa, lo cual puede destruir tu diseño de React
+
+<a> dentro de <a> o <button> dentro de <a>:
+El navegador cerrará automáticamente el primer enlace en cuanto encuentre el segundo
+dejando el resto de tu HTML "huérfano" y rompiendo tus estilos CSS.
+
+Elementos de bloque dentro de elementos de línea:
+Por ejemplo, meter un <div> o un <h1> dentro de un <span>.
+Aunque HTML5 lo permite en ciertos casos, suele causar comportamientos visuales erráticos.
+
+Tablas mal formadas:
+Poner contenido directamente en un <table> sin pasar por un <tr> o <td>.
+El navegador moverá ese contenido fuera de la tabla, arriba del todo.
+
+herramientas:
+Linter de Accesibilidad
+extensión "Axe Accessibility" en vs code
+plugin eslint-plugin-jsx-a11y.
+
+Google mide el LCP (Largest Contentful Paint)
+Si usas un <div> gigante para cargar una imagen en lugar de una etiqueta <img> con sus dimensiones correctas
+tu puntuación de velocidad caerá y bajarás en los resultados de búsqueda.
+
+
+
+# Especialización de Componentes
+
+Tener dos "capas" de componentes
+
+Componentes de UI (Genéricos): Card, Button, Modal
+No saben qué datos muestran, solo definen el diseño
+
+Componentes de Dominio (Específicos): Se llaman Bio, ProjectCard, ProductList
+Estos componentes usan a los genéricos por dentro.
+
+```
+// 1. El componente genérico (estilo)
+const Card = ({ children, className }) => (
+  <div className={`shadow-md rounded-lg p-4 ${className}`}>
+    {children}
+  </div>
+);
+
+// 2. El componente específico (dominio)
+const Bio = ({ user }) => (
+  <Card className="bg-blue-50"> 
+    <h2>{user.name}</h2>
+    <p>{user.description}</p>
+  </Card>
+);
+```
+
+Solo da estilo visual: Genérico
+"Container, Grid, Typography"
+
+Representa un objeto de tu base de datos:
+Específico (Modelo),"UserCard, ProjectItem, InvoiceRow"
+
+Es una sección entera de la página Específico (Sección):
+"Hero, ContactForm, ProjectsSection"
+
+Es una página completa: Vista/Page
+"HomePage, Dashboard, Settings"
+
+
+### Advertencia sobre componente especifico
+
+Llamar a un componente simplemente Bio está genial si estás dentro de una carpeta llamada /features/profile.
+Pero si tu aplicación crece mucho, podrías terminar con tres componentes llamados igual.
+
+Muchos desarrolladores prefieren ser un poco más descriptivos
+ProjectMain (en lugar de solo Projects)
+UserBio (en lugar de solo Bio)
+
+
+# Componentes Genericos
+
+librería de componentes genéricos
+UI Kit o Design System
+
+1. Agnosticismo Total
+Componente genérico no debe saber nada de tu lógica de negocio
+
+Mal: Un componente llamado UserCard que recibe un objeto usuario.
+Bien: Un componente llamado Card que recibe un title, un image y un children.
+
+
+2. Componente Genérico pro
+Para que sea realmente útil
+Debe cumplir con 4 características:
+
+1. Prop children (Composición):
+No intentes crear props para cada pedacito de texto
+Deja que el usuario meta lo que quiera dentro.
+
+```
+// En lugar de <Button text="Click" icon="home" />
+// Es mejor:
+const Button = ({ children, ...props }) => (
+  <button {...props} className="btn-style">
+    {children}
+  </button>
+);
+```
+
+2. Prop as (Polimorfismo):
+permite que tu componente cambie su etiqueta HTML pero mantenga sus estilos
+vital para el SEO
+
+Ej: Un componente <Text as="h1"> renderiza un <h1>
+pero <Text as="p"> renderiza un párrafo con el mismo estilo visual.
+
+3. Extensión de Atributos (...props):
+Siempre, siempre usa el spread operator al final de tus props
+Así, si alguien quiere añadir un type="submit", un onMouseEnter o un aria-label
+tu componente lo aceptará sin que tengas que programarlo explícitamente
+
+4. D. Combinación de Clases
+No sobrescribas la clase base, combínala
+Usa librerías como clsx o tailwind-merge para que el usuario pueda añadir estilos extra desde fuera.
+
+
+3. Clasificación
+
+Categoría | Componentes Clave |Propósito
+
+Layout: "Box, Stack, Container"
+"Controlar el espaciado, alineación y estructura."
+
+Tipografía: "Text, Heading"
+"Unificar tamaños de fuente, pesos y colores de texto."
+
+Acciones: "Button, IconButton, Link"
+"Todo lo que sea ""clicable""."
+
+Contenedores: "Card, Modal, Accordion"
+Agrupar contenido relacionado visualmente.
+
+Formularios: "Input, Checkbox, Select"
+Captura de datos estandarizada.
+
+
+4. Error de dar Margen Externo
+Nunca le pongas margin (espacio exterior) a un componente genérico dentro de su CSS base.
+
+Si un Button tiene un margin-right: 10px por defecto
+el día que quieras centrarlo o ponerlo al final de una línea
+Si un Button tiene un margin-right: 10px por defecto, el día que quieras centrarlo o ponerlo al final de una línea, tendrás que "pelearte" con tu propio CSS.
+
+La regla: El componente define su espacio interno (padding)
+pero el padre define dónde se coloca (margin o gap).
+
+
+5. Componente Box
+Componente que es el "átomo" de cualquier UI Kit moderno
+
+```
+const Box = ({ as: Component = 'div', children, className = '', ...props }) => {
+  return (
+    <Component 
+      className={`box-base-styles ${className}`} 
+      {...props}
+    >
+      {children}
+    </Component>
+  );
+};
+
+// Uso: <Box as="section" className="p-4 shadow"> Contenido </Box>
+```
+
+
+
+# Componentes de Dominio/Especificos
+
+Componentes que tienen "opinión": saben qué datos manejan
+cómo deben formatearse y qué reglas de negocio deben seguir
+
+1. Principio: Consumo Inteligente
+Casi nunca debería tener estilos CSS complejos propios
+En su lugar, debe orquestar componentes genéricos
+
+lógica: decide qué se muestra, y el genérico decide cómo se ve
+
+2. Pasar objeto entero o solo las props
+Pasa el objeto si el componente es "dueño" de esa entidad
+
+Caso A (para dominio): 
+<ProfileCard user={userData} />.
+limpio, si el día de mañana el usuario tiene un nuevo campo pronouns
+solo actualizas el interior del componente
+
+Caso B (componentes muy reutilizables):
+<Card title={userData.name} />
+Úsalo solo si quieres que esa Card sirva tanto para usuarios
+como para otros dominios como producto, etc
+
+3. Encapsulación de Lógica de Formateo
+componente de dominio es el lugar perfecto para limpiar los datos que vienen de la API
+No ensucies tu componente principal con lógica de "parseo".
+
+```
+// El componente de dominio limpia los datos
+const InvoiceRow = ({ invoice }) => {
+  const formattedDate = new Date(invoice.createdAt).toLocaleDateString();
+  const amountInCurrency = new Intl.NumberFormat('es-AR', { 
+    style: 'currency', currency: 'ARS' 
+  }).format(invoice.total);
+
+  return (
+    <Box as="tr">
+      <td>{invoice.id}</td>
+      <td>{formattedDate}</td>
+      <Text weight="bold">{amountInCurrency}</Text>
+    </Box>
+  );
+};
+```
+
+4. Manejo de Estados de "Gracia"
+Debe saber qué hacer cuando los datos no son perfectos
+No esperes a que el componente padre lo gestione
+
+Estado de Carga (Skeleton):
+Si el objeto es null, muestra una versión gris/animada.
+
+Estado Vacío:
+Si no hay datos, muestra un mensaje amigable ("No hay proyectos aún").
+
+Fallback de errores:
+Si falta una imagen, muestra un avatar por defecto.
+
+5. Estructura
+En Features
+
+src/components/ui/ -> Aquí van los Genéricos (Button, Card, Input).
+src/features/auth/components/ -> Aquí van los de Dominio de esa función (LoginForm, RegisterCard).
+src/features/projects/components/ -> (ProjectList, ProjectStatusBadge).
+
+UI y Dominio:
+
+Nombre:	Avatar | UserAvatar
+Props: src, size, alt | user (el objeto completo)
+CSS: Mucho (bordes, sombras, flex) | Poco (suele usar un Box o Stack)
+Conocimiento: No sabe qué es un "Usuario" | Sabe que un usuario tiene imgUrl
+Reutilización: En cualquier proyecto | Solo en este proyecto
+
+Especificidad en los componentes:
+HeaderBlueWithSearchAndLogo es demasiado específico y rígido
+Es mejor tener un Header (genérico)
+un AppHeader (dominio) que coloque el Logo y el SearchBar dentro del Header.
+
+Si sientes que estás copiando y pegando el mismo código
+
+
+# Componente ui y dominio interacción 
+
+1. Genérico: Card
+no tiene ni idea de qué es un Usuario
+Solo sabe que debe tener un borde, una sombra y un espacio para contenido
+
+```
+// src/components/ui/Card.jsx
+export const Card = ({ children, padding = "p-4", className = "" }) => {
+  return (
+    <div className={`bg-white shadow-lg rounded-xl overflow-hidden ${padding} ${className}`}>
+      {children}
+    </div>
+  );
+};
+```
+
+2. Dominio: UserProfile
+componente jefe, Recibe un objeto user, decide qué datos mostrar 
+y usa al componente Card para que se vea bonito.
+
+```
+// src/features/users/components/UserProfile.jsx
+import { Card } from "../../components/ui/Card";
+
+export const UserProfile = ({ user }) => {
+  // Lógica de dominio: ¿El usuario es VIP o normal?
+  const borderClass = user.isVip ? "border-2 border-gold" : "border-gray-200";
+  
+  return (
+    <Card className={borderClass}>
+      <div className="flex items-center gap-4">
+        <img 
+          src={user.avatarUrl || "/default-avatar.png"} 
+          alt={user.name} 
+          className="w-16 h-16 rounded-full"
+        />
+        <div>
+          <h2 className="text-xl font-bold">{user.name}</h2>
+          <p className="text-gray-500 text-sm">@{user.username}</p>
+        </div>
+      </div>
+      
+      <div className="mt-4">
+        <p>{user.bio}</p>
+      </div>
+    </Card>
+  );
+};
+```
+
+Ventajas:
+Si mañana quieres que la tarjeta sea azul en lugar de blanca, cambias Card.jsx
+Si mañana el objeto user cambia su propiedad name por fullName
+solo tocas UserProfile.jsx
+
+separación (UI + Dominio):
+
+Quieres crear una lista de productos:
+Reutilizas el Card y creas un ProductCard
+
+El diseñador cambia las sombras:
+Cambias 1 archivo (Card.jsx)
+
+Hacer un Test Unitario:
+Pruebas que Card renderiza hijos correctamente
+
+
+# Styled Components
+
+mantener los estilos encapsulados
+usar lógica de JavaScript directamente en el diseño
+evita las colisiones de nombres
+
+```
+import styled from 'styled-components';
+
+// Definimos el "esqueleto" visual
+export const StyledCard = styled.div`
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.2s ease-in-out;
+
+  /* Podemos usar props directamente en el CSS */
+  padding: ${props => props.$padding || '1rem'};
+  border: ${props => props.$isVip ? '2px solid #ffd700' : '1px solid #e5e7eb'};
+
+  &:hover {
+    transform: translateY(-4px);
+  }
+`;
+```
+
+Uso el prefijo $ (como $padding), se llaman Transient Props
+usa esta prop para el CSS, pero no la pasa al elemento HTML final
+
+2. Componente de Dominio lo consume
+sigue siendo el que tiene la lógica
+ahora le pasa "órdenes" al Styled Component a través de props.
+
+```
+// src/features/users/components/UserProfile.jsx
+import { StyledCard } from "../../components/ui/StyledCard";
+
+export const UserProfile = ({ user }) => {
+  return (
+    <StyledCard $isVip={user.isVip} $padding="2rem">
+      <div className="profile-content">
+        <img src={user.avatarUrl} alt={user.name} />
+        <h3>{user.name}</h3>
+        <p>{user.bio}</p>
+      </div>
+    </StyledCard>
+  );
+};
+```
+
+3. Ventajas para ui
+
+1. Polimorfismo nativo: Styled Components ya trae la prop as.
+Si quieres que tu Card sea un <article> por semántica, solo haces:
+
+```
+<StyledCard as="article">...</StyledCard>.
+```
+
+2. Theming
+Puedes envolver tu app en un ThemeProvider y acceder a colores globales (props.theme.primary) dentro de cualquier componente de UI.
+
+3. Cero CSS huérfano
+Si borras el componente StyledCard, el CSS se borra con él
+No quedan archivos .css de 3000 líneas que nadie se atreve a tocar.
+
+
+4. Styled Components vs Tailwind
+
+Styled Components:
+creando una librería de componentes de diseño muy personalizada
+necesitas lógica compleja en el CSS (como cálculos basados en props)
+o prefieres tener el CSS y el JS en el mismo archivo.
+
+Styled Components es una joya porque te permite crear una API muy limpia para otros desarrolladores
+puedes exponer props como variant="primary", size="large"
+manejar toda esa lógica visual dentro del archivo del componente
+
+Tailwind:
+prototipar a la velocidad de la luz
+prefieres no pensar nombres de clases
+y quieres que el bundle de tu aplicación sea lo más pequeño posible
+
+
+## Variantes en styled components
+
+
+
+
+# Biblioteca ui
+
+Piezas para que otros (o tú mismo en el futuro) puedan construir ciudades enteras.
+
+1. Elementos
+definir los Design Tokens
+son los valores atómicos que aseguran que todo se vea coherente
+
+Paleta de Colores:
+Primarios, secundarios, estados (error, éxito) y escalas de grises.
+
+Tipografía:
+Fuentes, tamaños (14px, 16px, 20px), pesos (bold, regular) y alturas de línea.
+
+Espaciado (Spacing):
+Una escala base (ej. múltiplos de 4px o 8px) para márgenes y paddings.
+
+Sombras y Bordes:
+Elevaciones (z-index) y radios de curvatura (border-radius).
+
+
+2. Componentes: Jerarquía
+Para organizar los componentes, Atomic Design
+
+Átomos: Componentes indivisibles
+Button, Input, Label, Icon, Badge.
+
+Moléculas: Unión de dos o más átomos
+SearchBar (Input + Button), FormField (Label + Input).
+
+Organismos: Secciones complejas de la UI
+Navbar, Footer, CardGrid.
+
+Templates:
+Estructuras de página sin contenido real
+DashboardLayout, AuthLayout
+
+
+3. NPM
+
+1. Definición Técnica:
+herramientas a usar, ej styled como base de estilo
+
+Languaje: js o ts.
+Con ts, los usuarios de tu librería tienen autocompletado
+
+Bundler: empaquetar el código
+Vite o Rollup, estándares actuales para librerías
+
+2. Desarrollo de "Fundaciones"
+
+ThemeProvider:
+componente que envolverá a toda la aplicación
+proveerá los colores y fuentes que definiste en los Design Tokens.
+
+3. Taller de Pruebas (Storybook)
+No puedes construir una biblioteca "a ciegas" dentro de una app normal
+
+Necesitas Storybook: permite renderizar tus componentes de forma aislada
+probar todas sus variantes (ej: botón rojo, botón grande, botón deshabilitado)
+documentarlos automáticamente.
+
+
+4. Accesibilidad y Testing
+
+Aria-roles: Asegúrate de que tus componentes sean legibles por máquinas.
+Unit Testing: Usa Vitest o Jest para asegurar que, si alguien actualiza el Button, no rompa toda la biblioteca
+
+
+5. Distribución
+Publicar en NPM o tener un repositorio privado
+configurar el archivo package.json
+que el usuario pueda hacer import { Button } from 'tu-libreria'.
+
+
+
+
+# Accesibilidad - Aria label
+
+no es solo "añadir etiquetas"
+asegurar que cualquier persona, independientemente de cómo navegue
+(teclado, lector de pantalla, comandos de voz), pueda usar tu aplicación
+
+1. Semántica antes que Aria
+No uses ARIA si puedes usar un elemento nativo de HTML
+
+Mal: <div role="button" onClick={...}>Enviar</div>
+Bien: <button type="button" onClick={...}>Enviar</button>
+
+El navegador ya sabe qué hace un <button>, cómo manejar el foco y qué anunciar al lector de pantalla
+Si usas un div, tienes que programar todo eso a mano.
+
+2. Fragmentos para no romper el DOM
+A veces, para que React funcione, envolvemos todo en <div>, pero esto rompe la semántica
+por ejemplo, dentro de una tabla o una lista
+Ract Fragments para agrupar elementos sin añadir nodos innecesarios
+
+```
+// No añade un div extra que rompería una lista <ul>
+const ListItems = ({ items }) => (
+  <>
+    {items.map(item => <li key={item.id}>{item.text}</li>)}
+  </>
+);
+```
+
+3. Atributos ARIA
+ARIA (Accessible Rich Internet Applications)
+es un puente para cuando HTML nativo no es suficiente
+
+aria-label: Cuando un elemento no tiene texto visible
+(ej. un botón con solo un icono de "X").
+
+```
+<button aria-label="Cerrar modal">X</button>
+```
+
+aria-expanded: Para componentes que se abren/cierran
+(acordeones, menús).
+
+```
+<button aria-expanded={isOpen}>Menú</button>
+```
+
+aria-hidden="true": Para ocultar elementos decorativos (como iconos)
+que el lector de pantalla no necesita leer
+
+4. Gestión del foco: useRef
+En React, cuando abres un modal o cambias de página, el foco del teclado puede "perderse".
+Debes moverlo manualmente hacia el elemento correcto usando el hook useRef
+
+```
+const Modal = ({ isOpen, onClose }) => {
+  const closeBtnRef = useRef(null);
+
+  useEffect(() => {
+    if (isOpen) {
+      // 🎯 Mandamos el foco al botón de cerrar al abrir el modal
+      closeBtnRef.current?.focus();
+    }
+  }, [isOpen]);
+
+  return (
+    <div role="dialog" aria-modal="true">
+      <button ref={closeBtnRef} onClick={onClose}>Cerrar</button>
+      {/* Contenido */}
+    </div>
+  );
+};
+```
+
+5. Navegación por Teclado
+Toda interacción que funcione con un onClick debería ser accesible con la tecla Enter o Espacio
+Si usas componentes nativos como <button> o <a>, esto ya viene incluido
+Si creas algo muy personalizado, usa el evento onKeyDown.
+
+6. Herramientas
+
+eslint-plugin-jsx-a11y: Te avisa en tiempo real si olvidas un alt o usas mal un role.
+Axe DevTools: Extensión de Chrome que analiza tu página y te dice exactamente qué falla.
+React Aria (Adobe): Una de las mejores librerías de hooks que ya maneja toda la lógica de accesibilidad por ti.
+
+Componentes:
+
+Imágenes: Siempre con alt. Si es decorativa, alt="".
+
+Formularios: Cada input debe tener su label asociado
+(usa htmlFor en lugar de for).
+
+Contraste: Asegúrate de que el texto sea legible
+(puedes revisarlo en la pestaña de inspección del navegador).
+
+Estados: Usa aria-live="polite" para anuncios dinámicos
+como un mensaje de "Cargando..." que aparece de repente).
+
+
+
+
+# Arq y patrones de diseño/código
+
+## 1. Capa Servicio ("Cómo")
+
+No vive nada de React. Es puro JavaScript/TypeScript
+El patrón principal aquí es el `Repository Pattern` o `API Client`.
+
+### Singleton Pattern
+Se suele crear una instancia única de Axios o Fetch
+configurada con baseURL, interceptores de tokens y headers
+
+### Data Mapper / Transformer
+Antes de devolver los datos al Hook
+el servicio puede "limpiar" la respuesta de la API
+por ejemplo, cambiar snake_case a camelCase
+para que el resto de la app no dependa del formato crudo del backend.
+
+
+## 2. Capa de Hooks ("Cuándo y Qué")
+
+Manejas el ciclo de vida y el estado.
+Es como el pegamento
+
+### State Machine Pattern
+En lugar de tener mil booleanos como isLoading, isError
+se suele usar un estado consolidado o herramientas como React Query o SWR
+que gestionan internamente el estado de la petición.
+
+### Facade Pattern
+El Hook funciona como una fachada
+El componente solo ve una función getData() y un objeto data
+sin saber si los datos vienen de una caché, de un servidor o de un localStorage
+
+### Command Pattern
+Especialmente útil en formularios
+donde el hook expone una función (ej. executeSave)
+encapsula toda la lógica de validación y llamada al servicio.
+
+
+## 3. Capa de Cliente / Componente (UI)
+
+Solo nos importa pintar la interfaz
+
+### Container/Presenter Pattern (Evolucionado)
+Aunque los Hooks casi reemplazaron este patrón
+la filosofía persiste: el componente "Padre" usa el Hook (lógica)
+y pasa los datos a componentes "Presentacionales" (puros) que solo reciben props.
+
+### Conditional Rendering Pattern
+Manejo de estados de carga, vacío o error
+basado en lo que el Hook devuelve.
+
+### Composition Pattern
+En lugar de pasar mil props hacia abajo (prop drilling)
+usas la composición para inyectar componentes donde se necesiten.
+
+
+##### Servicio: Comunicación con el mundo exterior. Repository, Singleton, Adapter.
+##### Hook:	Gestión de estado y lógica de negocio. Facade, Observer (vía React state).
+##### Renderizado y experiencia de usuario. Composition, Presentational.
 
