@@ -8152,6 +8152,16 @@ se ejecutará antes de cada test para extender las capacidades de Vitest con las
 import '@testing-library/jest-dom';
 ```
 
+Tipado (Si usas TypeScript)
+Si tu proyecto es en TypeScript, te falta instalar los tipos para que el editor no te marque errores rojos:
+
+```
+npm install -D @types/jest
+```
+
+Aunque uses Vitest, muchos tipos de Testing Library todavía se basan en las definiciones de Jest
+
+
 
 styled:
 
@@ -9585,3 +9595,64 @@ usas la composición para inyectar componentes donde se necesiten.
 ##### Hook:	Gestión de estado y lógica de negocio. Facade, Observer (vía React state).
 ##### Renderizado y experiencia de usuario. Composition, Presentational.
 
+
+# Helmet.js
+Node.js y Express son muy "charlatanes"
+Envían información que un hacker puede usar para planear un ataque
+Ej: Express envía la cabecera X-Powered-By: Express
+le dice al atacante exactamente qué tecnología usas y qué vulnerabilidades buscar.
+
+Helmet oculta esa información y activa defensas del navegador que vienen desactivadas por defecto
+Activa 4 defensas claves
+
+1. Content Security Policy (CSP)
+La más potente. Evita ataques de XSS (Cross-Site Scripting).
+Le dice al navegador que solo confie confía en scripts que vengan del propio dominio de la app
+Si un hacker logra inyectar un script malicioso desde otro servidor
+el navegador se negará a ejecutarlo.
+
+2. X-Frame-Options
+Evita el Clickjacking
+Impide que tu página sea cargada dentro de un <iframe> en otro sitio web
+sAsí, nadie puede poner un botón invisible encima de tu web para engañar a los usuarios y que hagan clic donde no deben
+
+3. Strict-Transport-Security (HSTS)
+Fuerza el uso de HTTPS.
+Le dice al navegador que recuerde que este sitio solo debe ser visitado a través de conexiones seguras (SSL/TLS)
+evitando ataques de "man-in-the-middle".
+
+4. X-Content-Type-Options (nosniff)
+Evita el "MIME type sniffing".
+Obliga al navegador a respetar el tipo de archivo que tú declaras. Si dices que un archivo es un text/plain
+El navegador no intentará ejecutarlo como si fuera un script de JavaScript.
+
+
+Uso:
+
+`npm install helmet`
+
+En Express:
+
+```
+import express from 'express';
+import helmet from 'helmet';
+
+const app = express();
+
+// ¡Solo esta línea activa todas las protecciones básicas!
+app.use(helmet());
+
+app.get('/', (req, res) => {
+  res.send('Hola mundo seguro');
+});
+
+app.listen(3000);
+```
+
+Usa Helmet desde el primer día de desarrollo:
+##### Es mucho más fácil ajustar una regla de seguridad mientras construyes la app
+que intentar "securizar" una aplicación gigante y llena de parches días antes de salir a producción.
+
+Si usas imágenes o scripts de otros sitios (como Google Fonts o Cloudflare)
+Helmet podría bloquearlos al principio por la política CSP
+Solo tienes que configurar esa opción específica para permitir esos dominios.
