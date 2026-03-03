@@ -8107,6 +8107,10 @@ const newObject = {
 ## Vite
 
 ```
+npm create vite@latest mi-proyecto
+```
+
+```
 nvm use
 
 npm run dev
@@ -8167,6 +8171,75 @@ styled:
 
 ```
 npm install styled-components
+```
+
+### Archivos raiz
+
+
+#### nvm
+
+```
+node -v > .nvmrc
+```
+
+#### gitignore
+
+```
+# Dependencias (Nunca se suben, se reinstalan con npm/yarn install)
+node_modules/
+/jspm_packages/
+
+# Carpeta de Producción (Se genera al hacer 'build')
+dist/
+build/
+out/
+
+# Archivos de Registro (Logs)
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+logs/
+*.log
+
+# Variables de Entorno (¡SEGURIDAD CRÍTICA!)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.env.local
+
+# Archivos del Editor / IDE
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Archivos del Sistema Operativo
+.DS_Store
+Thumbs.db
+
+# Testing
+/coverage
+```
+
+#### corepack
+
+```
+corepack enable
+```
+
+json:
+
+```
+{
+  "name": "mi-proyecto",
+  "version": "1.0.0",
+  "packageManager": "pnpm@9.15.0"
+}
 ```
 
 
