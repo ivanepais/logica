@@ -616,6 +616,1046 @@ haz dos commits
 
 
 
+## Branches
+
+### Naming
+
+feat/:
+Nueva funcionalidad o característica.
+`feat/login-google`
+
+fix/:
+Corrección de un error (bug).
+`fix/header-mobile-overlap`
+
+hotfix/
+Arreglo urgente que debe ir directo a producción.
+`hotfix/security-patch-v1`
+
+docs/
+Solo cambios en documentación.
+`docs/update-readme`
+
+refactor/
+Mejora del código sin cambiar su función.
+`refactor/api-services`
+
+chore/
+Tareas de mantenimiento (dependencias, builds).
+`chore/update-npm-packages`
+
+
+### Workflows
+
+Dependiendo del tamaño de tu equipo y la complejidad de tu proyecto, elegirás una u otra:
+
+A. GitHub Flow (El estándar para Web/SaaS):
+Más sencillo
+
+1. main siempre es estable y está lista para producción.
+2. Para cualquier cosa, creas una rama desde main (ej. feat/new-button).
+3. Haces tus commits en esa rama.
+4. Abres un Pull Request (PR) para que alguien revise tu código.
+5. Una vez aprobado, se fusiona (merge) a main y se borra la rama
+
+B. Gitflow (lanzamientos programados)
+Más complejo, ideal para software que tiene versiones numeradas (v1.0, v2.0).
+
+main: Código en producción.
+`develop`: Rama de integración donde se juntan todas las novedades.
+`feature/`: Ramas que salen de develop y vuelven a develop.
+release/: Rama de preparación para una nueva versión.
+
+
+### Ciclo de vida de una rama
+
+No trabajar sobre main, cada vez que empieces algo nuevo:
+
+1. Sincroniza: `git checkout main` y luego `git pull origin main`.
+2. Crea la rama: `git checkout -b feat/mi-tarea`.
+3. Trabaja: Haz tus commits atómicos.
+4. Sube la rama: `git push origin feat/mi-tarea`.
+5. `Pull Request`: En GitHub/GitLab, abre el PR.
+Aquí es donde ocurre la magia: tests automáticos, revisión de compañeros y discusión.
+6. Merge y Limpieza: Una vez aceptado,
+`fusiona y borra la rama (tanto en local como en remoto)`
+para no acumular "ramas fantasma".
+
+Una rama nunca debería vivir más de 2 o 3 días.
+Las ramas largas traen grandes conflictos
+Si una tarea es muy grande, dividirla en ramas más pequeñas
+ej. `feat/login-ui`, `feat/login-api`, `feat/login-validation`)
+
+
+### Branch Protection
+
+En equipo el estándar es configurar Reglas de Protección en GitHub:
+
+1. `Bloquear el push directo a main`: Nadie (ni tú) puede subir cambios sin un Pull Request.
+2. `Requerir revisiones`: Al menos una o dos personas deben dar el "visto bueno" (Approve) antes de fusionar.
+3. `Requerir tests exitosos`: Si tienes GitHub Actions, el PR no se puede cerrar si los tests fallan.
+
+
+### Comandos Branches
+
+1. Creación y Navegación
+Lo que usas cada vez que empiezas una nueva tarea.
+
+`git branch`:
+Lista todas tus ramas locales.
+
+`git branch -a`:
+Lista todas las ramas (locales y remotas).
+
+`git checkout -b <nombre>`:
+Crea una rama nueva y salta a ella de inmediato.
+
+`git switch <nombre>`:
+Cambia a una rama existente (el comando moderno).
+
+`git switch -c <nombre>`:
+Crea y cambia a una rama nueva (equivalente a checkout -b).
+
+`git checkout -`:
+Salta a la rama en la que estabas justo antes
+(el "botón de canal previo").
+
+2. Gestión y Limpieza
+cuando terminas una tarea o cometiste un error en el nombre.
+
+Renombrar la rama actual:
+`git branch -m nuevo-nombre-rama`
+
+Borrar una rama local (seguro):
+`git branch -d nombre-rama`
+(Git te avisará si la rama tiene cambios sin fusionar).
+
+Borrar una rama local (a la fuerza):
+`git branch -D nombre-rama`
+
+Comparar ramas:
+`git diff rama1..rama2`
+
+3. Sincronización con el Servidor (Remote)
+Crucial para que tus compañeros vean tu trabajo o para limpiar el repositorio en la nube.
+
+Subir una rama nueva por primera vez:
+`git push -u origin nombre-rama`
+(El -u o --set-upstream vincula tu rama local con la remota para que luego solo uses git push).
+
+Borrar una rama en el servidor (GitHub/GitLab):
+`git push origin --delete nombre-rama`
+
+Actualizar la lista de ramas remotas:
+`git fetch --prune`
+Borra de tu lista local las ramas que ya fueron eliminadas en el servidor
+
+4. Flujo
+Con una nueva tarea
+
+1. Actualizas tu base:
+`git checkout main` + `git pull origin main`.
+
+2. Creas tu espacio:
+`git switch -c feat/login-button`.
+
+3. (Trabajas y haces tus commits...)
+
+4. Subes tu código:
+`git push -u origin feat/login-button`.
+
+5. Tras el merge en GitHub:
+Vuelves a main y borras tu rama local:
+`git branch -d feat/login-button`.
+
+
+Comando "mapa": recordar ubicación
+
+```
+git log --oneline --graph --all
+```
+
+
+
+## Staging
+
+Staging Area (o "Index"):
+paso intermedio que hace que Git sea superior a otros sistemas de versionado
+"sala de espera o el probador" antes de la foto final (el commit).
+
+No todo lo que has tocado tiene por qué ir al commit,
+el staging es donde decides qué entra y qué se queda fuera.
+
+Herramientas para mover archivos hacia y desde el limbo del staging.
+
+`git status`
+dice qué archivos están modificados
+cuáles en staging y cuáles no rastreados
+
+`git add <archivo>`
+Pasa un archivo específico al staging.
+
+`git add .`
+Pasa todos los cambios del directorio actual al staging.
+
+`git add -p`
+Más 'pro': Permite elegir partes (hunks) de un archivo para añadir.
+
+`git restore --staged <file>`
+Saca un archivo del staging pero mantiene tus cambios en el código.
+
+`git diff`
+Muestra cambios entre el código actual y el staging.
+
+`git diff --cached`
+Muestra cambios entre el staging y el último commit (lo que vas a commitear).
+
+2. git add -p (Patch Mode)
+Tecnica más senior.
+A veces modificas un archivo para arreglar un bug
+pero también añades un comentario o un log de debug
+Con el modo interactivo, puedes elegir qué líneas subir.
+
+`git add -p`
+Git te preguntará por cada bloque de código:
+`y`: Sí, añadir este bloque.
+`n`: No, saltar este bloque.
+`s`: Dividir este bloque en trozos más pequeños.
+`e`: Editar el bloque manualmente (para control total).
+
+Te obliga a revisar tu código línea por línea antes de hacer el commit
+Es el primer filtro de calidad.
+
+3. Prácticas
+
+A. Commits Atómicos:
+El staging existe para que puedas separar tareas
+Si arreglaste el CSS del botón
+y además cambiaste un endpoint de la API
+
+no hagas un solo git add ..
+
+Haz git add del CSS -> git commit.
+Haz git add del endpoint -> git commit.
+
+Hace que el historial sea mucho más fácil de revertir si algo falla.
+
+B. Flujo: Check-up antes del Commit
+
+git add <tus-cambios>
+
+git diff --cached
+(Para leer exactamente lo que estás a punto de guardar).
+
+git commit -m "..."
+
+4. Diferencias visuales entre estados
+Lo que estamos comparando en cada momento
+
+`git diff`:
+Compara "lo que tienes en el editor" vs.
+"lo que ya preparaste en el staging".
+
+`git diff HEAD`
+Compara "lo que tienes en el editor" vs.
+"el último commit hecho".
+
+`git diff --cached`
+Compara "el staging" vs "el último commit".
+Es la vista previa del commit.
+
+5. Unstaging
+Si hiciste un git add . e incluiste un archivo que no debías
+Como un archivo .env o una carpeta de logs por error:
+
+Para un archivo: `git restore --staged <archivo>`
+Para limpiar todo el staging: `git reset`
+(sin argumentos, esto vacía el área de preparación pero no borra tu código).
+
+Usar `git status` compulsivamente
+Es la única forma de estar seguro de que no estás enviando "ruido" al repositorio de tu equipo.
+
+
+
+## git stash
+
+El secreto para que no se convierta en un caos es nombrar tus guardados
+Si solo haces git stash, luego no sabrás qué hay dentro.
+
+Guardar con nombre: `git stash push -m "Intento de refactor del login"`
+
+Ver qué tienes guardado: `git stash list`
+
+Recuperar un stash específico: `git stash apply stash@{2}`
+(el 2 es el índice que ves en la lista).
+
+Ver qué hay dentro de un stash sin aplicarlo: `git stash show -p stash@{0}`
+
+
+## Git Worktree
+
+A veces el stash es molesto porque tienes que ocultar todo
+cambiar de rama, y luego volver y aplicar
+
+git worktree te permite tener dos ramas abiertas al mismo tiempo en carpetas separadas.
+
+Comando: `git worktree add ../carpeta-temporal rama-hotfix`
+crea una carpeta nueva fuera de tu proyecto actual donde puedes trabajar en un error urgente.
+Tu código "no listo" se queda exactamente donde está en la carpeta original
+No necesitas esconder nada.
+
+Al terminar: Borras la carpeta y ejecutas `git worktree prune`.
+
+
+## Commit "WIP" + commit --amend
+
+Técnica muy común: haces un commit sabiendo que está mal
+pero solo para "anclar" el progreso
+
+1. `git commit -m "WIP: no borrar, falta validación"`
+2. Seguir trabajando: hacer los cambios faltantes
+3. Corregir el commit: `git commit --amend --no-edit`
+4. Git mete tus nuevos cambios dentro del commit anterior sin crear uno nuevo
+Es como si el commit "WIP" nunca hubiera existido y siempre hubiera estado bien.
+
+
+## Git Restore
+(Si el código "no listo" es basura), no sirve
+quieres volver atrás rápidamente.
+
+Descartar cambios en un archivo: `git restore <archivo>`
+
+Descartar TODOS los cambios locales: `git restore`.
+(Cuidado: esto borra lo que no hayas commiteado).
+
+Limpiar archivos nuevos (untracked):
+`git clean -fd`
+Borra carpetas y archivos que no están en Git
+
+
+## Draft Pull Requests (En GitHub/GitLab)
+
+Si el código no está listo para ser usado
+pero quieres asegurarte de que no se pierda
+
+Súbelo a una rama y crea un Draft PR.
+El código está en la nube, tus compañeros pueden verlo para darte consejos
+pero el sistema impide que se fusione (merge) a la rama principal por error.
+
+
+## Situaciones
+
+Me piden un fix de 5 minutos y no quiero commitear lo mío
+`git stash`
+
+El fix va a tardar horas y no quiero mover mi código actual
+`git worktree`
+
+Quiero guardar cómo voy para seguir mañana desde este punto
+`git commit -m ""WIP...""`
+
+Me equivoqué en el enfoque y quiero empezar el archivo de cero
+`git restore <archivo>`
+
+He terminado una parte pero no toda la funcionalidad
+Feature Flags: (ocultar tras un `if`)
+
+
+## Código no listo
+
+1. Decisión
+Dependiendo de la urgencia y el tiempo que vayas a estar fuera de esa tarea
+
+Interrupción rápida (un fix de 10 min):
+Congelar el estado actual
+`git stash`
+
+Cambio de contexto largo (prioridad nueva):
+Separar el espacio de trabajo
+`git worktree`
+
+Fin de la jornada (quiero guardar progreso)
+`Commit temporal`
+WIP Commit
+
+
+2. Congelado: Git Stash
+Estándar para emergencias
+Si estás en medio de un refactor y tu jefe te pide un cambio urgente en otra rama
+no puedes cambiar de rama con archivos modificados que chocan.
+
+Guardar: `git stash push -m "Refactor de login a medias"`.
+Limpiar: Tu directorio queda como el último commit. Haces el fix urgente.
+Recuperar: `git stash pop` para volver exactamente donde estabas.
+
+3. Git Worktree
+Si el código no está listo porque es una tarea grande que te llevará días
+pero necesitas atender otras ramas constantemente
+el estándar es no mezclar carpetas.
+
+Dejas tu código "no listo" tal cual en tu carpeta actual.
+Creas un nuevo espacio: `git worktree add ../hotfix-urgente main`.
+Trabajas en la nueva carpeta. Cuando terminas, la borras
+
+No tienes que andar haciendo stash y pop cada vez
+lo cual reduce el riesgo de conflictos tontos.
+
+4. WIP Commits: Work in progress
+Muchos desarrolladores prefieren hacer un commit
+al final del día aunque el código no compile
+solo para tener el respaldo en la nube (GitHub)
+
+Hacer el commit: git commit -m "WIP: auth logic halfway".
+día siguiente: Sigues trabajando.
+Limpiar la historia: Antes de que nadie vea ese commit,
+lo "aplastas" con el cambio real usando:
+
+`git commit --amend` (si solo es un commit).
+`git rebase -i` (si son varios commits de "WIP").
+
+5. Feature Flags: código que SÍ se sube
+A veces el código no está listo para el usuario
+pero sí está listo para ser integrado.
+En lugar de tener una rama abierta durante un mes
+se usa una Feature Flag.
+
+Subes el código incompleto a `main`.
+Lo envuelves en un `if (config.ENABLE_NEW_FEATURE)`.
+En producción, la flag está en false.
+Ventaja: Evitas conflictos masivos de archivos al final del proyecto.
+
+Rs:
+basura o experimento? -> git restore (bórralo).
+oro a medias y necesitas moverte de rama? -> `git stash`
+proyecto largo y necesitas multitarea? -> `git worktree`
+subirlo a GitHub para que no se pierda? -> `Draft Pull Request`
+
+Nunca hagas un merge de un commit que diga 'WIP' a la rama principal
+
+
+## Git se lleva los cambios
+
+Separación de responsabilidades entre el Directorio de Trabajo y el Repositorio
+
+Tres Árboles:
+`Working Directory`: Tu carpeta con archivos (donde programas).
+`Staging Area (Index)`: El borrador de tu próximo commit.
+`Commit History (Head)`: Los datos guardados oficialmente en una rama.
+
+El "Working Directory" y el "Staging Area" son espacios compartidos
+No pertenecen a ninguna rama en particular hasta que haces un commit
+Git asume que lo que estás haciendo en tu carpeta es "trabajo en progreso" que aún no ha encontrado su hogar definitivo
+
+Ej: Imagina que empiezas a escribir una funcionalidad compleja
+y te das cuenta de que estás trabajando directamente en main
+
+Si Git bloqueara los cambios a la rama:
+Tendrías que borrar todo, cambiar de rama y volver a escribir.
+
+Gracias al diseño actual: Simplemente haces git checkout -b nueva-rama y tus cambios viajan contigo
+Git te permite corregir tu error de contexto sin fricción.
+
+Eficiencia y Rendimiento:
+Si Git tuviera que "limpiar" y "restaurar" completamente tu carpeta de archivos cada vez que saltas entre ramas
+(incluso cuando los cambios no afectan a los mismos archivos)
+las operaciones serían más pesadas
+Al permitir que los cambios no commiteados permanezcan en el Directorio de Trabajo
+Git evita procesar datos innecesariamente.
+
+La práctica recomendada siempre es mirar el "escritorio" antes de empezar a trabajar en una carpeta nueva:
+`git status` es tu mejor amigo antes y después de cambiar de rama.
+
+#### Commit por error: en una rama porque te llevaste los cambios de otra
+"mover" ese último commit a la rama donde realmente debería estar.
+
+
+Los Tres Árboles:
+explica por qué puedes deshacer casi cualquier error
+tan diferente de otros sistemas que guardan archivos de forma "plana".
+
+1. Working Directory ("Mundo Real"):
+carpeta de archivos en el disco duro
+donde editas, borras y creas código
+
+2. Staging Area / Index ("Probador"):
+zona intermedia
+colocas los archivos que quieres que salgan en la foto.
+Git prepara el escenario basándose en lo que añades aquí.
+
+3. Repository / HEAD (La "Foto Final"):
+base de datos de Git (la carpeta .git).
+donde se guardan los snapshots permanentes
+HEAD es el puntero al último commit que hiciste en la rama actual
+
+Comandos de Transición:
+
+Working → Staging:
+cuando decides que un cambio "vale la pena".
+
+`git add <archivo>`: archivo especifico a staging
+`git add .`: todos los archivos
+`git add -p`: eliges solo algunas líneas
+
+Staging → HEAD:
+foto oficial y le pones un nombre
+`git commit -m "mensaje"`:
+nuevo snapshot permanente en el historial.
+
+HEAD → Working:
+Es cuando quieres "viajar en el tiempo" y ver cómo estaba el código antes
+
+`git checkout <commit/branch>:`
+Cambia tu escritorio para que coincida con lo que hay en el archivo
+Hoy en día se usa más `git switch`
+
+
+#### Moverse hacia atrás:
+
+Los tres árboles te permiten deshacer cambios en diferentes niveles
+
+Sacar de staging:
+`git restore --staged <archivo>`
+Quita del Staging, mantiene en Working
+
+Descartar cambios:
+`git restore <archivo>`
+Borra lo que hay en el Working (peligroso).
+
+Mover el puntero:
+`git reset --soft HEAD~1`
+Mueve HEAD al commit anterior
+pero deja los archivos en Staging.
+
+Reset completo:
+`git reset --hard HEAD`
+Borra todo y vuelve al estado del último commit
+
+4. Comandos de "vista previa": donde están cada cosa
+
+`git status`
+Te da un resumen de qué archivos están en el Working (rojo)
+y cuáles en el Staging (verde).
+
+`git diff`
+Te enseña la diferencia entre tu Working Directory y el Staging.
+(¿Qué he escrito que aún no he preparado?).
+
+`git diff --cached:`
+Te enseña la diferencia entre el Staging y el HEAD.
+(¿Qué hay en el probador listo para la foto?).
+
+Rs:
+Working Directory → `git add` → Staging Area → `git commit` → HEAD
+
+
+## Limpiar WIP commits: Squashing
+
+Dependiendo de cuántos commits "WIP" hayas acumulado
+
+1. Solo tienes UN commit "WIP"
+Si solo hiciste un commit rápido para guardar el progreso
+progreso y ahora ya terminaste la tarea
+lo más fácil es enmendarlo.
+
+Termina de escribir tu código real.
+Añade los cambios al staging: git add .
+Hacer:
+`git commit --amend -m "feat: descripción real de la funcionalidad"`
+
+El commit "WIP" desaparece y es reemplazado por este nuevo con el mensaje correcto
+y todo el código final.
+
+2. Varios commits "WIP" (El Rebase Interactivo)
+cuando tienes un historial tipo:
+
+feat: inicio login
+WIP: no compila
+WIP: corregido error de typo
+WIP: casi listo
+
+convertir esos 4 commits en uno solo perfecto
+usamos el Rebase Interactivo
+
+Asegúrate de estar en tu rama de trabajo
+Mira cuántos commits quieres limpiar (en este ejemplo, 4):
+`git rebase -i HEAD~4`
+Se abrirá un editor de texto con una lista como esta:
+```
+pick a1b2c3d feat: inicio login
+pick e5f6g7h WIP: no compila
+pick i9j0k1l WIP: corregido error de typo
+pick m2n3o4p WIP: casi listo
+```
+Cambia la palabra pick por f (o fixup) en todos los commits excepto en el primero:
+
+```
+pick a1b2c3d feat: inicio login
+f e5f6g7h WIP: no compila
+f i9j0k1l WIP: corregido error de typo
+f m2n3o4p WIP: casi listo
+```
+fixup fusiona el commit con el anterior y borra el mensaje feo de "WIP"
+
+si haces un git log, verás un único commit limpio con todo el trabajo integrado.
+
+##### Regla para WIP: has reescrito la historia (los hashes han cambiado, 
+si ya habías subido esos "WIP" a GitHub anteriormente, no podrás hacer un push normal
+
+usar:
+
+```
+git push --force-with-lease
+```
+
+Tus compañeros no necesitan ver tus 10 intentos fallidos, solo el resultado final
+Bisect: Si hay un error en el futuro, es más fácil encontrarlo si cada commit es una unidad funcional completa que sí compila.
+
+
+## Flujo stash
+
+Ej: 
+
+```
+// auth.js
+export const login = () => {
+   // Falta terminar la lógica de Firebase...
+   const user =
+```
+Si intentas hacer git switch main, Git te gritará: “error: Your local changes... would be overwritten”.
+
+No quieres hacer un commit de ese código incompleto
+
+1. Guardado (Stash)
+
+`git stash push -m "WIP: logica de firebase a mitad"`
+
+Git responde
+Saved working directory and index state On feat/login: WIP: logica de firebase a mitad
+
+2. Fix Urgente
+Ahora que estás libre, saltas a main, arreglas
+haces el push.
+
+```
+git switch main
+# ... arreglas el logo ...
+git add .
+git commit -m "fix: repair home logo path"
+git push origin main
+```
+
+3. Volver
+el archivo sigue incompleto
+Tienes que pedirle a Git que te devuelva tus "papeles" del cajón.
+
+```
+git stash list
+```
+
+Respuesta: stash@{0}: On feat/login: WIP: logica de firebase a mitad
+
+4. Recuperación (Pop)
+aplicamos los cambios y, de paso, limpiamos el stash para no acumular basura.
+`git stash pop`
+
+Toma el código de stash@{0}.
+Lo pega de nuevo en tu archivo auth.js.
+Elimina ese stash de la lista de pendientes.
+
+Diferencia: apply vs pop
+
+`git stash pop`:
+Es para cuando ya vas a terminar la tarea.
+Lo recuperas y lo borras del cajón.
+
+`git stash apply`:
+Es para cuando quieres probar algo pero mantener una copia de seguridad en el cajón por si acaso.
+Lo recuperas pero no lo borras
+
+Si por error hiciste pop y hubo un conflicto tan feo que perdiste el código
+o si borraste un stash sin querer, recuerda que puedes buscarlo en el git fsck
+(pero es un proceso de "cirugía mayor")
+Lo mejor es siempre trabajar con nombres claros en los stashes.
+
+
+## Flujo con Worktree
+
+Abres una puerta a otra rama en una carpeta nueva
+
+Multitarea:
+En la carpeta de proyecto /mi-app
+trabajando en una refactorización pesada de la base de datos en la rama refactor/db
+20 archivos abiertos, consola, servidor abierto
+
+surge un bug crítico en la pasarela de pagos
+que hay que arreglar en main YA.
+
+1. Espacio Paralelo
+crear un segundo directorio de trabajo vinculado al mismo repositorio.
+
+```
+# git worktree add <ruta-nueva> <rama>
+git worktree add ../mi-app-hotfix main
+```
+Preparing worktree (checking out 'main')
+HEAD is now at a1b2c3d Fix: update security headers
+
+2. Cambio de Contexto
+si miras tus carpetas, tienes dos
+
+/mi-app: Donde sigues con tu refactor de DB a medias.
+/mi-app-hotfix: Una copia limpia de la rama main.
+
+cambiamos de carpeta
+
+```
+cd ../mi-app-hotfix
+# Abres tu editor (VS Code) en esta nueva carpeta
+code .
+```
+Tienes dos instancias de VS Code abiertas
+
+3. Reparar y Subir
+Trabajas en el hotfix como si fuera un repo normal.
+
+```
+# (Arreglas el bug en /mi-app-hotfix)
+git add .
+git commit -m "fix: emergency patch for payment gateway"
+git push origin main
+```
+
+4. Cerrar
+Una vez que el hotfix está en la nube, ya no necesitas esa carpeta extra.
+
+```
+cd ../mi-app        # Vuelves a tu proyecto original
+git worktree list    # Para ver tus oficinas abiertas
+```
+
+Respuesta:
+```
+/Users/tu/mi-app         a1b2c3d [refactor/db]
+/Users/tu/mi-app-hotfix  e5f6g7h [main]
+```
+
+```
+git worktree remove ../mi-app-hotfix
+```
+
+#### Limitación de worktree: Git no te permite tener la misma rama abierta en dos worktrees a la vez
+Esto es para evitar que entres en una paradoja donde cambias un archivo en la Carpeta A
+A y Git no sepa cómo actualizarlo en la Carpeta B en tiempo real.
+
+
+## Worktree Multitarea
+
+Rama A físicamente separada de la Rama B
+
+1. Ej: En la carpeta principal
+mi-proyecto
+
+estás en la Rama A con archivos modificados
+
+```
+# Compruebas que estás en A y tienes cambios
+git status 
+# Resultado: On branch Rama-A, changes not staged for commit...
+```
+
+2. Crear el Worktree para la Rama B
+Como la Rama B ya existe, le dices a Git que:
+cree una nueva carpeta y "mueva" esa rama allí
+
+```
+git worktree add ../mi-proyecto-B Rama-B
+```
+../mi-proyecto-B: ruta donde se creará la nueva carpeta (fuera de la actual para no anidarlas).
+Rama-B: Es el nombre de la rama que ya tienes creada.
+
+3. Cambiar a la carpeta creada
+Ahora tienes dos carpetas en tu computadora
+Tu terminal sigue en la carpeta original, así que debes moverte:
+
+```
+cd ../mi-proyecto-B
+# Ahora abre tu editor aquí
+code .
+```
+Efecto: código de la Rama B totalmente limpio
+Listo para trabajar, sin rastro de lo que estabas haciendo en la Rama A.
+
+4. Rama B
+haces tu flujo normal
+Como es una carpeta vinculada al mismo .git
+todo lo que hagas impactará en el repositorio global.
+
+```
+# Modificas archivos...
+git add .
+git commit -m "feat: completar tarea en rama B"
+git push origin Rama-B
+```
+
+5. Volver a Rama A
+Cuando termines lo de la Rama B simplemente cierras ese editor
+y vuelves a tu carpeta original.
+
+```
+cd ../mi-proyecto
+```
+Tus archivos de la Rama A siguen exactamente donde los dejaste
+
+6. Limpieza final
+Una vez que ya no necesites esa "oficina temporal"
+para la Rama B, la eliminas para no ocupar espacio en disco.
+
+```
+# Desde la carpeta original (mi-proyecto)
+git worktree remove ../mi-proyecto-B
+```
+
+Independencia: Puedes tener los dos editores abiertos lado a lado
+Si necesitas copiar una lógica de la Rama A a la Rama B
+solo tienes que arrastrar o copiar entre ventanas.
+
+Sin errores de Staging: No hay riesgo de que hagas un git add . en la Rama B
+y se te cuele un archivo que era de la Rama A.
+
+Servidores corriendo: Si tu app de la Rama A tarda mucho en compilar
+puedes dejarla corriendo y abrir otro servidor en la Rama B en un puerto distinto.
+
+##### Si usas mucho este flujo, acostúmbrate a nombrar las carpetas con un prefijo claro (como temp- o wt-)
+para que cuando navegues por tus carpetas sepas cuáles son temporales y cuáles son tus repositorios base.
+
+
+### Moverse entre carpetas
+
+Multitasking puro, simplemente cambias de carpeta
+
+#### Cambios de A se vean en B
+Como ambos árboles de trabajo comparten la misma base de datos .git
+si haces un commit en la carpeta de la Rama A
+ese commit estará disponible inmediatamente para ser usado
+(mediante un merge o rebase) en la carpeta de la Rama B.
+
+#### Dependencias (node_modules): Las carpetas son independientes
+Si instalas una librería nueva en la Rama A
+tendrás que ejecutar npm install (o tu gestor)
+también en la carpeta de la Rama B si quieres que funcione allí.
+
+Truco: Algunos desarrolladores usan enlaces simbólicos (symlinks)
+para compartir la carpeta node_modules
+pero lo más seguro y limpio es dejarlas separadas para evitar versiones de librerías cruzadas.
+
+Terminar el flujo:
+
+Haces el commit final en la carpeta de la Rama B.
+Cierras ese editor.
+Vuelves a la carpeta principal y ejecutas:
+
+```
+git worktree remove ../proyecto-B
+```
+
+## Rutas en worktree
+
+Al ejecutar `git worktree add <ruta> <rama>`
+la <ruta> puede ser de dos tipos:
+
+Relativa:
+calcula desde tu ubicación actual en la terminal
+Si estás en `/proyectos/mi-app`.
+ejecutas git worktree add ../mi-app-B
+la carpeta se creará en `/proyectos/mi-app-B`.
+
+Absoluta:
+No importa dónde estés.
+`git worktree add /Users/tu/Desktop/temporal Rama-B`.
+siempre la creará en el escritorio.
+
+Recomendable hacerlo desde la raíz:
+
+Consistencia de rutas:
+Si siempre lo haces desde la raíz, tus rutas relativas
+(como ../nombre) siempre funcionarán igual.
+
+Evitar anidación:
+Si estás en una subcarpeta y escribes git worktree add nueva-carpeta Rama-B
+crearás un repositorio dentro de tu repositorio actual (pero sin ser un sub-módulo)
+lo cual es una pesadilla de archivos ignorados y confusión visual.
+
+Bajo el capó:
+Worktree no tiene su propia carpeta .git.
+
+En la carpeta principal: Tienes la carpeta .git/ real
+Dentro hay una carpeta llamada worktrees/ que guarda los metadatos de tus otras sucursales.
+
+En la carpeta del Worktree: Solo verás un archivo llamado .git (sin el punto)
+Si lo abres con un editor de texto, verás algo como:
+```
+gitdir: /ruta/al/proyecto-principal/.git/worktrees/nombre-del-worktree
+```
+
+Peligro:
+Nunca muevas una carpeta de Worktree usando el explorador de archivos o el comando mv de la terminal
+Si cambias la ruta manualmente, el "vínculo" se rompe y Git pensará que el worktree ha desaparecido o está corrupto.
+
+Si necesitas moverlo, usa:
+`git worktree move <ruta-vieja> <ruta-nueva>`.
+
+
+Estructura limpia:
+
+```
+/Desarrollo/
+  └── mi-proyecto/          <-- Carpeta contenedora (no es un repo)
+      ├── main/             <-- El repo original (Worktree principal)
+      ├── feat-login/       <-- Worktree 2
+      └── hotfix-api/       <-- Worktree 3
+```
+
+Entras en main/.
+
+Ejecutas: git worktree add ../feat-login rama-login.
+Así, todas tus ramas están al mismo nivel jerárquico y es imposible que se aniden unas dentro de otras.
+
+1. Ejecuta siempre desde la raíz para que ../ signifique siempre lo mismo.
+2. Usa rutas relativas hacia afuera (../nombre) para mantener tus ramas agrupadas en una misma zona.
+3. No borres carpetas a mano: Usa git worktree remove para que Git limpie sus registros internos
+
+
+
+## Moverse entre ramas: Flujo de trabajo limpio
+
+1. La Decisión:
+
+git stash
+git worktree
+WIP Commit
+
+2. Flujo de Trabajo Limpio
+
+git status:
+bajo ninguna circunstancia, cambies de rama sin mirar
+qué tienes "en el escritorio".
+
+Si ves archivos que no deberían estar ahí, mételos al .gitignore
+o bórralos con `git clean -fd`.
+
+Limpiar el área de trabajo:
+El objetivo es que git status diga:
+`"nothing to commit, working tree clean"`.
+
+Si es algo a medias:
+`git stash push -m "descriptivo"` o
+`git commit -m "WIP"`.
+
+3. Salto moderno: git switch
+Comando específico para ramas y es más seguro
+
+`git switch main` (para ir a una existente).
+`git switch -c nueva-rama` (para crear y saltar).
+
+4. La vuelta y el "Merge" de tus propios cambios
+
+Al volver a tu rama original:
+Si usaste stash: `git stash pop`.
+Si usaste WIP: `git reset HEAD~1`
+1 (esto deshace el commit pero deja tus archivos listos para seguir trabajando en el Working Directory).
+
+Reglas:
+
+Ramas aisladas:
+Nunca lleves cambios de la Rama A a la Rama B "flotando"
+Si Git te deja pasar los cambios, oblígate a no hacerlo
+Usa un stash.
+
+Historial legible:
+Antes de fusionar (merge) tu rama al proyecto principal
+usa `rebase` o `commit --amend` para que tus "WIP" desaparezcan
+El resto del equipo solo debe ver commits que funcionan
+
+Higiene de Worktrees:
+Si usas worktrees, bórralos en cuanto termines la tarea
+Tener 10 carpetas del mismo proyecto es una receta para el desastre de espacio en disco y confusión
+
+Rs: 
+git stash
+git switch otra-rama
+(Trabajas)
+git switch rama-original
+git stash pop
+
+
+## Nueva rama y worktree en un solo movimiento
+
+1. Crear una rama nueva y su carpeta
+Si quieres empezar una rama desde donde estás parado actualmente
+(usualmente main o develop)
+usa el flag -b.
+```
+git worktree add -b nombre-nueva-rama ../carpeta-nueva
+```
+-b: Crea la rama antes de montar el worktree.
+../carpeta-nueva: La ruta física.
+nombre-nueva-rama: El nombre que tendrá la rama en Git.
+
+2. Crear la rama basada en otra específica
+A veces estás en una rama de prueba, pero quieres que tu nuevo worktree nazca limpio desde main.
+
+```
+git worktree add -b feat-login ../login-folder main
+```
+Git, crea una rama llamada feat-login
+basada en main
+en la carpeta ../login-folder
+
+#### 3. Traer una rama del servidor que no tienes localmente
+Si un compañero subió una rama y tú quieres trabajar en ella sin afectar tu rama actual
+Git la detectará automáticamente.
+
+```
+git worktree add ../review-feature rama-remota
+```
+Si rama-remota no existe localmente pero sí en origin
+Git la crea localmente, la vincula al servidor y te abre la carpeta.
+
+Rs:
+
+Rama nueva desde el HEAD actual:
+git worktree add -b nueva-rama ../ruta
+
+Rama nueva desde un punto específico:
+git worktree add -b nueva-rama ../ruta base-branch
+
+Rama que ya existe en el servidor:
+git worktree add ../ruta nombre-rama-remota
+
+flag --no-checkout:
+opción avanzada por si quieres crear el worktree
+pero no quieres que Git pierda tiempo descargando los archivos todavía
+(quizás porque el repo es gigante o vas a hacer algo por script).
+
+```
+git worktree add --no-checkout -b rama-vacia ../vacia
+```
+Esto crea la carpeta y el registro
+pero la deja vacía hasta que tú decidas qué archivos traer
+No es muy común en el día a día, pero es bueno saber que existe.
+
+Nombre de la rama: si no te gusta
+Entras a la carpeta nueva.
+Usas `git branch -m nuevo-nombre`
+git actualizará el vínculo con la carpeta principal automáticamente
+
+## Revertir git add
+
+```
+git restore --staged <archivo>
+```
+
+
 ## Git Rebase flow
 
 Evitar los "merge commits":
@@ -623,7 +1663,6 @@ mensajes automáticos de "Merge branch 'main' into feature/...")
 ensucian el historial
 
 Rebase mantiene una línea de tiempo lineal y limpia.
-
 
 Ej: Sacar una rama feature desde main
 Mientras otros suben cambios a main
@@ -702,6 +1741,13 @@ preparar el terreno localmente antes de subirlo a la nube
 ```
 git init
 ```
+
+Si necesitas especificar el nombre de la rama principal
+al inicializar, puedes usar
+
+`git init -b <nombre-rama>`
+
+`git status`
 
 2. Crear archivo .gitignore:
 No querrás subir carpetas pesadas como node_modules

@@ -8173,10 +8173,15 @@ styled:
 npm install styled-components
 ```
 
+
 ### Archivos raiz
 
 
 #### nvm
+
+```
+nvm alias default 24
+```
 
 ```
 node -v > .nvmrc
