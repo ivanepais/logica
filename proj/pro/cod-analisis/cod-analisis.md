@@ -1818,3 +1818,30 @@ Resultado: explicación concisa, estructurada y convincente en ≤5 minutos.
 # Diseño de la solución
 
 # Punteros
+
+
+
+
+
+# Libros
+
+## Designing Data Intensive app
+
+
+## System design Interview - Alex Xu 
+
+
+## Database Internals
+
+
+## Release It!
+
+
+## Fundamentals of Software Architecture
+
+
+##  A Philosophy of Software Design - John Ousterhout
+
+
+## Software Architecture - hard parts
+

@@ -1846,6 +1846,104 @@ Qué hace el proyecto?
 ¿Cómo se ejecuta?
 
 
+
+# Flujo Real
+
+1. Comienzo en local:
+
+## 1. Inicio
+
+## 2. Integración de ramas
+
+1. `main`: Código en producción.
+2. `develop`: Rama de integración donde se juntan todas las novedades.
+3. `feature/`: Ramas que salen de develop y vuelven a develop.
+4. `release/`: Rama de preparación para una nueva versión. 
+
+
+### Fusionar rama lista
+
+1. Regresar a la rama de integración
+sales de tu rama de dominio (limpia) y vuelves a `develop`
+
+```
+git switch develop
+```
+
+2. develop esté al día 
+Con un repo remoto o en otros entornos
+vital traer lo último antes de fusionar nada
+
+```
+git pull origin develop
+```
+
+3. Fusionar la Feature en Develop
+Dos opciones según qué tan "limpio" quieras el historial
+
+A: para Git Flow)
+Mantener el registro de que existió una rama feature
+
+```
+git merge --no-ff feature/domain
+```
+
+--no-ff (no-fast-forward) para que Git cree un commit de merge
+útil en arquitecturas limpias para ver exactamente cuándo se integró una funcionalidad completa
+
+B: Historial lineal
+Si los commits de la feature ya son perfectos
+
+```
+git merge feature/domain
+```
+
+4. Subir los cambios y limpiar
+Una vez fusionado
+subes el develop actualizado al servidor
+borras la rama local que ya no necesitas
+(que ya vive en develop)
+
+```
+git push origin develop
+git branch -d feature/domain
+```
+
+5. Nueva rama
+Ahora que develop tiene tu lógica de dominio integrada
+creas la siguiente rama desde ahí mismo
+
+```
+# git switch -c <tipo>/<nombre>
+git switch -c feature/nueva-funcionalidad
+```
+
+### Sobre los commits "WIP"
+
+Si antes de hacer este flujo te das cuenta de que en feature/domain
+hiciste 20 commits de "arreglo typo", "test", "probando",
+
+usar Squash al fusionar para que en develop solo quede un commit limpio
+que diga: feat(domain): implement core logic and entities.
+
+```
+git merge --squash feature/domain
+# Luego haces el commit manual
+git commit -m "feat(domain): implement core logic and entities"
+```
+
+
+2. Rama remota:
+
+
+
+
+3. Interacción con rama remota:
+
+
+
+
+
 # Versiones
 
 Semantic Versioning (SemVer) como estándar
