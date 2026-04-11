@@ -6167,6 +6167,605 @@ export const TodoCard = styled.div`
 
 ### Generico en Global
 
-
 ### Desestructuración múltiple
+
+
+
+# Atoms css
+
+## Typography.tsx css
+
+##### Aprovechar la prop polimórfica as, usar Transient Props (tienen un $ delante) para que React no se queje de pasar atributos no estándar al DOM
+
+1. Typography.styles.ts
+
+##### lógica visual basada en el theme y los variants.
+
+```
+import styled, { css } from 'styled-components';
+import { mixins } from '../../../styles/mixins';
+
+export type TypographyVariant = 'title' | 'body' | 'label';
+
+interface StyledProps {
+  $variant: TypographyVariant;
+}
+
+const variantStyles = {
+  title: css`
+    font-size: ${({ theme }) => theme.spacing.lg}; /* 24px aprox */
+    font-weight: 700;
+    color: ${({ theme }) => theme.colors.textPrimary};
+    letter-spacing: -0.02em;
+  `,
+  body: css`
+    font-size: ${({ theme }) => theme.spacing.md}; /* 16px */
+    font-weight: 400;
+    color: ${({ theme }) => theme.colors.textPrimary};
+    line-height: 1.6;
+  `,
+  label: css`
+    font-size: 0.875rem; /* 14px */
+    font-weight: 500;
+    color: ${({ theme }) => theme.colors.textSecondary};
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  `,
+};
+
+export const StyledTypography = styled.p<StyledProps>`
+  /* Aplicamos el estilo según la variante */
+  ${({ $variant }) => variantStyles[$variant]}
+
+  /* Ejemplo: Si queremos que el texto nunca rompa el layout */
+  ${mixins.textTruncate}
+`;
+```
+
+
+2. Componente: Typography.tsx
+
+```
+import { StyledTypography, TypographyVariant } from './Typography.styles';
+
+interface TypographyProps {
+  variant?: TypographyVariant;
+  children: React.ReactNode;
+  as?: 'h1' | 'h2' | 'h3' | 'p' | 'span' | 'label';
+}
+
+export const Typography = ({ 
+  variant = 'body', 
+  children, 
+  as = 'p' 
+}: TypographyProps) => {
+  return (
+    <StyledTypography as={as} $variant={variant}>
+      {children}
+    </StyledTypography>
+  );
+};
+```
+
+Transient Props ($variant):
+Al usar el signo $, le decimos a Styled Components: "Usa esta prop para el CSS, pero no la renderices en el HTML final".
+Así evitamos que en el navegador veas un <p variant="title">, lo cual es inválido
+
+Polimorfismo Real:
+La prop as que pasas a Typography se delega directamente a StyledTypography
+Si pasas as="h1", se renderizará un <h1> pero con los estilos que tú hayas definido para la variante
+
+Mantenibilidad:
+Si decides que el label debe ser un poco más brillante, lo cambias en el objeto variantStyles y se actualiza en todo el ToDo
+
+Integración de Mixins:
+He incluido el mixin textTruncate que creamos antes
+Esto es vital en una ToDo App para que, si el usuario escribe una tarea de 300 palabras, no rompa el diseño del componente
+
+
+### Detalle en el CSS
+en Typography.styles.ts estamos usando theme.spacing.lg para el tamaño de la fuente
+Lo ideal sería añadir una sección typography en tu theme.ts (con fontSize, fontWeight, etc.). Pero por ahora, usar los tokens de spacing o valores en rem es un gran comienzo
+
+#### Corrección
+
+```
+font-size: ${({ theme }) => theme.typography.fontSize.lg};
+    font-weight: ${({ theme }) => theme.typography.fontWeight.bold};
+    line-height: ${({ theme }) => theme.typography.lineHeight.tight};
+```
+
+
+## Nuevo theme
+
+```
+export const theme = {
+  colors: {
+    background: 'oklch(18% 0.04 258)',
+    glass: 'oklch(100% 0 0 / 8%)',
+    glassBorder: 'oklch(100% 0 0 / 15%)',
+    primary: 'oklch(65% 0.22 255)',
+    primaryHover: 'oklch(70% 0.22 255)',
+    textPrimary: 'oklch(98% 0.01 255)',
+    textSecondary: 'oklch(75% 0.05 255)',
+    success: 'oklch(70% 0.18 145)',
+    error: 'oklch(62% 0.22 25)',
+    white: 'oklch(100% 0 0)',
+  },
+
+  // Tokens específicos de tipografía
+  typography: {
+    fontFamily: "'Inter', -apple-system, sans-serif",
+    fontSize: {
+      xs: '0.75rem',    // 12px
+      sm: '0.875rem',   // 14px
+      md: '1rem',       // 16px
+      lg: '1.5rem',     // 24px
+      xl: '2.25rem',    // 36px
+    },
+    fontWeight: {
+      regular: 400,
+      medium: 500,
+      bold: 700,
+    },
+    lineHeight: {
+      tight: 1.1,
+      normal: 1.5,
+      relaxed: 1.6,
+    }
+  },
+
+  spacing: {
+    xs: '0.25rem',
+    sm: '0.5rem',
+    md: '1rem',
+    lg: '1.5rem',
+    xl: '2rem',
+  },
+
+  borderRadius: {
+    sm: '0.5rem',
+    md: '1rem',
+    lg: '1.5rem',
+    full: '9999px', // Para Badges y botones redondos
+  },
+
+  effects: {
+    blur: '12px',
+    shadow: '0 8px 32px 0 oklch(0% 0 0 / 30%)',
+  },
+
+  // Gestión de capas (Z-Index)
+  zIndex: {
+    base: 1,
+    dropdown: 10,
+    sticky: 20,
+    modal: 100,
+  },
+
+  // Animaciones consistentes
+  transitions: {
+    default: '0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+    fast: '0.1s ease-in-out',
+  }
+};
+
+export type ThemeType = typeof theme;
+```
+
+
+## Nuevo GlobalStyles
+
+```
+import { createGlobalStyle } from 'styled-components';
+
+export const GlobalStyles = createGlobalStyle`
+  /* 1. Reset e Higiene CSS */
+  *, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    font-size: 100%;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    /* Usamos los nuevos tokens de tipografía */
+    font-family: ${({ theme }) => theme.typography.fontFamily};
+    background-color: ${({ theme }) => theme.colors.background};
+    color: ${({ theme }) => theme.colors.textPrimary};
+    
+    /* Gradientes orgánicos basados en el tono Deep Midnight (258-280) */
+    background-image: 
+      radial-gradient(at 0% 0%, oklch(25% 0.08 260 / 30%) 0px, transparent 50%),
+      radial-gradient(at 100% 100%, oklch(20% 0.12 280 / 20%) 0px, transparent 50%);
+    
+    min-height: 100vh;
+    line-height: ${({ theme }) => theme.typography.lineHeight.normal};
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    
+    display: flex;
+    justify-content: center;
+    padding: ${({ theme }) => theme.spacing.xl};
+    overflow-x: hidden;
+  }
+
+  /* 2. Títulos Coherentes */
+  h1, h2, h3, h4 {
+    color: ${({ theme }) => theme.colors.textPrimary};
+    font-weight: ${({ theme }) => theme.typography.fontWeight.bold};
+    line-height: ${({ theme }) => theme.typography.lineHeight.tight};
+  }
+
+  /* 3. Inputs y Botones Globales */
+  input, button, textarea {
+    font-family: inherit;
+    font-size: inherit;
+    color: inherit;
+    background: transparent;
+    border: none;
+    outline: none;
+  }
+
+  button {
+    cursor: pointer;
+    /* Usamos la transición centralizada */
+    transition: ${({ theme }) => theme.transitions.default};
+    
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+  }
+
+  /* 4. Estados de Foco (Accesibilidad) */
+  :focus-visible {
+    outline: 2px solid ${({ theme }) => theme.colors.primary};
+    outline-offset: 4px;
+  }
+
+  /* 5. Scrollbar con estilo Glassmorphism */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: ${({ theme }) => theme.colors.glassBorder};
+    border-radius: ${({ theme }) => theme.borderRadius.full};
+    border: 2px solid ${({ theme }) => theme.colors.background};
+    
+    &:hover {
+      background: ${({ theme }) => theme.colors.textSecondary};
+    }
+  }
+
+  /* Selección de texto con el color primario */
+  ::selection {
+    background-color: ${({ theme }) => theme.colors.primary};
+    color: ${({ theme }) => theme.colors.background};
+  }
+`;
+```
+
+
+## Testing con styled components
+
+1. No testear la librería, sino el Contrato Visual
+##### Testeamos que nuestro componente reaccione correctamente a las props.
+
+Antes: Buscábamos .text-title.
+Ahora: Verificamos que si pasamos variant="title", el elemento tenga el font-size y font-weight que definimos en el theme.
+
+2. Evitar los selectores de Clase
+Styled Components genera clases aleatorias (como .sc-bdnyZg), buscar por clase en un test es imposible
+
+##### regla: Se busca por Rol de Accesibilidad (screen.getByRole('heading')) o por Texto (screen.getByText()).
+
+##### validación: Se usa el matcher .toHaveStyle() para comprobar que el CSS final sea el correcto.
+
+3. Snapshot Testing (Con moderación)
+
+Los Styled Components se prestan mucho a los Snapshots
+Un snapshot guarda una "foto" del código HTML y CSS generado.
+
+Ventaja: Si cambias un color en el mixin de glass, el test te avisará:
+"Oye, el CSS del Badge ha cambiado, ¿esto es intencional?".
+
+Riesgo: Pueden volverse ruidosos si cambias cosas pequeñas constantemente
+
+Qué testeamos| Cómo lo hacemos
+
+`Renderizado Base`
+"Comprobar que el tag HTML sea el correcto (as=""h1"" → <h1>)."
+
+`Consumo del Tema`
+Verificar que los colores OKLCH se apliquen (ej: color: oklch(...)).
+
+`Lógica de Props`
+"Si isActive={true}
+¿tiene el borde Electric Blue?"
+
+`Mixins`
+¿Tiene aplicado el backdrop-filter cuando usamos el mixin glass?
+
+
+
+# Implementación
+
+1. De "Dummy" a "Smart":
+
+Debemos sustituir las paginas que tiene datos simulados/locales
+Para usar 'useTasks'
+
+2. Conexión Dominio-Categorías:
+
+Con FilterPanel: conectar las Categorías con las Tareas
+
+task.logic.ts, deberías tener una función:
+f(tasks,selectedCategories)→filteredTasks
+
+El paso es asegurar que cuando el usuario marca
+"Frontend" en el FilterPanel,
+el useTasks use esa lógica de dominio
+para filtrar la lista que se muestra en el main-content.
+
+3. Persistencia Real (Sync con Storage)
+
+storage.service.ts no debe ser llamado por los componentes.
+El paso es integrarlo en el Ciclo de Vida del estado:
+
+Efecto de Carga: Al iniciar el hook, lee del localStorage e inicializa el reducer.
+
+Middleware/Effect: Cada vez que el estado cambie (una tarea se complete o se cree)
+el hook debe invocar al servicio para guardar la "foto" actual del estado.
+Esto garantiza que si el usuario refresca la página, nada se pierda
+
+4. Storybook (Design System)
+Atomic Design, Styled Components y Tests
+documentar esto:
+
+Storybook te permitiría ver tus átomos (Badge, Checkbox) y moléculas en aislamiento, probando sus diferentes estados
+(glass, normal, disabled) sin necesidad de correr toda la app. Es el "manual de identidad" de tu código.
+
+5. Gestión de Errores y Estados Límite (Edge Cases)
+
+Ahora que la arquitectura es sólida, hay que prepararla para la realidad:
+
+Capa de Servicios: ¿Qué pasa si el localStorage está lleno?
+El storage.service debería manejar ese error
+
+UI: Implementar un componente de Error Boundary
+o estados de "Lista Vacía" más elaborados
+ (Empty States) cuando el filtrado no arroja resultados.
+
+```
+graph TD
+    A[DashboardPage] -->|Usa| B(useTasks Hook)
+    B -->|Despacha| C(Task Reducer)
+    C -->|Aplica| D(Domain Logic)
+    B -->|Persiste| E(Storage Service)
+    A -->|Inyecta Datos| F[FilterPanel]
+    A -->|Inyecta Datos| G[TodoList]
+```
+
+
+
+# Fix UI: Conectar el hook con los componentes
+
+## Ej organismo que conecta con el hook de acciones
+
+1. TodoHeader:
+
+```
+import { TodoInput } from '../../molecules/TodoInput/TodoInput';
+import { useTasks } from '@/hooks/useTasks';
+
+export const TodoHeader = () => {
+  const { add } = useTasks(); // Aquí extraemos la lógica
+
+  return (
+    <header>
+      <h1>Mis Tareas</h1>
+      {/* Aquí inyectamos la acción del hook en el prop de la molécula */}
+      <TodoInput onAdd={(text) => add(text)} />
+    </header>
+  );
+};
+```
+
+2. FilterPanel:
+
+```
+// Ejemplo de cómo se vería el pegamento en un nivel superior
+const { stats, filter, setFilter } = useTasks();
+
+return (
+  <FilterPanel>
+    <FilterItem 
+      label="Pendientes" 
+      count={stats.pending} 
+      isSelected={filter === 'pending'} 
+      onToggle={() => setFilter('pending')} 
+    />
+    <FilterItem 
+      label="Completadas" 
+      count={stats.completed} 
+      isSelected={filter === 'completed'} 
+      onToggle={() => setFilter('completed')} 
+    />
+  </FilterPanel>
+);
+```
+
+
+## Ej Template que conecta con el hook de acciones
+
+TodoPage.tsx
+
+```
+export const TodoPage = () => {
+  // AQUÍ es donde vive el hook, el "único punto de verdad"
+  const { tasks, toggle, remove } = useTasks();
+
+  return (
+    <MainLayout>
+      <TodoHeader /> {/* Este organismo ya lo analizamos */}
+      <TodoList 
+        todos={tasks} 
+        onToggleTodo={toggle} 
+        onDeleteTodo={remove} 
+      />
+    </MainLayout>
+  );
+};
+```
+
+
+## Ej pagina que conecta con el hook de acciones
+
+1.
+
+```
+export const TodoPage = () => {
+  const { tasks, add, toggle, remove } = useTasks();
+
+  return (
+    <TodoTemplate 
+      header={<TodoHeader />} 
+      inputSlot={<TodoInput onAdd={add} />}
+      listSlot={
+        <TodoList 
+          todos={tasks} 
+          onToggleTodo={toggle} 
+          onDeleteTodo={remove} 
+        />
+      }
+    />
+  );
+};
+```
+
+2. Dash
+
+```
+export const AppDashboard = () => {
+  const { stats, filter, setFilter, tasks, add, toggle, remove } = useTasks();
+
+  return (
+    <DashboardTemplate
+      header={<GlobalHeader />}
+      sidebar={
+        <FilterPanel 
+          categories={mapStatsToCategories(stats)} 
+          selectedIds={[filter]}
+          onToggleCategory={setFilter}
+        />
+      }
+    >
+      {/* El contenido principal es otro template */}
+      <TodoTemplate 
+        header={<Typography variant="h1">Mis Tareas</Typography>}
+        inputSlot={<TodoInput onAdd={add} />}
+        listSlot={<TodoList todos={tasks} onToggleTodo={toggle} onDeleteTodo={remove} />}
+      />
+    </DashboardTemplate>
+  );
+};
+```
+
+
+
+# Conectar los componentes con la entidad
+
+## Caso TodoList: importamos la entidad, le pasamos el array
+
+Deja de usar sus props local
+
+El cambio:
+
+```
+import type { Task } from '@/core/task.entity';
+
+interface Todo {
+  id: string;
+  text: string;
+  completed: boolean;
+}
+
+interface TodoListProps {
+  todos: Task[];
+  onToggleTodo: (id: string) => void;
+  onDeleteTodo: (id: string) => void;
+}
+```
+
+
+Componete Completo:
+
+```
+import { TodoItem } from '../../molecules/TodoItem/TodoItem';
+import { Typography } from '../../atoms/Typography/Typography';
+import { ListWrapper, StyledList, EmptyState } from './TodoList.styles';
+import type { Task } from '@/core/task.entity';
+
+interface Todo {
+  id: string;
+  text: string;
+  completed: boolean;
+}
+
+interface TodoListProps {
+  todos: Task[];
+  onToggleTodo: (id: string) => void;
+  onDeleteTodo: (id: string) => void;
+}
+
+export const TodoList = ({ 
+  todos, 
+  onToggleTodo, 
+  onDeleteTodo 
+}: TodoListProps) => {
+  const hasTodos = todos.length > 0;
+
+  return (
+    <ListWrapper>
+      {!hasTodos ? (
+        <EmptyState>
+          <span style={{ fontSize: '3rem' }}>📝</span>
+          <Typography variant="h3" color="textSecondary">
+            No hay tareas pendientes
+          </Typography>
+          <Typography variant="body" color="textSecondary">
+            ¡Añade algo para empezar el día!
+          </Typography>
+        </EmptyState>
+      ) : (
+        <StyledList>
+          {todos.map((todo) => (
+            <TodoItem
+              key={todo.id}
+              text={todo.content}
+              completed={todo.isCompleted}
+              onToggle={() => onToggleTodo(todo.id)}
+              onDelete={() => onDeleteTodo(todo.id)}
+            />
+          ))}
+        </StyledList>
+      )}
+    </ListWrapper>
+  );
+};
+```
+
+
+# Pautas contratos/orquestadores en componentes ui complejos
+
 
