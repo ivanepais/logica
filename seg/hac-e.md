@@ -8779,6 +8779,3806 @@ Browser renderiza
 
 ### Waterfall del navegador
 
+##### Una de las herramientas para entender el rendimiento web real
+##### Waterfall/Cascada es la vista en DevTools (Network) que muestra cómo y cuándo se descargan todos los recursos de una página
+
+##### Cada fila = 1 request. Cada barra = tiempo que tarda
+
+```
+index.html  |███████
+style.css   |   ██████
+app.js      |   ███████
+image.png   |       █████
+```
+
+Las barras muestran tiempo + paralelismo
+
+Se encuentra en DevTools -> Network, columna: Waterfall
+
+
+#### Partes de una Request: cada barra está dividida en fases
+
+##### Fases tipicas: DNS, TCP, TLS, Request, Waiting (TTFB), Download
+
+
+##### 1. DNS Lookup: resolver dominio → IP. solo aparece si no está en cache
+
+##### 2. TCP Handshake: SYN → SYN-ACK → ACK
+
+##### 3. TLS Handshake (HTTPS): negociación de seguridad
+
+##### 4. Request Sent: se envía HTTP request
+
+##### 5. Waiting (TTFB): Time To First Byte, espera hasta que el servidor responde. Muy importante para performance
+
+##### 6. Content Download: descarga de datos
+
+`[DNS][TCP][TLS][REQ][WAIT][DOWNLOAD]`
+
+
+#### Waterfall Muestra
+
+##### 1. Paralelismo: requests en paralelo
+
+Ves:
+
+```
+████
+  ████
+    ████
+```
+
+##### 2. Bloqueos: uno dónde termina el anterior
+
+Si ves:
+
+```
+████████
+        ████████
+```
+
+##### 3. Dependencias
+
+HTML primero, luego CSS/JS
+
+
+#### Flujo de una página
+
+1. HTML: index.html → primero
+
+
+2. Analisis del navegador:
+
+Encuentra:
+
+```
+<link>
+<script>
+<img>
+```
+
+
+3. Aparecen nuevas requests: El waterfall se llena
+
+
+#### Recursos bloqueantes
+
+CSS: bloqueo de renderizado
+JS: puede bloquear analisis del HTML
+
+
+#### Detección de problemas
+
+##### 1. DNS lento: DNS muy largo. Problema de red o resolver
+
+##### 2. TCP/TLS lento: mucho tiempo antes del request. Latencia alta.
+
+##### 3. TTFB alto: WAIT muy largo. Servidor lento
+
+##### 4. Descarga lenta: Download largo. archivo pesado o red lenta
+
+##### 5. Bloqueo en cadena: HTML → CSS → JS → imágenes. mala optimización
+
+
+#### Diagnostico:
+
+##### 1. secuencial → ❌ malo
+
+```
+HTML █████
+CSS        █████
+JS             █████
+```
+
+##### 2. paralelo → ✅ bueno
+
+```
+HTML █████
+CSS   █████
+JS    █████
+IMG   █████
+```
+
+
+#### HTTP/1.1 vs HTTP/2 vs HTTP/3 en Waterfall
+
+1. HTTP/1.1
+muchas conexiones
+líneas separadas
+
+2. HTTP/2
+una conexión
+multiplexing
+
+3. HTTP/3
+igual que HTTP/2 pero:
+menos bloqueos por pérdida
+
+
+#### Métricas importantes
+
+##### TTFB: Tiempo hasta primer Byte
+
+##### Total Time: Tiempo total request
+
+##### Blocking Time: espera antes de empezar
+
+
+#### Modelo: timeline de requests
+
+##### Waterfall es una visualización del flujo: DNS → TCP → TLS → HTTP → descarga
+
+DNS → bloque inicial
+TCP → conexión
+TLS → seguridad
+HTTP → request/response
+
+
+##### Muestra qué se carga, cuándo, cuánto tarda, qué bloquea
+
+##### Waterfall te dice porqué es lento
+
+
+#### Otros conceptos
+
+##### Analisis de un Waterfall real paso a paso
+
+##### Buen vs Mal Rendimiento
+
+##### Optimizar una web leyendo el waterfall
+
+##### Simular problemas reales y detectarlos
 
 
 
+### Request/Solicitud/pedido/petición
+
+##### Mensaje que envía el cliente (navegador/app) a un servidor pidiendo algo
+
+HTTP:
+
+Cliente → Request → Servidor
+Servidor → Response → Cliente
+
+Cuando abrís una web, el navegador envía:
+
+```
+GET / HTTP/1.1
+Host: example.com
+```
+
+Es un HTTP Request.
+
+
+#### Partes de una Request
+
+##### 1. Línea inicial (Request Line)
+
+```
+GET /index.html HTTP/1.1
+```
+
+##### Contiene: método → GET, ruta → /index.html, versión HTTP → HTTP/1.1
+
+
+##### 2. Headers: metadatos
+
+```
+Host: example.com
+User-Agent: Firefox
+Accept: text/html
+Authorization: Bearer xxx
+```
+
+##### 3. Body: opcional. Datos que enviás al servidor
+
+```
+{
+  "username": "bob",
+  "password": "123"
+}
+```
+
+
+#### Métodos HTTP: lo que pide el cliente
+
+##### GET: pedir datos
+
+```
+GET /users
+```
+
+##### POST: enviar datos
+
+##### PUT: reemplazar recurso
+
+##### PATCH: modificar parcialmente
+
+##### DELETE: borrar un recurso
+
+
+Ej:
+
+```
+POST /api/login HTTP/1.1
+Host: example.com
+Content-Type: application/json
+
+{
+  "user": "bob",
+  "password": "123"
+}
+```
+
+
+#### Al enviar un Request: protocolos
+
+1. DNS → obtiene IP
+2. TCP → abre conexión
+3. TLS → asegura conexión (HTTPS)
+4. HTTP Request → se envía
+
+El request no viaja solo
+
+HTTP Request
+   ↓
+TLS (cifrado)
+   ↓
+TCP (segmentos)
+   ↓
+IP (paquetes)
+   ↓
+Red
+
+
+##### Request en Waterfall: es una pequeña parte del total
+
+Aparece como:
+
+`[DNS][TCP][TLS][REQUEST][WAIT][DOWNLOAD]`
+
+
+#### Request ≠ una página
+
+Una página web puede generar:
+
+1 HTML
++ 1 CSS
++ 5 JS
++ 20 imágenes
++ APIs
+
+
+#### Statless: HTTP no tiene estado. Cada Request es independiente
+
+##### El login se logra con: cookies, tokens, sesiones
+
+Ej cookies: el servidor usa eso para identificarte
+
+
+#### Tipos de Request
+
+##### 1. Navegación: abrir página
+
+##### 2. Recursos: CSS, JS, imágenes
+
+##### 3. API: fetch /api/data
+
+##### 4. Background: requests automáticos (analytics, etc.)
+
+##### Un request es una intención: "quiero esta página/datos, quiero enviar esto"
+
+##### Request = mensaje del cliente al servidor con: qué quiero (método), dónde (URL), cómo (headers), datos (body)
+
+##### Request = petición HTTP del cliente
+
+
+#### Ver Request: Navegador, devtools -> Network
+
+
+#### Otros conceptos
+
+Headers importantes (Authorization, Cache-Control, etc.)
+
+Cuando falla un request
+
+Diseñar buenos requests en APIs (backend level)
+
+
+
+### Response: es lo que el servidor te devuelve
+
+Ciclo: Request → Response → Cliente
+
+El mensaje que el servidor envía como respuesta a un request
+
+Cliente → Request → Servidor
+Servidor → Response → Cliente
+
+Siempre vienen en pares
+
+```
+HTTP/1.1 200 OK
+Content-Type: text/html
+Content-Length: 1234
+
+<html>...</html>
+```
+
+
+#### Partes de un Response
+
+##### 1. Status line: línea inicial. Contiene: version HTTP, código de estado, mensaje
+
+`HTTP/1.1 200 OK`
+
+
+##### 2. Headers: metadatos
+
+```
+Content-Type: text/html
+Content-Length: 1234
+Cache-Control: max-age=3600
+Set-Cookie: session=abc123
+```
+
+##### 3. Body: contenido real. HTML, JSON, img, file, etc
+
+
+#### Códigos de estado
+
+1. 2xx — éxito
+200 OK → todo bien
+201 Created → recurso creado
+
+2. 3xx — redirecciones
+301 Moved Permanently
+302 Found
+el navegador hace otra request
+
+3. 4xx — error del cliente
+400 Bad Request
+401 Unauthorized
+403 Forbidden
+404 Not Found
+
+5. 5xx — error del servidor
+500 Internal Server Error
+502 Bad Gateway
+503 Service Unavailable
+
+Ej: 
+JSON (API)
+
+```
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "name": "b",
+  "role": "dev"
+}
+```
+
+
+#### Navegador y response
+
+##### Renderiza HTML, aplica CSS, ejecuta JS, JSON lo procesa (fetch/axios)
+
+DNS → TCP → TLS → Request → Response
+
+
+#### Response en Waterfall
+
+Aparece como: `WAIT (TTFB) → DOWNLOAD`
+
+WAIT (TTFB): tiempo hasta el primer byte
+servidor procesando
+
+DOWNLOAD: descarga del contenido
+
+
+#### Headers 
+
+##### Content-type: que tipo de dato es.
+
+`Content-Type: application/json`
+
+
+##### Content-Length: tamaño
+
+`Content-Length: 1234`
+
+
+##### Cache-Control: catching
+
+`Cache-Control: max-age=3600`
+
+
+##### Set-Cookie`: guarda sesión en navegador
+
+`Set-Cookie: session=abc123`
+
+##### Locatio`n: redirect
+
+`Location: https://newsite.com`
+
+Ej:
+HTTP/1.1 301 Moved Permanently
+Location: https://www.example.com
+
+Ej: 
+HTTP/1.1 200 OK
+<html>...</html>
+
+
+#### Problemas comunes
+
+##### 1. TTFB alto: WAIT largo. Backend lento
+
+##### 2. Response grande: DOWNLOAD largo. archivo pesado.
+
+##### 3. Demasiados redirects. 301 → 302 → 200. pérdida de tiempo
+
+
+#### Statless: el servidor responde sin recordar. cada request es independiente
+
+##### Estado se maneja con: cookies, tokens
+
+##### Un response es la materialización de lo que pediste
+
+
+#### Ver responses
+
+##### Navegador: DevTools → Network → click en request → pestaña Response
+
+##### Terminal: curl -i https://example.com
+
+
+Response = resultado del servidor
+
+Incluye: 
+estado (status)
+metadatos (headers)
+contenido (body)
+
+Response = respuesta HTTP del servidor
+
+
+#### Otros conceptos
+
+Headers importantes en profundidad (Auth, Cache, CORS)
+Cómo cachear responses correctamente (pro)
+Qué pasa cuando un response falla (debugging real) 
+Cómo diseñar responses en APIs (backend pro)
+
+
+
+
+## 4. DHCP: automatiza la configuración de dispositivos cuando se conectan a una red
+
+En lugar de configurar manualmente IP, máscara, gateway, DNS, etc
+DHCP lo hace
+
+##### Cuando un dispositivo (tu PC, celular, etc.) entra a una red, necesita una “identidad” para comunicarse:
+
+Dirección IP
+Máscara de red
+Gateway (salida a internet)
+DNS
+
+DHCP es el “asignador automático” de esos datos
+
+
+### Proceso DORA 
+
+Flujo Dora:
+
+#### 1. Discover (Descubrimiento)
+
+El cliente:
+“Hola, ¿hay algún servidor DHCP ahí?”
+
+Se envía como broadcast (a toda la red)
+No tiene IP todavía
+
+
+#### 2. Offer (Oferta)
+
+El servidor DHCP responde al cliente: 
+"te puedo dar esta IP y configuración"
+
+Incluye:
+
+IP disponible
+Tiempo de alquiler (lease time)
+DNS, gateway, etc.
+
+
+#### 3. Request (Solicitud)
+
+El cliente le responde al servidor DHCP:
+“Acepto esa configuración”
+
+##### Esto también suele ser broadcast (para que otros servidores sepan que no fueron elegidos).
+
+
+#### 4. Acknowledge (Confirmación): A partir de acá, el dispositivo ya puede comunicarse en la red.
+
+Servidor DHCP confirma:
+Esa IP es tuya por X tiempo”
+
+
+##### Ej en casa: router (el de tu ISP) actúa como servidor DHCP
+
+Tu laptop se conecta al WiFi
+
+DHCP le asigna algo como: 192.168.0.14
+También le dice:
+Gateway: 192.168.0.1
+DNS: (ej. Google DNS)
+
+
+#### Lease (alquiler): es clave. La IP no es “para siempre”
+
+Se asigna por un tiempo (ej: 24 horas)
+Antes de que expire, el cliente intenta renovarla
+Si no la renueva → vuelve al pool
+
+Esto permite reutilizar IPs eficientemente.
+
+
+#### Información que puede dar DHCP
+
+Además de lo básico, puede configurar:
+
+Servidores DNS
+Servidores NTP (hora)
+Dominio de red
+Rutas estáticas
+Boot servers (PXE)
+
+
+#### Problemas comunes
+
+No hay servidor DHCP → no hay IP → no hay red
+Conflicto de IP (raro con DHCP, común en manual)
+DHCP rogue (servidor no autorizado)
+Pool agotado (no quedan IPs disponibles
+
+
+#### En contexto
+
+DHCP ocurre antes de muchas cosas que ya venías viendo:
+
+DHCP → obtengo IP
+DNS → resuelvo dominio
+TCP → establezco conexión
+HTTP/HTTPS → intercambio datos
+
+Es literalmente el primer paso para “entrar a Internet”.
+
+DHCP es como el recepcionista de una oficina que te da:
+
+un número de escritorio (IP)
+la puerta de salida (gateway)
+la guía telefónica (DNS)
+
+
+### Comandos Linux 
+
+1. Cliente DHCP (obtener IP automáticamente)
+
+dhclient
+Es el cliente DHCP clásico en muchas distros.
+
+`sudo dhclient`
+Pide una IP por DHCP para todas las interfaces
+
+`sudo dhclient eth0`
+Pide IP solo para una interfaz específica
+
+
+#### Renovar IP
+
+`sudo dhclient -v`
+-v = verbose, ves todo el proceso DORA
+
+
+#### Liberar IP
+
+`sudo dhclient -r`
+Envía un “release” al servidor DHCP
+
+
+Archivos importantes:
+/var/lib/dhcp/dhclient.leases → historial de leases
+/etc/dhcp/dhclient.conf → configuración
+
+
+2.  Alternativa moderna (systemd)
+
+`networkctl`
+Si usás systemd-networkd
+
+`networkctl status`
+Muestra estado de interfaces (incluyendo DHCP)
+
+`networkctl renew eth0`
+Renueva DHCP
+
+
+3. NetworkManager: desktops
+
+`nmcli`
+CLI de NetworkManager (Ubuntu, Fedora, etc.)
+
+Renovar DHPC
+`nmcli device reapply eth0`
+
+o más directo:
+`nmcli connection up <nombre_conexion>`
+
+Ver estado:
+`nmcli device show`
+
+Incluye:
+IP
+Gateway
+DNS
+Método (DHCP/manual)
+
+
+4. Ver la IP asignada (resultado de DHCP)
+
+Estos no hacen DHCP, pero lo verifican:
+
+`iproute2`
+comando: `ip addr`
+
+`ip route`
+Ves:
+
+IP asignada
+Gateway (ruta default)
+
+
+5. Diagnóstico de DHCP (nivel red)
+
+`tcpdump``
+Podés ver el proceso DORA en vivo:
+
+`sudo tcpdump -i eth0 port 67 or port 68`
+
+Vas a ver:
+
+DHCP Discover
+DHCP Offer
+DHCP Request
+DHCP ACK
+
+##### Es oro para entender networking de verdad.
+
+
+6. Servidor DHCP (menos común)
+
+Si quisieras montar uno:
+
+`isc-dhcp-server`
+Pero normalmente en casa lo hace el router.
+
+| Objetivo              | Comando       |
+| --------------------- | ------------- |
+| Pedir IP              | `dhclient`    |
+| Renovar               | `dhclient -v` |
+| Liberar               | `dhclient -r` |
+| Ver IP                | `ip addr`     |
+| Ver DHCP en vivo      | `tcpdump`     |
+| Manejar red (moderno) | `nmcli`       |
+
+
+
+## 5. VLANs: Virtual LANs
+
+##### Dividir una red física en múltiples redes lógicas independientes
+es como crear varias redes separadas dentro del mismo switch físico.
+
+Sin VLANs:
+Todos los dispositivos están en la misma red (broadcast domain)
+
+Con VLANs:
+Separás la red en “grupos aislados”
+
+Ej: en una empresa
+
+##### Administración → VLAN 10
+##### IT → VLAN 20
+##### Invitados → VLAN 30
+
+Aunque todos estén conectados al mismo switch,:
+
+##### No se ven entre sí directamente ❌
+##### No comparten broadcast ❌
+##### Necesitan un router para comunicarse
+
+
+##### Las VLANs operan en Capa 2 (Enlace de datos) del modelo OSI.
+
+##### Se basan en: Etiquetado de frames Ethernet
+
+
+#### IEEE 802.1Q
+ 
+Estándar define cómo se agrega un tag VLAN dentro del frame Ethernet:
+
+VLAN ID (ej: 10, 20, 30)
+Prioridad (QoS)
+
+
+### Tipos de puertos
+
+#### 1. Access Port
+
+Pertenece a una sola VLAN
+No etiqueta frames
+Usado para PCs, impresoras, etc.
+
+Ej:
+Puerto 1 → VLAN 10
+
+
+#### 2. Trunk Port
+Transporta múltiples VLANs
+Usa tagging (802.1Q)
+
+Ej:
+Switch ↔ Switch
+Switch ↔ Router
+
+
+### Flujo 
+
+1. PC en VLAN 10 envía un frame
+2. El switch lo asocia a VLAN 10
+3. Si sale por trunk → se agrega tag VLAN
+4. Otro switch lo recibe y mantiene el aislamiento
+
+
+### Aislamiento
+
+##### Las VLANs crean broadcast domains separados: mejora seguridad, rendimiento y organización
+Un broadcast en VLAN 10 → NO llega a VLAN 20
+
+
+### Comunicación entre VLANs
+
+##### Por defecto: VLANs NO se comunican entre sí, necesitás: Routing (Capa 3)
+
+Opciones:
+Router físico (router-on-a-stick)
+Switch capa 3
+
+
+### Router on a stick: Un router con una sola interfaz física pero múltiples subinterfaces: Cada una con su IP (gateway de la VLAN)
+
+eth0.10 → VLAN 10
+eth0.20 → VLAN 20
+
+
+Ej: hogar / WiFi
+
+##### Muchos routers hacen esto internamente: Red principal → VLAN 1; Red de invitados → VLAN separada. Aunque no lo veas, está pasando
+
+
+### Problemas comunes
+
+VLAN mal configurada → no hay conectividad
+Trunk sin permitir VLAN → tráfico bloqueado
+Native VLAN mal definida → conflictos
+VLAN hopping (ataque
+
+
+### En contexto o agregados con los otros protocolos/tecnologías
+
+Las VLANs afectan directamente:
+
+DHCP → cada VLAN suele tener su propio rango IP
+ARP → solo dentro de la VLAN
+Broadcast → aislado por VLAN
+Routing → necesario entre VLANs
+
+
+Un switch con VLANs es como un edificio con pisos separados
+
+Cada piso = una VLAN
+Ascensor (router) = comunicación entre pisos
+
+Las VLANs no son “seguridad fuerte”, son:nsegmentación lógica
+
+Mejoran organización y reducen ruido
+Pero no reemplazan firewalls ni controles L3
+
+
+### Comandos para VLANs linux
+
+Podés crear, configurar y diagnosticar VLANs directamente desde la terminal
+una VLAN se representa como una interfaz virtual encima de una interfaz física
+
+Interfaz física: eth0
+VLAN 10: eth0.10
+VLAN 20: eth0.20
+
+Cada una funciona como si fuera una red independiente.
+
+`iproute2`
+Es la herramienta moderna para networking en Linux
+(ip reemplaza a `ifconfig`).
+
+
+#### Crear VLAN
+
+`sudo ip link add link eth0 name eth0.10 type vlan id 10`
+
+Usa eth0 como base
+Crea interfaz virtual eth0.10
+Asigna VLAN ID = 10
+
+
+#### Activar la interfaz
+
+`sudo ip link set dev eth0.10 up`
+
+
+#### Asignar IP (como DHCP o manual)
+
+Manual:
+
+`sudo ip addr add 192.168.10.2/24 dev eth0.10`
+
+DHCP:
+
+`sudo dhclient eth0.10`
+DHCP funciona igual sobre VLANs.
+
+
+#### Ver VLANs configuradas
+
+`ip -d link show`
+
+-d (details) muestra:
+
+VLAN ID
+Interfaz base
+
+
+#### Eliminar una VLAN
+
+`sudo ip link delete eth0.10`
+
+
+#### Alternativa legacy
+
+`vconfig`: Antiguo (evitar en sistemas modernos):
+
+`sudo vconfig add eth0 10`
+Hoy se usa `ip`
+
+
+#### NetworkManager
+
+`nmcli`
+
+Si estás en desktop:
+
+```
+nmcli connection add type vlan \
+  con-name vlan10 \
+  dev eth0 \
+  id 10 \
+  ip4 192.168.10.2/24
+```
+
+
+#### Ver tráfico VLAN
+
+`tcpdump`
+`sudo tcpdump -i eth0 -e vlan`
+
+Vas a ver:
+
+Tags 802.1Q
+VLAN IDs en vivo
+
+
+Ej real
+
+Supongamos:
+
+Switch envía VLAN 10 por un trunk
+Tu Linux está conectado a ese puerto
+
+```
+ip link add link eth0 name eth0.10 type vlan id 10
+ip link set eth0.10 up
+dhclient eth0.10
+```
+Ya estás dentro de esa VLAN
+
+
+##### 1. El switch debe estar configurado
+Si no hay trunk o VLAN permitida: No funciona (aunque Linux esté bien)
+
+##### 2. Interfaz física UP
+`ip link set eth0 up`
+
+##### 3. Módulo del kernel
+
+`lsmod | grep 8021q`
+
+Si no:
+
+`sudo modprobe 8021q`
+
+
+#### En contexto
+
+VLAN → segmenta red (L2)
+DHCP → te da IP dentro de esa VLAN
+TCP/IP → ya podés comunicarte
+
+Linux trata las VLANs como:
+“interfaces virtuales etiquetadas encima de una interfaz física”
+
+El comando ip link add ... type vlan es básicamente:
+
+“Implementar 802.1Q en software”
+
+Esto te permite:
+
+Simular redes complejas
+Hacer labs sin hardware
+Entender redes reales (datacenters, cloud, etc.)
+
+
+#### Otros conceptos
+
+Montar un Lab:
+
+Crear 2 VLANs en Linux
+Usar bridges
+Simular un switch
+Ver tráfico real con tcpdump
+
+
+
+## Conceptos: socket, buffers, broadcast domain, OSI, máscara, gateway
+
+
+### 1. socket: punto de conexión entre un programa y la red
+##### Combinación de: IP, Puerto, Protocolo (TCP/UDP)
+
+Ej: 192.168.0.10:443 (TCP)
+“enchufe” que tu programa usa para hablar con otro programa en la red.
+
+
+### 2. buffers: “enchufe” que tu programa usa para hablar con otro programa en la red.
+##### En redes: Buffer de envío (send buffer), Buffer de recepción (receive buffer)
+##### Evitar pérdida de datos, Adaptar velocidades (CPU vs red)
+##### Son como “colas” donde los datos esperan su turno
+
+### 3. máscara (subnet mask): Define qué parte de una IP es: Red o Host
+
+Ej:
+IP: 192.168.1.10
+Máscara: 255.255.255.0 (/24)
+
+Red: 192.168.1.0
+Hosts: .1 a .254
+
+##### Es la regla que separa “mi red local” de “el resto del mundo”. 
+
+
+### 4. gateway: puerta de enlace, es el dispositivo que conecta tu red con otras redes
+
+##### Normalmente: Tu router (192.168.0.1). Si el destino no está en tu red: enviás el tráfico al gateway
+##### Es la “puerta de salida a Internet”.
+
+
+### 5. broadcast/broadcast domain: mensaje
+
+##### Broadcast: Un mensaje enviado a todos los dispositivos de la red
+
+Ej: “¿Quién tiene esta IP?”
+
+##### Broadcast domain: Conjunto de dispositivos que reciben ese broadcast.
+
+##### Se limita por: Routers, VLANs
+
+##### todos los presentes lo escuchan.
+
+
+### 6. ARP: Address Resolution Protocol. traduce: IP → MAC address
+
+Ej:
+“Tengo la IP 192.168.1.1, ¿quién tiene esa MAC?”
+
+Proceso:
+1. Broadcast ARP request
+2. Respuesta del dispositivo
+3. Se guarda en caché
+
+##### Es la “agenda de contactos” que conecta direcciones lógicas (IP) con físicas (MAC).
+
+
+### 7. OSI: Modelo que divide la red en 7 capas: fisica, enlce, red, transporte, sesión, presentación, aplicación
+
+
+
+### 8. MAC: Media Access Control
+##### identificador único de 48 bits (6 pares hexadecimales)
+##### asignado por el fabricante a cada tarjeta de red (física o inalámbrica) a nivel mundial.
+
+Actúa como una "huella dactilar" física en la Capa 2 (enlace de datos) del modelo OSI,
+esencial para identificar y dirigir datos a dispositivos específicos en una red local (LAN).
+
+Identificador Único: Ninguna tarjeta de red tiene la misma dirección MAC.
+Estructura: Los primeros 6 caracteres hexadecimales corresponden al OUI (Identificador Único de Organización) asignado al fabricante por el IEEE
+los últimos 6 son asignados por el propio fabricante.
+
+Los switches usan la dirección MAC
+##### A diferencia de la dirección IP (que es lógica y cambia), la MAC es inalterable en el hardware
+##### A diferencia de la dirección IP (que es lógica y cambia), la MAC es inalterable en el hardware
+
+
+### Switch: conmutador
+##### dispositivo de red que interconecta equipos (ordenadores, impresoras, servidores) dentro de una misma red local (LAN) cableada, operando en la capa 2 del modelo OSI
+
+##### Su función es gestionar el tráfico de datos enviando información de manera inteligente y directa solo al destinatario correcto mediante direcciones MAC
+optimiza el rendimiento y elimina colisiones
+
+Capa 2 (Enlace de Datos): Opera basándose en direcciones físicas (MAC), no en direcciones IP (capa 3).
+
+Tipos de switches
+No gestionados: "Plug and play", sin configuración, ideales para redes domésticas o pequeñas.
+Gestionados: Permiten configuración avanzada (VLANs, seguridad, QoS) para redes empresariales.
+
+##### Switch vs Router: El switch conecta dispositivos dentro de la misma red (LAN), mientras que el router conecta redes distintas (por ejemplo, tu LAN a Internet).
+los switches son fundamentales para estructurar redes locales, asegurando que los datos viajen de manera eficiente y segura entre equipos
+
+
+### Ej en conjunto: 
+
+1. DHCP → obtenés IP
+2. ARP → resolvés MAC del gateway
+3. Enviás datos:
+Socket (app)
+Buffers (gestionan datos)
+TCP (transporte)
+IP (red)
+Ethernet (L2)
+
+4. Si no está en tu red:
+→ Gateway lo enruta
+
+| Concepto  | Rol                   |
+| --------- | --------------------- |
+| Socket    | Punto de comunicación |
+| Buffers   | Manejo de datos       |
+| Máscara   | Define red local      |
+| Gateway   | Salida a otras redes  |
+| Broadcast | Comunicación masiva   |
+| ARP       | IP → MAC              |
+| OSI       | Modelo conceptual     |
+
+
+##### Todos estos conceptos responden a una misma pregunta: “¿Cómo viaja un dato desde un proceso hasta otro en otra máquina?”
+##### La respuesta/solución es: capas + abstracciones + resolución de direcciones + rutas
+
+Ej: simular flujo
+Proceso → Socket → Buffer → TCP → IP → ARP → Ethernet → Switch → Router
+
+
+### LAN
+
+Local Area Network/Red de Área Local
+
+##### infraestructura básica que permite conectar dispositivos en un entorno geográfico limitado
+pilar fundamental sobre el cual se construyen las redes domésticas y empresariales modernas
+
+Una LAN se define principalmente por su alcance geográfico
+##### diseñada para conectar nodos (computadoras, impresoras, servidores) dentro de un mismo edificio, oficina o casa
+
+Distancia: Generalmente no supera unos pocos kilómetros.
+
+Propiedad: Suele ser privada; la infraestructura (cables, routers, switches) pertenece a la persona u organización que la utiliza.
+
+##### Velocidad: Ofrece altas tasas de transferencia, comúnmente desde 100 Mbps hasta 10 Gbps o más
+
+
+#### Componentes de una LAN
+
+requiere de elementos específicos de hardware y protocolos:
+
+##### 1. Dispositivos Finales: Computadoras, smartphones, cámaras IP y dispositivos IoT.
+
+##### 2. Medios de Transmisión: * Cableado: El estándar más común es el cable de par trenzado (Ethernet/RJ45).
+Inalámbrico: Cuando la LAN es inalámbrica, se denomina WLAN (basada en estándares Wi-Fi).
+
+##### 3. Dispositivos de Red Intermedios
+
+##### Switch (Conmutador): Es el corazón de la LAN. Conecta los dispositivos y dirige el tráfico de datos de forma inteligente basándose en direcciones MAC.
+
+##### Router: Actúa como la puerta de enlace (Gateway) para conectar la LAN con otras redes o con Internet
+
+
+#### Topologías de Red: forma en que se conectan físicamente los cables o se organizan los nodos:
+
+##### 1. Estrella (Star): Es la más utilizada hoy en día. Todos los dispositivos se conectan a un nodo central (un switch).
+Si un cable falla, solo ese dispositivo pierde conexión.
+
+##### 2. Malla (Mesh): Los dispositivos tienen múltiples conexiones entre sí, lo que ofrece alta redundancia.
+
+##### 3. Bus y Anillo: Tecnologías más antiguas donde los datos pasaban por un único cable común o en círculo. Actualmente están en desuso para LANs estándar.
+
+
+#### Protocolos y Estándares
+
+##### El lenguaje que hablan las LANs está estandarizado para asegurar que diferentes marcas de hardware funcionen juntas
+
+##### Ethernet (IEEE 802.3): Es el estándar dominante para conexiones por cable. Define cómo se envían los paquetes de datos y cómo se gestionan las colisiones.
+
+##### Wi-Fi (IEEE 802.11): El estándar para redes LAN inalámbricas.
+
+##### Direcciones MAC: Cada dispositivo en una LAN tiene una dirección física única que permite al switch saber exactamente a dónde enviar la información
+
+
+#### VLAN (Virtual LAN)
+
+##### En entornos profesionales, es común segmentar una LAN física en múltiples VLANs
+##### Permite separar, por ejemplo, el tráfico del departamento de "Contabilidad" del de "Invitados" utilizando el mismo hardware
+lo que mejora la seguridad y reduce la congestión de la red.
+
+Característica | LAN (Local) | WAN (Global/Internet)
+
+Área
+Limitada (Casa/Oficina)
+Extensa (Países/Continentes)
+
+Velocidad
+Muy alta
+Variable (depende del ISP)
+
+Costo
+Bajo (mantenimiento propio)
+Alto (pago de servicios)
+
+
+#### Comandos linux
+
+existen dos suites de herramientas principales:
+la moderna iproute2 (comando ip)
+la clásica net-tools (comando ifconfig)
+
+Antes de configurar, necesitas identificar tus interfaces de red y su estado
+
+`ip link show`: Lista todas las interfaces de red físicas y virtuales (útil para ver los nombres como eth0 o enp3s0).
+
+`ip addr show`: Muestra las direcciones IP asignadas a cada interfaz
+
+`arp -a o ip neigh`: Muestra la tabla ARP, permitiéndote ver las direcciones MAC de otros dispositivos conectados a tu LAN.
+
+`nmcli device`: Si usas NetworkManager, este comando da un resumen rápido del estado de los dispositivos.
+
+
+##### Configuración de VLANs (Etiquetado 802.1Q)
+
+##### Para trabajar con VLANs, el núcleo de Linux debe tener cargado el módulo 8021q
+
+Puedes cargarlo con `sudo modprobe 8021q`.
+
+comando ip (Recomendado)
+
+##### Para crear una interfaz de VLAN (por ejemplo, la VLAN 10 sobre la interfaz física eth0):
+
+1. Crear la interfaz:
+`sudo ip link add link eth0 name eth0.10 type vlan id 10`
+
+2. Levantar la interfaz:
+`sudo ip link set dev eth0.10 up`
+
+3. Asignar una IP:
+`sudo ip addr add 192.168.10.5/24 dev eth0.10`
+
+Usando vconfig (Legacy)
+Aunque está siendo reemplazado, en sistemas ligeros aún podrías encontrarlo:
+
+`sudo vconfig add eth0 10` (Crea la interfaz eth0.10)
+
+
+Administración de Puentes (Bridgeting
+son esenciales en LANs para conectar dos interfaces o para entornos de virtualización.
+
+`ip link add name br0 type bridge`: Crea un puente virtual llamado br0.
+
+`ip link set eth0 master br0`: Agrega una interfaz física al puente.
+
+`bridge link show`: Muestra el estado de los puertos en los puentes configurados.
+
+
+Herramientas de Diagnóstico y Rendimiento
+
+probar la conectividad o el rendimiento dentro de tu red local
+
+
+Comando | Función
+
+`ping -c 4 [IP]`
+Verifica la latencia y conectividad básica.
+
+`iperf3 -s / -c`
+Mide el ancho de banda real entre dos nodos de la LAN.
+
+`ethtool [interfaz]`
+Muestra la velocidad física del enlace (100/1000 Mbps) y si hay soporte para Duplex.
+
+`tcpdump -i [interfaz]`
+Captura tráfico en tiempo real (vital para depurar si los tags de VLAN están llegando correctamente).
+
+
+Persistencia
+para que estos cambios no se borren al reiniciar, debes editar el archivo /etc/network/interfaces:
+
+```
+# Ejemplo de configuración de VLAN 10 en interfaces
+auto eth0.10
+iface eth0.10 inet static
+    address 192.168.10.5
+    netmask 255.255.255.0
+    vlan-raw-device eth0
+```
+
+##### Seguridad: Recuerda que al manipular interfaces de red, especialmente mediante ip link set ... down. seguridad: Recuerda que al manipular interfaces de red, especialmente mediante ip link set ... down
+
+
+
+## 6. Puertos
+
+##### identificador numérico de 16 bits que permite a un sistema operativo dirigir el tráfico de red hacia un proceso o aplicación concreta
+
+##### Sin puertos, una computadora podría recibir datos de internet, pero no sabría si esos datos pertenecen a una pestaña del navegador, a una partida de un videojuego o a una actualización del sistema
+
+
+### Clasificación de puertos
+El rango de puertos va desde el 0 hasta el 65535
+
+##### Se dividen en tres categorías principales gestionadas por la IANA (Internet Assigned Numbers Authority):
+
+Puertos Bien Conocidos (0 - 1023): Reservados para servicios del sistema y protocolos estándar.
+
+Puertos Registrados (1024 - 49151): Utilizados por aplicaciones específicas de usuario o empresas (ej. bases de datos).
+
+Puertos Dinámicos o Privados (49152 - 65535): Usados de forma temporal por el cliente cuando inicia una conexión (puertos efímeros).
+
+
+### Puertos Comunes que se deben conocer
+
+Dado que se interactúa constantemente con ellos
+
+Puerto | Protocolo | Uso común
+
+##### 20/21: FTP. Transferencia de archivos
+
+##### 22: SSH. Acceso remoto seguro (fundamental en Linux)
+
+##### 80: HTTP. Tráfico web sin cifrar
+
+##### 443: HTTPS. Tráfico web cifrado (SSL/TLS)
+
+##### 53: DNS. Resolución de nombres de dominio
+
+##### 3000/8080: Alt-HTTP. "Comunes para servidores de desarrollo (Node.js, React)"
+
+##### 5432: PostgreSQL. Conexión a bases de datos
+
+
+### TCP vs. UDP: viaje de los datos
+
+##### Los puertos operan en la Capa 4 (Transporte) del modelo OSI funcionan sobre dos protocolos principales:
+
+1. TCP (Transmission Control Protocol): Orientado a la conexión
+se asegura de que el receptor esté listo, envía los datos y verifica que llegaron bien
+Si algo se pierde, se reenvía. (Ej: HTTP, SSH).
+
+2. UDP (User Datagram Protocol): Sin conexión
+Es como enviar cartas por correo: se lanzan los datos y no se verifica si llegaron
+Es mucho más rápido pero menos fiable
+(Ej: Streaming de video, juegos online, DNS).
+
+
+### Comandos en linux
+
+`ss -tulpn`: (Socket Statistics)
+La forma moderna y rápida de ver qué puertos están abiertos, qué procesos los usan y si son TCP o UDP.
+
+`netstat -lnptu`:
+El comando clásico (parte de net-tools) para listar puertos en escucha.
+
+`lsof -i :8080`:
+Te dice exactamente qué aplicación está "adueñada" de un puerto específico
+muy útil cuando un servidor de desarrollo no arranca porque el puerto está ocupado
+
+`nmap localhost`:
+Escanea tu propia máquina para ver qué puertos son visibles desde fuera
+
+
+### Port Forwarding (Reenvío de Puertos): Cuando estás detrás de un router (en una LAN), tu IP es privada
+
+##### Si quieres que alguien desde internet acceda a un servidor web que corre en tu PC, debes configurar el Port Forwarding en el router
+
+Esto le dice al router: "Todo el tráfico que llegue al puerto 80 desde el exterior, envíalo directamente a la IP privada de mi PC en el puerto 80".
+
+
+## 7. Firewalls
+
+##### Sistema de seguridad diseñado para monitorear y filtrar el tráfico de red entrante y saliente basándose en un conjunto de reglas de seguridad previamente establecidas
+##### Su función principal es actuar como una barrera entre una red interna de confianza (como tu LAN) y una red externa en la que no confías (como Internet).
+Dice quién puede entrar, quién debe salir y quién tiene prohibido el paso.
+
+##### El tráfico se analiza por paquetes. Cada paquete de datos contiene información como: ip (origen y destino), puerto y protocolo
+Dirección IP de origen y destino.
+Puerto de origen y destino.
+Protocolo (TCP, UDP, ICMP, etc.).
+
+##### Si un paquete coincide con una regla de "permitir", pasa
+##### Si un paquete coincide con una regla de "permitir", pasa
+
+
+### Tipos de Firewalls
+
+1. Según su implementación
+
+#### Firewall de Software: Aplicaciones instaladas en dispositivos individuales
+individuales (como el firewall de Windows o ufw en Linux).
+Protegen solo ese dispositivo
+
+#### Firewall de Hardware: Dispositivos físicos colocados entre el router y la red
+Son comunes en empresas porque protegen a toda la red local de forma centralizada.
+
+
+2. Según su método de filtrado
+
+#### Filtrado de paquetes: El más básico. Revisa las IPs y puertos
+Es rápido pero no muy inteligente.
+
+#### Inspección de estado (Stateful Inspection): No solo mira el paquete, sino que recuerda si es parte de una conexi
+Si tú pediste una web, el firewall deja entrar la respuesta automáticamente.
+
+#### Next-Generation Firewall (NGFW): Además de lo anterior, inspecciona el contenido del tráfico (DPI - Deep Packet Inspection)
+para detectar malware o bloquear aplicaciones específicas (como bloquear Facebook pero permitir el resto de la web).
+
+
+### Comandos en Linux
+
+##### El kernel maneja el filtrado mediante un subsistema llamado Netfilter
+Sin embargo, nosotros interactuamos con él a través de herramientas más amigables:
+
+#### UFW (Uncomplicated Firewall)
+Es el estándar en distribuciones como Debian y sus derivadas por su sencillez.
+
+Ver estado:
+`sudo ufw status`
+
+Permitir un servicio (ej. SSH):
+`sudo ufw allow 22` o `sudo ufw allow ssh`
+
+Bloquear una IP específica:
+`sudo ufw deny from 192.168.1.50`
+
+Habilitar el firewall:
+`sudo ufw enable`
+
+
+### Iptables / Nftables: Se utilizan para reglas muy específicas de enrutamiento y NAT.
+
+Son herramientas mucho más potentes y granulares, pero con una curva de aprendizaje más alta
+
+```
+# Ejemplo de iptables para permitir tráfico web
+sudo iptables -A INPUT -p tcp --dport 80 -j ACCEPT
+```
+
+
+### Políticas por defecto: ¿Permitir o Denegar?
+
+Existen dos filosofías principales al configurar un firewall:
+
+1. Permisiva:
+Todo está permitido excepto lo que se prohíbe explícitamente
+(Menos segura, más fácil de usar).
+
+2. Restrictiva (Whitelist):
+Todo está prohibido excepto lo que se permite explícitamente
+Esta es la práctica recomendada en ciberseguridad.
+
+
+### Un firewall no protege contra
+
+No suele detectar virus que descargas voluntariamente.
+
+No protege contra ataques de ingeniería social (Phishing).
+
+Si dejas el puerto 80 abierto para tu servidor web y tu aplicación tiene una vulnerabilidad de código
+el firewall dejará pasar el ataque porque el puerto está "autorizado".
+
+##### Para un desarrollador, es fundamental entender qué puertos abres en tu entorno local para no exponer servicios críticos (como una base de datos sin contraseña) a la red pública.
+
+
+
+## 8. FTP
+
+File Transfer Protocol:
+Protocolo de Transferencia de Archivos es uno de los protocolos más antiguos y fundamentales de Internet
+##### Su única misión es mover archivos de un lugar a otro entre un cliente y un servidor
+
+Es crucial porque estableció las bases de cómo gestionamos datos en red.
+
+### 1. Funcionamiento: modelo Cliente-Servidor
+FTP es único porque utiliza dos conexiones paralelas (o canales) para funcionar:
+
+1. Canal de Control (Puerto 21): Se usa para enviar comandos (como "listar archivos", "borrar" o "descargar").
+Es como la conversación entre tú y el servidor.
+
+2. Canal de Datos (Puerto 20): Es el carril exclusivo por donde viajan los archivos pesados.
+Se abre solo cuando hay una transferencia activa.
+
+
+### 2. Modos de Conexión: Activo vs. Pasivo
+
+Concepto que suele causar dolores de cabeza con los firewalls:
+
+#### Modo Activo: El cliente le dice al servidor: "Estoy escuchando en este puerto, envíame los datos".
+Aquí el servidor inicia la conexión hacia el cliente
+(Suele fallar si el cliente tiene un firewall estricto).
+
+#### Modo Pasivo: El cliente le pregunta al servidor: "¿Dónde te envío los datos?".
+El servidor abre un puerto aleatorio y el cliente se conecta
+Es el modo estándar hoy en día porque atraviesa mejor los firewalls domésticos.
+
+
+### Seguridad: FTP original no cifra los datos
+##### Tanto tu usuario, tu contraseña y los archivos que envías viajan en texto plano
+##### Cualquiera que esté "escuchando" en la red local puede robar tus credenciales.
+
+#### FTPS (FTP over SSL/TLS): Es el mismo FTP pero envuelto en una capa de cifrado
+cifrado (similar a cómo HTTP se convierte en HTTPS).
+
+#### SFTP (SSH File Transfer Protocol): Aunque suena igual, es técnicamente distinto
+Corre sobre SSH (Puerto 22) y es mucho más seguro y fácil de configurar en Linux.
+
+
+#### Herramientas de FTP
+
+`ftp`: El cliente básico por consola.
+`lftp`: Mucho más potente; soporta scripts, múltiples protocolos (incluyendo SFTP y HTTP) y permite descargas en paralelo.
+`ncftp`: Un cliente muy popular por ser más amigable que el ftp estándar.
+
+Gráficos (GUI):
+`FileZilla`: El estándar de la industria, muy completo.
+`gFTP`: Una alternativa más ligera, ideal para entornos con pocos recursos.
+
+
+### Comandos dentro de una sesión FTP
+
+Una vez te conectas a un servidor (ej: ftp 192.168.1.10)
+usas comandos similares a la shell de Linux
+
+`ls`: Listar archivos en el servidor.
+`get archivo`: Descargar un archivo del servidor a tu PC.
+`put [archivo]`: Subir un archivo de tu PC al servidor
+`mget * / mput *`: Descargar o subir múltiples archivos a la vez.
+`binary`: Cambia al modo binario (obligatorio para imágenes, ejecutables o archivos comprimidos para evitar que se corrompan).
+
+
+    
+## 9. SSH
+
+##### Protocolo de red que permite a los usuarios acceder, administrar y modificar de forma segura sus servidores u ordenadores de forma remota a través de Internet
+Es el estándar absoluto para la administración de sistemas Linux.
+
+##### SSH cifra toda la sesión: significa que tu contraseña y los comandos que ejecutas son ilegibles para cualquier atacante que intente interceptar el tráfico
+
+SSH utiliza un modelo cliente-servidor.
+
+##### 1. Servidor SSH: El ordenador remoto que quieres controlar (debe tener instalado el servicio sshd).
+Escucha por defecto en el Puerto 22.
+
+##### 2. Cliente SSH: Tu máquina local, desde la cual lanzas el comando ssh para conectarte
+
+
+El protocolo utiliza tres técnicas principales de cifrado:
+
+##### Cifrado Simétrico: Para la transferencia de datos.
+
+##### Cifrado Asimétrico: Para el intercambio de claves y la autenticación inicial.
+
+##### Hashing: Para verificar que los datos no hayan sido alterados durante el viaje
+
+
+### Métodos de Autenticación     
+
+##### 1. Usuario y Contraseña: método más sencillo pero el más vulnerable a ataques de "fuerza bruta".
+El servidor te pide tus credenciales y, si son correctas, te da acceso a la terminal.
+
+##### 2. Claves SSH (Public/Private Keys): método recomendado y más seguro. Se basa en un par de llaves criptográficas
+
+##### Clave Privada: Se queda en tu ordenador y nunca la compartes con nadie
+
+##### Clave Pública: Se sube al servidor (archivo ~/.ssh/authorized_keys).
+
+Cuando intentas entrar, el servidor usa la clave pública para enviarte un "desafío" que solo tu clave privada puede resolver
+No necesitas escribir contraseñas.
+
+
+### Comandos Esenciales en la Terminal
+
+dominar estos comandos te dará un control total
+
+Conexión básica:
+`ssh usuario@direccion_ip`
+
+Conexión por puerto específico (si no es el 22):
+`ssh -p 1234 usuario@ip`
+
+Generar un par de llaves (RSA de 4096 bits):
+`ssh-keygen -t rsa -b 4096`
+
+Copiar tu llave pública al servidor automaticamente:
+`ssh-copy-id usuario@ip`
+
+
+### SSH Tunneling (Port Forwarding)
+
+##### Una de las funciones más potentes de SSH es su capacidad para crear "túneles".
+
+##### Puedes redirigir el tráfico de un puerto local hacia un puerto en el servidor remoto de forma cifrada.
+
+Ejemplo: Si tienes una base de datos en un servidor que solo acepta conexiones locales (localhost:5432),
+puedes mapear ese puerto a tu PC local:
+`ssh -L 5000:localhost:5432 usuario@ip`
+
+Ahora, al entrar en localhost:5000 en tu PC, estarás entrando realmente a la base de datos del servidor remoto
+
+
+### Archivo de configuración (~/.ssh/config)
+
+##### Si gestionas varios servidores o entornos de desarrollo, escribir la IP y el usuario cada vez es tedioso
+Puedes crear un alias en tu archivo de configuración:
+
+```
+Host mi-servidor
+    HostName 192.168.1.50
+    User desarrollador
+    Port 2222
+    IdentityFile ~/.ssh/id_rsa_personal
+```
+
+Con esto, solo tendrías que escribir `ssh mi-servidor` en tu terminal.
+
+
+### SSH Vs. SFTP
+
+el protocolo de transferencia de archivos SFTP corre directamente sobre SSH.
+Esto significa que si tienes acceso SSH a un servidor
+automáticamente tienes una vía segura para subir y bajar archivos usando el mismo puerto (22) y las mismas credenciales.
+
+
+
+## 10. SMB: Server Message Block
+
+##### Es un protocolo de red diseñado para compartir recursos, principalmente archivos e impresoras, entre dispositivos de una misma red local (LAN).
+
+##### Es el "idioma" que permite que tu computadora vea y edite archivos guardados en otro dispositivo como si estuvieran en tu propio disco duro.
+
+Nació en los años 80 y está históricamente ligado a Windows, hoy es un estándar multiplataforma que verás en todas partes
+
+
+1. Funcionamiento y Casos de Uso
+
+##### SMB opera en la Capa de Aplicación (Modelo OSI) y suele funcionar sobre TCP (Puerto 445).
+Su principal ventaja es que no solo sirve para mover archivos (como FTP), sino para interactuar con ellos en tiempo real.
+
+Edición en vivo: Puedes abrir un documento de Word guardado en un servidor SMB, editarlo y guardarlo sin tener que descargarlo primero a tu PC.
+Acceso a impresoras: Permite que varios usuarios envíen trabajos a una misma impresora conectada a la red.
+Comunicación entre procesos (IPC): SMB también permite que diferentes aplicaciones en distintas máquinas se comuniquen entre sí.
+
+2. SMB vs. Samba
+
+En linux se suele hablar de Samba
+
+SMB: Es el protocolo propietario de Microsoft.
+
+##### Samba: Es la implementación libre y de código abierto de SMB para sistemas Unix/Linux
+##### Es lo que permite que tu máquina Linux "hable" con carpetas compartidas de Windows y viceversa
+
+3. Evolución y Versiones
+
+SMB ha tenido varias versiones, y conocer la diferencia es vital para la seguridad de tu red:
+
+SMBv1: Antiguo y extremadamente inseguro
+##### SMB1. Es famoso por ser el vector de ataque de virus como WannaCry. Debe estar desactivado en cualquier red moderna.
+
+SMBv2: Introducido con Windows Vista, mejoró mucho la eficiencia y redujo el "ruido" (chatiness) del protocolo en la red.
+
+SMBv3: La versión actual
+Incluye funciones críticas como cifrado de extremo a extremo y mejoras de rendimiento para redes de alta velocidad.
+
+
+### Comandos Linux para SMB
+
+Si necesitas interactuar con carpetas compartidas desde la terminal de tu sistema, estos son tus aliados:
+
+`smbclient -L //IP_DEL_SERVIDOR`
+Lista todas las carpetas compartidas disponibles en una dirección IP específica
+
+`mount -t cifs //IP/carpeta /punto/de/montaje`
+Monta una carpeta compartida de red como si fuera un directorio local
+(requiere el paquete `cifs-utils`).
+
+`smbstatus`
+(En el servidor) Muestra quién está conectado actualmente a tus recursos compartidos
+
+
+### SMB Vs. NFS (Network File System)
+
+En linux, usar SMB o NFS:
+
+Característica | SMB / Samba | NFS
+
+Compatibilidad
+"Universal (Windows, Linux, macOS, Android)."
+Principalmente Linux/Unix.
+
+Configuración
+Un poco más compleja por los permisos.
+Muy sencilla entre máquinas Linux.
+
+Uso ideal
+Redes mixtas (oficinas con Windows).
+Clústeres de servidores Linux o NAS.
+
+
+
+
+
+### Samba y NFS
+
+##### Samba y NFS son las dos soluciones principales para compartir archivos en red
+Aunque ambos cumplen el mismo objetivo, su arquitectura y casos de uso son distintos.
+
+#### 1. Samba (Implementación de SMB/CIFS)
+##### Samba es la suite de software que permite a sistemas Linux comunicarse utilizando el protocolo SMB
+Samba es la suite de software que permite a sistemas Linux comunicarse utilizando el protocolo SMB
+
+Puntos Fuertes:
+Compatibilidad Universal: Es el único que permite compartir archivos de forma nativa entre Windows, macOS y Linux.
+Gestión de Usuarios: Se integra perfectamente con Active Directory de Windows
+Servicios de Impresión: Facilita compartir impresoras en redes mixtas
+
+Contras:
+Es más "pesado" en términos de configuración y uso de recursos debido a la complejidad del protocolo SMB.
+El rendimiento puede ser ligeramente inferior a NFS en transferencias de archivos pequeños dentro de redes puramente Linux
+
+
+#### 2. NFS (Network File System)
+
+NFS es el estándar nativo de los sistemas Unix/Linux
+##### Su filosofía es la simplicidad: permite que una carpeta remota aparezca en tu sistema como si fuera un disco duro local más.
+
+Fuertes:
+Rendimiento: Es extremadamente rápido y eficiente en redes donde todos los equipos son Linux.
+Simplicidad de Permisos: Utiliza el mismo sistema de permisos de usuario (UID/GID) que ya manejas en tu terminal.
+Transparencia: Para las aplicaciones, no hay diferencia entre un archivo local y uno montado por NFS
+
+Contras:
+Seguridad: Tradicionalmente, NFS confía en la IP del cliente. Configurar seguridad robusta (con Kerberos) es bastante complejo.
+Compatibilidad: Windows requiere software adicional (o versiones Pro/Enterprise) para conectarse a un servidor NFS de forma nativa
+
+Característica | Samba | NFS
+
+Protocolo base:
+SMB/CIFS
+NFS (v3 o v4)
+
+Entorno ideal:
+Redes mixtas (Win/Linux)
+Redes 100% Linux / Servidores
+
+Facilidad de uso:
+Media (muchas opciones)
+Alta (configuración mínima)
+
+Seguridad nativa:
+Usuario y contraseña
+Basada en IP (v3) o Kerberos (v4)
+
+Carga de sistema
+Mayor (más procesos)
+Muy baja (integrado en el kernel)
+
+
+#### Comandos
+
+Samba
+
+Si quieres acceder a una carpeta compartida desde tu terminal:
+
+Instalar cliente:
+`sudo apt install smbclient cifs-utils`
+
+Montar manualmente:
+`sudo mount -t cifs //192.168.1.50/archivos /mnt/compartido -o username=tu_usuario` 
+
+
+NFS
+
+Si tienes un servidor NFS y quieres montar la carpeta:
+
+Instalar cliente:
+`sudo apt install nfs-common`
+
+Montar manualmente:
+`sudo mount -t nfs 192.168.1.50:/var/nfs_share /mnt/nfs_local`
+
+##### Samba si: Tienes una laptop con Windows en casa, quieres ver archivos desde un Android o compartes archivos con personas que no usan Linux.
+
+##### NFS si: Estás configurando un clúster de servidores, una Raspberry Pi que solo habla con tu máquina principal o si buscas el máximo rendimiento posible en tu red local Linux.
+
+
+
+## 11. RDP: Remote Desktop Protocol 
+
+Protocolo de comunicación propietario desarrollado por Microsoft que permite a un usuario conectarse y controlar de forma gráfica un ordenador remoto
+
+A diferencia de SSH, que es puramente textual, RDP te entrega el escritorio completo: ves el papel tapiz, mueves el ratón y abres ventanas como si estuvieras sentado frente al equipo
+
+1. Funcionamiento y Arquitectura
+RDP opera principalmente sobre el puerto TCP 3389 (aunque también puede usar UDP para mejorar la fluidez en el streaming de video).
+
+Basado en imagen y eventos: En lugar de enviar solo video (como lo haría un servicio de streaming)
+RDP envía instrucciones gráficas inteligentes (como "dibuja una ventana en estas coordenadas")
+y devuelve los eventos del teclado y ratón del cliente al servidor.
+
+Redirección de recursos: Una de sus mayores ventajas es que permite "pasar" hardware local al remoto.
+Puedes usar tu impresora local, tus discos duros o incluso tu tarjeta inteligente dentro de la sesión remota.
+
+
+2. En linux
+es extremadamente común usarlo en Linux para administrar servidores con interfaz gráfica o para conectar con máquinas Windows.
+
+Como Cliente (Desde tu Linux hacia afuera):
+
+Remmina: Es el cliente más popular y completo para entornos GTK.
+Soporta RDP, VNC y SSH en una sola interfaz
+
+FreeRDP / xfreerdp: La implementación de línea de comandos más potente
+Es la base de casi todos los demás clientes.
+
+
+Como Servidor (Para que otros entren a tu Linux):
+
+xrdp: Es un servidor de código abierto que permite conexiones RDP a máquinas Linux
+Traduce las instrucciones RDP a comandos que el sistema de ventanas de Linux (X11) pueda entender.    
+
+
+#### Comandos útiles (FreeRDP)
+
+Si prefieres la terminal para lanzar tus conexiones, xfreerdp es la herramienta estándar
+
+```
+# Conexión básica a un servidor Windows
+xfreerdp /v:192.168.1.100 /u:administrador /p:password /dynamic-resolution
+```
+
+/v:
+Especifica la IP del servidor.
+
+/dynamic-resolution:
+Ajusta el tamaño del escritorio remoto al tamaño de tu ventana automáticamente
+
+
+#### RDP vs. VNC
+A menudo se confunden, pero funcionan de forma muy distinta:
+
+Característica| RDP | VNC
+
+Eficiencia
+Alta (envía comandos gráficos).
+Media (envía capturas de pantalla/píxeles).
+
+Multiusuario
+Permite sesiones independientes.
+Normalmente comparte la pantalla actual.
+
+Sonido/USB
+Soporta redirección nativa.
+Muy limitado o requiere extensiones.
+
+Uso ideal
+Administrar Windows o VPS Linux.
+Soporte técnico (ver lo que ve el usuario).
+
+
+#### Seguridad
+##### Exponer el puerto 3389 directamente a Internet es un riesgo crítico de seguridad
+##### Los servidores RDP son el blanco favorito de ataques de fuerza bruta y ransomware.
+
+Nunca abras el puerto 3389 en tu router hacia la red pública.
+
+Usa una VPN: Conéctate primero a tu red local mediante VPN y luego inicia el RDP.
+
+SSH Tunneling: Puedes tunelizar RDP a través de SSH para añadir una capa de cifrado robusta:
+ssh -L 33389:localhost:3389 usuario@servidor
+(Luego conectas tu cliente RDP a localhost:33389).
+
+
+
+## 12. VPN: Virtual Private Network
+
+##### Tecnología que crea un "túnel" cifrado y seguro entre tu dispositivo (computadora, smartphone) y un servidor remoto
+
+##### En términos de networking, una VPN permite que tu dispositivo se comporte como si estuviera conectado directamente a una red privada. incluso si físicamente estás usando una red pública como el Wi-Fi de una cafetería o tu propio ISP (Proveedor de Internet).
+
+
+### 1. Túnel VPN
+
+##### Cuando navegas sin VPN, tus datos viajan de forma abierta y tu dirección IP real es visible
+
+Al activar una VPN, ocurren tres procesos críticos:
+
+1. Cifrado (Encapsulamiento):
+Tus datos se empaquetan dentro de otro protocolo de red y se cifran
+Si alguien intercepta el tráfico, solo verá código ilegible.
+
+2. Enmascaramiento de IP:
+##### El sitio web al que accedes no ve tu dirección IP real, sino la dirección IP del servidor VPN
+##### Esto te da anonimato y permite cambiar tu ubicación geográfica virtual.
+
+3. Capa de Autenticación:
+Asegura que solo los dispositivos autorizados puedan establecer la conexión con el servidor.
+
+
+### 2. Protocolos de VPN Comunes
+
+##### Diferentes "motores" que hacen que la VPN funcione:
+
+#### 1. WireGuard: Estandar moderno
+Es extremadamente rápido, ligero y tiene un código mucho más limpio que sus predecesores
+Está integrado directamente en el kernel de Linux
+
+#### 2. OpenVPN: estándar de la industria por años
+Muy configurable y altamente seguro, aunque más lento y pesado que WireGuard
+
+#### 3. IPsec (L2TP/IPsec): Común en entornos corporativos más antiguos.
+
+#### 4. Tailscale / ZeroTier: No son protocolos per se, sino servicios basados en WireGuard que crean redes "Mesh" (malla) sin necesidad de configurar firewalls o port forwarding
+
+
+### 3. Tipos de VPN según su uso
+
+1. Acceso Remoto (Client-to-Site):
+Es la que usas para conectarte desde tu casa a la oficina o para navegar de forma segura
+Un software cliente en tu PC se conecta a un servidor.
+
+2. Un software cliente en tu PC se conecta a un servidor:
+Conecta dos oficinas completas entre sí
+Los routers de cada ubicación mantienen el túnel activo para que ambas LANs se vean como una sola red gigante.
+
+
+### 4. VPN y linux
+
+WireGuard: Se gestiona con el comando `wg` y `wg-quick`.
+`sudo wg-quick up wg0` (Levanta la interfaz de la VPN).
+
+NetworkManager (nmcli): Si usas interfaz gráfica o la versión CLI de NetworkManager
+`nmcli con up id "NombreDeTuVPN"`
+
+OpenVPN:
+`sudo openvpn --config archivo.ovpn`
+(Inicia una conexión rápida desde la terminal).
+
+
+#### Casos de uso
+
+##### 1. Seguridad en Redes Públicas: Evita que intercepten tus contraseñas en un Wi-Fi abierto
+
+##### 2. Acceso a Recursos Internos: Esencial para acceder por SSH o SMB a servidores que no están expuestos a Internet por seguridad
+
+##### 3. Evadir Censura o Bloqueos Geográficos: Permite acceder a contenido disponible solo en ciertos países
+
+##### 4. Teletrabajo: Permite que tu laptop sea "parte" de la red local de tu empresa de forma segura.
+
+
+### VPN vs. Proxy
+
+A menudo se confunden, pero hay una diferencia clave:
+
+##### Un Proxy solo suele funcionar a nivel de aplicación (ej. el navegador) y no suele cifrar el tráfico
+
+##### Una VPN funciona a nivel de sistema operativo; cifra todo el tráfico que sale de tu máquina (DNS, actualizaciones, terminal, apps, etc.).
+
+
+
+## 13. Proxy
+
+##### Servidor proxy es un intermediario que se sitúa entre un cliente (tu computadora) y un servidor de destino (el sitio web o servicio al que quieres acceder).
+##### En lugar de que tú hables directamente con el servidor final, le pides al proxy que lo haga por ti.
+
+1. Flujo de datos
+
+Cuando usas un proxy, la ruta de tu conexión cambia:
+
+1. Tu navegador envía la solicitud al Proxy.
+2. El Proxy recibe la solicitud y, si es necesario, cambia tu Dirección IP o añade filtros.
+3. El Proxy envía la solicitud al Servidor Web.
+4. El Servidor responde al Proxy.
+5. El Proxy te devuelve la información a ti.
+
+
+2. Tipos de Proxy según su dirección
+
+##### 1. Forward Proxy (Proxy de salida)  
+Es el más común para el usuario final. Se usa para que un grupo de clientes internos acceda a internet.
+
+Uso: Evadir bloqueos geográficos, filtrar contenido en una oficina o ahorrar ancho de banda (usando caché).
+
+
+##### 2. Reverse Proxy (Proxy de entrada)
+Se sitúa "frente" a los servidores web
+##### Cuando entras a un sitio como Google, no hablas con un servidor, sino con un Reverse Proxy
+
+##### Uso: Balanceo de carga (repartir el tráfico entre varios servidores), seguridad (ocultar la IP del servidor real) y aceleración mediante caché.
+
+##### Ej. Nginx, Apache, HAProxy.
+
+
+Beneficios:
+
+Anonimato: El servidor de destino ve la IP del proxy, no la tuya.
+
+##### Control y Filtrado: Las empresas lo usan para bloquear sitios (como redes sociales) o para escanear el tráfico en busca de malware.
+
+Caché (Velocidad): Si 10 personas en tu oficina visitan la misma página, el proxy la guarda en su memoria y se la entrega a los demás instantáneamente sin volver a descargarla de internet.
+
+Ahorro de ancho de banda: Muy útil en conexiones lentas o limitadas
+
+
+### Proxy vs. VPN
+
+Característica | Proxy | VPN
+
+Nivel de acción
+Aplicación (ej. solo el navegador).
+Sistema Operativo (todo el tráfico).
+
+Cifrado
+Normalmente no cifra los datos.
+Cifrado robusto de extremo a extremo.
+
+Privacidad
+"Oculta la IP, pero el ISP ve lo que haces."
+Oculta la IP y el ISP solo ve ruido cifrado.
+
+Complejidad
+Muy ligero y rápido de configurar.
+Más pesado para el procesador y la batería.
+
+
+### Proxy en Linux
+
+formas de gestionar proxies:
+
+Variables de entorno: Puedes forzar a que tu terminal use un proxy con estos comandos:
+
+```
+export http_proxy="http://usuario:pass@ip_proxy:puerto"
+export https_proxy="http://usuario:pass@ip_proxy:puerto"
+```
+
+Proxychains: Una herramienta excelente que permite "obligar" a cualquier aplicación
+(incluso las que no soportan proxy nativamente) a pasar por uno o varios proxies.
+
+`proxychains4 nmap -sT 8.8.8.8`
+
+Privoxy / Squid: Software para montar tu propio proxy local o en un servidor para filtrar publicidad o mejorar la velocidad
+
+
+### Proxies 'Gratuitos'
+
+##### Debes tener mucho cuidado con las listas de "proxies públicos" que hay en internet
+##### Como el tráfico no suele estar cifrado, el dueño del proxy puede realizar un ataque Man-in-the-Middle (MitM), viendo tus contraseñas, cookies de sesión y toda la información que pase por él.
+
+##### Para un desarrollador, los proxies son vitales para entender cómo escalar aplicaciones (Reverse Proxy) o para depurar tráfico de red
+
+
+###  Firewall vs proxy vs vpn 
+
+Aunque los tres actúan como intermediarios o barreras en una red, cumplen funciones distintas
+
+##### el Firewall protege, el Proxy actúa como delegado y la VPN crea un túnel seguro
+
+Característica | Firewall | Proxy | VPN
+
+Objetivo Principal,Seguridad (filtrado).,Anonimato y control.,Privacidad y cifrado.
+
+`Nivel de Operación`
+Red / Sistema (Capa 3/4/7).
+Aplicación (Capa 7).
+Sistema completo (Capa 3).
+
+`Cifrado de Datos`
+No.
+No (usualmente).
+Sí (Extremo a extremo).
+
+`Oculta tu IP`
+No.
+Sí (al servidor de destino).
+Sí (al servidor y al ISP).
+
+`Uso común`
+##### Bloquear ataques/puertos.
+##### Caché y evadir bloqueos.
+##### Teletrabajo y seguridad.
+
+
+#### 1. Firewall: Seguridad
+
+Su función es decidir qué pasa y qué no
+No le importa quién eres tú, sino qué tipo de tráfico intentas enviar
+Si intentas conectar a un puerto que no está autorizado (como el de una base de datos expuesta), el firewall lo bloquea.
+
+##### Uso ideal: Evitar que hackers entren a tu PC o que apps maliciosas envíen datos hacia afuera.
+
+
+#### 2. Proxy: Representante
+
+Intermediario que realiza peticiones en tu nombre
+El servidor de destino cree que es el Proxy quien lo visita.
+##### Sin embargo, tu ISP (proveedor de internet) todavía puede ver qué sitios visitas porque el tráfico no suele estar cifrado.
+
+##### Uso ideal: En empresas para filtrar qué páginas ven los empleados o para acelerar la navegación guardando archivos en caché
+
+
+#### 3. VPN: Túnel Privado
+
+Opción más completa para la privacidad
+##### Crea un túnel cifrado desde tu dispositivo hasta el servidor VPN
+##### Nadie (ni tu ISP, ni el gobierno, ni un hacker en un Wi-Fi público) puede ver qué datos viajan dentro del túnel.
+
+##### Uso ideal: Conectarse de forma segura a la red de tu oficina o navegar anónimamente en redes públicas
+
+
+#### Situación
+
+1. Quieres que nadie en la cafetería te robe la contraseña de tu banco.
+Solución: VPN. El cifrado es lo único que te protege aquí.
+
+2. Quieres bloquear el acceso a puertos innecesarios en tu servidor Linux.
+Firewall (usando ufw o iptables).
+
+3. Necesitas que tu script de Python parezca que viene de otro país para evitar un bloqueo de IP, pero no te importa el cifrado.
+Solución: Proxy. Es más rápido y ligero que una VPN.
+
+4. Eres un desarrollador y quieres proteger tu base de datos local de conexiones externas
+Firewall
+
+
+#### En un entorno profesional, lo normal es usar los tres al mismo tiempo
+##### Un firewall para proteger el servidor, una VPN para que los desarrolladores entren de forma segura, y un reverse proxy (como Nginx) para gestionar el tráfico que llega a la web
+
+
+
+## 14. OSI: Open Systems Interconnection 
+
+##### Marco conceptual creado por la ISO que estandariza las funciones de un sistema de telecomunicaciones en 7 capas distintas
+
+##### permite diagnosticar fallos: ¿es un problema del cable (Capa 1), de la IP (Capa 3) o del código de mi aplicación (Capa 7)?
+
+
+### 1. Capa Física (Physical): hardware
+
+Es el nivel del hardware
+Define las características eléctricas, mecánicas y funcionales de la conexión física
+
+Elementos: Cables (RJ45, fibra óptica), hubs, repetidores y bits.
+
+##### Problema común: El cable está desconectado o dañado.
+
+
+### 2. Capa de Enlace de Datos (Data Link): conexión de nodos
+
+Se encarga del direccionamiento físico y la detección de errores en la transmisión entre dos nodos directamente conectados.
+
+Elementos: Direcciones MAC, Switches, Ethernet, Wi-Fi.
+
+Unidad de datos: Tramas (Frames).
+
+
+### 3. Capa de Red (Network): datos
+
+Determina cómo los datos se envían de una red a otra (enrutamiento).
+La inteligencia de internet:
+
+Elementos: Direcciones IP, Routers, protocolos de enrutamiento (ICMP, ARP).
+
+Unidad de datos: `Paquetes`
+
+
+### 4. Capa de Transporte (Transport): entrega
+
+Garantiza que los mensajes se entreguen sin errores y en secuencia. Gestiona el control de flujo.
+
+Elementos: TCP (fiable), UDP (rápido), y los Puertos.
+
+Unidad de datos: Segmentos
+
+
+### 5. Capa de Sesión (Session)
+
+Mantiene, sincroniza y finaliza la comunicación entre dos aplicaciones en dispositivos distintos.
+
+Uso: Autenticación, gestión de diálogos y reconexión tras una interrupción.
+
+
+### 6. Capa de Presentación (Presentation)
+
+Actúa como "traductor".
+##### Asegura que la información enviada por la capa de aplicación de un sistema pueda ser leída por la capa de aplicación de otro.
+
+##### Funciones: Cifrado (SSL/TLS), compresión de datos y formatos de archivo (JPEG, GIF, ASCII
+    
+
+### 7. Capa de Aplicación (Application)
+
+Es la capa más cercana al usuario.
+Proporciona la interfaz para que las aplicaciones accedan a los servicios de red.
+
+Protocolos: HTTP/HTTPS, SSH, FTP, SMTP, DNS.
+        
+
+Capa | Nombre | Protocolo / Tecnología
+
+7. Aplicación: "HTTP, SSH, FTP, DNS"
+6. Presentación: "SSL, TLS, JPG, MP3"
+5. Sesión: "NetBIOS, RPC"
+4. Transporte: "TCP, UDP"
+3. Red: "IP (IPv4/IPv6), ICMP"
+2. Enlace: "Ethernet, Switches, MAC"
+1. Física: "Cableado, Voltaje, Fibra"
+
+
+### Ej real: una app en desarrollo que no llegan los datos
+
+Capa 7 (App): ¿Está el endpoint mal escrito en mi código React?
+
+Capa 4 (Transporte): ¿Está el puerto 3000 abierto en mi servidor Node.js?
+
+Capa 3 (Red): ¿Mi archivo .env tiene la IP correcta del servidor?
+
+Capa 1 (Física): ¿Mi laptop perdió la conexión Wi-Fi?
+
+
+
+## 15. ICMP, NetBIOS, RPC
+
+### ICMP: Protocolo de "mantenimiento" y mensajería de la Capa de Red (Capa 3).
+
+A diferencia de TCP o UDP, no se utiliza para enviar datos de usuario (como un archivo o un correo)
+##### sino para enviar mensajes de error y operativos sobre el estado de la red.
+
+Informa si un destino es inalcanzable, si un paquete ha caducado (TTL excedido) o si hay congestión en la red.
+
+Comandos en linux:
+
+`ping`: Utiliza los mensajes Echo Request y Echo Reply de ICMP para verificar si un host está vivo y cuánta latencia hay.
+`traceroute`: Utiliza mensajes de tiempo excedido para mapear cada salto (router) que da un paquete hasta su destino.
+
+Seguridad: Muchos administradores bloquean ICMP en los firewalls para que sus servidores no respondan al ping y sean más difíciles de detectar por atacantes.
+
+
+### NetBIOS: Network Basic Input/Output System
+
+##### no es un protocolo de red moderno, sino una API antigua (Capa 5 - Sesión) que permitía a las aplicaciones en computadoras antiguas comunicarse en una LAN
+##### Fue el pilar de las redes de Windows antes de que todo se estandarizara con el protocolo IP
+
+Su función más conocida es la resolución de nombres. En lugar de usar una IP, permitía que las computadoras se encontraran por su nombre
+ej: \\PC-DE-JUAN
+
+Relación con Samba: Si alguna vez has visto "Nombres NetBIOS" en la configuración de Samba en Linux, es porque Samba mantiene compatibilidad con este sistema para que computadoras viejas de Windows puedan ver tu máquina Linux en la red.
+
+Estado actual: Está prácticamente en desuso y ha sido reemplazado por el DNS (para nombres) y SMB sobre TCP/IP (para datos).
+Generalmente, se recomienda desactivarlo por seguridad.
+
+
+### RPC: Remote Procedure Call
+
+##### Llamada a Procedimiento Remoto es un concepto de la Capa de Sesión (Capa 5) que permite que un programa ejecute código en otra computadora de la red como si lo estuviera ejecutando en la suya propia
+Funcionamiento: El desarrollador no tiene que preocuparse por cómo viajan los datos por la red; simplemente llama a una función
+El sistema RPC se encarga de empaquetar la petición, enviarla al servidor, ejecutar la función allí y devolver el resultado
+
+Relación con otros protocolos:
+
+NFS (Network File System): Es el ejemplo clásico en Linux. NFS utiliza RPC para decirle al servidor "abre este archivo" o "escribe estos datos".
+##### gRPC: Es la versión moderna (creada por Google) muy usada en microservicios actuales con lenguajes como Node.js o Go.
+
+Linux: Puedes ver los servicios RPC activos en tu sistema usando el comando:
+`rpcinfo -p`
+
+El servicio `rpcbind` es el encargado de gestionar estas conexiones.
+
+
+
+## 16. SIEM: Security Information and Event Management
+
+##### Solución de seguridad que centraliza y analiza el tráfico y los eventos de toda tu infraestructura tecnológica en tiempo real
+como un "Panel de Control Maestro" que ingiere logs de servidores Linux
+bases de datos, aplicaciones web y firewalls para detectar comportamientos sospechosos que un humano no podría ver a simple vista
+
+SIEM combina dos disciplinas que antes funcionaban por separado
+
+### 1. SIM (Security Information Management):
+Recopila y almacena logs para reportes y cumplimiento (compliance).
+
+### 2. SEM (Security Event Management):
+Analiza eventos en tiempo real para alertar sobre amenazas.
+
+
+### Proceso
+
+Recolección: Obtiene datos de todas partes (logs de auth.log
+tráfico de red, logs de tu app en React/Node
+
+Normalización: Convierte formatos de logs distintos en uno solo para poder compararlos
+
+Correlación: SIEM busca patrones
+Por ejemplo: ¿Hubo 50 intentos fallidos de login por SSH (Capa 4)
+luego un cambio de permisos en la base de datos (Capa 7)? Esto dispara una alerta.
+
+Notificación: Envía alertas a los analistas de seguridad.
+
+
+### Componentes
+
+#### 1. Agentes/Colectores
+Pequeños programas instalados en los dispositivos que envían los logs
+
+#### 2. Base de datos/Almacenamiento
+Donde se guardan terabytes de logs (histórico).
+
+#### 3. Motor de Reglas
+Donde se definen qué comportamientos son "peligrosos".
+
+#### 4. Dashboard: Interfaz gráfica para visualizar ataques y estadísticas.
+
+
+SIEM te ayuda en escenarios reales:
+
+##### Detección de Inyecciones SQL: Si tu backend empieza a recibir caracteres extraños de forma masiva, el SIEM lo detecta.
+##### Ataques de Fuerza Bruta: Detecta si alguien está intentando adivinar tu contraseña de SSH en el puerto 22.
+##### Exfiltración de Datos: Alerta si un usuario está descargando gigabytes de información a las 3:00 AM.
+##### Depuración de errores críticos: A veces, un error en producción solo se entiende viendo la correlación de logs de red y de aplicación al mismo tiempo
+    
+
+### Herramientas SIEM: soluciones comerciales potentes
+
+Splunk
+Comercial,
+"El líder del mercado, extremadamente potente pero costoso."
+
+Elastic Security (ELK)
+Open Source / Comercial
+Muy popular entre desarrolladores por su velocidad de búsqueda.
+
+Wazuh
+Open Source
+Excelente para sistemas Linux
+incluye detección de intrusos (HIDS).
+
+Microsoft Sentinel
+Cloud
+"Basado en Azure, ideal para entornos puramente en la nube."
+
+
+
+## 18. Comandos Linux
+
+
+### 1. TCP/IP
+
+Las herramientas se dividen principalmente:
+suite moderna `iproute2` (el comando `ip`)
+las herramientas de diagnóstico de red tradicionales
+
+1. Capa de Acceso a la Red (Enlace/Física)
+Para verificar el hardware, las interfaces y las direcciones MAC.
+
+`ip link show`: Muestra todas las interfaces de red (ej: eth0, wlan0) y su estado físico (UP/DOWN).
+`ethtool <interfaz>`: (Requiere instalación) Muestra la velocidad física del cable (100/1000 Mbps) y si hay enlace activo.
+`ip neigh`: Muestra la tabla ARP. Permite ver las direcciones MAC de otros dispositivos en tu misma LAN.
+
+2. Capa de Internet (IP)
+Para gestionar direcciones, rutas y conectividad básica.
+
+`ip addr show`: El comando fundamental para ver tu dirección IPv4 e IPv6 actual.
+
+`ip route show`: Muestra la tabla de enrutamiento.
+Aquí puedes ver cuál es tu "Default Gateway" (la IP de tu router).
+
+`ping -c 4 <IP o dominio>`: Envía paquetes ICMP para verificar si un host remoto responde y medir la latencia.
+
+`traceroute <IP o dominio>:` Muestra cada salto (router) por el que pasa tu paquete hasta llegar al destino. Útil para saber dónde se corta la conexión.
+
+3. Capa de Transporte (TCP/UDP)
+Para monitorear puertos y conexiones activas.
+
+`ss -tulpn`: herramienta moderna para ver qué procesos están escuchando en qu
+-t: TCP | -u: UDP | -l: Listening | -p: Muestra el proceso (PID)
+-n: Muestra números de puerto en lugar de nombres.
+
+`nc -zv <IP> <puerto>`: (Netcat) Verifica rápidamente si un puerto específico está abierto en un servidor remoto sin intentar una conexión completa.
+
+`telnet <IP> <puerto>`: Una forma clásica de probar si un puerto TCP responde
+(ej: telnet google.com 80). 
+
+4. Capa de Aplicación y Diagnóstico Integral
+Herramientas que cruzan varias capas para depurar tráfico real.
+
+`host <dominio>` o `dig <dominio>`:
+Consulta al servidor DNS para resolver un nombre a una dirección IP.
+
+`curl -I <URL>`:
+Realiza una petición HTTP y muestra solo las cabeceras. Ideal para verificar la capa de aplicación
+
+##### `tcpdump -i <interfaz>`: "microscopio" de la red
+Captura y muestra los paquetes reales que entran y salen de tu tarjeta de red.
+
+##### Ejemplo: `sudo tcpdump -i eth0 port 80` (ve el tráfico web en tiempo real).
+
+`mtr <dominio>`: Combina `ping` y `traceroute` en una herramienta interactiva que se actualiza constantemente
+
+
+#### Práctica:
+
+1. ¿Cuál es mi IP? `ip addr`
+2. ¿Tengo salida a Internet? `ping 8.8.8.8`
+3. ¿Quién usa el puerto 3000? `sudo ss -tulpn`
+4. ¿Por qué no carga mi web? `curl -Iv http://tuweb.com`
+
+Como desarrollador:
+combo `ip addr + ss -tulpn + curl`
+será el que más utilices para asegurar que tus aplicaciones en React/Node se están comunicando correctamente en tu entorno local
+
+
+
+### 2. DNS
+
+gestionar y diagnosticar el sistema de nombres de dominio (DNS)
+operan principalmente en la Capa de Aplicación del modelo TCP/IP
+
+1. Resolución de nombres
+permiten saber qué IP corresponde a un dominio y viceversa.
+
+`host <dominio>`: Es la herramienta más sencilla para una consulta rápida.
+host google.com
+
+`nslookup <dominio>`: clásico multiplataforma
+antiguo pero muy útil para consultas interactivas.
+
+`dig <dominio>`: (Domain Information Groper)
+herramienta estándar y más potente para administradores
+Muestra toda la respuesta detallada del servidor DNS.
+
+Ej: dig google.com
+
+
+2. Diagnóstico Avanzado con dig
+extremadamente versátil
+Puedes pedir tipos de registros específicos o consultar a servidores distintos
+
+Consultar un tipo de registro específico:
+dig google.com MX (Registros de correo).
+dig google.com NS (Servidores de nombres).
+dig google.com TXT (Registros de texto/seguridad
+    
+Consultar a un servidor DNS específico:
+dig @8.8.8.8 google.com (Pregunta directamente a los servidores de Google en lugar de a los de tu proveedor).
+    
+Formato corto (solo la IP):
+dig google.com +short
+
+
+3. Configuración y Estado del Sistema
+La configuración de DNS no siempre está en un solo lugar
+Aquí es donde debes mirar
+
+`/etc/resolv.conf`
+archivo principal donde el sistema busca qué servidores DNS utilizar
+Puedes verlo con cat /etc/resolv.conf.
+
+`systemd-resolve --status`
+muestra qué DNS está usando cada interfaz de red.
+
+`resolvectl status`
+La versión moderna del comando anterior para gestionar el resolver del sistema.
+
+
+4. Pruebas de Latencia y Ruta
+A veces el problema no es que el DNS no funcione, sino que es lento
+
+`time dig google.com`
+Al final de la salida verás el "Query time".
+Si es mayor a 100-200ms, tu servidor DNS actual es lento.
+
+`mtr --report <dominio>`
+Muestra si hay pérdida de paquetes específicamente en la ruta hacia el servidor que resuelve el dominio
+
+
+5. Limpiar la Caché DNS
+Si has cambiado los registros de un dominio y tu PC sigue viendo la versión antigua
+necesitas limpiar la caché:
+
+Con systemd-resolved
+`sudo resolvectl flush-caches`
+
+Con nscd
+`sudo /etc/init.d/nscd restart`
+
+
+Rs:
+
+host
+Ver una IP rápido sin distracciones.
+
+dig
+Depurar registros MX, TXT o problemas de propagación.
+
+nslookup
+Consultas rápidas si vienes de entornos Windows.
+
+cat /etc/resolv.conf
+Verificar qué servidores DNS tiene configurados tu Linux.
+
+Para desarrollo el comando `dig +short`
+especialmente útil para scripts de automatización
+
+Mientras que: `dig @8.8.8.8`
+permite confirmar si un problema de acceso es general
+o solo de tu proveedor de internet (ISP).
+
+Otros conceptos:
+servidores DNS más rápidos (como los de Cloudflare o Google)
+
+
+
+### 3. DHCP: Dynamic Host Configuration Protocol
+
+Se divide en dos partes:
+el cliente (tu máquina pidiendo una IP)
+y el servidor (tu máquina repartiendo IPs).
+
+1. Cliente DHCP
+
+Si tu computadora no obtiene una dirección IP automáticamente
+o quieres "refrescar" la conexión, usas estos comandos:
+
+`dhclient`: Estandar
+
+`sudo dhclient -v`: Solicita una nueva IP al router mostrando todo el proceso en la terminal (modo verbose).
+`sudo dhclient -r`: Libera (release) la dirección IP actual. Útil si tienes conflictos de IP en la LAN.
+`sudo dhclient <interfaz>`: Solicita IP solo para una interfaz específica (ej: eth0).
+
+`dhcpcd`: Alternativa
+
+`sudo dhcpcd -n`: Fuerza una renovación de la IP existente.
+`sudo dhcpcd -k`: Detiene el demonio y libera la IP.
+
+
+2. Inspección y Diagnóstico
+Para saber si el DHCP funcionó correctamente o por qué falló:
+
+`journalctl -u dhcpcd`
+o `grep -i dhcp /var/log/syslog`
+
+Permite ver los logs del sistema relacionados con DHCP
+Aquí verás los mensajes `DISCOVER`, `OFFER`, `REQUEST` y `ACK`.
+
+`cat /var/lib/dhcp/dhclient.leases`:
+Muestra el historial de "concesiones" (leases) de IP que el router te ha dado
+incluyendo cuánto tiempo dura la asignación
+
+`ip addr show`:
+Verifica si la interfaz tiene asignada una IP dentro del rango esperado de tu red local
+
+
+3. Configuración del Servidor DHCP
+Configurando tu máquina Linux para que actúe como servidor (repartiendo IPs a otros)
+el servicio más común es `isc-dhcp-server`.
+
+Archivo de configuración: `/etc/dhcp/dhcpd.conf`
+Aquí defines el rango de IPs (subnet), el gateway y los DNS.
+    
+`sudo systemctl status isc-dhcp-server`
+Verifica si el servidor está corriendo correctamente.
+
+`sudo dhcpd -t`:
+Comprueba si hay errores de sintaxis en tu archivo de configuración antes de reiniciar el servicio
+
+
+4. Red Modernas: `NetworkManager`
+
+Uso de `nmcli` (NetworkManager)
+puedes forzar el proceso de DHCP sin tocar los demonios directamente
+
+`nmcli con up id "Nombre_Red"`:
+Al levantar la conexión, NetworkManager inicia automáticamente la solicitud DHCP.
+
+`nmcli device modify eth0 ipv4.method auto`:
+Asegura que la interfaz esté configurada para usar DHCP en lugar de una IP estática
+
+
+5. Archivo de configuración del cliente
+A veces quieres que el DHCP te asigne la IP pero no los servidores DNS
+porque prefieres usar los de Google o Cloudflare
+
+editas el archivo:
+`/etc/dhcp/dhclient.conf`
+
+Si comentas la línea `prepend domain-name-servers`
+evitarás que el router sobrescriba tus DNS personalizados cada vez que reinicias la conexión.
+
+
+Rs:
+
+Pedir IP nueva:
+sudo dhclient -v
+
+Soltar la IP actual:
+sudo dhclient -r
+
+Ver logs de DHCP:
+grep -i dhcp /var/log/syslog
+
+Ver tiempo de concesión:
+cat /var/lib/dhcp/dhclient.leases
+
+
+
+### 4. NAT: Network Address Translation
+
+##### Permite que múltiples dispositivos de una red privada (LAN) compartan una única dirección IP pública para acceder a Internet
+
+Se gestiona a través del kernel (Netfilter)
+utilizando herramientas como `iptables`
+o la más moderna `nftables`
+
+Para que NAT funcione: habilitar el `IP Forwarding`
+##### permite que el sistema actúe como un router
+
+1. Habilitar el Reenvío de IP (IP Forwarding)
+Sin esto, el kernel descartará cualquier paquete que no vaya dirigido a la propia máquina
+
+Temporal (se borra al reiniciar):
+`sudo sysctl -w net.ipv4.ip_forward=1`
+
+Permanente:
+Edita `/etc/sysctl.conf`
+busca la línea `net.ipv4.ip_forward=1`
+Descomentarla
+
+Aplicar `sudo sysctl -p`.
+
+
+2. Comandos con iptables: Estandar clásico
+NAT se configura en una tabla específica
+llamada precisamente `nat`.
+
+#### 1. SNAT (Source NAT / Masquerading)
+Se usa para dar salida a Internet a los equipos de tu LAN.
+
+Masquerade (IP dinámica):
+Ideal si tu IP pública cambia (como en redes domésticas).
+`sudo iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE`
+Donde eth0 es tu interfaz conectada a Internet
+
+SNAT (IP estática):
+Si tienes una IP pública fija (ej. 1.2.3.4).
+`sudo iptables -t nat -A POSTROUTING -o eth0 -j SNAT --to-source 1.2.3.4`
+
+#### 2. DNAT (Destination NAT / Port Forwarding)
+Para que alguien desde Internet pueda entrar a un servicio dentro de tu red local
+
+Redirigir puerto 80 a un servidor interno
+
+```
+sudo iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 -j DNAT --to-destination 192.168.1.10:80
+```
+
+#### 3. Ver y limpiar reglas
+
+Listar reglas de NAT: `sudo iptables -t nat -L -n -v`
+Limpiar tabla NAT: `sudo iptables -t nat -F`
+
+
+3. Comandos con nftables (estándar moderno)
+`nftables` es más eficiente y es el sucesor de iptables en distribuciones modernas.
+
+1. Crear la tabla de NAT:
+`sudo nft add table ip nat`
+
+2. Añadir las cadenas necesarias:
+
+```
+sudo nft add chain ip nat prerouting { type nat hook prerouting priority -100 \; }
+```
+
+```
+sudo nft add chain ip nat postrouting { type nat hook postrouting priority 100 \; }
+```
+
+3. Configurar Masquerade:
+
+```
+sudo nft add rule ip nat postrouting oifname "eth0" masquerade
+```
+
+4. Configurar Port Forwarding
+
+```
+sudo nft add rule ip nat prerouting iifname "eth0" tcp dport 80 dnat to 192.168.1.10
+```
+
+Ver reglas: `sudo nft list ruleset`    
+
+
+4. Diferencia entre SNAT y DNAT
+
+Tipo | Dirección | Caso de uso común
+
+`SNAT`:
+Salida (Post-routing)
+Compartir el Internet del router con los PCs de la casa.
+
+`DNAT`:
+Entrada (Pre-routing)
+Alojar un servidor web o de juegos y que sea accesible desde fuera.
+
+
+5. Herramientas de diagnóstico para NAT
+Si el NAT no está funcionando
+estos comandos te ayudarán a ver qué pasa con los paquetes:
+
+`conntrack -L`:
+Muestra la tabla de seguimiento de conexiones
+Aquí ves en tiempo real qué IP interna está hablando con qué IP externa y a través de qué puerto traducido
+
+`tcpdump -i eth0`:
+Captura el tráfico en la interfaz de salida para verificar si los paquetes están saliendo con la IP correcta (la pública)
+o si siguen llevando la IP privada (lo que indicaría que el NAT falló).
+
+##### nftables es mucho más limpio y fácil de leer para scripts complejos
+##### iptables sigue siendo el lenguaje universal en la mayoría de tutoriales de servidores Linux antiguos
+
+
+
+### 5. LAN: Local Area Network
+
+Especialmente en entornos ligeros o de administración de servidores
+
+Los comandos se centran en identificar dispositivos
+Verificar la integridad física del enlace y gestionar la visibilidad de los nodos vecinos
+
+1. Identificación y Estado de la Interfaz
+Antes de ver a los demás, debes asegurarte de que tu propia conexión en la LAN es correcta
+
+`ip link show`
+Muestra el estado físico de tus tarjetas de red
+Si dice `state DOWN`, el cable está desconectado o la interfaz apagada.
+
+`ip addr show`
+Te da tu dirección IP privada dentro de la LAN
+(ej. 192.168.1.15).
+
+`nmcli device status`
+Proporciona un resumen rápido de qué interfaces están conectadas y cuáles están gestionadas.
+
+`ethtool <interfaz>`:
+Ej: ethtool eth0
+Comando vital para ver la velocidad real del enlace
+si es 100Mb o 1000Mb
+si el cable soporta Full-Duplex.
+
+
+2. Descubrimiento de Vecinos (Tabla ARP)
+##### La LAN funciona mediante direcciones MAC en la Capa 2
+Para saber quién más está en tu red, consultas la tabla ARP.
+
+`ip neigh`: Moderno
+Muestra la lista de dispositivos conocidos en tu red local, sus IPs y sus direcciones MAC.
+
+`arp -a`: Clásico
+La forma tradicional de ver la tabla de correspondencia entre IP y MAC.
+
+`arp-scan --localnet`: Requiere instalación
+Es una herramienta potente que "escanea" la red enviando paquetes ARP
+para descubrir dispositivos que no aparecen en la tabla caché (como impresoras o cámaras IP).
+
+
+3. Pruebas de Conectividad Local
+Una vez que conoces la IP de un compañero de red, verificas si hay comunicación
+
+`ping -b 192.168.1.255`:
+Envía un ping a la dirección de Broadcast
+Los dispositivos configurados para responder te darán señales de vida
+útil para un descubrimiento rápido
+
+`fping -g 192.168.1.0/24`:
+Escanea todo el rango de la LAN de forma mucho más rápida que el ping convencional.
+
+`nmap -sn 192.168.1.0/24`
+Realiza un "Ping Sweep
+Te dirá qué dispositivos están encendidos sin realizar un escaneo de puertos profundo
+
+
+4. Compartición de Recursos y Nombres
+Para que los dispositivos se encuentren por nombre en la LAN:
+
+`avahi-browse -all`: (Protocolo mDNS/Bonjour)
+Busca servicios y dispositivos que se anuncian a sí mismos en la red local
+como impresoras compartidas o servidores SSH
+
+`hostname -I`:
+Muestra todas las direcciones IP de tu máquina de forma simplificada
+útil para pasarle tu IP a un compañero.
+
+`smbtree`:
+Si tienes Samba instalado, este comando muestra la jerarquía de carpetas compartidas disponibles en la LAN.
+
+
+5. Diagnóstico de Tráfico Local
+Si algo no funciona, ej un servidor web local no carga
+debes ver qué pasa en el cable
+
+`tcpdump -i eth0 icmp`
+Captura solo los pings que entran o salen de tu máquina
+
+`iptraf-ng`
+Una interfaz visual en la terminal que muestra el tráfico que entra y sale de tu LAN en tiempo real
+
+
+Rs:
+
+¿Quién está en mi red?
+ip neigh o arp-scan -l
+
+¿A qué velocidad conecté?
+ethtool eth0
+
+¿Cuál es mi IP local?
+hostname -I
+
+Escaneo rápido de nodos
+nmap -sn 192.168.1.0/24
+
+
+Herramientas manuales y ligeras:
+El uso de arp-scan combinado con ip neigh
+te dará un control total sobre quién entra y sale de tu red local
+sin necesidad de herramientas gráficas pesadas
+
+
+
+### 6. VLANs: Virtual Local Area Networks
+
+Se utiliza el estándar `802.1Q`
+En Linux, una VLAN se trata como una interfaz virtual "hija" que se apoya sobre una interfaz física "padre".
+
+Comandos esenciales utilizando la suite moderna `iproute2`.
+
+1. Crear y Activar una VLAN
+debes especificar la interfaz física, un nombre para la nueva interfaz y el VLAN ID (un número del 1 al 4094).
+
+Crear la interfaz de VLAN:
+`sudo ip link add link eth0 name eth0.10 type vlan id 10`
+(Aquí creamos la `VLAN 10` sobre la interfaz física `eth0`).
+
+Levantar la interfaz:
+`sudo ip link set dev eth0.10 up`
+
+Asignar una dirección IP a la VLAN:
+`sudo ip addr add 192.168.10.5/24 dev eth0.10`
+
+
+2. Inspección y Verificación
+Una vez creada aparece en el sistema como cualquier otra tarjeta de red.
+
+Ver estado de las interfaces:
+`ip -d link show eth0.10`
+flag -d es crucial porque muestra los detalles específicos del protocolo 802.1Q e ID de la VLAN
+
+Ver todas las VLANs configuradas:
+`cat /proc/net/vlan/config`
+(Muestra un resumen de todas las interfaces virtuales de tipo VLAN activas).
+
+Ver estadísticas de tráfico por VLAN:
+`ip -s link show eth0.10`
+
+
+3. Eliminar una VLAN
+Si ya no necesitas la segmentación, puedes borrar la interfaz virtual sin afectar a la física.
+
+Borrar la VLAN:
+`sudo ip link delete eth0.10`
+
+
+4. Configuración Persistente
+En Debian, para que la VLAN no desaparezca al reiniciar,
+debes editar el archivo `/etc/network/interfaces`:
+
+```
+auto eth0.10
+iface eth0.10 inet static
+    address 192.168.10.5
+    netmask 255.255.255.0
+    vlan-raw-device eth0
+```
+
+
+5. VLANs y Bridges (Entornos de Virtualización)
+Si usas contenedores o máquinas virtuales, a menudo querrás conectar una VLAN a un Bridge
+
+Añadir interfaz VLAN a un Bridge existente
+`sudo ip link set eth0.10 master br0`
+
+
+#### Clave: Tagging
+##### Para que estos comandos funcionen, el Switch al que está conectada tu computadora debe estar configurado en modo Trunk o o permitir el etiquetado 802.1Q en ese puerto específico
+Si el switch no envía paquetes etiquetados, tu interfaz eth0.10 nunca verá tráfico.
+
+Rs:
+
+Crear VLAN:
+ip link add link [fisica] name [nombre] type vlan id [id]
+
+Ver detalles:
+ip -d link show [interfaz]
+
+Borrar VLAN:
+ip link delete [interfaz]
+
+Ver configuración:
+cat /proc/net/vlan/config
+
+usar el comando ip directamente es mucho más eficiente que instalar gestores pesados
+
+
+
+### 7. Puertos: Capa de Transporte - TCP/UDP
+
+##### Fundamental para saber qué aplicaciones están escuchando conexiones
+##### Cuáles están bloqueadas y cómo probar la comunicación entre servicios.
+
+Comandos de inspección hasta pruebas de conectividad
+
+1. Inspección de Puertos Abiertos (Escucha)
+Permiten saber qué programas están ocupando un puerto en tu propia máquina
+
+`ss -tulpn`: herramienta moderna y rapida
+-t: TCP | -u: UDP | -l: Listening (en escucha) | -p: Proceso (PID) | -n: Muestra números de puerto.
+
+`netstat -tulpn`: versión clásica de ss.
+
+`lsof -i :<puerto>`: Muestra qué proceso específico tiene abierto un puerto.
+
+Ej: sudo lsof -i :3000
+Ideal para cuando quieres saber qué bloquea tu app de Node.js
+
+
+2. Escaneo de Puertos Remotos
+Verificar si un puerto está abierto en otro servidor o dispositivo de la red
+
+`nc -zv <IP> <puerto>`: Netcat
+La forma más rápida de testear un puerto sin "entrar" en él.
+Ej: `nc -zv 192.168.1.50 22`
+Verifica si el SSH está abierto
+
+`nmap -p <puerto> <IP>`: Herramienta profesional de escaneo.
+Ej: `nmap -p 1-1000 192.168.1.50`
+Escanea los primeros 1000 puertos
+
+`telnet <IP> <puerto>`:
+método antiguo pero efectivo para probar puertos TCP.
+Si la pantalla se pone en blanco o conecta, el puerto está abierto.
+
+
+3. Gestión del Firewall (Abrir/Cerrar Puertos)
+Dependiendo de qué herramienta uses en tu sistema para filtrar el tráfico
+
+Usando UFW (Uncomplicated Firewall)
+
+`sudo ufw allow 80/tcp`
+Abre el puerto 80 para tráfico web
+
+`sudo ufw deny 22`
+Cierra el puerto 22 (SSH)
+
+`sudo ufw status numbered`
+Lista las reglas con sus números para borrarlas fácilmente
+
+
+Usando iptables
+
+`sudo iptables -A INPUT -p tcp --dport 443 -j ACCEPT`
+Abre el puerto HTTPS.
+
+
+4. Redirección y Túneles (Port Forwarding)
+
+Ej: Como desarrollador, a veces necesitas traer un puerto remoto a tu máquina local
+
+SSH Tunneling (Local):
+`ssh -L 8080:localhost:3000 usuario@servidor`
+(Mapea el puerto 3000 del servidor al 8080 de tu laptop).
+
+Redirigir tráfico local (con iptables):
+`sudo iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 8080`
+Útil para que tu app que corre en el 8080 responda en el puerto estándar 80
+
+
+5. Estadísticas y Depuración
+
+`nstat`
+Proporciona estadísticas detalladas sobre el tráfico de red y errores en los puertos
+
+`tcpdump port 443`
+Captura y muestra los paquetes que entran o salen exclusivamente por un puerto específico
+
+
+Rs:
+
+Ver mis puertos abiertos
+sudo ss -tulpn
+
+¿Qué proceso usa el puerto X?
+sudo lsof -i :X
+
+Probar puerto en servidor remoto
+nc -zv [IP] [puerto]
+
+Escaneo masivo de puertos
+nmap [IP]
+
+Abrir puerto en firewall
+sudo ufw allow [puerto]
+
+Ej: Para React y Node.js
+el comando `sudo lsof -i :3000`
+cuando el servidor no inicie porque el puerto "ya está en uso" después de un cierre inesperado
+
+
+
+### 8. HTTP/HTTPS (TLS/SSL): Capa 7 - Aplicación
+
+Herramientas potentes para realizar peticiones, depurar cabeceras y verificar certificados
+
+1. curl: estándar para peticiones
+Permite enviar y recibir datos utilizando sintaxis de URL.
+
+Petición básica (GET):
+`curl https://www.google.com`
+
+Ver solo las cabeceras (Headers):
+Ideal para ver el código de estado (200, 404, 500) y el tipo de servidor.
+`curl -I https://api.github.com`
+
+Ver todo el proceso (Modo Verbose):
+Muestra el apretón de manos (handshake) TLS, las cabeceras enviadas y recibidas
+`curl -v https://example.com`
+
+Enviar datos (POST):
+útil para probar tus APIs en Node.js.
+`curl -X POST -H "Content-Type: application/json" -d '{"task":"comprar pan"}' http://localhost:3000/tasks`
+
+
+2. wget: Descarga de archivos
+A diferencia de curl, wget está diseñado principalmente para descargar contenido de forma recursiva o en segundo plano
+
+Descargar un archivo:
+`wget https://sitio.com/archivo.zip`
+
+Continuar una descarga interrumpida:
+`wget -c https://sitio.com/archivo_grande.iso`
+
+Descargar un sitio completo (Mirroring):
+`wget -m https://tu-sitio-web.com`
+
+
+3. openssl: Depuración de HTTPS y Certificados
+Como HTTPS depende de certificados SSL/TLS,
+a veces el problema no es la web, sino el certificado.
+
+Verificar el certificado de un servidor remoto:
+Muestra quién emitió el certificado y cuándo caduca.
+`openssl s_client -connect google.com:443`
+
+Extraer solo las fechas de validez:
+`echo | openssl s_client -connect google.com:443 2>/dev/null | openssl x509 -noout -dates`
+
+
+4. Herramientas de terminal modernas (Alternativas a curl)
+Algo más visual o "amigable" para desarrollo de APIs
+
+httpie (comando http):
+Muestra la salida con colores y formatea el JSON automáticamente.
+`http GET https://api.github.com/users/octocat`
+
+curlie:
+Combina el poder de curl con la facilidad de lectura de httpie.
+
+
+5. Inspección de tráfico en tiempo real
+Ver qué está pasando por el puerto 80 o 443 de forma masiva:
+
+tcpdump (Capa de transporte):
+`sudo tcpdump -i any port 80 -A`
+flag -A permite ver el contenido del paquete en texto plano, útil para HTTP
+
+ngrep: Permite buscar cadenas de texto específicas dentro del tráfico de red.
+`sudo ngrep -W byline "GET|POST" port 80`
+
+
+6. Diagnóstico de rendimiento
+
+ab (Apache Benchmark):
+Para realizar pruebas de carga sencillas.
+`ab -n 100 -c 10 https://tu-app-node.com/`
+Envía 100 peticiones con una concurrencia de 10
+
+
+Rs:
+
+Petición rápida y ver headers
+curl -I [URL]
+
+Probar API con JSON
+curl -X POST -d '...' [URL]
+
+Descargar archivo
+wget [URL]
+
+Verificar seguridad SSL
+openssl s_client -connect [URL]:443
+
+Prueba de carga básica
+ab -n 50 [URL]
+
+##### Dominar curl -v es vital para entender por qué una petición falla debido a problemas de CORS, certificados mal configurados o cabeceras faltantes
+
+
+
+### 9. FTP/SFTP/FTPS: Transferencia de archivos
+
+Funcionan de forma muy distinta a nivel de seguridad y puertos
+
+1. FTP (File Transfer Protocol)
+Clásico, pero inseguro (todo viaja en texto plano, incluyendo tu contraseña)
+Se usa cada vez menos, principalmente en redes locales controladas
+
+`ftp <IP_servidor>`: Inicia la conexión.
+
+Una vez dentro, usas comandos internos:
+`ls`: Listar archivos remotos
+`get archivo`: Descargar un archivo
+`put archivo`: Subir un archivo
+`bye`: cerrar sesión
+
+
+2. SFTP (SSH File Transfer Protocol)
+Estándar moderno y el que deberías usar por defecto
+No es FTP, sino un subsistema de SSH
+Todo el tráfico va cifrado por el puerto 22.
+
+Conexión básica:
+`sftp usuario@direccion_ip`
+
+Comandos útiles dentro de SFTP:
+`lpwd`: Muestra tu directorio local (en tu PC).
+`pwd`: Muestra el directorio remoto (en el servidor).
+`put -r <carpeta>`: Sube una carpeta completa de forma recursiva.
+`get <archivo_remoto> <nombre_local>`: Descarga y renombra.
+`chmod 755 <archivo>`: Cambia permisos en el servidor remoto.
+
+
+3. FTPS (FTP over SSL/TLS)
+Protocolo FTP tradicional pero envuelto en una capa de seguridad SSL
+similar a cómo HTTP se convierte en HTTPS
+Se usa mucho en servidores de hosting tradicionales.
+
+Conexón FTPS:
+`lftp -u usuario,password -e "set ftp:ssl-force true" direccion_ip`
+
+
+4. SCP (Secure Copy) - La alternativa rápida
+Si solo necesitas enviar o traer un archivo rápido sin abrir una sesión interactiva
+Al igual que SFTP, utiliza SSH.
+
+Enviar archivo al servidor:
+`scp archivo.zip usuario@ip:/ruta/destino/`
+
+Traer carpeta del servidor a tu PC:
+`scp -r usuario@ip:/ruta/remota/ ./carpeta_local/`
+
+
+5. Puertos y seguridad
+
+Protocolo | Puerto | Seguridad | Basado en...
+
+FTP
+21
+Nula (Texto plano)
+Protocolo FTP original
+
+SFTP
+22
+Alta
+SSH
+
+FTPS
+21 / 990
+Alta
+FTP + SSL/TLS
+    
+
+#### Productividad: sshfs
+
+Como desarrollador que busca eficiencia, puedes "montar" una carpeta remota por SFTP como si fuera un disco duro local en tu sistema ligero:
+`sudo sshfs usuario@ip:/var/www/html /mnt/servidor_remoto`
+
+Para editar los archivos del servidor directamente con tu editor favorito (Gvim o Emacs)
+sin tener que estar subiendo y bajando archivos manualmente.
+
+
+
+### 10. SSH
+
+No solo sirve para "entrar" a otra máquina, sino para mover datos, tunelizar servicios y gestionar servidores de forma segura por el puerto 22.
+
+1. Conexión y Sesión
+
+Conectar a un servidor:
+`ssh usuario@direccion_ip`
+
+Conectar especificando un puerto distinto (si no es el 22):
+`ssh -p 2222 usuario@direccion_ip`
+
+Ejecutar un comando remoto sin entrar en la shell:
+`ssh usuario@ip "ls -la /var/www"`
+(Útil para scripts de automatización).
+
+
+2. Gestión de Llaves (Seguridad sin Contraseñas)
+flujo de trabajo profesional
+lo ideal es usar llaves criptográficas en lugar de escribir tu contraseña cada vez
+
+Generar un par de llaves (Pública/Privada):
+`ssh-keygen -t ed25519 -C "tu_email@ejemplo.com"`
+(Se recomienda ed25519 por ser más segura y rápida que RSA).
+
+Enviar tu llave pública al servidor:
+`ssh-copy-id usuario@direccion_ip`
+Después de esto, podrás entrar sin que te pida contraseña
+
+
+3. Túneles y Port Forwarding
+
+##### Vital para Devs: permite saltar firewalls o acceder a servicios internos.
+
+Local Port Forwarding:
+Trae un puerto del servidor a tu máquina local.
+`ssh -L 8080:localhost:3000 usuario@ip_servidor`
+Ahora, si entras a localhost:8080 en tu navegador
+estarás viendo lo que corre en el puerto 3000 del servidor remoto
+
+Remote Port Forwarding:
+Expone un puerto de tu laptop al servidor
+útil para mostrarle algo local a un cliente
+`ssh -R 9000:localhost:3000 usuario@ip_servidor`
+
+
+4. Configuración del Cliente: (~/.ssh/config)
+Para no tener que recordar IPs y puertos largos, puedes crear "alias" en tu máquina
+
+Edita el archivo `nano ~/.ssh/config`:
+
+```
+Host mi-servidor
+    HostName 192.168.1.50
+    User desarrollador
+    Port 2222
+    IdentityFile ~/.ssh/id_ed25519
+``` 
+
+Ahora solo necesitas escribir: ssh mi-servidor.
+
+
+5. Mantenimiento y Diagnóstico
+
+Limpiar una llave vieja (si el servidor se reinstaló):
+`ssh-keygen -f "~/.ssh/known_hosts" -R "direccion_ip"`
+
+Ver qué está pasando durante la conexión (Debug):
+`ssh -v usuario@ip`
+Usa -vvv para el nivel máximo de detalle si la conexión falla
+
+Mantener la sesión viva (evitar desconexiones por inactividad):
+`ssh -o ServerAliveInterval=60 usuario@ip`
+
+
+6. Comandos del Servidor (sshd)
+Si estás configurando tu propio sistema para recibir conexiones:
+
+Ver si el servicio está corriendo:
+`sudo systemctl status ssh`
+
+Reiniciar tras cambiar la configuración (/etc/ssh/sshd_config):
+`sudo systemctl restart ssh`
+
+Rs:
+
+Conexión simple
+`ssh [user]@[ip]`
+
+Generar llaves
+`ssh-keygen`
+
+Copiar llave al servidor
+`ssh-copy-id [user]@[ip]`
+
+Túnel local
+`ssh -L [puerto_local]:localhost:[puerto_remoto] [user]@[ip]`
+
+
+### 11. NSS y Hosts
+
+1. Sistema de Nombres Local
+
+##### Antes de que el DNS entre en juego, Linux consulta archivos locales para resolver nombres
+
+`/etc/hosts`
+primer lugar donde el sistema mira
+vital para desarrollo local (mapear dominios falsos a 123.456.7.8).
+
+`/etc/nsswitch.conf`
+El "interruptor" que decide el orden de búsqueda
+(¿primero hosts o primero dns?).
+
+`getent hosts <nombre>`
+Verifica cómo el sistema está resolviendo un nombre exactamente
+respetando el orden de configuración.
+
+
+
+### 12. Túnel y VPN: Capa 3 segura
+
+Vimos SSH, que es un túnel de aplicación (Capa 7)
+pero a veces necesitas unir redes completas.
+
+WireGuard / OpenVPN: Los protocolos estándar
+ `wg show`: Para ver el estado de túneles WireGuard
+
+`ip tun`: Para crear túneles IP sobre IP o GRE manualmente.
+
+
+
+### 13. Puentes y Virtualización (Bridges)
+
+Fundamentales si usas Docker, máquinas virtuales o quieres unir dos interfaces físicas.
+
+`ip link add name br0 type bridge`
+Crea un switch virtual dentro de tu Linux.
+
+`ip link set eth0 master br0`
+Conecta una interfaz física al puente.
+
+`bridge link show`
+Muestra qué interfaces están conectadas a qué puentes.
+
+
+
+### 14. Control de Tráfico y Calidad de Servicio (QoS)
+
+##### Linux permite limitar el ancho de banda por puerto o IP.
+
+`tc` (Traffic Control):
+El comando más complejo y potente de red en Linux.
+Uso: Limitar la velocidad de una interfaz para simular conexiones lentas en desarrollo.
+
+`nload / bmon`:
+Herramientas visuales de terminal para monitorear el ancho de banda en tiempo real.
+
+
+
+### 15. IPv6 (El protocolo del futuro/presente)
+
+Comandos de IPv4 funcionan, pero IPv6 tiene sus propias reglas
+
+`ip -6 addr`:
+Ver solo direcciones IPv6.
+
+`ping6`:
+Ping específico para IPv6.
+
+`ip -6 route`:
+Ver la tabla de enrutamiento IPv6.
+
+
+
+### 16. Monitoreo de Sockets y Conexiones (Deep Dive)
+
+Vimos ss. Pero para auditoría profunda:
+
+`conntrack`
+Permite ver y manipular la tabla de seguimiento de conexiones del kernel
+(vital si haces NAT).
+
+`nstat`
+Estadísticas detalladas de los contadores del kernel
+(errores de checksum, paquetes descartados, etc.).
+
+
+
+### 17. Protocolos de Redundancia y Enlace (Bonding)
+
+##### Para servidores que no pueden perder la conexión.
+
+`Bonding / Teaming`
+Combinar dos tarjetas de red en una sola lógica para duplicar velocidad o tener respaldo.
+
+`cat /proc/net/bonding/bond0`:
+Ver el estado de la agregación de enlaces.
+
+
+
+### 18. Herramientas de Escaneo de Vulnerabilidades
+
+Más allá de nmap. para asegurar apps de Node.js/React:
+
+`nikto`
+Escáner de servidores web que busca archivos peligrosos y configuraciones obsoletas
+
+`snmpwalk`
+Para consultar información de dispositivos de red vía SNMP (protocolo de gestión).
+
+
+### 19. OSI
+
+
+#### 1. Capa 1 y Capa 2: Fisica y Enlace de Datos
+
+##### Para consultar información de dispositivos de red vía SNMP (protocolo de gestión)
+
+`ip link`
+Muestra el estado físico de las interfaces (UP/DOWN)
+y sus direcciones MAC.
+
+`ethtool <interfaz>`
+Permite ver si el cable está conectado
+la velocidad del enlace (1000Mb/s)
+y si hay errores de colisión a nivel físico.
+
+`ip neigh` o `arp`
+Muestra la tabla ARP, que mapea direcciones IP (Capa 3) a direcciones MAC (Capa 2).
+
+`iwconfig`
+Específico para redes inalámbricas;
+muestra la potencia de la señal y el SSID.
+
+
+#### Capa 3: Red
+
+##### Donde ocurre el enrutamiento y el direccionamiento lógico (IP).
+
+Capa que conecta redes distintas.
+
+`ip addr`
+Muestra y gestiona las direcciones IPv4 e IPv6 asignadas a tu máquina.
+
+`ip route`
+Muestra la tabla de enrutamiento
+decide por dónde salen los paquetes hacia Internet (el Gateway).
+
+`ping`
+Utiliza el protocolo ICMP para verificar la conectividad entre dos puntos.
+
+`traceroute`
+Rastrea el camino que sigue un paquete
+mostrando cada router (salto) en la Capa 3 hasta el destino.
+
+
+#### Capa 4: Transporte
+
+##### Gestionamos la entrega de datos, asegurando que lleguen al proceso correcto mediante Puertos y protocolos como TCP o UDP.
+
+`ss` o `netstat`
+La herramienta principal para ver qué puertos están abiertos
+y qué conexiones TCP/UDP están activas
+
+`lsof -i`
+Cruza la información de red con el sistema de archivos
+para decirte qué proceso (PID) tiene secuestrado un puerto
+
+`nc` (Netcat)
+Navaja suiza, permite abrir conexiones TCP/UDP manuales para probar si un puerto remoto responde.
+
+`telnet` antiguo
+se usa para verificar si un puerto TCP está aceptando conexiones.
+
+
+#### Capa 5, 6 y 7: Sesión, Presentación y Aplicación
+
+##### En Linux, estas capas suelen manejarse juntas bajo la "Capa de Aplicación" del modelo TCP/IP
+
+Donde vive el código y los servicios web.
+
+`curl` / `wget`
+Interactúan directamente con la capa de aplicación (HTTP/HTTPS)
+para enviar o recibir datos.
+
+`openssl`
+Se encarga de la Capa 6 (Presentación)
+gestionando el cifrado/descifrado de los datos mediante certificados SSL/TLS.
+
+`ssh`
+Gestiona la Capa 5 (Sesión) para mantener una conexión interactiva segura
+y la Capa 7 para la interfaz de comandos
+
+`dig` / `host`
+Consultan el servicio DNS (Capa 7) para traducir nombres a IPs.
+
+`snmpwalk`
+Consulta información de gestión (CPA 7) de dispositivos de red
+
+
+7. Aplicación
+Datos / Protocolos
+"curl, dig, ssh, ftp"
+
+6. Presentación
+Cifrado / Formato
+openssl (TLS/SSL)
+
+5. Sesión
+Diálogo / Conexión
+"ssh (gestión de sesión), rpcinfo"
+
+4. Transporte
+Puertos / TCP-UDP
+"ss, netstat, lsof, nc"
+
+3. Red
+IP / Enrutamiento
+"ip addr, ip route, ping, traceroute"
+
+2. Enlace
+MAC / Switches
+"ip link, ip neigh, arp-scan"
+
+1. Física
+Cable / Señal
+"ethtool, iwconfig"
+
+
+Ej: depuración de app
+
+##### Si el ping (Capa 3) funciona pero el curl (Capa 7) no
+sabes que el problema está probablemente en tu servidor web
+o en el puerto, no en tu conexión a Internet.
+
+
+
+
+# 2. OS
+
+
+## 1. Estructura de Linux
+
+### 1. Arquitectura
+
+Arquitectura Básica:
+Entender qué es el Kernel, el Shell y el sistema de archivos (jerarquía de directorios como /etc, /bin, /var).
+
+
+#### 1. Kernel
+
+El núcleo, el componentes más importante de cualquier OS
+'Puente' que que comunica el software con el hardware
+
+1. Intermediario/Master/Orquestador
+
+El software (tus programas) no puede tocar el hardware (el procesador, la memoria, el disco) directamente
+Si cada programa intentara escribir en el disco al mismo tiempo por su cuenta, habría un caos total y el sistema se colapsaría
+
+El Kernel recibe las peticiones de los programas, decide quién tiene prioridad
+y gestiona el acceso al hardware de forma segura y ordenada.
+
+
+2. 4 Funciones Principales
+
+##### 1. Gestión de Memoria (RAM)
+El Kernel lleva la cuenta de cuánta memoria se está usando
+qué programas la están ocupando y se asegura de que un programa no "pise" los datos de otro.
+
+##### 2. Gestión de Procesos: scheduling
+Decide qué proceso (programa en ejecución) usa la CPU en cada milisegundo
+Esto se llama scheduling (planificación).
+
+##### 3. Controladores de Dispositivos (Drivers)
+Actúa como un intérprete. Sabe cómo hablar con tu tarjeta de video, tu teclado o tu tarjeta de red
+
+##### 4. Llamadas al Sistema (System Calls)
+Es la interfaz de comunicación
+Cuando un programa quiere abrir un archivo
+envía una "System Call" al Kernel pidiendole permiso para ejecutar una acción como leer un documento
+
+
+3. Anillos de Seguridad
+
+En Linux, existe una separación física y lógica para evitar desastres:
+
+##### 1. User Space (Espacio de Usuario): Software. Lugar de ejecución de aplicaciones
+Donde corren tus aplicaciones (Chrome, Visual Studio Code, la Terminal).
+Si una aplicación falla aquí, simplemente se cierra, pero el sistema sigue vivo.
+
+##### 2. Kernel Space (Espacio del Kernel): Hardware.
+Área protegida donde reside el núcleo. Solo el código del Kernel puede tocar los componentes físicos
+
+Un "Kernel Panic" ocurre cuando algo sale tan mal dentro del Kernel Space que el sistema no puede recuperarse de forma segura
+Decide detenerse por completo para evitar daños al hardware o pérdida de datos
+
+
+4. Kernel Monolítico
+Significa que todo el sistema operativo:
+Gestión de memoria, drivers, sistemas de archivos
+Corre en un único espacio de memoria del kernel.
+
+Sin embargo, es modular: puedes cargar y descargar "módulos" (como controladores de WiFi o USB)
+mientras el sistema está encendido, sin necesidad de reiniciar, lo que lo hace increíblemente flexible.
+
+
+#### En Profundidad:
+
+Ver el Kernel "en acción" ahora mismo en tu terminal, prueba estos comandos:
+
+`uname -r`
+Te dirá la versión exacta del kernel que estás usando
+
+`lsmod`
+Te mostrará todos los módulos (drivers y funciones) que el kernel tiene cargados actualmente.
+
+`dmesg`
+Muestra los mensajes de diagnóstico del kernel
+kernel (muy útil para ver qué pasa cuando conectas un hardware nuevo).
+
+
+##### Kernel Panic, ocurrencias:
+
+Equivalente en Linux a la "Pantalla Azul" (BSOD) en Windows.
+
+Medida de seguridad: el sistema detecta un error interno tan grave que no puede continuar funcionando
+Sin arriesgarse a dañar el hardware o corromper los datos, por lo que decide "detenerse" en seco.
+
+En un sistema estable y moderno, los Kernel Panics son extremadamente raros
+Si usas una distribución estándar (como Ubuntu, Fedora o Debian) en hardware compatible, es probable que no veas uno en años
+
+Su frecuencia aumenta en ciertos escenarios
+
+Desarrollo de Drivers: Si estás programando módulos del kernel.
+Hardware defectuoso: Especialmente RAM o discos en mal estado.
+Entornos Experimentales: Uso de kernels muy recientes o distribuciones "rolling release" con hardware muy específico.
+
+
+Causas Principales: Tres grandes categorías
+
+1. Fallos de Hardware (La causa más común)
+
+##### Memoria RAM defectuosa
+Si el Kernel intenta escribir en un sector de la RAM que está dañado físicamente
+el sistema colapsará inmediatamente.
+
+##### Sobrecalentamiento
+Si la CPU alcanza temperaturas críticas, puede empezar a ejecutar instrucciones de forma errónea
+forzando al Kernel a detenerse
+
+##### Discos duros fallando
+Si un archivo crítico del sistema reside en un sector dañado del disco y no puede leerse
+el Kernel puede entrar en pánico.
+
+
+2. Errores de Software y Drivers
+
+##### Módulos incompatibles
+Instalar un driver (como el de una tarjeta gráfica) que no es compatible con la versión actual de tu Kernel.
+
+##### Bugs en el Kernel
+Aunque es poco común debido a las pruebas masivas
+Un error de código en el núcleo puede causar un desbordamiento de memoria.
+
+##### Falta de archivos críticos
+Si el Kernel intenta montar el sistema de archivos raíz (root filesystem)
+y no lo encuentra (por ejemplo, después de una actualización de GRUB mal configurada), lanzará un pánico
+
+
+3. Problemas de Configuración
+
+##### Kernel incompatible con la arquitectura
+Intentar arrancar un kernel de 64 bits en un procesador muy antiguo de 32 bits.
+
+##### Parámetros de arranque incorrectos
+Configurar mal el cargador de arranque (GRUB) para que apunte a una partición de disco inexistente.
+
+
+##### Visualmente describe 'Kernel panic'
+La pantalla suele mostrar un bloque de texto técnico (un "stack trace").
+
+1. Reiniciar: A veces es un error transitorio.
+
+2. Leer el log: Si puedes acceder al sistema (o desde un Live USB), revisa /var/log/messages o /var/log/syslog.
+
+3. Memtest86+: Si los pánicos son frecuentes y aleatorios, lo primero es escanear tu memoria RAM en busca de errores físicos.
+
+4. Boot a un Kernel anterior: En el menú de inicio (GRUB), Linux suele guardar versiones anteriores del kernel.
+Si la última actualización causó el problema, arrancar con la anterior suele ser la solución inmediata
+
+En los teclados que tienen luces de Caps Lock y Scroll Lock
+el Kernel suele hacerlas parpadear rítmicamente cuando entra en pánico
+para avisarte visualmente si la pantalla está apagada
+
+
+
+#### Módulos/APIs/Código
+
+Pieza de ingeniería masiva que, a pesar de ser "monolítica", está extremadamente organizada en capas y subsistemas
+##### Podríamos decir que el código está dividido en subsistemas lógicos que se comunican entre sí mediante APIs internas.
+
+
+Componentes Principales:
+
+##### 1. System Call Interface (SCI)
+
+Puerta de entrada.
+Capa delgada que permite que las aplicaciones del espacio de usuario (User Space)
+soliciten servicios al kernel.
+
+Función: 
+Traduce peticiones como open(), read() o fork()
+en instrucciones que el kernel entiende
+cruzando la frontera de seguridad entre el usuario y el sistema.
+
+
+##### 2. Process Management (Gestión de Procesos)
+
+Este subsistema se encarga de crear, detener y comunicar procesos.
+
+Componente Clave: El Scheduler (Planificador)
+Algoritmo que decide qué proceso usa la CPU
+Cuánto tiempo y con qué prioridad
+También gestiona los hilos (threads).
+
+
+##### 3. Memory Management (Gestión de Memoria - MM) 
+
+Es uno de los códigos más complejos.
+Maneja la memoria física y virtual
+
+Función:
+Se encarga del paginado.
+Asignar memoria a los procesos y de la "memoria virtual.
+Esta permite que los programas crean que tienen más RAM de la que realmente hay disponible.
+
+
+##### 4. Virtual File System (VFS)
+
+Capa de abstracción brillante
+Permite que el kernel hable con diferentes tipos de discos y formatos
+ext4, NTFS, FAT32, NFS, usando las mismas funciones
+
+Función:
+Gracias al VFS, para un programador es lo mismo leer un archivo en un USB que en un disco duro interno
+el kernel oculta las diferencias técnicas de cada formato.
+
+
+##### 5. Network Stack (Pila de Red)
+
+Implementación de los protocolos de comunicación (como TCP/IP, UDP, HTTP).
+###### Estructura: Está diseñado siguiendo el modelo OSI
+El código fluye desde los protocolos de alto nivel hasta los controladores de la tarjeta de red (NIC).
+
+
+##### 6. Device Drivers (Controladores de Dispositivos)
+
+###### Representan la mayor parte del código fuente de Linux
+Son los encargados de "hablar" con el hardware específico.
+
+Módulos: Linux permite que estos controladores sean LKM (Linux Kernel Modules)
+Significa que el código del driver puede cargarse o quitarse de la memoria en tiempo de ejecución sin reiniciar el PC.
+
+
+##### 7. Architecture-Dependent Code (Código Dependiente de la Arquitectura)
+
+Aunque la mayoría de Linux es lenguaje C portable
+Hay una sección (generalmente en la carpeta /arch/) escrita específicamente para cada procesador (x86, ARM, RISC-V).
+
+Función:
+Contiene el código en Ensamblador necesario para arrancar el procesador
+y manejar las interrupciones específicas de cada tipo de hardware.
+
+
+##### Capa y Responsabilidad
+
+User Space
+"Aplicaciones, Librerías (glibc)."
+
+System Calls
+Punto de contacto (API pública del kernel).
+
+Kernel Subsystems
+"Lógica de procesos memoria, red y archivos."
+
+Drivers
+Traducción para hardware específico.
+
+Hardware
+"CPU, RAM, Discos, Dispositivos."
+
+
+
+#### 2. Shell: Interacción con el Kernel
+
+
+
+
+#### Archivos
+
+
+
+
+#### Visualización y Edición
+
+
+
+#### Permisos y Usuarios
+
+
+
+
+
+## 2. Estructura de Windows

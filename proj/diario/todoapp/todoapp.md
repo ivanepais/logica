@@ -6766,6 +6766,3424 @@ export const TodoList = ({
 ```
 
 
+# TodoList: Patrón adaptador
+
+Su propósito en la vida es recibir una lista de objetos de negocio (Task[])
+transformarlos en elementos visuales (TodoItem).
+
+`import type { Task } from '@/core/task.entity'; es`
+Al usar el tipo real, TypeScript te obligó a ver que la propiedad se llama content y no text.
+
+## Patrón mapping: Mapeo de Propiedades
+
+`text={todo.content}.`
+##### adaptando el lenguaje del Núcleo (content) al lenguaje de la UI (text).
+
+```
+        <StyledList>
+          {todos.map((todo) => (
+            <TodoItem
+              key={todo.id}
+              text={todo.content}
+              completed={todo.isCompleted}
+              onToggle={() => onToggleTodo(todo.id)}
+              onDelete={() => onDeleteTodo(todo.id)}
+            />
+          ))}
+        </StyledList>
+```
+
+
+## Eliminar interfaz local
+
+```
+// Este "Todo" ya no se usa en ningún lado
+interface Todo {
+  id: string;
+  text: string;
+  completed: boolean;
+}
+```
+
+##### Como ya usas Task en TodoListProps
+##### Errores que pueden surgir: tarde o temprano alguien la pisará y pensará que debe usar text de nuevo
+
+
+### Lógica Interna vs. Arquitectura en la Lista
+
+Detalle de implementación como:
+`const hasTodos = todos.length > 0;`
+especialmente pensando en la fluidez del sistema
+
+No es lógica de arquitectura:
+Al Reducer no le importa si la lista está vacía para mostrar un emoji de una libreta (📝).
+
+#### Lógica de UI: Es un Empty State.
+Al manejar esto dentro del organismo, mantienes tu TodoPage limpia
+La página solo dice: "Aquí tienes las tareas", y el TodoList decide si se ve una lista elegante o un mensaje motivador
+
+
+## Dispatch espera
+
+Componente sea 100% a prueba de errores:
+
+1. Strict Typing: Ya lo tienes.
+Al definir `todos: Task[]`, si mañana cambias el nombre de una propiedad
+en task.entity.ts, este archivo se pondrá rojo inmediatamente
+
+2. Identidad de Callbacks: 
+##### Contrato claro: pasas (id: string) => void. coincide perfectamente con lo que el dispatch del reducer espera.
+
+
+## Punto Critico en el códigos
+
+##### En el todos.map, usas key={todo.id}, Al usar un UUID real generado por crypto.randomUUID() en tu task.logic.ts, aseguras de que React no se confunda al reordenar o filtrar tareas
+##### algo que suele causar bugs visuales extraños si se usa el índice del array.
+
+
+
+
+# TodoTemplate
+
+# DashboardTemplate
+
+
+# TodoPage: orquestación
+
+##### El único componente que tiene permiso para "ensuciarse las manos" con todo
+##### Conoce el Hook de negocio, conoce los Templates y conoce los Organismos
+
+Cierra el círculo de tu Clean Architecture:
+
+## 1. Mapeo: lo más importante
+
+```
+const categories = useMemo(() => [
+  { id: 'all', label: 'Todas', count: stats.total },
+  // ...
+], [stats]);
+```
+
+No se adivina. 
+FilterPanel no tiene ni idea de qué es stats.total
+En la Página, actúas como traductor
+
+Si mañana la API cambia total por countAll
+solo cambias esta línea y nada de la UI se rompe.
+
+## 2. Composición de Templates 
+
+##### Template dentro de otro: DashboardTemplate (Estructura global) > TodoTemplate (Estructura de la app).
+
+Permite que tu aplicación sea modular
+Si mañana quieres añadir una página de "Estadísticas",
+usarías el mismo DashboardTemplate
+pero con un StatsTemplate dentro
+
+
+## Detalle: El Cast as any
+
+En `onToggleCategory={(id) => setFilter(id as any)}`,
+usas `as any` porque el FilterPanel dice que:
+id es un string, pero setFilter espera un TaskFilter
+
+Para que sea 100% Type-Safe:
+cambiar la interfaz en el organismo FilterPanel
+(como comentamos antes)
+o hacer un type-guard, pero para la velocidad de desarrollo que llevas
+ese as any es un "pecado menor" aceptable siempre que sepas por qué está ahí.
+
+
+
 # Pautas contratos/orquestadores en componentes ui complejos
 
 
+
+# Pautas para lógica de ui
+
+
+
+# Pautas par lógica de Arquitectura
+
+
+
+# Debugg de archivo ts
+
+Archivos individuales
+
+1. tsx o ts-node
+En lugar de compilar a JS y luego ejecutar con Node
+puedes usar ejecutores directos. tsx es actualmente el más rápido y ligero
+Instalación: npm install -D tsx
+
+Ejecución:
+`npx tsx src/core/task.logic.ts`
+
+Ej: Puedes añadir un `console.log(createTask("Prueba"))` al final de tu archivo de lógica y ejecutarlo para ver si el UUID y las fechas se generan bien.
+
+
+2. Unit Teseting
+
+Ej:
+
+```
+// task.logic.test.ts
+import { createTask } from './task.logic';
+import { describe, it, expect } from 'vitest';
+
+describe('Logic: createTask', () => {
+  it('should create a task with a valid ID', () => {
+    const task = createTask('Debuggear');
+    expect(task.id).toBeDefined();
+  });
+});
+```
+
+Ejecutas solo ese test con:
+`npx vitest task.logic.test.ts`.
+
+
+3. Launch Config
+
+VS Code (o similar), puedes crear un archivo
+.vscode/launch.json
+
+para darle al F5 y que se detenga en tus puntos de interrupción (breakpoints) en un solo archivo
+
+
+Herramientas:
+
+`Source Maps`:
+Vinculación TS-JS
+Permite que el navegador te muestre el error en el archivo .ts original,
+no en el JS compilado.
+
+`Vitest / Jest`:
+Tests Unitarios
+Aísla la lógica de la UI.
+Si el test pasa, el bug está en el componente, no en la lógica."
+
+`React DevTools`:
+Inspección de Estado,
+Para ver cómo cambian las tasks en el hook useTasks en tiempo real.
+
+`debug (npm package)`:
+Logging Selectivo
+"En lugar de console.log, usas namespaces.
+Puedes encender/apagar logs de ""base de datos""
+o "UI" con una variable de entorno."
+
+
+Prácticas:
+
+`debugger`:
+En lugar de llenar el código de logs
+escribe la palabra debugger donde sospeches que está el fallo
+El navegador (o el IDE) detendrá la ejecución ahí y podrás inspeccionar todas las variables
+
+`Source Maps activados`:
+Asegúrate de que en tu `tsconfig.json` tengas
+`"sourceMap": true`
+
+`Depuración de Tipos`:
+A veces el bug es de lógica de tipos
+Usa `Type Guards` como `if (typeof value === 'string')`
+TypeScript atrapará errores antes de que el código corra
+
+`Error Boundaries (React)`:
+Envuelve tus organismos en un `ErrorBoundary`
+Si un TodoItem rompe la app
+el componente capturará el error
+te dirá exactamente qué falló sin que la pantalla se quede en blanco.
+
+`Log Inteligente`:
+console.log, objetos literales para saber qué estás viendo:
+
+```
+// Mal: console.log(task); // ¿Qué tarea es esta?
+// Bien: console.log({ taskAtCreation: task }); // Muestra el nombre de la variable
+```
+
+
+
+# Cambio FilterPanel: posibilidades de expansion en su campo de busqueda de categorias
+
+Organismo escalable:
+hoy es un simple filtro, mañana es un sistema de etiquetas o carpetas
+
+Expansión:
+
+1. Buscador Condicional
+Para que no estorbe cuando solo tienes 3 categorías, lo primero es hacerlo opcional
+Esto limpia la UI pero mantiene la funcionalidad lista para cuando la necesites
+
+```
+interface FilterPanelProps {
+  categories: Category[];
+  selectedIds: string[];
+  onToggleCategory: (id: string) => void;
+  title?: string;
+  showSearch?: boolean; // 👈 Propiedad nueva
+}
+
+// En el JSX:
+{showSearch && categories.length > 5 && (
+  <InputGroup ... />
+)}
+```
+
+2. Expansión a "Proyectos" o "Etiquetas" (Tags)
+Si decides que el usuario pueda crear sus propias categorías (ej: "Trabajo", "Personal", "Gimnasio", "Proyecto React"),
+
+el FilterPanel se convierte en un gestor de etiquetas.
+
+Búsqueda Rápida: Si el usuario tiene 20 etiquetas, el buscador interno cobra sentido total
+Gestión: Podrías añadir un pequeño botón de + al lado del título "Categorías" para crear nuevas sobre la marcha
+
+3. Agrupamiento y Jerarquías (Faceted Search)
+Puedes expandir el contrato de Category para admitir grupos
+Imagina que quieres filtrar por Prioridad y por Proyecto al mismo tiempo:
+
+```
+interface Category {
+  id: string;
+  label: string;
+  count: number;
+  group?: 'status' | 'project' | 'priority'; // 👈 Categorización por grupos
+}
+```
+
+
+4. Selección Múltiple y "Modo Operador"
+Actualmente filtras de uno en uno.
+Una expansión lógica sería permitir al usuario seleccionar varias categorías
+categorías (ej: "Ver Pendientes" Y "Ver Trabajo").
+
+Como ya usas selectedIds (en plural), tu arquitectura ya está preparada para esto
+Solo tendrías que cambiar la lógica del useTasks para que el filtro sea un array en lugar de un string único.
+
+5. Acciones Rápidas en el Panel
+A medida que el panel crezca, podrías añadir "Quick Actions"
+que aparezcan al pasar el ratón (hover) sobre un FilterItem:
+
+Un icono de lápiz para renombrar la categoría.
+Un icono de tacho para eliminar una etiqueta creada por el usuario.
+
+
+### De "Simple Filtro" a "Navegador de Datos"
+Al separar el buscador de tareas, que busca en el contenido
+del buscador de categorías (que busca en los metadatos),
+has creado un sistema de Búsqueda Facetada.
+
+En herramientas como Jira o Notion, el sidebar es exactamente esto
+un FilterPanel supervitaminado que permite navegar por estructuras de datos complejas sin perderse.
+
+
+## Código Original
+
+```tsx
+import { useState, useId } from 'react';
+import { FilterItem } from '../../molecules/FilterItem/FilterItem';
+import { InputGroup } from '../../molecules/InputGroup/InputGroup';
+import { 
+  PanelContainer, 
+  PanelHeader, 
+  PanelContent, 
+  CategoryList, 
+  EmptyState 
+} from './FilterPanel.styles';
+
+interface Category {
+  id: string;
+  label: string;
+  count: number;
+}
+
+interface FilterPanelProps {
+  categories: Category[];
+  selectedIds: string[];
+  onToggleCategory: (id: string) => void;
+  title?: string;
+}
+
+export const FilterPanel = ({ 
+  categories, 
+  selectedIds, 
+  onToggleCategory, 
+  title = "Filtros" 
+}: FilterPanelProps) => {
+  const [searchTerm, setSearchTerm] = useState('');
+  const titleId = useId();
+
+  const filteredCategories = categories.filter((cat) =>
+    cat.label.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  return (
+    <PanelContainer aria-labelledby={titleId}>
+      <PanelHeader>
+        <h2 id={titleId}>{title}</h2>
+        <InputGroup
+          label="Filtrar por nombre"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          placeholder="Buscar categorías..."
+          maxLength={30}
+        />
+      </PanelHeader>
+
+      <PanelContent>
+        <CategoryList aria-label="Lista de categorías">
+          {filteredCategories.map((category) => (
+            <li key={category.id}>
+              <FilterItem
+                label={category.label}
+                count={category.count}
+                isSelected={selectedIds.includes(category.id)}
+                onToggle={() => onToggleCategory(category.id)}
+              />
+            </li>
+          ))}
+        </CategoryList>
+
+        {filteredCategories.length === 0 && (
+          <EmptyState role="status">
+            No hay coincidencias para "{searchTerm}"
+          </EmptyState>
+        )}
+      </PanelContent>
+    </PanelContainer>
+  );
+};
+```
+
+
+
+# Search Bar
+
+Código:
+
+```
+import { Input } from '../../atoms/Input/Input';
+import styled from 'styled-components';
+
+const SearchContainer = styled.div`
+  margin-bottom: 1.5rem;
+  width: 100%;
+`;
+
+interface SearchBarProps {
+  value: string;
+  onChange: (value: string) => void;
+}
+
+export const SearchBar = ({ value, onChange }: SearchBarProps) => {
+  return (
+    <SearchContainer>
+      <Input
+        placeholder="🔍 Buscar tarea por nombre..."
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        type="text"
+      />
+    </SearchContainer>
+  );
+}; 
+```
+
+Su mayor virtud es su ignorancia
+No conoce las tareas, no conoce el filtro y no sabe qué es un reducer.
+
+1. Molécula "Presentacional" Pura:
+Al mantenerla aislada de la lógica de filtrado
+has conseguido que el componente sea 100% predecible.
+
+No importa el `Task`:
+##### Solo le interesa un string y una función para avisar que ese string cambió.
+
+Separación de responsabilidades:
+La SearchBar se encarga de la captura del interés del usuario
+
+mientras que el hook `useTasks` se encarga de la ejecución (el filtrado real mediante el useMemo)
+
+
+2. Flujo de Datos y "State Lifting"
+Elevación de Estado
+
+la SearchBar es un excelente ejemplo de cómo el estado fluye hacia arriba.
+
+1. Input: El usuario escribe "fix".
+2. Evento: La SearchBar ejecuta onChange("fix").
+3. Hook (useTasks): El estado searchQuery se actualiza.
+4. Cálculo: El useMemo dentro del hook detecta el cambio
+filtra el array de tasks y devuelve solo las coincidencias.
+5. Render: La lista se actualiza mágicamente
+
+
+##### 3. Implementación interna: mejor así que pasarle el evento completo
+usado `onChange={(e) => onChange(e.target.value)}`.
+al extraer el value dentro de la molécula, blindas a los componentes superiores
+
+Si mañana decides que la búsqueda se activa con un botón o que el input viene de una librería externa
+como Material UI o Radix, solo cambias la SearchBar
+
+##### El contrato del padre (onChange: (value: string) => void) se mantiene intacto.
+
+#### 4. Debounce (opcional)
+las búsquedas en tiempo real pueden ser estresantes si el array de datos es enorme
+Como tu lógica de filtrado está en un useMemo dentro del hook, React solo trabajará cuando sea estrictamente necesario
+
+##### Si en algún momento notas que la escritura va "lenta", podrías aplicar un Debounce (un retraso de 300ms) antes de actualizar el estado
+
+
+### Moleculas
+
+Has construido un set de herramientas atómicas muy sólido:
+
+##### Agnósticas: No dependen del negocio.
+##### Consistentes: Todas siguen el mismo patrón de comunicación.
+##### Testeables: Puedes probar cada una por separado sin montar todo el sistema de tareas
+    
+
+Flujo de Datos Final (Data Flow)
+1. Acción: El usuario escribe "fix" en la SearchBar.
+2. Subida: Se ejecuta setSearchQuery en useTasks.
+3. Proceso: El useMemo del hook filtra el array de tasks original.
+4. Bajada: La página recibe la nueva lista filtrada y se la pasa a TodoList.
+5. Render: El TodoList mapea las tareas a TodoItem y las vemos en pantalla
+
+
+
+# Modificación del hook useTasks
+
+##### Para buscar una tarea específica por su nombre ("fix app"), necesitamos un Filtro de Contenido
+
+El hook debe ser el dueño del estado de búsqueda para que la lista filtrada se actualice automáticamente
+
+
+## Opción 1: busqueda de categoria y texto
+
+```
+// Dentro de useTasks.ts
+import { useState, useMemo } from 'react';
+
+export const useTasks = () => {
+  // ... estados anteriores ...
+  const [searchQuery, setSearchQuery] = useState(''); // Nuevo estado
+
+  const filteredTasks = useMemo(() => {
+    // 1. Primero filtramos por categoría (all, pending, completed)
+    let result = state.tasks;
+    if (state.filter === 'pending') result = result.filter(t => !t.isCompleted);
+    if (state.filter === 'completed') result = result.filter(t => t.isCompleted);
+
+    // 2. Luego filtramos por el texto de búsqueda
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      result = result.filter(t => t.content.toLowerCase().includes(query));
+    }
+
+    return result;
+  }, [state.tasks, state.filter, searchQuery]);
+
+  return {
+    // ... acciones anteriores ...
+    searchQuery,
+    setSearchQuery,
+    tasks: filteredTasks
+  };
+};
+```
+
+### Componente SearchBar
+
+Reutilizaremos tu átomo de Input para crear un componente de búsqueda con un icono.
+
+```
+import { Input } from '../../atoms/Input/Input';
+import styled from 'styled-components';
+
+const SearchContainer = styled.div`
+  margin-bottom: 1.5rem;
+  width: 100%;
+`;
+
+interface SearchBarProps {
+  value: string;
+  onChange: (value: string) => void;
+}
+
+export const SearchBar = ({ value, onChange }: SearchBarProps) => {
+  return (
+    <SearchContainer>
+      <Input
+        placeholder="🔍 Buscar tarea por nombre..."
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        type="text"
+      />
+    </SearchContainer>
+  );
+};
+```
+
+
+### Integración TodoPage.tsx
+
+Lo ideal para una buena UX es ponerlo justo encima de la lista o en el encabezado del contenido principal
+separándolo de las categorías del Sidebar.
+
+```
+// En TodoPage.tsx
+export const TodoPage = () => {
+  const { 
+    tasks, searchQuery, setSearchQuery, // ... resto del hook
+  } = useTasks();
+
+  return (
+    <DashboardTemplate
+      header={<Typography variant="h2" color="white">Liquid Task</Typography>}
+      sidebar={/* ... tu FilterPanel de categorías ... */}
+    >
+      <TodoTemplate
+        header={
+          <>
+            <Typography variant="h1">
+              {filter === 'all' ? 'Mis Tareas' : '...'}
+            </Typography>
+            {/* ✅ Insertamos la búsqueda aquí */}
+            <SearchBar value={searchQuery} onChange={setSearchQuery} />
+          </>
+        }
+        inputSlot={<TodoInput onAdd={add} />}
+        listSlot={<TodoList todos={tasks} onToggleTodo={toggle} onDeleteTodo={remove} />}
+      />
+    </DashboardTemplate>
+  );
+};
+```
+
+Separación de Preocupaciones
+Sidebar maneja el "Estado Global" de la lista (qué tipo de tareas ves),
+mientras que el SearchBar maneja la "Refinación" (qué tarea específica buscas).
+
+Rendimiento: Al usar useMemo en el hook, el filtrado solo se recalcula cuando escribes o cambias de categoría
+
+UX Clara: El usuario entiende que el Sidebar son "carpetas"
+el input central es para "buscar dentro de la carpeta".
+
+
+debug: Si al implementar esto sigues viendo "No hay coincidencias", recuerda limpiar el localStorage una última vez
+Es posible que tengas tareas viejas con la propiedad text en lugar de content que están rompiendo el .includes().
+
+
+## Opción 2: Reemplazo de componentes
+
+Si los botones de categorías ya cumplen su función
+Mover el SearchBar al Sidebar
+usas el lateral para "buscar y navegar" y el centro para "gestionar".
+
+1. useTasks.ts
+hook exponga el estado de búsqueda y que filteredTasks use ese valor.
+
+```
+// En useTasks.ts
+export const useTasks = () => {
+  const [searchQuery, setSearchQuery] = useState('');
+  // ... resto del estado ...
+
+  const filteredTasks = useMemo(() => {
+    let result = state.tasks;
+    
+    // Filtro por Categoría
+    if (state.filter === 'pending') result = result.filter(t => !t.isCompleted);
+    if (state.filter === 'completed') result = result.filter(t => t.isCompleted);
+
+    // Filtro por Nombre (SearchBar)
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      result = result.filter(t => t.content.toLowerCase().includes(q));
+    }
+    return result;
+  }, [state.tasks, state.filter, searchQuery]);
+
+  return {
+    // ...
+    searchQuery,
+    setSearchQuery,
+    tasks: filteredTasks,
+    // ...
+  };
+};
+```
+
+
+2. Modificar el Sidebar en TodoPage.tsx
+
+Modificar el Sidebar en TodoPage.tsx
+Quitaremos la lógica de búsqueda interna del FilterPanel (si la tenía)
+pondremos nuestro nuevo SearchBar arriba.
+
+```
+export const TodoPage = () => {
+  const { 
+    tasks, filter, setFilter, stats, clearCompleted,
+    searchQuery, setSearchQuery // Traemos el nuevo estado
+  } = useTasks();
+
+  const categories = useMemo(() => [
+    { id: 'all', label: 'Todas', count: stats.total },
+    { id: 'pending', label: 'Pendientes', count: stats.pending },
+    { id: 'completed', label: 'Completadas', count: stats.completed },
+  ], [stats]);
+
+  return (
+    <DashboardTemplate
+      header={<Typography variant="h2" color="white">Liquid Task</Typography>}
+      sidebar={
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem', padding: '1rem' }}>
+          
+          {/* ✅ REEMPLAZO: El SearchBar ahora vive aquí */}
+          <SearchBar 
+            value={searchQuery} 
+            onChange={setSearchQuery} 
+          />
+
+          {/* Los botones de categorías (ahora sin buscador interno) */}
+          <FilterPanel 
+            title="Vistas"
+            categories={categories}
+            selectedIds={[filter]}
+            onToggleCategory={(id) => setFilter(id as any)}
+          />
+          
+          {stats.completed > 0 && (
+            <Button variant="secondary" onClick={clearCompleted}>
+              Limpiar completadas
+            </Button>
+          )}
+        </div>
+      }
+    >
+      <TodoTemplate
+        header={
+          <Typography variant="h1">
+            {filter === 'all' ? 'Mis Tareas' : filter === 'pending' ? 'Pendientes' : 'Completadas'}
+          </Typography>
+        }
+        inputSlot={<TodoInput onAdd={add} />}
+        listSlot={<TodoList todos={tasks} onToggleTodo={toggle} onDeleteTodo={remove} />}
+      />
+    </DashboardTemplate>
+  );
+};
+```
+
+3. Ajuste en SearchBar.tsx
+Para que visualmente encaje en el sidebar, asegúrate de que el componente no sea demasiado alto
+que el icono de lupa esté bien alineado
+
+`Contexto: Ahora`, cuando el usuario escribe "fix"
+la lista central de tareas se actualiza en tiempo real.
+
+`Consistencia`: El Sidebar se convierte en tu "Centro de Control".
+Filtras el qué (categoría) y el cuál (nombre) desde el mismo lugar.
+
+`Codigo`: El componente FilterPanel ahora solo se encarga de renderizar la lista de categorías
+cumpliendo con el principio de responsabilidad única.
+
+
+
+## Opción 3: agregar busqueda (general) y mantener filtrado general
+
+
+
+
+# Arq ante cambios
+
+`task.logic.ts` (El Dominio):
+Contiene las reglas puras (cómo se crea una tarea, cómo se valida).
+No sabe nada de React ni de estados.
+
+`task.reducer.ts` (El Orquestador de Estado):
+##### Es el unico que se 'ensucia' con la lógica para transformar el estado
+##### importa TaskLogic porque necesita ejecutar createTask o toggleStatus
+
+`useTasks.ts` (fachada/hook):
+Su único trabajo es exponer una API limpia a los componentes
+Solo necesita saber qué acciones existen (dispatch),
+no cómo se ejecutan internamente.
+
+
+## Contrato: los tipos
+
+`useTasks` Mecesita el Contrato (los tipos) `task.entity.ts` para que ts ayude
+el hook debe saber que lo que devuelve es un `Task[]`
+y que el filtro es un TaskFilter
+Pero no necesita saber cómo se fabrica una tarea
+
+
+## Análisis de Dependencias: Flujo de "Conocimiento"
+
+### Visualiza tu app en capas: Las capas externas pueden conocer a las internas, pero no al revés
+
+##### 1. Capa de Entidad (task.entity.ts): Todos la conocen
+Ella no conoce a nadie.
+
+##### 2. Capa de Lógica (task.logic.ts): Conoce a la Entidad. Es "funcional" y pura.
+
+##### 3. Capa de Almacenamiento/Estado (reducer, storage): Conocen la Lógica y la Entidad
+
+##### 4. Capa de Interfaz (useTasks, componentes): Solo deberían conocer la Entidad (para los tipos) y el Hook
+
+
+### Contratos de propiedad estrictos
+
+TodoList estaba usando su propia implementación interna
+##### Se soluciona con Contratos de Propiedades Estrictos: Para que tus componentes de UI hablen el mismo idioma que tu lógica
+
+
+#### Analisis de componentes
+
+##### 1. Atoms (Button, Checkbox): Genéricos
+##### No deben saber qué es una Task. Reciben checked, onClick, label."
+
+##### 2. Molecules (TodoItem): Adaptadores.
+##### Aquí es donde traduces: text={task.content}.
+
+##### 3. Organisms (TodoList): Consumidores de Entidad.
+##### Deben pedir explícitamente tasks: Task[].
+
+Ej: TodoList.tsx
+en lugar de definir una interfaz Todo local
+exporta la interfaz del componente usando el tipo real
+
+```
+// TodoList.tsx
+import type { Task } from '@/core/task.entity';
+
+interface TodoListProps {
+  todos: Task[]; // Si intentas pasar algo que no sea una Task real, TS chillará.
+  onToggleTodo: (id: string) => void;
+  // ...
+}
+```
+
+### Rendimiento: calculos de re renderizado
+
+En tu useTasks.ts, calcula stats en cada renderizado
+
+```
+const stats = {
+  total: state.tasks.length,
+  pending: state.tasks.filter(t => !t.isCompleted).length,
+  completed: state.tasks.filter(t => t.isCompleted).length
+};
+```
+
+cada vez que escribes en el SearchBar
+esto recorre el array de tareas 2 veces adicionales
+
+
+#### Solución: usar useMemo
+
+Que solo dependa de `state.tasks`.
+
+```
+const stats = useMemo(() => ({
+  total: state.tasks.length,
+  pending: state.tasks.filter(t => !t.isCompleted).length,
+  completed: state.tasks.filter(t => t.isCompleted).length
+}), [state.tasks]);
+```
+
+
+# Lógica de Negocio (task.logic) vs Lógica de UI (comportamiento visual)
+
+Logica de UI:
+Implementaciones internas que no esté en la arquitectura
+
+
+## 1. FilterItem: Agnóstico al Dominio
+
+##### No sabe qué es una Task: Solo sabe que recibe un label y un count.
+
+##### Reutilizable: podrías usar este mismo componente para filtrar "Categorías de productos" o "Emails" y funcionaría igual.
+
+##### Cumple con la 'Identidad': La "identidad" de tu arquitectura la aporta el Organismo o la Página que inyecta los datos.
+
+##### Cuanto más abajo estés en el Atomic Design (Átomos y Moléculas), menos deben saber de tu entity.ts.
+
+##### Deben ser "tontos" y recibir tipos primitivos (string, number, boolean).
+
+
+### Lógica de UI vs. Lógica de Negocio:
+
+A veces un componente necesita lógica que no pertenece a task.logic.ts.
+
+Imagina que quieres que el `Badge` haga una pequeña animación cuando el count aumente
+Esa lógica de "cómo animar" no tiene nada que ver con tu arquitectura de tareas
+##### vive dentro de la molécula o en un hook local de UI (ej. useSpring).
+
+#### Lógica de Negocio (Arquitectura): relacionada al dominio/negocio
+
+##### Saber si una tarea está completada o no. Eso nunca debe decidirlo el componente, debe venir procesado desde el reducer o el logic.ts.
+
+Ej: Flujo de conocimiento
+
+Nivel | Conoce Task o TaskFilter? | Responsabilidad
+
+`Átomos (Badge, Checkbox)`:
+NO
+Solo estilos y funcionalidad base.
+
+`Moléculas (FilterItem)`:
+NO
+Combinar átomos
+Recibe label
+ no task.status.
+
+##### `Organismos (FilterPanel)`: OPCIONAL. Aquí puedes empezar a mapear.
+##### Puede recibir un array de categories ya formateado.
+
+`Página (TodoPage)`:
+SÍ
+Es el "pegamento".
+Conecta el useTasks (Arquitectura) con los componentes (UI)."
+
+
+### Mapeo de Page y FilterItem
+
+```
+// En la página (El traductor)
+const categories = useMemo(() => [
+  { id: 'all', label: 'Todas', count: stats.total }, // Mapeamos 'total' a 'count'
+  { id: 'pending', label: 'Pendientes', count: stats.pending },
+], [stats]);
+
+// ... en el render ...
+<FilterPanel>
+  {categories.map(cat => (
+    <FilterItem 
+       key={cat.id} 
+       label={cat.label} 
+       count={cat.count} // FilterItem recibe un número, no sabe de dónde viene
+    />
+  ))}
+</FilterPanel>
+```
+
+##### El hecho de que use isSelected en lugar de algo como isTaskFilterSelected es lo que permite que tu UI sea flexible
+
+
+### Implementación interna (lógica UI) que podría fallar
+
+Quizás una validación visual
+si el count es 0, podrías querer que el FilterItem se vea más opaco
+Eso es Lógica de UI y podrías ponerlo directamente en los estilos de la molécula:
+
+```
+// FilterItem.styles.ts
+export const FilterContainer = styled.div<{ $disabled?: boolean }>`
+  opacity: ${props => props.$disabled ? 0.5 : 1};
+  cursor: pointer;
+  // ...
+`;
+```
+
+
+## 2. InputGroup
+
+```
+import { useId } from 'react';
+import { Badge } from '../../atoms/Badge/Badge';
+
+import { 
+  GroupContainer, 
+  GroupHeader, 
+  StyledLabel, 
+  StyledInput 
+} from './InputGroup.styles';
+
+interface InputGroupProps {
+  label: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  maxLength?: number;
+  placeholder?: string;
+  disabled?: boolean;
+}
+
+export const InputGroup = ({ 
+  label, 
+  value, 
+  onChange, 
+  maxLength = 100, 
+  placeholder,
+  disabled = false
+}: InputGroupProps) => {
+  const inputId = useId();
+  const remaining = maxLength - value.length;
+
+  return (
+    <GroupContainer>
+      <GroupHeader>
+        <StyledLabel htmlFor={inputId}>
+          {label}
+        </StyledLabel>
+        {/* Mostramos el contador solo si el usuario ha empezado a escribir */}
+        {value.length > 0 && (
+          <Badge 
+            count={remaining} 
+            overflowCount={maxLength} 
+          />
+        )}
+      </GroupHeader>
+      
+      <StyledInput
+        id={inputId}
+        type="text"
+        value={value}
+        onChange={onChange}
+        maxLength={maxLength}
+        placeholder={placeholder}
+        disabled={disabled}
+      />
+    </GroupContainer>
+  );
+}; 
+```
+
+##### Si hubiese conocido useTask o Task, se crea acoplamiento
+
+InputGroup es una molécula de propósito general
+
+Como parte del SearchBar (para filtrar).
+Como parte del TodoInput (para crear tareas).
+
+Si InputGroup importara useTasks, ¿cómo sabría si debe llamar a setSearchQuery o a add?
+Tendrías que llenar el componente de ifs y se volvería un caos.
+
+
+Lógica de UI vs. Lógica de Negocio
+`const remaining = maxLength - value.length;`
+
+Lógica de UI pura
+##### A la arquitectura le importa cuántos caracteres quedan? No
+Al reducer solo le importa el texto final
+
+##### ¿Al usuario le importa? Sí, para no pasarse del límite.
+
+mantener esta lógica dentro de la molécula, la arquitectura queda limpia
+el componente es inteligente por sí mismo sin saber nada de "tareas".
+
+
+#### Arquitectura:
+
+##### Entidad/Lógica: Define que una tarea tiene un content
+##### useTasks: Gestiona el estado de ese content.
+##### Página/Organismo: Hace de puente. Toma el value del hook y se lo pasa a InputGroup.
+##### Simplemente renderiza y avisa cuando hay un cambio.
+
+
+##### useId: asegurar que el label y el input están vinculados correctamente mediante un ID único generado por React es una práctica de accesibilidad (A11y) impecable
+
+
+
+## TodoInput: portal de entrada de datos a tu sistema
+
+##### donde el mundo exterior (el teclado del usuario) se encuentra con tu arquitectura.
+
+##### No debería conocer la arquitectura. si le permites importar createTask o useTasks, rompes el patrón de Componentes Presentacionales.
+
+
+"Borrador" (Draft State)
+
+##### TodoInput gestiona su propio useState, Este estado no es parte de tu arquitectura de tareas, es un estado efímero de la interfaz.
+##### A tu reducer no le importa si el usuario escribió "Comprar pa", borró, y luego escribió "Comprar pan".
+##### Solo le importa el resultado final cuando se pulsa "Añadir".
+
+Al mantener el taskText aquí, evitas renderizados innecesarios en toda la aplicación mientras el usuario escribe
+
+
+### Validación de UI vs. Validación de Negocio
+
+Tienes un taskText.trim() en la molécula para deshabilitar el botón:
+`disabled={!taskText.trim()}`
+
+Y tienes un trimmedContent en tu task.logic.ts.
+#### Redundancia necesaria
+
+##### Validación de UI (TodoInput): Su objetivo es la Experiencia de Usuario (UX).
+Evita que el usuario haga clic en un botón que no hará nada.
+
+##### Validación de Dominio (task.logic.ts): Su objetivo es la Integridad de los Datos
+Asegura que, sin importar desde dónde se cree una tarea (un formulario, una carga masiva, una API), nunca entre basura al sistema.
+
+
+Acoplamiento: Identidad Task
+
+Si TodoInput conociera la entidad Task, podrías tener la tentación de hacer esto:
+
+```
+// ❌ MALA PRÁCTICA (Acoplamiento)
+const newTask = createTask(taskText); 
+onAdd(newTask);
+```
+
+TodoInput ahora depende de cómo se construye una tarea
+Si mañana decides que las tareas necesitan una "categoría" obligatoria al crearse, tendrías que romper esta molécula.
+
+##### Como lo tienes ahora (pasando solo el string): La molécula es invencible
+##### dice: "Oye, quien sea que me esté escuchando, aquí tienes este texto que el usuario envió".
+
+
+Uso de `e.preventDefault()`:
+los refrescos de página accidentales por un submit no controlado son especialmente molestos porque obligan a recargar todo el bundle de JS y el estado de memoria
+
+
+#### Regla de oro para Insumos de Datos: El componente recolecta, el Hook procesa, la Lógica valida.
+
+
+
+## TodoItem
+
+```
+import { Checkbox } from '../../atoms/Checkbox/Checkbox';
+import { Typography } from '../../atoms/Typography/Typography';
+import { IconButton } from '../../atoms/IconButton/IconButton';
+
+import { 
+  ItemContainer, 
+  ContentWrapper, 
+  TextContainer 
+} from './TodoItem.styles';
+
+interface TodoItemProps {
+  text: string;
+  completed: boolean;
+  onToggle: () => void;
+  onDelete: () => void;
+}
+
+export const TodoItem = ({ 
+  text, 
+  completed, 
+  onToggle, 
+  onDelete 
+}: TodoItemProps) => {
+
+  return (
+    <ItemContainer $isCompleted={completed}>
+      <ContentWrapper>
+        <Checkbox 
+          checked={completed} 
+          onChange={onToggle} 
+          aria-label={completed ? "Marcar como pendiente" : "Marcar como completada"}
+        />
+
+        <TextContainer $isCompleted={completed}>
+          <Typography 
+            variant="body" 
+            color={completed ? 'textSecondary' : 'textPrimary'}
+          >
+            {text}
+          </Typography>
+        </TextContainer>
+      </ContentWrapper>
+
+      <IconButton 
+        icon="🗑️" // Aquí luego pondremos un SVG real
+        label="Eliminar tarea"
+        onClick={onDelete}
+      />
+    </ItemContainer>
+  );
+};
+
+```
+
+
+##### Aunque es la representación visual de una tarea, no debe conocer la entidad Task.
+
+##### Si miramos sus props, descompuesto la entidad en tipos primitivos (text, completed).
+
+1. Principio de Segregación de Interfaces (ISP)
+Si le pasaras el objeto task completo como prop, estarías obligando a TodoItem a depender de propiedades que no usa (como id, createdAt o updatedAt). Al
+Al pedir solo lo que necesita para pintar, el componente es más ligero y fácil de testear.
+
+
+2. Error de input
+
+##### Si el componente dependiera de Task, cualquier cambio en el nombre de la propiedad en el Core rompería la UI.
+
+Al usar un mapeo intermedio (en el Organismo o Página), TodoItem se vuelve inmune
+Si mañana content pasa a llamarse description, solo cambias una línea en el padre, y este componente ni se entera.
+
+
+3. "Lógica Interna" vs "Lógica de Arquitectura"
+Lógica de UI que no pertenece a tu task.logic.ts:
+
+Color dinámico: Decidir que el color sea textSecondary si está completada es una decisión puramente estética
+
+Aria-labels: El texto del lector de pantalla cambia según el estado. Esto es accesibilidad, no reglas de negocio
+
+
+4. la Prop text vs children
+Actualmente pasas el contenido como una prop text
+pero si en el futuro quisieras que las tareas permitieran negritas, enlaces o iconos inline, podrías cambiarlo a children: React.ReactNode.
+
+Al ser una molécula que se repite muchas veces en una lista, es vital que sea así de simple
+Si este componente tuviera lógica pesada o importara hooks globales, cada vez que marcaras una tarea como completada
+el motor de renderizado de React tendría que procesar mucha más información de la necesaria, afectando la latencia de la interfaz.
+
+
+### Diseño de TodoItem:
+
+Recibe: Datos primitivos y callbacks.
+Gestiona: Nada (es stateless).
+Emite: Eventos hacia arriba (onToggle, onDelete).
+
+
+## SearchBar
+
+```
+import { Input } from '../../atoms/Input/Input';
+import styled from 'styled-components';
+
+const SearchContainer = styled.div`
+  margin-bottom: 1.5rem;
+  width: 100%;
+`;
+
+interface SearchBarProps {
+  value: string;
+  onChange: (value: string) => void;
+}
+
+export const SearchBar = ({ value, onChange }: SearchBarProps) => {
+
+  return (
+    <SearchContainer>
+      <Input
+        placeholder="🔍 Buscar tarea por nombre..."
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        type="text"
+      />
+    </SearchContainer>
+  );
+}; 
+```
+
+Virtud es su ignorancia.
+No conoce las tareas, no conoce el filtro y no sabe qué es un reducer
+
+1. Presentacional Pura
+Al mantenerla aislada de la lógica de filtrado, has conseguido que el componente sea 100% predecible
+
+##### No importa el Task: Solo le interesa un string y una función para avisar que ese string cambió.
+
+##### Separación de responsabilidades: La SearchBar se encarga de la captura del interés del usuario
+
+##### mientras que el hook useTasks se encarga de la ejecución (el filtrado real mediante el useMemo).
+
+
+2. Flujo de Datos y "State Lifting" (Elevación de Estado)
+ejemplo de cómo el estado fluye hacia arriba.
+
+Input: El usuario escribe "fix".
+Evento: La SearchBar ejecuta onChange("fix").
+Hook (useTasks): El estado searchQuery se actualiza.
+Cálculo: El useMemo dentro del hook detecta el cambio, filtra el array de tasks y devuelve solo las coincidencias.
+Render: La lista se actualiza mágicamente
+
+
+3. Implementación interna vs. Arquitectura
+Usando onChange={(e) => onChange(e.target.value)}.
+
+##### Mejor así que pasarle el evento completo
+Porque al extraer el value dentro de la molécula, blindas a los componentes superiores
+Si mañana decides que la búsqueda se activa con un botón o que el input viene de una librería externa
+(como Material UI o Radix), solo cambias la SearchBar
+El contrato del padre (onChange: (value: string) => void) se mantiene intacto.
+
+
+
+## FilterPanel
+
+```
+import { useState, useId } from 'react';
+import { FilterItem } from '../../molecules/FilterItem/FilterItem';
+import { InputGroup } from '../../molecules/InputGroup/InputGroup';
+
+import { 
+
+  PanelContainer, 
+  PanelHeader, 
+  PanelContent, 
+  CategoryList, 
+  EmptyState 
+} from './FilterPanel.styles';
+
+interface Category {
+
+  id: string;
+  label: string;
+  count: number;
+}
+
+interface FilterPanelProps {
+  categories: Category[];
+  selectedIds: string[];
+  onToggleCategory: (id: string) => void;
+  title?: string;
+}
+
+
+export const FilterPanel = ({ 
+  categories, 
+  selectedIds, 
+  onToggleCategory, 
+  title = "Filtros"
+  
+}: FilterPanelProps) => {
+  const [searchTerm, setSearchTerm] = useState('');
+  const titleId = useId();
+
+  const filteredCategories = categories.filter((cat) =>
+    cat.label.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+
+  return (
+    <PanelContainer aria-labelledby={titleId}>
+      <PanelHeader>
+        <h2 id={titleId}>{title}</h2>
+        <InputGroup
+          label="Filtrar por nombre"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          placeholder="Buscar categorías..."
+          maxLength={30}
+        />
+      </PanelHeader>
+
+      <PanelContent>
+        <CategoryList aria-label="Lista de categorías">
+          {filteredCategories.map((category) => (
+            <li key={category.id}>
+              <FilterItem
+                label={category.label}
+                count={category.count}
+                isSelected={selectedIds.includes(category.id)}
+                onToggle={() => onToggleCategory(category.id)}
+              />
+            </li>
+          ))}
+        </CategoryList>
+
+        {filteredCategories.length === 0 && (
+        
+          <EmptyState role="status">
+            No hay coincidencias para "{searchTerm}"
+          </EmptyState>
+        )}
+      </PanelContent>
+    </PanelContainer>
+  );
+}; 
+```
+
+##### Donde la Arquitectura de Dominio y la Estructura de la UI se encuetran
+
+
+1. Responsabilidades
+búsqueda interna de categorías
+
+Lógica de UI: El searchTerm que vive aquí adentro solo sirve para filtrar visualmente si ves el botón de "Pendientes" o el de "Completadas".
+
+El Error de Concepto: Cuando intentabas buscar una tarea (ej. "fix app"), lo hacías en este input
+##### Pero como "fix app" no es el nombre de una categoría, el filteredCategories quedaba vacío y te lanzaba el EmptyState.
+
+
+2. Conocer arquitectura:
+
+##### No directamente. Sin embargo, como es un Organismo, ya empieza a definir un contrato de datos más complejo que una molécula
+
+Ej:
+
+```
+interface Category {
+  id: string; // Aquí inyectamos el TaskFilter ('all' | 'pending' | 'completed')
+  label: string;
+  count: number;
+}
+```
+
+#### Mapeo de Tipos: En la TodoPage, tú conviertes el tipo TaskFilter en este id de string
+##### El FilterPanel no sabe que ese ID disparará un cambio en el reducer
+##### solo sabe que cuando haces clic, debe avisar al padre.
+
+
+#### Orquestación de moleculas
+
+Molécula 1: InputGroup (para el buscador interno).
+Molécula 2: FilterItem (repetido en una lista)
+
+##### Necesita implementación interna fuera de la arquitectura? SÍ. El searchTerm y el filteredCategories son lógica puramente interna del panel
+##### La arquitectura (tu useTasks) no tiene por qué saber si el usuario está filtrando visualmente los botones del sidebar. Eso es Estado de UI Local
+
+
+#### Decisión
+
+Si decidimos que el buscador de tareas real debe ir en el sidebar pero fuera de este panel
+(para que no filtre las categorías sino las tareas)
+este componente ahora tiene dos caminos
+
+1. Simplificación: Si solo vas a tener 3 categorías fijas ("Todas", "Pendientes", "Completadas"), el buscador interno (InputGroup) sobra
+No necesitas filtrar una lista de solo 3 elementos.
+
+2. Escalabilidad: Si en el futuro permites al usuario crear "Categorías" o "Proyectos" (como carpetas),
+Escalabilidad: Si en el futuro permites al usuario crear "Categorías" o "Proyectos" (como carpetas),
+
+
+#### Blindaje de Tipos
+
+Para evitar que nos pase lo de text vs content,
+##### lo ideal en los Organismos es usar tipos compartidos pero desacoplados
+
+para que el id de la categoría sea seguro, podrías hacer:
+
+```
+import type { TaskFilter } from '@/core/task.entity';
+
+interface Category {
+  id: TaskFilter; // ✅ Ahora es imposible pasarle un ID que el reducer no entienda
+  label: string;
+  count: number;
+}
+```
+
+
+
+## TodoList
+
+```
+import { TodoItem } from '../../molecules/TodoItem/TodoItem';
+import { Typography } from '../../atoms/Typography/Typography';
+import { ListWrapper, StyledList, EmptyState } from './TodoList.styles';
+import type { Task } from '@/core/task.entity';
+
+interface Todo {
+  id: string;
+  text: string;
+  completed: boolean;
+}
+
+interface TodoListProps {
+  todos: Task[];
+  onToggleTodo: (id: string) => void;
+  onDeleteTodo: (id: string) => void;
+}
+
+export const TodoList = ({ 
+  todos, 
+  onToggleTodo, 
+  onDeleteTodo 
+
+}: TodoListProps) => {
+
+  const hasTodos = todos.length > 0;
+
+  return (
+    <ListWrapper>
+      {!hasTodos ? (
+        <EmptyState>
+          <span style={{ fontSize: '3rem' }}>📝</span>
+          <Typography variant="h3" color="textSecondary">
+            No hay tareas pendientes
+          </Typography>
+          <Typography variant="body" color="textSecondary">
+            ¡Añade algo para empezar el día!
+          </Typography>
+        </EmptyState>
+      ) : (
+        <StyledList>
+          {todos.map((todo) => (
+            <TodoItem
+              key={todo.id}
+              text={todo.content}
+              completed={todo.isCompleted}
+              onToggle={() => onToggleTodo(todo.id)}
+              onDelete={() => onDeleteTodo(todo.id)}
+            />
+          ))}
+        </StyledList>
+      )}
+    </ListWrapper>
+  );
+}; 
+```
+
+
+##### Actúa como traductor/adaptador de la arquitectura 
+
+1. Adaptador
+TodoList SÍ debe conocer la entidad Task
+##### Su propósito es recibir una lista de objetos de negocio (Task[])
+##### y transformarlos en elementos visuales (TodoItem).
+
+Importar la Entidad: import type { Task } from '@/core/task.entity'; es
+Al usar el tipo real, TypeScript te obligó a ver que la propiedad se llama content y no text.
+
+##### Mapeo de Propiedades: `text={todo.content}.`. Estás adaptando el lenguaje del Núcleo (content) al lenguaje de la UI (text).
+
+
+##### Eliminar interface local para tareas: Como ya usas Task en TodoListProps
+
+```
+// Este "Todo" ya no se usa en ningún lado
+interface Todo {
+  id: string;
+  text: string;
+  completed: boolean;
+}
+```
+
+tarde o temprano alguien la pisará y pensará que debe usar text de nuevo.
+
+
+### Lógica Interna vs. Arquitectura en la Lista
+
+`const hasTodos = todos.length > 0;`
+
+No es lógica de arquitectura:
+Al Reducer no le importa si la lista está vacía para mostrar un emoji de una libreta
+
+Es lógica de UI: Es un Empty State.
+
+##### La página solo dice: "Aquí tienes las tareas", y el TodoList decide si se ve una lista elegante o un mensaje motivador.
+
+
+#### Componente robusto
+
+Strict Typing: Ya lo tienes. Al definir todos: Task[]
+si mañana cambias el nombre de una propiedad en task.entity.ts
+este archivo se pondrá rojo inmediatamente.
+
+Identidad de Callbacks: Fíjate que pasas (id: string) => void.
+Esto coincide perfectamente con lo que el dispatch del reducer espera
+hay contratos claros.
+
+En el todos.map, usas key={todo.id}. Esto es crítico
+Al usar un UUID real generado por crypto.randomUUID() en tu task.logic.ts
+te aseguras de que React no se confunda al reordenar o filtrar tareas, algo que suele causar bugs visuales extraños si se usa el índice del array
+
+
+
+## TodoTemplate: esqueleto de tu aplicación
+
+##### Definen el contexto espacial sin casarse con los datos
+
+1. Patrón de Slots (Huecos)
+
+##### Slot Pattern: En lugar de importar TodoInput o TodoList directamente, dejas "huecos" (header, inputSlot, listSlot).
+
+Ventaja Arquitectónica: El Template no tiene dependencias
+No importa si listSlot recibe una lista de tareas, un cargando (spinner) o un mensaje de error
+El Template solo se preocupa de que "el área de la lista"
+
+Agnosticismo Total: Este componente no conoce Task, no conoce useTasks
+y no sabe qué es un Reducer. Es 100% visual y estructural.
+
+
+2. Responsabilidad Única (Layout vs. Contenido)
+
+Layout Sectioning: Las sub-secciones (HeaderSection, InputSection, ListSection)
+permiten que cada parte de la interfaz tenga su propio comportamiento de scroll
+o espaciado sin afectar a las demás.
+
+Flexibilidad: Si mañana quieres cambiar el diseño y poner el input debajo de la lista
+solo mueves una línea en este archivo. No tienes que tocar ninguna lógica de negocio
+
+
+3. Rendimiento
+React puede renderizar esta estructura de forma extremadamente barata
+Solo se vuelve a pintar si las "piezas" que le pasas (los slots) cambian, pero el contenedor en sí es estático y ligero.
+
+
+4. Conocimiento de Arquitectura
+La única excepción sería si el layout dependiera de un estado global
+Ej. PageWrapper necesitara cambiar de color según un tema oscuro/claro
+
+Pero incluso entonces, lo ideal es que reciba esa información por props o mediante un ThemeProvider de Styled Components
+manteniendo el componente libre de lógica de tareas
+
+
+#### ReactNode
+Usar React.ReactNode para los slots es la forma más flexible de tipar en TypeScript
+Permite pasar strings, componentes, arrays o incluso null si decides ocultar una sección dinámicamente
+
+
+
+## TodoPage
+
+```
+import { useMemo } from 'react';
+import { useTasks } from '../../../hooks/useTasks';
+import { DashboardTemplate } from '../../templates/DashboardTemplate/DashboardTemplate';
+import { TodoTemplate } from '../../templates/TodoTemplate/TodoTemplate';
+import { FilterPanel } from '../../organisms/FilterPanel/FilterPanel';
+import { TodoList } from '../../organisms/TodoList/TodoList';
+import { TodoInput } from '../../molecules/TodoInput/TodoInput';
+import { Typography } from '../../atoms/Typography/Typography';
+import { Button } from '../../atoms/Button/Button'; // Asumiendo que tienes este átomo
+
+export const TodoPage = () => {
+
+const {
+tasks, add, toggle, remove,
+filter, setFilter, stats, clearCompleted
+} = useTasks();
+
+// 1. Mapeamos las stats al formato que espera el FilterPanel
+const categories = useMemo(() => [
+{ id: 'all', label: 'Todas', count: stats.total },
+{ id: 'pending', label: 'Pendientes', count: stats.pending },
+{ id: 'completed', label: 'Completadas', count: stats.completed },
+], [stats]);
+
+return (
+<DashboardTemplate
+header={
+<Typography variant="h2" color="white">Liquid Task</Typography>
+}
+sidebar={
+<div style={{ display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'space-between' }}>
+<FilterPanel
+categories={categories}
+selectedIds={[filter]}
+onToggleCategory={(id) => setFilter(id as any)}
+title="Categorías"
+/>
+
+{/* Bonus: Limpiar completadas al final del sidebar */}
+{stats.completed > 0 && (
+<Button
+variant="secondary"
+onClick={clearCompleted}
+style={{ margin: '20px' }}
+>
+Borrar completadas ({stats.completed})
+
+</Button>
+)}
+</div>
+}
+>
+{/* El contenido principal usa el TodoTemplate para el layout interno */}
+<TodoTemplate
+header={
+<div style={{ marginBottom: '1rem' }}>
+<Typography variant="h1">
+{filter === 'all' ? 'Mis Tareas' : filter === 'pending' ? 'Pendientes' : 'Completadas'}
+</Typography>
+<Typography variant="body" color="textSecondary">
+Tienes {stats.pending} asuntos por resolver hoy.
+</Typography>
+</div>
+}
+inputSlot={
+<TodoInput onAdd={add} />
+}
+listSlot={
+<TodoList
+todos={tasks}
+onToggleTodo={toggle}
+onDeleteTodo={remove}
+/>
+}
+/>
+</DashboardTemplate>
+);
+}; 
+```
+
+##### Orquestador: único componente que tiene permiso para ensuciarse, conoce el Hook de negocio, conoce los Templates y conoce los Organismos
+
+1. Mapeo:
+
+```
+const categories = useMemo(() => [
+  { id: 'all', label: 'Todas', count: stats.total },
+  // ...
+], [stats]);
+```
+
+FilterPanel no tiene ni idea de qué es stats.total, la página actúa como traductor.
+Si mañana la API cambia total por countAll, solo cambias esta línea y nada de la UI se rompe
+
+
+2. Composición de Templates
+Template dentro de otro:
+DashboardTemplate (Estructura global) > TodoTemplate (Estructura de la app).
+
+Si mañana quieres añadir una página de "Estadísticas", usarías el mismo DashboardTemplate pero con un StatsTemplate dentro
+
+
+### SearchBar
+filtre las tareas por nombre, integrarlo
+
+FilterPanel tiene un buscador interno que filtra categorías
+pero nosotros queremos filtrar tareas
+
+```
+export const TodoPage = () => {
+  const { 
+    tasks, add, toggle, remove, 
+    filter, setFilter, stats, clearCompleted,
+    searchQuery, setSearchQuery // 👈 1. Traemos el estado de búsqueda
+  } = useTasks();
+
+  // ... (categories memo) ...
+
+  return (
+    <DashboardTemplate
+      sidebar={
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', padding: '1rem' }}>
+          {/* 👈 2. Insertamos la SearchBar aquí, arriba de los filtros */}
+          <SearchBar value={searchQuery} onChange={setSearchQuery} />
+          
+          <FilterPanel 
+            categories={categories}
+            selectedIds={[filter]}
+            onToggleCategory={(id) => setFilter(id as any)}
+            title="Vistas"
+          />
+          {/* ... */}
+        </div>
+      }
+    >
+      <TodoTemplate
+        // ... (header, inputSlot, listSlot) ...
+      />
+    </DashboardTemplate>
+  );
+};
+```
+
+Flujo:
+
+1. Acción: El usuario escribe "fix" en la SearchBar.
+2. Subida: Se ejecuta setSearchQuery en useTasks.
+3. Proceso: El useMemo del hook filtra el array de tasks original.
+4. Bajada: La página recibe la nueva lista filtrada y se la pasa a TodoList.
+5. Render: El TodoList mapea las tareas a TodoItem y las vemos en pantalla.
+
+
+#### Cast as any
+`onToggleCategory={(id) => setFilter(id as any)},`
+FilterPanel dice que id es un string
+pero setFilter espera un TaskFilter
+
+100% Type-Safe:
+cambiar la interfaz en el FilterPanel
+
+
+# Refactor
+
+## Diseño
+
+FilterPanel
+
+```
+
+Tareas
+
+filtrar por tareas
+
+buscar tareas...
+
+
+Categorías:
+
+todas
+pendientes
+completadas
+
+```
+
+
+## Busqueda sin Search Bar
+
+1. Limpiar FilterPanel
+quitarle la lógica interna de búsqueda al FilterPanel para que sea un componente "tonto" (presentacional
+##### que el input que tiene ahora controle el estado global de búsqueda de tareas.
+
+```
+// src/components/organisms/FilterPanel/FilterPanel.tsx
+
+import { useId } from 'react';
+import { FilterItem } from '../../molecules/FilterItem/FilterItem';
+import { InputGroup } from '../../molecules/InputGroup/InputGroup';
+import { 
+  PanelContainer, 
+  PanelHeader, 
+  PanelContent, 
+  CategoryList 
+} from './FilterPanel.styles';
+
+interface Category {
+  id: string;
+  label: string;
+  count: number;
+}
+
+interface FilterPanelProps {
+  categories: Category[];
+  selectedIds: string[];
+  onToggleCategory: (id: string) => void;
+  // --- NUEVAS PROPS PARA CONTROLAR LA BÚSQUEDA DE TAREAS ---
+  searchQuery: string;
+  onSearchChange: (value: string) => void;
+  title?: string;
+}
+
+export const FilterPanel = ({ 
+  categories, 
+  selectedIds, 
+  onToggleCategory,
+  searchQuery,
+  onSearchChange,
+  title = "Categorías" 
+}: FilterPanelProps) => {
+  const titleId = useId();
+
+  return (
+    <PanelContainer aria-labelledby={titleId}>
+      <PanelHeader>
+        {/* Siguiendo tu nueva estructura visual */}
+        <h2 style={{ fontSize: '1.2rem', marginBottom: '0.5rem' }}>Tareas</h2>
+        
+        <InputGroup
+          label="Filtrar por tareas" // Tu nuevo label
+          value={searchQuery}
+          onChange={(e) => onSearchChange(e.target.value)}
+          placeholder="buscar tareas..." // Tu nuevo placeholder
+        />
+      </PanelHeader>
+
+      <PanelContent>
+        <h3 id={titleId} style={{ fontSize: '1rem', margin: '1.5rem 0 0.5rem' }}>
+          {title}:
+        </h3>
+        <CategoryList aria-label="Lista de categorías">
+          {categories.map((category) => (
+            <li key={category.id}>
+              <FilterItem
+                label={category.label}
+                count={category.count}
+                isSelected={selectedIds.includes(category.id)}
+                onToggle={() => onToggleCategory(category.id)}
+              />
+            </li>
+          ))}
+        </CategoryList>
+      </PanelContent>
+    </PanelContainer>
+  );
+};
+```
+
+2. Conectar la búsqueda en TodoPage
+conectar este nuevo contrato del FilterPanel con tu hook useTasks
+Asegúrate de que tu hook useTasks ya devuelva searchQuery y setSearchQuery.
+
+```
+// src/components/pages/TodoPage/TodoPage.tsx (Fragmento)
+
+export const TodoPage = () => {
+  const { 
+    tasks, 
+    filter, 
+    setFilter, 
+    stats, 
+    searchQuery,    // 👈 Traemos el estado de búsqueda del hook
+    setSearchQuery, // 👈 Y su función para actualizarlo
+    // ... resto de métodos
+  } = useTasks();
+
+  // ... memo de categorías ...
+
+  return (
+    <DashboardTemplate
+      // ... header ...
+      sidebar={
+        <FilterPanel 
+          categories={categories}
+          selectedIds={[filter]}
+          onToggleCategory={(id) => setFilter(id as any)}
+          // --- CONEXIÓN DE LA BÚSQUEDA ---
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery}
+        />
+      }
+    >
+      {/* TodoTemplate con su TodoList que ya recibe 'tasks' filtradas */}
+    </DashboardTemplate>
+  );
+};
+```
+
+Sincronización:
+Ahora, cuando escribes en el input del sidebar,
+##### estás actualizando el searchQuery que vive en tu Hook Global
+
+##### Filtrado Real: Tu hook useTasks detectará que searchQuery cambió
+y filtrará el array de tareas automáticamente
+
+Adiós al "No hay coincidencias": Como ya no filtramos las categorías en el sidebar, los botones "Todas", "Pendientes" y "Completadas" nunca desaparecerán mientras buscas una tarea
+
+
+### Modificación en useTasks
+
+procesa tanto el filtro de estado (Pendientes/Completadas) como la búsqueda por texto
+
+```
+import { useReducer, useMemo, useCallback } from 'react';
+import { taskReducer, initialTaskState } from '../context/taskReducer'; // Asumiendo tu ruta
+import { TaskFilter } from '@/core/task.entity';
+
+export const useTasks = () => {
+  const [state, dispatch] = useReducer(taskReducer, initialTaskState);
+
+  // --- ACCIONES ---
+  const add = (content: string) => dispatch({ type: 'ADD_TASK', payload: content });
+  const toggle = (id: string) => dispatch({ type: 'TOGGLE_TASK', payload: id });
+  const remove = (id: string) => dispatch({ type: 'REMOVE_TASK', payload: id });
+  const clearCompleted = () => dispatch({ type: 'CLEAR_COMPLETED' });
+  
+  const setFilter = (filter: TaskFilter) => 
+    dispatch({ type: 'SET_FILTER', payload: filter });
+
+  const setSearchQuery = (query: string) => 
+    dispatch({ type: 'SET_SEARCH_QUERY', payload: query });
+
+  // --- LÓGICA DE FILTRADO (El corazón del buscador) ---
+  const filteredTasks = useMemo(() => {
+    return state.tasks.filter((task) => {
+      // 1. Filtro por Estado (Todas / Pendientes / Completadas)
+      const matchesFilter = 
+        state.filter === 'all' || 
+        (state.filter === 'pending' && !task.isCompleted) || 
+        (state.filter === 'completed' && task.isCompleted);
+
+      // 2. Filtro por Texto (Buscador)
+      // Usamos .toLowerCase() para que la búsqueda no sea sensible a mayúsculas
+      const matchesSearch = task.content
+        .toLowerCase()
+        .includes(state.searchQuery.toLowerCase());
+
+      return matchesFilter && matchesSearch;
+    });
+  }, [state.tasks, state.filter, state.searchQuery]);
+
+  // --- ESTADÍSTICAS (Para los contadores del FilterPanel) ---
+  const stats = useMemo(() => ({
+    total: state.tasks.length,
+    pending: state.tasks.filter(t => !t.isCompleted).length,
+    completed: state.tasks.filter(t => t.isCompleted).length,
+  }), [state.tasks]);
+
+  return {
+    // Datos
+    tasks: filteredTasks, // Enviamos las tareas ya filtradas
+    filter: state.filter,
+    searchQuery: state.searchQuery,
+    stats,
+    
+    // Métodos
+    add,
+    toggle,
+    remove,
+    setFilter,
+    setSearchQuery,
+    clearCompleted
+  };
+};
+```
+
+Filtrado Combinado:
+Si seleccionas la categoría "Pendientes" y escribas "fix",
+el sistema buscará solo dentro de las pendientes
+Es un comportamiento de aplicación profesional
+
+useMemo: Solo recalculamos la lista si cambian las tareas, el filtro o la búsqueda
+Esto evita trabajo extra al procesador en cada renderizado de la página.
+
+content: usando task.content
+
+
+### Reducer
+Asegúrate de que tu taskReducer tenga los casos para SET_FILTER y SET_SEARCH_QUERY que actualicen sus respectivos campos en el estado
+actualizar tanto la definición del estado como los casos de acción
+añadir searchQuery al estado global, permites que cualquier cambio en el input del sidebar se propague de forma predecible por toda la aplicación
+
+```
+import { Task, TaskFilter } from '@/core/task.entity';
+import { createTask } from '@/core/task.logic';
+
+// 1. Extendemos la interfaz del estado
+export interface TaskState {
+  tasks: Task[];
+  filter: TaskFilter;
+  searchQuery: string; // 👈 El nuevo miembro del estado
+}
+
+// 2. Definimos el nuevo tipo de acción
+export type TaskAction =
+  | { type: 'ADD_TASK'; payload: string }
+  | { type: 'TOGGLE_TASK'; payload: string }
+  | { type: 'REMOVE_TASK'; payload: string }
+  | { type: 'SET_FILTER'; payload: TaskFilter }
+  | { type: 'SET_SEARCH_QUERY'; payload: string } // 👈 Acción para la búsqueda
+  | { type: 'CLEAR_COMPLETED' };
+
+export const initialTaskState: TaskState = {
+  tasks: [],
+  filter: 'all',
+  searchQuery: '', // 👈 Valor inicial vacío
+};
+
+export const taskReducer = (state: TaskState, action: TaskAction): TaskState => {
+  switch (action.type) {
+    case 'ADD_TASK':
+      return {
+        ...state,
+        tasks: [...state.tasks, createTask(action.payload)],
+      };
+
+    case 'TOGGLE_TASK':
+      return {
+        ...state,
+        tasks: state.tasks.map((task) =>
+          task.id === action.payload
+            ? { ...task, isCompleted: !task.isCompleted }
+            : task
+        ),
+      };
+
+    case 'REMOVE_TASK':
+      return {
+        ...state,
+        tasks: state.tasks.filter((task) => task.id !== action.payload),
+      };
+
+    case 'SET_FILTER':
+      return {
+        ...state,
+        filter: action.payload,
+      };
+
+    // 3. Implementamos la lógica de actualización de búsqueda
+    case 'SET_SEARCH_QUERY':
+      return {
+        ...state,
+        searchQuery: action.payload,
+      };
+
+    case 'CLEAR_COMPLETED':
+      return {
+        ...state,
+        tasks: state.tasks.filter((task) => !task.isCompleted),
+      };
+
+    default:
+      return state;
+  }
+};
+```
+
+
+### TodoPage
+
+Asegúrate de que tu página esté pasando las nuevas propiedades al FilterPanel
+Como ahora el estado de búsqueda vive en el Hook (y por extensión en el Reducer),
+el FilterPanel ya no es dueño de su propio searchTerm, sino que es un mero transmisor
+
+```
+// En TodoPage.tsx
+const { 
+  tasks, 
+  filter, 
+  setFilter, 
+  stats, 
+  searchQuery,    // 👈 Asegúrate de extraer esto del hook
+  setSearchQuery  // 👈 Y esto también
+} = useTasks();
+
+// ...
+
+<FilterPanel 
+  categories={categories}
+  selectedIds={[filter]}
+  onToggleCategory={(id) => setFilter(id as any)}
+  searchQuery={searchQuery}     // 👈 Conexión de bajada
+  onSearchChange={setSearchQuery} // 👈 Conexión de subida
+/>
+```
+
+
+¿Qué pasa cuando la búsqueda no devuelve nada?
+
+Actualmente, tu TodoList muestra el mensaje "No hay tareas pendientes".
+Pero si el usuario buscó "comprar pan" y no aparece nada, el mensaje correcto debería ser
+"No se encontraron tareas que coincidan con tu búsqueda".
+
+#### mejorar tu organismo TodoList así:
+
+```
+// En TodoList.tsx
+export const TodoList = ({ todos, onToggleTodo, onDeleteTodo, isSearching }: TodoListProps) => {
+  if (todos.length === 0) {
+    return (
+      <EmptyState>
+        <Typography variant="h3">
+          {isSearching ? "🔍 Sin resultados" : "📝 Todo listo"}
+        </Typography>
+        <Typography variant="body">
+          {isSearching 
+            ? "Intenta con otras palabras clave" 
+            : "¡Añade algo para empezar el día!"}
+        </Typography>
+      </EmptyState>
+    );
+  }
+  // ... resto del map
+}
+```
+
+
+### Rendimiento
+Como estás filtrando en cada pulsación de tecla
+el cpu agradecerá que el filtrado sea "Case Insensitive" (ignorar mayúsculas) y que use useMemo.
+
+##### hook useTasks, asegúrate de que el useMemo del filtrado tenga a state.searchQuery, en su array de dependencias
+Si no está ahí, la lista no se actualizará cuando el usuario escriba.
+
+```
+// En useTasks.ts (Verifica esto)
+const filteredTasks = useMemo(() => {
+  // ... lógica de filtrado ...
+}, [state.tasks, state.filter, state.searchQuery]); // 👈 ¡Crítico!
+```
+
+
+
+# Componente SearchTask
+
+Sin InputGroup
+
+```
+import React from 'react';
+import { SearchContainer, StyledInput, SearchIcon } from './SearchTask.styles';
+
+interface SearchTaskProps {
+  value: string;
+  onChange: (value: string) => void;
+  placeholder?: string;
+}
+
+export const SearchTask = ({ 
+  value, 
+  onChange, 
+  placeholder = "buscar tareas..." 
+}: SearchTaskProps) => {
+  return (
+    <SearchContainer>
+      {/* Un pequeño detalle visual: icono de lupa tipo Glassmorphism */}
+      <SearchIcon aria-hidden="true">🔍</SearchIcon>
+      <StyledInput
+        type="text"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder}
+        maxLength={40}
+      />
+    </SearchContainer>
+  );
+};
+```
+
+Estilo:
+
+```
+import styled from 'styled-components';
+
+export const SearchContainer = styled.div`
+  display: flex;
+  align-items: center;
+  position: relative;
+  width: 100%;
+  margin-top: 0.5rem;
+`;
+
+export const SearchIcon = styled.span`
+  position: absolute;
+  left: 12px;
+  font-size: 0.9rem;
+  opacity: 0.6;
+`;
+
+export const StyledInput = styled.input`
+  width: 100%;
+  padding: 10px 12px 10px 35px;
+  background: rgba(255, 255, 255, 0.05); // Efecto cristal
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  color: #fff;
+  font-size: 0.9rem;
+  outline: none;
+  transition: all 0.2s ease-in-out;
+
+  &::placeholder {
+    color: rgba(255, 255, 255, 0.3);
+  }
+
+  &:focus {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: #3b82f6; // Un azul sutil para el foco
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+  }
+`;
+```
+
+Integración con FilterPanel
+Limpiamos para que use esta nueva molécula y refleje la estructura visual
+
+```
+// Fragmento del FilterPanel.tsx actualizado
+export const FilterPanel = ({ 
+  categories, 
+  selectedIds, 
+  onToggleCategory,
+  searchQuery,
+  onSearchChange
+}: FilterPanelProps) => {
+  return (
+    <PanelContainer>
+      <PanelHeader>
+        {/* Tu nueva estructura visual */}
+        <Typography variant="h3" style={{ marginBottom: '4px' }}>Tareas</Typography>
+        <Typography variant="caption" color="textSecondary">filtrar por tareas</Typography>
+        
+        <SearchTask 
+          value={searchQuery} 
+          onChange={onSearchChange} 
+        />
+      </PanelHeader>
+
+      <PanelContent>
+        <Typography variant="h4" style={{ margin: '1.5rem 0 0.8rem' }}>
+          Categorías:
+        </Typography>
+        <CategoryList>
+          {categories.map((cat) => (
+            <FilterItem 
+              key={cat.id}
+              label={cat.label}
+              count={cat.count}
+              isSelected={selectedIds.includes(cat.id)}
+              onToggle={() => onToggleCategory(cat.id)}
+            />
+          ))}
+        </CategoryList>
+      </PanelContent>
+    </PanelContainer>
+  );
+};
+```
+
+### Funcionamiento de SearchTask
+
+Captura (El Evento)
+Cuando escribes la letra "f" en el StyledInput, ocurre lo siguiente
+
+```
+// Dentro de SearchTask.tsx
+onChange={(e) => onChange(e.target.value)}
+```
+captura el evento del navegador (e.target.value), pero no lo guarda en un useState local
+Simplemente "grita" ese valor hacia arriba a través de la prop onChange
+
+
+El FilterPanel escucha ese grito y lo pasa a la página:
+
+```
+// Dentro de FilterPanel.tsx
+<SearchTask 
+  value={searchQuery} // Aquí recibe el valor actual para mostrarlo
+  onChange={onSearchChange} // Aquí pasa la función que viene de la página
+/>
+```
+
+Reducer y el Hook
+
+La Acción: Se ejecuta setSearchQuery("f").
+El Estado: El Reducer actualiza el campo searchQuery en el estado global.
+El Filtrado Real: El hook tiene este bloque de código (que es el que realmente "captura" las coincidencias):
+
+```
+// En useTasks.ts
+const filteredTasks = useMemo(() => {
+  return state.tasks.filter((task) => {
+    // Aquí es donde se "cruza" lo que escribiste con tus tareas
+    return task.content.toLowerCase().includes(state.searchQuery.toLowerCase());
+  });
+}, [state.tasks, state.searchQuery]); // 👈 Se ejecuta CADA VEZ que escribes
+```
+
+Resultado UI:
+
+Como el hook useTasks devuelve tasks: filteredTasks, la TodoPage recibe ahora una lista más corta (solo las que tienen una "f").
+Esa lista corta se le pasa al TodoList y ¡listo!, las tareas que no coinciden desaparecen de la pantalla
+
+sincronización de datos:
+
+Subida: El input le dice al Reducer: "El usuario quiere buscar 'fix'".
+Proceso: El Reducer guarda "fix".
+Bajada: El Hook mira todas las tareas, saca las que dicen "fix" y se las entrega a la lista para que las dibuje
+
+
+### Cambios en arquitectura
+
+task.entity.ts
+##### La entidad Task no cambia porque una tarea no sabe que está siendo buscada; ella solo existe
+
+task.logic.ts
+##### La lógica de dominio se encarga de cómo se crea una tarea o cómo se valida
+##### El filtrado por texto es una operación de la interfaz, no una regla de negocio del objeto "Tarea". 
+
+#### task.reducer.ts (Cambio de Estado)
+##### donde añadimos la propiedad searchQuery, define que la búsqueda ahora es parte del "Estado Global" de la aplicación.
+
+```
+// src/context/taskReducer.ts
+
+import { Task, TaskFilter } from '@/core/task.entity';
+import { createTask } from '@/core/task.logic';
+
+export interface TaskState {
+  tasks: Task[];
+  filter: TaskFilter;
+  searchQuery: string; // 👈 Nueva propiedad
+}
+
+export type TaskAction =
+  | { type: 'ADD_TASK'; payload: string }
+  | { type: 'TOGGLE_TASK'; payload: string }
+  | { type: 'REMOVE_TASK'; payload: string }
+  | { type: 'SET_FILTER'; payload: TaskFilter }
+  | { type: 'SET_SEARCH_QUERY'; payload: string } // 👈 Nueva acción
+  | { type: 'CLEAR_COMPLETED' };
+
+export const taskReducer = (state: TaskState, action: TaskAction): TaskState => {
+  switch (action.type) {
+    case 'SET_SEARCH_QUERY':
+      return { ...state, searchQuery: action.payload };
+    
+    case 'SET_FILTER':
+      return { ...state, filter: action.payload };
+
+    // ... (resto de casos ADD_TASK, TOGGLE_TASK, etc. se mantienen igual)
+    default:
+      return state;
+  }
+};
+```
+
+#### useTasks.ts (El Motor de Búsqueda)
+donde "cruzamos" las tareas reales con el texto que el usuario escribe. 
+
+```
+// src/hooks/useTasks.ts
+
+import { useReducer, useMemo } from 'react';
+import { taskReducer, initialTaskState } from '../context/taskReducer';
+
+export const useTasks = () => {
+  const [state, dispatch] = useReducer(taskReducer, initialTaskState);
+
+  // Funciones de despacho (Dispatchers)
+  const setSearchQuery = (query: string) => 
+    dispatch({ type: 'SET_SEARCH_QUERY', payload: query });
+    
+  const setFilter = (filter: any) => 
+    dispatch({ type: 'SET_FILTER', payload: filter });
+
+  // --- EL CEREBRO DEL FILTRADO ---
+  const filteredTasks = useMemo(() => {
+    return state.tasks.filter((task) => {
+      // Primero: ¿Cumple con el filtro de categoría (Todas/Pendientes...)?
+      const matchesFilter = 
+        state.filter === 'all' || 
+        (state.filter === 'pending' && !task.isCompleted) || 
+        (state.filter === 'completed' && task.isCompleted);
+
+      // Segundo: ¿Cumple con lo que el usuario escribió en el buscador?
+      const matchesSearch = task.content
+        .toLowerCase()
+        .includes(state.searchQuery.toLowerCase());
+
+      return matchesFilter && matchesSearch;
+    });
+  }, [state.tasks, state.filter, state.searchQuery]); // 👈 Dependencias críticas
+
+  return {
+    tasks: filteredTasks, // La UI solo recibe las tareas que pasaron los filtros
+    searchQuery: state.searchQuery,
+    filter: state.filter,
+    setSearchQuery,
+    setFilter,
+    // ... add, toggle, remove
+  };
+};
+```
+
+### Actualizar FilterPanel
+
+```
+// src/components/organisms/FilterPanel/FilterPanel.tsx
+
+import { useId } from 'react';
+import { FilterItem } from '../../molecules/FilterItem/FilterItem';
+import { SearchTask } from '../../molecules/SearchTask/SearchTask'; // 👈 Importamos la nueva molécula
+import { Typography } from '../../atoms/Typography/Typography';
+import { 
+  PanelContainer, 
+  PanelHeader, 
+  PanelContent, 
+  CategoryList 
+} from './FilterPanel.styles';
+
+interface Category {
+  id: string;
+  label: string;
+  count: number;
+}
+
+interface FilterPanelProps {
+  categories: Category[];
+  selectedIds: string[];
+  onToggleCategory: (id: string) => void;
+  searchQuery: string;      // 👈 Prop de bajada
+  onSearchChange: (v: string) => void; // 👈 Prop de subida
+}
+
+export const FilterPanel = ({ 
+  categories, 
+  selectedIds, 
+  onToggleCategory,
+  searchQuery,
+  onSearchChange
+}: FilterPanelProps) => {
+  const titleId = useId();
+
+  return (
+    <PanelContainer aria-labelledby={titleId}>
+      <PanelHeader>
+        {/* Sección de Tareas según tu nuevo esquema */}
+        <Typography variant="h2" style={{ fontSize: '1.2rem', marginBottom: '4px' }}>
+          Tareas
+        </Typography>
+        <Typography variant="caption" color="textSecondary" style={{ marginBottom: '8px', display: 'block' }}>
+          filtrar por tareas
+        </Typography>
+        
+        {/* Nuestra nueva molécula limpia */}
+        <SearchTask 
+          value={searchQuery} 
+          onChange={onSearchChange} 
+          placeholder="buscar tareas..."
+        />
+      </PanelHeader>
+
+      <PanelContent>
+        {/* Sección de Categorías */}
+        <Typography id={titleId} variant="h3" style={{ fontSize: '1rem', margin: '1.5rem 0 0.8rem' }}>
+          Categorías:
+        </Typography>
+        
+        <CategoryList aria-label="Lista de filtros de estado">
+          {categories.map((category) => (
+            <li key={category.id}>
+              <FilterItem
+                label={category.label}
+                count={category.count}
+                isSelected={selectedIds.includes(category.id)}
+                onToggle={() => onToggleCategory(category.id)}
+              />
+            </li>
+          ))}
+        </CategoryList>
+      </PanelContent>
+    </PanelContainer>
+  );
+};
+```
+
+
+#### Actualización TodoPage.tsx
+mediador. Extrae el estado del Hook y se lo entrega al Organismo.
+
+```
+// src/components/pages/TodoPage/TodoPage.tsx
+
+import { useMemo } from 'react';
+import { useTasks } from '../../../hooks/useTasks';
+import { DashboardTemplate } from '../../templates/DashboardTemplate/DashboardTemplate';
+import { TodoTemplate } from '../../templates/TodoTemplate/TodoTemplate';
+import { FilterPanel } from '../../organisms/FilterPanel/FilterPanel';
+import { TodoList } from '../../organisms/TodoList/TodoList';
+import { TodoInput } from '../../molecules/TodoInput/TodoInput';
+import { Typography } from '../../atoms/Typography/Typography';
+
+export const TodoPage = () => {
+  // 1. Extraemos todo lo necesario del hook
+  const { 
+    tasks, add, toggle, remove, 
+    filter, setFilter, stats, 
+    searchQuery, setSearchQuery // 👈 Los nuevos inquilinos
+  } = useTasks();
+
+  // 2. Mapeamos stats para el FilterPanel
+  const categories = useMemo(() => [
+    { id: 'all', label: 'Todas', count: stats.total },
+    { id: 'pending', label: 'Pendientes', count: stats.pending },
+    { id: 'completed', label: 'Completadas', count: stats.completed },
+  ], [stats]);
+
+  return (
+    <DashboardTemplate
+      header={<Typography variant="h2" color="white">Liquid Task</Typography>}
+      sidebar={
+        <FilterPanel 
+          categories={categories}
+          selectedIds={[filter]}
+          onToggleCategory={(id) => setFilter(id as any)}
+          // 3. Conectamos la búsqueda aquí
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery}
+        />
+      }
+    >
+      <TodoTemplate
+        header={
+          <div style={{ marginBottom: '1rem' }}>
+            <Typography variant="h1">
+              {filter === 'all' ? 'Mis Tareas' : filter === 'pending' ? 'Pendientes' : 'Completadas'}
+            </Typography>
+            {/* Si hay búsqueda activa, podemos dar feedback visual aquí también */}
+            <Typography variant="body" color="textSecondary">
+              {searchQuery 
+                ? `Buscando "${searchQuery}"...` 
+                : `Tienes ${stats.pending} asuntos por resolver hoy.`}
+            </Typography>
+          </div>
+        }
+        inputSlot={<TodoInput onAdd={add} />}
+        listSlot={
+          <TodoList 
+            todos={tasks} // Estas tareas ya vienen filtradas por el hook
+            onToggleTodo={toggle} 
+            onDeleteTodo={remove} 
+          />
+        }
+      />
+    </DashboardTemplate>
+  );
+};
+```
+
+
+# TaskPanel
+
+Estado Centralizado:
+El componente no sacará la información de "sí mismo",
+sino de un Estado Central (que en tu caso reside en el taskReducer).
+
+`tasks`: El array con todos los objetos de tareas (cada una con su id, content e isCompleted).
+
+`searchQuery`: El texto que el usuario está escribiendo.
+
+`filter`: El estado del botón seleccionado (all, pending, completed).
+
+
+Buscador:
+no necesita conocer las tareas
+Su única responsabilidad es capturar lo que el usuario escribe.
+
+Proceso: Cuando escribes "comprar", el componente simplemente envía ese texto al useTasks.
+
+Captura: El "rastreo" ocurre en el Hook
+El Hook toma la lista completa de tareas del Reducer
+y crea una nueva lista filtrada en tiempo real.
+
+Resultado: El buscador no "capta" las tareas
+el sistema "esconde" las tareas que no coinciden con lo que el buscador dice.
+
+
+Botones de filtro:
+muestren el número correcto y filtren bien, necesitan dos tipos de datos que el Hook debe procesar
+
+1. Cálculo de Estadísticas (Derivación de datos)
+El Hook recorre el array de tareas original y cuenta cuántas tienen isCompleted: true y cuántas false
+Estos números se le pasan al componente como Props (propiedades).
+
+2. Filtro de Estado
+Cuando pulsas "Pendientes", el componente le avisa al Hook
+El Hook entonces filtra la lista basándose en la propiedad isCompleted de cada tarea.
+
+
+Contrato: información que necesita
+Para que el componente sea independiente y limpio, recibirá la información a través de una Interfaz (Props) muy clara
+No irá a buscar la información a la base de datos ni al almacenamiento; esperará a que el useTasks se la entregue "masticada
+
+
+Flujo:
+
+1. Entrada: El usuario interactúa con el buscador o los botones.
+2. Acción: El componente emite un evento (onSearchChange o onFilterChange).
+3. Proceso: El Hook/Reducer actualiza el estado global.
+4. Cálculo: El Hook recalcula qué tareas mostrar y qué números poner en los botones (usando useMemo para no sobrecargar tu procesador).
+5. Salida: El componente recibe las nuevas props y se repinta con la información actualizada
+
+
+Organismo: 
+su trabajo es orquestar esas dos funciones independientes (Búsqueda y Filtrado) en una sola interfaz coherente.
+no tiene lógica interna pesada, solo recibe datos y emite eventos.
+
+TaskPanel.tsx
+
+```
+import { useId } from 'react';
+import { FilterItem } from '../../molecules/FilterItem/FilterItem';
+import { SearchTask } from '../../molecules/SearchTask/SearchTask';
+import { Typography } from '../../atoms/Typography/Typography';
+import { 
+  PanelContainer, 
+  PanelSection, 
+  CategoryList 
+} from './TaskPanel.styles';
+
+// Definimos el contrato de datos del componente
+interface Category {
+  id: string;
+  label: string;
+  count: number;
+}
+
+interface TaskPanelProps {
+  // Props para el Buscador
+  searchQuery: string;
+  onSearchChange: (value: string) => void;
+  
+  // Props para los Filtros
+  categories: Category[];
+  activeFilterId: string;
+  onFilterChange: (id: string) => void;
+  
+  // Personalización
+  title?: string;
+}
+
+export const TaskPanel = ({
+  searchQuery,
+  onSearchChange,
+  categories,
+  activeFilterId,
+  onFilterChange,
+  title = "Categorías"
+}: TaskPanelProps) => {
+  const categoriesTitleId = useId();
+
+  return (
+    <PanelContainer>
+      {/* SECCIÓN 1: BÚSQUEDA (Independiente) */}
+      <PanelSection>
+        <Typography variant="h2" style={{ fontSize: '1.2rem', marginBottom: '4px' }}>
+          Tareas
+        </Typography>
+        <Typography variant="caption" color="textSecondary" style={{ display: 'block', marginBottom: '12px' }}>
+          filtrar por tareas
+        </Typography>
+        
+        <SearchTask 
+          value={searchQuery} 
+          onChange={onSearchChange} 
+          placeholder="buscar tareas..."
+        />
+      </PanelSection>
+
+      {/* SECCIÓN 2: FILTRADO POR ESTADO */}
+      <PanelSection>
+        <Typography 
+          id={categoriesTitleId} 
+          variant="h3" 
+          style={{ fontSize: '1rem', marginTop: '1rem', marginBottom: '12px' }}
+        >
+          {title}:
+        </Typography>
+
+        <CategoryList aria-labelledby={categoriesTitleId}>
+          {categories.map((category) => (
+            <li key={category.id}>
+              <FilterItem
+                label={category.label}
+                count={category.count}
+                isSelected={activeFilterId === category.id}
+                onToggle={() => onFilterChange(category.id)}
+              />
+            </li>
+          ))}
+        </CategoryList>
+      </PanelSection>
+    </PanelContainer>
+  );
+};
+```
+
+
+### SearchTask
+
+```
+import React from 'react';
+import { SearchContainer, StyledInput, SearchIcon } from './SearchTask.styles';
+
+interface SearchTaskProps {
+  value: string;
+  onChange: (value: string) => void;
+  placeholder?: string;
+}
+
+export const SearchTask = ({ 
+  value, 
+  onChange, 
+  placeholder = "buscar tareas..." 
+}: SearchTaskProps) => {
+  return (
+    <SearchContainer>
+      {/* Icono decorativo de lupa */}
+      <SearchIcon aria-hidden="true">🔍</SearchIcon>
+      <StyledInput
+        type="text"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder}
+        maxLength={40}
+      />
+    </SearchContainer>
+  );
+};
+```
+
+Estilo
+
+```
+
+import styled from 'styled-components';
+
+export const SearchContainer = styled.div`
+  display: flex;
+  align-items: center;
+  position: relative;
+  width: 100%;
+`;
+
+export const SearchIcon = styled.span`
+  position: absolute;
+  left: 12px;
+  font-size: 0.9rem;
+  opacity: 0.5;
+  pointer-events: none; // Para que no interfiera al hacer click en el input
+`;
+
+export const StyledInput = styled.input`
+  width: 100%;
+  padding: 10px 12px 10px 36px; // Espacio extra a la izquierda para el icono
+  
+  /* Estilo Liquid Glass */
+  background: rgba(255, 255, 255, 0.05); 
+  backdrop-filter: blur(4px); // Efecto de desenfoque detrás del cristal
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  
+  color: #ffffff;
+  font-size: 0.9rem;
+  outline: none;
+  transition: all 0.2s ease-in-out;
+
+  &::placeholder {
+    color: rgba(255, 255, 255, 0.3);
+  }
+
+  &:focus {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.05);
+  }
+`;
+```
+
+Estado Externo: El componente no guarda lo que escribes. Recibe el texto a través de la prop value.
+
+El Evento (Subida): Cuando pulsas una tecla, el input dispara onChange. Este componente captura el evento del navegador y "extrae" solo el texto (e.target.value), pasándoselo a la función que recibió por props.
+
+La Reacción (Bajada): El texto viaja hasta tu Reducer, se guarda allí, y React vuelve a renderizar el TaskPanel con el nuevo valor. Este nuevo valor vuelve a entrar por la prop value, haciendo que el input muestre la letra que acabas de escribir
+
+
+### Cambios
+
+1. task.entity.ts y task.logic.ts (SIN CAMBIOS)
+##### una "Tarea" (entidad) no cambia su esencia solo porque la estemos buscando
+##### Las reglas de negocio (lógica) siguen siendo las mismas: crear, validar o completar
+##### El filtrado es una preocupación de la Capa de Aplicación, no del núcleo
+
+2. task.reducer.ts (Cambio en el Estado)
+Necesitamos que el estado global "recuerde" qué es lo que el usuario está escribiendo
+Añadimos searchQuery al estado y una acción para actualizarlo.
+
+```
+// src/context/taskReducer.ts
+
+export interface TaskState {
+  tasks: Task[];
+  filter: TaskFilter;
+  searchQuery: string; // 👈 Agregamos esto
+}
+
+export type TaskAction =
+  | { type: 'ADD_TASK'; payload: string }
+  | { type: 'TOGGLE_TASK'; payload: string }
+  | { type: 'REMOVE_TASK'; payload: string }
+  | { type: 'SET_FILTER'; payload: TaskFilter }
+  | { type: 'SET_SEARCH_QUERY'; payload: string } // 👈 Nueva acción
+  | { type: 'CLEAR_COMPLETED' };
+
+export const taskReducer = (state: TaskState, action: TaskAction): TaskState => {
+  switch (action.type) {
+    case 'SET_SEARCH_QUERY':
+      return { ...state, searchQuery: action.payload };
+    
+    case 'SET_FILTER':
+      return { ...state, filter: action.payload };
+
+    // ... resto de casos iguales
+    default:
+      return state;
+  }
+};
+```
+
+3. useTasks.ts (El motor de procesamiento)
+donde ocurre la magia
+El hook se encarga de cruzar los datos
+usamos useMemo para que el filtrado solo ocurra cuando realmente sea necesario
+
+```
+// src/hooks/useTasks.ts
+
+import { useReducer, useMemo } from 'react';
+import { taskReducer, initialTaskState } from '../context/taskReducer';
+
+export const useTasks = () => {
+  const [state, dispatch] = useReducer(taskReducer, initialTaskState);
+
+  // Acciones para que TaskPanel las use
+  const setSearchQuery = (query: string) => 
+    dispatch({ type: 'SET_SEARCH_QUERY', payload: query });
+    
+  const setFilter = (filter: any) => 
+    dispatch({ type: 'SET_FILTER', payload: filter });
+
+  // FILTRADO COMBINADO: El corazón del sistema
+  const filteredTasks = useMemo(() => {
+    return state.tasks.filter((task) => {
+      // 1. ¿Coincide con la categoría (Pendiente/Completada)?
+      const matchesFilter = 
+        state.filter === 'all' || 
+        (state.filter === 'pending' && !task.isCompleted) || 
+        (state.filter === 'completed' && task.isCompleted);
+
+      // 2. ¿Coincide con el texto buscado?
+      const matchesSearch = task.content
+        .toLowerCase()
+        .includes(state.searchQuery.toLowerCase());
+
+      return matchesFilter && matchesSearch;
+    });
+  }, [state.tasks, state.filter, state.searchQuery]); // 👈 Si algo de esto cambia, se recalcula
+
+  // Estadísticas para los botones de categorías
+  const stats = useMemo(() => ({
+    total: state.tasks.length,
+    pending: state.tasks.filter(t => !t.isCompleted).length,
+    completed: state.tasks.filter(t => t.isCompleted).length,
+  }), [state.tasks]);
+
+  return {
+    tasks: filteredTasks, // La UI recibe la lista final "limpia"
+    searchQuery: state.searchQuery,
+    filter: state.filter,
+    stats,
+    setSearchQuery,
+    setFilter,
+    // ... add, toggle, remove
+  };
+};
+```
+
+
+### TaskPanel y SearchTask sin consumir arq
+
+mantener el "Core" de tu aplicación intacto
+o cuando estás trabajando en una arquitectura donde no tienes permiso para tocar el Reducer
+
+La clave está en manejar la búsqueda y el filtrado como "Estado de Interfaz"
+exclusivamente dentro de la página (TodoPage).
+
+#### Interceptador
+En lugar de que el Hook te dé las tareas ya filtradas
+el Hook te dará la lista completa (sin procesar),
+tú harás el filtrado "al vuelo" dentro de la TodoPage antes de pasárselas al TodoList
+
+TodoPage:
+
+```
+import { useState, useMemo } from 'react'; // Usamos useState local
+import { useTasks } from '../../../hooks/useTasks';
+// ... importaciones de componentes (TaskPanel, TodoList, etc.)
+
+export const TodoPage = () => {
+  // 1. El Hook se queda igual (Arquitectura intacta)
+  // Solo extraemos lo que ya tiene: tasks, add, toggle, remove...
+  const { tasks, add, toggle, remove } = useTasks();
+
+  // 2. Creamos estado LOCAL para la UI
+  // Esto no toca el Reducer, vive solo mientras la página está abierta
+  const [searchQuery, setSearchQuery] = useState('');
+  const [activeFilter, setActiveFilter] = useState<'all' | 'pending' | 'completed'>('all');
+
+  // 3. El "Filtro al vuelo" (Lógica local)
+  // Aquí es donde sucede la magia sin tocar el core
+  const filteredTasks = useMemo(() => {
+    return tasks.filter((task) => {
+      // Filtro de categoría
+      const matchesFilter = 
+        activeFilter === 'all' || 
+        (activeFilter === 'pending' && !task.isCompleted) || 
+        (activeFilter === 'completed' && task.isCompleted);
+
+      // Filtro de búsqueda
+      const matchesSearch = task.content
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase());
+
+      return matchesFilter && matchesSearch;
+    });
+  }, [tasks, activeFilter, searchQuery]); // Recalcula si cambia el estado local o las tareas del hook
+
+  // 4. Calculamos stats locales para los botones
+  const categories = useMemo(() => [
+    { id: 'all', label: 'Todas', count: tasks.length },
+    { id: 'pending', label: 'Pendientes', count: tasks.filter(t => !t.isCompleted).length },
+    { id: 'completed', label: 'Completadas', count: tasks.filter(t => t.isCompleted).length },
+  ], [tasks]);
+
+  return (
+    <DashboardTemplate
+      sidebar={
+        <TaskPanel 
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery} // Actualiza el useState local
+          categories={categories}
+          activeFilterId={activeFilter}
+          onFilterChange={(id) => setActiveFilter(id as any)} // Actualiza el useState local
+        />
+      }
+    >
+      <TodoTemplate
+        inputSlot={<TodoInput onAdd={add} />}
+        listSlot={
+          <TodoList 
+            todos={filteredTasks} // Le pasamos la lista "interceptada" y filtrada aquí mismo
+            onToggleTodo={toggle} 
+            onDeleteTodo={remove} 
+          />
+        }
+      />
+    </DashboardTemplate>
+  );
+};
+```
+
+Cero cambios en el Core: No tocas task.reducer.ts, ni useTasks.ts, ni las entidades. Tu arquitectura original permanece pura
+Velocidad de Desarrollo: Implementas la funcionalidad en un solo archivo (TodoPage).
+Independencia: Si usaras la lista de tareas en otra página diferente, esa página vería todas las tareas sin filtrar, porque el filtro solo existe en TodoPage
+
+##### Desventaja: Persistencia: Si el usuario escribe algo en el buscador, navega a otra página y vuelve, la búsqueda se habrá borrado (porque el useState local se reinicia).
+Si estuviera en el Reducer, podrías mantenerla.
+
+Reutilización: Si quisieras tener este mismo buscador en otra pantalla, tendrías que copiar y pegar la lógica del useMemo.
+
+
+# División de componentes: buscador y filtrado
+
+Dividir TaskPanel en dos Organismos independientes
+permite una flexibilidad total
+podrías poner el buscador en el header y los filtros en el sidebar sin que el código se rompa
+
+
+1. TaskSearch
+se encarga exclusivamente de la entrada de texto y su contexto visual
+
+```
+// src/components/organisms/TaskSearch/TaskSearch.tsx
+import { SearchTask } from '../../molecules/SearchTask/SearchTask';
+import { Typography } from '../../atoms/Typography/Typography';
+import { SearchSectionContainer } from './TaskSearch.styles';
+
+interface TaskSearchProps {
+  value: string;
+  onChange: (value: string) => void;
+  title?: string;
+  subtitle?: string;
+}
+
+export const TaskSearch = ({ 
+  value, 
+  onChange, 
+  title = "Tareas", 
+  subtitle = "filtrar por tareas" 
+}: TaskSearchProps) => {
+  return (
+    <SearchSectionContainer>
+      <Typography variant="h2" style={{ fontSize: '1.2rem', marginBottom: '4px' }}>
+        {title}
+      </Typography>
+      <Typography variant="caption" color="textSecondary" style={{ display: 'block', marginBottom: '12px' }}>
+        {subtitle}
+      </Typography>
+      
+      <SearchTask 
+        value={value} 
+        onChange={onChange} 
+        placeholder="buscar tareas..."
+      />
+    </SearchSectionContainer>
+  );
+};
+```
+
+
+2. CategoryFilter
+se encarga de la navegación por estados (Todas, Pendientes, Completadas).
+
+```
+// src/components/organisms/CategoryFilter/CategoryFilter.tsx
+import { useId } from 'react';
+import { FilterItem } from '../../molecules/FilterItem/FilterItem';
+import { Typography } from '../../atoms/Typography/Typography';
+import { FilterSectionContainer, CategoryList } from './CategoryFilter.styles';
+
+interface Category {
+  id: string;
+  label: string;
+  count: number;
+}
+
+interface CategoryFilterProps {
+  categories: Category[];
+  activeFilterId: string;
+  onFilterChange: (id: string) => void;
+  title?: string;
+}
+
+export const CategoryFilter = ({
+  categories,
+  activeFilterId,
+  onFilterChange,
+  title = "Categorías"
+}: CategoryFilterProps) => {
+  const titleId = useId();
+
+  return (
+    <FilterSectionContainer>
+      <Typography 
+        id={titleId} 
+        variant="h3" 
+        style={{ fontSize: '1rem', marginBottom: '12px' }}
+      >
+        {title}:
+      </Typography>
+
+      <CategoryList aria-labelledby={titleId}>
+        {categories.map((category) => (
+          <li key={category.id}>
+            <FilterItem
+              label={category.label}
+              count={category.count}
+              isSelected={activeFilterId === category.id}
+              onToggle={() => onFilterChange(category.id)}
+            />
+          </li>
+        ))}
+      </CategoryList>
+    </FilterSectionContainer>
+  );
+};
+```
+
+Independencia de Props: TaskSearch no necesita saber nada de categorías o contadores. Solo necesita un string y una función
+Escalabilidad: Si mañana decides añadir un filtro por "Prioridad" o "Fecha", solo tienes que crear un nuevo organismo o duplicar CategoryFilter sin tocar el código del buscador
+
+Composición en la Página: Ahora en tu TodoPage o en tu DashboardTemplate, puedes decidir exactamente dónde va cada pieza:
+
+Ej:
+
+```
+// Ejemplo de uso en el sidebar
+<aside>
+  <TaskSearch value={searchQuery} onChange={setSearchQuery} />
+  <div style={{ height: '2rem' }} /> {/* Espaciador sutil */}
+  <CategoryFilter 
+    categories={categories} 
+    activeFilterId={filter} 
+    onFilterChange={setFilter} 
+  />
+</aside>
+```
+
+React puede optimizar mejor los re-renderizados.
+Si el usuario escribe en el buscador, solo se re-renderiza el árbol de TaskSearch, dejando a CategoryFilter tranquilo y ahorrando ciclos de CPU.
+
+
+## Unión de componentes
+
+TaskSidebar.tsx
+
+```
+// src/components/organisms/TaskSidebar/TaskSidebar.tsx
+import { TaskSearch } from '../TaskSearch/TaskSearch';
+import { CategoryFilter } from '../CategoryFilter/CategoryFilter';
+import { SidebarContainer, SectionSpacer } from './TaskSidebar.styles';
+
+// Definimos el contrato de datos: es la suma de las necesidades de sus hijos
+interface Category {
+  id: string;
+  label: string;
+  count: number;
+}
+
+interface TaskSidebarProps {
+  // Props para el buscador (TaskSearch)
+  searchQuery: string;
+  onSearchChange: (value: string) => void;
+  
+  // Props para los filtros (CategoryFilter)
+  categories: Category[];
+  activeFilterId: string;
+  onFilterChange: (id: string) => void;
+}
+
+export const TaskSidebar = ({
+  searchQuery,
+  onSearchChange,
+  categories,
+  activeFilterId,
+  onFilterChange
+}: TaskSidebarProps) => {
+  return (
+    <SidebarContainer>
+      {/* Primer bloque independiente: Búsqueda */}
+      <TaskSearch 
+        value={searchQuery} 
+        onChange={onSearchChange} 
+      />
+
+      {/* Espaciador visual para mantener la jerarquía de Liquid Glass */}
+      <SectionSpacer />
+
+      {/* Segundo bloque independiente: Categorías */}
+      <CategoryFilter 
+        categories={categories}
+        activeFilterId={activeFilterId}
+        onFilterChange={onFilterChange}
+      />
+    </SidebarContainer>
+  );
+};
+```
+
+Desacoplamiento total: Si mañana decides que el buscador debe ir en la barra superior (Header) y las categorías deben quedarse en el lateral, solo tienes que desmontar este TaskSidebar y usar los componentes por separado
+No tienes que reescribir la lógica.
+
+Prop Drilling controlado: Este componente solo pasa las props un nivel hacia abajo
+Es el máximo permitido antes de que el código se vuelva difícil de mantener
+
+Simplicidad visual: Al usar un SectionSpacer o simplemente márgenes en su archivo de estilos
+mantienes ese aire minimalista y ordenado que requiere tu configuración
+
+
+## Flujo de Datos
+
+##### 1. La Página (TodoPage) le pasa todo a TaskSidebar.
+
+##### 2. TaskSidebar reparte: el texto a la izquierda (TaskSearch) y los filtros a la derecha (CategoryFilter).
+
+
+
+## Molécula y Organismo: buscador
+
+1. SearchTask (Molécula)
+componente técnico
+Su única preocupación es ser un input que se vea bien y funcione correctamente
+
+Un campo de texto con un icono de lupa y estilos de cristal (Glassmorphism).
+
+Responsabilidad: Manejar el foco, los estilos del input y capturar las teclas.
+
+##### Es genérico. Podrías usar este mismo componente para buscar amigos, buscar configuraciones o buscar archivos. No sabe nada de "Tareas".
+
+
+2. TaskSearch (Organismo)
+componente de negocio
+Su preocupación es darle sentido a ese input dentro de tu aplicación de tareas
+
+Una sección que agrupa un título ("Tareas"), un subtítulo descriptivo ("filtrar por tareas") y el buscador (SearchTask).
+
+##### Responsabilidad: Definir la estructura visual de la zona de búsqueda y el espaciado.
+
+##### Contexto: Es específico. Está diseñado para el panel lateral de tu app de tareas
+
+
+### Relación contenedor a contenido:
+
+```
+// TaskSearch (jefe)
+export const TaskSearch = ({ value, onChange }) => (
+  <Container>
+    <Typography variant="h2">Tareas</Typography> {/* Contexto */}
+    <Typography variant="caption">filtrar...</Typography> {/* Contexto */}
+    
+    <SearchTask value={value} onChange={onChange} /> {/* Herramienta */}
+  </Container>
+);
+
+```
+
+##### Si mañana decides que el buscador ya no debe tener el título "Tareas" arriba, solo cambias el Organismo (TaskSearch).
+
+No tienes que tocar la Molécula (SearchTask), que sigue siendo un input perfecto y limpio.
+
+##### SearchTask es el binario (el programa) y TaskSearch es el archivo de configuración que dice cómo y dónde se muestra.
+
+
+
+# Buscador genérico vs especifico
+
+Buscador Genérico (Global): portal
+Se usa cuando el usuario no sabe exactamente dónde está lo que busca
+Es "ruidoso" por naturaleza porque busca en todo el ecosistema (tareas, notas, archivos, etiquetas).
+Es para un Dashboard o una pantalla de inicio.
+
+Específico (Contextual): Es una lupa
+Se usa cuando el usuario ya entró en una "habitación" (ej. el panel de tareas)
+y solo quiere encontrar algo dentro de ese cajón
+Es "silencioso" y rápido
+
+Si la acción principal de la pantalla es la gestión
+(ej. "limpiar mis tareas de hoy")
+usa uno específico
+
+Si la acción es la exploración
+(ej. "quiero ver qué tengo pendiente en toda la app")
+usa uno genérico.
+
+
+Encapsulamiento de Contexto:
+Principio de Menor Sorpresa
+
+Si estoy en el panel de "Tareas Completadas" y el buscador me devuelve resultados de "Tareas Pendientes" o de "Notas de Configuración"
+el buscador me está "mintiendo" o rompiendo mi contexto actual.
+
+El buscador específico respeta las fronteras que el usuario ya decidió cruzar.
+
+##### Un buscador genérico no se transforma en uno específico; se especializa mediante una envoltura (wrapper).
+
+##### El ADN es el mismo: Ambos comparten la tecnología de "entrada de texto" y "procesamiento de coincidencia"
+
+La máscara cambia: El buscador genérico es un ente solitario
+El buscador específico "hereda" los filtros de la pantalla donde vive.
+
+Ej: Imagina que tienes un motor de búsqueda
+En el modo genérico, el motor busca en toda la base de datos
+En el modo específico, el motor recibe un parámetro invisible: "solo busca en lo que el usuario está viendo ahora".
+
+
+"Scope" (Alcance):
+Un buscador genérico suele estar en la parte superior (Header), indicando que manda sobre toda la página.
+
+Un buscador específico suele estar dentro de un panel o sección (como nuestro TaskPanel)
+indicando que su poder se limita a ese cuadro de cristal
+
+
+
+## SearchTask, TaskSearch e Inputs
+
+"podría usarse para buscar: amigos, buscar configuraciones o buscar archivos. No sabe nada de 'Tareas'." 
+
+Cambio de identidad:
+pequeño refactor para convertirlo en un componente puramente técnico
+
+1. SearchTask a SearchInput:
+quitarle la etiqueta de "tareas" al nombre y al valor por defecto
+
+```
+// Lo renombramos a SearchInput (Molecula genérica)
+export const SearchInput = ({ 
+  value, 
+  onChange, 
+  placeholder = "buscar..." // Un valor por defecto neutral
+}: SearchTaskProps) => {
+  return (
+    <SearchContainer>
+      <SearchIcon aria-hidden="true">🔍</SearchIcon>
+      <StyledInput
+        type="text"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder} // El contexto lo da quien lo usa
+        maxLength={40}
+      />
+    </SearchContainer>
+  );
+};
+```
+
+Ej buscar amigos
+
+Organismo. Creamos un componente que use esa molécula genérica y le dé el contexto de "Amigos".
+
+```
+// Un nuevo Organismo: FriendSearch.tsx
+import { SearchInput } from '../../molecules/SearchInput/SearchInput';
+
+export const FriendSearch = ({ query, setQuery }) => {
+  return (
+    <section>
+      <h2>Mis Contactos</h2>
+      <SearchInput 
+        value={query}
+        onChange={setQuery}
+        placeholder="Buscar amigos por nombre..." 
+      />
+    </section>
+  );
+};
+```
+
+No se ha cambiado el componente:
+
+La Prop placeholder: Es la voz del componente
+El componente simplemente "repite" lo que le pides.
+
+Nombre (Semántica): Al llamarse SearchInput, ya no estás mintiendo al código
+Es un "Input de búsqueda" y punto.
+
+##### Función de Callback: En el caso de tareas, el onChange enviaba el texto a un taskReducer
+En el caso de amigos, lo enviaría a un friendReducer o a una API de contactos
+
+Concepto clave: La molécula es el contenedor de la interacción
+(el dibujo de la lupa, el efecto de cristal, el foco del teclado)
+
+El contexto (qué estás buscando) lo inyectas tú desde un nivel superior.
+
+
+Es como tener un buen motor (el componente): hoy lo montas en un coche (Tareas)
+y mañana en un barco (Amigos), pero el motor sigue haciendo exactamente lo mismo
+procesar combustible (texto) para generar movimiento (búsqueda).
+
+
+## Refactor
+
+Importar Input (Átomo):
+En Atomic Design, una molécula como SearchInput es básicamente un "ensamblado" de átomos.
+
+Si mañana decides que todos los campos de texto en tu app tengan un borde color "vidrio esmerilado", solo lo cambias en Input.styles.ts
+mágicamente tu buscador también se actualiza.
+
+DRY (Don't Repeat Yourself): Evitas tener dos archivos de estilos (Input.styles.ts y SearchTask.styles.ts) definiendo lo mismo (colores, sombras, tipografía).
+
+Jerarquía: Una molécula (SearchInput) no suele importar otra molécula (InputGroup).
+
+
+```
+// src/components/molecules/SearchInput/SearchInput.tsx
+import { Input } from '../../atoms/Input/Input'; // 👈 Reutilizamos el ADN
+import { SearchContainer, SearchIcon } from './SearchInput.styles';
+
+export const SearchInput = ({ value, onChange, placeholder = "buscar..." }) => {
+  return (
+    <SearchContainer>
+      <SearchIcon>🔍</SearchIcon>
+      
+      {/* Usamos el átomo genérico. 
+        Nota: El Input espera un evento (e), 
+        así que lo manejamos aquí mismo. 
+      */}
+      <Input
+        value={value}
+        onChange={onChange} // El Input ya sabe manejar el evento
+        placeholder={placeholder}
+      />
+    </SearchContainer>
+  );
+};
+```
+
+Input (Átomo): Es el material (cristal).
+
+SearchInput (Molécula): Es el objeto (una lupa de cristal).
+
+InputGroup (Molécula): Es otro objeto distinto (un frasco con etiqueta).
+
+TaskSearch (Organismo): Es la estantería donde pones la lupa.
+
+
+
+## Input vs InputGroup
+
+Input:
+Ideal para lugares donde el contexto ya es obvio. Por ejemplo, en tu buscador o en una celda de una tabla.
+No necesita etiquetas porque su ubicación ya explica lo que hace.
+
+Solo se encarga de la interacción técnica (teclado, eventos, estados de foco).
+Ventaja: Es ultra-ligero y fácil de colocar en cualquier hueco pequeño de la UI.
+
+
+InputGroup: campo de formulario)
+terreno de la experiencia de usuario (UX) y la accesibilidad.
+
+Uso: Formularios, creación de tareas, edición de perfiles.
+Se usa siempre que necesites guiar al usuario explícitamente ("Escribe el título aquí") y darle feedback (el contador de caracteres).
+
+Es un conjunto. Incluye un Label (crítico para lectores de pantalla)
+un Badge (lógica de negocio sobre la longitud del texto).
+
+Actualmente, InputGroup está usando un StyledInput propio en lugar de importar el átomo Input
+Esto significa que si mañana decides que todos los inputs tengan un borde azul neón, tendrás que cambiarlo en dos archivos diferentes
+
+
+##### Nota de arquitectura: El hecho de que InputGroup no importe a Input es una "fuga" de diseño atómico. La molécula debería estar construida con átomos
