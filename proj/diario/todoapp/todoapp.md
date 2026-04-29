@@ -10187,3 +10187,1612 @@ Esto significa que si mañana decides que todos los inputs tengan un borde azul 
 
 
 ##### Nota de arquitectura: El hecho de que InputGroup no importe a Input es una "fuga" de diseño atómico. La molécula debería estar construida con átomos
+
+
+
+# Bugs
+
+## 1. Más allá de los Tests
+
+### 1. TypeScript Check:
+A veces el editor se salta errores si hay muchos archivos abiertos.
+
+`npx tsc --noEmit`
+
+
+## 2. Pruebas de "Stress" en el LocalStorage:
+Como usas un storageService, un bug común es la corrupción de datos.
+
+1. Cierra la app, ve a la consola del navegador:
+escribe: `localStorage.setItem('tasks', 'esto no es un json')`.
+
+2. Recarga la app: Se rompe o maneja el error con gracia?
+Tu servicio debería tener un try/catch para estos casos.
+
+
+### 3. Monkey Testing (Pruebas de Estrés Humano): Intenta romper la lógica de negocio
+
+##### Añade una tarea vacía o solo con espacios.
+##### Busca un término, borra una tarea de los resultados y luego limpia el buscador.
+##### Crea 100 tareas rápido. ¿El scroll del sidebar y la lista se mantienen independientes?
+
+
+### 4. Auditoría de Re-renders (React DevTools): Si la eficiencia es rey
+
+Si al escribir en el buscador se re-renderiza toda la página (incluyendo el Header), tenemos una oportunidad de optimización con React.memo.
+
+
+
+## 2. Archivos
+
+Auditar tus archivos uno a uno
+Seguir el flujo de Clean Architecture
+
+Revisa cada capa con estas preguntas:
+
+### 1. Dominio: Core/
+
+1. Pureza:
+
+Algún import que no debería.
+El dominio debe ser TypeScript puro.
+
+2. Lógica de Negocio: 
+Revisarla:
+
+##### ¿Maneja casos donde el contenido sea un string gigante?
+¿El ID se genera siempre de forma única?
+
+
+### 2. Capa de Aplicación: hooks/ & store/
+
+1. Fugas de Memoria:
+En useTasks.ts, ¿hay algún useEffect que no tenga función de limpieza si fuera necesario?
+
+2. Consistencia del Reducer:
+##### Revisa que cada acción devuelva un nuevo objeto de estado (inmutabilidad).
+Nunca hagas state.tasks.push().
+
+
+### 3. Capa de Presentación: components/
+
+1. Atoms:
+¿Son realmente atómicos?
+¿Reciben sus estilos solo por props
+o por el theme?v
+
+2. Molecules & Organisms:
+Revisa los propTypes o interfaces
+Están todas las props marcadas como opcionales (?) si realmente lo son?
+
+Accesibilidad (A11y):
+Tienen los inputs sus label o aria-label?
+Se puede navegar por las tareas usando solo el teclado (Tab y Enter)?
+
+3. Styled Components
+Todos los colores usan el theme.colors.X
+
+Busca valores en "hardcode"
+reemplázalos por los tokens de tu theme.ts.
+
+Verifica que los efectos de blur no se solapen de forma que oscurezcan demasiado el texto.
+
+
+#### Uso de grep para malas prácticas
+
+```
+# Buscar console.logs olvidados
+grep -r "console.log" src/
+
+# Buscar estilos inline que se te hayan pasado (style={{...}})
+grep -r "style={{" src/
+```
+
+
+## 3. Herramientas
+
+### 1. React DevTools
+
+Components: Te permite ver el estado actual del useReducer en tiempo real
+##### Puedes modificar el searchQuery manualmente desde ahí para ver cómo reacciona la UI sin escribir.
+
+Profiler: rendimiento para el hardware
+##### Profiler te dice qué componentes se están re-renderizando y por qué.
+Profiler te dice qué componentes se están re-renderizando y por qué.
+Si ves que al escribir una letra se renderiza toda la página, es hora de usar memo.
+
+
+### 2. Application en DevTools: persistencia
+
+Como tu app depende de la persistencia:
+
+Ve a Application > Local Storage.
+aquí puedes borrar manualmente entradas
+##### editar el JSON de las tareas o ver si el storageService está guardando duplicados
+Es mucho más rápido que limpiar todo el historial.
+
+
+### 3. Sentencia debugger:
+
+1. Coloca la palabra debugger; dentro de tu taskReducer o en el useMemo de filtrado
+2. Abre la consola del navegador y realiza una acción
+3. El navegador congelará la ejecución del código en esa línea exacta.
+Podrás ver el valor de todas las variables en ese instante preciso antes de que ocurra el error
+
+
+### 4. ESLint + Accesibilidad
+
+Verificar archivo por archivo de forma automatizada, ESLint es el estándar
+
+Añadir plugin de accesibilidad: 
+
+`eslint-plugin-jsx-a11y`:
+avisará si a tu buscador le falta un aria-label
+o si un icono no es descriptivo para lectores de pantalla.
+
+Comando para Auditar proyecto:
+
+package.json
+
+`"lint": "eslint src --ext .ts,.tsx"`
+
+
+### 5. Lighthouse (Chrome/Chromium):
+
+Corre un reporte de Lighthouse (pestaña en DevTools).
+
+Fíjate en la métrica de Performance.
+Si el puntaje es bajo, quizás el blur es demasiado alto para equipos modestos
+Te dará consejos específicos sobre cómo optimizar el renderizado.
+
+
+### 6. SonarLint (nvim, vs)
+
+Te marca "Cognitive Complexity" (cuando una función es tan difícil de leer que es propensa a bugs).
+
+Detecta "Code Smells" (patrones que funcionan pero son mala práctica).
+
+
+### 7. Rubber Duck Debugging
+
+explícale a alguien línea por línea qué crees que está haciendo tu código
+El 90% de las veces, encontrarás el error antes de terminar la explicación.
+
+
+
+## 4. Terminal
+
+### 1. Biome
+
+Linter y Formatter en una sola herramienta
+Detecta errores de lógica, variables no usadas y formatea el código siguiendo estándares profesionales
+
+`npx @biomejs/biome check --apply ./src`
+flag --apply arregla los errores automáticamente
+
+
+### 2. Knip
+
+En Clean Architecture, solemos crear muchos archivos y a veces olvidamos borrar lo que ya no usamos
+Encuentra archivos no utilizados, dependencias que sobran en tu package.json y exports que nadie está importando
+
+`npx knip`
+
+Ej: verificar si ese viejo FilterPanel o alguna función de task.logic.ts quedó huérfana.
+
+
+### 3. Stylelint
+
+ESLint no suele mirar dentro de las template literals de CSS. Stylelint sí lo hace.
+
+Evita errores en tu CSS, como unidades mal escritas, selectores duplicados o propiedades que no existen
+
+Con el plugin `stylelint-config-standard-styled-components`.
+
+Ejecutar:
+
+```
+npx stylelint "**/*.styles.ts"
+```
+
+
+### 4. Depcheck
+
+Si instalamos paquetes para probar algo
+como una librería de iconos o un motor matemático
+se quedan ahí ocupando espacio
+
+Analiza tus importaciones y te dice exactamente qué librerías del package.json no se están usando en ningún archivo
+
+`npx depcheck`
+
+
+### 5. Cspell: Corrector ortográfico
+
+Un searchQuerry (con doble 'r') puede romper tu lógica si no te das cuenta.
+
+Revisa que no haya faltas de ortografía en tus variables, comentarios y strings
+
+`npx cspell "src/**/*.ts"`
+
+
+
+# ESLint
+
+1. npx: ejecución directa
+
+Auditar todo el proyecto:
+`npx eslint src/`
+
+Auditar y corregir automáticamente (Auto-fix):
+arreglará por ti problemas de formato, comillas, punto y coma y algunas variables no usadas
+`npx eslint src/ --fix`
+
+Auditar extensiones específicas:
+`npx eslint "src/**/*.{ts,tsx}"`
+para enfocarte solo en tus componentes o lógica de dominio
+
+
+2. Comandos de Inicialización y Gestión
+
+Configurar ESLint desde cero:
+Si clonas un proyecto nuevo o quieres resetear tu configuración actual
+lanza un asistente interactivo:
+`npm init @eslint/config`
+
+Verificar la versión instalada:
+`npx eslint -v`
+
+
+3. package.json: scripts
+Evitar rutas largas cada vez
+```
+"scripts": {
+  "lint": "eslint src --ext .ts,.tsx",
+  "lint:fix": "eslint src --ext .ts,.tsx --fix"
+}
+```
+
+En tu terminal solo tendrías que ejecutar:
+`npm run lint` (Para ver errores).
+`npm run lint:fix` (Para limpiar el código).
+
+
+4. Flags debugg
+
+`--quiet`:
+Muestra solo los errores y oculta las advertencias (warnings).
+Ideal para cuando tienes demasiadas alertas de estilo y solo quieres ver lo que rompe la app.
+
+```
+npx eslint src/ --quiet
+```
+
+
+`--format`:
+Cambia cómo se presentan los errores en la terminal
+El formato table es muy limpio para leer en terminales pequeñas
+
+```
+npx eslint src/ --format table
+```
+
+
+`--max-warnings`:
+Define un límite de advertencias permitidas
+Si el código supera ese número, el comando falla
+útil para procesos de integración continua
+
+```
+npx eslint src/ --max-warnings 10
+```
+
+
+
+# Prettier
+
+Formateo de estilo visual (espacios, comillas, saltos de línea) sea idéntico en todos tus archivos
+vital para que al abrir archivos de diferentes capas (core, hooks, components), la lectura sea fluida y consistente.
+
+Intalación:
+
+`npm install --save-dev prettier eslint-config-prettier`
+
+
+Crear dos archivos para que el sistema sepa cómo quieres que se vea tu código
+
+
+archivo .prettierrc (Las reglas):
+define el "estilo" de tu código
+
+```
+{
+  "semi": true,
+  "singleQuote": true,
+  "tabWidth": 2,
+  "trailingComma": "all",
+  "printWidth": 80,
+  "bracketSpacing": true,
+  "arrowParens": "always"
+}
+```
+
+
+archivo .prettierignore: no tocar
+No quieres que Prettier intente formatear archivos pesados o autogenerados
+Crearlo:
+
+```
+node_modules
+dist
+build
+coverage
+.next
+package-lock.json
+public
+```
+
+Sincronización con ESLint
+Para que ESLint no se queje de los espacios que Prettier va a poner
+abre tu archivo de configuración de ESLint (.eslintrc.json o eslint.config.js) y añade "prettier"
+
+al final de extends:
+
+```
+{
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "prettier" 
+  ]
+}
+```
+
+Automatización: package.json scripts
+limpiar todo tu proyecto con un solo comando de terminal
+
+```
+"scripts": {
+  "format": "prettier --write \"src/**/*.{ts,tsx,css,md}\"",
+  "format:check": "prettier --check \"src/**/*.{ts,tsx,css,md}\"",
+  "lint": "eslint src --ext .ts,.tsx",
+  "check-all": "npm run format && npm run lint"
+}
+```
+
+
+1. Comandos de Verificación y Aplicación
+
+Verificar si los archivos cumplen el formato:
+solo te avisa qué archivos "están mal", pero no los toca
+`npx prettier --check .`
+
+Formatear archivos: el más usado
+sobreescribe los archivos con el formato correcto.
+`npx prettier --write .`
+
+Formatear un archivo o carpeta específica
+Para no procesar todo el proyecto si solo estás trabajando en la lógica de dominio
+`npx prettier --write src/core/task.logic.ts`
+
+
+2. package.json: scripts
+
+```
+"scripts": {
+  "format": "prettier --write \"src/**/*.{ts,tsx,css,md}\"",
+  "format:check": "prettier --check \"src/**/*.{ts,tsx,css,md}\""
+}
+```
+npm run format
+
+
+3. Flags
+
+`--list-different` o `-l`:
+Similar a --check
+pero solo imprime los nombres de los archivos que necesitan un ajuste
+`npx prettier -l`
+
+
+`--no-config`:
+formatear algo rápido sin que Prettier busque
+.prettierrc.
+
+```
+npx prettier --write src/ --no-config --semi false
+```
+
+
+`--ignore-path`:
+##### no toque archivos que ya están ignorados por git (como node_modules o dist)
+```
+npx prettier --write . --ignore-path .gitignore
+```
+
+
+4. ESLint vs Prettier
+Es muy común que ambos choquen
+si uno quiere comillas simples y el otro dobles
+
+
+ESLint se encarga de las reglas de código
+(variables no usadas, lógica errónea).
+
+Prettier se encarga de la estética
+(espacios, comas, indentación).
+
+
+Archivo .prettierrc: config
+archivo en la raíz de tu proyecto para que Prettier sepa exactamente cómo quieres tu estilo
+```
+{
+  "semi": true,
+  "trailingComma": "all",
+  "singleQuote": true,
+  "printWidth": 80,
+  "tabWidth": 2,
+  "useTabs": false
+}
+```
+
+
+Enfoque
+Errores de ejecución y malas prácticas.
+Estética y consistencia visual.
+
+Configuración
+Muy compleja (cientos de reglas que pueden chocar).
+Mínima (apenas 10-15 opciones).
+
+Velocidad
+Más lento (tiene que analizar el árbol lógico).
+Mucho más rápido (solo le importa el texto).
+
+
+
+# eslint-config-prettier
+
+Desactiva todas las reglas de ESLint que son innecesarias o que pueden entrar en conflicto con Prettier
+
+`npm install --save-dev eslint-config-prettier`
+
+
+Editar tu archivo de configuración de ESLint
+`.eslintrc.json`,  `.eslintrc.js` o `eslint.config.js` (para la versión moderna)
+
+Solo añadir "prettier" al final del array de extends.
+El orden es vital: lo último siempre tiene la prioridad.
+
+En .eslintrc.json:
+```
+{
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "prettier" // Siempre al final
+  ]
+}
+```
+
+En eslint.config.js:
+```
+const eslintConfigPrettier = require('eslint-config-prettier');
+
+module.exports = [
+  // ... tus otras configuraciones
+  eslintConfigPrettier, // Se añade al final de la exportación
+];
+```
+
+
+Verificación:
+si hay alguna regla que todavía se está "peleando" con Prettier
+`npx eslint-config-prettier src/core/task.logic.ts`
+
+Si no imprime nada: Todo está perfecto, no hay conflictos.
+
+Si imprime una lista de reglas: Significa que esas reglas de ESLint todavía están activas y chocan con Prettier
+
+##### Gracias a eslint-config-prettier, ESLint solo te hablará cuando algo esté realmente mal en la lógica
+ignorando por completo si pusiste una comilla simple o doble
+
+
+
+# Styled Components
+
+sintaxis de CSS: errores de escritura
+lógica de TypeScript: que existan las props pasadas
+
+
+1. Stylelint
+ESLint y Prettier son ciegos a lo que pasa dentro de las comillas invertidas (backticks `)
+Para ellos, eso es solo un string largo
+Stylelint es el encargado de entrar ahí y validar el CSS.
+
+chequea: Propiedades inexistentes, falta de puntos y coma dentro del template literal, o colores mal escritos.
+
+`npm install --save-dev stylelint stylelint-config-standard-styled-components`
+
+config: .stylelintrc.json
+
+```
+{
+  "extends": ["stylelint-config-standard-styled-components"]
+}
+```
+
+
+2. Props: TypeScript
+Quien se asegura de que, si tu componente Button espera una prop variant
+no le pases un color por error
+
+valida que la interfaz que definiste para el styled component coincida con el uso.
+
+```
+interface StyledButtonProps {
+  $isVisible: boolean; // El $ evita que la prop se mande al DOM
+}
+
+const StyledButton = styled.button<StyledButtonProps>`
+  display: ${props => props.$isVisible ? 'block' : 'none'};
+```
+
+
+Formato: Prettier
+Tiene soporte nativo para Styled Components
+No necesita una librería extra para "leer" dentro de los backticks.
+
+Si escribes el CSS todo en una sola línea o con indentación errática
+Prettier lo re-ordenará para que se vea como CSS estándar y limpio
+`npm run format`
+
+
+
+
+# Reutilizar componentes en Styled
+
+## !!! No aplica el estilo propio porque no estoy retornando/renderizando su styledinput, sino el componente Input
+
+##### Problema: SearchInput.tsx importa Input pero no está aplicando su estilo, sino los del Input
+
+Ej: 1rem porque eso es lo que el átomo Input tiene definido por defecto en su propio Input.styles.ts
+Al renderizar <Input /> dentro de la molécula, el componente se queda con sus estilos base de átomo e ignora los de la molécula
+
+### Extender Átomo: Para que la molécula pueda modificar el estilo del átomo
+
+#### 1. Input.tsx debe ser capaz de recibir una clase de css externa
+
+```
+// src/components/atoms/Input/Input.tsx
+
+interface InputProps {
+  // ... tus otras props
+  className?: string; // Agregamos esto
+}
+
+export const Input = ({
+  className, // Lo recibimos
+  // ... resto de props
+}: InputProps) => {
+  return (
+    <StyledInput
+      className={className} // Lo pasamos al componente de estilo
+      // ... resto de props
+    />
+  );
+};
+```
+
+
+#### 2. No crear input propio en styled de la molecula
+
+Como `styled.input`
+##### extender el componente Input
+Ej: mantiene la lógica del átomo (como el aria-label) pero le aplica el padding necesario
+
+```
+// src/components/molecules/SearchInput/SearchInput.styles.ts
+import styled from 'styled-components';
+import { Input } from '../../atoms/Input/Input'; // Importamos el componente, no el estilo
+
+export const SearchContainer = styled.div`
+  position: relative;
+  width: 100%;
+`;
+
+export const SearchIcon = styled.span`
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;
+  pointer-events: none;
+`;
+
+// Extendemos el Átomo Input en lugar de crear un input nuevo
+export const StyledSearchInput = styled(Input)`
+  && { 
+    padding-left: 36px; 
+  }
+`;
+```
+
+"Uso && para aumentar la especificidad de CSS y asegurarnos de que los 36px de la molécula ganen a los 1rem del átomo"
+
+#### 3. Componente final
+
+```
+import { SearchContainer, SearchIcon, StyledSearchInput } from './SearchInput.styles';
+
+export const SearchInput = ({ value, onChange, placeholder = 'buscar...' }) => {
+  return (
+    <SearchContainer>
+      <SearchIcon>🔍</SearchIcon>
+      <StyledSearchInput 
+        value={value} 
+        onChange={onChange} 
+        placeholder={placeholder} 
+      />
+    </SearchContainer>
+  );
+};
+```
+
+
+
+# Rest props: aceptar cualquier prop
+
+
+
+
+
+# Variantes en props y Variantes en estilo
+
+
+
+
+# Semantica/accesibilidad vs Diseño visual
+
+
+
+
+# Comunicación entre componentes
+
+##### Para no incurrir en parches
+
+
+## Flujo de comunicación entre componentes de UI
+
+1. Átomo: Habla "DOM" (ChangeEvent).
+2. Molécula: Debería ser bilingüe. Escucha "DOM" del átomo y habla "Datos" (string) al organismo.
+3. Organismo: Habla "Datos" (string).
+
+
+
+## Caso 2
+
+Tanto Input como Checkbox usan React.ChangeEvent<HTMLInputElement>
+porque, en el estándar de HTML, ambos son etiquetas <input>.
+##### La diferencia es el atributo type.
+
+En el Input: Nos interesa e.target.value (un string).
+En el Checkbox: Nos interesa e.target.checked (un boolean).
+
+El riesgo: Si un desarrollador se confunde y usa e.target.value en un checkbox, recibirá el string "on" (valor por defecto de HTML) en lugar de un booleano
+
+### 1. Patrón "Value-Only" (Abstracción total)
+##### Un átomo bien diseñado no debería exponer el evento del DOM a sus superiores. Debería exponer datos puros.
+
+```
+// ❌ Sucio: El padre debe conocer el evento
+onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+
+// ✅ Limpio: El átomo traduce el evento antes de subirlo
+onChange: (value: string) => void;   // Para el Input
+onToggle: (checked: boolean) => void; // Para el Checkbox
+```
+
+### 2. Semántica en los Nombres de Props
+
+##### No uses onChange para todo. El nombre de la prop debe describir la acción del usuario, no el evento del navegador
+
+de búsqueda: onSearch o onQueryChange.
+Checkbox: onToggle o onCheck.
+Botón: onClick o onAction.
+
+
+### 3. Principio de Menor Conocimiento (Law of Demeter)
+
+Un componente Molecule u Organism no debería saber que existe un objeto llamado ChangeEvent.
+Solo debería saber que "el nombre de la tarea cambió
+
+
+
+# Naming
+
+Componente | Prop Actual | "Prop ""Ultra-Limpia""" | Razón
+
+`Input`
+onChange
+onChange
+"Es un átomo, el estándar manda."
+
+`SearchInput`
+onChange
+onQueryChange
+"Especificas que lo que cambia es la ""consulta"" (query)."
+
+`TaskSearch`
+onChange
+onFilterChange
+Expresas que el cambio afecta al filtrado de la lista.
+
+##### Si el componente es simple (como ahora): Mantén onChange. La simplicidad gana.
+
+##### Si el componente crece: Cambia a nombres específicos (onQueryChange) para evitar confusiones al leer el código del padre.
+
+
+## Estado vs. Intención
+
+Característica | onChange | onSearch (u onEnter)
+
+Naturaleza
+"Sincronización: Es el ""ahora""."
+"Acción: Es el ""ya está, haz algo""."
+
+Frecuencia
+Alta (con cada pulsación de tecla).
+Baja (una sola vez al terminar).
+
+Responsabilidad
+Mantener el estado visual del input.
+"Ejecutar lógica de negocio (filtrar, llamar a una API)."
+
+Costo
+Barato (solo actualiza un string).
+"Potencialmente caro (re-renderiza listas, procesos de búsqueda)."
+
+
+
+# Smart vs Dumb en styled components
+
+Patrón "Custom Input".
+responsabilidades totalmente opuestas: el cerebro (lógica) y la cara (estética).
+
+1. HiddenCheckbox (El Cerebro)
+
+Este es un elemento <input type="checkbox"> real. Aunque no se vea, es el que interactúa con el navegador y el sistema operativo.
+Props Estándar (id, checked, onChange, disabled): Se pasan así porque el input las necesita para funcionar como un control de formulario legítimo.
+Por qué el id: Para que el label sepa a quién "mandar" el click.
+Por qué no tienen $: Porque son atributos HTML válidos. Queremos que el navegador los vea y los procese.
+
+2. StyledCheckbox (La Cara)
+
+Este es un simple <div> que hemos decorado para que parezca un checkbox (con tu efecto de cristal, bordes y el "tick").
+$checked (Prop Transitoria): El símbolo $ es una convención de Styled Components. Significa: "Pasa este valor al CSS para cambiar el color, pero no lo escribas en el DOM".
+Si pasaras checked={true} a un div, React se quejaría en la consola: "Warning: React does not recognize the 'checked' prop on a DOM element". El $ evita ese ruido.
+aria-hidden="true": Es por pura Accesibilidad (A11y). Como el HiddenCheckbox ya le dice al lector de pantalla que hay un checkbox, no queremos que el lector encuentre este div y diga "Checkbox" otra vez. Es invisible para los ojos de la tecnología asistiva.
+data-testid: Como este elemento es puramente visual, lo marcamos para que nuestros tests de Vitest puedan encontrarlo fácilmente y verificar si el color de fondo es el correcto
+
+Porque si mañana decides cambiar el diseño (por ejemplo, pasar de un cuadrado a un interruptor tipo switch), no tienes que tocar la lógica. Solo cambias el CSS de StyledCheckbox.
+El "cerebro" sigue siendo el mismo input de siempre, lo que garantiza que tu aplicación sea robusta y fácil de mantener.
+
+
+# visibility css
+
+```
+  visibility: ${({ $isVisible }) => ($isVisible ? 'visible' : 'hidden')};
+```
+
+visible y hidden: palabras clave nativas de CSS.
+Específicamente, son los valores de la propiedad visibility
+
+propiedad que controla si un elemento es visible o no, pero con una diferencia técnica fundamental respecto a display: none:
+
+visible (Default): El elemento se ve y se puede interactuar con él.
+hidden: El elemento es invisible (como un fantasma), pero sigue ocupando su espacio en el layout.
+
+    
+
+# Aria Role: valores
+
+
+
+# Atributo as y sus valores: Styled Components. Flexibilidad
+
+
+
+# createdAt: Date.now(): uso
+
+
+
+# Crecimiento de los datos/entidad
+
+En useTasks, el useEffect guarda en el storage cada vez que state.tasks cambia
+Si tasks es muy grande; Todo List normal (menos de 1000 tareas)
+en hard moderado; el delay de escritura en disco será imperceptible,
+pero es algo a tener en cuenta si el JSON crece mucho
+
+Si state.tasks pasa de 10 a 10,000 elementos,
+el cuello de botella se desplaza de la CPU al I/O
+(Entrada/Salida) y al hilo principal de ejecución.
+
+1. Control de I/O: Debouncing (Escritura Diferida)
+Actualmente, cada vez que marcas un checkbox, el useEffect dispara una escritura a disco
+Si el usuario escribe rápido o hay procesos en ráfaga, saturas el bus de datos.
+
+Concepto: En lugar de "Guardar siempre que cambie", aplicamos "Guardar cuando el usuario deje de hacer cambios por X milisegundos".
+Beneficio: Agrupamos 20 operaciones de escritura en una sola, ahorrando ciclos de CPU y vida útil del SSD/Disco
+
+2. Estructura de Datos: Normalización del Estado
+usas un Array
+Buscar un elemento específico o actualizarlo en un array de 10,000 elementos es una operación O(n) (tienes que recorrerlo).
+
+Concepto: Cambiar el Array por un Mapa (Diccionario) indexado por ID.
+
+Beneficio: Las actualizaciones pasan a ser O(1) (instantáneas), sin importar si tienes 10 o 1 millón de tareas
+
+El filtrado sigue siendo necesario, pero la gestión interna del estado se vuelve trivial para el procesador.
+
+3. Renderizado: Virtualización (Windowing)
+El DOM es lo más lento de una web.
+Renderizar 5,000 FilterItem mataría el rendimiento de tu navegador.
+
+Concepto: Solo "dibujar" en el HTML lo que cabe en la pantalla (ej. las 10 tareas visibles).
+A medida que el usuario hace scroll, se reciclan los elementos del DOM.
+
+Beneficio: El navegador siempre gestiona una cantidad constante de nodos, manteniendo el uso de RAM bajo y estable
+
+4. Procesamiento: Web Workers (Hilos Secundarios)
+JavaScript es monohilo.
+Si el filtrado de 10,000 tareas tarda 200ms, la interfaz se "congela" durante ese tiempo
+adiós a la fluidez de las animaciones
+
+Concepto: Mover la lógica pesada (el .filter()
+y el .includes()) a un Web Worker.
+Es como crear un proceso hijo
+
+Beneficio: El hilo principal (UI) queda libre para las animaciones y la interacción,
+mientras el "cerebro" procesa los datos en segundo plano
+
+5. Almacenamiento: De LocalStorage a IndexedDB
+LocalStorage es síncrono y bloqueante.
+Si guardas un JSON de 5MB, el navegador se detiene por completo hasta que termina de escribir
+
+Concepto: Usar IndexedDB, que es una base de datos transaccional y asíncrona dentro del navegador.
+
+Beneficio: Las lecturas y escrituras no bloquean la interfaz y permiten manejar volúmenes de datos que harían colapsar al LocalStorage
+
+6. Cambios en la arquitectura
+
+En el Reducer: Cambiar la estructura de tasks de [] a {}.
+En el Hook: Implementar un temporizador (Debounce) en el useEffect.
+En la UI: Implementar una lista virtualizada para el TodoList.
+En el Servicio: Migrar la lógica de storageService a métodos asíncronos (async/await).
+
+
+
+# Number vs Date
+
+Característica | number (Epoch/Timestamp) | Date (Objeto Nativo)
+
+Serialización: Excelente. Se mantiene como número en JSON sin cambios.,Problema. Al convertir a JSON se vuelve un string.
+
+Rendimiento: Muy ligero. Es un valor primitivo.,Más pesado. Es un objeto con métodos internos.
+
+Ordenación: Ultra simple: a.createdAt−b.createdAt.,Requiere convertir a valor: a.getTime()−b.getTime().
+
+Legibilidad: Mala para humanos (1714262460000).,Buena en consola o depuración.
+
+Inmutabilidad: Inmutable por naturaleza.,Mutable (peligroso si se usa .setFullYear()).
+
+
+## Ventajas/desventajas number
+
+number (Timestamp).
+Las razones de peso:
+
+El problema del "Hydration" (JSON):
+Cuando recibas tus tareas de una API o las guardes en localStorage, el objeto Date se convertirá automáticamente en un string (ISO 8601).
+
+Si tu interfaz dice que createdAt es Date, pero recibes un string de la base de datos, TypeScript te dirá que todo está bien, pero tu código fallará al intentar llamar a .getFullYear().
+
+Usar number evita este "engaño", ya que el número sobrevive intacto al ciclo de JSON.stringify y JSON.parse.
+
+Facilidad en el Estado (Redux/Zustand):
+Si decides usar un gestor de estado global, se recomienda que el estado sea serializable. Los objetos Date no lo son, lo que complica herramientas como el "Time Travel Debugging".
+
+Lógica de Negocio:
+Calcular si una tarea es de "hoy" o de "ayer" es más rápido matemáticamente con milisegundos que instanciando objetos.
+    
+
+
+# Mapeo, optimización para el render
+
+Una pequeña optimización para el render
+
+En TodoList.tsx, estás haciendo el mapeo así:
+{todos.map((todo) => (
+
+Si tu lista llegara a tener cientos de elementos (poco probable en una lista de tareas, pero posible), podrías notar un pequeño "lag" al escribir en el buscador. Esto es porque cada tecla en el input causa un re-render de toda la lista.
+
+Como ya usamos Delegación y las funciones son estables, podrías envolver el componente TodoItem en un React.memo. De esa forma, al filtrar, React solo tocará los items que realmente cambian de posición o estado
+
+
+
+# Test de Integración UI
+
+La comunicación en TodoPage es el corazón de la aplicación
+Aquí, el componente actúa como un Orquestador (Smart Component)
+mientras que TaskSidebar y los demás son Presentacionales (Dumb Components).
+
+hook useTasks centraliza el estado
+permitiendo que la página solo se encargue de "repartir" las funciones y los datos
+
+
+## 1. TodoPage & TaskSidebar
+
+verificar que la comunicación
+necesitamos un test de integración que compruebe:
+que los cambios en el Sidebar afectan realmente al estado global
+
+##### mockearemos el hook useTasks para tener control total sobre qué datos entran y qué funciones se disparan
+
+```
+import { render, screen, fireEvent } from '../../../test/utils';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { TodoPage } from './TodoPage';
+import * as useTasksHook from '../../../hooks/useTasks';
+
+// Mockeamos el hook para simular diferentes estados
+vi.mock('../../../hooks/useTasks');
+
+describe('Page: TodoPage - Sidebar Communication', () => {
+  const mockSetFilter = vi.fn();
+  const mockSetSearchQuery = vi.fn();
+  const mockClearCompleted = vi.fn();
+
+  const mockStats = {
+    total: 5,
+    pending: 3,
+    completed: 2,
+  };
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+    
+    // Configuración por defecto del mock
+    (useTasksHook.useTasks as any).mockReturnValue({
+      tasks: [],
+      add: vi.fn(),
+      toggle: vi.fn(),
+      remove: vi.fn(),
+      filter: 'all',
+      setFilter: mockSetFilter,
+      searchQuery: '',
+      setSearchQuery: mockSetSearchQuery,
+      stats: mockStats,
+      clearCompleted: mockClearCompleted,
+    });
+  });
+
+  it('should update search query when typing in Sidebar search input', () => {
+    render(<TodoPage />);
+    
+    const searchInput = screen.getByPlaceholderText(/buscar tareas/i);
+    fireEvent.change(searchInput, { target: { value: 'Aprender React' } });
+
+    expect(mockSetSearchQuery).toHaveBeenCalledWith('Aprender React');
+  });
+
+  it('should change filter when clicking on category in Sidebar', () => {
+    render(<TodoPage />);
+    
+    // Buscamos el botón de la categoría "Pendientes"
+    // Nota: Como usamos Typography como label, el texto es accesible
+    const pendingCategory = screen.getByText(/pendientes/i);
+    fireEvent.click(pendingCategory);
+
+    expect(mockSetFilter).toHaveBeenCalledWith('pending');
+  });
+
+  it('should show the correct task counts in Sidebar categories', () => {
+    render(<TodoPage />);
+    
+    // Verificamos que los counts de los stats se pasen correctamente
+    expect(screen.getByText(mockStats.total.toString())).toBeInTheDocument();
+    expect(screen.getByText(mockStats.pending.toString())).toBeInTheDocument();
+    expect(screen.getByText(mockStats.completed.toString())).toBeInTheDocument();
+  });
+
+  it('should call clearCompleted when clicking the action button in Sidebar', () => {
+    render(<TodoPage />);
+    
+    const clearButton = screen.getByText(/borrar completadas/i);
+    fireEvent.click(clearButton);
+
+    expect(mockClearCompleted).toHaveBeenCalledTimes(1);
+  });
+});
+```
+
+1. Estabilidad con useMemo
+En TodoPage, has envuelto categories en un useMemo que depende de stats
+
+clave: Cada vez que el componente se re-renderiza, si stats no ha cambiado
+(por ejemplo, si estás escribiendo en el input de tareas),
+la referencia del array categories sigue siendo la misma.
+Esto evita que TaskSidebar y su hijo CategoryFilter se re-rendericen innecesariamente
+
+2. patrón "Lifting State Up"
+La búsqueda y el filtrado viven en el hook useTasks
+pero se controlan desde el Sidebar
+
+Al pasarle setSearchQuery y setFilter como callbacks
+estás aplicando una comunicación unidireccional limpia:
+
+Hacia abajo: Props (searchQuery, filter, categories).
+Hacia arriba: Eventos (onSearchChange, onFilterChange).
+
+3. botón "Borrar completadas"
+TaskSidebar se mantiene puro
+solo se encarga de buscar y filtrar
+La lógica de acciones globales se queda en la Página
+que es donde reside la autoridad del dominio.
+
+
+
+## 2. TodoPage -> TodoList
+
+Al pasarle a TodoList las tareas ya filtradas y un booleano isSearching
+"máquina de estados" visual
+que no necesita entender por qué la lista está vacía
+solo necesita saber cómo reaccionar.
+
+1. "Casting" de lógica en el Page
+línea isSearching={searchQuery.trim().length > 0}
+resolviendo una ambigüedad semántica antes de que llegue al componente
+
+Sin esto: TodoList tendría que recibir el string searchQuery y hacer el .trim().length él mismo
+
+Si mañana decides que la búsqueda solo se activa después de 3 caracteres
+lo cambias en la Page y el Organismo ni se entera
+él solo sigue obedeciendo a su booleano.
+
+2. Propagación Limpia (Delegación)
+onToggleTodo={toggle} y onDeleteTodo={remove}
+pasan directamente del hook al hijo
+No hay envolturas innecesarias
+
+Esto mantiene la estabilidad referencial: si el hook usa useCallback
+TodoList no se re-renderiza a menos que las tareas cambien.
+
+3. UX del Empty State
+Separar el estado vacío en "Normal" vs "Búsqueda"
+es un detalle de calidad profesional
+Ayuda al usuario a entender si el sistema falló
+o si simplemente no hay datos que coincidan con su criterio.
+
+Integración: TodoPage -> TodoList
+test en TodoPage verifica que la comunicación de los estados vacíos sea correcta:
+
+```
+import { render, screen } from '../../../test/utils';
+import { describe, it, expect, vi } from 'vitest';
+import { TodoPage } from './TodoPage';
+import * as useTasksHook from '../../../hooks/useTasks';
+
+vi.mock('../../../hooks/useTasks');
+
+describe('TodoPage <-> TodoList Integration', () => {
+  it('should pass isSearching=true to TodoList when there is a search query', () => {
+    // Simulamos que el hook devuelve una búsqueda activa pero sin resultados
+    (useTasksHook.useTasks as any).mockReturnValue({
+      tasks: [], // Lista vacía
+      searchQuery: 'Tarea inexistente', // Hay búsqueda
+      stats: { total: 0, pending: 0, completed: 0 },
+      filter: 'all',
+      // ... otros mocks de funciones
+    });
+
+    render(<TodoPage />);
+
+    // Si la comunicación es correcta, TodoList debe mostrar el estado de búsqueda
+    expect(screen.getByText(/no hay coincidencias/i)).toBeInTheDocument();
+    expect(screen.getByText(/🔍/)).toBeInTheDocument();
+  });
+
+  it('should pass isSearching=false to TodoList when search query is empty', () => {
+    (useTasksHook.useTasks as any).mockReturnValue({
+      tasks: [],
+      searchQuery: '', // Sin búsqueda
+      stats: { total: 0, pending: 0, completed: 0 },
+      filter: 'all',
+    });
+
+    render(<TodoPage />);
+
+    // Debe mostrar el estado de bienvenida normal
+    expect(screen.getByText(/no hay tareas pendientes/i)).toBeInTheDocument();
+    expect(screen.getByText(/📝/)).toBeInTheDocument();
+  });
+});
+```
+
+Test con Main:
+
+```
+import { render, screen, within } from '../../../test/utils'; // 👈 Importamos within
+import { describe, it, expect, vi } from 'vitest';
+import { TodoPage } from './TodoPage';
+import * as useTasksHook from '../../../hooks/useTasks';
+
+vi.mock('../../../hooks/useTasks');
+
+describe('TodoPage <-> TodoList Integration', () => {
+  // Aplicamos lo aprendido: Eliminamos el 'any'
+  const useTasksMock = vi.mocked(useTasksHook.useTasks);
+
+  it('should pass isSearching=true to TodoList when there is a search query', () => {
+    useTasksMock.mockReturnValue({
+      tasks: [],
+      searchQuery: 'Tarea inexistente',
+      stats: { total: 0, pending: 0, completed: 0 },
+      filter: 'all',
+      setSearchQuery: vi.fn(),
+      setFilter: vi.fn(),
+      add: vi.fn(),
+      toggle: vi.fn(),
+      remove: vi.fn(),
+      clearCompleted: vi.fn(),
+    });
+
+    render(<TodoPage />);
+
+    // 1. Identificamos la región de la lista (nuestro organismo TodoList)
+    // Usamos el rol 'list' o buscamos por un texto que sepamos que está ahí.
+    // Una forma elegante es buscar por el contenedor que envuelve la lista.
+    const mainContent = screen.getByRole('main'); 
+
+    // 2. Buscamos el icono y el texto SOLO dentro del contenido principal
+    expect(within(mainContent).getByText(/no hay coincidencias/i)).toBeInTheDocument();
+    expect(within(mainContent).getByText('🔍')).toBeInTheDocument();
+  });
+
+  it('should pass isSearching=false to TodoList when search query is empty', () => {
+    useTasksMock.mockReturnValue({
+      tasks: [],
+      searchQuery: '',
+      stats: { total: 0, pending: 0, completed: 0 },
+      filter: 'all',
+      // ... (restantes mocks igual que arriba)
+    });
+
+    render(<TodoPage />);
+
+    const mainContent = screen.getByRole('main');
+
+    // Para el texto "No hay tareas pendientes", usamos regex de coincidencia exacta
+    // para que no choque con "¡Estás al día! No hay tareas pendientes" del Header.
+    expect(within(mainContent).getByText(/^no hay tareas pendientes$/i)).toBeInTheDocument();
+    expect(within(mainContent).getByText('📝')).toBeInTheDocument();
+  });
+});
+```
+
+
+Test con within y un div adicional
+
+```
+import { render, screen, within } from '../../../../test/utils';
+import { describe, it, expect, vi } from 'vitest';
+import { TodoPage } from '../TodoPage';
+import * as useTasksHook from '../../../../hooks/useTasks';
+
+vi.mock('../../../../hooks/useTasks');
+
+describe('TodoPage <-> TodoList Integration', () => {
+  const useTasksMock = vi.mocked(useTasksHook.useTasks);
+
+  it('should pass isSearching=true to TodoList when there is a search query', () => {
+    // Simulamos que el hook devuelve una búsqueda activa pero sin resultados
+    useTasksMock.mockReturnValue({
+      tasks: [],
+      searchQuery: 'Tarea inexistente',
+      stats: { total: 0, pending: 0, completed: 0 },
+      filter: 'all',
+      setSearchQuery: vi.fn(),
+      setFilter: vi.fn(),
+      add: vi.fn(),
+      toggle: vi.fn(),
+      remove: vi.fn(),
+      clearCompleted: vi.fn(),
+    });
+    render(<TodoPage />);
+
+    // 1. Buscamos el contenedor específico por Test ID
+    const listContainer = screen.getByTestId('todo-list-container');
+
+    // 2. Verificamos que los elementos del EmptyState de búsqueda estén ahí
+    expect(within(listContainer).getByText(/no hay coincidencias/i)).toBeInTheDocument();
+    expect(within(listContainer).getByText('🔍')).toBeInTheDocument();
+  });
+
+  it('should pass isSearching=false to TodoList when search query is empty', () => {
+    useTasksMock.mockReturnValue({
+      tasks: [],
+      searchQuery: '',
+      stats: { total: 0, pending: 0, completed: 0 },
+      filter: 'all',
+      setSearchQuery: vi.fn(),
+      setFilter: vi.fn(),
+      add: vi.fn(),
+      toggle: vi.fn(),
+      remove: vi.fn(),
+      clearCompleted: vi.fn(),
+    });
+
+    render(<TodoPage />);
+
+    const listContainer = screen.getByTestId('todo-list-container');
+
+    // Para el texto "No hay tareas pendientes", usamos regex de coincidencia exacta
+    // para que no choque con "¡Estás al día! No hay tareas pendientes" del Header.
+    expect(within(listContainer).getByText(/^no hay tareas pendientes$/i)).toBeInTheDocument();
+    expect(within(listContainer).getByText('📝')).toBeInTheDocument();
+  });
+});
+```
+
+Adiós al error de múltiples "main":
+Al no usar getByRole('main'), no importa si tu arquitectura tiene uno, dos o ningún elemento main.
+El test va directo al grano.
+
+Encapsulamiento:
+Estás probando que la página le pasa la prop isSearching correctamente a la lista
+Si la lista recibe esa prop, renderiza el EmptyState correspondiente dentro de todo-list-container
+
+
+Cuando usas screen, buscas en el DOM global
+Cuando usas within(elemento), estás creando una instancia de búsqueda limitada a los hijos de ese elemento específico
+
+Flujo:
+1. Renderiza TodoPage.
+2. Localiza el div con data-testid="todo-list-container".
+3. within toma ese div.
+4. Busca "🔍" solo dentro de ese div.
+
+
+ 
+## 3. TodoPage <-> TodoInput
+
+cierra el ciclo de vida de los datos: la entrada
+Mientras que el sidebar filtra y la lista representa
+##### TodoInput es el encargado de "inyectar" nueva información al sistema.
+##### Aquí la comunicación sigue el patrón de Flujo de Datos Inverso (Inverse Data Flow).
+
+El padre entrega una "promesa" de acción (add) y el hijo la ejecuta cuando tiene los datos listos
+
+1. Responsabilidades
+Sin estados intermedios molestando al padre
+
+TodoPage no sabe si el usuario está escribiendo
+borrando o si dejó espacios en blanco
+
+Solo se entera cuando hay un texto válido listo para ser procesado
+
+Hijo: Gestiona el useState local del input y la validación (trim).
+
+Padre: Recibe el string limpio y lo transforma en una entidad Task dentro del hook.
+
+2. UX y Accesibilidad (A11y)
+e.preventDefault(): Crucial para que tu aplicación no se recargue
+Botón disabled: Evitas que el usuario dispare eventos innecesarios si no hay texto
+aria-label: Permite que los lectores de pantalla identifiquen el propósito del formulario
+
+Integración: TodoPage <-> TodoInput
+
+```
+import { render, screen, fireEvent } from '../../../test/utils';
+import { describe, it, expect, vi } from 'vitest';
+import { TodoPage } from './TodoPage';
+import * as useTasksHook from '../../../hooks/useTasks';
+
+vi.mock('../../../hooks/useTasks');
+
+describe('TodoPage <-> TodoInput Communication', () => {
+  const mockAdd = vi.fn();
+
+  it('should call the add function from hook when form is submitted', () => {
+    (useTasksHook.useTasks as any).mockReturnValue({
+      tasks: [],
+      add: mockAdd,
+      searchQuery: '',
+      stats: { total: 0, pending: 0, completed: 0 },
+      filter: 'all',
+      setSearchQuery: vi.fn(),
+    });
+
+    render(<TodoPage />);
+
+    const input = screen.getByPlaceholderText(/¿qué hay que hacer hoy?/i);
+    const button = screen.getByRole('button', { name: /añadir/i });
+
+    // 1. Escribimos en el input
+    fireEvent.change(input, { target: { value: 'Nueva tarea de prueba' } });
+    
+    // 2. Click en añadir
+    fireEvent.click(button);
+
+    // 3. Verificamos que la comunicación llegó al "cerebro" (hook)
+    expect(mockAdd).toHaveBeenCalledWith('Nueva tarea de prueba');
+    
+    // 4. Verificamos que el input se limpió (UX interno del componente)
+    expect(input).toHaveValue('');
+  });
+});
+```
+
+Arquitectura Limpia:
+TodoPage pasas la función directamente: onAdd={add}.
+posible porque las firmas coinciden perfectamente
+
+add (en el hook) espera un string.
+onAdd (en el componente) envía un string.
+
+Si en el futuro add necesitara más parámetros (como una categoría o prioridad)
+solo tendrías que ajustar la lógica interna de TodoInput
+o de la página, sin romper el contrato de comunicación.
+
+
+
+
+# Test Real vs Integración
+
+Real:
+
+estrategia, confianza y el coste de ejecución
+
+```
+import { render, screen, fireEvent } from '../../../test/utils';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { TodoPage } from './TodoPage';
+
+describe('Page: TodoPage', () => {
+  // Limpiamos el localStorage antes de cada test para evitar contaminación
+  beforeEach(() => {
+    localStorage.clear();
+    vi.clearAllMocks();
+  });
+
+  it('should allow a user to add a new todo', () => {
+    render(<TodoPage />);
+    
+    const input = screen.getByPlaceholderText(/¿qué hay que hacer hoy\?/i);
+    const addButton = screen.getByRole('button', { name: /añadir/i });
+
+    // 1. Escribimos
+    fireEvent.change(input, { target: { value: 'Comprar café' } });
+    // 2. Click en añadir
+    fireEvent.click(addButton);
+
+    // 3. Verificamos que aparezca en la lista
+    expect(screen.getByText('Comprar café')).toBeInTheDocument();
+    // 4. Verificamos que el input se haya limpiado
+    expect(input).toHaveValue('');
+  });
+
+  it('should toggle a todo status when clicked', () => {
+    render(<TodoPage />);
+    
+    // Añadimos una tarea primero
+    const input = screen.getByPlaceholderText(/¿qué hay que hacer hoy\?/i);
+    fireEvent.change(input, { target: { value: 'Tarea para completar' } });
+    fireEvent.click(screen.getByRole('button', { name: /añadir/i }));
+
+    const checkbox = screen.getByRole('checkbox');
+    const text = screen.getByText('Tarea para completar');
+
+    // 1. Marcamos como completada
+    fireEvent.click(checkbox);
+    expect(checkbox).toBeChecked();
+    
+    // Verificamos el estilo (que viene de la molécula TodoItem)
+    expect(text.parentElement).toHaveStyle({ 'text-decoration': 'line-through' });
+
+    // 2. Desmarcamos
+    fireEvent.click(checkbox);
+    expect(checkbox).not.toBeChecked();
+  });
+
+  it('should remove a todo from the list', () => {
+    render(<TodoPage />);
+    
+    // Añadimos
+    fireEvent.change(screen.getByPlaceholderText(/¿qué hay que hacer hoy\?/i), { 
+      target: { value: 'Tarea efímera' } 
+    });
+    fireEvent.click(screen.getByRole('button', { name: /añadir/i }));
+
+    // Borramos
+    const deleteButton = screen.getByLabelText(/eliminar tarea/i);
+    fireEvent.click(deleteButton);
+
+    // Verificamos que ya no esté
+    expect(screen.queryByText('Tarea efímera')).not.toBeInTheDocument();
+  });
+
+  it('should persist and load todos from localStorage', () => {
+    // 1. Simulamos datos ya existentes en localStorage
+    const savedTodos = [
+      { id: '123', text: 'Tarea persistida', completed: false }
+    ];
+    localStorage.setItem('liquid-glass-todos', JSON.stringify(savedTodos));
+
+    render(<TodoPage />);
+
+    // 2. Verificamos que la página los haya cargado al montar
+    expect(screen.getByText('Tarea persistida')).toBeInTheDocument();
+  });
+});
+```
+
+Test Funcional o de Caja Negra
+vs
+Tests de Integración por Contrato.
+
+1. hook: Real vs. Mock
+
+real:
+Está probando la página Y la lógica real del hook Y el localStorage
+Si el hook tiene un bug, el test de la página falla.
+
+mocked:
+Aislamos la página del hook
+No nos importa si el hook sabe guardar en disco o no
+solo nos importa si la página le pasa el string correcto a la función add.
+
+2. verdad de datos
+
+real:
+hace el trabajo para probar que algo se muestra
+primero tienes que añadirlo simulando clicks
+Esto hace que los tests sean más largos y dependientes entre sí.
+
+mock:
+"Forzamos" estados
+Si queremos ver cómo se comporta la página cuando hay 100 tareas completadas
+simplemente le decimos al mock: tasks: arrayDe100.
+No tenemos que simular 100 clicks.
+
+3. Persistencia y Efectos Secundarios
+
+real: 
+Verifica que localStorage funcione
+genial para asegurar que el usuario no pierda sus datos
+pero es un test más "pesado".
+
+nuevos: Se centran en la interfaz de comunicación
+No les importa el localStorage, les importa que el Sidebar y la Lista estén bien "cableados".
+
+
+# e2e test ligero:
+
+Mientras que los tests de integración que hicimos antes prueban los "cables",
+este test prueba que la "corriente" realmente fluye por todo el circuito.
+
+Estrategia: "The Reliable Smoke Test"
+
+Sincronización de Entidad: Cambiamos text por content y completed por isCompleted.
+Manejo de Fechas: Aunque el componente no muestre la fecha aún, el localStorage debe tener el campo createdAt como number para no romper el hook real.
+Prioridad a la Accesibilidad: Usaremos los aria-labels y roles que añadimos (label, checkbox, button) para que el test sea más robusto y cercano a la realidad del usuario
+Flujo Completo: Añadiremos un caso para la Búsqueda, ya que es una pieza clave de la nueva TodoPage
+
+```
+import { render, screen, fireEvent } from '../../../test/utils';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { TodoPage } from './TodoPage';
+
+// NOTA: Aquí NO mockeamos useTasks. Usamos la implementación real.
+
+describe('Page: TodoPage (Functional)', () => {
+  const STORAGE_KEY = 'liquid-glass-todos'; // Asegúrate que coincida con tu hook
+
+  beforeEach(() => {
+    localStorage.clear();
+    vi.clearAllMocks();
+  });
+
+  it('should allow a user to add a new task and see it in the list', () => {
+    render(<TodoPage />);
+    
+    const input = screen.getByPlaceholderText(/¿qué hay que hacer hoy\?/i);
+    const addButton = screen.getByRole('button', { name: /añadir/i });
+
+    fireEvent.change(input, { target: { value: 'Aprender Vitest' } });
+    fireEvent.click(addButton);
+
+    // Verificamos con la nueva propiedad 'content'
+    expect(screen.getByText('Aprender Vitest')).toBeInTheDocument();
+    expect(input).toHaveValue('');
+  });
+
+  it('should toggle task status and reflect changes in UI', () => {
+    render(<TodoPage />);
+    
+    // Añadir tarea
+    const input = screen.getByPlaceholderText(/¿qué hay que hacer hoy\?/i);
+    fireEvent.change(input, { target: { value: 'Tarea para completar' } });
+    fireEvent.click(screen.getByRole('button', { name: /añadir/i }));
+
+    const checkbox = screen.getByRole('checkbox');
+    
+    // 1. Completar
+    fireEvent.click(checkbox);
+    expect(checkbox).toBeChecked();
+    
+    // Verificamos que el texto tenga el estilo de completado (ahora vía props de Typography)
+    const taskText = screen.getByText('Tarea para completar');
+    expect(taskText).toHaveStyle({ 'text-decoration': 'line-through' });
+  });
+
+  it('should filter tasks when using the search bar in the Sidebar', () => {
+    render(<TodoPage />);
+    
+    // Añadimos dos tareas
+    const input = screen.getByPlaceholderText(/¿qué hay que hacer hoy\?/i);
+    const addButton = screen.getByRole('button', { name: /añadir/i });
+
+    fireEvent.change(input, { target: { value: 'Comprar leche' } });
+    fireEvent.click(addButton);
+    fireEvent.change(input, { target: { value: 'Comprar pan' } });
+    fireEvent.click(addButton);
+
+    // Usamos el buscador del Sidebar
+    const searchInput = screen.getByPlaceholderText(/buscar tareas/i);
+    fireEvent.change(searchInput, { target: { value: 'leche' } });
+
+    // Debería ver 'leche' pero no 'pan'
+    expect(screen.getByText('Comprar leche')).toBeInTheDocument();
+    expect(screen.queryByText('Comprar pan')).not.toBeInTheDocument();
+  });
+
+  it('should persist tasks in localStorage with the correct entity structure', () => {
+    // 1. Simulamos datos con la nueva estructura Task
+    const savedTasks = [
+      { 
+        id: '1', 
+        content: 'Tarea desde el pasado', 
+        isCompleted: false, 
+        createdAt: Date.now() 
+      }
+    ];
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(savedTasks));
+
+    render(<TodoPage />);
+
+    expect(screen.getByText('Tarea desde el pasado')).toBeInTheDocument();
+  });
+
+  it('should remove a task when the delete button is clicked', () => {
+    render(<TodoPage />);
+    
+    // Añadir
+    fireEvent.change(screen.getByPlaceholderText(/¿qué hay que hacer hoy\?/i), { 
+      target: { value: 'Tarea a eliminar' } 
+    });
+    fireEvent.click(screen.getByRole('button', { name: /añadir/i }));
+
+    // Borrar usando el nuevo aria-label que añadimos en TodoItem
+    const deleteButton = screen.getByLabelText(/eliminar tarea/i);
+    fireEvent.click(deleteButton);
+
+    expect(screen.queryByText('Tarea a eliminar')).not.toBeInTheDocument();
+  });
+});
+```
+
+
+# DashboardTemplate distribuye estos slots con CSS Grid/Flexbox
+

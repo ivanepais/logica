@@ -4855,3 +4855,27 @@ pnpm (con Corepack).
 Express + Helmet (Cabeceras).
 Zod (Validación de formularios y APIs).
 Prisma (ORM que evita inyecciones SQL automáticamente).
+
+
+
+# Git y Dependencias nuevas
+
+##### 1. Se modifican los archivos package.json y package-lock.json (o yarn.lock). Git rastrea estos archivos.
+
+##### 2. Binarios: Se descargan gigas de código en la carpeta node_modules/. Git NO rastrea esta carpeta (porque está en el .gitignore).
+
+Ejecutar: 
+`npm install`
+lee el package.json actual.
+
+Si ve que algo sobra en node_modules (porque cambiaste a una rama vieja), lo ignora o lo borra.
+
+Si ve que algo falta (porque acabas de fusionar la feature), lo descarga.
+
+Con git switch: Compartes la misma carpeta node_modules
+Si cambias de rama, tienes que estar haciendo npm install constantemente para sincronizar el disco con el package.json
+
+Con Worktree: Cada rama tiene su propia carpeta física y su propia carpeta node_modules
+No hay interferencia. Puedes probar la app en develop y estar seguro de que no estás usando "restos" de la rama feature.
+
+

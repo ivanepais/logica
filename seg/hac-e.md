@@ -12563,22 +12563,4821 @@ Hardware
 
 #### 2. Shell: Interacción con el Kernel
 
+##### Su función es leer tus comandos, interpretarlos y pedirle al Kernel que los ejecute
+Envuelve al Kernel, protegiéndolo del acceso directo pero permitiendo que tú, como usuario, puedas darle órdenes de forma segura
+
+##### REPL (Read-Eval-Print Loop): Ciclo de vida de un comando
+
+Read: El Shell espera a que escribas algo y presiones Enter.
+Eval: Analiza lo que escribiste (¿es un comando válido? ¿tiene argumentos?).
+Print: Si el comando genera una salida (como listar archivos), la muestra en pantalla.
+Loop: Vuelve a mostrar el prompt (el cursor parpadeando) esperando la siguiente orden
+
+
+Tipos de Shells:
+Han evolucionado varios, cada uno con sus propias ventajas
+
+1. sh (Bourne Shell): El abuelo de todos. Sencillo, pero limitado.
+
+2. bash (Bourne Again Shell): El estándar de oro.
+Es el shell por defecto en la inmensa mayoría de las distribuciones Linux. Es potente y compatible con casi todo
+
+3. zsh (Z Shell): Muy popular actualmente (especialmente en macOS y entre desarrolladores) por su alta capacidad de personalización y autocompletado inteligente
+
+4. fish (Friendly Interactive Shell): Enfocado en la facilidad de uso, con colores y sugerencias automáticas de fábrica, aunque no es 100% compatible con la sintaxis de Bash
+
+
+##### Shell como Lenguaje de Programación
+
+La parte más poderosa, no es solo para escribir comandos sueltos
+Es un lenguaje de Scripting completo
+
+Variables: Guardar datos temporalmente.
+
+Condicionales: Ejecutar acciones solo si algo sucede (ej. "si el archivo existe, bórralo").
+
+Bucles: Repetir una tarea mil veces en un segundo (ej. "cambia el nombre a todas estas fotos").
+
+Automatización: Puedes escribir un archivo .sh con 50 comandos y ejecutarlo con una sola instrucción
+
+
+##### Terminal, Shell y Consola
+
+Terminal (o Emulador de Terminal): Es la ventana (el programa gráfico como GNOME Terminal, Alacritty o uRxvt) que muestra el texto
+
+Shell: Es el intérprete que corre dentro de esa ventana (Bash, Zsh).
+
+Consola: Históricamente, era el terminal físico (teclado y pantalla) conectado directamente a un servidor o computadora central.
+
+
+##### .bashrc
+
+Uno de los archivos de configuración más importantes para cualquier usuario de Linux
+Es un script de shell que se ejecuta cada vez que abres una nueva terminal
+(una sesión interactiva que no es de inicio de sesión).
+
+`. (punto)`: Indica que es un archivo oculto
+No lo verás con un simple ls, necesitas usar ls -a.
+
+`bash`: Indica que las instrucciones dentro deben seguir la sintaxis del shell Bash.
+
+`rc`: Significa "Run Commands" (ejecutar comandos).
+Es una convención antigua de Unix para archivos que configuran las preferencias de un programa al iniciar.
+
+Vive en la raíz de tu carpeta personal:
+`~/.bashrc` (o `/home/tu_usuario/.bashrc`).
+
+
+Archivo para todos los usuarios del sistema:
+`/etc/bash.bashrc`
+lo normal es que tú solo edites el de tu carpeta personal.
+
+
+##### Uso de .bashrc
+
+1. Alias (Atajos de teclado)
+Permiten crear nombres cortos para comandos largos o complejos.
+
+```
+alias ll='ls -lah'
+alias update='sudo apt update && sudo apt upgrade'
+```
+
+##### 2. Variables de Entorno: defines rutas o comportamientos globales
+##### La más famosa es la variable $PATH le dice al shell en qué carpetas buscar los programas que intentas ejecutar
+
+```
+export EDITOR='vim'
+export PATH=$PATH:/home/usuario/mis_scripts
+```
+
+3. Personalización del Prompt (PS1)
+Terminales que muestran la rama de Git, la hora o colores locos?
+Eso se define en la variable PS1 dentro del .bashrc
+
+Ej:
+
+```
+PS1='\[\e[1;32m\]\u@\h \[\e[1;34m\]\w \$ \[\e[0m\]'
+```
+
+##### 4. Edición: Guardar y Cargar 
+Cuando editas tu .bashrc con un editor de texto (como vim, nano o gedit)
+Los cambios no se aplican instantáneamente en las terminales que ya tienes abiertas.
+
+1. Cerrar y volver a abrir la terminal.
+
+2. Usar el comando source:
+
+`source ~/.bashrc`
+
+Le dice al shell: "Lee este archivo ahora mismo y aplica todo lo que dice".
+
+
+##### 5. Errores en .bashrc
+
+Como el .bashrc es un script, si cometes un error de sintaxis (por ejemplo, olvidas cerrar una comilla),
+Podrías recibir mensajes de error cada vez que abras una terminal o, en casos extremos, podrías tener problemas para ejecutar comandos básicos si rompes el $PATH
+
+Antes de editarlo, siempre haz una copia de seguridad:
+`cp ~/.bashrc ~/.bashrc.bak`
 
 
 
-#### Archivos
+##### Comandos esenciales: Dominar el CRUD (Crear, Leer, Actualizar, Borrar) de archivos y la navegación
+
+1. Dónde estoy y qué hay aquí? (Navegación)
+
+`pwd` (Print Working Directory):
+Te dice la ruta exacta de la carpeta donde estás parado.
+
+`ls` (List):
+Muestra los archivos.
+`ls -l`:
+Formato de lista larga (verás tamaños y fechas).
+`ls -a`:
+Muestra archivos ocultos (los que empiezan con punto).
+
+`cd` (Change Directory): Cambiar de carpeta.
+`cd ..`: Sube un nivel (va a la carpeta "padre").
+`cd ~`: Te lleva directo a tu carpeta personal (home).
+    
+
+2. Manipulación de Archivos y Carpetas
+
+`mkdir` (Make Directory): Crea una carpeta nueva.
+
+`touch`: Crea un archivo vacío (ej. touch notas.txt).
+
+`cp (Copy)`: Copia archivos o carpetas.
+`cp archivo.txt copia.txt`
+`cp -r carpeta_a carpeta_b`
+(La -r es de recursivo, necesaria para carpetas
+
+`mv` (Move): Mueve archivos, pero también se usa para renombrar
+`mv viejo_nombre.txt nuevo_nombre.txt`
+
+
+`rm` (Remove): Borra archivos
+En la terminal no hay papelera de reciclaje
+`rm -rf carpeta/`: Borra una carpeta y todo su contenido a la fuerza.
+
+
+3. Leer el contenido (Sin editar)
+A veces solo quieres ver qué hay dentro de un archivo sin abrir un editor complejo
+
+`cat`: Da todo el contenido del archivo en la terminal.
+
+`less`: Abre el archivo de forma que puedes bajar y subir con las flechas
+(presiona q para salir). Mejor que cat para archivos largos.
+
+`head / tail`: Muestran las primeras o últimas 10 líneas de un archivo
+(útil para ver archivos de logs).
+
+
+4. Ayuda
+
+`man <comando>`: manual completo del comando
+
+`--help`: La mayoría de los comandos aceptan este argumento para mostrar un resumen rápido
+
+
+5. Atajos de Teclado
+
+Tabulador (TAB):
+Empieza a escribir un nombre de archivo o comando y presiona TAB.
+El Shell lo autocompletará por ti. Úsalo siempre.
+
+Flechas Arriba/Abajo:
+Navega por el historial de comandos que ya escribiste
+
+Ctrl + C:
+Cancela o detiene el comando que se está ejecutando en ese momento
+
+Ctrl + L:
+Limpia la pantalla
+igual que escribir clear
+
+
+
+#### 3. Sistema de Archivos y Jerarquía de Directorios
+
+##### En Linux todo parte de un único tronco común
+No como en Windows (donde cada disco es una letra como C: o D:).
+
+1. Todo es un Archivo
+Dogma central de Linux
+No solo tus documentos son archivos; tu teclado, tu disco duro, los procesos que corren en memoria y hasta tu tarjeta de red son representados como "archivos" en algún lugar del sistema
+Permite que el sistema operativo interactúe con el hardware usando las mismas herramientas que usas para leer un .txt.
+
+2. Árbol de Directorios (Jerarquía)
+El sistema de archivos de Linux es como un árbol invertido
+
+La base de todo es la raíz
+representada por una simple barra diagonal: /. No hay nada por encima de ella.
+
+A partir de /, se despliegan carpetas estandarizadas
+definidas por el `Filesystem Hierarchy Standard`
+
+Las más importantes:
+
+##### 1. `/bin` y `/usr/bin`: Contienen los ejecutables de los comandos básicos
+(como ls, cp, bash).
+
+##### 2. `/etc`: Centro de control. Residen los archivos de configuración de todo el sistema
+
+##### 3. `/home`: Donde viven las carpetas personales de los usuarios. Único lugar donde, por defecto, tienes permiso total.
+ej. /home/pedro
+
+##### 4. `/root`: La carpeta personal del superusuario (administrador). Está separada de /home por seguridad
+
+##### 5. `/var`: Contiene archivos que "varían" o crecen, como los logs (registros) del sistema y bases de datos
+
+##### 6. `/dev`: Archivos que representan dispositivos físicos (tu ratón, tus discos).
+
+##### 7. `/tmp`: Archivos temporales que se borran al reiniciar
+
+
+Tipos de Rutas
+
+Para moverte por este árbol, usas rutas
+Hay dos formas:
+
+1. Ruta Absoluta:
+Empieza siempre desde la raíz /.
+Es la dirección completa.
+
+2. Ruta Relativa:
+Empieza desde donde estás parado ahora mismo
+
+Si estoy en `/home/usuario` y quiero ir a Documentos
+solo escribo `cd Documentos`
+
+`. (punto)`: Significa "aquí mismo".
+`.. (doble punto)`: Significa "la carpeta de arriba".
+
+
+Montaje/Mounting:
+
+Cuando conectas un USB o un disco duro externo, este no aparece como una letra nueva
+Lo que hace el sistema es "montarlo" en una carpeta existente del árbol.
+
+Por ejemplo, tu USB podría aparecer dentro de `/media/usuario/mi_disco`
+El contenido del dispositivo externo se "fusiona" temporalmente con una rama de tu árbol de directorios principal.
+
+
+Formatos de Archivo (Sistemas de Archivos):
+
+Aunque Linux puede leer casi cualquier cosa, su formato nativo actual es mayoritariamente ext4
+Es un sistema de archivos "Journaling", lo que significa que lleva un diario de los cambios que va a hacer
+si se va la luz de repente, el sistema usa ese diario para repararse y no perder datos.
+
+
+##### Lista de Directorios y Subdirectorios
+
+1. /bin y /sbin (Binarios del Sistema)
+Contienen los programas ejecutables necesarios para que el sistema funcione.
+
+##### /bin: Comandos que pueden usar todos los usuarios (ls, cp, ping).
+
+##### /sbin: Comandos de administración del sistema que normalmente solo usa el superusuario (iptables, fdisk, reboot).
+
+
+2. /boot (Arranque)
+Todo lo necesario para que Linux inicie.
+
+/boot/grub: Archivos del cargador de arranque (GRUB).
+
+##### `vmlinuz`: El archivo comprimido del Kernel de Linux.
+
+##### `initrd`: Sistema de archivos temporal que ayuda a cargar los drivers antes de que el disco real esté disponible.
+
+
+3. /dev (Dispositivos)
+##### Linux aplica el concepto de "todo es un archivo". Los archivos aquí no ocupan espacio en disco. son "puntos de acceso" al hardware.
+
+dev/sda o /dev/nvme0n1: Tu disco duro físico
+
+/dev/null: El "agujero negro" (si mandas algo aquí, desaparece).
+
+/dev/tty: Representa a la propia terminal.
+
+
+4. /etc (Configuración)
+Es el "Panel de Control" de Linux en formato texto.
+
+##### etc/network: Configuración de redes.
+
+##### /etc/passwd: Lista de usuarios del sistema.
+
+##### /etc/fstab: Información sobre qué discos se montan automáticamente al arrancar
+
+
+5. /home y /root (Usuarios)
+
+##### /home/usuario: Tu espacio personal. Aquí están tus Descargas, Documentos y archivos de configuración personal (como el .bashrc).
+
+##### /root: Es el "home" del administrador. Está separado para que, si el disco de los usuarios se llena, el administrador aún tenga espacio para trabajar
+
+
+6. /lib (Librerías)
+
+##### Contiene las bibliotecas compartidas que necesitan los programas de /bin y /sbin para correr
+
+Son similares a los archivos .dll de Windows.
+
+##### /lib/modules: Aquí dentro están los módulos del kernel (los drivers).
+
+
+7. /media y /mnt (Montaje)
+
+##### /media: Donde el sistema monta automáticamente discos externos, USBs o CDs
+
+##### /mnt: Un lugar destinado para que el administrador monte sistemas de archivos temporalmente de forma manual
+
+
+8. /opt (Opcional)
+
+##### Reservado para paquetes de software "pesados" o de terceros que no siguen la estructura estándar de Linux
+por ejemplo, Google Chrome, Discord o herramientas de diseño
+
+
+9. /proc y /sys (Directorios Virtuales)
+
+##### No existen en el disco duro; son una ventana al interior del Kernel y el Hardware.
+
+##### /proc/cpuinfo: Muestra detalles de tu procesador.
+
+##### /proc/meminfo: Estado actual de la RAM.
+
+##### /sys: Información estructurada sobre drivers y dispositivos conectados.
+
+
+10. /usr (User System Resources)
+
+##### Es el directorio más grande. Aquí se instala la mayoría del software que instalas tú.
+
+##### /usr/bin: Ejecutables de aplicaciones de usuario (como Python, Git o Vim).
+
+##### /usr/lib: Librerías para esas aplicaciones.
+
+##### /usr/share: Archivos compartidos que no dependen de la arquitectura (iconos, fuentes, manuales).
+
+##### /usr/local: Donde instalas programas manualmente (compilados por ti) para no mezclarlos con los del sistema.
+
+
+11. /var (Variable)
+
+##### Archivos que cambian constantemente mientras el sistema corre.
+
+##### /var/log: Los registros (logs) de todo lo que pasa en el sistema.
+
+##### /var/mail: Correos electrónicos del sistema.
+
+##### /var/cache: Datos temporales de aplicaciones (como los paquetes descargados por apt).
+
+
+
+### 2. Manipulación de archivos
+
+Manipulación de Archivos: ls, cd, mkdir, cp, mv, rm y touch
+
+
+1. Creación y Modificación
+generar nuevos elementos o alterar sus metadatos
+
+touch: Crea un archivo vacío o actualiza la fecha de acceso/modificación de uno existente.
+mkdir: Crea un nuevo directorio (carpeta).
+mkdir -p crea toda una estructura de subcarpetas de una vez.
+ln: Crea enlaces (links) entre archivos.
+ln -s: Crea un enlace simbólico (un acceso directo que apunta a otra ruta).
+
+2. Movimiento y Duplicación
+lógica de mover datos de un punto A a un punto B
+
+cp: Copia archivos o directorios.
+Requiere la bandera -r (recursivo) para copiar carpetas enteras.
+mv: Mueve o renombra archivos y directorios
+En Linux, renombrar es simplemente "mover" un archivo a un nombre diferente en la misma ubicación.
+install: Similar a cp pero permite copiar archivos y definir sus permisos y atributos de seguridad al mismo tiempo (muy usado en scripts de instalación).
+
+3. Eliminación (Sin retorno)
+En la terminal no hay papelera de reciclaje por defecto
+
+rm: Elimina archivos.
+rm -r: Elimina carpetas y su contenido.
+rm -f: Fuerza la eliminación sin pedir confirmación.
+rmdir: Elimina directorios, pero solo si están vacíos. Es una medida de seguridad.
+shred: Sobrescribe un archivo varias veces antes de borrarlo para que sea prácticamente imposible recuperar los datos físicamente
+
+4. Lectura y Visualización
+Antes de manipular, a veces necesitas ver qué hay dentro.
+
+cat: Concatena y muestra todo el contenido de un archivo en la terminal.
+more / less: Permiten leer archivos largos página por página (o línea por línea).
+less es más moderno y potente.
+head: Muestra las primeras 10 líneas de un archivo.
+tail: Muestra las últimas 10 líneas
+##### tail -f sigue el archivo en tiempo real (vital para ver archivos de log).
+stat: Muestra información detallada sobre un archivo (tamaño, inodo, permisos exactos, fechas de creación).
+
+5. Búsqueda y Selección
+
+find: Busca archivos en una jerarquía de directorios basándose en nombre, tamaño, fecha o permisos
+locate: Busca archivos rápidamente usando una base de datos indexada
+es mucho más rápido que find pero puede no estar actualizado al segundo
+which: Te dice la ruta exacta del ejecutable de un comando (ej. which python).
+grep: Busca patrones de texto dentro de los archivos.
+
+6. Archivado y Compresión
+
+agrupar muchos archivos en uno solo o reducir su tamaño
+
+tar: Empaqueta varios archivos en uno solo (un .tar).
+No comprime por sí solo, pero suele usarse con -z (gzip) o -j (bzip2).
+gzip / gunzip: El estándar de compresión en Linux.
+zip / unzip: Formato de compresión común para compatibilidad con otros sistemas como Windows.
+
+
+#### 1. ls
+
+1. Lista y Detalle
+
+ls: verás nombres, pero no sabrás quién es el dueño o cuánto pesan los archivos
+ls -l: formato largo, permisos, número de enlaces, propietario, grupo, tamaño, fecha de modificación y nombre.
+
+2. Archivos ocultos y configuración
+archivos que empiezan con un punto (.bashrc, .config) están ocultos por defecto
+
+ls -a
+ls -la (detalle)
+
+cuando necesitas editar configuraciones en tu /home
+
+3. Humano: tamaño legible
+
+ls -l: muestra el tamaño en bytes, difícil de leer
+
+`ls -lh`: Convierte los bytes a KB, MB o GB
+casi obligatorio combinar siempre la l con la h.
+
+4. Ordenar por tiempo: archivos más nuevos 
+Ej: descargar algo o un programa generó un log y no sabes cómo se llama
+
+`ls -lt`: Ordena por fecha de modificación, los más recientes arriba
+Variante: `ls -ltr` (la r es de Reverse).
+pone los archivos más nuevos al final
+justo encima de tu cursor, para que no tengas que hacer scroll hacia arriba
+
+5. Clasificación visual rápida
+A veces es difícil distinguir a simple vista qué es una carpeta, qué es un ejecutable y qué es un archivo de texto
+
+`ls -F`: Añade un símbolo al final de cada nombre
+`/` para directorios.
+`*` para ejecutables.
+`@` para enlaces simbólicos
+
+6. Listado recursivo (todo lo que hay dentro)
+ver el contenido de la carpeta actual y de todas las subcarpetas que contiene
+
+`ls -R`
+Cuidado: Si lo ejecutas en la raíz /
+podrías estar un buen rato viendo texto pasar por pantalla
+
+7. Listar solo directorios  
+Carpeta llena de archivos y solo quieres ver qué subcarpetas hay
+
+`ls -d */`
+
+8. Combinación de banderas pro
+`ls -lahtr`
+mostrar todos los archivos (a),
+en formato largo (l),
+con tamaños legibles (h),
+ordenados por tiempo (t) de forma inversa
+para que los últimos modificados queden abajo".
+
+9. Alias en .bashrc
+`alias ll='ls -lahtr'`
+
+
+
+#### 2. cd
+
+1. Hacia Home
+Carpeta personal (/home/usuario) base de operaciones
+
+cd: lleva a carpeta personal desde cualquier ubicación
+`cd ~`: igual, atajo universal para tu directorio personal
+`cd ~/Descargas`: carpeta específica dentro de tu home, sin importar ubicación actual
+
+2. Atrás
+te has movido a una carpeta muy profunda
+
+`cd -`: devuelve al directorio anterior
+
+3. Niveles
+sin escribir rutas largas
+
+cd ..: Sube un nivel hacia la carpeta "padre".
+cd ../..: Sube dos niveles de un solo golpe.
+cd ../otra_carpeta: Sube un nivel y entra inmediatamente en otra carpeta que está al mismo nivel que la anterior
+
+4. Rutas con espacios
+Linux usa el espacio para separar comandos de argumentos
+Si una carpeta se llama Mis Proyectos
+un simple cd Mis Proyectos fallará.
+
+Opción A (Comillas): cd "Mis Proyectos"
+
+Opción B (Escape): cd Mis\ Proyectos
+(La barra invertida le dice al Shell: "el espacio que sigue es parte del nombre").
+
+5. Tabulador (Auto-completado)
+para cd: Nunca escribas la ruta completa manualmente
+
+Escribe cd Doc y presiona la tecla TAB
+Shell escribirá Documentos/ por ti.
+
+##### Si hay varias carpetas que empiezan igual, presiona TAB dos veces para ver la lista de opciones
+
+6. A la raíz
+ir al inicio de todo el árbol para revisar archivos de configuración o logs
+
+`cd /`: Te lleva a la raíz del sistema.
+`cd /etc/network`: Un ejemplo de ruta absoluta (empieza por /).
+
+Si estás en una terminal y quieres ir a una carpeta que tienes abierta en el explorador de archivos (UI)
+Escribe cd  (con un espacio al final) y arrastra la carpeta desde la ventana a la terminal
+La ruta se escribirá automáticamente
+
+
+
+#### 3. mkdir
+
+1. Carpeta simple
+Crea una carpeta en tu ubicación actual.
+mkdir proyectos
+
+2. Varias carpetas a la vez
+
+mkdir musica videos fotos
+tres carpetas independientes al mismo tiempo en la ubicación actual
+
+3. estructuras profundas: param -p (parents)
+crear una carpeta dentro de otra que no existe
+(mkdir carpeta1/carpeta2), da error sin la bandera -p
+
+mkdir -p trabajo/2026/abril/facturas
+Si "trabajo", "2026" o "abril" no existen
+
+4. Nombres coplejos
+Si el nombre de tu carpeta tiene espacios,
+usar comillas o "escapar" el espacio
+
+A: mkdir "Mis Documentos"
+B: mkdir Mis\ Documentos
+
+se prefiere usar guiones bajos (mis_documentos)
+o guiones (mis-documentos) para evitar problemas en la terminal
+
+5. Llaves {}: Expansión bash, carpetas independientes
+crear una estructura repetitiva rápidamente
+
+`mkdir -p proyecto/{src,bin,docs,test}`
+carpeta principal 'proyecto'
+y crea cuatro subcarpetas: src, bin, docs y test.
+
+6. Definir permisos al crear: param -m
+carpeta sea privada o de solo lectura desde el momento en que nace
+
+`mkdir -m 700 secret`
+Crea la carpeta y le asigna inmediatamente permisos de lectura, escritura y ejecución
+solo para tu usuario, bloqueando a todos los demás
+
+7. Combinación de comandos
+
+`mkdir -p curso_python/semana_{1..10}/{ejercicios,teoria}`
+carpeta curso_python
+Dentro de ella, 10 carpetas (de semana_1 a semana_10)
+dentro de cada una de esas 10 semanas
+habrá una carpeta para ejercicios y otra para teoria
+
+21 carpetas con una sola línea!
+
+
+
+#### 4. cp
+
+duplicar información
+crea una copia exacta dejando el original intacto.
+
+`cp [opciones] origen destino`
+
+1. Copiar solo archivo
+
+`cp notas.txt notas_backup.txt`
+duplicado del archivo en la misma carpeta con un nombre distinto
+
+2. Copiar archivos a otra carpeta
+
+`cp reporte.pdf ~/Documentos/`
+Copia el archivo dentro de la carpeta Documentos
+
+`cp reporte.pdf ~/Documentos/reporte_final.pdf`
+copiarlo y además cambiarle el nombre en el destino:
+
+3. Copiar carpetas enteras: param -r
+Si intentas copiar una carpeta con cp a secas
+
+Para copiar directorios y todo su contenido, debes usar la opción recursiva
+`cp -r carpeta_fotos/ /media/usb/`
+Copia la carpeta, sus subcarpetas y todos los archivos que contenga
+
+4. Evitar sobrescribir por error (Modo interactivo): param -i
+##### si el destino ya tiene un archivo con el mismo nombre, cp lo borrará y pondrá el nuevo encima sin avisar.
+
+`cp -i archivo.txt ~/Documentos/`
+preguntará: "¿Sobrescribir destino.txt?".
+presionar y para confirmar o n para cancelar.
+
+5. Copiar múltiples archivos con comodines
+
+`cp *.jpg ~/Imagenes/`
+##### Busca todos los archivos que terminen en .jpg en la carpeta actual
+y los copia a la carpeta Imagenes
+
+6. modo "Preservar": -a
+
+##### copiar archivos como administrador o para respaldos
+a veces quieres mantener los permisos originales, las fechas de creación y los enlaces simbólicos.
+
+`cp -a mi_proyecto/ backup_proyecto/`
+La -a (archive): copia recursivamente y preserva todos los atributos del archivo
+
+7. Ver qué está pasando (Modo Verbose)
+copiando muchos archivos y quieres ver el progreso en la terminal
+
+`cp -v *.mp3 ~/Musica/`
+imprimirá en pantalla una línea por cada archivo copiado, confirmando el origen y el destino
+
+8. Banderas rv: copia de carpeta y detalles
+
+carpeta llamada web_site y quieres hacer un respaldo rápido
+`cp -rv web_site/ web_site_v2/`
+
+Verás una lista de todos los archivos siendo duplicados en una nueva carpeta llamada web_site_v2.
+
+
+#### 5. mv
+
+mover archivos de un lugar a otro y renombrarlos
+no duplica el archivo; cambia su ubicación o su nombre en la tabla del sistema de archivos
+
+1. Renombrar archivo o carpeta
+cambiar el nombre de algo sin moverlo de carpeta.
+
+`mv notas_viejas.txt notas_2026.txt`
+
+2. Mover archivos a otro directorio
+
+`mv reporte.pdf ~/Documentos/`
+Desplaza el archivo desde la ubicación actual a la carpeta Documentos
+
+Mover y Renombrar al mismo tiempo:
+`mv foto.jpg ~/Imagenes/perfil.jpg`
+archivo se mueve a la carpeta Imagenes y cambia su nombre de "foto" a "perfil".
+
+3. Mover múltiples archivos a la vez
+
+Listar varios archivos antes de indicar el destino final
+siempre debe ser el último argumento
+
+`mv archivo1.txt archivo2.txt carpeta_destino/`
+
+comodines: `mv *.mp3 ~/Musica/`
+Mueve todas las canciones en formato MP3 de un solo golpe
+
+4. Mover carpetas
+A diferencia de cp, el comando mv no necesita la bandera -r para mover carpetas
+
+`mv mi_proyecto/ ~/Copias_Seguridad/`
+Mueve la carpeta completa con todo su contenido (subcarpetas y archivos) instantáneamente
+
+5. Protección de datos: seguridad
+
+Mover archivos puede ser peligroso
+por defecto, mv sobrescribirá cualquier archivo en el destino que tenga el mismo nombre sin preguntar
+
+Interactivo (-i): Te pregunta antes de sobrescribir algo.
+`mv -i documento.docx ~/Escritorio/`
+
+No sobrescribir nunca (-n):
+Si el archivo ya existe en el destino, mv simplemente no hace nada
+`mv -n archivo.txt ~/Documentos/`
+
+Crear un respaldo automático (-b):
+Si hay un conflicto de nombres, mueve el archivo y le añade una virgulilla (~)
+al nombre del archivo original en el destino para que no lo pierdas
+`mv -b datos.csv ~/BaseDatos/`
+
+6. Mover solo si es más nuevo (-u)
+Update es muy útil para sincronizar carpetas manualmente
+
+`mv -u *.py ~/Scripts/`
+Solo moverá los archivos .py si el archivo en la carpeta actual es más reciente
+que el que ya existe en la carpeta de destino o si no existe en absoluto.
+
+7. Ordenar archivos
+Ej: carpeta llena de archivos mezclados
+mover todos los archivos que empiezan con la palabra "trabajo"
+a una carpeta llamada "Oficina"
+`mv trabajo* Oficina/`
+
+
+
+#### 6. rm
+
+el comando más peligroso de Linux porque no existe una papelera de reciclaje
+los datos se marcan como espacio libre en el disco y recuperarlos es muy difícil o imposible
+
+1. Eliminar archivos individuales
+limpiar archivos sueltos
+rm notas.txt
+
+`rm foto1.jpg foto2.jpg documento.pdf`
+varios archivos
+
+2. Eliminar carpetas: -r
+Por defecto, rm solo borra archivos
+Para borrar una carpeta y todo lo que contiene (subcarpetas y archivos)
+se necesita del modo recursivo
+
+`rm -r carpeta_vieja/`
+Entra en la carpeta, borra cada archivo y luego borra la carpeta misma
+
+3. Fuerza: -f
+archivos protegidos contra escritura que te piden confirmación
+"rm: remove write-protected regular empty file 'archivo'?"
+
+`rm -f archivo_protegido`
+-f ignora archivos inexistentes y nunca pide confirmación.
+Borra sin preguntar
+
+4. Combinación: rm -rf
+Eliminar directorios complejos de forma instantánea
+
+`rm -rf proyecto_fallido/`
+Si te equivocas en la ruta (por ejemplo, pones un espacio extra)
+`rm -rf / ruta/equivocada`
+podrías borrar carpetas vitales del sistema
+
+5. Interactivo: -i
+Para verificar lo borrado o o vas a borrar muchos archivos con comodines
+
+`rm -i *.jpg`
+preguntará por cada archivo
+presionar y (yes) o n (no).
+
+6. Comodines (Wildcards)
+
+Borrar por extensión:
+`rm *.log`
+(Borra todos los archivos de registro).
+
+Borrar archivos que empiezan por algo:
+`rm temp_*`
+(Borra todo lo que empiece por "temp_").
+
+7. Ver proceso: -v
+confirmación visual de que los archivos realmente se están eliminando
+
+`rm -v *.txt`
+imprime en pantalla: removed 'nota1.txt', removed 'nota2.txt', etc.
+
+8. Practicas para rm
+
+1. ls primero:
+Antes de ejecutar `rm *.txt`
+ejecuta `ls *.txt`.
+Así verás exactamente qué archivos coinciden con el patrón antes de borrarlos
+
+2. Tratar espacios:
+Un espacio mal puesto es fatal
+`rm archivo 1.txt`
+##### Borrará un archivo llamado "archivo" y otro llamado "1.txt".
+
+Para borrar un archivo con espacios usa comillas:
+`rm "archivo 1.txt`".
+
+3. Alias de seguridad
+añaden a .bashrc
+`alias rm='rm -i'`
+para que el sistema siempre les pregunte
+
+9. Ej: carpeta llamada Basura con 100 archivos temporales y 3 subcarpetas
+Quieres borrar todo el contenido viendo qué se borra pero sin que te pregunte uno por uno
+
+`rm -rv Basura/`
+
+
+
+#### 7. touch
+
+Aunque su función técnica principal es cambiar las marcas de tiempo de un archivo
+en la práctica el 99% de las veces lo usamos para crear archivos vacíos instantáneamente
+
+1. Archivo vacío
+preparar un archivo para luego editarlo o usarlo como marcador
+
+`touch mi_archivo.txt`
+Si el archivo no existe, lo crea vacío.
+Si ya existe, no cambia su contenido pero actualiza su "fecha de última modificación" a la hora actual
+
+2. Múltiples archivos
+
+pasarle todos los nombres que quieras separados por espacios
+
+`touch index.html style.css script.js`
+Crea los tres archivos en la carpeta actual simultáneamente
+
+3. Expansiones: llaves
+
+llaves {} para generar listas de archivos rápidamente
+
+`touch archivo_{1..5}.log`
+Crea cinco archivos: archivo_1.log, archivo_2.log, archivo_3.log, archivo_4.log y archivo_5.log.
+Ideal para crear estructuras de prueba para bases de datos o logs
+
+4. Cambiar la fecha de un archivo (Función técnica)
+necesitas "engañar" al sistema para que crea que un archivo fue modificado en el pasado o en el futuro
+útil para scripts de respaldo o pruebas de compilación
+
+`touch -t 202512251200 nota.txt`
+Cambia la fecha de modificación de "nota.txt" al 25 de diciembre de 2025 a las 12:00.
+
+Formato: `[[CC]YY]MMDDhhmm[.ss]`
+Año, Mes, Día, Hora, Minuto
+
+5. Evitar crear el archivo si no existe (-c)
+Ej: actualizar la fecha de un archivo pero no quieres que se cree uno nuevo si te equivocas al escribir el nombre.
+
+`touch -c archivo_inexistente.txt`
+-c (no-create): Si el archivo existe, actualiza su fecha;
+si no existe, no hagas nada
+
+6. Copiar la fecha de otro archivo (-r)
+Si quieres que un archivo tenga exactamente la misma marca de tiempo que otro (referencia).
+
+`touch -r origen.txt destino.txt`
+Toma la fecha del archivo `origen.txt` y se la aplica a destino.txt.
+
+Rs: 
+
+touch file.txt
+Crea un archivo o actualiza su fecha.
+
+touch a b c
+Crea tres archivos a la vez.
+
+touch -t YYYYMMDD...
+Cambia la fecha a una específica.
+
+touch -c file.txt
+"Actualiza fecha, pero no crea archivos nuevos."
+
+7. Práctica: documentar todo el año
+los 12 meses del año
+`touch mes_{01..12}.md`
+12 archivos de texto ordenados para empezar tu diario
+
+
+
+#### 8. cat
+
+catenate:
+un uso básico es leer archivos
+su uso potente es para combinar, crear y redirigir contenido de texto
+
+1. Ver contenido
+volcar el texto de un archivo directamente en tu terminal
+
+`cat notas.txt`
+Si el archivo es muy largo (miles de líneas)
+cat lo imprimirá todo de golpe y tendrás que hacer mucho scroll
+##### Para archivos largos, es mejor usar less.
+
+2. Ver varios
+cat puede unir el contenido de varios archivos en la salida
+
+`cat parte1.txt parte2.txt parte3.txt`
+Muestra el contenido de los tres archivos uno tras otro
+como si fueran un solo documento continuo.
+
+3. Enumerar líneas (-n)
+en qué numero de linea está el contenido
+
+`cat -n script.py`
+Muestra el contenido del archivo con números de línea a la izquierda.
+
+4. Crear archivos rápidamente
+##### usar cat junto con la redirección >
+crear un archivo y empezar a escribir en él directamente desde la terminal
+
+`cat > nuevo_archivo.txt`
+Escribe tu texto
+Cuando termines, presiona Ctrl + D
+Eso le indica al sistema que el archivo ha terminado (End Of File).
+
+5. Unir archivos en uno nuevo
+varios fragmentos y quieres crear un solo archivo final que los contenga a todos
+
+`cat capitulo1.txt capitulo2.txt > libro_completo.txt`
+Toma el contenido de los dos primeros y lo guarda dentro del tercero
+##### Si libro_completo.txt ya existía, se borrará su contenido previo
+
+6. Añadir contenido al final de un archivo (>>)
+Si no quieres borrar lo que ya hay en un archivo
+agregarle más texto al final
+
+`cat extra.txt >> log_acumulado.txt`
+
+7. Limpiar líneas vacías repetidas (-s)
+
+espacios en blanco
+
+`cat -s archivo.txt`
+Comprime múltiples líneas vacías consecutivas en una sola, haciendo el texto más legible
+
+8. Ver caracteres invisibles (-A)
+detectar si un archivo tiene tabuladores
+espacios al final de la línea
+o caracteres de fin de línea de Windows (\r\n)
+que suelen romper scripts en Linux.
+
+`cat -A script.sh`
+Muestra símbolos especiales para tabulaciones (^I) y finales de línea ($).
+
+Rs:
+
+-n: Enumera todas las líneas.
+-b: Enumera solo las líneas que NO están vacías.
+-s: Suprime múltiples líneas vacías repetidas.
+-A: Muestra todo (caracteres ocultos incluidos).
+
+9. Crear archivo a partir de varios con lineas numeradas
+Tienes tres archivos de texto llamados inicio.md, desarrollo.md y fin.md.
+
+Quieres crear un archivo llamado articulo.md que contenga los tres
+pero quieres que las líneas estén numeradas para revisarlo mejor
+
+`cat -n inicio.md desarrollo.md fin.md > articulo.md`
+
+
+#### 9. more/less
+
+##### more
+
+Paginador de texto
+leer archivos grandes de una manera cómoda
+mostrando el contenido pantalla por pantalla
+en lugar de volcarlo todo de golpe como hace cat.
+
+1. Lectura
+
+`more archivo_largo.txt`
+Abre el archivo y se detiene cuando llena la pantalla
+En la parte inferior verás un porcentaje de lectura
+(ej. --More--(25%))
+
+2. Navegación: atajos
+dentro de more se usan teclas
+
+`Espacio`: Avanza una pantalla completa.
+`Enter`: Avanza línea por línea.
+`b`: Retrocede una pantalla (solo funciona en algunas versiones modernas de more)
+`/texto`: Busca una palabra específica dentro del archivo
+Presiona `n` para ir a la siguiente coincidencia
+`q`: Salir (Quit) del visor inmediatamente.
+
+3. Línea específica (+)
+Si sabes que la información que buscas está a mitad del archivo
+
+`more +500 log_sistema.log`
+Empieza a mostrar el archivo directamente desde la línea 500
+
+4. Buscar palabra antes de abrir: +/
+
+`more +/error log_sistema.log`
+Abre el archivo y salta automáticamente a la primera línea que contenga la palabra "error".
+
+5. Ajustar el tamaño de la "pantalla" (-n)
+Si tienes una pantalla pequeña o quieres leer en bloques específicos
+
+`more -10 archivo.txt`
+Muestra el texto en bloques de solo 10 líneas cada vez que presionas espacio.
+
+6. Limpiar la pantalla antes de mostrar (-p)
+
+`more -p archivo.txt`
+En lugar de hacer scroll hacia abajo, limpia la ventana de la terminal y redibuja el texto desde arriba
+más limpio visualmente
+
+7. Ver varios archivos
+
+`more notas1.txt notas2.txt`
+Cuando termines de leer el primero, te avisará y pasará al siguiente al presionar espacio
+
+more: Es primitivo
+solo te permite ir hacia adelante
+
+less: potente.
+hacia adelante, hacia atrás, buscar mejor y no carga todo el archivo en memoria
+
+8. Ej: Buscar palabra clave en un archivo
+
+log en tu sistema como /var/log/syslog
+o el archivo de configuración /etc/services
+ábrelo buscando una palabra clave
+`more +/http /etc/services`
+ 
+##### less: visor definitivo
+
+donde puedes saltar de página
+buscar hacia atrás y moverte con total libertad
+
+Es el visor por defecto en Linux por una razón
+no carga todo el archivo en la memoria RAM antes de empezar
+lo que lo hace increíblemente rápido incluso con archivos de gigabytes.
+
+1. Velocidad de navegación
+tienes control total con el teclado
+
+`Flechas arriba/abajo`
+ Desplazamiento línea por línea
+
+`Espacio / RePág`
+Avance de pantalla completa
+
+`b / AvPág`
+Retroceso de pantalla completa
+
+`g`: Salta al inicio del archivo.
+
+`G`: Salta al final del archivo.
+
+2. Búsqueda
+
+less resalta las coincidencias para navegarlas
+
+`/palabra`:
+Busca "palabra" hacia adelante.
+
+`?palabra`:
+Busca "palabra" hacia atrás (desde tu posición actual hacia el inicio).
+
+`n`:
+Va a la siguiente coincidencia.
+
+`N`:
+Vuelve a la coincidencia anterior
+
+3.  Tiempo real (+F)
+
+##### función favorita de los SysAdmins: Permite ver cómo un archivo crece (como un log de servidor) mientras está abierto
+
+`less +F /var/log/syslog`
+Actúa como tail -f.
+
+Si quieres dejar de seguir el archivo para buscar algo que ya pasó
+`Ctrl + C`Volverás al modo normal de less
+Para retomar el seguimiento, presiona `F`.
+
+4. Bookmarks: marcas de posición
+leyendo un archivo de configuración de 5,000 líneas y encuentras algo importante
+
+Presiona `m` seguido de una letra (ej. ma).
+Has marcado ese sitio como `"a"`.
+
+Al seguir navegando 
+Cuando quieras volver, presiona ' (comilla simple)
+y la letra ('a).
+
+5. Múltiples archivos
+`less archivo1.txt archivo2.txt`
+
+Navegación:
+`:n`: Salta al siguiente archivo (next).
+`:p`: Vuelve al archivo anterior (previous).
+`:x`: Salta al primer archivo de la lista.
+
+6. Editor desde less: v
+mientras lees un archivo te das cuenta de que necesitas corregir algo
+Abre el archivo actual en tu editor por defecto (normalmente Vim o Nano).
+Al cerrar el editor, volverás exactamente al mismo punto donde estabas en less
+
+7. Números de línea (-N)
+`less -N archivo.conf`
+Muestra el contenido con los números de línea a la izquierda, similar a cat -n.
+
+Rs:
+
+Buscar hacia adelante: /
+Buscar hacia atrás: ?
+Ir al final del archivo: G
+Seguir cambios en vivo: F
+Abrir editor: v
+Salir: q
+
+
+
+#### 10. head/tail
+
+##### head
+
+Solo cuando necesitamos un 'vistazo' al comienzo de un archivo
+especialmente útil para leer encabezados de tablas, metadatos de archivos de configuración o los primeros registros de un log sin saturar tu terminal
+
+1. Inicio
+
+Por defecto, mostrará solo las primeras 10 líneas
+
+`head archivo.txt`
+Ver rápidamente de qué trata un archivo o comprobar si tiene el formato correcto
+
+2. Controlar la cantidad de líneas (-n)
+10 líneas son muchas o muy pocas
+especificar el número exacto.
+
+`head -n 5 lista_compras.txt`
+`head -5 lista_compras.txt`
+
+3. Ver todo "menos las últimas N líneas"
+Si usas un número negativo con -n
+todo el archivo pero se detiene -n lineas antes del final
+
+`head -n -20 archivo_largo.txt`
+Imprime todo el archivo excepto las últimas 20 líneas.
+
+4. Ver los primeros bytes (-c)
+en archivos binarios o archivos de texto donde el número de caracteres importa más que el número de líneas
+
+`head -c 50 archivo.txt`
+Muestra exactamente los primeros 50 caracteres (bytes) del archivo.
+
+5. Múltiples archivos
+pondrá una cabecera con el nombre de cada uno para que sepas qué estás leyendo
+
+`head -n 3 *.log`
+Muestra las primeras 3 líneas de cada archivo que termine en .log.
+
+6. Combinación con Pipes (|)
+
+##### Combinación con otros comandos: pipes |
+
+Ej: ver cuáles son los 5 archivos más pesados de una carpeta
+`ls -lS | head -n 6`
+
+ls -lS: Lista los archivos ordenados por tamaño (Size).
+##### |: Pasa esa lista al siguiente comando.
+head -n 6: Toma la cabecera del listado y los primeros 5 archivos.
+
+7. Aplicado al sistema: 
+ver qué usuarios se crearon primero en tu sistema
+El archivo /etc/passwd contiene la lista de usuarios
+
+`head -n 5 /etc/passwd`
+
+
+
+##### tail 
+
+Para ver el final
+el comando más utilizado por programadores y administradores de sistemas para una tarea crítica
+monitorear lo que está pasando en este preciso momento
+
+1. Final de un archivo
+
+`tail mi_archivo.log`
+Comprobar rápidamente los últimos eventos registrados en un historial o si un proceso terminó correctamente
+
+2. Controlar la cantidad de líneas (-n)
+
+`tail -n 5 datos.csv`
+`tail -5 datos.csv`
+Muestra solo las últimas 5 líneas.
+
+3. Empezar desde una línea específica (+)
+un uso menos conocido pero muy potente
+"empieza en esta línea y llega hasta el final"
+
+`tail -n +20 lista.txt`
+Salta las primeras 19 líneas y muestra todo el contenido desde la línea 20 en adelante
+Ej: para saltar encabezados de archivos CSV
+
+4. Modo "Vivo" o Seguimiento (-f)
+La bandera -f (follow) mantiene el archivo abierto y actualiza la terminal en tiempo
+cada vez que se añade una nueva línea al final.
+
+`tail -f /var/log/syslog`
+salir: Ctrl + C.
+
+5. Seguir un archivo que puede rotar (-F)
+A veces, los sistemas de logs borran el archivo viejo y crean uno nuevo con el mismo nombre (rotación).
+El comando tail -f normal se rompería porque el archivo original "murió".
+
+`tail -F servidor.log`
+sigue intentando leer el archivo aunque este se borre y se vuelva a crear
+Es mucho más robusto para monitoreos largos.
+
+6. Ver los últimos bytes (-c)
+
+`tail -c 100 archivo.txt`
+Muestra los últimos 100 caracteres del archivo
+
+7. Combinación con Pipes (|)
+##### Ej: Si quieres ver solo los últimos 3 procesos que más memoria están consumiendo
+
+`ps aux --sort=-%mem | head -n 4`
+Usas head para ver la cabecera y los primeros 3
+
+O si quieres el final de un listado
+`ls -lh /var/log | tail -n 5`
+
+##### Ej: Qué está registrando el sistema en tiempo real
+
+`tail -f /var/log/Xorg.0.log`
+puede requerir sudo
+
+###### Mueve el ratón o conecta un USB y verás cómo aparecen líneas nuevas si el sistema registra esos eventos
+
+
+
+#### 11. find
+
+A diferencia de locate, que usa una base de datos
+
+find rastrea el sistema de archivos en tiempo real
+permitiéndote buscar no solo por nombre, sino por tamaño, fecha, permisos y hasta por el dueño del archivo
+
+Sintaxis: `find [donde_buscar] [criterio] [que_buscar].`
+
+1. Búsqueda por nombre
+usar comillas si vas a usar comodines (*).
+
+Nombre exacto
+`find . -name "notas.txt"`
+Busca en el directorio actual . y subcarpetas
+
+Ignorar mayúsculas
+`find /home -iname "proyecto.pdf"`
+
+comodines
+`find . -name "*.jpg"`
+Busca todas las imágenes JPEG
+
+2. Búsqueda por tipo de archivo (-type)
+A veces solo quieres encontrar carpetas o solo archivos.
+
+Solo carpetas
+`find /var/log -type d`
+
+Solo archivos
+`find /etc -type f -name "*.conf"`
+
+3. Búsqueda por tamaño (-size)
+##### Ej: encontrar archivos que están llenando tu disco duro
+
+Archivos mayores a 100MB:
+`find / -size +100M`
+
+Archivos menores a 10k:
+`find . -size -10k`
+
+Rango específico:
+`find . -size +10M -size -50M`
+(Entre 10 y 50 Megabytes).
+
+4. Búsqueda por tiempo (-mtime, -atime)
+encontrar qué archivos se modificaron recientemente
+
+Modificados en las últimas 24 horas:
+`find . -mtime 0`
+
+Modificados hace más de 7 días:
+`find . -mtime +7`
+
+Modificados en los últimos 10 minutos:
+`find . -mmin -10`
+
+5. Búsqueda por Permisos y Dueño
+
+usuario:
+`find / -user juan`
+
+permisos exactos:
+`find . -perm 777`
+##### Busca archivos con peligro total de seguridad
+
+
+6. Ejecutar acciones sobre lo encontrado (-exec)
+
+##### Ejecutar ordenes sobre lo encontrado: Puedes buscar algo y, en la misma línea, borrarlo, moverlo o cambiarle los permisos
+
+`find . -name "*.tmp" -exec rm {} \;`
+{}: Es un marcador de posición que representa cada archivo encontrado
+\;: Indica el fin del comando que se va a ejecutar.
+
+Ej: Cambiar el dueño de todos los archivos de una carpeta:
+`find ./web -type f -exec chown www-data {} \;`
+
+7. Limitar profundidad (-maxdepth)
+##### Si no quieres que find se meta en cientos de subcarpetas.
+
+`find . -maxdepth 1 -name "*.sh"`
+Solo busca en la carpeta actual, sin entrar en las subcarpetas
+
+8. Encontrar archivos y mostrar detalles (ls)
+Ej: encontrar todos los archivos de más de 50MB en tu carpeta personal y ver sus detalles
+
+`find ~ -type f -size +50M -ls`
+opción -ls al final es un atajo de find para mostrar detalles del archivo encontrado
+
+
+
+#### 12. locate
+
+1. Busqueda
+no necesitas especificar rutas
+por defecto, busca en todo el sistema
+
+`locate notas.txt`
+Devuelve instantáneamente todas las rutas que contienen "notas.txt".
+
+Búsqueda parcial
+`locate .conf`
+mostrará todos los archivos del sistema que tengan ".conf" en cualquier parte de su nombre o ruta
+
+2. Ignorar mayus y minus: -i
+para no perder resultados por una letra capital.
+
+`locate -i proyecto`
+Encontrará "Proyecto", "PROYECTO", "proyecto.zip", etc.
+
+3. Actualizar la base de datos (updatedb)
+locate lee un archivo llamado `mlocate.db`
+Si acabas de descargar algo y locate no lo ve
+debes forzar la actualización del índice.
+
+`sudo updatedb`
+Normalmente el sistema hace esto automáticamente una vez al día
+querrás hacerlo manualmente tras cambios importantes.
+
+4. Limitar el número de resultados (-n)
+A veces una búsqueda devuelve miles de líneas
+Ej: "lib". Puedes limitar la salida para que sea legible.
+
+`locate -n 10 config.php`
+Solo te muestra los primeros 10 resultados que encuentre.
+
+5. Contar coincidencias (-c)
+Si solo quieres saber cuántos archivos de un tipo tienes
+sin ver todas sus rutas.
+
+`locate -c ".mp3"`
+Te da un número total (ej. 450).
+
+6. Verificar que el archivo aún existe (-e)
+Como locate usa una base de datos vieja
+a veces te muestra archivos que ya borraste
+La bandera -e (existing) comprueba si el archivo sigue ahí antes de mostrártelo
+
+`locate -e mi_archivo_borrado.txt`
+Si lo borraste recientemente y no has corrido updatedb
+este comando no devolverá nada (lo cual es correcto).
+
+7. Estadísticas (-S)
+sobre qué tan grande es tu índice
+o cuándo fue la última vez que se actualizó tu base de datos de archivos
+
+`locate -S`
+
+
+find y locate:
+
+Velocidad
+Lenta (escanea el disco).
+Instantánea (lee base de datos).
+
+Precisión
+100% (tiempo real).
+Depende de la última actualización.
+
+Filtros
+Tamaño, fecha, dueño, permisos.
+Principalmente nombres y rutas.
+
+Uso ideal
+Buscar archivos específicos recién creados.
+Encontrar dónde se instaló un programa o archivo viejo.
+
+# Ej: encontrar dónde guarda Linux los iconos del sistema
+`locate -n 5 icons`
+
+
+
+#### 13. wich
+
+Decirte la ruta exacta del archivo ejecutable que se lanza cuando escribes un comando en la terminal
+para saber qué versión de un programa estás usando
+o para encontrar dónde está instalado un script.
+
+1. Localizar un ejecutable
+
+`which ls`
+Devuelve: /bin/ls
+confirma que cuando escribes ls
+el sistema va a la carpeta /bin para ejecutarlo.
+
+2. Verificar versiones de lenguajes
+
+which python3
+which node
+
+##### Si un script no funciona, which te ayuda a verificar si estás usando el binario que crees estar usando
+Ej: uno en /usr/bin/ frente a uno en un entorno virtual
+
+3. Buscar todas las instancias (-a)
+A veces un comando existe en varias carpetas de tu sistema
+como /bin, /usr/bin o /usr/local/bin
+Por defecto, which solo te muestra la primera que encuentra
+
+`which -a python3`
+Muestra todas las rutas donde se encuentra ese ejecutable según tu variable de entorno $PATH.
+
+4. Funcionamiento de which: Variable $PATH
+Para entender which, hay que entender el $PATH
+##### El $PATH es una lista de carpetas donde Linux busca programas
+
+Cuando escribes un comando:
+El sistema mira la primera carpeta del $PATH.
+Si no lo encuentra, pasa a la segunda.
+which simplemente te dice en qué carpeta tuvo éxito la búsqueda primero
+
+5. whereis: más informativo
+
+which solo busca el ejecutable.
+
+whereis: Busca el ejecutable
+el código fuente
+las páginas del manual (documentación).
+`whereis bash`
+dará la ruta del binario Y la ruta de su manual en /usr/share/man/.
+
+which:
+Solo la ruta del binario que se ejecutaría ahora.
+
+whereis	Binario:
+Manuales y Código fuente.
+
+type:
+Te dice si es un binario, un alias o una función interna del Shell.
+
+Ej:
+which apt
+which vim
+
+
+#### Binarios
+
+##### 1. De Usuario Estándar (/bin y /usr/bin):  
+Aquí están los comandos que cualquier usuario puede ejecutar.
+
+Ejemplos: ls, cp, grep, python
+whereis grep → Verás que vive en /bin o /usr/bin.
+
+##### 2. Binarios de Administración del Sistema (/sbin y /usr/sbin)
+La "s" viene de System o Superuser
+Son comandos destinados a configurar el hardware, la red o el sistema operativo
+Normalmente requieren sudo.
+
+Ejemplos: iptables, fdisk, reboot, ifconfig
+which fdisk → Verás que vive en /sbin/fdisk.
+
+##### 3. Binarios Locales o Personalizados (/usr/local/bin)
+Aquí es donde caen los programas que instalas manualmente (compilados por ti)
+para no mezclarlos con los que gestiona el sistema (apt).
+
+which docker (a veces se instala aquí).
+
+##### Comandos disponibles en $PATH: compgen -c (todos los comandos posibles)
+Lista gigante de todos los comandos que "tu usuario" puede ejecutar porque están en sus carpetas de confianza
+
+###### Es un comando interno de Bash que genera una lista de todos los comandos, alias y funciones disponibles para ti en ese momento.
+
+
+#### Ruta bashrc y $PATH
+
+##### $PATH no vive en una ruta específica; es una variable de entorno que reside en la memoria de tu sesión de terminal mientras la tienes abierta
+
+Para ver qué carpetas tiene cargadas tu terminal ahora mismo, usa:
+echo $PATH
+
+Una lista de rutas separadas por dos puntos (:).
+El sistema buscará los comandos en ese orden exacto (de izquierda a derecha).
+
+Si quieres cambiar el $PATH o entender de dónde salen esas rutas, debes buscar en estos archivos "escondidos":
+
+1.Uusuario
+son los archivos que definen tu ruta personalizada
+podrías añadir carpetas como ~/bin o ~/.local/bin)
+
+~/.bashrc
+donde la mayoría de los usuarios añaden sus rutas personales.
+
+~/.profile: Se lee al iniciar sesión
+puede ser usado para configuraciones que deben persistir en toda la sesión gráfica
+
+~/.bash_profile:
+Similar al anterior, pero específico para Bash.
+
+
+2. Sistema
+Si una ruta aparece en el $PATH de todos los usuarios
+está definida aquí:
+
+/etc/environment: Un archivo simple que contiene variables globales
+
+/etc/profile: El archivo de configuración global para todos los usuarios al entrar al sistema.
+
+/etc/profile.d/: Una carpeta que contiene scripts .sh.
+Muchos programas (como Java o compiladores) añaden sus rutas aquí
+
+
+Si ves una ruta extraña en tu $PATH y quieres saber quién la puso ahí, puedes usar grep en tu carpeta personal
+Comando: `grep -H "PATH" ~/.bashrc ~/.profile ~/.bash_profile`
+dirá en cuál de esos archivos aparece la palabra "PATH" y qué línea la está modificando
+
+
+3. Ej añadir una ruta al $PATH temporalmente
+Si tienes un script en una carpeta nueva y quieres que Linux lo encuentre sin escribir la ruta completa
+
+`export PATH=$PATH:/ruta/de/tu/carpeta`
+"el nuevo PATH es igual al que ya tenía ($PATH) MÁS (:) esta nueva carpeta"
+Esto solo dura hasta que cierres la terminal
+
+##### Para que sea permanente, debes escribir esa misma línea al final de tu archivo ~/.bashrc.
+
+
+
+#### 14. grep: Global Regular Expression Print
+
+Caza texto: Su función es filtrar líneas que coincidan con un patrón específico
+herramienta indispensable para analizar archivos de configuración, logs o la salida de otros comandos
+
+`grep [opciones] "patrón" [archivo]`
+
+1. Busqueda
+palabra exacta dentro de un archivo
+
+`grep "error" sistema.log`
+##### Muestra todas las líneas del archivo sistema.log que contienen la palabra "error".
+
+2. Ignorar minus y mayus (-i)
+
+`grep -i "python" script.py`
+Encontrará "python", "Python", "PYTHON", etc.
+
+3. Buscar en todos los archivos de una carpeta (-r)
+Si no sabes en qué archivo está la información, puedes buscar de forma recursiva
+ 
+`grep -r "TODO" ~/proyectos/`
+Busca la palabra "TODO" en todos los archivos dentro de tu carpeta de proyectos y sus subcarpetas
+
+4. Invertir la búsqueda (-v)
+A veces quieres ver todo excepto las líneas que coinciden con algo
+
+`grep -v "DEBUG" servidor.log`
+Muestra todas las líneas que no contienen la palabra "DEBUG".
+
+5. Contar coincidencias (-c)
+En lugar de ver las líneas, solo quieres saber cuántas veces aparece el patrón
+
+`grep -c "failed" login.log` 
+Devuelve un número, 5 por ej.
+
+6. Mostrar números de línea (-n)
+Para saber exactamente dónde editar un archivo después de encontrar lo que buscabas
+
+`grep -n "config_dir" settings.php`
+Muestra la línea de texto precedida por su número
+`(42: config_dir = '/etc/var')`.
+
+7. Ver el contexto (Antes y Después)
+A veces la línea encontrada no es suficiente
+necesitas ver qué hay alrededor para entender el problema.
+
+`grep -A 3 "error"`
+Muestra la línea y las 3 líneas After (después).
+
+`grep -B 2 "error"`
+Muestra la línea y las 2 líneas Before (antes).
+
+`grep -C 2 "error"`
+Muestra el Contexto (2 líneas antes y 2 después).
+
+8. pipes |:
+##### grep se usa constantemente para filtrar la salida de otros comandos
+
+Filtrar procesos:
+`ps aux | grep "firefox"`
+Encuentra si Firefox está corriendo
+
+Filtrar paquetes instalados:
+`apt list --installed | grep "nvidia"`
+Busca si tienes drivers de Nvidia
+
+Filtrar el $PATH:
+`echo $PATH | tr ':' '\n' | grep "bin"`
+Muestra solo las carpetas del PATH que contengan "bin"
+
+9. Buscar palabras completas (-w)
+Evita que si buscas "usuario" te devuelva también "usuarios" o "usuariopara".
+
+`grep -w "usuario" archivo.txt`
+
+10. Combinación: rin
+Busca dónde tienes definida la palabra "color":
+`grep -rin "color" ~/.config/nvim/`
+
+Rs:
+
+-i: Ignora mayúsculas/minúsculas.
+-v: Invierte el filtro (lo que NO coincida).
+-r: Busca en carpetas y subcarpetas.
+-n: Muestra el número de línea.
+-l: Muestra solo los nombres de los archivos (no las líneas).
 
 
 
 
-#### Visualización y Edición
+#### 15. tar: Tape Archive
+
+No comprime por sí solo, pero suele usarse con -z (gzip) o -j (bzip2).
+
+herramienta estándar en Linux para agrupar muchos archivos y carpetas en un solo archivo, comúnmente llamado "tarball
+originalmente se diseñó para cintas de respaldo, hoy lo usamos para distribuir software o hacer backups
+
+por defecto, tar no comprime (solo empaqueta);
+para que el archivo pese menos, se le añaden herramientas adicionales como gzip.
+
+1. Crear archivo/empaquetarlo
+combinación de banderas más común es cvf:
+
+c: Create (Crear).
+v: Verbose (Ver lo que está pasando).
+f: File (Indicar el nombre del archivo).
+
+`tar -cvf mi_proyecto.tar carpeta_proyecto/`
+Mete toda la carpeta dentro de mi_proyecto.tar
+
+2. Archivo comprimido: .tar.gz
+formato .tar.gz
+
+añadimos la bandera z, que usa el algoritmo gzip.
+`tar -czvf backup.tar.gz /home/usuario/scripts/`
+Empaqueta y comprime al mismo tiempo, ahorrando mucho espacio
+
+3. Extraer contenido (Desempaquetar)
+Para sacar los archivos usamos la bandera x (Extract).
+
+`tar -xzvf archivo.tar.gz`
+Detecta automáticamente que es un archivo comprimido y lo extrae en la carpeta actual.
+
+Extraer en una ruta específica (-C):
+`tar -xzvf archivo.tar.gz -C /ruta/donde/quieras/`
+
+4. Ver el contenido sin extraer (-t)
+
+estándar de compresión en Linux.
+Si el archivo es muy pesado y solo quieres saber qué hay dentro antes de extraerlo
+
+`tar -tvf backup.tar.gz`
+Muestra una lista de archivos similar a la de ls -l.
+
+5. Añadir archivos a un tar existente (-r)
+Esto solo funciona en archivos que no están comprimidos.
+
+`tar -rvf mis_notas.tar nota_nueva.txt` 
+Agrega la nota al final del paquete existente
+
+6. Diferentes tipos de compresión
+Además de `gzip (z)`
+
+Existen otros algoritmos más potentes:
+
+Algoritmo| Bandera | Extensión | Ventaja
+
+`Gzip`: -z,
+tar.gz
+Es el más rápido y común.
+
+`Bzip2`: -j
+.tar.bz2
+"Comprime más que gzip, pero es más lento."
+
+`XZ`: -J
+.tar.xz
+El mejor nivel de compresión (ideal para software pesado).
+
+Rs: 
+
+`tar -czvf`: Para comprimir.
+`tar -xzvf`: Para extraer.
+`tar -tvf`: Para mirar dentro.
+
+7. Ej: respaldo
+respaldo de tu configuración de Neovim y guardarlo
+
+`tar -czvf ~/nvim_backup.tar.gz ~/.config/nvim/`
 
 
 
-#### Permisos y Usuarios
+#### 16. gzip/gunzip:
+
+
+##### gzip
+
+A diferencia de tar, que junta muchos archivos en uno solo
+gzip se enfoca en reducir el tamaño de un único archivo.
+
+##### gzip reemplaza el archivo original por una versión comprimida con la extensión .gz.
+
+1. Comprimir archivo
+forma más directa de ahorrar espacio
+
+`gzip base_de_datos.sql`
+Desaparece base_de_datos.sql y aparece base_de_datos.sql.gz.
+
+2. Descomprimir: -d
+Para volver al estado original, usamos la bandera de decompress.
+`gzip -d base_de_datos.sql.gz`
+
+comando `gunzip archivo.gz`
+hace exactamente lo mismo
+
+3. Mantener el archivo original (-k)
+Por defecto, gzip borra el archivo original tras comprimirlo
+
+Si quieres conservar ambos:
+`gzip -k notas.txt`
+Crea notas.txt.gz pero mantiene intacto notas.txt.
+
+4. Nivel de compresión (-1 al -9)
+
+compresión sea muy rápida a costa de que el archivo pese un poco más
+compresión muy lenta para que el archivo sea lo más pequeño posible
+
+`gzip -1 archivo.txt`
+El más rápido (mínima compresión).
+
+`gzip -9 archivo.txt`
+mejor (máxima compresión, consume más CPU).
+
+##### Por defecto: Usa el nivel 6.
+
+5. Ver el contenido sin descomprimir (zcat y zless)
+una de las funciones más útiles para desarrolladores
+Si tienes un log comprimido, no hace falta que lo descomprimas para leerlo.
+
+`zcat logs.gz`
+Vuelca todo el contenido
+
+`zless logs.gz`
+Lo abre de forma paginada, igual que less
+
+6. Comprimir directorios recursivamente (-r)
+Si le pasas una carpeta con la bandera -r
+no creará un solo archivo comprimido, sino que entrará en la carpeta y comprimirá cada archivo interno uno por uno
+
+`gzip -r carpeta_de_texto/`
+##### Cada .txt dentro de la carpeta ahora será un .txt.gz.
+
+7. Ver estadísticas de compresión (-l)
+Si quieres saber cuánto espacio has ahorrado realmente.
+
+`gzip -l archivo.gz`
+muestra el tamaño comprimido, el original y el porcentaje de ahorro (ratio).
+
+8. Comprimir archivo muy grande sin borrarlo
+archivo de log muy pesado llamado error.log
+comprimirlo al máximo nivel posible, pero sin que se borre el archivo original
+para que el sistema siga escribiendo en él.
+
+`gzip -k -9 error.log`
+
+
+##### gunzip: comando dedicado para descomprimir
+
+puedes descomprimir archivos usando gzip -d
+pero comando dedicado como gunzip es la forma estándar y más rápida de devolver tus archivos a su estado original.
+
+1. Descomprimir
+Al igual que gzip, este comando es "destructivo" por defecto
+elimina el archivo comprimido y deja el archivo original en su lugar
+
+`gunzip base_datos.sql.gz`
+Desaparece el .gz y recuperas el archivo .sql original.
+
+2. Descomprimir manteniendo el archivo comprimido (-k)
+
+`gunzip -k backup.tar.gz`
+-k (keep) asegura que el archivo comprimido no se borre tras la descompresión
+
+3. Descomprimir en una ubicación diferente
+gunzip extrae el archivo en la misma carpeta donde está el comprimido
+
+Si quieres enviarlo a otro sitio, usamos la redirección (>).
+`gunzip -c archivo.gz > ~/Documentos/archivo_extraido.txt`
+
+`-c`: Envía el contenido a la "salida estándar" (la pantalla).
+`>`: Atrapa esa salida y la guarda en la ruta que indiques
+
+4. Descompresión recursiva (-r)
+En una carpeta llena de archivos comprimidos individualmente
+no hace falta que vayas uno por uno
+
+`gunzip -r carpeta_logs/`
+Entra en la carpeta y en todas sus subcarpetas, buscando archivos .gz, .z, -gz o .tgz
+los descomprime todos automáticamente.
+
+5. Probar la integridad del archivo (-t)
+Antes de borrar el comprimido
+puedes verificar si el archivo está corrupto o si la descompresión fallará
+
+`gunzip -t archivo_corrupto.gz`
+-t (test) comprueba si el archivo es válido sin llegar a extraer nada
+Si no dice nada, todo está bien.
+
+6. Forzar la descompresión (-f)
+Si intentas descomprimir un archivo y ya existe uno con el mismo nombre en la carpeta
+gunzip se detendrá y te preguntará qué hacer.
+
+`gunzip -f archivo.gz`
+Sobrescribe cualquier archivo existente sin preguntar
+
+7. Ej: mantener archivo comprimdo
+`gunzip -k manual_linux.pdf.gz`
+
+
+#### 17. zip/unzip
+
+Formato de compresión común para compatibilidad con otros sistemas como Windows.
+
+
+#### 18. ln: link/enlace/puntero
+
+atajo hacia otro archivo o directorio.
+Hay dos tipos de enlaces fundamentales
+
+Se comportan de manera muy distinta
+Hard Links y Symbolic Links
+
+1. Enlaces Simbólicos (ln -s)
+tipo más común
+similar a los accesos directos de Windows
+
+archivo pequeño que simplemente apunta a la ruta de otro archivo.
+`ln -s archivo_original.txt acceso_directo.txt`
+
+Si borras el original, el enlace simbólico queda "roto" (apunta a la nada).
+Pueden apuntar a directorios.
+Pueden apuntar a archivos en discos diferentes.
+
+2. Hard Links
+nombre adicional para los mismos datos físicos en el disco
+No es un "puntero", es el archivo mismo con otro nombre.
+
+`ln archivo_original.txt copia_dura.txt`
+(Sin la -s).
+
+Si borras el original, los datos no desaparecen mientras exista al menos un enlace duro activo
+Solo funcionan dentro del mismo disco/partición.
+No se pueden crear para directorios (por seguridad del sistema).
+
+3. Prácticas de Gestión
+
+Crear un enlace a un directorio
+útil para acceder a carpetas profundas desde tu home.
+
+`ln -s /var/www/html/mi_proyecto/ ~/proyecto`
+Ahora, entrar a ~/proyecto es exactamente lo mismo que entrar a la ruta larga en /var/www.
+
+
+Sobrescribir un enlace existente (-f)
+Si intentas crear un enlace donde ya hay uno, te dará error
+La -f (force) lo reemplaza.
+
+`ln -sf nuevo_destino enlace_viejo`
+
+
+Ver hacia dónde apunta un enlace
+Cuando haces un ls -l, Linux te muestra la relación con una flecha.
+
+`ls -l enlace_simbolico`
+Resultado: `enlace_simbolico -> /ruta/al/archivo_original`
+
+4. Diferencias
+
+Característica | Enlace Simbólico (-s) | Enlace Duro
+
+¿Qué es?
+Un archivo que apunta a una ruta.
+Un nombre extra para los mismos datos.
+
+Si borras el original
+El enlace se rompe.
+El archivo sigue accesible por el enlace.
+
+Cruza discos?
+Sí.
+No.
+
+Enlaza carpetas?
+Sí.
+No.
+
+5. Concepto de "Inode"
+
+##### Linux identifica los archivos por un número llamado Inode
+Con un Hard Link, ambos nombres comparten el mismo número de Inode
+Con un Symlink, el enlace tiene su propio número de Inode.
+
+##### Práctica: Usa ls -i para ver los números de Inode de tus archivos y comprobar si dos nombres apuntan al mismo espacio físico.
+
+6. Ej: hacer un archivo accesible desde un lugar sin tener que moverlo
+imagina que quieres tener tu archivo de configuración (init.lua) accesible
+desde tu escritorio para editarlo rápido, pero sin moverlo de su carpeta original
+
+`ln -s ~/.config/nvim/init.lua ~/Escritorio/editar_nvim.lua`
 
 
 
+#### 19. install
+
+Herramienta de copia de archivos de alto nivel.
+Se utiliza principalmente en archivos Makefile o scripts de despliegue
+
+Su ventaja sobre cp es que install puede copiar el archivo
+crear el directorio de destino si no existe
+asignar permisos y dueño todo en un solo paso.
+
+1. Copiar archivos
+
+`install archivo.txt ~/bin/`
+Copia el archivo al destino
+Si no especificas opciones, le asigna permisos de ejecución por defecto
+(rwxr-xr-x).
+
+2. Crear directorios de destino (-d)
+install puede crear toda la ruta
+
+`install -d /home/usuario/nuevo/proyecto/bin`
+Crea todas las carpetas intermedias necesarias (como mkdir -p).
+
+3. Asignar Permisos y Dueño en el acto
+razón por la que existe este comando
+vital cuando estás moviendo binarios a carpetas del sistema.
+
+`sudo install -m 755 -o root -g root mi_script.sh /usr/local/bin/`
+
+m 755: Define los permisos (Lectura/Ejecución para todos, Escritura solo para el dueño).
+-o root: Define el dueño (Owner).
+-g root: Define el Grupo.
+
+4. Crear respaldos antes de sobrescribir (-b)
+Si vas a instalar una nueva versión de un binario y no quieres destruir la anterior por si algo falla
+
+`install -b script.sh ~/bin/`
+Si ya existe ~/bin/script.sh
+le cambia el nombre al viejo (normalmente añadiendo una virgulilla ~) y coloca el nuevo.
+
+5. Comparar antes de copiar (-C)
+útil para no desgastar discos SSD o ahorrar tiempo en scripts
+
+`install -C binario /usr/bin/`
+Compara el archivo de origen y el de destino
+Si son exactamente iguales
+no realiza la copia (evita actualizar la fecha de modificación innecesariamente).
+
+6. Eliminar símbolos de depuración (-s)
+Para C, para ejecutables finales:
+
+`install -s mi_programa_en_C /usr/local/bin/`
+Copia el binario y aplica un "strip"
+eliminando la tabla de símbolos para que el archivo ocupe mucho menos espacio.
+
+Diferencias con cp
+
+Característica| cp | install
+
+Copia archivos
+Sí
+Sí
+
+Crea directorios intermedios
+No (requiere mkdir)
+Sí (-d)
+
+Cambia permisos (chmod)
+No (paso extra)
+Sí (-m)
+
+Cambia dueño (chown)
+No (paso extra)
+Sí (-o)
+
+Optimizado para Makefiles
+No
+Sí
+
+7. Ej: tratar programa compilado en C
+Si se tiene compilado un pequeño programa en C
+quieres "instalarlo" en tu carpeta personal de binarios
+asegurándote de que tenga permisos de ejecución
+y que se cree la carpeta si no existe:
+
+`install -d ~/bin && install -m 700 mi_programa ~/bin/`
+
+
+
+#### 20. stat
+
+Mientras que ls -l te da una visión general
+
+stat te muestra todos los metadatos posibles de un archivo o directorio directamente desde el inode
+revela cómo el kernel ve realmente tus archivos.
+
+1. Inspección total
+
+`stat archivo.txt`
+
+File: Nombre del archivo.
+Size: Tamaño en bytes.
+Blocks: Cuántos bloques ocupa en el disco físico.
+Device: El ID del dispositivo (disco) donde reside.
+Inode: El número de identificación única en el sistema de archivos.
+Links: Cuántos enlaces duros (Hard Links) apuntan a este inode.
+Access/Modify/Change/Birth: El historial completo de tiempos (timestamps).
+
+2. Tres Tiempos y cuatro
+
+stat es la mejor forma de diferenciar qué le ha pasado a un archivo
+
+##### Access (atime): La última vez que alguien leyó el contenido (ej. con cat o less).
+##### Modify (mtime): La última vez que el contenido del archivo fue editado.
+##### Change (ctime): La última vez que cambiaron los metadatos (permisos, nombre, dueño).
+##### Birth (btime): La fecha de creación original (no siempre disponible en todos los sistemas de archivos)
+
+3. Ver solo el Sistema de Archivos (-f)
+
+A veces no te interesa el archivo, sino el disco donde está.
+
+`stat -f /`
+Te dice el tipo de sistema de archivos (ext4, btrfs, etc.),
+el tamaño de bloque del sistema y cuántos bloques quedan libres
+para el usuario root vs el usuario normal
+
+4. Formato Personalizado (--format)
+Si estás haciendo un script (bash, python)
+) y solo necesitas un dato específico
+no quieres procesar todo el texto de stat.
+
+Obtener solo los permisos en octal
+`stat --format=%a archivo.txt`
+Devuelve algo como 644
+
+Obtener solo el dueño
+`stat --format=%U archivo.txt`
+Devuelve el nombre de usuario
+
+Obtener el Inode
+`stat --format=%i archivo.txt.`
+
+5. Modo Conciso (-t)
+Si necesitas una salida rápida para que otra herramienta la procese
+el modo "terse" (conciso) pone todo en una sola línea separada por espacios
+
+`stat -t archivo.txt`
+
+6. Archivo y Enlace Simbólico (-L)
+Si ejecutas stat sobre un symlink
+por defecto te dará la información del enlace.
+
+`stat -L mi_enlace`
+bandera -L (dereference) sigue el enlace y te muestra los datos del archivo real al que apunta.
+
+
+##### Campos críticos
+
+Inode:
+ID único del archivo
+Vital para entender enlaces duros y sistemas de archivos.
+
+Links:
+Contador de referencias
+"Si es >1, hay enlaces duros. Si llega a 0, el archivo se borra."
+
+IO Block:
+Tamaño óptimo de bloque
+##### Crucial si estás programando en C para optimizar read() y write().
+
+Context:
+Seguridad SELinux
+Importante en distribuciones empresariales para permisos avanzados.
+
+7. Ej: las carpetas node_modules suelen tener miles de archivos
+Elige un archivo cualquiera ahí y mira cuántos "Links" tiene y cuál es su número de Inode:
+`stat node_modules/react/index.js`
+
+
+
+#### 21. shred
+
+##### Borrado un archivo sensible con rm, rm no borra los datos, simplemente le dice al sistema de archivos que ese espacio está "vacío" y puede ser sobrescrito
+##### Un software de recuperación de datos podría extraer esa información fácilmente
+
+##### Entra shred: sobrescribe el archivo varias veces con patrones de datos aleatorios para que la recuperación física sea prácticamente imposible
+
+1. Sobrescribir un archivo
+shred sobrescribe el archivo 3 veces con datos al azar
+
+`shred mi_secreto.txt`
+##### El contenido del archivo ahora es basura ilegible, pero el archivo sigue existiendo en la carpeta (con el mismo tamaño).
+
+2. Sobrescribir y eliminar (-u)
+Normalmente querrás destruir el rastro por completo
+La bandera -u (remove) trunca y borra el archivo después de sobrescribirlo
+
+`shred -u pasaportes.pdf`
+Sobrescribe los datos y luego borra el archivo del sistema de archivos
+
+3. Aumentar el número de pasadas (-n)
+##### Si eres especialmente cauteloso, puedes aumentar la cantidad de veces que se "tritura" el archivo
+
+`shred -u -n 10 datos_bancarios.csv`
+Realiza 10 pasadas de sobrescritura antes de borrar.
+
+4. Ocultar el triturado con ceros (-z)
+##### Un archivo lleno de datos puramente aleatorios grita "aquí se borró algo importante".
+
+##### La bandera -z (zero) añade una pasada final de ceros para que parezca un archivo vacío o simplemente reseteado
+
+`shred -uz archivo.txt`
+3 pasadas aleatorias + 1 pasada de ceros + borrado del archivo.
+
+5. Triturar un disco duro completo
+Si vas a vender tu computadora o un disco duro externo
+puedes usar shred sobre el dispositivo entero
+
+`sudo shred -v /dev/sdb`
+verbose, es útil porque triturar un disco entero puede tardar horas.
+
+6. Limitaciones
+##### shred es extremadamente efectivo en discos mecánicos (HDD), pero tiene matices en tecnologías modernas
+
+Sistemas de archivos con "Journaling" (como ext4):
+A veces el sistema guarda una copia del metadato o de los datos en el "journal" (diario)
+##### shred podría no alcanzar esa copia.
+
+Discos SSD:
+Los SSD usan una tecnología llamada Wear Leveling que mueve los datos físicamente para que el disco no se desgaste
+Al intentar sobrescribir, el SSD podría escribir en un bloque nuevo y dejar el viejo intacto
+##### Para SSDs, es mejor usar el borrado seguro del fabricante o cifrado de disco completo
+
+Rs:
+
+-u:
+Borra el archivo después de triturarlo.
+
+-z:
+Añade una pasada final con ceros para ocultar el proceso.
+
+-n N:
+Sobrescribe N veces (por defecto 3).
+
+-v:
+Muestra el progreso detallado.
+
+-s:
+Tritura solo un número específico de bytes (size).
+
+7. Ej: Archivo de prueba y sobreescritura
+escribe algo dentro y luego destrúyelo de forma que parezca que solo contenía ceros al final
+
+```
+echo "Informacion ultra secreta" > prueba.txt
+shred -uvz prueba.txt
+```
+
+
+
+#### 22. echo
+
+Fundamental en cualquier script de Linux
+
+Aunque su función básica es simplemente "repetir" lo que le pides en la pantalla
+es la herramienta principal para crear archivos, depurar variables y generar salidas dinámicas
+
+1. Mostrar texto y variables
+
+Se usa para verificar el valor de tus variables de entorno
+
+Texto simple:
+`echo "Hola, este es un mensaje"`
+
+Variables de entorno:
+`echo $PATH o echo $USER`
+
+Variables con texto:
+`echo "Mi editor actual es $EDITOR"`
+
+2. Interpretar caracteres especiales (-e)
+Por defecto, echo trata todo como texto plano
+
+Si quieres usar saltos de línea o tabulaciones
+necesitas la bandera -e (enable interpretation).
+
+Saltos de línea (\n):
+`echo -e "Línea 1\nLínea 2\nLínea 3"`
+
+Tabulaciones (\t):
+`echo -e "Columna1\tColumna2"`
+
+Colores en la terminal:
+Puedes usar códigos ANSI para dar formato a tus scripts:
+`echo -e "\e[32mEste texto es verde\e[0m"`
+
+3. No imprimir el salto de línea final (-n)
+Normalmente, echo añade un salto de línea automático al final del mensaje
+A veces (como en un prompt de entrada) no quieres esto
+
+`echo -n "Escribe tu nombre: "`
+El cursor se quedará justo después de los dos puntos, en lugar de bajar a la siguiente línea
+
+4. Crear y escribir en archivos (Redirección)
+Esta es una de las prácticas más potentes de echo.
+
+Sobrescribir (>):
+`echo "Nueva configuración" > config.txt`
+Esto borra todo lo que había en el archivo antes
+
+Añadir al final (>>):
+`echo "Nueva línea de log" >> logs.txt`
+
+5. Comodines (Globbing)
+echo puede ayudarte a ver qué archivos coinciden con un patrón antes de ejecutar un comando peligroso como rm.
+
+`echo *.c`
+Imprime los nombres de todos los archivos que terminan en .c en el directorio actual
+Es como un ls rápido y limpio.
+
+6. Ejecutar comandos dentro de un echo (Subshell) 
+Puedes incrustar el resultado de un comando dentro de tu mensaje usando $(comando).
+
+`echo "Hoy es: $(date)"`
+Ejecuta el comando date e inserta su salida en el texto que imprime echo.
+
+7. Comillas simples vs. Comillas dobles
+distinción vital en Linux:
+
+Comillas dobles ("):
+Permiten la expansión de variables
+`echo "$USER"`
+imprimirá tu nombre de usuario.
+
+Comillas simples ('):
+Tratan todo de forma literal
+`echo '$USER'`
+imprimirá literalmente el texto "$USER".
+
+Rs:
+
+-n:
+No imprime el salto de línea al final.
+
+-e:
+"Habilita la interpretación de caracteres de escape (\n, \t, etc.)."
+
+-E:
+(Por defecto) Deshabilita la interpretación de caracteres de escape.
+
+
+8. Script
+script de una sola línea que guarde la fecha actual
+tu nombre de usuario en un archivo llamado registro.txt
+asegurándote de que el texto aparezca en color verde en la terminal antes de guardarse
+
+```
+echo -e "\e[32mRegistrando sesión para $USER...\e[0m" && echo "Usuario: $USER - Fecha: $(date)" >> registro.txt
+```
+
+
+
+#### 23. sed: Stream EDitor
+uno de los pilares de la filosofía Unix
+
+A diferencia de un editor de texto convencional (como Neovim)
+donde abres un archivo, te desplazas y haces cambios manualmente
+
+sed es un editor de flujo: recibe texto, le aplica transformaciones según reglas que tú definas
+y escupe el resultado, todo sin intervención humana.
+
+##### Es la herramienta definitiva para automatizar cambios masivos en archivos de configuración o código
+
+1. Sustitución
+Sintaxis: `s/buscar/reemplazar/`
+
+`sed 's/Linux/GNU\/Linux/' archivo.txt`
+Busca la palabra "Linux" y la cambia por "GNU/Linux".
+
+Por defecto, sed solo cambia la primera aparición de cada línea
+y muestra el resultado en la terminal sin modificar el archivo original.
+
+2. Sustitución Global (g)
+Si una línea tiene la palabra "error" tres veces, el comando básico solo cambiaría la primera
+Para cambiarlas todas, usamos la bandera g (global).
+
+`sed 's/error/ERROR/g' log.txt`
+
+3. sed 's/error/ERROR/g' log.txt
+sed no toca el disco por defecto
+Si estás seguro de tus cambios y quieres que se guarden permanentemente
+
+`sed -i 's/puerto: 80/puerto: 8080/g' config.yaml`
+
+Práctica de seguridad: Usa `sed -i.bak`
+para que Linux cree automáticamente una copia de seguridad (config.yaml.bak) antes de aplicar el cambio.
+
+4. Eliminar líneas (d)
+sed también puede actuar como un filtro de borrado basado en patrones
+
+Borrar la línea 5:
+`sed '5d' archivo.txt`
+
+Borrar líneas que contengan "temporal":
+`sed '/temporal/d' archivo.txt`
+
+Borrar desde la línea 1 a la 10
+`sed '1,10d' archivo.txt`
+
+5. Expresiones Regulares (Regex)
+Donde sed se vuelve una herramienta de nivel profesional. Puedes buscar patrones complejos
+Puedes buscar patrones complejos
+
+Comentar todas las líneas que empiecen por "DEBUG":
+`sed 's/^DEBUG/#DEBUG/' script.py`
+símbolo ^ indica el inicio de la línea
+
+6. Selección de líneas específicas (-n + p)
+Si solo quieres imprimir ciertas líneas
+similar a un grep avanzado
+
+`sed -n '10,20p' archivo_gigante.log`
+La -n silencia la salida automática
+p (print) solo muestra de la línea 10 a la 20.
+
+7. Ej: Cambiar de algo con una instrucción
+`sed 's/<div>/<section>/g' index.html`
+
+
+
+#### 24. awk
+
+Con sed hacias edición de texto linea por linea
+##### awk hace procesamiento de datos por columnas
+
+##### lenguaje de programación completo diseñado para filtrar, manipular y generar informes a partir de archivos de texto estructurados
+como logs, archivos CSV o salidas de comandos).
+
+##### Lógica de awk: Si en esta línea ocurre X, entonces haz Y
+
+1. Columnas ($1, $2, $0)
+awk ve cada línea como una serie de campos (columnas) separados por espacios o tabulaciones
+
+$1, $2, $3...: Representan la primera, segunda, tercera columna, etc.
+$0: Representa la línea completa.
+`NF` Es una variable interna que te dice el Número de Filas (columnas) que tiene la línea actual
+
+Ej: Imprimir solo la primera y la tercera columna de un archivo.
+`awk '{print $1, $3}' datos.txt`
+
+2. Filtrar por condiciones
+
+grep, que busca texto
+
+awk puede filtrar basándose en lógica matemática sobre las columnas
+
+`awk '$3 > 500 {print $1}' ventas.txt`
+Si el valor en la columna 3 es mayor a 500, imprime el nombre que está en la columna 1
+
+3. Cambiar el separador de campos (-F)
+Por defecto, awk usa espacios
+Si trabajas con archivos separados por comas (CSV) o dos puntos (como /etc/passwd), debes indicarlo
+
+`awk -F ":" '{print $1}' /etc/passwd`
+Imprime el nombre de todos los usuarios del sistema
+la primera columna del archivo de contraseñas
+
+4. El poder de las Secciones: BEGIN y END
+awk permite ejecutar acciones antes de empezar a leer el archivo y después de terminar
+ideal para crear informes
+`awk 'BEGIN {print "LISTA DE USUARIOS"} {print $1} END {print "Fin del reporte"}' archivo.txt`
+
+5. Hacer cálculos matemáticos
+awk maneja variables y operaciones
+
+Sumar una columna entera:
+`awk '{sum += $2} END {print "El total es:", sum}' gastos.txt`
+sum es una variable que creamos al vuelo
+
+6. Práctica con comandos del sistema: pipes
+##### awk se usa muchísimo para limpiar la salida de otros comandos que son "sucios" o tienen demasiada información
+
+Saber cuánto espacio libre queda en tu disco principal:
+`df -h | grep '/$' | awk '{print "Espacio disponible: " $4}'`
+Filtramos con grep la raíz y con awk extraemos la columna exacta del tamaño
+
+Rs trinidad de texto en linux:
+
+grep
+Búsqueda
+Encontrar líneas que contienen una palabra.
+
+sed
+Edición
+Buscar y reemplazar texto o borrar líneas.
+
+awk
+Datos/Columnas
+"Extraer campos, hacer cálculos y generar tablas."
+
+
+7. Ej: listar todos los procesos que están consumiendo memoria en tu sistema
+mostrando primero el PID (columna 2) y luego el nombre del comando (columna 11):
+
+```
+ps aux | awk '{print "PID: " $2 " -> Comando: " $11}' | head -n 10
+```
+
+
+
+
+### 3. Visualización y Edición
+
+En Linux "todo es un archivo"
+
+Al ser el sistema operativo una colección de archivos de texto (configuraciones, scripts, logs)
+las herramientas para leerlos y modificarlos son el corazón de la administración del sistema.
+
+1. Visualización (Lectura sin riesgo)
+inspeccionar el contenido de un archivo sin alterar sus metadatos, como la fecha de modificación, ni su integridad
+
+`Flujo Continuo (Streaming)`:
+Comandos que vuelcan el texto directamente en la terminal
+
+cat: Muestra todo el archivo de golpe
+Útil para archivos pequeños.
+
+head y tail: Ideales para ver el inicio o el final
+como los últimos errores de un log
+
+`Paginadores (Navegación Interactiva)`:
+Permiten "desplazarse" por el archivo sin cargarlo todo en la RAM.
+
+less: El estándar
+Permite buscar texto, retroceder y avanzar páginas
+No bloquea el archivo, lo que lo hace seguro para archivos gigantes.
+
+`Seguimiento en Tiempo Real`:
+tail -f: Mantiene la terminal abierta
+muestra las nuevas líneas conforme se escriben en el disco
+vital para la depuración de aplicaciones.
+
+
+2. Edición (Modificación y Creación)
+Dependiendo de dónde estés
+un servidor remoto por SSH o tu escritorio local
+usarás diferentes tipos de editores
+
+`Editores de Consola`: CLI
+funcionan sin interfaz gráfica
+
+Basados en Modos (Vim/Neovim):
+Modo Comando (para navegar y borrar)
+Modo Inserto (para escribir).
+
+Lineales (Nano/Micro):
+Más intuitivos, similares a un bloc de notas básico donde las teclas siempre escriben texto
+
+`Editores de Flujo (Stream Editors)`: avanzado
+no abres el archivo manualmente
+le das una instrucción al comando para que edite el texto "al vuelo".
+
+##### sed: Capaz de buscar y reemplazar una palabra en mil archivos en un segundo sin intervención humana
+
+
+3. Flujo de Trabajo: Pipeline
+Visualización y la edición suelen trabajar juntas mediante el uso de Pipes (|).
+
+##### Tomas la salida de una herramienta de visualización, la filtras con otra y, si es necesario, la envías a un editor o archivo
+
+`cat sistema.log | grep "ERROR" | tail -n 5`
+(Visualizas) → (Filtras texto) → (Recortas el final).
+
+
+4. Metadatos y Buffer
+
+Buffer: clave al editar
+Cuando abres un archivo en un editor (como Neovim), Linux crea una copia en la memoria
+Los cambios no tocan el disco duro hasta que ejecutas el comando de guardado (:w).
+
+Seguridad: Muchos editores crean archivos temporales (como .swp) para recuperar el trabajo si la terminal se cierra de golpe
+
+
+
+
+### 4. Permisos y Usuarios
+
+##### La seguridad es la base del OS: Permisos y Usuarios se basa en el principio de "mínimo privilegio". Nadie tiene acceso a nada a menos que se le conceda explícitamente
+Permite que un sistema Linux sea multiusuario y altamente resistente a virus o errores accidentales
+
+1. Identidad: Quién eres? (Usuarios y Grupos)
+Linux organiza a las personas (y a los procesos) en dos categorías:
+
+Usuarios (User):
+Cada persona tiene un UID (User ID) único
+El usuario más poderoso es root (UID 0)
+que tiene permiso para hacer absolutamente todo.
+
+Grupos (Group):
+Es una colección de usuarios con un GID (Group ID).
+##### Sirve para dar permisos a varias personas a la vez
+por ejemplo, un grupo llamado developers que puede editar la carpeta /var/www
+
+
+2. Triple Objetos (UGO)
+Cuando miras un archivo en Linux, el sistema se pregunta
+Qué relación tienes tú con este archivo?.
+
+Hay tres niveles:
+
+##### 1. User (Dueño): La persona que creó el archivo.
+##### 2. Group (Grupo): El grupo al que pertenece el archivo
+##### 3. Others (Otros): Cualquier otra persona que tenga cuenta en el sistema pero no sea el dueño ni esté en el grupo
+
+
+3. Tres Tipos de Permisos (rwx)
+
+##### Cada uno de los niveles anteriores (U, G, O) puede tener tres tipos de acciones
+
+##### 1. Read (r): * En archivos: Leer el contenido (ej. con cat).
+En directorios: Listar los archivos que hay dentro (ej. con ls).
+
+##### 2. Write (w): * En archivos: Modificar el contenido o borrarlo.
+En directorios: Crear, borrar o renombrar archivos dentro de esa carpeta.
+
+##### 3. Execute (x): * En archivos: Ejecutarlo como un programa o script.
+En directorios: Entrar en la carpeta (ej. con cd).
+
+
+4. Representación de Permisos: Letras vs. Números
+Si haces un ls -l, verás algo como esto:
+`-rwxr-xr--`.
+
+Sistema de letras:
+Permisos se leen en bloques de tres
+`[Tipo de archivo] [Dueño] [Grupo] [Otros]`
+
+`- rwx r-x r--`
+
+##### 1. El dueño tiene todo (rwx).
+##### 2. El grupo puede leer y entrar (r-x), pero no editar.
+##### 3. Otros solo pueden leer (r--).
+
+Sistema octal (Números):
+##### sistema octal: lo usarás con el comando chmod
+
+A cada permiso se le asigna un valor:
+
+Read (r) = 4
+Write (w) = 2
+Execute (x) = 1
+
+Sumas los valores para obtener el número final:
+
+7 (4+2+1) = rwx
+5 (4+0+1) = r-x
+4 (4+0+0) = r--
+
+
+5. Comandos de Gestión: C de Control
+
+Existen tres herramientas principales para manipular estos conceptos
+
+##### 1. chmod (Change Mode): Cambia los permisos
+`chmod 755 script.sh`
+Dueño hace todo, el resto solo lee/ejecuta
+
+##### 2. chown (Change Owner): Cambia el dueño del archivo.
+`sudo chown root archivo.txt.`
+
+##### 3. chgrp (Change Group): Cambia el grupo del archivo.
+
+
+6. Elevación de Privilegios: sudo
+Para muchas tareas usas sudo
+
+sudo (SuperUser DO): Permite a un usuario normal ejecutar un comando con los poderes del usuario root
+Esto es mucho más seguro que usar la cuenta de root directamente
+porque solo "elevas" tus poderes para una tarea específica y luego vuelves a ser un usuario normal.
+
+
+7. Ej Gráfico: `ls -l`
+
+```
+-  rwx  r-x  r--  1  usuario  grupo  1024  abr 25  archivo.txt
+^   ^    ^    ^   ^     ^        ^      ^      ^         ^
+|   |    |    |   |     |        |      |      |      Nombre
+|   |    |    |   |     |        |      |    Fecha
+|   |    |    |   |     |        |    Tamaño
+|   |    |    |   |     |      Grupo propietario
+|   |    |    |   |   Usuario propietario
+|   |    |    |  Enlaces (links)
+|   |    |   Otros (Others)
+|   |   Grupo (Group)
+|  Dueño (User)
+Tipo de archivo (- es archivo, d es directorio)
+```
+
+
+
+
+#### 1. chmod Cambia permisos
+
+##### Define quién puede leer, escribir o ejecutar un archivo o directorio
+Ej: uno de los comandos que más usarás como desarrollador para asegurar tus scripts o configurar servidores web
+
+Dos formas de usarlo: el Modo Octal (Números) y el Modo Simbólico (Letras).
+
+1. Modo Octal (El sistema de números)
+Método más rápido y profesional
+Se basa en asignar un valor a cada permiso y sumarlos para cada categoría (Dueño, Grupo, Otros).
+
+Lectura (r): 4
+Escritura (w): 2
+Ejecución (x): 1
+
+Combinaciones Comunes:
+
+##### 7 (4+2+1): Todo permitido (rwx).
+##### 6 (4+2): Lectura y escritura (rw-).
+##### 5 (4+1): Lectura y ejecución (r-x).
+##### 4: Solo lectura (r--).
+
+Ej: `chmod 755 mi_script.sh`
+
+7 (Dueño): Puede leer, editar y ejecutar.
+5 (Grupo): Puede leer y ejecutar (pero no editar).
+5 (Otros): Puede leer y ejecutar
+
+
+2. Modo Simbólico (El sistema de letras)
+Más intuitivo si solo quieres añadir o quitar un permiso específico sin recalcular todo el número
+
+Usa estas etiquetas:
+
+u: Usuario (Owner)
+g: Grupo (Group)
+o: Otros (Others)
+a: Todos (All)
+
+Y estos operadores:
+
++: Añadir permiso.
+-: Quitar permiso.
+=: Asignar exactamente este permiso.
+
+Ej: 
+
+`chmod +x script.sh`
+Añade permiso de ejecución a todos.
+
+`chmod g-w archivo.txt`
+Quita el permiso de escritura al grupo.
+
+`chmod u=rwx,g=rx,o=r archivo.conf`
+Define permisos específicos para cada uno.
+
+
+3. Permisos en Directorios: un matiz importante
+###### Los permisos funcionan de forma un poco distinta cuando hablamos de carpetas
+
+r (Lectura): Te permite `hacer ls` para ver qué hay dentro.
+w (Escritura): Te permite `crear, borrar o renombrar` archivos dentro.
+x (Ejecución): Te permite `hacer cd` para entrar en la carpeta.
+Sin la x, no puedes acceder a los archivos aunque tengas permiso de lectura sobre ellos
+
+4. Aplicación Recursiva (-R)
+Si quieres cambiar los permisos de una carpeta
+y de todos los archivos y subcarpetas que contiene de un solo golpe.
+
+`chmod -R 700 ~/.ssh`
+Muy común para asegurar carpetas de configuración sensible (como las llaves SSH).
+
+5. Permisos Especiales
+Existen tres bits adicionales que verás en sistemas avanzados
+
+##### 1. SUID (4000): El archivo se ejecuta con los privilegios del dueño
+(usado en comandos como passwd).
+
+##### 2. SGID (2000): Los archivos nuevos creados en la carpeta heredan el grupo de la carpeta madre.
+
+##### 3. Sticky Bit (1000): Solo el dueño de un archivo puede borrarlo dentro de esa carpeta
+(común en /tmp).
+
+
+##### Practicas chmod
+
+##### 1. 777: Todo para todos. ¡Peligro! Evítalo (solo para pruebas rápidas).
+##### 2. 755: Público. Binarios y carpetas que todos deben poder usar
+##### 3. 644: Documento estándar. El dueño edita, el resto solo lee (archivos .html, .txt).
+##### 4. 600: Privado total. Llaves privadas, archivos de contraseñas
+##### 5. 700: Carpeta privada. Tu carpeta de scripts personales
+
+
+6. Ej: programa en C recien compilado
+Por defecto, Linux no te dejará ejecutarlo
+Dale permisos para que solo tú puedas hacer todo con él
+y que nadie más pueda siquiera leerlo:
+`chmod 700 calculadora`
+
+
+##### Comandos chmod
+
+1. Scripts y Binarios
+Como desarrollador, este es tu uso número uno
+Un archivo recién creado no tiene permisos de ejecución por defecto
+
+Dar permiso de ejecución al dueño:
+`chmod u+x mi_script.sh`
+
+Dar permiso de ejecución a todo el mundo (Público):
+`chmod +x programa`
+
+Quitar cualquier permiso de ejecución:
+`chmod -x archivo_peligroso`
+
+
+2. Comandos para Proyectos Web y Carpetas
+React o Nest.js
+a veces necesitas que el servidor pueda leer pero no escribir, o viceversa
+
+Configuración estándar para carpetas (755):
+`chmod 755 carpeta_proyecto`
+(Dueño: rwx | Grupo: r-x | Otros: r-x)
+
+Configuración estándar para archivos (644):
+`chmod 644 index.html`
+(Dueño: rw- | Grupo: r-- | Otros: r--)
+
+Asegurar archivos de configuración sensible (600):
+`chmod 600 .env`
+(Solo el dueño puede leer y escribir; nadie más puede verlo).
+
+
+3. Comandos de "Fuerza Bruta" (Recursividad)
+Cuando necesitas arreglar los permisos de todo un árbol de directorios.
+
+Todo el proyecto privado para ti:
+`chmod -R 700 ~/mi_secreto_c_projects`
+
+Hacer que toda una carpeta sea de "solo lectura" para otros:
+`chmod -R o-w /ruta/al/directorio`
+
+
+4. Comandos de "Referencia" (--reference)
+Si tienes un archivo que funciona perfectamente y quieres que otro archivo tenga exactamente los mismos permisos sin tener que ver cuáles son
+
+`chmod --reference=archivo_bueno archivo_nuevo`
+Copia los permisos del "bueno" al "nuevo".
+
+
+5. Comando X (X mayús)
+La X mayúscula solo aplica el permiso de ejecución
+si el archivo ya es ejecutable o si es un directorio
+
+`chmod -R a+X`
+Da permiso de entrada a todas las carpetas (porque son directorios)
+pero no vuelve ejecutables a los archivos de texto planos innecesariamente.
+
+
+6. Verificación rápida de cambios
+##### Siempre es buena práctica verificar qué hizo el comando, especialmente con la bandera -v (verbose).
+
+`chmod -v 744 script.py`
+Salida: mode of 'script.py' changed from 0644 (rw-r--r--) to 0744 (rwxr--r--)
+
+
+7. Octal vs Simbólico
+
+Nadie vea nada:
+chmod 000 file
+chmod a-rwx file
+
+Solo tú leas/editas:
+chmod 600 file
+chmod u=rw,go= file
+
+Todos lean y entren:
+chmod 755 dir
+chmod u=rwx,go=rx dir
+
+Todos editen todo:
+chmod 777 file
+chmod a+rwx file
+
+
+Conceptos de chmod: 
+se basa en la gestión de los modos de acceso a los archivos en un sistema tipo Unix
+no se trata solo de "dar permisos"
+
+##### Define la interacción técnica entre los sujetos (usuarios) y los objetos (archivos/directorios)
+a través de la estructura de metadatos del sistema de archivos.
+
+1. 'Modo' y Inode
+
+##### En Linux, los permisos no se guardan dentro del contenido del archivo, sino en el Inode
+##### El "modo" de un archivo es un conjunto de bits que le dicen al Kernel: Qué tipo de objeto es (archivo, directorio, enlace); Qué permisos de acceso tiene.
+
+
+2. Estructura de Tres Niveles (UGO)
+##### Divide el acceso en tres categorías de sujetos totalmente independientes
+
+User (u): El propietario individual.
+Group (g): Usuarios que pertenecen al grupo asignado al archivo.
+Others (o): El resto del mundo (cualquier otro proceso o usuario).
+
+
+3. Naturaleza de las Acciones (rwx)
+Permisos son conceptos binarios (se tienen o no se tienen)
+
+Read (r - Lectura):
+##### Archivos: Ver los bytes del archivo.
+Directorios: Ver los nombres de los archivos que contiene (ej. ls).
+
+Write (w - Escritura):
+##### Archivos: Modificar los bytes del archivo.
+Directorios: Alterar la estructura de la carpeta (crear, borrar o renombrar archivos dentro)
+##### Importante: Puedes borrar un archivo si tienes permiso w en la carpeta, aunque no tengas ningún permiso sobre el archivo en sí.
+
+Execute (x - Ejecución):
+##### Archivos: Cargar el archivo en la memoria para que la CPU lo procese como un programa.
+Directorios: Concepto de "paso".
+Permite entrar (cd) y acceder a los metadatos de los archivos internos.
+Sin x en la carpeta, no puedes leer un archivo de su interior aunque sepas su nombre
+    
+
+4. Máscara y Valores Octales
+chmod utiliza un sistema de base 8 (octal)
+encaja perfectamente con los 3 bits de permisos (2^3=8)
+Cada permiso es una posición binaria:
+
+r = 2^2 = 4
+w = 2^1 = 2
+x = 2^0 = 1
+
+Al sumar estos valores, obtienes un dígito único que representa un estado de permiso completo
+Por ejemplo, un 5 (4+1) siempre significará "lectura y ejecución", sin ambigüedades
+
+
+5. Herencia y Propagación
+
+##### A diferencia de Windows, en Linux los permisos no se heredan automáticamente de forma predeterminada cuando creas un archivo dentro de una carpeta
+a menos que se usen ACLs avanzadas o el bit SGID
+
+Recursividad (-R) en chmod es la forma manual de propagar un "modo" a través de un árbol de directorios existente.
+
+
+6. Permisos Especiales: Extended Modes
+##### Tres conceptos de "modo": más allá del rwx
+
+##### 1. SUID (Set User ID): programa corre con los permisos del dueño (ej. passwd).
+
+##### 2. SGID (Set Group ID): Útil en carpetas compartidas para que todos los archivos nuevos hereden el grupo de la carpeta madre.
+
+##### 3. Sticky Bit: Protege archivos en carpetas públicas (como /tmp) para que solo el dueño pueda borrarlos
+
+
+Quién?: Identificar si eres u, g o o.
+Qué puede hacer?: Sumar los valores octales (r=4, w=2, x=1).
+Dónde se guarda?: En los metadatos (Inode) del sistema de archivos.
+
+
+##### SUID, SGID y Sticky Bit
+
+##### Permiten a Linux manejar excepciones de seguridad y colaboración que el sistema estándar rwx no puede cubrir por sí solo.
+
+##### Se representan con un cuarto dígito al principio del modo octal (ej. 4755)
+##### o sustituyendo la x en la representación de letras
+
+1. SUID (Set User ID)
+Cuando este bit está activo en un archivo ejecutable
+el programa se ejecuta con los privilegios del dueño del archivo en lugar de los privilegios del usuario que lo lanza
+
+Valor Octal: `4000`
+Representación: `rws------`
+(Se ve una s en la sección del dueño).
+
+Uso principal: Permitir que usuarios normales realicen tareas que requieren privilegios de root de forma controlada
+
+Aplicación Real: El comando passwd
+Para cambiar tu contraseña, el sistema debe escribir en /etc/shadow
+un archivo que solo root puede tocar
+Gracias al bit SUID, cuando ejecutas passwd
+el proceso adquiere temporalmente poderes de root para escribir tu nueva clave y luego los pierde
+
+
+2. SGID (Set Group ID)
+Este bit tiene dos funciones dependiendo de dónde se aplique:
+
+En Archivos:
+Similar al SUID, el programa se ejecuta con los privilegios del grupo dueño del archivo.
+
+Valor Octal: `2000`
+Representación: `rwx--s---`
+(La s aparece en la sección del grupo).
+
+En Directorios (El uso más común):
+Cualquier archivo o subcarpeta que se cree dentro de ese directorio heredará automáticamente el grupo propietario del directorio padre
+ignorando el grupo principal del usuario que lo crea
+
+Aplicación Real:
+Carpetas compartidas de desarrollo
+Si tienes un equipo trabajando en /var/www/html
+activas el SGID para que todos los archivos nuevos pertenezcan al grupo developers
+permitiendo que todos los miembros puedan editarlos sin importar quién los creó
+
+
+3. Sticky Bit
+Este permiso se aplica exclusivamente a directorios
+actúa como una medida de protección para entornos compartidos.
+
+Valor Octal: `1000`
+Representación: `rwxrwxrwt` (Se ve una t al final).
+
+Uso principal:
+Evitar que un usuario borre o renombre archivos de los cuales no es dueño
+incluso si tiene permisos de escritura en la carpeta.
+
+Aplicación Real:
+En /tmp, todos los usuarios pueden crear archivos
+Sin el Sticky Bit, cualquier usuario podría borrar el archivo temporal de otro
+Con él, solo el dueño del archivo (o root) puede eliminarlo.
+
+
+4. Asignar estos permisos
+
+SUID:
+`chmod 4755 archivo`
+`chmod u+s archivo`
+
+SGID:
+`chmod 2775 carpeta`
+`chmod g+s carpeta`
+
+Sticky Bit:
+`chmod 1777 carpeta`
+`chmod +t carpeta`
+
+
+5. Consideraciones
+
+##### SUID: Casi nunca en tus propios programas: es un riesgo de seguridad alto si el código tiene bugs
+##### SGID: Siempre que configures una carpeta de proyecto para un equipo: git, servidores web
+##### Sticky Bit: En carpetas de "buzón" donde los usuarios dejan archivos pero no deben tocar los de los demás
+
+
+8. Seguridad
+Si ves una S o T (mayúsculas), significa que el bit especial está activo
+pero el permiso de ejecución (x) subyacente no está presente
+Generalmente, esto indica un error de configuración
+ya que el modo especial no funcionará correctamente sin el permiso de ejecución.
+
+
+
+##### Conceptos de umask: User Mask o Máscara de Usuario
+
+##### mecanismo que determina qué permisos NO tendrá un archivo o directorio en el momento exacto de su creación
+un filtro de seguridad automático que "resta" permisos a un valor inicial máximo.
+
+En Linux, los archivos no nacen con permisos aleatorios
+##### nacen con un valor base que luego es filtrado por el umask del sistema o del usuario
+
+Valores Base (El punto de partida):
+
+Antes de aplicar la máscara, el sistema operativo propone estos valores máximos por defecto:
+
+Para `Directorios: 777` (Todo para todos: rwxrwxrwx).
+Para `Archivos: 666` (Lectura y escritura para todos: rw-rw-rw-).
+
+Por seguridad, Linux nunca otorga permisos de ejecución (x) automáticamente a un archivo nuevo, incluso si el umask es 000.
+
+
+Lógica Matemática (La Resta):
+
+umask funciona mediante una resta lógica
+técnicamente es una operación bitwise AND NOT
+
+Para simplificar, puedes verlo como una resta simple de los valores octales:
+Permiso Final = Valor Base - Valor umask
+
+Ej: umask 022
+estándar en la mayoría de las distribuciones
+
+`Directorios: 777 - 022 = 755` (Dueño hace todo, el resto solo lee/entra).
+`Archivos: 666 - 022 = 644` (Dueño edita, el resto solo lee).
+
+
+Interpretación de los números en umask:
+
+Al igual que en chmod, los números representan Lectura (4), Escritura (2) y Ejecución (1).
+##### Pero en umask, el número indica lo que quieres prohibir:
+
+0: No prohíbe nada (permite todo).
+2: Prohíbe la escritura (w).
+7: Prohíbe lectura, escritura y ejecución (rwx).
+
+
+Visualización y Cambio:
+
+Comando `umask`:
+(devuelve algo como 0022).
+
+Modo Simbólico: `umask -S`:
+muestra lo que está permitido, por ejemplo: u=rwx,g=rx,o=rx
+
+
+Cambiar la máscara temporalmente:
+Ej: trabajar en un proyecto de C muy sensible
+quieres que todos los archivos que crees a partir de ahora sean privados:
+
+Comando: umask 077
+
+Cualquier archivo nuevo será 600 (rw-------)
+cualquier carpeta será 700 (rwx------)
+
+
+Persistencia:
+
+El umask se suele definir en los archivos de configuración del shell (como .bashrc, .zshrc o /etc/profile).
+
+umask | Permiso Archivo (Base 666) |Permiso Carpeta (Base 777) | Uso Típico
+
+`022`:
+644 (rw-r--r--)
+755 (rwxr-xr-x)
+Estándar del sistema.
+
+`002`:
+664 (rw-rw-r--)
+775 (rwxrwxr-x)
+Ideal para trabajo en grupo (el grupo puede editar).
+
+`077`:
+600 (rw-------)
+700 (rwx------)
+Privacidad total.
+
+
+Práctica:
+configuras un umask de 027
+qué permisos tendrá un directorio nuevo que crees con mkdir
+`777 - 027 = 750`
+
+
+
+#### 2. chown: Cambia dueño
+
+Administración de la propiedad en Linux, sobre el 'quién'
+Vital para evitar errores de tipo 'Permission Denied'
+
+
+1. Propiedad Dual
+
+##### En Linux, cada archivo o directorio tiene dos dueños asignados simultáneamente: owner/user y group
+
+##### 1. Propietario (Owner/User): Normalmente es la persona que creó el archivo
+##### Tiene el control total para cambiar los permisos (chmod) del mismo
+
+##### 2. Grupo (Group): Un conjunto de usuarios que comparten ciertos privilegios sobre ese archivo
+
+
+2. Jerarquía de Privilegios
+Para ejecutar `chown`, debes entender las reglas de jerarquía:
+
+`Solo el Superusuario (Root)`: 
+Es el único que puede "quitarle" un archivo a un usuario y dárselo a otro
+Un usuario normal no puede usar chown para "regalar" sus archivos a alguien más
+(por razones de seguridad y cuotas de disco).
+
+`impacto del cambio`
+##### Cuando cambias el dueño, los permisos definidos en chmod se aplican inmediatamente a la nueva persona
+`chmod`
+
+
+3. Sintaxis y Delimitadores
+chown es muy flexible gracias a sus delimitadores
+(punto . o los dos puntos :).
+
+Formatos aceptados:
+
+`usuario`: Cambia solo el dueño
+`usuario:grupo`: Cambia ambos (es el estándar moderno).
+`usuario:`: Cambia el dueño y asigna automáticamente el grupo principal de ese usuario
+`:grupo`: Cambia solo el grupo (actúa como chgrp).
+
+
+4. Sticky Bit y Propiedad de Directorios
+Concepto avanzado de propiedad ocurre en los directorios
+
+##### 1. Si eres dueño de un directorio, puedes borrar archivos dentro de él: incluso si no eres el dueño de esos archivos individuales.
+
+##### 2. Para evitar esto en carpetas compartidas (como /tmp), se usa el Sticky Bit: que restringe el borrado solo al dueño real del archivo.
+
+
+5. Vinculación con Procesos
+Clave para desarrolladores
+
+##### 1. Los procesos (como un servidor de base de datos o un servidor web) se ejecutan bajo un usuario específico
+
+##### 2. Si el proceso nginx intenta leer un archivo que pertenece a martin con permisos 600, fallará.
+##### El concepto de "Propiedad" debe alinearse con el usuario que ejecuta el software.
+
+
+6. Persistencia de Metadatos
+Cuando usas chown, el sistema operativo actualiza el Inode del archivo
+
+El número de Inode no cambia, pero los campos de UID (User ID) y GID (Group ID) se sobrescriben
+
+Esto actualiza automáticamente el timestamp de Change (ctime) que vimos con el comando stat.
+
+UID/GID:
+GID	Los nombres de usuario son etiquetas; Linux usa números internamente
+
+
+
+##### Prácticas
+
+##### Cambia la propiedad de un archivo o directorio
+chown cambia quién es el dueño
+
+Mientras que chmod cambia qué se puede hacer
+
+##### En Linux, solo el usuario root (o alguien con sudo) puede cambiar el dueño de un archivo
+##### Evita que un usuario le "regale" un archivo malicioso a otro sin su permiso
+
+1. Cambiar el Usuario Propietario
+Cambia el dueño pero mantiene el grupo original
+
+`sudo chown usuario archivo.txt`
+`sudo chown martin notas.txt`
+Ahora el archivo pertenece a Martin
+
+2. Cambiar Usuario y Grupo Simultáneamente
+##### Sintaxis más utilizada: formato usuario:grupo
+
+`sudo chown usuario:grupo archivo.txt`
+
+`sudo chown www-data:www-data index.html`
+Muy común en servidores web para que el servicio de Apache o Nginx pueda gestionar los archivos
+
+3. Cambiar solo el Grupo
+Aunque existe el comando chgrp
+puedes usar chown poniendo solo los dos puntos seguidos del grupo
+
+`sudo chown :developers proyecto.c`
+Mantiene al dueño actual pero cambia el grupo a developers
+
+4. Cambio Recursivo (-R)
+si quieres cambiar la propiedad de toda una carpeta y todo su contenido (subcarpetas y archivos)
+
+`sudo chown -R usuario:grupo /var/www/html`
+Fundamental cuando mueves un proyecto de un sitio a otro
+y los permisos quedan "rotos" o con el dueño equivocado.
+
+5. Dos puntos vacíos (usuario:)
+escribes el nombre de usuario seguido de dos puntos
+dejas el grupo vacío, chown cambiará el dueño
+##### y automáticamente cambiará el grupo al grupo principal de ese usuario.
+
+`sudo chown martin: script.sh`
+Si el grupo principal de Martin es staff
+el comando hará lo mismo que chown martin:staff.
+
+6. Usar una Referencia (--reference)
+Puedes copiar la propiedad de un archivo "modelo" a otro.
+
+`sudo chown --reference=archivo_original archivo_nuevo`
+
+7. Situaciones
+
+"No puedo entrar a la carpeta porque no soy el dueño"
+`chown`
+
+"Soy el dueño pero el archivo no se ejecuta"
+`chmod`
+
+"Quiero que mi equipo de desarrollo pueda editar este archivo"
+`chown :developers + chmod g+w`
+
+8. Ej: has descargado una carpeta de un repositorio como root por error
+ahora tu usuario normal no puede editarla
+
+La carpeta se llama mi_repo:
+Devolver la propiedad a tu user, y a tu grupo
+`sudo chown -R dev:users mi_repo`
+
+
+
+#### 3. chgrp (Change Group): Cambia el grupo del archivo.
+
+##### Cambiar el grupo propietario de un archivo o directorio
+
+chown puede cambiar tanto el usuario como el grupo
+
+1. Grupo en la Seguridad
+los grupos existen para facilitar la colaboración
+En lugar de dar permisos a 10 personas una por una
+las metes en un grupo (ej. desarrolladores) y le asignas ese grupo al archivo
+chgrp es la herramienta que "mueve" el archivo a esa esfera de colaboración
+
+
+2. Restricciones de Uso (Seguridad)
+chown (que generalmente requiere sudo).
+
+chgrp tiene reglas para usuarios normales:
+
+Si eres un usuario normal:
+Solo puedes cambiar el grupo de un archivo a otro grupo al que tú mismo pertenezcas
+
+Si eres root (o usas sudo):
+Puedes cambiar el archivo a cualquier grupo del sistema
+
+
+3. Comportamiento en Directorios (-R)
+Ej en proyectos c, etc; rara vez cambias el grupo de un solo archivo
+
+Recursividad es vital aqui: 
+`chgrp -R grupo carpeta/`
+asegura que todos los archivos internos
+desde el código fuente hasta los binarios
+pertenezcan al mismo equipo de trabajo.
+
+
+4. Enlace Simbólico: -h
+Detalle técnico importante
+
+Por defecto, si usas chgrp sobre un enlace simbólico
+el comando cambiará el grupo del archivo real al que apunta el enlace.
+
+Si quieres cambiar el grupo del enlace en sí
+(sin tocar el original), debes usar la bandera -h.
+
+
+5. Usar `chgrp` vs `chown`
+
+Aunque `chown :grupo archivo`
+hace lo mismo que `chgrp grupo archivo`
+
+Razones para preferir este último
+
+Legibilidad:
+scripts de administración, chgrp deja claro que la intención es solo modificar la colaboración grupal, no la propiedad individual
+
+Seguridad:
+Permite a usuarios sin privilegios de root gestionar sus propios archivos dentro de sus grupos de trabajo
+
+
+6. Verificación de metadatos
+Al igual que los otros comandos de esta familia, chgrp modifica el Inode.
+
+Al cambiar el grupo, el campo GID (Group ID) se actualiza.
+Esto provoca que el timestamp de Change (ctime) se actualice automáticamente
+puedes verificarlo con el comando stat
+
+
+Acción | Comando
+
+Cambiar grupo a un archivo
+`chgrp equipo1 notas.txt`
+
+Cambiar grupo recursivamente
+`chgrp -R web_dev /var/www/html`
+
+Ver cambios realizados
+`chgrp -v staff archivo.sh`
+
+Usar un archivo de referencia
+`chgrp --reference=base.txt nuevo.txt`
+
+
+##### Prácticas
+
+1. Cambio grupo
+cuando necesitas que otros miembros de un equipo tengan acceso a un archivo.
+
+`chgrp desarrolladores script.py`
+archivo ahora pertenece al grupo "desarrolladores"
+Si los permisos del grupo son r--, todos en ese grupo podrán leerlo
+
+
+2. Aplicación masiva: recursividad -R
+Cuando configuras una carpeta compartida o un nuevo proyecto web.
+
+`chgrp -R www-data /var/www/html/mi_sitio`
+Cambia el grupo de la carpeta
+de todos los archivos y de todas las subcarpetas de forma descendente
+
+
+3. Copiar el grupo de otro archivo (--reference)
+útil en scripts o cuando no recuerdas exactamente qué grupo debe llevar un archivo
+pero tienes uno que "está bien".
+
+`chgrp --reference=config_antigua.php config_nueva.php`
+Mira qué grupo tiene el archivo de referencia y lo aplica automáticamente al nuevo
+
+
+4. Gestión de enlaces simbólicos (-h)
+usuario de Linux avanzado, trabajarás con enlaces
+Por defecto, chgrp afecta al archivo original, no al enlace.
+
+Cambiar el grupo del enlace en sí:
+`chgrp -h grupo mi_link`
+
+Cambiar el grupo del destino:
+`chgrp grupo mi_link`
+
+
+5. Reporte de cambios: -c y -v
+Cuando ejecutas cambios en cientos de archivos
+quieres saber si algo falló o si realmente se hizo el cambio.
+
+Modo silencioso (solo reporta si hubo cambios):
+`chgrp -c grupo *`
+
+Modo detallado (reporta todo):
+`chgrp -v grupo archivo.txt`
+
+
+6. Integración con find
+comando definitivo para limpieza de permisos
+Supongamos que solo quieres cambiar el grupo de los archivos .c
+dejar los demás intactos.
+
+`find . -name "*.c" -exec chgrp programadores {} +`
+Busca todos los archivos que terminen en .c
+y les aplica chgrp.
 
 
 ## 2. Estructura de Windows
+
+
+
+# Scripting
+
+## Python
+
+## Plan
+
+Es como obtener un superpoder para automatizar lo aburrido
+
+el scripting se enfoca en resolver tareas específicas
+manipular archivos y conectar diferentes sistemas de forma rápida
+
+
+### 1. Fundamentos
+
+Cómo hablarle a la máquina.
+
+Variables, tipos de datos (strings, ints, floats) y operadores.
+Estructuras de Control: if, elif, else y los bucles mágicos for y while.
+
+Colecciones de Datos: Dominio de Listas, Diccionarios y Sets (esto es el 80% de lo que harás en scripts).
+Funciones: Cómo encapsular lógica para no repetirte (DRY - Don't Repeat Yourself).
+
+El objetivo es que dejes de usar la terminal interactiva y empieces a guardar archivos .py ejecutables.
+
+
+### 2. Interacción con el Sistema
+
+Python empieza a controlar tu computadora
+
+##### Manejo de Archivos: Lectura y escritura de archivos .txt, .csv y .json.
+
+La Librería os y shutil: Crear carpetas, mover archivos, listar directorios y borrar cosas (con cuidado).
+
+Argumentos de Línea de Comandos: Uso de sys.argv
+más adelante, la potente librería argparse para crear herramientas CLI reales.
+
+Variables de Entorno: Uso de .env para manejar secretos y rutas sin exponerlos en el código.
+
+
+### 3. Automatización y Web
+
+Scripting brilla cuando interactúa con el mundo exterior
+
+`Peticiones HTTP`
+requests
+Consumir APIs o descargar archivos automáticamente.
+
+`Web Scraping`
+BeautifulSoup
+Extraer datos de páginas web que no tienen API.
+
+`Automatización de Navegador`
+Selenium o Playwright
+Llenar formularios o hacer clics en sitios complejos.
+
+`Expresiones Regulares (RegEx)`
+Módulo re
+Buscar y validar patrones complejos en textos o logs.
+
+
+### 4. Robustez y Profesionalismo
+
+Un script que se rompe al primer error no es un buen script.
+
+Manejo de Errores: Bloques try / except / finally para que tu script no muera si falta un archivo.
+
+Logging: Deja de usar print() para depurar.
+Usa el módulo logging para crear archivos de registro.
+
+Entornos Virtuales: Uso de venv o conda
+No ensucies tu instalación global de Python.
+
+Subprocesos: Usar subprocess para ejecutar comandos del sistema (bash o powershell) desde Python.
+
+
+### 5. Mantenimiento
+
+##### Programación de Tareas: Aprender a usar Cron (Linux/Mac)
+o el Task Scheduler (Windows) para que tus scripts corran solos a las 3 AM.
+
+Empaquetado: Cómo convertir tu script en un ejecutable o un paquete instalable.
+
+
+
+## Prácticas/ejercicos para cada fase
+
+
+### 1. Fundamentos
+
+Manipulación de datos y lógica pura
+
+Ejercicio 1 (El Analizador de Texto): Crea un script que reciba un párrafo largo y devuelva un diccionario con la frecuencia de cada palabra, ignore mayúsculas y cuente cuántas oraciones hay
+
+Ejercicio 2 (Calculadora de Propinas Pro): Un script que pida el total de la cuenta, el porcentaje de propina y el número de personas. Debe validar que las entradas sean números positivos y devolver cuánto debe pagar cada uno
+
+
+### 2. Interacción con el Sistema
+
+Controlar archivos y rutas.
+
+Ejercicio 1 (El Limpiador de Escritorio): Escribe un script que escanee una carpeta específica. Si encuentra archivos .jpg o .png, los mueve a una carpeta llamada "Imágenes"; si son .pdf, a "Documentos".
+
+Ejercicio 2 (Buscador de Logs): Crea un script que lea un archivo de texto (simulando un log de servidor) y extraiga todas las líneas que contengan la palabra "ERROR", guardándolas en un archivo nuevo llamado errores_detectados.txt.
+
+Reto CLI: Modifica el Ejercicio 1 para que la carpeta a limpiar se pase como un argumento desde la terminal (ej: python limpiar.py /home/usuario/descargas).
+
+
+### 3. Automatización y Web
+
+Conectar Python con el exterior.
+
+Ejercicio 1 (Clima en Terminal): Usa la librería requests y una API gratuita (como OpenWeatherMap) para crear un script que, al darle el nombre de una ciudad, imprima la temperatura actual y la humedad.
+
+Ejercicio 2 (Extractor de Enlaces): Escribe un script con BeautifulSoup que pida una URL y extraiga todos los enlaces (<a>) de la página, guardándolos en un archivo CSV
+
+
+### 4. Robustez y Profesionalismo
+
+Crear herramientas que no fallen
+
+Ejercicio 1 (Descargador Seguro): Crea un script que descargue una lista de imágenes desde URLs en un archivo .txt. Debe usar try/except para manejar enlaces rotos o falta de internet, y registrar cada éxito o fallo en un archivo proceso.log.
+
+Ejercicio 2 (Monitor de Recursos): Usa el módulo subprocess para ejecutar el comando df -h (en Linux/Mac) o dir (en Windows) desde Python. Captura la salida, procésala para detectar si algún disco está a más del 90% y, si es así, imprime una alerta roja en la terminal
+
+
+### 5. Mantenimiento y Automatización Real
+
+El "set it and forget it".
+
+Tarea | Requisito del Ejercicio
+
+`Backup Semanal`
+Un script que comprima en un .zip tu carpeta de proyectos y le ponga la fecha actual al nombre del archivo.
+
+`Programación`
+Configura tu sistema (Cron o Task Scheduler) para que el script de Backup se ejecute automáticamente cada viernes a las 6:00 PM.
+
+`Notificación`
+"Añade una función al script anterior para que, una vez terminado el zip, te envíe una notificación al sistema o un mensaje simple por consola confirmando el tamaño del backup."
+
+
+Consejos: 
+
+No reinventes la rueda: Si necesitas manejar rutas, usa pathlib (es más moderno que os.path).
+
+Usa pip con cuidado: Para la Fase 3, recuerda crear un entorno virtual (python -m venv env) antes de instalar requests o beautifulsoup4.
+
+Comenta tu código: En el scripting, es común olvidar qué hacía un parámetro específico después de tres meses.
+
+
+
+## Buenas Prácticas Python
+
+### 1. Fundamentos
+
+Cómo hablarle a la máquina.
+
+Variables, tipos de datos (strings, ints, floats) y operadores.
+Estructuras de Control: if, elif, else y los bucles mágicos for y while.
+
+Colecciones de Datos: Domi
+nio de Listas, Diccionarios y Sets (esto es el 80% de lo que harás en scripts).
+Funciones: Cómo encapsular lógica para no repetirte (DRY - Don't Repeat Yourself).
+
+El objetivo es que dejes de usar la terminal interactiva y empieces a guardar archivos .py ejecutables.
+
+
+#### 1. Variables
+
+En Python, las variables no son solo "cajas" donde guardas datos
+Son nombres que apuntan a objetos en memoria
+
+Código sea legible (PEP 8), evitar errores lógicos difíciles de rastrear.
+
+
+1. Nomenclatura (Estilo PEP 8)
+cómo deben verse los nombres.
+
+snake_case siempre:
+Usa minúsculas y guiones bajos para nombres de variables y funciones.
+`user_registration_date = "2026-04-26"`
+
+Nombres descriptivos:
+El nombre debe explicar el qué, no el cómo.
+`active_users_count`
+
+Evita nombres genéricos:
+A menos que sea un índice en un bucle muy corto (como i para un rango numérico)
+evita letras sueltas.
+
+
+2. Constantes
+
+En Python no existen las constantes reales
+el lenguaje no te impide cambiar el valor
+pero por convención `usamos UPPER_CASE`
+
+Define las configuraciones o valores fijos al inicio del archivo o en un módulo aparte
+
+Uso de Final: Para herramientas de análisis estático (como Mypy)
+puedes usar el tipo Final para indicar que no debe ser sobrescrito.
+
+```
+from typing import Final
+
+API_RETRY_LIMIT: Final = 5
+DATABASE_URL = "localhost:5432"
+```
+
+
+3. Type Hinting (Sugerencia de Tipos)
+Declarar tipos hace que tu código sea mucho más robusto y que los editores (como Neovim o VS Code) te ayuden mejor.
+
+```
+# Sin tipos (difícil de predecir)
+def calcular_total(precio, cantidad):
+    return precio * cantidad
+
+# Con tipos (claro y profesional)
+def calcular_total(precio: float, cantidad: int) -> float:
+    return precio * cantidad
+```
+
+
+4. Peligro de los Mutables como Default
+Una de las "trampas" más comunes en Python
+Nunca uses una lista o un diccionario como valor por defecto en una función.
+
+problema: El valor por defecto se crea una sola vez cuando se define la función
+no cada vez que se llama.
+
+La solución: Usa None.
+
+```
+# ❌ MAL: La lista 'items' persistirá entre llamadas
+def agregar_item(item, items=[]):
+    items.append(item)
+    return items
+
+# ✅ BIEN:
+def agregar_item(item, items: list | None = None):
+    if items is None:
+        items = []
+    items.append(item)
+    return items
+```
+
+
+5. Ámbito y Ciclo de Vida (Scope)
+
+Entender dónde vive una variable evita efectos secundarios inesperados.
+
+Evita global: El uso de la palabra clave global suele ser señal de un diseño pobre.
+Prefiere pasar variables como argumentos y retornar valores.
+
+Limita el alcance: No declares todas tus variables al principio de un script
+Decláralas justo antes de necesitarlas para que la memoria se gestione mejor.
+
+
+6. Desempaquetado (Unpacking)
+Usa el desempaquetado para mantener el código limpio cuando trabajes con tuplas o listas
+
+```
+# Evita esto:
+coordenadas = (10.5, 20.8)
+x = coordenadas[0]
+y = coordenadas[1]
+
+# Prefiere esto:
+x, y = coordenadas
+```
+
+7. Clean Code
+
+Si necesitas un comentario para explicar una variable, el nombre está mal.
+
+No reutilices la misma variable para cosas distintas (ej. usar data para un string y luego para una lista en el mismo bloque).
+
+Usa _ para variables que no vas a usar (ej. en un bucle: for _ in range(10):).
+
+
+
+#### 2. Tipos de datos
+
+
+##### Descripción de todos los tipos de datos
+
+1. Tipos Numéricos
+
+int (Enteros): Números sin decimales, tanto positivos como negativos
+los enteros tienen precisión arbitraria
+pueden ser tan grandes como tu memoria lo permita
+
+float (Flotantes): Números con decimales
+Siguen el estándar IEEE 754 de coma flotante.
+
+complex (Complejos): Números con una parte real y una imaginaria (se representan como 3 + 5j).
+
+
+2. Tipos de Secuencia
+Se utilizan para almacenar colecciones de datos de manera ordenada.
+
+str (Cadenas de texto): Son secuencias de caracteres Unicode
+Son inmutables.
+
+list (Listas): Colecciones ordenadas y mutables que pueden contener elementos de diferentes tipos.
+
+tuple (Tuplas): Similares a las listas, pero son inmutables
+Se suelen usar para datos que no deben cambiar o para registros rápidos.
+
+range: Una secuencia inmutable de números, comúnmente utilizada en bucles for.
+
+
+3. Tipos de Mapeo
+
+dict (Diccionarios): Almacenan pares de clave-valor
+Son extremadamente rápidos para buscar información
+Las claves deben ser inmutables (como strings o tuplas).
+
+
+4. Tipos de Conjunto (Sets)
+
+set: Una colección desordenada de elementos únicos y mutables
+Útil para eliminar duplicados y realizar operaciones matemáticas como unión o intersección
+
+frozenset: La versión inmutable del set.
+
+
+5. Tipos Booleanos y Binarios
+
+bool: Solo puede ser True o False
+Es una subclase de los enteros (True=1, False=0).
+
+bytes: Secuencias inmutables de bytes (números entre 0 y 255).
+
+bytearray: Versión mutable de bytes.
+
+memoryview: Permite acceder a los datos internos de un objeto que soporta el protocolo de búfer sin copiarlo
+(uso avanzado de memoria).
+
+
+6. Tipo Especial
+
+NoneType (None):
+Representa la ausencia de valor o un valor nulo
+Es el equivalente a null en otros lenguajes
+
+
+Saber el tipo de una variable
+Puedes usar la función integrada type() para inspeccionar cualquier objeto en tiempo de ejecución:
+
+```
+x = [1, 2, 3]
+print(type(x))  # <class 'list'>
+```
+
+
+##### Buenas prácticas para tipos númericos
+
+1. Precisión Decimal: Evita float para Dinero
+usar float para cálculos financieros
+Debido a cómo se representan los decimales en binario (IEEE 754)
+puedes obtener resultados como:
+`0.1+0.2=0.30000000000000004`.
+
+Usa el módulo decimal para precisión exacta.
+permite controlar el redondeo y evitar errores de centavos.
+
+```
+from decimal import Decimal
+
+# ❌ Mal para finanzas
+precio = 0.1 + 0.2 
+
+# ✅ Bien para finanzas
+precio = Decimal('0.1') + Decimal('0.2') # Resultado: 0.3
+```
+
+
+2. Legibilidad de Números Grandes
+Cuando trabajas con scripts que manejan bytes, milisegundos o grandes bases de datos
+los números largos son difíciles de leer
+
+Usa guiones bajos como separadores visuales
+Python los ignora al procesar el número
+
+```
+poblacion_estimada = 8_000_000_000
+timeout_ms = 10_000
+```
+
+
+3. División: / vs //
+para evitar errores de tipo en funciones que esperan enteros.
+
+/ (División de punto flotante):
+Siempre devuelve un float
+incluso si el resultado es exacto (ej. 4 / 2 da 2.0).
+
+// (División de piso): Devuelve un int (redondea hacia abajo)
+Úsalo cuando necesites índices de listas o contadores que deban ser enteros
+
+
+4. math para Operaciones Complejas
+No intentes programar tus propias funciones para operaciones matemáticas estándar
+El módulo nativo math está escrito en C y es mucho más rápido y preciso.
+
+math.isclose(): Úsalo para comparar si dos flotantes son "iguales", ya que la comparación directa == con floats suele fallar por decimales invisibles.
+
+math.ceil() y math.floor(): Para redondeos explícitos hacia arriba o abajo.
+
+
+5. Conversiones Seguras (Casting)
+Al hacer scripting, a menudo recibes números como strings
+(de un input, un archivo o una API).
+
+Siempre valida o usa bloques try/except al convertir
+Un string vacío o con una letra romperá tu script con un ValueError.
+
+```
+entrada = "150px"
+try:
+    numero = int(entrada.replace("px", ""))
+except ValueError:
+    numero = 0  # Valor por defecto seguro
+```
+
+
+6. Type Hinting para Claridad
+
+Aunque Python es flexible
+indicar si esperas un entero o un flotante
+ayuda a quienes lean tu código
+(y a ti mismo en el futuro).
+
+```
+def aplicar_descuento(precio: float, porcentaje: int) -> float:
+    return precio * (1 - porcentaje / 100)
+```
+
+
+7. Enumeraciones para Estados Numéricos
+Si usas números para representar estados
+estados (ej: 0 para "apagado", 1 para "encendido")
+no uses "números mágicos" sueltos en el código
+
+Práctica recomendada: Usa el módulo enum
+Hace que el código sea autodocumentado.
+
+```
+from enum import IntEnum
+
+class Status(IntEnum):
+    OFF = 0
+    ON = 1
+
+# Es mucho más claro leer:
+if estado == Status.ON:
+    pass
+```
+
+
+##### Buenas prácticas para Strings
+
+Ya sea que estés limpiando nombres de archivos
+extrayendo datos de una web o formateando reportes
+manipular texto de manera eficiente y limpia es vital
+
+1. f-strings
+Son más rápidas, más legibles
+permiten incrustar expresiones lógicas y llamadas a funciones directamente
+
+Regla: Úsalas siempre que necesites concatenar variables con texto.
+
+```
+nombre = "Nvim"
+version = 0.10
+# ✅ Recomendado
+print(f"Estás usando {nombre} versión {version:.1f}")
+```
+
+
+2. Manipulación de Rutas: Usa pathlib
+
+Uno de los errores más comunes en scripting:
+tratar las rutas de archivos como simples strings
+y concatenarlas con + o /.
+
+causa errores entre Windows y Linux.
+
+Usa el módulo `pathlib`.
+
+Maneja automáticamente los separadores de cada sistema operativo
+hace que el código sea mucho más limpio
+
+```
+from pathlib import Path
+
+# ✅ Evita errores de rutas
+carpeta_base = Path("home") / "usuario" / "proyectos"
+archivo_config = carpeta_base / "config.json"
+```
+
+
+3. Unión Eficiente: .join() vs +
+Python crea un nuevo objeto en memoria cada vez que concatenas strings con +.
+Si estás uniendo miles de palabras en un bucle, el rendimiento caerá drásticamente.
+
+Acumula los elementos en una lista
+y únelos al final con .join().
+
+```
+palabras = ["Python", "es", "increíble"]
+
+# ❌ Lento en bucles grandes
+resultado = ""
+for p in palabras:
+    resultado += p + " "
+
+# ✅ Rápido y limpio
+resultado = " ".join(palabras)
+```
+
+
+4. Limpieza de Datos (Sanitization)
+Al recibir datos externos (APIs, logs, inputs)
+nunca asumas que vienen limpios.
+
+`.strip()`:
+Elimina espacios en blanco, tabulaciones
+ y saltos de línea accidentales al inicio y final.
+
+`.lower() / .upper()`:
+Normaliza el texto antes de compararlo
+para evitar que "Python" y "python"
+sean tratados como cosas distintas.
+
+```
+entrada_usuario = "  admin  \n"
+if entrada_usuario.strip().lower() == "admin":
+    print("Acceso concedido")
+```
+
+
+5. Strings Multilínea y Comentarios
+Para bloques grandes de texto
+como plantillas de correo o mensajes de ayuda
+triples comillas """.
+
+inicio de tus funciones para explicar qué hacen
+no es solo "orden", es lo que permite que herramientas como el servidor de lenguaje de tu editor te muestren ayuda mientras escribes
+
+```
+def procesar_log(ruta: str):
+    """
+    Lee un archivo de log y extrae las marcas de tiempo.
+    Retorna una lista de strings con formato ISO.
+    """
+    pass
+```
+
+
+6. Métodos de Verificación
+En lugar de usar lógica compleja
+aprovecha los métodos integrados que devuelven booleanos
+Son más descriptivos y rápidos de leer
+
+`texto.startswith("http")`
+en lugar de `texto[:4] == "http"`.
+
+`texto.endswith(".csv")` para filtrar archivos.
+
+`texto.isdigit()` para validar que un string puede convertirse a número antes de que explote el script.
+
+
+7. Inmutabilidad: No intentes cambiarlos
+los strings en Python son inmutables
+Si necesitas cambiar una letra en una posición específica
+no puedes hacer texto[0] = "A".
+
+Debes crear un nuevo string
+`usando .replace(), slicing o join`
+
+
+8. Raw Strings para RegEx
+Si trabajas con Expresiones Regulares
+o rutas de Windows con muchas barras invertidas (\)
+usa raw strings anteponiendo una r.
+evita que Python interprete \n como un salto de línea.
+
+```
+ruta_windows = r"C:\usuarios\nombre\nueva_carpeta"
+regex_patron = r"\d{3}-\d{3}-\d{4}"
+```
+
+
+#### Buenas Prácticas para Listas/arrays
+
+probablemente la estructura de datos que más usarás en tus scripts
+Al ser mutables y dinámicas, ofrecen mucha flexibilidad
+pero también pueden convertirse en un cuello de botella si no se manejan con eficiencia
+
+1. List Comprehensions: Pythonic
+Si estás creando una lista nueva basándote en otra
+evita los bucles for tradicionales de 4 líneas
+Las list comprehensions son más rápidas y legibles.
+
+Regla: Úsalas para transformar o filtrar datos de forma concisa.
+
+Límite: Si la lógica es tan compleja que ocupa más de una o dos líneas
+vuelve al bucle for convencional para mantener la legibilidad.
+
+```
+# ❌ Estilo antiguo
+cuadrados = []
+for x in range(10):
+    cuadrados.append(x**2)
+
+# ✅ Estilo Pythonic
+cuadrados = [x**2 for x in range(10)]
+```
+
+
+2. Pertenencia: in es tu mejor amigo
+Para verificar si un elemento existe dentro de una lista, usa el operador in.
+extremadamente legible
+
+Ojo con el rendimiento:
+Buscar con in en una lista tiene una complejidad de O(n).
+Si tu lista tiene millones de elementos y haces búsquedas frecuentes
+considera convertirla a un set (conjunto), donde la búsqueda es O(1).
+
+
+3. Desempaquetado y el Operador Asterisco (*)
+extraer elementos de una lista de forma elegante
+sin usar índices manuales (lista[0], lista[1]).
+
+```
+usuarios = ["Admin", "Editor", "Viewer", "Guest"]
+
+# Captura el primero, el segundo y el resto en una sub-lista
+admin, editor, *demas_personal = usuarios
+
+print(admin) # "Admin"
+print(demas_personal) # ["Viewer", "Guest"]
+```
+
+
+4. Evita modificar una lista mientras la recorres
+Este es un error clásico que genera bugs difíciles de encontrar
+Si eliminas elementos de una lista mientras la iteras con un for
+los índices se desplazan y Python se saltará elementos
+
+Solución: Itera sobre una copia de la lista
+o usa una list comprehension para crear una nueva lista filtrada
+
+```
+# ❌ Mal: Esto saltará elementos
+for item in mi_lista:
+    if condicion(item):
+        mi_lista.remove(item)
+
+# ✅ Bien: Crear una lista nueva con lo que quieres conservar
+mi_lista = [item for item in mi_lista if not condicion(item)]
+```
+
+
+5. Usa enumerate() en lugar de range(len())
+
+Si necesitas tanto el valor del elemento como su posición (índice)
+no uses contadores manuales.
+
+```
+servidores = ["192.168.1.1", "192.168.1.2", "192.168.1.3"]
+
+# ✅ Limpio y profesional
+for i, ip in enumerate(servidores, start=1):
+    print(f"Servidor {i}: {ip}")
+```
+
+
+6. Slicing (Rebanado) para copiar y rotar
+herramienta potente para manipular sub-secciones de una lista sin bucles.
+
+Copiar: `copia = mi_lista[:]`
+crea una copia superficial (shallow copy).
+
+Invertir: invertida = mi_lista[::-1].
+
+
+7. Métodos de ordenamiento: sort() vs sorted()
+Es vital conocer la diferencia para no perder datos:
+
+lista.sort():
+Ordena la lista in-place
+modifica la original
+y devuelve None
+Es más eficiente en memoria
+
+sorted(lista):
+Devuelve una nueva lista ordenada
+y Devuelve una nueva lista ordenada y
+
+
+8. Identidad vs Igualdad
+Nunca uses is para comparar el contenido de dos listas.
+
+`==` comprueba si los valores son iguales.
+`is` comprueba si son el mismo objeto en memoria.
+
+```
+a = [1, 2]
+b = [1, 2]
+print(a == b) # True
+print(a is b) # False
+```
+
+
+9. Scripting
+Si tu "lista" solo va a crecer por un extremo y disminuir por el otro
+como una cola de tareas
+considera usar collections.deque
+Es mucho más eficiente para añadir o quitar elementos al principio de la colección que una lista estándar.
+
+
+
+##### Prácticas para Tuple/Tupla/lista inmutable
+
+listas que no se pueden cambiar
+profesional tienen un propósito semántico distinto
+
+mientras que las listas son para colecciones de elementos del mismo tipo (homogéneas),
+las tuplas suelen usarse para estructuras de datos (heterogéneas)
+donde la posición del elemento tiene un significado
+
+1. Integridad de los Datos
+su contenido está protegido contra cambios accidentales.
+
+tuplas para pasar datos a través de tu script
+que no deben ser modificados por otras funciones
+como configuraciones de conexión, coordenadas o registros de una base de datos
+
+Seguridad: Si una función recibe una lista
+podría hacer un .append() y alterar el estado global
+
+Si recibe una tupla, Python garantiza que eso no pasará.
+
+
+2. Inmutabilidad no significa "Eternidad"
+Un error común es pensar que todo dentro de una tupla es inmutable.
+
+La tupla en sí no puede cambiar qué objetos contiene
+pero si uno de esos objetos es mutable (como una lista)
+ese objeto sí puede cambiar.
+
+Evítalo: No metas listas dentro de tuplas si buscas verdadera inmutabilidad.
+
+```
+# ❌ Mala práctica: Confusión de mutabilidad
+punto = (10, 20, [1, 2])
+punto[2].append(3) # ¡Esto funciona y cambia el contenido!
+```
+
+
+3. Desempaquetado: La forma más limpia de leerlas
+Evita acceder a los elementos por su índice (tupla[0]).
+Es difícil de leer y propenso a errores si la estructura cambia.
+
+```
+# ❌ Difícil de seguir
+empleado = ("Geralt", "Brujo", 99)
+print(empleado[1]) 
+
+# ✅ Estilo Profesional (Unpacking)
+nombre, profesion, nivel = empleado
+print(profesion)
+```
+
+
+4. Retorno de Múltiples Valores
+aplicación más potente de las tuplas en scripting
+
+En lugar de devolver una lista o un diccionario complejo
+devuelve una tupla
+
+```
+def obtener_estado_sistema():
+    cpu = 15.5
+    ram = 45.0
+    return cpu, ram  # Python crea una tupla automáticamente
+
+# Uso elegante:
+uso_cpu, uso_ram = obtener_estado_sistema()
+```
+
+
+5. NamedTuple para mayor claridad
+Si tu tupla empieza a tener más de 3 o 4 elementos
+desempaquetado se vuelve tedioso
+recordar qué significa el índice 3 es imposible
+
+Práctica recomendada:
+Usa `collections.namedtuple o typing.NamedTuple`.
+
+Te permite acceder a los elementos por nombre (como un objeto)
+pero manteniendo la ligereza y eficiencia de una tupla
+
+```
+from typing import NamedTuple
+
+class Servidor(NamedTuple):
+    ip: str
+    puerto: int
+    protocolo: str
+
+srv = Servidor("192.168.1.10", 8080, "HTTPS")
+print(srv.ip) # Mucho más claro que srv[0]
+```
+
+
+6. Tuplas vs Listas: Rendimiento
+tuplas son ligeramente más rápidas y consumen menos memoria que las listas.
+
+Por qué: Como su tamaño es fijo
+Python puede asignar el espacio de memoria exacto de una vez
+Las listas necesitan espacio extra para crecer ("over-allocation").
+
+Si tienes una colección constante
+ej. los meses del año o días de la semana
+tupla
+
+
+7. Cuidado con la tupla de un solo elemento!
+
+Incorrecto:
+`mi_tupla = (5)`
+Esto es solo el número 5 entre paréntesis (un int).
+
+Correcto:
+`mi_tupla = (5,)`
+La coma es lo que le dice a Python que es una tupla.
+
+
+8. Decisión
+
+elementos van a cambiar o añadirse? Usa Lista.
+orden y el contenido son fijos y representan una "entidad"
+(ej: latitud/longitud)? Usa Tupla.
+
+
+
+#### Buenas prácticas range
+
+objetos más eficientes y malinterpretados
+A diferencia de las listas, un range no guarda todos los números en memoria
+`los genera bajo demanda`
+
+Es, en esencia, una "promesa" de una secuencia
+
+1. Memoria: Lazy Evaluation
+Nunca intentes convertir un range a una lista (list(range(1000000)))
+a menos que sea estrictamente necesario
+
+Un range ocupa el mismo espacio en memoria (unos pocos bytes) sin importar si representa 10 números o 10 billones
+Al convertirlo a lista, obligas a Python a reservar RAM para cada número.
+
+Práctica: Úsalo directamente en bucles for o funciones que acepten iterables.
+
+
+2. Evita el patrón range(len(secuencia))
+Este es el signo más claro de alguien que viene de lenguajes como C++ o Java
+En Python, es casi siempre una mala práctica.
+
+Mala práctica:
+`for i in range(len(lista)): print(lista[i])`
+
+Práctica:
+Itera directamente sobre el objeto
+`for item in lista: print(item).`
+
+`Si necesitas el índice: Usa enumerate()`
+
+
+3. Uso inteligente del step (paso)
+tercer argumento de range(start, stop, step)
+muy potente y a menudo se ignora.
+
+Números pares:
+`range(0, 11, 2)`
+
+Cuenta regresiva: Usa un paso negativo
+más eficiente que generar una lista y luego invertirla.
+`range(10, -1, -1`
+(Cuenta de 10 a 0)
+
+Multiplicación de índices:
+Útil para procesar datos en bloques
+Ej: 4 en 4
+
+
+4. Pruebas de pertenencia ultra rápidas
+Mucha gente no sabe que puedes usar el operador in con un range
+
+Python no recorre el rango buscando el número
+usa una fórmula matemática
+`start≤x<stop y (x−start)%step==0`
+para saber si el número pertenece al rango de forma instantánea.
+
+```
+# Esto es instantáneo, no importa el tamaño del rango
+if 500_000_000 in range(0, 1_000_000_000, 2):
+    print("Es un número par dentro del rango")
+```
+
+
+5. El "Stop" es exclusivo
+el número final no se incluye.
+
+Si necesitas procesar del 1 al 10, debes escribir range(1, 11). 
+legibilidad: Si el límite superior es el resultado de un cálculo
+a veces es mejor escribir:
+`range(1, limite + 1)`
+para que sea obvio que quieres incluir el limite.
+
+
+6. Slicing y Comparación
+Los objetos range se comportan casi como secuencias inmutables
+
+Comparación
+Dos rangos son iguales si representan la misma secuencia, aunque se definan diferente
+`range(0, 3, 2) == range(0, 4, 2) es True.`
+
+Slicing
+Puedes "rebanar" un rango y el resultado será otro objeto range.
+`r = range(100)[10:20]`
+te devuelve un
+`range(10, 20)`
+
+
+7. No lo uses para bucles infinitos
+Si necesitas un bucle que no se detenga
+o que dependa de una condición externa que no es numérica
+usa while True:.
+
+El uso de range(99999999) como sustituto de un bucle infinito es confuso y poco elegante.
+
+
+8. Uso apropiado
+
+Repetir una acción un número específico de veces
+Generar una secuencia numérica para cálculos o índices.
+Validar si un número cae dentro de una progresión aritmética.
+
+
+
+##### Prácticas para Dict
+
+Son el motor de Python:
+Casi todo "bajo el capó" es un diccionario
+(como los atributos de una clase o las variables globales)
+
+Su eficiencia radica en el uso de hash tables
+permite búsquedas instantáneas `O(1)`.
+
+1. Evita el KeyError con .get() o defaultdict
+Acceder a una clave con mi_dict["clave"]
+es peligroso si la clave no existe;
+tu script se detendrá.
+
+Usa .get():
+Permite definir un valor por defecto si la clave no está.
+
+Usa defaultdict: Si vas a inicializar valores
+(como contadores o listas)
+usa collections.defaultdict.
+
+```
+# ✅ Seguro con .get()
+config = {"tema": "oscuro"}
+idioma = config.get("idioma", "es") # Devuelve "es" en vez de lanzar error
+
+# ✅ Limpio con defaultdict
+from collections import defaultdict
+conteo_palabras = defaultdict(int)
+conteo_palabras["python"] += 1 # No falla si "python" no existía
+```
+
+2. Dictionary Comprehensions
+Al igual que con las listas
+puedes crear diccionarios de forma elegante y rápida
+en una sola línea
+
+Caso de uso:
+Mapear datos, invertir diccionarios o filtrar entradas.
+
+```
+usuarios = [("id_1", "Geralt"), ("id_2", "Yennefer")]
+
+# ✅ Transforma una lista de tuplas en un diccionario
+mapa_usuarios = {uid: nombre for uid, nombre in usuarios}
+```
+
+3. Unir Diccionarios (Python 3.9+)
+Si necesitas combinar dos diccionarios
+olvida los métodos complejos o bucles manuales
+Usa el operador de unión |.
+
+```
+base_config = {"api": "v1", "debug": False}
+local_config = {"debug": True, "user": "dev"}
+
+# ✅ Combina y sobreescribe con los valores del segundo
+final_config = base_config | local_config
+```
+
+4. Itera con Inteligencia: .items()
+Si necesitas tanto la clave como el valor al recorrer un diccionario
+no busques el valor manualmente dentro del bucle.
+
+```
+servidores = {"web": "10.0.0.1", "db": "10.0.0.2"}
+
+# ❌ Lento e innecesario
+for key in servidores:
+    print(f"Tipo: {key}, IP: {servidores[key]}")
+
+# ✅ Rápido y limpio
+for rol, ip in servidores.items():
+    print(f"Tipo: {rol}, IP: {ip}")
+```
+
+5. Orden sí importa (desde Python 3.7+)
+Históricamente, los diccionarios eran desordenados
+Ahora, Python mantiene el orden de inserción.
+
+Puedes confiar en que el orden en que añades elementos
+será el orden en que salgan al iterar
+
+Nota: Si necesitas comparar dos diccionarios
+y que el orden sea parte de la igualdad
+o mover elementos al principio/final
+usa collections.OrderedDict.
+
+6. Claves Inmutables únicamente
+Solo objetos inmutables (strings, números, tuplas)
+pueden ser claves de un diccionario.
+
+Por qué: Python necesita calcular un "hash"
+(una huella digital única) para la clave.
+Si la clave pudiera cambiar (como una lista)
+el hash ya no coincidiría y Python no encontraría el valor.
+
+7. Desempaquetado**
+
+El operador de doble asterisco:
+útil para pasar configuraciones a funciones
+o crear copias modificadas.
+
+```
+def conectar(host, puerto, usuario):
+    print(f"Conectando a {host}...")
+
+params = {"host": "localhost", "puerto": 5432, "usuario": "root"}
+
+# ✅ Pasa el diccionario como argumentos de función
+conectar(**params)
+```
+
+8. Representar JSON
+En scripting, los diccionarios suelen ser el paso previo a un archivo JSON
+Usa el argumento indent de json.dumps()
+para que tus logs o archivos de configuración sean legibles por humanos
+
+```
+import json
+print(json.dumps(mi_dict, indent=4))
+```
+
+
+##### Buenas praćticas Set
+
+héroes anónimos del scripting
+
+Son colecciones desordenadas de elementos únicos
+y, al igual que los diccionarios
+utilizan una tabla de hash para su funcionamiento
+
+1. Eliminación de Duplicados
+forma más rápida y legible de limpiar una lista con elementos repetidos
+En lugar de escribir un bucle con un if not in,
+simplemente convierte la lista a un set.
+
+```
+correos_sucios = ["admin@test.com", "user@test.com", "admin@test.com"]
+
+# ✅ Limpieza instantánea
+correos_unicos = list(set(correos_sucios))
+```
+
+2. Búsqueda de Pertenencia Instantánea
+Si tienes una colección de elementos
+elementos y necesitas comprobar constantemente si algo está ahí
+ahí (ej: una "lista negra" de IPs o una lista de extensiones permitidas)
+usa un set.
+
+Rendimiento: Buscar un elemento en una lista de 10,000 elementos
+requiere recorrerla (O(n)).
+En un set, es casi instantáneo (O(1)) sin importar el tamaño
+
+3. Operaciones Matemáticas de Conjunto
+No reinventes la rueda comparando listas con bucles anidados
+Los sets tienen operadores nativos
+para lógica de conjuntos que son mucho más claros.
+
+Intersección (&): Elementos comunes en ambos.
+Unión (|): Todos los elementos de ambos sin duplicados.
+Diferencia (-): Elementos que están en el primero pero no en el segundo.
+Diferencia Simétrica (^): Elementos que están en uno u otro, pero no en ambos.
+
+```
+usuarios_activos = {"juan", "maria", "pedro"}
+usuarios_premium = {"maria", "ana"}
+
+# ✅ ¿Quién es activo pero NO es premium?
+solo_activos = usuarios_activos - usuarios_premium # {"juan", "pedro"}
+```
+
+4. Set Comprehensions
+Al igual que las listas y diccionarios, puedes crear sets de forma dinámica
+La sintaxis es casi igual a la de los diccionarios pero sin los dos puntos (:).
+
+```
+nombres = ["geralt", "YENNEFER", "geralt", "Triss"]
+
+# ✅ Crea un set de nombres normalizados en una línea
+nombres_limpios = {n.capitalize() for n in nombres}
+# Resultado: {'Geralt', 'Yennefer', 'Triss'}
+```
+
+5. frozenset para Claves de Diccionario
+Un set normal es mutable
+(puedes añadir o quitar elementos)
+por lo tanto, no es hasheable
+y no puede usarse como clave en un diccionario o como elemento de otro set
+
+Si necesitas un conjunto que sirva como clave, usa frozenset.
+Es la versión inmutable del set
+
+```
+# ✅ Esto fallaría con un set normal
+permisos_grupo = frozenset(["lectura", "escritura"])
+roles = {permisos_grupo: "Editor"}
+```
+
+6. add() vs update()
+
+add(elemento): Añade un único elemento.
+
+update(iterable): Añade múltiples elementos (puede ser una lista, tupla u otro set).
+Es mucho más eficiente que llamar a add() dentro de un bucle.
+
+7. Manejo Seguro: remove() vs discard()
+distinción es vital para que tu script no "explote" inesperadamente:
+
+remove(x): Lanza un error (KeyError) si el elemento no existe
+Úsalo cuando esperas que el elemento esté ahí y su ausencia sea un problema grave
+
+discard(x): Si el elemento no existe, no hace nada
+Es mucho más seguro para scripts de limpieza
+donde el objetivo es simplemente "asegurarse de que esto no esté".
+
+##### 8. Uso real en Scripting
+procesando archivos
+tienes una lista de archivos_en_disco
+y una lista de archivos_en_base_de_datos
+
+Con una sola línea de sets puedes saber qué archivos faltan por subir
+o cuáles han sido borrados físicamente
+
+
+
+##### Buenas práctica Boolean
+
+solo pueden ser True o False
+en Python, los booleanos son una subclase de los enteros (True=1, False=0)
+y su uso correcto es la diferencia entre un código "espagueti" y
+y un script profesional y legible.
+
+1. No compares contra True o False
+error más común
+En Python, las estructuras de control como if ya evalúan la expresión como booleana automáticamente
+
+```
+❌ Mal: if es_valido == True:
+
+✅ Bien: if es_valido:
+
+✅ Para la negación: if not es_valido: (en lugar de == False)
+```
+
+2. Aprovecha el "Truthiness" (Lo que es "Verdadero")
+Python tiene un concepto muy potente
+casi cualquier objeto puede evaluarse en un contexto booleano
+`No necesitas contar elementos para saber si una colección tiene algo.`
+
+Son evaluados como False:
+El número 0 (en cualquier tipo: 0, 0.0).
+Colecciones vacías: [], {}, (), set(), "".
+El valor None.
+
+```
+❌ Mal: if len(lista_usuarios) > 0:
+
+✅ Bien: if lista_usuarios: (Si la lista tiene elementos, es "True").
+```
+
+3. Evaluación de Cortocircuito (Short-circuit)
+Python evalúa los operadores and y or de izquierda a derecha
+se detiene en cuanto sabe el resultado final
+Esto es vital para evitar errores de ejecución.
+
+Caso de uso:
+Validar que un objeto existe antes de acceder a su contenido
+
+```
+# Si 'usuario' es None, Python no evaluará la segunda parte y no lanzará error
+if usuario and usuario.es_admin:
+    abrir_panel_control()
+```
+
+4. Operador Ternario para asignaciones rápidas
+Si necesitas asignar un valor basado en una condición,
+no uses 4 líneas de if/else
+
+Usa la expresión condicional de una sola línea
+
+```
+valor_si_verdadero if condicion else valor_si_falso
+
+# ✅ Elegante y conciso
+estado = "Activo" if sistema_online else "Mantenimiento"
+```
+
+5. Usa all() y any() para múltiples condiciones
+Si tienes que validar una lista de condiciones
+estas funciones integradas hacen que el código sea mucho más legible que encadenar muchos and u or.
+
+all(iterable): Devuelve True si todos los elementos son verdaderos.
+
+any(iterable): Devuelve True si al menos uno es verdadero.
+
+```
+requisitos = [
+    tiene_permisos,
+    archivo_existe,
+    espacio_disco_suficiente
+]
+
+# ✅ Solo procede si todo se cumple
+if all(requisitos):
+    procesar_archivo()
+```
+
+6. Comparación de Identidad vs. Valor con None
+Cuando verifiques si una variable tiene un valor o es nula, siempre usa is.
+
+```
+✅ Correcto:
+if variable is None:
+o
+if variable is not None:
+```
+
+is compara la identidad del objeto en memoria
+Como None es un singleton (solo existe una instancia en todo el programa)
+is es más rápido y seguro que ==.
+
+7. Nomenclatura Predictiva
+El nombre de una variable booleana debe sonar como una pregunta que se responde con "sí" o "no".
+
+Prefijos recomendados:
+`is_, has_, can_, should_`.
+
+```
+✅ is_connected, has_errors, can_write, user_exists.
+
+❌ connection_status (¿Qué significa? ¿1? ¿"Ok"?), valid (mejor is_valid).
+```
+
+8. Scripting: Conversión rápida
+Si necesitas forzar cualquier valor a un booleano real
+por ejemplo, para guardar un 1 o 0 en una base de datos
+usa la función bool().
+
+```
+# Convierte una lista con datos a True, o vacía a False
+limpio = bool(datos_recibidos)
+```
+
+
+
+##### Buenas prácticas None 
+
+objeto especial que representa la ausencia de valor
+o un estado "nulo".
+
+No es lo mismo que 0, False
+o un string vacío
+
+Es un singleton, lo que significa que solo existe una instancia de None en toda la ejecución de tu programa
+
+1. Usa siempre is y is not
+Nunca uses los operadores de igualdad == o !=
+para comparar con None.
+
+Por qué: is comprueba la identidad (si ambos nombres apuntan al mismo objeto en memoria)
+Como None es único, is es más rápido
+y evita comportamientos extraños
+si un objeto tiene sobrecargado el método de comparación __eq__.
+
+`if variable is None`: es la forma estándar y profesional.
+
+2. None como Valor por Defecto
+Como vimos en las listas, usar objetos mutables como valores predeterminados en funciones es peligroso
+None es el sustituto perfecto.
+
+Práctica:
+Inicializa argumentos opcionales con None y luego asígnales el valor real dentro de la función
+
+```
+# ✅ Práctica estándar
+def procesar_datos(lista=None):
+    if lista is None:
+        lista = []
+    # continuar proceso...
+```
+
+3. Diferencia entre "Falso" y None
+Aprovechar el truthiness es bueno, pero a veces necesitas ser específico.
+None evalúa como False, pero 0 también
+
+Si 0 es un valor válido para tu script
+evaluar `if not variable`: te dará un falso positivo.
+
+```
+# ❌ Riesgoso si el resultado puede ser 0
+resultado = obtener_progreso()
+if not resultado:
+    print("No hay progreso") # Esto se ejecutará si resultado es 0 o None
+
+# ✅ Preciso
+if resultado is None:
+    print("La tarea ni siquiera ha empezado")
+```
+
+4. Retorno Explícito vs. Implícito
+En Python, si una función llega al final sin una sentencia return
+devuelve None automáticamente
+
+Sin embargo, para que tu código sea legible
+
+Si la función hace algo (efecto secundario):
+No necesitas poner return None
+Se entiende que es un procedimiento
+
+Si la función busca algo: Si no encuentra el resultado
+pon un return None explícito para que el programador
+que lea tu código sepa que esa posibilidad fue considerada.
+
+5. Type Hinting con Optional
+Si usas sugerencias de tipo (Type Hints)
+debes indicar claramente cuando una variable puede ser un tipo específico o None.
+
+Python 3.10+: Usa el operador pipe |.
+
+Versiones anteriores: Usa Optional del módulo typing.
+
+```
+# ✅ Claro: puede recibir un string o nada
+def enviar_alerta(mensaje: str | None = None):
+    if mensaje:
+        print(f"Alerta: {mensaje}")
+```
+
+6. Evita el "None-Propagación"
+error común en scripts de automatización:
+permitir que un None viaje a través de varias funciones
+hasta que explota en un lugar lejano con un
+AttributeError: 'NoneType' object has no attribute....
+
+Estrategia: Valida la presencia de datos lo antes posible
+Si una función de "obtener_configuracion" devuelve None
+maneja el error ahí mismo
+o lanza una excepción clara antes de pasar ese valor a otra función.
+
+7. No uses None para ocultar errores
+A veces los programadores usan return None
+dentro de un bloque try/except para que el script no "explote".
+
+Mala práctica:
+except Exception: return None
+(Esto silencia errores que deberías conocer).
+
+Buena práctica: Solo devuelve None si la ausencia de un dato es un escenario esperado y normal del negocio
+no para tapar un bug.
+
+
+Comparar: Siempre con is None.
+Parámetros: Úsalo para evitar efectos secundarios en mutables.
+Lógica: Úsalo para representar "no definido" o "no encontrado".
+
+
+
+
+#### 3. Estructuras de control
+
+
+
+
+#### 4. Funciones
+
+
+
+
+## Bash
+
+
