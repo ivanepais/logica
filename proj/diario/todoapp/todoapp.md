@@ -11794,5 +11794,1393 @@ describe('Page: TodoPage (Functional)', () => {
 ```
 
 
+
+
+# Click areas: Activación y desactivación del click
+
+1. Qué hace que funcione la activación
+2. Qué hace que funcione la desactivación
+3. Áreas del click 
+
+
+## 1. Activación: Chain of Command
+
+La activación de un click no es un evento aislado:
+sino un viaje a través de la jerarquía de tu aplicación
+
+tres pilares conceptuales:
+
+1. Event Propagation (Propagación):
+Cuando haces click en un texto dentro de un botón
+el navegador no solo registra el click en el texto.
+
+El evento "viaja" hacia arriba (Bubbling) avisando a cada padre
+Si el padre tiene un "oído" (handler) puesto, se activa.
+
+2. Event Targeting:
+El navegador identifica exactamente quién recibió el impacto (el target)
+y quién está procesando la orden (el currentTarget).
+La activación exitosa ocurre cuando estos dos coinciden o cuando la comunicación entre ellos es fluida.
+
+3. Interactive Roles: 
+Los elementos tienen "personalidades".
+Un button o un a nacen preparados para ser activados
+Un div o un span son, por defecto, inertes.
+La activación funciona cuando el elemento tiene la "conciencia" de ser interactivo.
+
+
+## 2. Desactivación: Invisible Walls
+
+A veces, el click simplemente "muere" antes de llegar a su destino
+Los motivos suelen ser:
+
+1. Pointer Events (CSS): Es el interruptor maestro
+Si un elemento tiene pointer-events: none, se vuelve un fantasma
+el click lo atraviesa como si no existiera y golpea lo que haya detrás.
+
+2. Stoppage (Stop Propagation): Es cuando un hijo le dice al evento
+De aquí no pasas".
+Si haces click en el icono de "Eliminar" dentro de una fila
+queremos que se borre la tarea, pero no que se abra el detalle de la tarea
+Si no detenemos la propagación, ambos se activarían.
+
+3. Overlays & Z-Index:
+A menudo, un área transparente (un div vacío, un pseudo-elemento :before)
+está físicamente encima de nuestro botón
+Visualmente ves el botón, pero funcionalmente estás golpeando una pared de cristal invisible.
+
+4. Disabled State:
+A nivel lógico, el componente decide ignorar la orden
+El evento llega, el handler se ejecuta, pero la primera línea dice: if (disabled) return;.
+El usuario percibe una "desactivación", aunque técnicamente el click sí ocurrió.
+
+
+## 3. Áreas del click: Hitbox
+
+concepto más puramente visual y ergonómico
+El área que el usuario cree que puede clickear frente al área que realmente responde
+
+1. Padding vs. Margin:
+Esta es la causa número uno de frustración
+El Padding expande el área interactiva
+(es parte del cuerpo del elemento).
+El Margin empuja otros elementos pero es "tierra de nadie";
+un click en el margen no activa nada.
+
+2. Visual Deception (Engaño Visual):
+Ocurre cuando un elemento tiene un borde
+o una sombra muy grande pero su caja real (Box Model) es pequeña
+El usuario intenta clickear la sombra y nada sucede
+
+3. Fitts's Law (Ergonomía)
+Es una ley de UX que dice que el tiempo para alcanzar un objetivo depende de su tamaño y distancia
+En interfaces táctiles o de alta densidad (como una lista de tareas)
+las áreas de click deben ser mayores que el gráfico que representan para compensar la falta de precisión del puntero o del dedo.
+
+4. Content vs. Container
+##### A veces el click solo funciona si le das exactamente a las letras (Content)
+##### y falla si le das al espacio vacío al lado del texto (Container).
+Esto ocurre cuando el "oído" está puesto en el lugar equivocado de la jerarquía
+
+
+## Caso 1: Desactivar filtro con el mismo click/lugar
+
+Diseño de interacción vs. lógica de estado
+la activación funcione en toda el área pero la desactivación falle
+da pistas muy claras sobre cómo están "conversando" tus componentes.
+
+1. Selección Exclusiva: Comportamiento Radio
+filtro no se desactiva al volver a hacer click
+conceptualmente, está operando bajo la Lógica de Radio
+aunque visualmente usemos un componente que llamamos "Checkbox".
+
+`Estado Determinado`: En muchos sistemas de filtrado
+la acción está programada como una asignación directa:
+Estado = ValorClickado
+
+`Trampa de la Identidad`:
+Si el filtro activo es "Pendientes"
+y haces click de nuevo en "Pendientes"
+la lógica le dice al sistema: "Cambia el filtro a Pendientes".
+Como el sistema ya está en ese estado, no detecta un "cambio", sino una reafirmación
+
+`Falta de Toggle`:
+##### Para que algo se desactive la lógica debe ser bidireccional (Si A, entonces No A).
+Si la función solo sabe "Activar", el segundo click es redundante para el código
+aunque para el usuario sea una intención de cancelación.
+
+2. "Idempotencia" en la UI
+En programación, una operación es idempotente:
+si realizarla muchas veces tiene el mismo efecto que realizarla una sola vez
+
+`Activación exitosa`:
+Cuando pasas de "Todas" a "Pendientes",
+hay un cambio de estado real
+El área de click captura el evento y dispara la actualización.
+
+`Desactivación fallida`:
+Al hacer click en el elemento ya activo
+estás ejecutando una operación idempotente
+El sistema recibe la orden "Filtrar por Pendientes",
+mira su estado actual, ve que ya es "Pendientes" y decide que no hay nada nuevo que hacer
+
+`eslabón perdido`:
+Falta una regla de negocio que diga:
+"Si el filtro que llega es igual al que ya tengo
+entonces mi nuevo estado debe ser 'Ninguno' (o 'Todas')".
+
+3. Anatomía de las Áreas de Click:
+Por qué el "dónde" sí funciona
+
+click funciona en toda su área: física del componente bien construida
+
+`Hitbox Expandida`:
+Seguramente el FilterItem (contenedor)
+quien tiene el "oído" (onClick).
+
+##### Gracias a la Propagación de Eventos: No importa si tocas el texto, el número de tareas o el pequeño círculo del checkbox, el número de tareas o el pequeño círculo del checkbox
+el evento "burbujea" hasta el contenedor principal.
+
+`Visual vs. Funcional`:
+Checkbox interno es probablemente un "pasajero" visual.
+El verdadero conductor es el área del FilterItem
+Esto es correcto para la usabilidad (Fitts's Law)
+
+pero refuerza el problema: el contenedor envía la misma señal cada vez que lo tocas
+sin importar el estado interno del checkbox
+
+4. Conclusion: 
+problema no es de área (el click llega al destino)
+sino de intención lógica.
+
+`Activación`: Funciona porque el sistema reconoce un cambio de A -> B.
+
+`Desactivación`: Falla porque el sistema interpreta el click como B -> B
+y no tiene instrucciones para convertirlo en B -> A
+(o B -> Null).
+
+`Componentes involucrados`:
+El "contrato" de comunicación entre TodoPage
+y CategoryFilter probablemente solo permite
+"Setear" un valor, no "Alternarlo".
+
+el TaskSidebar contiene el TaskSearch y los filtros
+Si la función que baja desde TodoPage es un simple setFilter
+el comportamiento será siempre de selección única y "pegajosa".
+
+
+
+# Experiencia de Usuario
+
+Ej: desactivar el filtrado al volver a hacer click en el mismo
+Puede ser correcta pero con matices
+
+El usuario valora la libertad y el control
+Un click que no produce ningún efecto (un click "muerto")
+suele percibirse como un error o una falta de respuesta del sistema
+
+`Desactivar al volver a hacer click`:
+Elimina la fricción
+Si el usuario hace click en "Pendientes" para ver qué le falta
+y luego quiere volver a ver todo
+su instinto suele ser "desmarcar" lo que acaba de marcar
+
+Obligarle a buscar el botón "Todas" en otra parte
+añade una carga cognitiva pequeña, pero real
+
+##### Para que sea correcto, el sistema debe saber a dónde volver
+
+Nunca deberías dejar al usuario en un "limbo"
+(una pantalla vacía sin filtros seleccionados).
+
+
+## Aplicación 
+
+1. Estado por Defecto: Reset to All
+
+opción más común y segura.
+
+Lógica: El sistema trata la "desactivación" como una vuelta al origen.
+
+Comportamiento: Si haces click en el filtro activo (ej. "Pendientes"),
+el sistema interpreta que ya no quieres filtrar por eso
+y, automáticamente, activa el filtro "Todas".
+
+El usuario nunca se queda viendo una lista vacía por error
+siempre vuelve a la seguridad del estado global
+
+2. Toggle Binario: On/Off
+interruptor de luz.
+
+logica: Cada categoría es independiente
+
+Comportamiento: Al desactivar una categoría, el filtro queda "nulo".
+##### Si el sistema está diseñado para que "sin filtros" signifique "mostrar todo"
+funciona igual que la opción
+Si "sin filtros" significa "no mostrar nada", puede ser frustrante.
+
+Uso ideal: Cuando permites seleccionar varias categorías a la vez (Multiselección).
+
+3. Selección Circular
+
+avanzado y depende de la cantidad de filtros
+
+Lógica: El click no solo activa/desactiva, sino que rota el estado de la vista
+
+Comportamiento: Si solo hubiera dos estados (ej. "Pendientes" y "Completadas")
+hacer click en el activo podría simplemente alternar al otro
+(No es muy recomendable para 3 o más categorías porque es impredecible).
+
+Rs opciones:
+
+`Retorno al Origen`:
+Rescate automático
+"Si quito esto, vuelvo a ver todo".
+Es la más intuitiva."
+
+`Multiselección`:
+Adición y sustracción
+Estoy construyendo mi propia vista combinada.
+
+`Radio Estricto`:
+Selección única obligatoria
+"Siempre tengo que tener algo elegido".
+(Es lo que tienes ahora)."
+
+
+Ej: al aplicar "Retorno al Origen"
+suele ser la más elegante
+
+Si el usuario clickea en "Pendientes"
+y luego vuelve a clickear en "Pendientes",
+el sistema debería "limpiar" el filtro de categoría
+lo cual por defecto lo llevaría de vuelta a mostrar "Todas".
+
+
+
+# Retorno al origen
+
+Transforma una acción simple (marcar) en una conversación inteligente con la aplicación
+
+Para aplicarlo, existen dos caminos principales:
+dependiendo de dónde quieras situar la "inteligencia" del sistema.
+
+1. Arquitectura (Enfoque "Top-Down")
+En este modelo, los componentes son "tontos"
+simplemente informan qué se clickeó
+
+La lógica reside en el cerebro de la aplicación
+(el Hook useTasks o el estado de TodoPage).
+
+`Estado con Memoria de Identidad`:
+La arquitectura no solo guarda "qué filtro está activo"
+sino que conoce el "Estado por Defecto" (en este caso, 'Todas').
+
+`Acción de Conmutación (Toggle Logic)`:
+En lugar de tener una función que solo "asigna" un valor, la arquitectura implementa una función de comparación.
+pregunta: ¿El valor que llega es el mismo que ya tengo guardado?
+
+`Normalización hacia el Neutro`:
+Si la respuesta a la pregunta anterior es "Sí",
+la arquitectura decide ignorar el valor entrante
+y forzar el estado hacia el valor neutro o inicial
+Es un mecanismo de seguridad para asegurar que el sistema siempre vuelva a un estado estable.
+
+`Filtro Nullable`:
+La arquitectura permite que el estado de filtrado sea técnicamente "nulo" o "indefinido".
+Sin embargo, en la capa de presentación (la UI), ese "nada"
+se traduce automáticamente como "Mostrar Todo".
+
+
+2. Componentes (Enfoque "Bottom-Up")
+componentes son "más listos"
+deciden qué mensaje enviar hacia arriba basándose en el contexto del usuario.
+
+`Conciencia de Estado Externo`:
+El componente FilterItem recibe por Props no solo si él es el activo
+sino cuál es el valor global actual.
+Esto le permite comparar su propia identidad con la realidad de la aplicación
+
+`Intercepción Semántica`:
+Antes de avisar a TodoPage de un click
+el componente evalúa la intención
+Si el usuario hace click en él y ya estaba activo, el componente cambia el mensaje de salida
+en lugar de decir "Actívame", dice "Resetea el sistema".
+
+`Abstracción del Valor de Reseteo`:
+El componente no necesita saber que el origen es 'Todas'.
+Simplemente envía una señal de "Desactivación" o un valor vacío
+delegando en el padre la responsabilidad de saber a dónde volver.
+
+`Feedback Visual Preventivo`:
+El componente puede cambiar su estilo (o el del cursor)
+cuando ya está seleccionado para indicar que el próximo click no reafirmará la selección
+sino que la deshará
+
+
+## Modificaciones en el componente en retorno al origen
+
+Solo en un caso: La Semántica Visual
+Si el componente tiene algún efecto interno
+(como un estado de hover o una animación que dependa de creer que "siempre pasará algo")
+podrías querer ajustarlo
+Pero a nivel de código funcional (JS/TS), el componente sigue siendo un simple mensajero.
+
+
+
+# Toggle Binario: On/Off vs Retorno al Origen
+
+1. Toggle Binario (On/Off):
+Se basa en la independencia del componente.
+solo le importa su propia realidad
+
+##### Lógica de Estado: El valor es un booleano (true/false).
+Comportamiento: Si haces click en "Pendientes" y ya está activo, el sistema simplemente lo apaga.
+Resultado en la UI: El sistema queda en un estado de "Filtro Nulo".
+Riesgo UX: Si la aplicación no tiene una regla para el estado "Nulo", el usuario podría ver una pantalla vacía o un error
+Para que funcione bien, la arquitectura debe interpretar que "Nada seleccionado = Mostrar Todo".
+
+##### Uso Ideal: Selección múltiple (puedes tener "Pendientes" y "Urgentes" encendidos a la vez).
+
+
+2. Retorno al Origen (Reset to Default)
+
+Este concepto es relacional. El componente no solo se apaga, sino que "teletransporta" al usuario a una zona segura.
+
+##### Lógica de Estado: El valor es una identidad dentro de un conjunto (ej. 'all' | 'pending' | 'completed').
+Comportamiento: Si haces click en el filtro activo (ej. 'pending'), la arquitectura detecta la repetición y, en lugar de dejar el estado en "nada", lo fuerza a volver al valor definido como Origen (ej. 'all').
+Resultado en la UI: El usuario nunca pasa por un estado intermedio de "nada seleccionado". La transición es directa de un filtro específico al panorama general.
+
+##### Uso Ideal: Selección única (Radio buttons o Tabs de navegación) donde siempre debe haber una vista activa
+    
+Vs:
+
+Característica | Toggle Binario | Retorno al Origen
+
+Referencia:
+Se mira a sí mismo.
+"Mira al ""Punto de Inicio".
+
+Estado Resultante:
+null o undefined.
+Un valor válido (ej. 'all').
+
+Complejidad:
+Baja (es un switch).
+"Media (requiere conocer cuál es el "Origen").
+
+Sensación UX:
+"He quitado este filtro".
+"He vuelto a ver todas las tareas".
+
+
+Si aplicas Toggle Binario: Al desmarcar "Pendientes", el círculo azul desaparecería de todos los filtros
+Tendrías que definir qué mostrar cuando no hay nada marcado
+(probablemente todas las tareas por defecto).
+
+Si aplicas Retorno al Origen: Al desmarcar "Pendientes", el sistema automáticamente "mueve" el círculo azul
+(la marca de activo) de vuelta a "Todas".
+
+
+
+# Flujo de datos: eventos
+
+1. Camino que recorre el click
+es una cadena de mando
+va desde el átomo hasta el cerebro de la aplicación
+
+Ruta del Click:
+
+1. `Checkbox`: Detecta el cambio en el input y ejecuta `onChange`.
+2. `FilterItem`: Recibe esa señal en `onToggle`
+3. `CategoryFilter`: Al ser un mapa de categorías, dispara `onFilterChange(category.id)`.
+4. `TaskSidebar`: Pasa la función `onFilterChange hacia arriba` sin modificarla.
+5. `TodoPage`: Llama a `setFilter(id)` que proviene directamente del hook
+6. `useTasks` (Hook): Ejecuta un `dispatch` de tipo `SET_FILTER` con el `nuevo ID`.
+7. `taskReducer`: Simplemente `recibe el payload y sobreescribe el estado filter`.
+
+2. Problema: El "Contrato de Sobreescritura":
+Fragmento 3, vemos que CategoryFilter
+
+`onToggle={() => onFilterChange(category.id)}.`
+
+asignación absoluta:
+No importa si el filtro ya es el activo
+`la orden que llega al hook es siempre "Sé este ID"`
+`Como el Reducer no tiene una lógica de comparación`
+simplemente cumple la orden y el estado no cambia visualmente.
+
+3. Puntos de Intervención (Estrategias Conceptuales)
+##### Para que el sistema vuelva a 'all' (el Origen), cuando se clickea un filtro ya activo
+
+tenemos tres lugares donde podríamos inyectar la "lógica de comparación":
+
+1. cerebro: reducer
+lugar más puro
+El Reducer recibiría la acción SET_FILTER
+y, antes de actualizar, compararía:
+
+Lógica: ¿Es el nuevo ID igual al ID que ya tengo en el estado?
+
+##### Si es igual: Cambio el estado a 'all'.
+##### Si es diferente: Cambio el estado al nuevo ID.
+
+##### Ventaja: Los componentes siguen siendo "tontos" y el hook no necesita funciones extra
+
+2. Capa de servicio: hook useTasks
+Podríamos modificar la función setFilter antes de que envíe el dispatch.
+
+Lógica: La función intercepta el ID.
+Si coincide con state.filter, envía un dispatch con el valor 'all'.
+
+Ventaja: Centraliza la lógica de interacción en la API pública del hook
+manteniendo el Reducer como un simple ejecutor de cambios de estado directos.
+
+3. Organismo: CategoryFilter
+componente de UI podría decidir qué ID enviar hacia arriba
+
+Lógica: El componente ya conoce el activeFilterId.
+Al detectar un click en un item,
+él mismo decide si llamar a
+`onFilterChange(id)` o a `onFilterChange('all')`.
+
+##### Desventaja: Estás moviendo lógica de negocio
+(saber que el origen es 'all')
+a un componente de presentación
+##### que lo hace menos reutilizable.
+
+opción más robusta y escalable es la Opción A (Reducer)
+o la Opción B (Hook)
+
+permite que el componente FilterItem y Checkbox sigan funcionando de forma genérica
+
+ellos solo dicen "me han pulsado",
+y es la lógica superior la que decide si eso significa
+"activar" o "volver al origen".
+
+
+
+## Cambio en el reducer
+
+Retorno al Origen:
+el cambio se centra exclusivamente en la lógica de procesamiento de la acción SET_FILTER
+Actualmente, esta acción realiza una asignación directa
+
+pero para lograr el comportamiento deseado
+debemos transformarla en una `operación condicional`.
+
+1. Cambio en el Caso SET_FILTER
+En lugar de simplemente sobrescribir el estado con el payload de la acción
+`el Reducer debe actuar como un evaluador de identidad`:
+
+Evaluación de Identidad:
+El Reducer debe `comparar el valor actual de state.filter`
+con el `nuevo valor propuesto en action.payload`.
+
+
+2. Lógica de Conmutación
+
+`Si son iguales`:
+Significa que el usuario hizo click en el filtro que ya está activo.
+En este caso, el Reducer decide ignorar el payload
+y forzar el estado de filter hacia el valor de origen, que es 'all'.
+
+`Si son diferentes`:
+El usuario desea cambiar a una nueva categoría
+El Reducer procede con la asignación normal del `action.payload` al estado
+
+
+Lugar ideal para el cambio:
+Modificar el Reducer para manejar esta lógica ofrece varias ventajas estructurales según tu arquitectura actual
+
+Preservación de Componentes: Los componentes TodoPage, TaskSidebar, CategoryFilter, FilterItem y Checkbox
+no requieren ninguna modificación
+Ellos siguen reportando el ID clickeado de forma agnóstica.
+
+Consistencia de Datos: Al estar en el Reducer
+##### cualquier parte de la aplicación que use el dispatch para filtrar (ahora o en el futuro) heredará automáticamente este comportamiento de "activación/desactivación".
+
+Uso del Estado Inicial:
+La lógica se apoya en el initialState, donde filter ya está definido por defecto como 'all',
+
+3. Impacto en el Flujo de Datos
+Con este cambio, el ciclo de vida de la interacción se completa así:
+
+1. El usuario hace click en "Pendientes" (que ya estaba seleccionado).
+2. El evento viaja hasta el Reducer con el ID 'pending'.
+3. El Reducer nota que state.filter ya era 'pending'.
+4. El Reducer devuelve un nuevo estado con filter: 'all'.
+5. La UI se re-renderiza y el usuario ve que el filtro de "Pendientes" se ha desactivado
+y el de "Todas" se ha activado automáticamente.
+
+
+Nuevo código
+
+```
+    case 'SET_FILTER':
+      const nextFilter = state.filter === action.payload ? 'all' : action.payload;
+      
+      return {
+        ...state,
+        filter: nextFilter,
+      };
+
+```
+
+
+### Cambios en el test del reducer
+
+Escenario de Conmutación (Toggle):
+¿Qué sucede si el estado ya tiene el filtro 'completed' y le enviamos de nuevo la acción 'completed'?
+El test actual no lo comprueba, y es precisamente el comportamiento que acabamos de programar
+El test debería verificar que el resultado vuelve a ser 'all'.
+
+Escenario de Identidad de Origen:
+¿Qué sucede si estamos en 'all' y volvemos a enviar 'all'?
+El Reducer debería mantener 'all'.
+que parece trivial, asegura que el "Origen" es estable.
+
+Renombrar o expandir el test de SET_FILTER:
+Ya no solo "actualiza", ahora "gestiona" o "conmuta" el filtro
+
+Añadir un caso de "Arrastre de Estado" (Arrange):
+Crear un escenario donde el filtro ya esté activado
+(ej. 'pending') y enviar la misma acción
+para confirmar que el Reducer lo "apaga" devolviendo 'all'.
+
+No solo queremos que pase;
+queremos que documente cómo funciona el "Retorno al Origen".
+
+```
+describe('SET_FILTER (Lógica de Retorno al Origen)', () => {
+    it('debería cambiar el filtro cuando se selecciona uno diferente al actual', () => {
+      // De 'all' pasamos a 'completed'
+      const action = {
+        type: 'SET_FILTER' as const,
+        payload: 'completed' as const,
+      };
+
+      const newState = taskReducer(initialState, action);
+
+      expect(newState.filter).toBe('completed');
+    });
+
+    it('debería volver al filtro "all" si se selecciona el filtro que ya está activo', () => {
+      /**
+       * Arrange: Partimos de un estado donde el filtro ya es 'pending'
+       */
+      const stateWithFilter: TaskState = {
+        ...initialState,
+        filter: 'pending',
+      };
+      
+      const action = { 
+        type: 'SET_FILTER' as const, 
+        payload: 'pending' as const 
+      };
+
+      // Act
+      const newState = taskReducer(stateWithFilter, action);
+
+      /**
+       * Assert: Al ser el mismo, el reducer debe "apagarlo" 
+       * y devolvernos al origen ('all')
+       */
+      expect(newState.filter).toBe('all');
+    });
+
+    it('debería mantenerse en "all" si se selecciona "all" estando ya en "all"', () => {
+      const action = { 
+        type: 'SET_FILTER' as const, 
+        payload: 'all' as const 
+      };
+
+      const newState = taskReducer(initialState, action);
+
+      expect(newState.filter).toBe('all');
+    });
+  });
+```
+
+Transición Simple: Nos aseguramos de que el usuario aún puede navegar entre categorías.
+
+Comportamiento de Toggle: Este es el "corazón" de nuestra mejora
+Si un desarrollador en el futuro borra la línea de conmutación en el reducer por accidente, este test fallará inmediatamente en rojo
+avisándole de que ha roto la experiencia de usuario.
+
+Estabilidad del Origen: Validamos que el estado 'all' es nuestro "suelo firme";
+i ya estamos ahí, volver a pulsarlo no rompe nada ni produce estados extraños.
+
+
+
+# Caso 2: El contenido tiene el click y no toda el area, pero en este caso si tiene una desactivación al hacer click en él nuevamente; ni tampoco tengo hover
+
+##### Cambia el esta de tachado, vuelve al estado normal
+
+##### Pasarle la img
+
+Si en los filtros resolvemos la lógica de intención
+aquí debemos resolver la física del objeto.
+
+El hecho de que el tachado funcione pero el área de click sea pequeña
+y no tenga cursor nos indica un problema de jerarquía de interacción y afectancia (affordance).
+
+1. El Click "Estrecho" (Contenido vs. Contenedor)
+
+click solo funciona en las letras y no en todo el recuadro de la tarea
+
+`Punto de Anclaje del Evento`:
+En el desarrollo de UI,
+el "oído" (el listener del click)
+se coloca en un elemento específico
+##### Si el evento toggle está puesto directamente sobre el Typography o el Checkbox
+##### el resto del contenedor (el ItemContainer) es "sordo".
+
+`Tierra de Nadie (Padding vs. Content)`:
+probable que tu TodoItem tenga un margen interno (padding) para que el texto no toque los bordes
+Si el evento de click está en el contenido
+ese espacio de padding actúa como una zona muerta
+Visualmente es parte de la tarea, pero funcionalmente es invisible para el mouse
+
+`Falta de Envoltorio Semántico`:
+##### Cuando usamos un label que envuelve a todo un componente
+##### el navegador expande automáticamente el área de activación del input
+(el checkbox) a todo lo que esté dentro de ese label.
+Si aquí el texto y el checkbox están "sueltos" dentro de un div o li sin una relación de parentesco interactiva
+el área se fragmenta
+
+2. Cursor "Inerte" (Falta de Affordance)
+La "manito" (cursor: pointer) es el lenguaje universal de la web para decir: "Soy interactivo".
+
+Si no aparece, los motivos suelen ser:
+
+`Semántica Pasiva`:
+Por defecto, elementos como <div>, <li>, <span> o <p
+son considerados elementos de lectura
+El navegador muestra la flecha (o el selector de texto I)
+porque asume que el usuario quiere leer o copiar, no clickear.
+
+`Desconexión de Estilos`:
+el estilo de cursor debe aplicarse al elemento que el usuario percibe como la "caja" del objeto.
+Si el estilo de interacción está solo dentro del componente Checkbox
+el usuario solo verá la manito si pone el puntero exactamente sobre el pequeño círculo
+pero la perderá al moverse al texto o al fondo de la tarea.
+
+`Falta de Feedback de Estado (Hover)`:
+El hover no es solo cambiar el cursor
+es una señal de que el sistema está escuchando.
+Si el contenedor principal no tiene definida una reacción al ratón
+el navegador se comporta de forma estática
+
+
+En el Filtrado (que funcionaba bien): Usamos un contenedor que actuaba como una unidad total.
+##### El "área de impacto" y el "área visual" eran la misma.
+
+En los Items de Tarea:
+El objeto es una "cáscara" (el contenedor)
+que dentro tiene "botones" (el texto y el checkbox).
+
+El usuario quiere interactuar con la cáscara,
+pero la app solo le deja interactuar con los órganos internos
+
+
+Solución: Unificación de la Caja Interactiva
+lograr que el contenedor principal herede la responsabilidad de capturar el click
+y proyecte la señal de "soy un botón" a través del cursor.
+
+
+
+## Analisis del componente
+
+
+Pasemos al análisis de los componentes involucrados  (solo motivos y conceptos -sin código de solución-):
+
+
+Fragmentos de códigos:
+
+
+1. En TodoPage:
+
+
+```tsx
+     <div data-testid="todo-list-container">
+            <TodoList
+              todos={tasks}
+              onToggleTodo={toggle}
+              onDeleteTodo={remove}
+              isSearching={searchQuery.trim().length > 0}
+            />
+          </div>
+```
+
+
+2. TodoList:
+
+```tsx
+import type { Task } from '@/core/task.entity';
+
+interface TodoListProps {
+  todos: Task[];
+  onToggleTodo: (id: string) => void;
+  onDeleteTodo: (id: string) => void;
+  isSearching: boolean;
+}
+
+export const TodoList = ({
+  todos,
+  onToggleTodo,
+  onDeleteTodo,
+  isSearching,
+}: TodoListProps) => {
+  const hasTodos = todos.length > 0;
+
+  return (
+    <ListWrapper>
+      {!hasTodos ? (
+        <EmptyState>
+...
+        </EmptyState>
+      ) : (
+        <StyledList>
+          {todos.map((todo) => (
+            <TodoItem
+              key={todo.id}
+              id={todo.id}
+              text={todo.content}
+              completed={todo.isCompleted}
+              onToggle={onToggleTodo}
+              onDelete={onDeleteTodo}
+            />
+          ))}
+        </StyledList>
+      )}
+    </ListWrapper>
+```
+
+
+3. TodoItem:
+
+```tsx
+interface TodoItemProps {
+  id: string;
+  text: string;
+  completed: boolean;
+  onToggle: (id: string) => void;
+  onDelete: (id: string) => void;
+}
+
+export const TodoItem = ({
+  id,
+  text,
+  completed,
+  onToggle,
+  onDelete,
+}: TodoItemProps) => {
+  const checkboxId = `todo-check-${id}`;
+
+  const handleToggle = () => onToggle(id);
+
+  const handleDelete = () => onDelete(id);
+  
+  return (
+    <ItemContainer $isCompleted={completed}>
+      <ContentWrapper>
+        <Checkbox
+          id={checkboxId}
+          checked={completed}
+          onChange={handleToggle}
+          aria-label={
+            completed ? 'Marcar como pendiente' : 'Marcar como completada'
+          }
+        />
+        <TextContainer $isCompleted={completed}>
+          <Typography variant="body" as="label" htmlFor={checkboxId}>{text}</Typography>
+        </TextContainer>
+      </ContentWrapper>
+
+      <IconButton
+        icon="🗑️" // Aquí luego pondremos un SVG real
+        label="Eliminar tarea"
+        onClick={handleDelete}
+      />
+    </ItemContainer>
+  );
+};
+```
+
+
+4. Checkbox
+
+```tsx
+interface CheckboxProps {
+  id: string;
+  checked: boolean;
+  onChange: (checked: boolean) => void;
+  label?: string;
+  disabled?: boolean;
+}
+
+export const Checkbox = ({
+  id,
+  checked,
+  onChange,
+  label,
+  disabled = false,
+}: CheckboxProps) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (disabled) return;
+    onChange(e.target.checked);
+  };
+  return (
+    <CheckboxContainer>
+      <HiddenCheckbox
+        id={id}
+        checked={checked}
+        onChange={handleChange}
+        disabled={disabled}
+        type="checkbox"
+      />
+      <StyledCheckbox
+        $checked={checked}
+        aria-hidden="true"
+        data-testid="checkbox-visual"
+      />
+      {label && (
+        <LabelText as="label" htmlFor={id}>
+          {label}
+        </LabelText>
+      )}
+    </CheckboxContainer>
+  );
+};
+```
+
+5. Typography
+
+```
+interface TypographyProps {
+  id?: string;
+  variant?: TypographyVariant;
+  children: React.ReactNode;
+  as?: 'h1' | 'h2' | 'h3' | 'p' | 'span' | 'label';
+  htmlFor?: string;
+}
+
+export const Typography = ({
+  id,
+  variant = 'body',
+  children,
+  as = 'p',
+  htmlFor,
+}: TypographyProps) => {
+  return (
+    <StyledTypography id={id} as={as} $variant={variant} htmlFor={htmlFor}>
+      {children}
+    </StyledTypography>
+  );
+};
+```
+
+
+Interfaz rigida:
+problema no es la lógica de negocio (el estado cambia bien)
+sino de la física del DOM y cómo los elementos reclaman su territorio
+
+1. Punto de Contacto: Fragmentado
+En tu `TodoItem`, la función `handleToggle`
+solo está conectada a dos puntos específicos
+dejando el resto del contenedor como "zona muerta":
+
+`HTML Label`:
+motivo por el cual las letras sí activan el click
+el componente Typography con la prop as="label"
+y htmlFor={checkboxId}.
+
+##### Por naturaleza, el navegador vincula un <label> con su <input>.
+##### Si haces click en el texto, el navegador "dispara" el checkbox por ti.
+
+`Caja Sorda`:
+`ItemContainer` (componente principal de la fila)
+componente principal de la fila
+No tiene un onClick propio
+##### Por lo tanto, si el usuario hace click en el espacio vacío (el padding) entre el checkbox y el texto
+o al final de la fila, el evento simplemente se detiene ahí porque nadie lo está escuchando
+
+`Encapsulamiento del Checkbox`:
+`onChange` está enterrado dentro del componente Checkbox
+específicamente en el input oculto
+A menos que toques ese input o su etiqueta asociada, la acción no se dispara.
+
+
+2. Afectancia (Affordance) y el Cursor: 
+La falta de cursor: pointer
+señal visual de que el navegador no considera a la fila completa como un objeto interactivo
+
+`Semántica de Lista vs. Botón`:
+Un li (tu ItemContainer)
+es semánticamente un elemento estructural
+Los navegadores, por defecto
+##### muestran el cursor de flecha porque asumen que es contenido para leer, no para accionar
+
+`Localización del Estilo`:
+Probablemente el estilo cursor: pointer está dentro del Checkbox
+o se aplica automáticamente al label (el texto)
+pero no se extiende al ItemContainer
+
+Esto crea una experiencia inconsistente
+el cursor cambia a "manito" solo cuando pasas por encima de las letras
+pero vuelve a ser flecha si te mueves un centímetro hacia el borde de la tarea.
+
+`Falta de Feedback de Hover`:
+El efecto de iluminación que definiste en el CSS de ItemContainer se activa al pasar el mouse,
+pero como el cursor no cambia, el cerebro del usuario recibe señales mixtas
+"Se ilumina como un botón, pero mi cursor dice que no es un botón".
+
+
+3. Conflicto de Interacción (The Delete Trap)
+
+Dentro de tu TodoItem, tienes dos intenciones distintas:
+Toggle: (Marcar/Desmarcar).
+Delete: (Eliminar).
+
+Si simplemente hiciéramos que toda la fila fuera un botón de "Toggle",
+tendríamos un problema cuando el usuario intente hacer click en el botón de eliminar
+Sin una gestión correcta, al intentar borrar la tarea, ¡también la estarías marcando o desmarcando!
+
+##### Este es el motivo por el cual el área de click está limitada actualmente: para proteger la independencia del IconButton.
+
+Rs:
+
+Contenedor Visual no es el Contenedor de Interacción.
+El Click: Está limitado a los "hijos"
+(Checkbox y Label) en lugar de ser propiedad
+del "padre" (ItemContainer).
+
+El Cursor: Refleja la naturaleza pasiva del contenedor de lista en lugar de la naturaleza activa de la tarea
+
+
+
+## Soluciones/opciones: conceptos
+
+1. No se muestra en el texto de la tarea
+(pero si funciona el clickeado y desclickeado correctamente)
+
+2. La "manito" si se muestra en el cuadradito del checkbox
+y también en el icono del botón basura/borrar tarea (funciona/está bien)
+
+
+La funcionalidad está ahí (gracias a la semántica del HTML),
+pero la comunicación visual está incompleta.
+
+##### El usuario recibe un mensaje contradictorio: el cursor le dice "aquí no hay nada"
+##### pero al hacer click, el sistema responde.
+
+1. Promoción de Rango: Cursor en el Texto
+El motivo por el cual el texto (label) funciona
+pero no tiene hover, es porque, para el navegador,
+una etiqueta es simplemente un puente funcional
+no necesariamente un botón visual.
+
+`Heredar la Intención`:
+La solución conceptual no es ponerle el cursor solo al texto
+sino decidir que toda la zona de contenido es interactiva.
+
+`Affordance Visual`:
+El cursor "pointer" debe aplicarse a cualquier elemento que
+al ser clickeado, produzca una acción
+Si el texto es un disparador (trigger) del checkbox
+debe "vestirse" como tal.
+
+2. Solución 1: Contenedor Etiqueta/Label Wrapper
+conceptos más elegantes y simples de la arquitectura web para formularios y listas
+
+`Idea`: 
+En lugar de tener un ItemContainer (div) que dentro tiene un Checkbox y un Label
+convertimos al propio ItemContainer en el Label.
+
+`Física del DOM`:
+Al ser todo el contenedor una etiqueta vinculada al ID del checkbox
+el navegador interpreta que cualquier pixel dentro de esa caja
+(el fondo, el espacio entre palabras, el padding)
+es una extensión del checkbox
+
+Resultado: Ganas automáticamente el área de click total
+y puedes aplicar el cursor "pointer" a toda la fila de una sola vez.
+
+3. Solución 2: Delegación de Eventos
+Zonas de Exclusión
+
+Si preferimos mantener la estructura actual por razones de diseño
+el concepto cambia a una gestión jerárquica de clicks.
+
+`Captura Superior`:
+El ItemContainer deja de ser un espectador
+y empieza a escuchar clicks (onClick).
+
+`Desafío del "Fuego Amigo"`:
+Si el usuario hace click en el botón de borrar (basura)
+el evento "burbujea" hacia arriba, si no tenemos cuidado 
+el sistema borrará la tarea y además la marcará como completada antes de que desaparezca.
+
+`Propagación`:
+La solución aquí es el Freno de Emergencia (Stop Propagation).
+El botón de borrar debe tener la autoridad de decir
+Este click es mío, que nadie más en la jerarquía lo escuche
+
+Así, el resto de la fila queda libre para el "Toggle" sin interferencias.
+
+4. Solución 3: Fantasma Interactivo (Overlay)
+concepto más visual que estructural
+
+`Capa Invisible`:
+Se coloca un elemento transparente que cubre toda la superficie de la tarea
+Este elemento es el que tiene la "manito" y el que recibe los clicks.
+
+`Interacción Selectiva`:
+Mediante capas (z-index)
+nos aseguramos de que el botón de borrar esté por encima de este fantasma
+
+`Efecto`:
+El usuario siente que toda la fila es un gran botón
+pero el botón de borrar permanece como una "isla" independiente y accesible.
+
+
+# Combinación Solución A y B:
+
+## Modificaciones que abarca:
+
+1. Unificar el área:
+Lograr que el contenedor principal sea el responsable de la interacción
+ya sea siendo un label o teniendo el evento principal
+
+2. Sincronía Visual: Aplicar el cursor "pointer" y los efectos de hover a la caja entera
+para que no haya dudas de que es un objeto accionable.
+
+3. Proteger el Borrado:
+Asegurar que el botón de basura sea una excepción dentro de esa gran área de click.
+
+
+Fila de Interacción Inteligente:
+que la fila se comporte como un todo para la acción principal
+(marcar tarea), pero respete la autonomía de las acciones secundarias (borrar).
+
+1. Transformación del Contenedor
+modificación principal ocurre en la naturaleza del `ItemContainer`.
+
+`Cambio de Identidad Semántica`:
+El contenedor deja de ser un simple divisor (div)
+o elemento de lista (li) pasivo para convertirse en una Etiqueta Activa (label).
+
+`Vinculación Total`:
+Al transformar el contenedor en el label oficial del Checkbox
+el navegador extiende automáticamente la "zona de influencia" del input a cada píxel de la fila.
+
+`Simplificación de Hijos`:
+El texto de la tarea ya no necesita ser un label individual ni tener un htmlFor propio
+ya que ahora vive "dentro" de la gran zona de activación que es el padre
+
+2. Zona de Exclusión
+Como ahora toda la fila es un gran botón de "Toggle"
+debemos proteger al botón de eliminar para evitar que un click realice dos acciones a la vez
+
+`Captura y Freno del Evento`:
+Interrupción de Propagación
+Cuando el usuario interactúa con el botón de borrar
+el sistema debe "detener el viaje" del click en ese punto exacto.
+
+`Aislamiento de Responsabilidad`:
+El botón de basura se convierte en una "isla" funcional.
+El click entra al botón, ejecuta la eliminación y muere ahí
+impidiendo que el ItemContainer (que es el label) se entere de que hubo un click y active el checkbox por error.
+
+3. Unificación de la Experiencia Visual (Affordance):
+usuario sienta que la solución es sólida
+la parte visual debe seguir a la funcional:
+
+`Sincronización del Cursor`:
+##### El estilo cursor: pointer se mueve del checkbox y el texto hacia el contenedor principal
+Esto garantiza que la "manito" aparezca en cuanto el mouse entre en cualquier parte de la fila
+
+`Coherencia de Hover`:
+El efecto visual (cambio de brillo o color de fondo)
+el cursor ahora trabajan en equipo
+Si la fila se ilumina, el cursor es un puntero;
+el mensaje para el usuario es claro: "Toda esta caja es clickeable".
+
+`Prioridad del Cursor en Exclusiones`:
+Aunque toda la fila tenga "manito"
+el botón de borrar mantiene su propio estado visual
+(quizás cambiando a un color de advertencia)
+reforzando que es una acción distinta.
+
+Componente: Antes (Comportamiento) | Después (Concepto Nuevo)
+
+ItemContainer:
+"Caja pasiva, sin cursor."
+Área de acción principal (Label) y dueño del cursor.
+
+Typography:
+Dueño único del click en el texto.
+Texto descriptivo simple (hereda el click del padre).
+
+IconButton:
+Actúa de forma independiente.
+Actúa de forma independiente y bloquea al padre.
+
+Checkbox:
+Activado solo por su círculo o el texto.
+Activado por cualquier click en la fila.
+
+
+Resultado:
+
+El usuario podrá hacer click en el espacio vacío a la derecha del texto
+en el padding superior o directamente en las palabras
+y la tarea se marcará/desmarcará con total fluidez
+
+Solo si apunta específicamente al ícono de la basura
+la tarea se eliminará sin cambiar su estado de "completada".
+
+
+## Código
+
+original:
+
+```
+import { Checkbox } from '../../atoms/Checkbox/Checkbox';
+import { Typography } from '../../atoms/Typography/Typography';
+import { IconButton } from '../../atoms/IconButton/IconButton';
+import {
+  ItemContainer,
+  ContentWrapper,
+  TextContainer,
+} from './TodoItem.styles';
+
+interface TodoItemProps {
+  id: string;
+  text: string;
+  completed: boolean;
+  onToggle: (id: string) => void;
+  onDelete: (id: string) => void;
+}
+
+export const TodoItem = ({
+  id,
+  text,
+  completed,
+  onToggle,
+  onDelete,
+}: TodoItemProps) => {
+  const checkboxId = `todo-check-${id}`;
+  
+  const handleToggle = () => onToggle(id);
+  
+  const handleDelete = () => onDelete(id);
+
+  return (
+    <ItemContainer $isCompleted={completed}>
+      <ContentWrapper>
+        <Checkbox
+          id={checkboxId}
+          checked={completed}
+          onChange={handleToggle}
+          aria-label={
+            completed ? 'Marcar como pendiente' : 'Marcar como completada'
+          }
+        />
+        <TextContainer $isCompleted={completed}>
+          <Typography variant="body" as="label" htmlFor={checkboxId}>{text}</Typography>
+        </TextContainer>
+      </ContentWrapper>
+
+      <IconButton
+        icon="🗑️" // Aquí luego pondremos un SVG real
+        label="Eliminar tarea"
+        onClick={handleDelete}
+      />
+    </ItemContainer>
+  );
+};
+
+```
+
+Estilo:
+
+```
+import styled, { css } from 'styled-components';
+import { mixins } from '../../../styles/mixins';
+
+interface StyledItemProps {
+  $isCompleted: boolean;
+}
+
+export const ItemContainer = styled.li<StyledItemProps>`
+  ${mixins.glass}
+  ${mixins.flexCenter}
+  justify-content:空间-between;
+  padding: ${({ theme }) => `${theme.spacing.sm} ${theme.spacing.md}`};
+  border-radius: ${({ theme }) => theme.borderRadius.lg};
+  gap: ${({ theme }) => theme.spacing.md};
+  transition: ${({ theme }) => theme.transitions.default};
+  list-style: none;
+  width: 100%;
+
+  /* Efecto Hover: se ilumina sutilmente al pasar el mouse */
+  &:hover {
+    background: oklch(100% 0 0 / 10%);
+    border-color: ${({ theme }) => theme.colors.primary}40;
+    transform: translateX(4px); /* Pequeño desplazamiento orgánico */
+  }
+
+  /* Si está completada, suavizamos su presencia */
+  ${({ $isCompleted }) =>
+    $isCompleted &&
+    css`
+      opacity: 0.7;
+      background: oklch(100% 0 0 / 2%);
+    `}
+`;
+
+export const ContentWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.md};
+  flex: 1;
+  min-width: 0; /* Evita que el texto rompa el layout */
+`;
+
+interface TextProps {
+  $isCompleted: boolean;
+}
+
+export const TextContainer = styled.div<TextProps>`
+  flex: 1;
+  transition: all 0.3s ease;
+  text-decoration: ${({ $isCompleted }) => ($isCompleted ? 'line-through' : 'none')};
+  opacity: ${({ $isCompleted }) => ($isCompleted ? 0.5 : 1)};
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+`;
+```
+
+
+### Cambios
+
+1. Modificación en TodoItem.tsx
+tres cambios clave:
+
+`ContentWrapper` como label:
+Lo convertimos en el disparador de toda la fila.
+
+`Simplificación de Typography`:
+Ya no necesita ser el label, ahora es solo texto descriptivo.
+
+`Freno de Propagación`:
+Evitamos que borrar la tarea también cambie su estado de completado.
+
+```
+export const TodoItem = ({
+  id,
+  text,
+  completed,
+  onToggle,
+  onDelete,
+}: TodoItemProps) => {
+  const checkboxId = `todo-check-${id}`;
+  
+  const handleToggle = () => onToggle(id);
+
+  // Manejador para el botón de eliminar con "Freno de Emergencia"
+  const handleDelete = (e: React.MouseEvent) => {
+    // Evita que el click "suba" al label/contenedor y active el checkbox
+    e.stopPropagation(); 
+    e.preventDefault();
+    onDelete(id);
+  };
+
+  return (
+    <ItemContainer $isCompleted={completed}>
+      {/* 
+         1. El ContentWrapper ahora es un 'label' vinculado al checkbox.
+         Esto hace que todo el espacio interno sea clickeable.
+      */}
+      <ContentWrapper as="label" htmlFor={checkboxId}>
+        <Checkbox
+          id={checkboxId}
+          checked={completed}
+          onChange={handleToggle}
+          aria-label={
+            completed ? 'Marcar como pendiente' : 'Marcar como completada'
+          }
+        />
+        
+        <TextContainer $isCompleted={completed}>
+          {/* El texto ya no necesita 'as="label"' porque su padre ya lo es */}
+          <Typography variant="body">{text}</Typography>
+        </TextContainer>
+      </ContentWrapper>
+
+      {/* 
+         2. El botón de eliminar es una "isla". 
+         Al hacer click, se ejecuta handleDelete y el evento muere ahí.
+      */}
+      <IconButton
+        icon="🗑️"
+        label="Eliminar tarea"
+        onClick={handleDelete}
+      />
+    </ItemContainer>
+  );
+};
+```
+
+2. Ajustes en los Estilos
+"manito" y el área de click funcionen en toda la fila
+debemos asegurar que los estilos de los componentes
+TodoItem.styles.ts
+
+`ContentWrapper`:
+Debe tener `display: flex`,
+`flex: 1` para ocupar todo el ancho disponible
+y, lo más importante, `cursor: pointer`.
+
+`ItemContainer`:
+Al ser el padre
+debe asegurar que sus hijos se alineen correctamente
+para que no queden "huecos" sin click
+
+```
+// Fragmento conceptual de lo que debería haber en tus Styled Components:
+
+export const ContentWrapper = styled.label`
+  display: flex;
+  align-items: center;
+  flex: 1;           /* Ocupa todo el espacio sobrante a la izquierda del botón borrar */
+  cursor: pointer;   /* ¡Aquí activamos la manito para toda la fila! */
+  padding: 12px;     /* El área de click ahora incluye este padding */
+  gap: 12px;
+`;
+
+export const ItemContainer = styled.li`
+  display: flex;
+  align-items: center;
+  /* ... resto de tus estilos de Liquid Glass ... */
+  
+  &:hover {
+    background: rgba(255, 255, 255, 0.05); /* Feedback visual de que toda la fila es activa */
+  }
+`;
+```
+
+
+
 # DashboardTemplate distribuye estos slots con CSS Grid/Flexbox
+
+
+
+# Calidad de código
+
+###### Ej: Si los tests de TodoPage o TodoList fallan después de modificar TodoItem, significa que la lógica de integración se rompió. 
+
 

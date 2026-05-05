@@ -17370,10 +17370,3053 @@ Lógica: Úsalo para representar "no definido" o "no encontrado".
 
 #### 3. Estructuras de control
 
+permiten que tu script deje de ser una lista lineal de comandos
+y empiece a tomar decisiones o repetir tareas de forma inteligente
+
+principalmente en tres categorías:
+
+1. Estructuras Condicionales (Toma de decisiones)
+
+Permiten ejecutar diferentes bloques de código según si una condición se cumple o no.
+
+`if`: El bloque básico.
+Si la condición es verdadera, ejecuta el código.
+
+`elif (else if)`: Permite verificar múltiples condiciones adicionales si la anterior fue falsa.
+
+`else`: El bloque por defecto. Se ejecuta si ninguna de las condiciones anteriores se cumplió.
+
+`match` (Pattern Matching): Introducido en Python 3.10.
+Es similar al switch de otros lenguajes, pero mucho más potente, permitiendo comparar estructuras de datos complejas.
+
+2. Estructuras de Repetición (Bucles)
+
+Sirven para ejecutar un bloque de código varias veces
+
+`for`: Se utiliza para iterar sobre una secuencia
+(una lista, un diccionario, un string o un range).
+
+`while`: Ejecuta el código mientras una condición específica sea verdadera
+Es ideal cuando no sabes de antemano cuántas veces necesitarás repetir la tarea.
+
+3. Estructuras de Control de Bucles
+
+##### Son palabras clave que alteran el flujo normal de un bucle for o while
+
+`break`:
+Sale inmediatamente del bucle
+sin importar si la condición sigue siendo verdadera
+o si quedan elementos por iterar.
+
+`continue`:
+Salta el resto del código en la iteración actual
+actual y pasa directamente a la siguiente.
+
+`else (en bucles)`:
+Una característica única de Python
+El bloque else de un bucle se ejecuta solo si el bucle terminó normalmente
+(es decir, no fue interrumpido por un break)
+
+`pass`: No hace nada
+Se usa como un "marcador de posición"
+cuando la sintaxis requiere una línea de código
+pero aún no has decidido qué escribir ahí.
+
+4. Gestión de Excepciones (Control de Errores)
+Aunque a veces no se ven como estructuras de control puras
+controlan el flujo del programa cuando algo sale mal
+
+`try / except`:
+Intenta ejecutar un código
+y captura errores específicos para evitar que el script "explote".
+
+`finally`:
+Un bloque que se ejecuta siempre
+haya habido un error o no
+Ideal para cerrar archivos o conexiones a bases de datos.
+
+5. Elección/Decisión
+
+`Elegir entre dos caminos`: if / else
+
+`Elegir entre muchas opciones`: match o if / elif / else
+
+`Recorrer una lista de archivos`: for
+
+`Esperar a que una conexión esté lista`: while
+
+`Ignorar un error de red y reintentar`: try / except
+
+
+
+##### Buenas prácticas para if/else/else if/elif
+
+forma en que estructuramos nuestras decisiones
+define si nuestro script es un laberinto de "código espagueti" o una herramienta profesional
+
+mejores prácticas para dominar las condicionales
+enfocadas en la legibilidad y el estilo Pythonic
+
+1. Early Return
+Evita el "anidamiento profundo" (muchos niveles de indentación).
+
+Si una condición falla
+sal de la función o del bucle lo antes posible
+en lugar de meter el resto del código dentro de un else.
+
+Mal:
+
+```
+def procesar(datos):
+    if datos:
+        if es_valido(datos):
+            # Código principal aquí (muy indentado)
+            return True
+    return False
+```
+
+Bien:
+
+```
+def procesar(datos):
+    if not datos or not es_valido(datos):
+        return False
+
+    # Código principal aquí (nivel de indentación base)
+    return True
+```
+
+2. elif sustituye al else if
+A diferencia de C o JavaScript
+en Python no existe else if
+
+Usar else seguido de un if indentado crea niveles de profundidad innecesarios.
+
+Usa elif para mantener todas tus opciones al mismo nivel visual.
+
+3. Condiciones Complejas: Extráelas a Variables
+Si tu if tiene tantos and y or que no cabe en la pantalla
+señal de que debes simplificarlo
+
+Guarda el resultado de la lógica en una variable
+con un nombre descriptivo.
+
+```
+# ❌ Difícil de leer
+if user.active and (user.subscription == 'gold' or user.is_admin) and not user.is_banned:
+    pass
+
+# ✅ Mucho mejor
+tiene_acceso = user.subscription == 'gold' or user.is_admin
+puede_operar = user.active and tiene_acceso and not user.is_banned
+
+if puede_operar:
+    pass
+```
+
+4. Orden de las Condiciones Importa
+Debido a la evaluación de cortocircuito
+Python deja de leer el if en cuanto se define el resultado.
+
+Optimización: Pon la condición que sea más probable que falle (en un and)
+o más probable que sea verdadera (en un or) al principio.
+
+Seguridad: Pon las validaciones de existencia (is not None) antes de acceder a sus atributos.
+
+```
+# Si 'config' es None, Python no intentará leer ['timeout'] y no lanzará error
+if config is not None and config['timeout'] > 10:
+    pass
+```
+
+5. match para múltiples opciones
+Si tienes una cadena larga de elif
+comparando la misma variable contra diferentes valores
+el nuevo match-case es mucho más limpio y eficiente.
+
+```
+# ✅ Estilo moderno y legible
+match comando:
+    case "start":
+        iniciar()
+    case "stop" | "halt": # Soporta múltiples valores (OR)
+        detener()
+    case _: # El guion bajo es el 'else' (default)
+        print("Comando desconocido")
+```
+
+6. Evita comparar Booleanos explícitamente
+Como vimos antes, no uses if condicion == True:. Es redundante.
+
+Excepción: Úsalo solo si necesitas distinguir estrictamente entre True y 1
+(que es poco común en scripting).
+
+7. Operador Ternario (Solo para lógica simple)
+Usa la expresión condicional de una línea para asignaciones
+pero no para ejecutar lógica compleja.
+
+```
+nivel = "Pro" if puntos > 100 else "Novato"
+```
+
+8. Decisiones
+
+`Validaciones iniciales`:
+"Usa ""Early Returns"" para evitar el else."
+
+`3 o más opciones`:
+Considera usar match-case.
+
+`Lógica muy larga`:
+Crea variables booleanas intermedias.
+
+`Comparar con None`:
+Usa siempre if x is None:.
+
+
+
+##### Buenas prácticas para match
+
+mucho más que un simple switch/case
+Su poder real reside en su capacidad para "desestructurar" objetos
+y verificar patrones complejos de datos.
+
+1. No lo uses para comparaciones simples
+Si solo vas a comparar una variable contra dos o tres valores constantes
+un if/elif/else suele ser más rápido y legible
+
+Reserva el match para cuando la estructura de los datos importa
+o cuando tienes muchas ramas de decisión
+
+2. uso del Guion Bajo (_) como Comodín
+caso case _: actúa como el default en otros lenguajes
+
+Práctica recomendada: Inclúyelo siempre al final para manejar valores inesperados
+y evitar que el flujo continúe sin una acción definida.
+
+Regla: Debe ser siempre el último caso
+de lo contrario, Python lanzará un error porque los casos debajo de él serían inalcanzables
+
+3. Combinar Patrones con el Operador Pipe (|) 
+Puedes agrupar múltiples valores que deben ejecutar la misma lógica
+usando el operador OR (|)
+mantiene el código extremadamente limpio
+
+```
+match status_code:
+    case 200 | 201 | 204:
+        print("Éxito")
+    case 400 | 404 | 405:
+        print("Error del cliente")
+    case _:
+        print("Código desconocido")
+```
+
+4. Captura de Variables
+Una de las funciones más potentes
+capturar partes de la estructura para usarlas inmediatamente.
+
+```
+# Imagina que recibes un comando como ["move", 10, 20]
+match command.split():
+    case ["quit"]:
+        salir()
+    case ["move", x, y]:
+        # x e y se crean automáticamente a partir del contenido de la lista
+        print(f"Moviendo a {x}, {y}")
+    case _:
+        print("Comando no reconocido")
+```
+
+5. "Guards" (Guardias) con if
+Puedes añadir una condición extra a un case usando la palabra clave if
+permite filtrar patrones basados en valores lógicos.
+
+```
+match punto:
+    case (x, y) if x == y:
+        print("El punto está en la diagonal")
+    case (x, y):
+        print(f"Punto en {x}, {y}")
+```
+
+6. Coincidencia con Diccionarios
+Al hacer match con diccionarios
+Python verifica si las claves existen
+No necesitas preocuparte por si faltan claves
+(como pasaría con un acceso directo).
+
+importante: El patrón { "key": value } coincidirá
+si el diccionario tiene al menos esa clave, aunque tenga más.
+
+```
+match configuracion:
+    case {"debug": True, "port": p}:
+        print(f"Modo desarrollo en puerto {p}")
+    case {"port": p}:
+        print(f"Modo producción en puerto {p}")
+```
+
+7. Evita nombres de variables que coincidan con constantes
+Un error común es intentar comparar
+contra una variable externa dentro de un case
+
+Problema: Si escribes case MI_CONSTANTE
+Python pensará que quieres capturar el valor en una nueva variable llamada MI_CONSTANTE
+no comparar contra ella.
+
+Solución: Usa nombres con puntos
+(ej. clase.CONSTANTE) o
+usa una "Guardia" (case x if x == MI_CONSTANTE:).
+
+8. Matching de Clases (Objetos)
+
+Es ideal para scripts que manejan
+diferentes tipos de eventos o respuestas de API.
+
+```
+match respuesta:
+    case Exito(data=contenido):
+        print(f"Procesado: {contenido}")
+    case Error(code=500):
+        print("Error crítico del servidor")
+    case Error(code=c):
+        print(f"Error menor: {c}")
+```
+
+9. Elección: match sobre if
+
+`Cuando estás desestructurando`:
+(sacando valores de listas, tuplas o diccionarios).
+
+`Cuando tienes muchas opciones`:
+(más de 4 o 5 ramas).
+
+`Cuando necesitas validar la forma de los datos`:
+(ej: "una lista de dos elementos donde el primero es un string").
+
+
+
+##### Buenas prácticas para for
+
+iterador de colecciones
+A diferencia de otros lenguajes, el for de Python está diseñado para ser expresivo
+y evitar errores de "fuera de rango" (off-by-one errors).
+
+1. Itera directamente sobre el objeto
+no necesitas usar un índice para acceder a los elementos de una colección
+regla número uno del código legible
+
+Mal:
+`for i in range(len(lista)): print(lista[i])`
+
+Bien:
+`for item in lista: print(item)`
+
+2. enumerate() si necesitas el índice
+Si realmente necesitas saber en qué posición estás
+(por ejemplo, para imprimir un ranking o un log)
+(por ejemplo, para imprimir un ranking o un log)
+
+```
+nombres = ["Alice", "Bob", "Charlie"]
+
+# ✅ Limpio y profesional. Puedes empezar en 1 si es para humanos.
+for i, nombre in enumerate(nombres, start=1):
+    print(f"{i}. {nombre}")
+```
+
+3. Itera sobre múltiples listas con zip()
+Si tienes dos listas relacionadas
+relacionadas (ej. una de usuarios y otra de correos)
+##### quieres recorrerlas al mismo tiempo, usa zip().
+
+```
+usuarios = ["admin", "dev", "guest"]
+correos = ["a@test.com", "d@test.com", "g@test.com"]
+
+# ✅ Combina ambas listas elemento a elemento
+for usuario, correo in zip(usuarios, correos):
+    print(f"Enviar a {usuario}: {correo}")
+```
+
+4. No modifiques la lista mientras la iteras
+Como mencionamos en la sección de listas
+borrar o añadir elementos a la lista que estás recorriendo causará que el bucle se salte elementos o se comporte de forma errática
+
+Estrategia: Itera sobre una copia
+`for item in lista[:]`
+
+mejor aún, usa una List Comprehension
+para filtrar lo que no quieras.
+
+5. Usa el else del bucle (Con precaución)
+Python permite añadir un bloque else a un for
+Este se ejecuta solo si el bucle terminó por completo
+sin haber encontrado un break
+
+ideal para algoritmos de búsqueda
+
+```
+busqueda = "archivo_secreto.txt"
+archivos = ["nota.txt", "foto.jpg", "datos.csv"]
+
+for archivo in archivos:
+    if archivo == busqueda:
+        print("¡Lo encontré!")
+        break
+else:
+    # Se ejecuta solo si el bucle recorrió TODO y no hubo break
+    print("El archivo no existe en la lista.")
+```
+
+6. List Comprehensions para transformaciones
+Si el único propósito de tu bucle for es crear una nueva lista basada en una existente
+usa una list comprehension
+
+Recomendado:
+`precios_iva = [p * 1.21 for p in precios_sin_iva]`
+
+7. Evita el uso de variables "fantasma"
+Si vas a repetir una acción N veces
+pero no vas a usar el valor del contador para nada
+usa el guion bajo _ por convención
+
+Esto le indica a otros programadores (y a tu editor) que esa variable es intencionalmente ignorada.
+
+```
+# ✅ Repetir una tarea 5 veces sin usar el índice
+for _ in range(5):
+    hacer_limpieza_temporal()
+```
+
+8. Elige bien entre for y while
+
+Usa for cuando sepas de antemano cuántos elementos hay
+o tengas una colección definida (listas, archivos, diccionarios).
+
+Usa while cuando la repetición dependa de una condición externa que puede cambiar en cualquier momento
+momento (esperar una respuesta de red, un sensor, o que el usuario presione una tecla).
+
+Si tienes tres bucles for uno dentro de otro, intenta refactorizar
+El código se vuelve exponencialmente más difícil de mantener con cada nivel de anidamiento
+
+
+
+##### Prácticas para while
+
+herramienta de precisión
+A diferencia del for, que recorre una colección finita
+while se utiliza cuando no sabemos cuántas veces se debe ejecutar una acción
+sino que dependemos de una condición dinámica
+(como la respuesta de un servidor o la entrada de un usuario)
+
+1. Garantiza una "Condición de Salida"
+error más común con while es crear un bucle infinito
+porque la condición nunca se vuelve falsa.
+
+Asegúrate de que dentro del bloque de código
+ocurra algo que eventualmente invalide la condición
+
+Si usas un contador, increméntalo al final del bloque.
+
+```
+intentos = 0
+while intentos < 3:
+    if conectar_servidor():
+        break
+    intentos += 1  # Crucial para no quedar atrapado
+```
+
+2. Prefiere while True con break para "Sentinel Loops"
+A veces, la condición de parada se descubre dentro del bucle
+(por ejemplo, al leer la entrada del usuario).
+
+En estos casos, el patrón while True
+es más limpio que intentar declarar variables vacías antes del bucle.
+
+```
+# ✅ Patrón profesional para menús o entradas
+while True:
+    comando = input("Escribe 'salir' para terminar: ").lower()
+    if comando == "salir":
+        break
+    procesar_comando(comando)
+```
+
+3. Evita el "Bucle Ocupado" (Busy Waiting)
+Si usas un while para esperar a que algo suceda
+(como que aparezca un archivo),
+un bucle vacío consumirá el 100% de un núcleo de tu CPU.
+
+Práctica: Usa time.sleep() para dar un respiro al procesador.
+
+```
+import time
+import os
+
+# ❌ Mal: Consume toda la CPU
+while not os.path.exists("reporte.pdf"):
+    pass 
+
+# ✅ Bien: Espera un segundo entre chequeos
+while not os.path.exists("reporte.pdf"):
+    time.sleep(1)
+```
+
+4. Usa while/else para búsquedas
+Al igual que el for, el while tiene un bloque else
+Se ejecuta solo si el bucle terminó porque la condición se volvió falsa
+pero no si se rompió con un break.
+
+```
+energia = 10
+while energia > 0:
+    if encontrar_salida():
+        print("¡Escapé!")
+        break
+    energia -= 1
+else:
+    print("Se agotó la energía sin encontrar la salida.")
+```
+
+5. Cuidado con los Objetos Mutables en la Condición
+Si la condición del while depende del tamaño de una lista que estás modificando
+asegúrate de entender cómo cambia ese tamaño en cada iteración para evitar errores de lógica.
+
+6. Flags (Banderas) Booleanas para Claridad
+Si la lógica para salir del bucle es compleja
+no metas todo en la línea del while
+Usa una variable booleana descriptiva.
+
+```
+# ✅ Mucho más legible
+sistema_operativo_ok = True
+
+while sistema_operativo_ok:
+    error = ejecutar_tarea()
+    if error_critico(error):
+        sistema_operativo_ok = False
+```
+
+7. Límite de Seguridad (Safety Timeout)
+Incluso si esperas que una condición se cumpla
+en el scripting de automatización es una buena práctica añadir un contador de seguridad
+o un tiempo máximo para evitar que el script se cuelgue para siempre si algo falla externamente
+
+```
+import time
+
+inicio = time.time()
+timeout = 30  # segundos
+
+while not servicio_listo():
+    if time.time() - inicio > timeout:
+        raise TimeoutError("El servicio no respondió a tiempo")
+    time.sleep(1)
+```
+
+8. while en lugar de for
+
+`Protocolos de red`: Esperar a que un socket reciba datos.
+
+`Interfaces de usuario`: Mantener una aplicación abierta hasta que se cierre.
+
+`Sensores/Hardware`: Leer datos hasta que se detecte una señal específica.
+
+
+
+##### Prácticas para break/continue/pass/else en bucles
+
+son los "interruptores" de los bucles
+
+1. break: La Salida de Emergencia
+termina el bucle inmediatamente
+
+##### Úsalo para detener la ejecución en cuanto encuentres lo que buscabas o si ocurre un error fatal.
+eficiencia: No sigas iterando sobre 10,000 elementos si ya encontraste el dato en el elemento número 5.
+
+```
+for archivo in lista_archivos:
+    if "config_critica" in archivo:
+        archivo_encontrado = archivo
+        break  # ✅ Ahorra tiempo y recursos
+```
+
+2. continue: El Salto Selectivo
+salta el resto del código de la iteración actual y pasa directamente a la siguiente
+
+##### Úsalo para limpiar el flujo lógico: 
+En lugar de meter todo el código dentro de un if gigante
+a continue para descartar los casos que no te interesan al principio.
+
+Mantiene la indentación del código plana (más legible).
+
+```
+# ❌ Mal (Mucho anidamiento)
+for item in datos:
+    if item is not None:
+        if item.es_valido:
+            # Procesar...
+
+# ✅ Bien (Estilo "Guardia")
+for item in datos:
+    if item is None or not item.es_valido:
+        continue  # Ignora este caso y sigue con el siguiente
+    
+    # El código principal vive sin niveles extra de indentación
+    procesar(item)
+```
+
+3.  pass: El Marcador de Posición
+no hace absolutamente nada
+Es una operación nula
+
+##### Úsalo solo cuando la sintaxis de Python te obliga a escribir algo
+pero todavía no has implementado la lógica o quieres ignorar un error de forma intencional
+
+Si ves un pass en un código terminado
+suele ser señal de que algo quedó pendiente
+pendiente o que un bloque except está silenciando errores
+(lo cual es peligroso).
+
+```
+def funcion_por_hacer():
+    pass  # ✅ Evita que Python lance un IndentationError mientras desarrollas
+```
+
+4. else (en bucles): El Verificador de Completitud
+
+joya oculta de Python
+El bloque else se ejecuta solo si el bucle terminó normalmente
+(es decir, recorrió todos los elementos y NO fue interrumpido por un break).
+
+```
+# ✅ Patrón de búsqueda elegante
+for servidor in servidores:
+    if servidor.esta_activo():
+        print(f"Conectado a {servidor}")
+        break
+else:
+    # Este bloque solo corre si el break NUNCA ocurrió
+    enviar_alerta("¡Ningún servidor está disponible!")
+```
+
+
+break:
+Rompe el bucle por completo.
+Detener una búsqueda exitosa.
+
+continue:
+Salta a la siguiente iteración.
+Ignorar archivos basura o datos nulos.
+
+pass:
+No hace nada.
+Estructuras temporales o prototipado.
+
+else:
+Corre al final si no hubo break.
+Confirmar que una búsqueda falló.
+
+No abuses de break y continue en el mismo bucle
+Si tienes demasiados saltos, la lógica se vuelve difícil de seguir
+Si tu bucle tiene muchos de estos, considera dividir la lógica en funciones más pequeñas
+
+
+
+
+#### Prácticas para try, except, finally
+
+##### scripting, las cosas van a fallar: un servidor no responde, un archivo no existe o un disco se llena
+
+1. específico con las excepciones
+Nunca uses un except: vacío o un except Exception:.
+Esto captura todos los errores
+incluidos errores de sintaxis o la señal de interrupción (Ctrl+C),
+hace que tu script sea imposible de detener o depurar.
+
+Mal:
+
+```
+except: print("Error")
+```
+
+Bien:
+##### Captura solo lo que esperas y sabes manejar
+
+```
+try:
+    with open("config.json") as f:
+        data = f.read()
+except FileNotFoundError:
+    print("El archivo no existe. Usando configuración por defecto.")
+except PermissionError:
+    print("No tienes permisos para leer el archivo.")
+```
+
+2. bloque finally para la "Limpieza"
+finally se ejecuta siempre, pase lo que pase
+incluso si hubo un return o un break dentro del try
+Es el lugar sagrado para liberar recursos.
+
+Ej: Cerrar conexiones a bases de datos, sockets de red o borrar archivos temporales.
+
+```
+conexion = conectar_db()
+try:
+    conexion.ejecutar_query("DELETE FROM logs")
+except Exception as e:
+    print(f"Error en la base de datos: {e}")
+finally:
+    conexion.close()  # ✅ Se cerrará aunque el query falle
+```
+
+3. Usa as e para registrar el error
+Cuando captures una excepción, asígnale un nombre
+(normalmente e o err)
+para poder registrar el mensaje real del error
+Esto es vital para el Logging.
+
+```
+import logging
+
+try:
+    resultado = 10 / 0
+except ZeroDivisionError as e:
+    logging.error(f"Fallo en cálculo: {e}")
+```
+
+4. bloque else: camino del éxito
+Poca gente usa el else en un try
+pero es muy útil.
+Se ejecuta solo si no hubo ninguna excepción
+Ayuda a mantener el bloque try lo más pequeño posible.
+
+##### Regla: En el try solo debe ir la línea que puede fallar
+El resto del proceso va en el else.
+
+```
+try:
+    respuesta = requests.get("https://api.test.com")
+except requests.exceptions.RequestException:
+    print("Fallo en la red")
+else:
+    # ✅ Solo corre si la petición fue exitosa
+    print(f"Datos recibidos: {respuesta.json()}")
+```
+
+5. No silencies los errores (No hagas "pass")
+Capturar un error y poner un pass
+
+Si no sabes cómo arreglar el error: No lo captures
+o captúralo para registrarlo y vuelve a lanzarlo con raise.
+
+```
+try:
+    procesar_pago()
+except PaymentError as e:
+    logging.critical(f"Fraude detectado: {e}")
+    raise  # ✅ Lanza el error de nuevo para que el sistema se detenga
+```
+
+6. Lanza excepciones claras con raise
+En tus propias funciones de scripting, no devuelvas valores extraños como -1 o False
+cuando algo sale mal
+
+Lanza una excepción con un mensaje que ayude a entender qué pasó.
+
+```
+def configurar_puerto(puerto: int):
+    if not (1 <= puerto <= 65535):
+        raise ValueError(f"Puerto inválido: {puerto}. Debe estar entre 1 y 65535.")
+```
+
+7. Context Managers (with) vs try/finally
+Para el manejo de archivos y algunos recursos de red, Python ofrece el bloque with
+##### Úsalo siempre que puedas, ya que es un "atajo" que implementa un try/finally
+de forma automática por ti.
+
+Se prefiere:
+
+```
+with open("file.txt") as f:
+```
+
+Evitar:
+
+```
+f = open(); try: ... finally: f.close()
+```
+
+Rs:
+
+try: "Voy a intentar esto que podría romperse".
+except: "Si se rompe de esta forma específica, haré esto otro".
+else: "Como no se rompió, sigamos con el siguiente paso".
+finally: "Sin importar qué pasó, voy a dejar todo limpio".
+
+
+
+##### raise vs try, except y finally vs with
+
+sirven para manejar errores o recursos pero 
+cumplen roles muy diferentes en el ciclo de vida de un script.
+
+1. raise: lanzar
+##### raise se usa para provocar un error intencionalmente
+Es tu forma de decir: "Algo salió mal y no puedo seguir adelante".
+
+usarlo: Cuando escribes una función y detectas que los datos de entrada son inválidos
+inválidos o que una condición crítica no se cumple.
+
+##### Propósito: Detener la ejecución antes de que el error cause un desastre mayor.
+
+```
+def establecer_edad(edad):
+    if edad < 0:
+        raise ValueError("La edad no puede ser negativa") # ✅ Detenemos el script aquí
+    print(f"Edad establecida en {edad}")
+```
+
+2. try / except / finally: Protección y Limpieza
+##### se usa para gestionar errores que no controlas directamente
+como una falla de red o un archivo que no existe
+
+try: Encierra el código "peligroso".
+except: Define qué hacer si ocurre el error (el plan B).
+finally: El bloque de limpieza. Se ejecuta siempre, pase lo que pase.
+
+```
+try:
+    f = open("datos.txt")
+    # Operaciones...
+except FileNotFoundError:
+    print("Archivo no encontrado")
+finally:
+    print("Cerrando recursos...") # ✅ Siempre se ejecuta
+```
+
+3. with: Context Manager
+##### with es la forma más elegante y segura de manejar recursos que deben abrirse y cerrarse
+archivos, conexiones a bases de datos, bloqueos de hilos
+
+##### Se encarga automáticamente de abrir el recurso y, lo más importante, de cerrarlo, incluso si ocurre un error dentro del bloque.
+
+Sustituye a la combinación try...finally de forma mucho más limpia.
+
+```
+# ✅ Práctica recomendada
+with open("archivo.txt", "r") as f:
+    contenido = f.read()
+# Al salir del bloque 'with', el archivo se cierra solo.
+```
+
+Rs:
+
+raise:
+Crea un error.
+
+try / except:
+Captura un error.
+
+finally:
+Limpia después del error.
+
+with:
+Gestiona recursos.
+
+4. Elección
+
+##### 1. Si vas a abrir un archivo o conexión: Usa siempre with
+Es menos código y menos riesgo de dejar archivos abiertos.
+
+##### 2. Si estás creando una función y quieres validar algo: Usa raise
+No devuelvas None o -1, lanza una excepción clara
+
+##### 3. Si vas a llamar a una función que podría fallar: como un requests.get, Usa try / except
+para que tu programa no se detenga bruscamente si el servidor está caído.
+
+##### 4. Si necesitas cerrar algo manualmente que no soporta with: Usa finally.
+
+5. Combinación
+A menudo verás with dentro de un try/except
+nivel máximo de seguridad en scripting
+
+```
+try:
+    with open("datos_criticos.csv", "r") as f:
+        # 'with' asegura que el archivo se cierre
+        procesar_datos(f)
+except FileNotFoundError:
+    # 'except' asegura que el script no muera si el archivo falta
+    print("Error: El archivo no existe.")
+```
 
 
 
 #### 4. Funciones
+
+Bloques de código reutilizables, diseñados para realizar una tarea específica
+
+una "máquina" a la que le introduces materia prima (datos)
+realiza un proceso y, a menudo, te devuelve un producto terminado.
+
+Fundamentales para cumplir el principio DRY (Don't Repeat Yourself)
+
+1. Estructura
+
+```
+def saludar(nombre):
+    """Esta es una docstring: explica qué hace la función."""
+    mensaje = f"Hola, {nombre}, ¡bienvenido!"
+    return mensaje
+
+# Llamada a la función
+print(saludar("Geralt"))
+```
+
+##### return: Envía un resultado de vuelta al lugar donde se llamó la función
+Si no pones return, la función devuelve None por defecto.
+
+2. Parámetros vs. Argumentos
+Parámetro: Es la variable definida en la función (la "plantilla").
+Argumento: Es el valor real que envías al llamarla
+
+```
+def sumar(a, b): # 'a' y 'b' son parámetros
+    return a + b
+
+sumar(5, 3) # 5 y 3 son argumentos
+```
+
+3. Tipos de Argumentos
+
+##### Argumentos por Defecto
+asignar valores predeterminados por si el usuario no envía nada.
+
+```
+def configurar_conexion(puerto=8080):
+    print(f"Conectando al puerto {puerto}")
+
+configurar_conexion()      # Usa 8080
+configurar_conexion(3000)  # Usa 3000
+```
+
+##### Argumentos Nombrados (Keyword Arguments)
+Permiten llamar a la función sin importar el orden de los parámetros, lo que hace el código mucho más legible.
+
+```
+def crear_perfil(nombre, edad, profesion):
+    pass
+
+# Mucho más claro que pasar solo valores
+crear_perfil(profesion="Brujo", nombre="Geralt", edad=99)
+```
+
+##### 4. Argumentos Variables (*args y kwargs)
+A veces no sabes cuántos datos te van a enviar.
+
+`*args`: Recibe una cantidad ilimitada de argumentos posicionales
+(se guardan en una tupla).
+
+`kwargs`: Recibe una cantidad ilimitada de argumentos con nombre
+(se guardan en un diccionario).
+
+```
+def listar_invitados(*nombres):
+    for n in nombres:
+        print(f"Invitado: {n}")
+
+listar_invitados("Alice", "Bob", "Charlie", "David")
+```
+
+5. Scope (Alcance de las Variables)
+vital entender dónde vive cada variable
+
+Local: Definida dentro de la función.
+Solo existe mientras la función se ejecuta
+
+Global: Definida fuera de las funciones
+Puede ser leída desde dentro, pero no modificada
+(a menos que uses la palabra clave global, lo cual se considera mala práctica)
+
+6. Funciones Lambda (Anónimas)
+funciones pequeñas de una sola línea que no tienen nombre
+Se usan para tareas rápidas y temporales.
+
+`lambda argumentos: expresion`
+
+```
+# Función tradicional
+def elevar_cuadrado(x): return x**2
+
+# Función Lambda equivalente
+cuadrado = lambda x: x**2
+
+print(cuadrado(5)) # 25
+```
+
+`Nombre descriptivo`:
+Usa verbos (calcular_total, enviar_email) en snake_case.
+
+`Una sola responsabilidad`:
+Una función debe hacer una sola cosa y hacerla bien. Si tu función hace 5 cosas distintas, divídela en 5 funciones.
+
+`Docstrings`:
+Siempre explica qué hace, qué recibe y qué devuelve.
+
+`Type Hinting`:
+Ayuda a otros (y a ti mismo) a saber qué tipos de datos se esperan.
+
+```
+def duplicar(numero: int) -> int:
+    return numero * 2
+```
+
+
+
+##### Prácticas con Funciones
+
+Una función bien diseñada debe ser predecible, fácil de probar y autoexplicativa
+
+1. Responsabilidad Única (SRP)
+Una función debe hacer una sola cosa
+Si tienes que usar la palabra "y" para describir lo que hace tu función
+
+(ej: validar_y_enviar_y_guardar_logs)
+es una señal de que debes dividirla.
+
+Si una función hace solo una cosa, es mucho más fácil de testear y reutilizar en otras partes del código
+
+2. Type Hinting
+Desde Python 3.5, puedes indicar qué tipo de datos espera una función y qué va a devolver
+vital para que herramientas como VS Code o PyCharm te ayuden a evitar errores
+
+```
+# ✅ Profesional y documentado
+def calcular_impuesto(monto: float, tasa: float = 0.21) -> float:
+    return monto * tasa
+```
+
+3. Objetos Mutables como Argumentos
+##### Nunca uses listas o diccionarios vacíos como valores por defecto en los parámetros
+Python los crea una sola vez al definir la función, no cada vez que la llamas.
+
+Mal:
+
+```
+def agregar_item(item, lista=[])
+```
+Bien:
+Usa None como vimos en la sección de buenas prácticas de None.
+
+4. Limita el número de parámetros
+Si una función recibe más de 3 o 4 argumentos
+se vuelve difícil de leer y de llamar.
+
+Solución: Si los datos están relacionados
+agrúpalos en un objeto (como un diccionario o una dataclass)
+
+o usa Keyword-Only Arguments para obligar al usuario a escribir el nombre del parámetro.
+
+```
+# El '*' obliga a que los siguientes argumentos se pasen por nombre
+def enviar_mensaje(id_usuario, *, asunto, cuerpo, urgente=False):
+    pass
+
+# ✅ Obligatorio: enviar_mensaje(123, asunto="Hola", cuerpo="...")
+```
+
+5. Docstrings: documentación interna
+
+```
+def obtener_clima(ciudad: str) -> dict:
+    """
+    Consulta la API meteorológica para obtener el clima actual.
+
+    Args:
+        ciudad (str): Nombre de la ciudad a consultar.
+
+    Returns:
+        dict: Datos de temperatura y humedad.
+    """
+    pass
+```
+
+6. Evita los Efectos Secundarios (Funciones Puras)
+funciones sean "puras".
+Una función pura es aquella que:
+
+##### 1. Dada la misma entrada, siempre devuelve la misma salida.
+
+##### 2. No modifica variables globales o estados fuera de ella
+
+Las funciones sin efectos secundarios son mucho más fáciles de predecir y depurar.
+
+7. No usar 'global'
+Modificar una variable global dentro de una función es una de las mayores fuentes de errores (bugs) en programación
+Si una función necesita cambiar algo, es mejor que devuelva el nuevo valor y que el programa principal decida qué hacer con él
+
+8. patrón "Early Return" aplicado a funciones
+Al igual que en las condicionales
+si puedes determinar el resultado de una función rápidamente
+(por un error o un caso trivial)
+hazlo al principio y sal de la función.
+
+```
+def procesar_archivo(ruta):
+    if not ruta.endswith(".csv"):
+        return None  # Salida temprana
+    
+    # ... lógica compleja de procesamiento ...
+    return resultado
+```
+
+##### Nombre: Verbo + Sustantivo (obtener_usuarios).
+
+Tamaño: Si no cabe en tu pantalla, es demasiado larga.
+
+Niveles de indentación: No más de 2 niveles de profundidad dentro de una función.
+
+
+
+##### DRY con Funciones 
+
+significa que cada pieza de conocimiento
+o lógica debe tener una representación única
+y autorizada dentro de tu código
+
+Si copias y pegas un bloque de código y solo cambias una variable
+estás violando el DRY y creando una "deuda técnica"
+que tendrás que pagar cuando necesites hacer un cambio.
+
+1. Identificando el "Código Espejo"
+aplicar DRY es cuando ves funciones que se ven casi idénticas.
+
+Escenario: Tienes dos bloques que limpian datos de diferentes fuentes.
+
+```
+# ❌ Mal: Lógica repetida
+def procesar_nombres(lista):
+    resultado = []
+    for nombre in lista:
+        resultado.append(nombre.strip().capitalize())
+    return resultado
+
+def procesar_ciudades(lista):
+    resultado = []
+    for ciudad in lista:
+        resultado.append(ciudad.strip().capitalize())
+    return resultado
+```
+
+##### Solución DRY: Abstrae la lógica común en una sola función parametrizada.
+
+```
+def normalizar_datos(lista):
+    return [item.strip().capitalize() for item in lista]
+
+nombres = normalizar_datos(lista_nombres)
+ciudades = normalizar_datos(lista_ciudades)
+```
+
+2. Abstracción mediante Parámetros
+A veces la repetición no es idéntica, pero sigue un patrón
+identificar qué es lo que cambia y convertirlo en un parámetro.
+
+3. Funciones de Orden Superior (Pasar funciones como argumentos)
+nivel avanzado de DRY
+##### consiste en pasar una función a otra función
+Python trata a las funciones como "objetos de primera clase"
+permite una reutilización extrema
+
+Ej: varios procesos que necesitan medir cuánto tiempo tardan en ejecutarse.
+En lugar de poner time.time() en todas
+crea una función que "envuelva" a las demás.
+
+```
+import time
+
+def medir_tiempo(funcion, *args):
+    inicio = time.time()
+    resultado = funcion(*args)
+    fin = time.time()
+    print(f"La función {funcion.__name__} tardó {fin - inicio:.4f}s")
+    return resultado
+
+# Ahora puedes medir CUALQUIER función sin repetir código de tiempo
+medir_tiempo(procesar_datos, mis_datos)
+```
+
+4. Over-Engineering
+
+Existe un principio contrapuesto llamado WET
+Write Everything Twice o Waste Everyone's Time
+
+"Duplica el código hasta que el patrón sea tan obvio que la abstracción sea perfecta".
+
+Regla de Tres:
+
+Cuando escribes código por primera vez, escríbelo.
+Cuando lo repites, puede que te sientas mal, pero hazlo.
+##### A la tercera vez que lo repites, refactoriza a una función.
+
+5. Composition sobre Herencia
+En lugar de crear funciones gigantes que intentan prever todos los casos
+lo que lleva a muchos if/else internos
+crea funciones pequeñas y componlas.
+
+```
+# ✅ Pequeñas piezas de Lego
+def limpiar_texto(t): return t.strip()
+def remover_puntos(t): return t.replace(".", "")
+def anonimizar(t): return "REDACTED"
+
+# Las combinas según necesites
+def procesar_log_seguro(linea):
+    return anonimizar(remover_puntos(limpiar_texto(linea)))
+```
+
+Beneficios de DRY
+
+Mantenimiento fácil: Si el formato de limpieza cambia, solo tocas una función, no diez.
+Menos bugs: Menos líneas de código significan menos lugares donde esconder errores.
+Legibilidad: El código cuenta una historia de "qué" está pasando, no de "cómo" se itera cada lista.
+
+
+
+#### Configuración entorno Python
+
+1. Gestión de Versiones y Entornos
+la base
+
+`uv (o Poetry)`:
+Gestión de paquetes y entornos
+"Es el estándar moderno (2026).
+uv es increíblemente rápido y reemplaza a pip, venv y pip-tools en una sola herramienta."
+
+`pyenv`:
+Gestión de versiones de Python
+"Te permite saltar de Python 3.10 a 3.13 o 3.14 con un comando, sin romper nada."
+
+`Virtualenv / pyenv`:
+Aislamiento
+"Crea una "burbuja" para cada proyecto para que las bibliotecas no se peleen entre sí."
+
+2. IDE
+
+Extensiones imprescindibles:
+Python (Microsoft), Pylance, Error Lens y GitLens.
+
+3. Linters y Formatters: Calidad de Código
+
+`Ruff`:
+Es un linter y formatter escrito en Rust que reemplaza a Flake8, Isort y Black.
+Es 100 veces más rápido que sus predecesores
+
+`Mypy` o `Pyright`:
+Para el Static Type Checking
+Se aseguran de que no intentes sumar un None con un int
+antes de que siquiera ejecutes el script.
+
+4. Control de Versiones
+
+Git / GitHub / GitLab / Bitbucket
+
+`pre-commit`:
+herramienta que ejecuta automáticamente
+linters y tests justo antes de que hagas un git commit
+Si el código está "sucio", no te deja subirlo
+
+5. Pruebas (Testing)
+
+`Pytest`:
+framework estándar
+potente, legible y tiene un ecosistema de plugins gigante.
+
+6. Estructura de Proyecto Profesional
+Un script profesional no es solo un archivo .py. Suele tener esta cara:
+
+```
+mi_proyecto/
+├── .git/                # Control de versiones
+├── .venv/               # Entorno virtual (ignorado por git)
+├── data/                # Datos de entrada/salida
+├── src/                 # Código fuente (o el nombre del paquete)
+│   └── main.py
+├── tests/               # Pruebas unitarias
+├── .gitignore           # Archivos que Git debe ignorar
+├── pyproject.toml       # La "partida de nacimiento": dependencias y config
+└── README.md            # Instrucciones para humanos
+```
+
+uv:
+Con un solo comando como `uv init` y `uv add requests`
+te crea el entorno, el archivo de configuración y gestiona las dependencias de forma impecable
+
+
+##### uv vs poetry vs pyenv vs pyenv vs Virtualenv
+
+1. Jerarquía de Herramientas
+clasificar estas herramientas en tres capas:
+
+Capa | Herramienta | ¿Qué hace realmente?
+
+`Versión de Python`:
+pyenv
+"Instala Python 3.11, 3.12, 3.14 en tu sistema sin conflictos."
+
+`Aislamiento`
+virtualenv / venv
+"Crea la ""burbuja"" (carpeta .venv) donde viven las librerías de un proyecto específico."
+
+`Gestión Total`
+Poetry / uv
+"Manejan las librerías (pip)
+el aislamiento (venv)
+y la publicación del proyecto." 
+
+
+1. pyenv: El Gestor de Versiones
+ej: proyecto viejo necesita Python 3.9
+y uno nuevo el 3.13.
+
+cambiar de versión de Python globalmente o por carpeta.
+Esencial si no usas uv
+Si usas uv, pyenv se vuelve casi opcional.
+
+2. virtualenv (no nativo) y venv (nativo)
+Burbuja
+Crea una carpeta que contiene una copia ligera de Python.
+Evita que instalar pandas en el Proyecto A rompa el pandas del Proyecto B.
+
+estándar mínimo
+Casi todas las demás herramientas usan esto por debajo
+
+3. Poetry
+Fue el rey absoluto durante años
+Introdujo el archivo pyproject.toml
+como estándar para centralizar todo
+
+Pros: Muy determinista (siempre instala exactamente lo mismo con su archivo lock)
+maneja dependencias complejas de forma increíble.
+
+Contras: Puede ser lento al resolver dependencias.
+
+4. uv: rust
+estándar actual
+Creado por Astral
+herramienta que está jubilando a casi todas las anteriores
+absurdamente rápida (10x a 100x más que pip o poetry).
+
+Hace todo:
+Instala versiones de Python
+crea entornos virtuales, gestiona paquetes y corre scripts.
+
+Reemplaza a pip, pip-tools, venv
+y gran parte de pyenv.
+
+
+Flujo de trabajo: uv
+
+1. Instalar uv
+
+2. Iniciar proyecto
+
+```
+uv init practicas_python
+cd practicas_python
+```
+
+3. Añadir una librería (ej. requests):
+ `uv add requests`
+Esto crea el entorno virtual automáticamente, descarga Python si hace falta y añade la librería
+
+4. Ejecutar tu script
+
+
+##### uv
+
+Desarrollada por Astral (los mismos creadores de Ruff)
+escrita en Rust, lo que la hace extremadamente rápida.
+
+herramienta única
+un solo ejecutable que reemplaza a pip, venv, pyenv, pip-tools y poetry.
+
+1. Fundamentos
+
+`Gestor de Python`:
+uv puede descargar e instalar versiones específicas de Python (3.10, 3.12, etc.)
+sin que tengas que instalarlas manualmente en tu sistema.
+
+`Gestor de Proyectos`:
+Crea una estructura estandarizada con un archivo pyproject.toml
+que define qué necesita tu script para funcionar.
+
+`Gestor de Dependencias (Locking)`:
+Genera un archivo uv.lock
+Este archivo es una "foto fija" de todas las librerías y sus versiones exactas
+garantizando que tu script funcione igual en cualquier computadora
+
+2. Comandos Principales
+
+```
+uv init mi-proyecto
+cd mi-proyecto
+```
+crea una carpeta con un main.py y un pyproject.toml
+
+Gestión de Python
+No necesitas tener Python instalado previamente.
+uv lo gestiona:
+
+```
+uv python install 3.12    # Instala una versión específica
+uv python list           # Lista todas las versiones disponibles y descargadas
+```
+
+Gestión de Librerías (Dependencias):
+Olvídate de pip install
+uv, añades librerías al proyecto y él se encarga de crear el entorno virtual (.venv) automáticamente
+
+```
+uv add requests          # Instala y guarda en pyproject.toml
+uv add pandas numpy      # Puedes añadir varias a la vez
+uv remove requests       # Desinstala y limpia el archivo
+```
+
+Ejecución de Código:
+parte más potente. uv run
+se asegura de que el código se ejecute dentro del entorno correcto con las librerías necesarias
+
+```
+uv run main.py
+```
+
+
+Características "Mágicas" de uv:
+
+1. El Cache Global
+Si instalas pandas en 10 proyectos diferentes, uv solo lo descarga una vez en un cache global
+y usa "enlaces duros" (hardlinks) para cada proyecto.
+
+El espacio en disco se ahorra y la "instalación" en nuevos proyectos es instantánea (milisegundos).
+
+2. Ejecución de Scripts Efímeros (uvx)
+Quieres probar una herramienta (como ruff o httpie)
+sin instalarla en tu proyecto ni en tu sistema?
+
+`uvx ruff check .`
+
+uvx descarga la herramienta en un entorno temporal, la ejecuta y listo
+Mantiene tu sistema limpio.
+
+3. Scripts con dependencias autogestionadas
+Puedes crear un único archivo .py
+que declare sus propias librerías en la cabecera
+Al ejecutarlo con uv, él instalará lo necesario al vuelo.
+
+```
+# /// script
+# dependencies = ["requests"]
+# ///
+import requests
+print(requests.get("https://google.com").status_code)
+```
+
+Tarea | Método Tradicional | Con uv
+
+`Crear Entorno`:
+python -m venv .venv
+uv venv (o automático al usar uv add)
+
+`Instalar paquete`:
+pip install requests,uv add requests
+
+`Versión de Python`:
+Instalar desde python.org,
+uv python install 3.13
+
+`Ejecutar script`:
+source .venv/bin/activate + python main.py
+uv run main.py
+
+
+Instalación de uv:
+Es un solo binario. Dependiendo de tu sistema
+
+Windows (PowerShell):
+`powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"`
+
+Linux:
+`curl -LsSf https://astral.sh/uv/install.sh | sh`
+
+
+
+
+##### venv
+
+
+
+##### pipx
+
+herramienta especializada en aplicaciones
+
+Mientras que pip está diseñado para instalar librerías que vas a usar dentro de tu código
+(como pandas o requests)
+
+pipx está diseñado para instalar programas hechos en Python que quieres usar como herramientas en tu terminal
+
+
+1. Solución
+
+Tradicionalmente, si querías usar una herramienta como Black (formateador)
+o HTTPie (cliente de terminal) de forma global,
+hacías un pip install --user
+
+causaba dos grandes problemas:
+
+Conflictos de dependencias:
+Si la Herramienta A necesita requests v2.0 y la Herramienta B necesita requests v3.0, al instalarlas globalmente, una romperá a la otra
+
+Contaminación del sistema: Llenabas tu Python global de basura que luego era difícil de limpiar
+
+2. Funcionamiento
+pipx automatiza un flujo de trabajo "limpio":
+
+Crea un entorno virtual invisible
+y dedicado para cada aplicación que instales.
+
+Instala la aplicación y sus dependencias dentro de ese entorno aislado
+
+Crea un enlace simbólico (acceso directo)
+del ejecutable en una carpeta que está en tu PATH.
+
+3. Comandos Esenciales de pipx
+
+`pipx install black`
+Ahora puedes usar black en cualquier terminal.
+
+Ejecutar una herramienta sin instalarla (Temporal):
+`pipx run cowsay "Hola Python"`
+Ideal para herramientas que usas una sola vez al mes.
+
+Listar lo que tienes instalado:
+`pipx list`
+
+Actualizar todas tus herramientas:
+`pipx upgrade-all`
+
+
+
+##### pipx vs uv
+
+uv tiene un comando llamado uvx (o uv tool run).
+
+Velocidad:
+Estándar (usa pip)
+Extremadamente rápido (usa Rust)
+
+Aislamiento:
+"Sí, en carpetas específicas"
+"Sí, gestionado por uv"
+
+Uso principal:
+Herramientas permanentes
+Ejecución rápida y efímera
+
+Ecosistema:
+El estándar histórico
+El sucesor moderno
+
+
+Usa pipx solo si estás en un servidor o entorno donde no puedes usar uv
+y necesitas instalar una herramienta de CLI (Interfaz de Línea de Comandos) de forma aislada.
+
+`Instalar una librería para tu script`:
+uv add
+
+`Crear un programa nuevo`:
+uv init
+
+`Instalar una herramienta global` (como un linter):
+uv tool install (o pipx)
+
+`Probar un paquete rápido sin instalar nada`
+uvx (o pipx run)
+
+
+
+##### Ruff
+
+ha dejado obsoletos a casi todos los linters y formateadores tradicionales de Python en tiempo récord
+Si antes necesitabas 4 o 5 herramientas diferentes para mantener tu código limpio, ahora solo necesitas una
+
+Escrito en Rust, lo que lo hace hasta 100 veces más rápido que herramientas anteriores como Flake8 o Black.
+
+1. Función:
+
+Linter: Analiza tu código en busca de errores lógicos
+variables no usadas, importaciones mal hechas y violaciones de estilo
+(reemplaza a Flake8, isort, pydocstyle).
+
+Formatter: Cambia automáticamente el formato de tu código (espacios, comas, comillas)
+para que siempre sea consistente (reemplaza a Black).
+
+2. Conceptos:
+
+Sistema de Reglas
+utiliza códigos para identificar problemas
+
+`F`: Errores detectados por Pyflakes (ej. variables no definidas).
+`E / W`: Errores de estilo (ej. líneas muy largas).
+`I`: Errores en el orden de los imports.
+
+Ruff está diseñado para ser un "drop-in replacement"
+Si ya usabas Black o Flake8, puedes migrar a Ruff sin cambiar ni una coma de tu código
+se adapta a esos estándares.
+
+En proyectos gigantes con miles de archivos donde Flake8 tarda segundos
+Ruff tarda milisegundos. Esto permite que el análisis ocurra mientras escribes, sin lag.
+
+3. Instalación:
+instalarlo es a través de uv o de forma global con uv tool.
+
+`uv add ruff --dev`
+
+forma global:
+`uv tool install ruff`
+
+4. Comandos
+
+ruff check (El Linter):
+Analiza el código y te dice qué está mal.
+
+```
+ruff check .               # Analiza todos los archivos de la carpeta actual
+ruff check --fix .         # ¡Mágico! Corrige automáticamente los errores simples
+```
+
+ruff format (El Formateador):
+Aplica las reglas de estilo (espacios, saltos de línea) de forma automática.
+
+```
+ruff format .
+```
+
+ruff server:
+permite que Ruff se comunique con tu editor
+para darte feedback en tiempo real mientras programas
+
+5. Configuración (pyproject.toml)
+En lugar de tener mil archivos de configuración
+centralizamos todo en el archivo de uv
+
+```
+[tool.ruff]
+line-length = 88  # El estándar de Black
+select = ["E", "F", "I", "UP"] # Elige qué reglas quieres activar
+ignore = [] # Aquí puedes silenciar reglas que te molesten
+
+[tool.ruff.lint.isort]
+combine-as-imports = true # Junta imports similares en una línea
+```
+
+VS Code:
+extensión de Ruff
+actívala para que haga "Format on Save"
+Así, cada vez que presiones Ctrl+S, tu código se ordenará y limpiará solo
+
+
+
+##### MyPy
+
+Python es un lenguaje de tipado dinámico
+significa que una variable puede ser un número ahora
+y un texto después sin que el lenguaje se queje...
+
+MyPy llega para evitar eso introduciendo el Static Type Checking (Comprobación de tipos estática).
+
+1. Funcionamiento
+herramienta que analiza tu código sin ejecutarlo
+para verificar que los tipos de datos que estás usando sean coherentes con lo que declaraste
+
+Si tú dices que una función recibe un número entero (int)
+pero en otra parte del código intentas pasarle una lista
+MyPy te avisará del error antes de que siquiera ejecutes a tu script.
+
+2. Type Hinting (sugerencias de tipos)
+Para que MyPy funcione, debes usar la sintaxis de "Type Hints" de Python
+(introducida en la versión 3.5).
+
+```
+# ❌ Código sin tipos (MyPy no puede ayudar mucho aquí)
+def calcular_total(precio, cantidad):
+    return precio * cantidad
+
+# ✅ Código con tipos (MyPy ahora es tu mejor amigo)
+def calcular_total(precio: float, cantidad: int) -> float:
+    return precio * cantidad
+```
+
+3. Instalación de MyPy
+
+tenerlo como dependencia de desarrollo:
+`uv add mypy --dev`
+
+global:
+`uv tool install mypy`
+
+4. Comandos
+
+Analizar un archivo
+`uv run mypy script.py`
+
+Analizar todo el proyecto
+`uv run mypy`
+
+Modo estricto
+`uv run mypy --strict`
+obliga a tipar absolutamente todo
+eliminando cualquier ambigüedad
+
+5. Conceptos Avanzados
+
+`Optional` y `Union`
+A veces una variable puede ser de dos tipos
+o puede ser nula (`None`).
+
+```
+from typing import Optional, Union
+
+# Puede recibir un entero o un decimal
+def procesar(valor: Union[int, float]):
+    pass
+
+# Puede recibir un string o ser None
+def buscar_usuario(id: int) -> Optional[str]:
+    if id == 1: return "Geralt"
+    return None
+```
+
+Archivos de "Stubs" (.pyi):
+
+##### Algunas librerías viejas no tienen tipos
+
+##### MyPy usa archivos especiales llamados "stubs":
+para saber qué tipos usan esas librerías externas
+Si MyPy se queja de que no encuentra los tipos de una librería
+a veces debes instalar los tipos aparte
+
+```
+uv add types-requests --dev
+```
+
+6. Configuración en pyproject.toml
+Al igual que Ruff, puedes configurar MyPy en tu archivo central:
+
+```
+[tool.mypy]
+python_version = "3.12"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true  # Te obliga a poner tipos en todas las funciones
+```
+
+Ruff:
+Se enfoca en el estilo y errores obvios
+(sintaxis, variables no usadas).
+
+MyPy:
+Se enfoca en la lógica de datos.
+Entiende cómo fluyen los objetos por todo tu programa
+
+
+
+##### MyPy Strict
+
+nivel máximo de dificultad (seguridad) en el tipado de Python
+MyPy deja de ser un asistente que da sugerencias
+se convierte en un auditor estricto que prohíbe cualquier ambigüedad.
+
+En el modo normal, MyPy es permisivo con lo que no conoce
+En modo strict, si no hay una definición de tipo explícita
+MyPy lanzará un error.
+
+
+Activa:
+colección de reglas individuales
+(que también podrías activar por separado en tu pyproject.toml)
+
+Las más importantes son:
+
+1. disallow_untyped_defs = true
+No se permiten funciones sin tipos
+Todas las funciones deben tener tipados sus argumentos y su valor de retorno
+
+mal:
+`def sumar(a, b): return a + b`
+
+bien:
+`def sumar(a: int, b: int) -> int: return a + b`
+
+2. disallow_any_generics = true
+Prohíbe el uso de colecciones genéricas
+No puedes decir simplemente que algo es una "lista"
+debes decir "lista de qué".
+
+Mal: `items: list = []`
+
+Bien: `items: list[str] = []`
+
+3. disallow_untyped_calls = true
+##### No puedes llamar a funciones que no tengan tipos desde una función que sí los tiene
+Esto evita que "contamines" tu código seguro con código inseguro o antiguo.
+
+4. no_implicit_optional = true
+##### Obliga a ser explícito con los valores None
+Si un argumento puede ser nulo, debes usar Optional o | None.
+
+Mal: `def login(user: str = None)`
+
+Bien: `def login(user: str | None = None)`
+
+En el modo estricto, MyPy garantiza que no existan agujeros negros de información (el tipo Any).
+Si una variable entra al sistema como int, MyPy rastreará cada operación para asegurar que nunca se trate como un string por accidente
+
+
+Configuración en pyproject.toml:
+Si usas uv, no necesitas pasar --strict por consola cada vez
+Lo ideal es dejarlo configurado en tu proyecto para que todos los que trabajen en él (y tu linter en VS Code) respeten estas reglas
+
+```
+[tool.mypy]
+# Equivale a poner --strict en la terminal
+strict = true
+
+# Opcionalmente, puedes ser aún más específico o relajar alguna regla
+warn_unused_ignores = true
+warn_redundant_casts = true
+check_untyped_defs = true
+```
+
+Scripts rápidos / Prototipos:
+No
+Te ralentizará demasiado con errores de tipos triviales.
+
+Librerías Públicas (Open Source):
+Sí
+Da seguridad a quienes consumen tu librería.
+
+Sistemas Financieros / Críticos:
+Sí
+Un error de tipo puede costar dinero o seguridad.
+
+Aprendizaje:
+Recomendado
+Te obliga a entender cómo Python maneja los datos internamente.
+
+
+De Normal a Strict
+
+Modo Normal (MyPy no se queja):
+
+```
+def procesar_lista(datos): # MyPy asume que todo es Any
+    return [d.upper() for d in datos]
+
+print(procesar_lista([1, 2, 3])) # Error en ejecución (int no tiene .upper())
+```
+
+Modo Strict (MyPy detecta el error antes de ejecutar):
+
+```
+# Error: Function is missing a type annotation
+def procesar_lista(datos: list[str]) -> list[str]:
+    return [d.upper() for d in datos]
+
+# Error: Argument 1 to "procesar_lista" has incompatible type "list[int]"; 
+# expected "list[str]"
+procesar_lista([1, 2, 3])
+```
+
+
+##### Conflictos con la regla: disallow_untyped_calls = true
+
+
+
+##### Pytest
+
+estándar de la industria
+Aunque Python viene con un módulo interno llamado unittest
+la comunidad prefiere abrumadoramente Pytest porque es mucho más potente
+menos código (menos "boilerplate") y sus mensajes de error son increíblemente claros.
+
+1. Fundamentos
+
+prueba unitaria:
+pequeño fragmento de código que verifica que una "unidad" de tu programa
+normalmente una función o una clase
+se comporte como se espera.
+
+`Assert`:
+Pytest usa la palabra clave nativa de Python assert
+Si la expresión es True, la prueba pasa
+si es False, la prueba falla y Pytest te muestra exactamente por qué.
+
+`AAA (Arrange, Act, Assert)`:
+estructura estándar para escribir cualquier test
+
+Arrange (Organizar):
+`Preparas los datos y el entorno`
+
+Act (Actuar):
+`Ejecutas la función que quieres probar`.
+
+Assert (Afirmar):
+`Verificas que el resultado sea el correcto`
+
+
+1. Instalación y Configuración
+
+Usando nuestro entorno profesional con uv:
+`uv add pytest --dev`
+
+Estructura de carpetas:
+Pytest buscará automáticamente cualquier archivo
+que empiece por `test_*.py` o termine en `*_test.py`.
+
+```
+mi_proyecto/
+    ├── src/
+    │   └── calculadora.py
+    └── tests/
+        └── test_calculadora.py  # ✅ Pytest lo encontrará aquí
+```
+
+
+3. Mi primer Test
+
+Supongamos que en `src/calculadora.py` tienes:
+
+```
+def sumar(a: int, b: int) -> int:
+    return a + b
+```
+
+En tests/test_calculadora:
+
+```
+from src.calculadora import sumar
+
+def test_sumar_numeros_positivos():
+    # Arrange & Act
+    resultado = sumar(2, 3)
+    # Assert
+    assert resultado == 5
+
+def test_sumar_con_cero():
+    assert sumar(5, 0) == 5
+```
+
+4. Comandos Esenciales
+
+Ejecutar todos los tests:
+`uv run pytest`
+
+Modo detallado (Verbose):
+`uv run pytest -v`
+
+Detenerse en el primer fallo:
+`uv run pytest -x`
+
+Ejecutar un test específico:
+`uv run pytest tests/test_calculadora.py::test_sumar_con_cero`
+
+5. Avanzados
+
+`Fixtures (Accesorios)`:
+son funciones que preparan un recurso
+una base de datos, un cliente de API, un archivo temporal
+antes de los tests y lo limpian después
+
+```
+import pytest
+
+@pytest.fixture
+def base_de_datos_limpia():
+    # Setup: preparar algo
+    db = {"usuarios": []}
+    yield db  # Aquí es donde el test "toma" el recurso
+    # Teardown: limpiar después (opcional)
+    db.clear()
+
+def test_agregar_usuario(base_de_datos_limpia):
+    base_de_datos_limpia["usuarios"].append("Geralt")
+    assert len(base_de_datos_limpia["usuarios"]) == 1
+```
+
+`Parametrización`:
+Ej: probar la misma función con 10 datos diferentes
+No escribas 10 tests, usa parametrize.
+
+```
+@pytest.mark.parametrize("a, b, esperado", [
+    (1, 1, 2),
+    (10, 20, 30),
+    (-1, 1, 0),
+    (0, 0, 0),
+])
+def test_sumar_varios(a, b, esperado):
+    assert sumar(a, b) == esperado
+```
+
+6. Configuración en pyproject.toml
+Para no tener que pasar parámetros por la terminal, dejamos la configuración lista en nuestro archivo profesional:
+
+```
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+addopts = "-ra -q" # Muestra reporte de errores al final y modo silencioso
+```
+
+
+##### pyproject.toml: Clasificación / Lista
+
+introducido para resolver un problema histórico:
+la fragmentación de archivos de configuración
+(setup.py, requirements.txt, setup.cfg, tox.ini, etc.).
+
+##### Fundamentos
+
+1. PEP 518 y PEP 621
+Históricamente, Python necesitaba ejecutar un script (setup.py)
+solo para saber qué herramientas necesitaba para instalarse
+Esto era un riesgo de seguridad y un caos lógico.
+
+`518`: Introdujo el pyproject.toml para definir qué herramientas
+como setuptools, poetry o uv
+se necesitan para construir el proyecto.
+
+`PEP 621`: Estandarizó cómo se escribe la información del proyecto
+nombre, versión, dependencias
+para que todas las herramientas lean lo mismo.
+
+2. Estructura de un pyproject.toml Maestro
+utiliza el formato TOML (Tom's Obvious, Minimal Language),
+fácil de leer para humanos y máquinas
+
+Se divide en secciones llamadas "tablas".
+
+`Información del Proyecto ([project])`:
+partida de nacimiento de tu software
+Al usar estándares de la PEP 621,
+herramientas como uv o pip saben qué instalar
+
+```
+[project]
+name = "mi-script-pro"
+version = "0.1.0"
+description = "Un script de práctica con entorno profesional"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "requests>=2.31.0",
+]
+```
+
+`Sistema de Construcción ([build-system])`:
+Indica qué "motor" se usa para empaquetar el proyecto
+Si usas uv, suele configurarse automáticamente
+
+```
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+```
+
+`Herramientas de Desarrollo ([tool])`
+En lugar de tener un archivo para Ruff, otro para MyPy y otro para Pytest
+metes todo aquí. Es la "central de mando".
+
+```
+[tool.ruff]
+line-length = 88
+select = ["E", "F", "I"] # Errores, Pyflakes e Isort (orden de imports)
+
+[tool.mypy]
+strict = true # Activamos el modo máximo de seguridad que discutimos
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-v"
+```
+
+3. Profesional:
+
+Centralización: Tienes un solo lugar para ver la salud del proyecto
+Si quieres cambiar el largo de línea de tu código, vas al `pyproject.toml`.
+Si quieres añadir una dependencia, vas al `pyproject.toml`
+
+Determinismo: Al definir `requires-python`
+evitas que alguien intente correr tu código en una versión de Python que no soporta las funciones que usaste
+
+Portabilidad: Cualquier desarrollador senior que vea tu carpeta y encuentre un pyproject.toml sabe exactamente qué hacer
+`uv sync o pip install`
+el entorno estará listo en segundos
+
+4. Archivo Maestro:
+Ej:
+configuración definitiva que une todo lo que hemos aprendido (uv, Ruff, MyPy Strict y Pytest).
+
+```
+[project]
+name = "practicas-python"
+version = "0.1.0"
+description = "Entorno profesional de aprendizaje"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = []
+
+[tool.uv]
+dev-dependencies = [
+    "mypy>=1.10.0",
+    "pytest>=8.0.0",
+    "ruff>=0.4.0",
+]
+
+[tool.ruff]
+# Configuración de linter y formateador
+line-length = 88
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "UP", "B"]
+# E: Error, F: Pyflakes, I: Isort, N: PEP8-naming, UP: Upgrade, B: Bugbear
+
+[tool.mypy]
+strict = true
+python_version = "3.12"
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+```
+
+5. Flujo
+
+1. Creas tu carpeta: mkdir mi-practica && cd mi-practica.
+
+2. Inicias: uv init.
+
+3. Pegas esta configuración en el pyproject.toml.
+
+4. Ejecutas uv sync.
+
+
+##### Dependencies (prod)
+
+dependencies:
+Son las librerías que tu código importa
+y utiliza para ejecutar su lógica principal
+Si falta una de estas, el programa lanza un ImportError y muere.
+
+dev-dependencies (Desarrollo): Son herramientas que tú
+usas para escribir, limpiar o probar el código
+como MyPy o Pytest
+pero el usuario final no las necesita para correr el programa
+
+1. Ciencia de Datos y Análisis
+Si tu script analiza archivos CSV
+genera gráficos o hace cálculos matemáticos complejos:
+
+```
+dependencies = [
+    "pandas>=2.2.0",    # Para manipular tablas de datos
+    "numpy>=1.26.0",     # Para cálculos numéricos
+    "matplotlib>=3.8.0", # Para crear gráficos y diagramas
+]
+```
+
+2. Automatización y Web Scraping
+Si tu script entra a páginas web para extraer información o interactúa con APIs:
+
+```
+dependencies = [
+    "requests>=2.31.0",      # Para hacer peticiones HTTP (APIs)
+    "beautifulsoup4>=4.12.0", # Para extraer datos de HTML
+    "playwright>=1.42.0",    # Para automatizar navegadores reales
+]
+```
+
+3. Desarrollo de APIs y Servidores Web
+Si estás creando un servicio que escucha peticiones en un puerto:
+
+```
+dependencies = [
+    "fastapi>=0.110.0",   # El framework web moderno
+    "uvicorn>=0.27.0",   # El servidor para correr FastAPI
+    "pydantic>=2.6.0",   # Para validación de datos
+    "sqlalchemy>=2.0.0", # Para conectar con bases de datos
+]
+```
+
+4. Utilidades de Terminal (CLI)
+Si quieres que tu script tenga una interfaz de comandos bonita con colores y menús:
+
+```
+dependencies = [
+    "rich>=13.7.0",  # Para textos con colores, tablas y barras de progreso
+    "typer>=0.9.0",  # Para crear comandos de terminal fácilmente
+    "python-dotenv>=1.0.0", # Para leer variables de entorno (claves secretas)
+]
+```
+
+Pregunta: "Si borro esta librería, ¿mi import en main.py fallará?"
+
+1. Si la respuesta es SÍ (ej. import requests):
+Va en dependencies.
+Comando uv: `uv add requests`
+
+2. Si la respuesta es NO (ej. pytest, que solo corres desde la terminal):
+Va en dev-dependencies.
+Comando uv: `uv add --dev pytest`
+
+
+
+##### Clasificación de las configuraciones
+
+Se organiza en tablas (secciones encabezadas por corchetes [...]).
+Cada una tiene una responsabilidad específica
+para que las herramientas de Python entiendan cómo tratar tu proyecto
+
+1. Información del Proyecto ([project])
+
+estándar de metadatos (PEP 621).
+Define qué es tu proyecto y qué necesita para ejecutarse.
+
+name: El nombre de tu paquete o script.
+version: La versión actual (ej. 0.1.0).
+description: Breve resumen de qué hace el proyecto.
+requires-python: Define la compatibilidad de versión (ej. ">=3.12"). Es crucial para evitar errores de sintaxis en versiones viejas.
+dependencies: Lista de librerías necesarias en producción (las que el usuario final debe tener instaladas).
+optional-dependencies: Grupos de librerías extras (ej. [project.optional-dependencies] extra = ["pandas"]).
+
+2. Sistema de Construcción ([build-system])
+Indica a las herramientas de instalación (como pip)
+qué motor debe usar para convertir tu código en un paquete distribuible.
+
+requires: Lista de herramientas para construir el proyecto (ej. ["hatchling"] o ["setuptools"]).
+build-backend: El punto de entrada del motor de construcción.
+
+3. Gestión con uv ([tool.uv])
+Específico para el flujo de trabajo con la herramienta uv.
+
+dev-dependencies: Librerías que solo tú usas para desarrollar (linters, testers, etc.). No se incluyen cuando el proyecto se instala para uso final.
+package: Indica si el proyecto debe tratarse como un paquete instalable o simplemente como un entorno de scripts.
+
+4. Calidad de Código ([tool.ruff])
+Configura el linter y el formateador más rápido del ecosistema.
+
+line-length: Define el máximo de caracteres por línea (típicamente 88 o 100).
+target-version: La versión de Python para la que Ruff debe optimizar las correcciones.
+lint.select: Lista de reglas activas (ej. "E" para errores, "F" para Pyflakes, "I" para ordenar imports).
+lint.ignore: Reglas específicas que quieres omitir
+
+5. Tipado Estático ([tool.mypy])
+Controla cómo MyPy analiza la lógica de tus datos.
+
+strict = true: Activa todas las comprobaciones de seguridad posibles.
+python_version: Asegura que MyPy valide el código según la versión de Python que estás usando.
+ignore_missing_imports: Evita que MyPy lance errores si una librería de terceros no tiene archivos de tipos
+
+6. Pruebas Unitarias ([tool.pytest.ini_options])
+Define el comportamiento de tus tests.
+
+testpaths: Directorios donde Pytest debe buscar pruebas (ej. ["tests"]).
+pythonpath: Indica dónde está el código fuente para que los tests puedan importarlo correctamente (ej. ["src"] o ["."]).
+addopts: Argumentos automáticos para la terminal (ej. "-v" para ver detalles o "--strict-markers").
+
+[project]
+¿Qué es mi programa y qué librerías usa?
+
+[build-system]
+¿Cómo se compila/instala este programa?
+
+[tool.uv]
+¿Qué herramientas uso para programar?
+
+[tool.ruff]
+¿Cómo debe verse y limpiarse mi código?
+
+[tool.mypy]
+¿Cómo de estricta es la validación de mis datos?
+
+[tool.pytest]
+¿Cómo se ejecutan mis pruebas?
+
+
+
+#### MyPy
+
+1. Escenario: strict = false + ignore_missing_imports = true
+desactivando el "modo paranoico"
+pero manteniendo la "venda en los ojos" para librerías externas.
+
+MyPy se vuelve mucho más silencioso. Si olvidas poner el tipo de retorno en una función o si no tipas los argumentos
+##### Asumirá que todo lo que no conoce es de tipo Any (el tipo "comodín" que desactiva las comprobaciones).
+Pierdes la trazabilidad. Si una función devuelve un Any, y luego usas ese resultado en otra parte
+MyPy dejará de protegerte en toda esa cadena de ejecución.
+
+##### Con ignore_missing_imports = true: Si importas una librería como pandas (que a veces requiere stubs aparte)
+MyPy simplemente ignorará el import y tratará todo lo que venga de esa librería como Any.
+
+2. Configuración para strict = false
+Cuando no usas strict
+MyPy solo se queja si encuentra una contradicción obvia en el código que sí está tipado
+
+Una configuración "relajada" pero útil en un pyproject.toml se vería así:
+
+```
+[tool.mypy]
+strict = false
+python_version = "3.12"
+ignore_missing_imports = true
+
+# Opciones manuales para no perder el control total:
+check_untyped_defs = true  # Analiza el cuerpo de funciones sin tipos
+warn_return_any = false    # No molesta si una función devuelve Any
+warn_unused_ignores = true # Te avisa si un '# type: ignore' ya no es necesario
+```
+
+Esta configuración es común en proyectos donde se está migrando código antiguo a Python moderno y no se puede tipar todo de golpe.
+
+3. strict true or false
+
+strict = true:
+Te obliga a entender cómo fluyen los datos en Python
+Aprenderás a usar Optional, Union, Generic
+y los nuevos protocolos de la 3.12 mucho más rápido.
+
+Documentación viva: Los tipos son documentación que nunca se desactualiza
+Un programador senior prefiere leer def buscar(id: int) -> User | None
+que tener que leer el cuerpo de la función para saber qué devuelve.
+
+Mantenimiento a largo plazo
+En un proyecto de práctica, hoy sabes qué hace cada función
+En 6 meses, no lo recordarás
+MyPy Strict será el "test" que te diga si tus cambios están rompiendo la lógica de datos
+
+strict = false:
+Usa strict = false únicamente si estás prototipando algo muy rápido (un script que vas a borrar en 2 horas)
+o si estás trabajando con librerías de Ciencia de Datos muy dinámicas que hacen que el tipado sea una pesadilla burocrática.
+
+##### strict = true. Si una librería externa te da muchos problemas, es mejor usar la tabla de overrides en el pyproject.toml
+para relajar solo esa librería en lugar de bajar la guardia en todo tu proyecto.
+
+
+##### `strict = true` y `ignore_missing_imports = true
+
+Extremadamente riguroso con el código que escribes tú
+pero decides ignorar por completo la validez de las herramientas externas que utilizas.
+
+1. Fortaleza: strict = true
+MyPy activa automáticamente unas 15 reglas de seguridad
+
+Prohibición del "Código Invisible":
+No puedes dejar ninguna función sin anotar.
+Si escribes def suma(a, b):, MyPy detendrá la ejecución hasta que definas qué son a y b.
+
+Adiós a la ambigüedad en Genéricos: Ya no existe list o dict.
+Ahora todo debe ser `list[str]` o `dict[str, int]`.
+Esto te obliga a pensar en la estructura de tus datos desde el segundo uno.
+
+Control de Nulos (Optional): Es la consecuencia más beneficiosa.
+##### Si una variable puede ser None, MyPy te obligará a validarla con un if x is not None: antes de usarla.
+##### Esto elimina el 90% de los errores en producción
+
+2. Consecuencias de ignore_missing_imports = true
+silenciador global
+##### Si no encuentras los tipos de una librería que importé, no me molestes
+
+Desaparición de errores de configuración
+Te ahorras ver el molesto mensaje:
+Skipping analyzing 'pandas': module is installed, but missing library stubs.
+
+Pérdida de inteligencia en el editor:
+dejará de darte autocompletado sugerido para esa librería
+porque MyPy no la está analizando.
+
+Creación de "Zonas Oscuras:
+Cualquier librería ignorada se convierte automáticamente en el tipo Any.
+
+
+Tu código es estricto (seguro).
+Importas una librería ignorada (insegura/Any).
+Llamas a una función de esa librería: resultado = libreria.hacer_algo().
+Consecuencia: La variable resultado ahora es de tipo Any.
+
+##### Como Any es un comodín, MyPy dejará de revisar cualquier línea de código donde uses resultado
+
+
+
+##### ignore_missing_imports = false
+
+Si una librería te da error de tipos, no la ignores globalmente
+##### En su lugar, instala sus tipos (ej: types-requests)
+o ignora solo ese módulo en la sección [[tool.mypy.overrides]] de tu pyproject.toml.
+
+
+##### Archivos de interfaz o Stubs
+
+1. Tipos de las librerías/módulos nativas
+Si abres el código fuente de un módulo nativo como os o math en tu instalación de Python
+verás que la mayoría no tienen Type Hints
+(como def func(x: int)).
+
+##### Muchos de estos módulos están escritos incluso en C por rendimiento
+por lo que no hay código Python que MyPy pueda leer directamente.
+
+TypeShed:
+biblioteca gigantesca de archivos con extensión .pyi.
+
+un archivo .py contiene el código que se ejecuta.
+Un archivo .pyi (Stub) contiene solo las firmas de las funciones y sus tipos, sin la lógica.
+
+2. Funcionamiento de MyPy
+
+Cuando tú escribes import json y luego json.loads(variable), MyPy hace lo siguiente:
+
+Busca el Stub: En lugar de mirar el código real de json, MyPy busca en su base de datos interna de Typeshed el archivo json.pyi.
+
+Lee el contrato: En ese archivo encuentra algo como:
+def loads(s: str | bytes, ...) -> Any: ...
+
+Valida tu código: Si tú intentas pasarle un número a loads(), MyPy lanza el error porque el archivo .pyi dice que solo acepta texto o bytes.
+
+
+3. Librería sin tipos
+
+Módulos Nativos: MyPy siempre sabe qué son porque vienen incluidos en su instalación.
+
+Librerías de Terceros (Pip):
+Si la librería incluye un archivo llamado py.typed
+MyPy lee los tipos directamente de ella.
+Si no tiene tipos ni archivos .pyi en Typeshed,
+MyPy se "rinde" y marca todo como Any.
+
+Puedes crear archivos .pyi para tu propio código si quieres ocultar la implementación y solo exponer los tipos
+aunque lo normal en 2026 es escribir los tipos directamente en el archivo .py.
+
+
+
+##### Entorno con uv
+
+1. Python local
+descargar versiones de Python de forma aislada
+`uv python install 3.12`
+
+Actualiza el "pin" del proyecto:
+`uv python pin 3.12`
+El error dice que tienes un archivo oculto llamado .python-version que está bloqueando a uv en la 3.11. Cámbialo con:
+actualizará el archivo .python-version y le dirá a uv: "En esta carpeta, usa siempre la 3.12 aunque el sistema tenga otra
+
+2. entorno
+El archivo .python-version es una orden explícita. Si ese archivo dice 3.11 y tu pyproject.toml dice >=3.
+uv entra en un conflicto lógico y se detiene para que tú decidas a quién creerle
+Al ejecutar uv python pin 3.12, resuelves ese conflicto.
+
+Una vez que el "pin" coincida con tus requerimientos
+la próxima vez que hagas uv run o uv sync, uv creará el entorno .venv con la 3.12 automáticamente, descargándola de internet si es necesario
+
+3. configs modernas
+
+```
+[dependency-groups]
+dev = [
+    "mypy>=1.10.0",
+    "pytest>=8.0.0",
+    "ruff>=0.4.0",
+]
+```
+
+Borra el archivo .python-version (o ejecuta uv python pin 3.12).
+
+Modifica tu pyproject.toml cambiando [tool.uv.dev-dependencies] por [dependency-groups] (y asegúrate de que el nombre del grupo sea dev).
+
+Ejecuta de nuevo:
+`uv sync`
+
+
+4. python de uv
+descarga en una carpeta de caché central de tu usuario (normalmente en ~/.local/share/uv/python o similar).
+
+Cuando haces uv python install 3.12, uv descarga el binario y lo guarda en su almacén central
+Una vez descargado, está disponible para todos tus proyectos
+No necesitas volver a descargarlo para un segundo proyecto que también use la 3.12.
+
+lo más cómodo es hacerlo dentro de la carpeta de tu proyecto por una razón práctica: el comando pin.
+
+uv python install 3.12 (Lo descarga al almacén central).
+uv python pin 3.12 (Crea el archivo .python-version aquí mismo).
+
+Si lo haces en tu home, el comando pin creará ese archivo en el home,
+eso podría causar que uv intente usar la 3.12 para todo lo que hagas en tu computadora, lo cual no siempre es lo que quieres
+
+
+
+#### Practicas 1
+
+
+##### 1. Planteamiento
+
+Dividir el problema en cuatro fases lógicas:
+
+1. Fase de Normalización (Limpieza)
+Antes de contar nada, tenemos que asegurarnos de que los datos sean uniformes
+Si no lo hacemos, el programa pensará que "Hola", "hola" y "hola." son tres cosas distintas
+
+`Transformación`:
+Convertir todo el párrafo a minúsculas
+Así unificamos "Python" con "python".
+
+`Decisión Técnica`:
+Cuándo limpiamos la puntuación?
+Si limpiamos los puntos antes de contar oraciones
+perderemos la métrica de las oraciones
+Por lo tanto, la limpieza debe ser selectiva o secuencial
+
+2. Fase de Segmentación (División)
+Concepto de "Divide y Vencerás".
+
+Necesitamos romper el bloque de texto en unidades más pequeñas.
+
+`Identificación de Oraciones`:
+Buscamos los caracteres que delimitan una idea completa: el punto (.)
+la exclamación (!) y la interrogación (?).
+Contamos cuántas veces aparecen estos delimitadores.
+
+`Identificación de Palabras`:
+Una vez que tenemos el texto
+lo "troceamos" usando los espacios en blanco como guía.
+
+`Limpieza de Ruido`:
+En cada palabra resultante, debemos eliminar los caracteres
+que no sean letras (comas, paréntesis, puntos finales)
+para que la palabra "datos," se convierta en "datos".
+
+3. Fase de Procesamiento (La Lógica del Contador)
+Entra en juego la estructura de datos que mencionaste: el Diccionario.
+
+`Inicialización`: Creamos un diccionario vacío.
+`Iteración (El Bucle)`: Recorremos la lista de palabras una por una
+`Lógica de Verificación`: 
+¿La palabra ya existe en mi diccionario? -> Incremento su valor en 1.
+¿Es la primera vez que veo esta palabra? -> La agrego al diccionario con un valor inicial de 1.
+
+4. Fase de Salida (Estructuración del Resultado)
+Finalmente, empaquetamos todo
+No queremos variables sueltas
+sino un objeto (o diccionario) que represente el informe final.
+
+`Estructura esperada`:
+conteo_palabras: { "palabra1": X, "palabra2": Y }
+total_oraciones: Z
+
+5. Flujo lógico
+
+1. Entrada: Texto crudo.
+2. Paso A: Contar puntos/signos para las oraciones.
+3. Paso B: Pasar todo a minúsculas y quitar puntuación sobrante.
+4. Paso C: Convertir el texto en una lista de palabras.
+5. Paso D: Llenar el diccionario con un bucle.
+6. Salida: Informe final.
+
+6. Planteamiento profesional
+Separa las responsabilidades
+
+Si mañana te pido que además de oraciones cuentes párrafos
+solo tendrías que añadir un paso en la Fase 2
+sin romper la lógica del contador de la Fase 3
+
+
+ 
+##### 2. Elección de librerías/Módulos
+
+Elegir las herramientas adecuadas:
+
+`Navaja de Ockham`: principio fundamental en ingeniería de software:
+Si el problema se puede resolver de forma elegante con lo que ya trae Python
+esa es la opción ganadora por rendimiento y simplicidad.
+
+1. Evaluación de la Librería Estándar: (Enfoque "Vanilla")
+Mirar lo que ofrece Python por defecto
+
+Para el ejercicio: tres módulos que son candidatos directos
+
+`string`
+Esencial para obtener una lista rápida de todos los caracteres de puntuación
+(string.punctuation) sin tener que escribirlos a mano.
+
+`collections`
+vive la clase Counter
+Es una estructura diseñada específicamente para contar elementos de forma eficiente
+En lugar de hacer un bucle manual con if word in dict
+`Counter` lo hace en una sola línea de código optimizada en C.
+
+`re` (Regular Expressions):
+Para contar oraciones
+un simple .split('.') fallará con las exclamaciones o interrogaciones
+Las expresiones regulares nos permiten definir un "patrón de ruptura"
+(ej: cualquier carácter que sea ., ! o ?).
+
+2. Evaluación de Librerías de Terceros (NLP)
+Ej: proyecto de Inteligencia Artificial a gran escala, pensaría en:
+
+NLTK o spaCy:
+Son los titanes del Procesamiento de Lenguaje Natural.
+
+Añaden megabytes de dependencias y complejidad
+
+3. Árbol de Decisión Técnica
+Para elegir, paso cada opción por este filtro:
+
+`¿Es una tarea común?`
+Sí, contar y limpiar texto es básico.
+-> Módulos Nativos.
+
+`¿La lógica es compleja?`
+El conteo de oraciones con múltiples delimitadores sugiere que un split() básico no basta
+-> Uso de re (Regex).
+
+`¿El rendimiento es crítico?`
+Para un párrafo no
+pero usar Counter es una buena práctica de escalabilidad
+-> Uso de collections.Counter
+
+4. Selección Final
+
+`re (Regex)`:
+La usaría para la Fase de Segmentación
+Un patrón como `r'[.!?]+'` nos permite encontrar el final de las oraciones de forma robusta
+incluso si el usuario usa puntos suspensivos o varios signos de exclamación seguidos.
+
+`collections.Counter`:
+La usaría para la Fase de Procesamiento
+Es la forma más "Pythonica" y eficiente de generar el diccionario de frecuencias
+Además, se integra perfectamente con MyPy, ya que Counter es un subtipo de dict.
+
+`Métodos de str (Nativos)`
+Para la Fase de Normalización, los métodos lower() y strip() son más que suficientes
+No hace falta importar nada extra para limpiar una palabra de espacios o mayúsculas
+
+5. Arquitectura Limpia
+Incluso en un script pequeño 
+separaría estas herramientas en funciones distintas:
+
+`obtener_oraciones(texto: str) -> int` (Usa re)
+
+`limpiar_palabra(palabra: str) -> str` (Usa string)
+
+`contar_frecuencias(palabras: list[str])` -> dict[str, int] (Usa Counter)
+
+
+
+##### 3. Normalización/sanitización, transformación, errores
+
+1. Normalización y Sanitización: Unicidad
+Eliminar el "ruido"
+para que MyPy y tu lógica no tengan que lidiar con casos infinitos.
+
+`Case Folding`:
+No basta con bajar a minúsculas
+entornos profesionales analiza si existen caracteres especiales
+(como la ẞ alemana o tildes)
+La normalización busca que "Árbol" y "arbol" sean la misma entidad
+
+`Sanitización Selectiva`:
+No puedes borrar todo lo que no sea letra de golpe.
+
+Punto ciego: Si borras todos los puntos
+pierdes el contador de oraciones.
+
+Solución: Aplicamos una sanitización por capas
+Primero extraemos las métricas de estructura (oraciones)
+luego "limpiamos" el residuo para las frecuencias (palabras).
+
+`Unicode Normalization`:
+vital decidir si n y ñ se tratan igual
+(normalmente no, pero es una decisión de diseño).
+
+2. Transformación: Inmutabilidad
+Convertimos el dato de un estado a otro
+La clave es no destruir el dato original
+mientras creas el nuevo.
+
+`Tokenización (Mapping)`:
+Pasamos de un bloque amorfo (String)
+a una lista de unidades (List).
+La estrategia aquí es definir qué separa a una palabra:
+¿Solo el espacio?
+¿Qué pasa con los guiones en "socio-económico"?
+
+`Reducción (Reduction)`:
+proceso de convertir esa lista en un Diccionario de frecuencias.
+
+Concepto: Se transforma una estructura lineal
+en una estructura asociativa (Hash Map).
+
+`Preservación de Estado`:
+Durante la transformación
+el párrafo original debe permanecer intacto
+Esto permite que, si el proceso de conteo falla
+el dato original siga disponible para un re-intento
+o un log de error.
+
+3. Manejo de Errores: Resiliencia
+Respuesta esperada ante una situación inesperada.
+
+`Validación de Tipo (Contrato)`:
+Antes de procesar, verificamos que lo que entró sea realmente un texto
+Qué pasa si el usuario envía un número o un None?
+
+`Fallo Silencioso vs. Ruidoso`:
+
+Fallo Silencioso (Graceful Degradation):
+Si el texto está vacío
+devolvemos un diccionario vacío y 0 oraciones
+El programa no muere.
+
+Fallo Ruidoso (Fail-Fast):
+Si la entrada no es un String
+lanzamos una excepción clara
+Es mejor detenerse que intentar procesar algo que corromperá el resultado
+
+`Casos de Borde (Edge Cases)`:
+Qué pasa si el párrafo son solo espacios en blanco?
+¿Qué pasa si el párrafo no tiene puntos finales?
+(¿Es una oración o cero?).
+
+
+Normalización:
+`Uniformidad`
+.lower()
+quitar tildes.
+
+Sanitización:
+`Seguridad/Limpieza`
+Quitar caracteres de control,
+HTML o emojis.
+
+Transformación:
+`Utilidad`
+"split(), Counter(), map()."
+
+Errores:
+`Robustez`
+"try/except
+validación de if not text."
+
+
+¿Qué es lo más raro que podría pasar?:
+
+¿Un libro entero pegado en el input? (Rendimiento).
+¿Un texto en un idioma con caracteres que no son ASCII? (Codificación).
+¿Un ataque de "inyección" donde el texto intenta engañar al sistema? (Seguridad).
+
+
+
+
+##### Funciones/métodos/librerías/modulos para normalización/sanitización/transformación/errores
+
+##### Normalización 
+
+ofrece herramientas que van desde el manejo básico de texto
+hasta estándares internacionales de codificación
+
+1. Métodos Nativos de str
+primera línea de defensa
+No requieren importaciones y son extremadamente rápidos
+
+`.lower() / .upper()`: Convierten a minúsculas o mayúsculas.
+
+`.casefold()`: Similar a .lower() más agresivo
+Está diseñado para eliminar todas las distinciones de caso en Unicode
+(necesario para comparar correctamente idiomas como el alemán).
+
+`.strip() / .lstrip() / .rstrip()`:
+Eliminan espacios en blanco (o caracteres específicos) al inicio y al final de la cadena
+
+`.replace(old, new)`: Sustitución básica de caracteres o patrones fijos.
+
+2. Módulo unicodedata (Nivel Estándar)
+librería estándar y es vital para tratar con tildes
+símbolos y caracteres especiales de manera profesional.
+
+`unicodedata.normalize(form, unistr)`:
+Transforma caracteres equivalentes en una representación única
+
+Con:
+
+`NFD`: Separa los caracteres de sus acentos
+(ej. la "á" se convierte en "a" + "´").
+
+`NFC`: Combina caracteres (forma compacta).
+
+`unicodedata.category(char)`:
+Devuelve la categoría Unicode
+(ej. si es una letra, un número o un signo de puntuación)
+Muy útil para filtrar "ruido" manteniendo el texto.
+
+3. Módulo re
+normalizaciones complejas que dependen de patrones
+y no de caracteres fijos.
+
+`re.sub(pattern, repl, string)`:
+Permite limpiar el texto de forma masiva
+(ej. "borra todo lo que no sea una letra o espacio").
+
+`re.split(pattern, string)`:
+Divide el texto usando múltiples delimitadores
+ideal para normalizar la estructura de las oraciones
+
+4. Librerías Especializadas (terceros)
+Si el proyecto escala o requiere reglas lingüísticas específicas.
+
+`Unidecode`:
+librería muy popular que convierte cualquier carácter Unicode a su representación más cercana en ASCII
+(ej. convierte "naranja" en japonés o "árbol" con tilde a texto plano inglés).
+
+`string (Módulo nativo)`:
+Provee constantes como string.punctuation o string.digits
+que se usan junto con métodos de limpieza para normalizar el contenido eliminando símbolos.
+
+`ftfy (fixes text for you)`:
+Una librería diseñada para arreglar "Mojibake"
+(cuando el texto se rompe por problemas de codificación como UTF-8 vs Latin-1).
+
+Ej:
+
+Bajar a minúsculas (Seguro):
+text.casefold()
+
+Quitar tildes:
+unicodedata.normalize('NFD', ...)
+
+Eliminar símbolos/puntuación:
+re.sub(r'[^\w\s]', '', text)
+
+Convertir a ASCII puro:
+unidecode.unidecode(text)
+
+
+
+##### Sanitización
+
+
+
+##### Transformación
+
+
+
+##### Errores
+
+
+
+##### 4. Arquitectura para el planteamiento
+
+Mentalidad de Arquitectura Limpia (Clean Architecture).
+La idea no es solo "que funcione", sino que el código sea testeable, mantenible
+##### que la lógica de negocio esté aislada de los detalles técnicos.
+
+1. Patrón Fundamental: IPO (Input-Process-Output)
+A nivel macro, dividimos el flujo en tres bloques estancos
+Esto permite que, si mañana el texto viene de un archivo PDF en lugar de un string
+solo cambies el "Input" sin tocar la lógica de análisis
+
+`Entrada (Input)`: Recibe el párrafo crudo.
+`Proceso (Process)`: La "Caja Negra" que contiene las reglas de análisis.
+`Salida (Output)`: Estructura el diccionario y los contadores para el usuario.
+##### Fundamentos
+
+2. Capas de Responsabilidad (Separation of Concerns)
+Ej: tres niveles de abstracción para este analizador
+
+`A. Capa de Dominio (Core Logic)`:
+reside la verdad del negocio
+Son funciones puras que no dependen de nada externo.
+
+`Responsabilidad`:
+Cómo se limpia una palabra?
+Qué define el final de una oración?
+
+`Independencia`:
+Si cambias la librería re por otra
+esta capa debería verse afectada lo mínimo posible
+porque las reglas de "qué es una palabra" no cambian.
+
+`B. Capa de Aplicación (Orquestación)`:
+El director
+No sabe limpiar palabras
+pero sabe a qué función del Dominio llamar primero
+y a cuál después
+
+`Responsabilidad`:
+Recibir el párrafo
+llamar al limpiador
+luego al segmentador
+finalmente al contador
+
+`Flujo`:
+Coordina el paso de datos entre las funciones de dominio
+
+`C. Capa de Infraestructura / Punto de Entrada (Entrypoint)`:
+Cáscara exterior
+
+`Responsabilidad`:
+Capturar el texto
+(ya sea por un input() de consola o una variable)
+y mostrar el resultado final.
+
+`Tratamiento de errores`:
+Aquí es donde decidimos qué hacer si el texto está vacío
+o no es un string
+
+3. Modelo de Datos: DTO - Data Transfer Object
+En lugar de pasar variables sueltas entre funciones
+definiremos cómo luce la información.
+
+`Entrada`: Un string plano
+
+`Salida`: Un "Objeto de Resultado"
+(en Python puede ser un TypedDict o un NamedTuple)
+Vital para que MyPy (en modo strict)
+sepa exactamente qué llaves tiene el diccionario resultante
+y no tengamos errores de "llave no encontrada" en el futuro.
+
+4. Patrón "Pipeline" (Tubería)
+Dado que es un análisis secuencial
+la arquitectura se beneficia del patrón Pipeline
+El texto fluye a través de una serie de transformaciones
+donde cada etapa es una función independiente:
+
+1. Ingesta
+2. Conteo de Oraciones
+3. Normalización
+4. Tokenización (dividir en palabras)
+5. Frecuencia
+6. Reporte
+
+5. Principios SOLID
+
+`S (Single Responsibility)`:
+Una función cuenta oraciones, otra cuenta palabras
+No mezclamos ambas en un solo bucle gigante
+
+`O (Open/Closed)`:
+El sistema debe estar abierto a nuevas métricas
+(ej. contar caracteres) pero cerrado a modificar la lógica de limpieza ya existente
+
+`D (Dependency Inversion)`:
+El orquestador no debería depender de implementaciones rígidas
+Por ejemplo, podríamos pasarle la "lista de caracteres de puntuación"
+como un parámetro en lugar de tenerla escrita a fuego dentro de la función
+
+
+Entidades:
+Reglas de limpieza y conteo.
+`Dominio Puro`
+
+Casos de Uso:
+El flujo: analizar_parrafo().
+`Orquestación`
+
+Controlador:
+"if __name__ == ""__main__"":.",
+`Punto de Entrada`
+
+Contrato:
+El esquema del diccionario final.
+`Tipado Estricto`
+
+
+##### Pytest: testing de arquitectura 
+
+1. Patrón IPO (Input-Process-Output)
+
+2. Capas de Responsabilidad: Separation of Concerns
+
+Capa de Dominio (Core Logic):
+`Verdad del negocio, funciones puras`
+ej: las reglas de "qué es una palabra" no cambian.
+
+Capa de Aplicación (Orquestación):
+`Llamadas a las funciones del dominio`
+Coordina el paso de datos entre las funciones de dominio
+
+Capa de Infraestructura / Punto de Entrada (Entrypoint):
+`Capturar input, mostrar resultado final`
+qué hacer según el estado de ese input
+
+3. Modelo de Datos: DTO - Data Transfer Object
+cómo luce la información.
+salida: Objeto de Resultado
+
+4. Patron Pipeline: tubería
+Ej: análisis secuencial
+texto fluye a través de una serie de transformaciones
+cada etapa es una función independiente
+
+Ingesta → 2. Conteo de Oraciones → 3. Normalización → 4. Tokenización (dividir en palabras) → 5. Frecuencia → 6. Reporte.
+
+5. SOLID
+
+S (Single Responsibility):
+Funciones para cada transformación
+
+O (Open/Closed):
+sistema abierto a nuevas entidades
+pero cerrado a modificar la lógica de limpieza ya existente.
+
+D (Dependency Inversion):
+orquestador no debería depender de implementaciones rígidas
+paso por params, funciones/callbacks params
+
+
+
+
+##### 1. Ejercicio: (El Analizador de Texto):
+
+Crea un script que reciba un párrafo largo
+y devuelva un diccionario con la frecuencia de cada palabra,
+ignore mayúsculas y cuente cuántas oraciones hay
+
+
+##### Simple
+
+
+##### Con arquitectura
+
+
+
+
+
+##### 2. Ejercicio:
+
+
+
+
+
+#### 3. Automatización
+
+
+
+
+##### RegEx
+
 
 
 
