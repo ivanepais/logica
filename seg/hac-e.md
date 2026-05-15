@@ -20130,7 +20130,7 @@ validación de if not text."
 
 
 
-##### Funciones/métodos/librerías/modulos para normalización/sanitización/transformación/errores
+##### Funciones/métodos/librerías/modulos para normalización/sanitización/transformación/errores/validación
 
 ##### Normalización 
 
@@ -20216,13 +20216,870 @@ unidecode.unidecode(text)
 
 ##### Sanitización
 
+se diferencia de la normalización
+
+para la sanitización:
+su objetivo principal es la seguridad y la eliminación de datos no deseados o peligrosos
+
+la normalización busca "uniformidad", la sanitización busca "limpieza y protección".
+
+1. Herramientas de Limpieza de Contenido: 
+Texto e Inyección
+
+aseguran de que el texto no contenga "basura" o scripts maliciosos.
+
+`re.sub()` (Módulo re):
+herramienta de sanitización por excelencia
+Permite definir una "lista blanca" de caracteres permitidos y eliminar todo lo demás
+
+Uso común: Eliminar caracteres de control
+emojis o símbolos que podrían romper una base de datos o un log
+
+`string.printable`:
+constante del módulo string
+que contiene todos los caracteres que se consideran "imprimibles"
+(letras, números, puntuación).
+Se usa para filtrar caracteres ASCII invisibles o corruptos
+
+`html.escape()`:
+Parte de la librería estándar
+Convierte caracteres como < y > en entidades HTML (&lt;, &gt;).
+###### vital para evitar ataques XSS (Cross-Site Scripting)
+vital para evitar ataques XSS (Cross-Site Scripting)
+
+2. Sanitización de Estructuras
+Tipado y Validación
+
+la sanitización también implica asegurar que los datos tengan la forma correcta
+
+`pydantic` (Librería de terceros):
+estándar de la industria para la validación y sanitización de datos mediante tipos.
+Si esperas un entero pero recibes el string "10", Pydantic lo sanitiza y lo convierte a int.
+Si recibe algo que no puede limpiar, lanza un error claro.
+
+`bleach`:
+librería especializada en sanitizar fragmentos de HTML
+A diferencia de escape, bleach permite definir una "lista blanca"
+de etiquetas permitidas (ej. dejar pasar <b> pero borrar <script>).
+
+3. Sanitización de Rutas y Archivos
+Sistema de Archivos
+
+importante si tu script lee o escribe archivos basados en el texto de entrada
+
+`os.path.basename()`:
+Evita ataques de "Directory Traversal".
+Si un usuario intenta enviar un nombre de archivo como ../../etc/passwd
+esta función lo sanitiza para que solo quede el nombre final (passwd).
+
+`pathlib.Path.resolve()`:
+asegura de que una ruta de archivo sea absoluta y real
+eliminando cualquier redundancia o intento de engaño en la estructura de carpetas
+
+`shlex.quote()`:
+Si tu script va a pasar el texto a un comando de la terminal (Shell)
+esta función añade comillas de forma segura
+para evitar que alguien ejecute comandos extra mediante "Shell Injection".
+
+4. Rs/casos
+
+Riesgo-Necesidad | Herramienta | Recomendada
+
+`Inyección de Código (XSS)`:
+html.escape()
+
+`Caracteres extraños/Emojis`:
+"re.sub(r'[^\x00-\x7F]+', '', text) (Solo ASCII)"
+
+`Scripts maliciosos en HTML`:
+bleach.clean()
+
+`Rutas de archivos peligrosas`:
+os.path.basename() o pathlib
+
+`Inyección de Comandos Shell`:
+shlex.quote()
+
+5. Estrategia "Lista Blanca" vs "Lista Negra"
+##### En sanitización, la mejor estrategia es siempre la Lista Blanca
+
+Lista Negra:
+borrar las palabras malo, peligro y <script>".
+El atacante siempre encontrará algo que no pusiste en la lista
+
+Lista Blanca
+Solo permito letras de la A a la Z y espacios
+Todo lo demás se borra
+
 
 
 ##### Transformación
 
+convertir datos de una estructura a otra
+para que sean útiles para la lógica de negocio
+
+implica pasar de datos planos (strings) a estructuras ricas (listas, conjuntos, diccionarios)
+o realizar operaciones matemáticas y de mapeo.
+
+1. Transformación de Estructura (De String a Lista)
+Estas herramientas "rompen" el dato para cambiar su dimensionalidad
+
+`.split(sep)`: El método más básico
+Divide un string en una lista basándose en un separador
+(por defecto, cualquier espacio en blanco).
+
+`.join(iterable)`: operación inversa
+Toma una lista de strings
+los une en un solo string usando un separador definido
+mucho más eficiente que sumar strings con +.
+
+`re.findall(pattern, string)`:
+Transforma un bloque de texto en una lista de coincidencias basadas en un patrón
+ideal para extraer "tokens" específicos
+como solo palabras, ignorando números
+
+2. Programación Funcional (Mapeo y Filtrado)
+ofrece funciones de alto nivel para transformar colecciones completas
+sin usar bucles for explícitos
+
+`map(function, iterable)`:
+Aplica una función a cada elemento de una lista.
+ej: Convertir una lista de palabras a sus longitudes
+map(len, palabras).
+
+`filter(function, iterable)`:
+Crea una nueva colección incluyendo solo los elementos que cumplen una condición
+ej: Eliminar palabras vacías de una lista
+
+`zip(*iterables)`:
+Transforma varias listas en una sola lista de tuplas
+emparejando elementos por su índice
+Muy útil para combinar "Claves" y "Valores".
+
+3. Comprensiones (Comprehensions)
+Es la forma más "Pythonica" y eficiente de transformar datos
+Son más rápidas que los bucles tradicionales y mucho más legibles.
+
+`List Comprehensions`:
+`[x.lower() for x in palabras]`.
+transforma y filtra en una sola línea.
+
+`Dict Comprehensions`:
+`{palabra: len(palabra) for palabra in lista}`
+Transforma una lista en un diccionario mapeando claves a valores.
+
+`Set Comprehensions`:
+`{x for x in lista}`
+Transforma una lista en un conjunto, eliminando duplicados automáticamente
+una transformación de "unicidad".
+
+4. Agregación y Conteo (De Lista a Diccionario)
+Herramientas para "reducir" una colección de datos
+a un resumen estadístico
+
+`collections.Counter`:
+Transforma un iterable en un objeto similar a un diccionario
+donde las llaves son los elementos y los valores son sus frecuencias
+
+`enumerate(iterable)`:
+Transforma una lista simple en una secuencia de tuplas (índice, valor)
+Vital si necesitas la posición del dato durante la transformación
+
+`reversed() / sorted()`:
+Transforman el orden de los datos sin modificar la colección original
+manteniendo la inmutabilidad
+
+5. Rs:
+
+`Separar texto en unidades`:
+text.split() o re.findall()
+
+`Cambiar formato de toda una lista`:
+List Comprehension
+
+`Eliminar duplicados`:
+set(lista)
+
+`Contar frecuencias`:
+collections.Counter(lista)
+
+`Unir elementos limpiamente`:
+""" "".join(lista)"
+
+
+6. Inmutabilidad en la Transformación
+cuando transformas un dato, no modificas el original.
+
+Ej: Tienes `texto_original`.
+Creas `palabras_limpias = [transformacion(p) for p in texto_original.split()]`
+
+##### Esto permite que tu programa sea más fácil de depurar
+##### ya que puedes inspeccionar el estado del dato en cada etapa del "Pipeline".
+
 
 
 ##### Errores
+
+gestionar excepciones para que el software sea predecible
+no se trata solo de evitar que el programa se detenga
+
+1. Estructuras de Control (try-except)
+capturar problemas en tiempo de ejecución.
+
+`try`: Envuelve el código que podría fallar.
+
+`except Exception as e`: Captura la falla
+Lo profesional es capturar excepciones específicas
+(ej. ValueError, KeyError) en lugar de una genérica.
+
+`else`: Se ejecuta solo si no hubo errores en el bloque try
+Útil para separar la lógica principal del manejo de errores.
+
+`finally`:
+Se ejecuta siempre, haya habido error o no.
+lugar ideal para cerrar archivos o conexiones a bases de datos
+(limpieza de recursos).
+
+2. Lanzamiento y Validación
+##### A veces, tú quieres provocar el error porque los datos no cumplen con tus requisitos
+
+`raise`: Lanza una excepción manualmente
+Ejemplo: raise ValueError("El texto no puede estar vacío").
+
+`assert`: principalmente en desarrollo y pruebas
+Verifica si una condición es verdadera y, si no,
+lanza un AssertionError.
+
+`Excepciones Personalizadas`:
+crear tus propias clases de error heredando de Exception
+da a que el usuario de tu código sepa exactamente qué falló a nivel de negocio
+(ej. class ParrafoDemasiadoCortoError(Exception):).
+
+3. Módulos de Diagnóstico y Registro
+Cuando un programa falla en producción
+no estás ahí para ver la consola
+
+herramientas guardan la evidencia
+
+`logging`:
+librería estándar para registrar qué está pasando
+Permite niveles de severidad: DEBUG, INFO, WARNING, ERROR, CRITICAL
+
+`traceback`:
+Permite extraer y formatear el rastro del error
+(la lista de funciones por las que pasó el fallo antes de explotar)
+Es vital para generar reportes técnicos detallados.
+
+`warnings`:
+Se usa para emitir mensajes de advertencia sobre cosas que no detienen el programa pero que son peligrosas
+(como funciones que van a desaparecer en versiones futuras).
+
+4. Tipos de Errores Comunes (Built-in Exceptions)
+vital para tu configuración de MyPy
+y para escribir bloques except precisos:
+
+`TypeError`:
+Operación aplicada a un objeto del tipo incorrecto.
+
+`ValueError`:
+"El tipo es correcto, pero el valor es inapropiado (ej. ""hola"" donde se espera un número)."
+
+`KeyError`:
+Intentas acceder a una llave que no existe en un diccionario.
+
+`AttributeError`:
+Intentas usar un método que el objeto no tiene.
+
+`FileNotFoundError`:
+El archivo que intentas abrir no existe.
+
+5. Estrategia
+
+`Validación Temprana`:
+Usa `if not texto: raise ValueError`
+al principio de tu función (Fail-Fast).
+
+`Captura Específica`:
+Nunca hagas un except: pass
+Si vas a capturar un error, debes saber cuál es y por qué.
+
+`Registro (Logging)`:
+En lugar de solo mostrar el error
+guárdalo con `logging.error(e, exc_info=True)`
+para ver el rastro completo después.
+
+`Tipado con MyPy`:
+Asegúrate de que tus funciones declaren qué tipos aceptan para evitar TypeError
+antes siquiera de ejecutar el código
+
+
+
+##### Validación
+
+proceso de verificar que los datos de entrada cumplan con un conjunto de reglas
+(esquema, rango, tipo o formato)
+##### antes de ser procesados
+
+se maneja mediante una mezcla de lógica integrada
+tipado estático y librerías robustas que actúan como "porteros"
+
+1. Verificaciones Integradas (Nivel Atómico)
+Son métodos rápidos que se usan sobre variables individuales
+para validar su contenido inmediato.
+
+`isinstance(obj, type)`:
+estándar de verificar si una variable es del tipo esperado
+(ej. isinstance(texto, str))
+preferible sobre `type(obj) == type` porque soporta herencia
+
+`Métodos de inspección de str`:
+`.isalnum()`: Valida que el texto solo contenga letras y números.
+`isnumeric() / .isdigit()`: Valida que el contenido sean solo números.
+`.isascii()`: Verifica que el texto no contenga caracteres fuera del estándar ASCII
+
+`Operadores de pertenencia (in)`:
+Validan si un valor está dentro de una "lista blanca" de opciones permitidas
+(ej. `if color in ['rojo', 'verde', 'azul']`).
+
+
+2. Validación por Esquema y Tipado (Nivel Estructural)
+validan objetos complejos o estructuras de datos completas.
+
+`pydantic (Librería de terceros):`
+reina de la validación en Python moderno.
+Permite definir clases (Modelos) con tipos
+Si los datos no coinciden, Pydantic intenta convertirlos (coerción)
+o lanza un error de validación detallado.
+
+`typing (Módulo nativo)`:
+Aunque MyPy lo usa para análisis estático
+herramientas como Pydantic lo usan en tiempo de ejecución
+para validar estructuras complejas como `List[int] o Optional[str]`.
+
+`cerberus / marshmallow`:
+Librerías diseñadas para validar diccionarios basados en esquemas definidos
+Son muy útiles cuando trabajas con datos que vienen de archivos JSON o APIs externas
+
+3. Validación de Formatos Complejos
+Para datos que deben seguir una estructura interna específica
+como emails, URLs o fechas.
+
+`re.match() / re.fullmatch()` (Módulo re):
+Permite validar si un string cumple con un patrón exacto
+(ej. un formato de código postal o una matrícula).
+
+`datetime.fromisoformat()`:
+Valida si un string de fecha cumple con el estándar ISO 8601
+Si el formato es incorrecto, lanza un ValueError
+
+`validators` (Librería de terceros):
+librería utilitaria que ofrece funciones de una sola línea para validar cosas comunes
+
+`validators.email('test@test.com')`
+`validators.url('https://...')`
+
+4. Validación de Integridad de Archivos
+Si tu script procesa archivos
+debes validar que el archivo sea lo que dice ser
+
+`mimetypes`:
+Ayuda a validar el tipo de archivo basado en su extensión
+
+`hashlib`:
+Permite calcular el hash (SHA256, MD5) de un archivo
+para validar que no haya sido alterado o esté corrupto
+
+`os.access()`:
+Valida si tienes los permisos necesarios
+(lectura, escritura) antes de intentar abrir un archivo
+
+5. Ej:
+
+`Tipos de variables simples`:
+isinstance()
+
+`Estructuras de datos / Objetos`:
+Pydantic
+
+`Formato de texto específico`:
+re (Regex)
+
+`Emails, URLs, IPs`:
+validators
+
+`Existencia de llaves en dict`:
+dict.get() o in
+
+
+##### Regla: Validación en la Frontera
+la validación se hace en la frontera (Boundary
+
+##### 1. El dato entra (Input).
+##### 2. Se valida inmediatamente
+##### 3. Si es válido, se convierte en un objeto de confianza
+ara el resto de la lógica de negocio.
+
+
+
+##### Testing Normalización, sanitización, transformación, errores, validación
+
+
+##### Testing Normalización
+
+Debe asegurar que diferentes variantes de un mismo dato
+converjan siempre en el mismo resultado `(identidad)`.
+
+1. Testing de Caja Negra e Invariantes
+En normalización, nos interesa el resultado final, no el proceso interno
+
+Idempotencia:
+Si normalizas un texto que ya está normalizado, el resultado debe ser el mismo
+normalizar(normalizar(x)) == normalizar(x).
+
+Convergencia:
+Diferentes entradas que representan lo mismo deben producir salidas idénticas
+
+Ejemplo: "PYTHON", "Python ", e "python"
+deben resultar todos en "python".
+
+2. Tests a Aplicar
+
+Unit:
+funciones de normalización de forma aislada
+
+Test de `Case Folding`:
+Verificar que caracteres especiales (como la ß alemana o la ñ) se manejen según la regla de negocio
+
+`Stripping`:
+Asegurar que espacios en blanco, tabulaciones
+y saltos de línea desaparezcan de los extremos
+
+`Diacríticos`:
+Comprobar que "Caffé" se convierta en "caffe"
+(si la regla es quitar tildes).
+
+Parametrized Testing (Pruebas Parametrizadas):
+técnica más eficiente para normalización
+
+En lugar de escribir 10 tests
+escribes uno que recibe una lista de pares
+(entrada, salida_esperada)
+
+```
+# Ejemplo conceptual con Pytest
+@pytest.mark.parametrize("entrada, esperado", [
+    ("  HOLA  ", "hola"),
+    ("Música", "musica"),
+    ("Python\n", "python"),
+])
+def test_normalizacion_basica(entrada, esperado):
+    assert mi_normalizador(entrada) == esperado
+```
+
+Property-Based Testing (Pruebas basadas en propiedades
+librerías como Hypothesis
+el sistema genera miles de strings aleatorios
+incluyendo emojis, caracteres asiáticos, etc
+para intentar romper tu lógica de normalización
+ideal para encontrar errores de codificación (Unicode).
+
+3. Escenarios Críticos (Edge Cases)
+cubrir los "puntos de dolor" clásicos del texto
+
+Strings Vacíos o con solo Espacios
+Devuelve un string vacío o lanza un error?
+
+Caracteres Non-ASCII
+Qué hace tu normalizador con un emoji 🐍
+o con texto en cirílico?
+
+Normalización Unicode (NFD vs NFC):
+Probar que una "á" compuesta de dos caracteres (letra + tilde)
+sea igual a una "á" de un solo carácter tras pasar por tu función.
+
+Inyección de Puntuación:
+Asegurar que si el usuario mete puntos suspensivos ... o guiones largos —,
+la normalización los trate según lo previsto.
+
+4. Herramientas 
+
+Pytest
+El framework estándar para ejecutar los tests.
+
+Hypothesis
+Para generar datos de prueba complejos y encontrar fallos en Unicode.
+
+Coverage.py
+Para asegurarte de que tus tests pasan por todas las líneas de tu lógica de normalización.
+
+Mutmut (Mutation Testing)
+Modifica tu código de normalización a propósito para ver si tus tests son capaces de detectar el cambio (mide la calidad de tus tests).
+
+
+
+##### Testing Sanitización
+
+no solo busca "limpieza", sino que actúa como una auditoría de seguridad.
+garantizar que cualquier carácter o secuencia `que no pertenezca a nuestra "lista blanca"`
+sea neutralizado o eliminado antes de que llegue a la lógica de negocio
+
+1. Testing Negativo y de Seguridad
+##### nos enfocamos en lo que no debería suceder.
+
+Filtrado de Residuos
+Verificar que, tras la sanitización, no quede rastro de caracteres prohibidos
+
+Integridad del Mensaje
+Asegurar que la sanitización no "rompa" el significado del texto legítimo
+(por ejemplo, que no borre espacios necesarios).
+
+Inmunidad a la Inyección
+Comprobar que secuencias que parecen código (scripts o comandos)
+sean tratadas como texto plano e inofensivo.
+
+2. Tipos de Tests a Aplicar
+
+"Lista Blanca" (Whitelist Testing):
+Consiste en pasar una cadena con caracteres permitidos y prohibidos mezclados.
+Caso: "Hola <script>alert(1)</script> Mundo"
+Esperado: "Hola alert1 Mundo" (o lo que defina tu regla de limpieza).
+
+Caracteres de Control e Invisibles:
+Muchos fallos de lógica ocurren por caracteres que no vemos
+(saltos de línea, retornos de carro, caracteres nulos).
+
+Prueba: Inyectar \0 (null byte), \t (tab), \n (newline) en medio de las palabras
+Objetivo: Verificar que el sanitizador los elimine o los convierta en espacios según el requerimiento.
+
+"Boundary Cases" (Límites):
+
+Strings extremadamente largos
+Para evitar ataques de denegación de servicio (DoS)
+por expresiones regulares mal optimizadas (ReDoS).
+
+Strings con solo caracteres prohibidos
+Verificar que el resultado sea un string vacío y no un error de sistema.
+
+3. Escenarios Críticos (Vectores de Ataque)
+Para un analizador de texto, estos son los escenarios que tu batería de tests debe cubrir:
+
+Inyección HTML/XML: Probar con etiquetas como <div>, <a>, <img>.
+
+Caracteres Unicode Peligrosos: Probar con caracteres que se parecen a otros (homoglyphs)
+o caracteres de dirección de texto (Bidi) que pueden alterar cómo se lee el resultado.
+
+Secuencias de Escape: Verificar cómo maneja el sanitizador las barras invertidas \ y las comillas " o '.
+
+Emojis y Símbolos: Si tu "lista blanca" solo permite letras
+los tests deben confirmar que los emojis sean removidos sin dejar "huérfanos" de bytes en la cadena.
+
+4. Herramientas
+
+Fuzz Testing:
+Inyectar datos aleatorios y deformes masivamente para ver si el sanitizador falla o deja pasar algo.
+
+Pytest Parametrized:
+Probar múltiples "cargas maliciosas" contra una única función de limpieza."
+
+Regex Debuggers:
+Herramientas para probar que tu expresión regular de sanitización no tenga fugas.
+
+5. Ejemplo de Matriz de Pruebas
+
+Entrada (Payload) | Propósito del Test | Salida Esperada
+
+##### Texto con <b>negrita</b>: Sanitizar etiquetas HTML Texto con negrita
+
+##### Usuario: DROP TABLE...: Prevenir inyección SQL (simulada), Usuario DROP TABLE
+
+##### Hola\r\n\tMundo: Limpiar espacios y controles, Hola Mundo 
+
+##### Python 🐍, Limpiar emojis (si no se permiten), Python
+
+
+
+##### Testing Transformación
+
+el objetivo del testing es verificar la integridad y exactitud del mapeo
+No nos preocupa tanto si el dato es "peligroso" (eso lo hizo la sanitización)
+
+sino si la lógica de conversión es matemáticamente correcta
+y si la estructura de datos final cumple con el contrato definido.
+
+1. Verificación de Contratos y Estado
+transformación es una función pura: Entrada A → Salida B
+Por lo tanto, la estrategia se basa en:
+
+Consistencia de Tipos: Si la transformación promete un dict[str, int]
+el test debe fallar si recibe cualquier otra cosa (vital para MyPy).
+
+Conservación de la Masa: La suma de las frecuencias en el diccionario resultante
+debe ser igual al número total de palabras válidas identificadas tras la limpieza
+
+Determinismo: A la misma entrada, la transformación debe producir siempre la misma salida
+
+2. Testing de Mapeo Directo (Unit Testing)
+Probamos casos donde conocemos la respuesta exacta de antemano.
+
+Entrada: ["python", "java", "python"]
+Salida Esperada: {"python": 2, "java": 1}
+Propósito: Verificar que el contador (ej. Counter) funciona correctamente.
+
+Transformación de Estructura
+Verificamos que el paso de un bloque de texto a una lista de oraciones
+o palabras no pierda elementos.
+
+Test de Longitud: Si el texto tiene 3 puntos finales
+la lista de oraciones transformada debe tener longitud 3.
+
+Test de Vacío: Una lista vacía de palabras debe transformarse en un diccionario vacío
+no lanzar un error.
+
+Testing de Orden y Clasificación:
+Si la transformación incluye ordenar los resultados
+(por ejemplo, las palabras más frecuentes primero).
+
+Propósito: Asegurar que el primer elemento del resultado sea efectivamente el de mayor valor
+
+3. Escenarios Críticos en la Transformación
+
+Palabras Repetidas con Distinto Caso:
+Tras la normalización, ¿se agrupan correctamente?
+(Ej: "Hola" y "hola" deben ser {"hola": 2}).
+
+Manejo de Singletons: Palabras que aparecen solo una vez.
+
+Manejo de Empates: Si dos palabras aparecen 5 veces
+cómo las ordena la transformación? (Orden alfabético, orden de aparición, etc.).
+
+Preservación de Caracteres Especiales Permitidos: Si permites guiones (ej. "socio-económico")
+verificar que la transformación no lo rompa en dos palabras.
+
+4. Herramientas y Técnicas de Validación
+
+Deep Comparison:
+"Usar assert dict_a == dict_b de Pytest, que analiza llave por llave y valor por valor."
+
+Schema Validation:
+Usar Pydantic o TypedDict para asegurar que el objeto transformado tiene la forma correcta.
+
+Data Samples:
+"Usar un párrafo de ""control"" (como un Lorem Ipsum modificado) donde ya conocemos todas las métricas."
+
+5. Casos de Prueba (Transformación)
+
+Entrada (Lista de Tokens),Lógica de Transformación,Salida Esperada (Estado Final)
+
+"[""a"", ""b"", ""a""]",Frecuencia de palabras,"{""a"": 2, ""b"": 1}"
+
+[] (Lista vacía),Frecuencia de palabras,{} (Dict vacío)
+
+"[""uno""]",Conteo de oraciones,1
+
+"[""A"", ""a""]",Normalización + Frecuencia,"{""a"": 2}"
+
+6. Golden Files
+En proyectos de transformación de datos complejos, se suelen usar Golden Files
+archivos de texto con el "resultado perfecto" esperado
+El test lee el archivo, ejecuta la transformación y compara el resultado actual contra el "Golden"
+Si hay una diferencia de un solo caracter, el test falla
+
+
+
+##### Testing Errores
+
+fundamental para garantizar que el sistema no solo funcione bien en el "camino feliz"
+sino que sepa cómo fallar con elegancia y seguridad
+
+En lugar de probar valores, aquí probamos el comportamiento del sistema ante el caos.
+
+1. Testing de Excepciones y Robustez
+El objetivo es verificar que, cuando algo sale mal
+el sistema responda según lo planeado en la arquitectura.
+
+Aserción de Excepciones: Verificar que se lance la excepción correcta ante el estímulo incorrecto
+Mensajería de Error: Comprobar que los mensajes de error sean informativos y no expongan datos sensibles
+Recuperación: Asegurar que, tras un error capturado, el sistema quede en un estado estable
+(ej. no dejar archivos abiertos o memoria bloqueada).
+
+2. Tests a Aplicar
+
+Testing de Lanzamiento (Raising Tests):
+Es la prueba más común
+Se fuerza una entrada inválida para confirmar que el código "escupe" el error esperado.
+
+```
+def test_parrafo_vacio_lanza_error():
+    with pytest.raises(ValueError, match="El texto no puede estar vacío"):
+        analizador("")
+```
+
+Testing de Propagación:
+Verificar si una función de bajo nivel lanza un error
+error y si la función de alto nivel (el orquestador) lo captura o lo deja pasar según el diseño.
+
+Propósito: Evitar que un error de "limpieza" se convierta en un error de "conteo" genérico e incomprensible
+
+Testing de Efectos Secundarios en Errores:
+Si ocurre un error a mitad de camino,
+¿qué pasa con los datos?
+
+Garantía de Limpieza: Si el análisis falla
+verificar que los recursos (como manejadores de archivos o logs)
+se cierren o escriban correctamente mediante el bloque finally.
+
+3. Escenarios Críticos a Probar
+
+Tipos Incompatibles:
+Qué pasa si pasamos una lista en lugar de un string al analizador?
+(Debe lanzar TypeError).
+
+Límites de Recursos:
+Qué pasa si el párrafo es masivo (gigabytes)?
+(Probar límites de memoria o tiempo de ejecución).
+
+Entradas Nulas (None): Un clásico que rompe programas
+La estrategia debe confirmar que esto se maneja antes de procesar.
+
+Errores de Codificación: Probar texto con caracteres que no pueden ser decodificados
+para ver si el manejador de errores de normalización responde bien.
+
+4. Herramientas y Técnicas de Diagnóstico
+
+pytest.raises
+La herramienta estándar para asegurar que un bloque de código lanza una excepción específica.
+
+Log Spying
+"Usar herramientas (como caplog en pytest) para verificar que, ante un error, se escribió el mensaje correcto en los registros de logging."
+
+Chaos Engineering (Básico)
+Alterar deliberadamente una parte del entorno
+(ej. simular que un módulo no está instalado) para ver cómo reacciona el sistema de errores.
+
+5. Matriz de Testing de Errores
+Ej Analizador
+
+Situación Provocada | Excepción Esperada | Acción de Recuperación
+
+`Entrada no es String`
+TypeError
+Detener ejecución con mensaje claro.
+
+`String de longitud 0`
+ValueError
+Retornar resultado vacío o lanzar error
+(según diseño).
+
+`Texto con solo símbolos`
+Ninguna (o ValueError)
+Retornar frecuencias vacías y 0 oraciones.
+
+`Error en módulo re`
+RuntimeError
+Registrar en log y notificar fallo técnico.
+
+
+"Error Silencioso" vs "Error Ruidoso"
+
+##### En tu estrategia de testing, debes decidir qué errores son "Ruidosos": (deben detener el programa, como un TypeError de configuración)
+
+##### Cuáles son "Silenciosos" (el programa sigue, pero informa que no encontró nada, como un párrafo vacío).
+
+
+
+##### Testing Validación
+
+##### Asegurar que el "portero" de nuestra aplicación deje pasar exactamente lo que queremos
+y bloquee todo lo demás
+
+A diferencia del testing de errores (que mira cómo falla el sistema)
+aquí probamos el criterio de aceptación
+
+1. Análisis de Valores Límite (BVA)
+La mayoría de los errores de validación ocurren en los bordes
+Si un párrafo debe tener entre 10 y 1000 caracteres
+los tests deben atacar precisamente esos números.
+
+Valores de Frontera: Probar el mínimo exacto (10),
+el máximo exacto (1000), uno por debajo (9) y uno por encima (1001).
+
+Partición de Equivalencia: Dividir las entradas en grupos que deberían tratarse igual
+(ej. todos los strings de 20 a 100 caracteres se consideran "clase válida").
+
+2. Tests a Aplicar
+
+Tipo y Estructura (Contratos):
+Verificar que el validador rechace estructuras que no coinciden con el contrato
+
+Prueba: Enviar un diccionario donde se espera un string
+o un string con formato de fecha donde se espera texto plano.
+
+Objetivo: Confirmar que la validación de isinstance
+o los modelos de Pydantic funcionan.
+
+Testing de Formato (Regex & Patterns):
+Si el validador usa expresiones regulares para identificar
+qué es una "palabra" o una "oración".
+
+Prueba: Enviar strings con caracteres que no son palabras
+(números, símbolos matemáticos, emojis).
+Objetivo: Asegurar que el validador identifique correctamente qué contenido es procesable.
+
+Testing de Restricciones de Negocio:
+Validar las reglas arbitrarias que hemos puesto para este ejercicio
+
+Si la regla es "No se procesan textos con más de un 50% de caracteres especiales"
+el test debe verificar ese cálculo.
+
+3. Escenarios Críticos: Bad Data Suite
+
+Para el Analizador de Texto, tus tests de validación deben cubrir:
+
+Entradas Vacías/Nulas: El caso base de toda validación.
+
+Strings de Espacio Único: Un string " " técnicamente tiene longitud 1, pero ¿es válido para un análisis de texto?
+
+Contenido de Solo Puntuación: ¿Qué hace el sistema si le pasas "... !!! ???"?
+(Debe validar si eso cuenta como oraciones sin palabras).
+
+Longitudes Extremas: Validar cómo se comporta ante un párrafo de una sola palabra de 500 caracteres
+(posible error de formato).    
+
+4. Herramientas y Técnicas de Validación
+
+Negative Testing,Pruebas diseñadas específicamente para fallar. Es el 70% del testing de validación.
+Schema Testing,"Si usas Pydantic, los tests verifican que el ValidationError contenga el campo exacto que falló."
+Parametrización de Casos Inválidos,"Crear una lista de ""Entradas Prohibidas"" y correrlas todas contra el validador en un solo bucle de test."
+
+5. Matriz de Testing de Validación
+
+Dato de Entrada | Regla a Validar | Resultado Esperado
+
+12345 (Integer),Tipo de dato,Rechazado (TypeError)
+"""Abc"" (3 chars)",Longitud mínima (ej. 10),Rechazado (MinLengthError)
+"""Hola mundo...""",Formato,Aceptado
+None,Presencia de datos,Rechazado (RequiredField)
+
+
+##### 1. Normalización: Asegura identidad (A = a).
+
+##### 2. Sanitización: Asegura seguridad (Quitar scripts/basura).
+
+##### 3. Transformación: Asegura utilidad (String -> Dict).
+
+##### 4. Errores: Asegura resiliencia (Falla con elegancia).
+
+##### 5. Validación: Asegura integridad (Solo entra lo correcto).
+
+
+##### STLC: soft test life cycle
+
+1. Requirement Analysis
+2. Test Planning
+3. Test Case Development
+4. Environment Setup
+5. Test Execitopm
+6. Test Closure
 
 
 
@@ -20240,7 +21097,6 @@ solo cambies el "Input" sin tocar la lógica de análisis
 `Entrada (Input)`: Recibe el párrafo crudo.
 `Proceso (Process)`: La "Caja Negra" que contiene las reglas de análisis.
 `Salida (Output)`: Estructura el diccionario y los contadores para el usuario.
-##### Fundamentos
 
 2. Capas de Responsabilidad (Separation of Concerns)
 Ej: tres niveles de abstracción para este analizador
@@ -20395,16 +21251,2286 @@ y devuelva un diccionario con la frecuencia de cada palabra,
 ignore mayúsculas y cuente cuántas oraciones hay
 
 
-##### Simple
+##### Simple/KISS
+
+utilizar las herramientas nativas más potentes de Python
+el módulo re para la segmentación y collections.Counter para el conteo
+
+el módulo re para la segmentación y collections.Counter para el conteo
+
+Código:
+
+```
+import re
+from collections import Counter
+
+def analizar_texto(parrafo: str) -> dict:
+    """
+    Analiza un párrafo para contar la frecuencia de palabras 
+    y el número de oraciones.
+    """
+    # 1. Validación básica
+    if not parrafo.strip():
+        return {"frecuencias": {}, "total_oraciones": 0}
+
+    # 2. Conteo de oraciones antes de limpiar puntuación
+    # Buscamos puntos, exclamaciones o interrogaciones
+    oraciones = re.split(r'[.!?]+', parrafo)
+    # Filtramos strings vacíos que genera split al final del párrafo
+    total_oraciones = len([s for s in oraciones if s.strip()])
+
+    # 3. Normalización y limpieza de palabras
+    # Pasamos a minúsculas y extraemos solo caracteres alfanuméricos
+    texto_limpio = parrafo.lower()
+    palabras = re.findall(r'\b\w+\b', texto_limpio)
+
+    # 4. Conteo de frecuencias
+    frecuencias = dict(Counter(palabras))
+
+    return {
+        "frecuencias": frecuencias,
+        "total_oraciones": total_oraciones
+    }
+
+# --- Bloque de ejecución ---
+if __name__ == "__main__":
+    texto_ejemplo = """
+    ¡Hola Mundo! Este es un script de prueba. 
+    ¿Python es genial? Sí, Python es genial y simple.
+    """
+    
+    resultado = analizar_texto(texto_ejemplo)
+    
+    print(f"Total de oraciones: {resultado['total_oraciones']}")
+    print("Frecuencia de palabras:")
+    for palabra, cuenta in resultado['frecuencias'].items():
+        print(f" - {palabra}: {cuenta}")
+```
+
+
+Uso de `re.findall(r'\b\w+\b', ...)`:
+En lugar de hacer múltiples .replace() para quitar comas, puntos y signos
+##### esta expresión regular extrae directamente las palabras ignorando todo lo demás
+mucho más limpio y menos propenso a errores
+
+`collections.Counter`:
+Evita la necesidad de crear un diccionario vacío
+y hacer un bucle for con un if word in dict
+herramienta optimizada para esto
+
+`List Comprehension`:
+Usamos `[s for s in oraciones if s.strip()]`
+para limpiar la lista de oraciones de forma compacta y legible.
+
+Estructura Directa:
+flujo es lineal y fácil de seguir
+
+futuro: Wildcard
+script funciona perfectamente para textos estándar
+considerar en un paso posterior cómo manejaría las abreviaturas
+(como "Sra." o "U.S.A."), ya que actualmente el split por punto las contaría como oraciones separadas
+
+
+##### Testing
+
+Pytest:
+permite escribir tests como funciones simples, sin la carga de clases o estructuras complejas
+
+cubriendo el "camino feliz", los bordes y la robustez
+
+1. test_analizador.py
+
+```
+import pytest
+from analizador import analizar_texto
+
+def test_analisis_basico():
+    """Prueba el funcionamiento general con un párrafo estándar."""
+    texto = "Hola mundo. Hola Python."
+    resultado = analizar_texto(texto)
+    
+    assert resultado["total_oraciones"] == 2
+    assert resultado["frecuencias"]["hola"] == 2
+    assert resultado["frecuencias"]["mundo"] == 1
+
+def test_parrafo_vacio():
+    """Valida que un string vacío o con espacios no rompa el script."""
+    assert analizar_texto("")["total_oraciones"] == 0
+    assert analizar_texto("   ")["total_oraciones"] == 0
+    assert analizar_texto("")["frecuencias"] == {}
+
+def test_insensibilidad_a_mayusculas():
+    """Verifica que 'Python' y 'python' se cuenten como la misma palabra."""
+    texto = "Python es python y PYTHON es genial."
+    resultado = analizar_texto(texto)
+    
+    # Debe haber 3 menciones de la misma entidad 'python'
+    assert resultado["frecuencias"]["python"] == 3
+    assert len(resultado["frecuencias"]) == 3  # python, es, genial
+
+def test_conteo_oraciones_complejo():
+    """Prueba que múltiples signos de puntuación se cuenten correctamente."""
+    texto = "¡Cuidado! ¿Qué haces? ¡¡¡No lo hagas!!!"
+    resultado = analizar_texto(texto)
+    
+    assert resultado["total_oraciones"] == 3
+
+def test_limpieza_puntuacion_pegada():
+    """Verifica que las comas y puntos pegados a las palabras se eliminen."""
+    texto = "palabra, otra; mas. final!"
+    resultado = analizar_texto(texto)
+    
+    esperado = ["palabra", "otra", "mas", "final"]
+    for p in esperado:
+        assert p in resultado["frecuencias"]
+```
+
+2. Estrategia Aplicada
+priorizado tres conceptos
+
+Aserciones Directas (assert): No usamos métodos complejos
+Si la condición es True, el test pasa; si no, falla.
+
+Independencia: Cada función test_ es un universo cerrado
+Lo que pase en test_parrafo_vacio no afecta a los demás
+
+Documentación mediante Nombres:
+El nombre de la función describe exactamente qué estamos rompiendo o verificando
+(ej. test_insensibilidad_a_mayusculas).
+
+3. Ejecución
+pytest test_analizador.py
+
+Fiabilidad: Que el regex de las oraciones ([.!?]+) no cuente "espacios vacíos" como oraciones
+Precisión: Que el regex de palabras (\b\w+\b) ignore los símbolos de exclamación y comas de forma efectiva
+Seguridad de Tipo: Que el resultado sea siempre un diccionario con las llaves que el resto del sistema espera
+
+
 
 
 ##### Con arquitectura
 
+##### Diseño
+
+permite separar la "lógica de negocio" (el análisis del texto)
+de los "detalles técnicos" (cómo recibimos el input o cómo imprimimos el resultado).
+
+dividiremos el diseño en capas que mantienen la regla de dependencia
+##### las capas externas dependen de las internas: pero el núcleo nunca sabe nada del mundo exterior
+
+1. `Capa de Dominio (Entities)`
+definimos qué es un análisis de texto
+sin importar cómo se calcula
+
+Usaremos una estructura de datos pura
+
+`Entidad AnalisisResultado`:
+objeto (o Dataclass)
+que contiene:
+
+frecuencias: Un diccionario [palabra, conteo].
+total_oraciones: Un entero.
+palabras_unicas: Un entero (metadato extra).
+
+2. `Lógica: Capa de Aplicación (Use Cases)`
+reside el cómo se cumplen las reglas de negocio
+Esta capa orquestará el análisis.
+
+`Interfaz AnalizadorInterface`:
+Define el contrato (que puedes cambiarlo)
+
+Caso de Uso `ProcesarTexto`:
+
+1. Recibe el string.
+2. Limpia el texto (minúsculas, eliminar símbolos).
+3. Cuenta oraciones (detectar ., !, ?).
+4. Cuenta palabras.
+5. Devuelve la entidad AnalisisResultado
+
+3. `Exterior: Capa de Infraestructura (Adapters)`
+Son los detalles que conectan el script
+con el usuario o el sistema operativo.
+
+`Controlador CLI`:
+Se encarga de capturar el párrafo
+(vía input() o argumentos de terminal).
+
+`Presentador`:
+Formatea el diccionario para que se vea bien en tu terminal
+
+
+Rs: 
+`Mapa de Dependencias`:
+Capa | Componente | Responsabilidad
+
+Dominio:
+`models.py`
+`Definir la estructura de los datos resultantes`.
+
+Aplicación:
+`service.py`
+`"Lógica de limpieza, tokenización y conteo."`
+
+Interfaz:
+`cli.py`
+`"Punto de entrada (main), manejo de entrada/salida."`
+
+
+Beneficios:
+
+1. Testabilidad Máxima:
+Puedes testear la lógica de service.py con Pytest
+sin necesidad de simular entradas de teclado.
+Es rápido y ligero.
+
+2. Modularidad:
+Si mañana quieres que el párrafo venga de un archivo .txt en lugar del teclado
+solo cambias la capa de Interfaz; la lógica de análisis se queda intacta
+
+3. Mantenimiento:
+Al separar la limpieza de la lógica de conteo
+evitas los "scripts espagueti"
+lentos y difíciles de depurar
+
+
+Archivos (Estructura):
+Estructura plana pero con responsabilidades separadas:
+
+`domain.py`: La entidad (Dataclass).
+`logic.py`: El motor de análisis (Use Case).
+`main.py`: El adaptador de entrada (CLI) y orquestador.
+
+
+
+##### 1. Entidad/Dominio/Modelo
+
+`domain.py`:
+En esta capa no implementamos algoritmos ni lógica de limpieza
+solo definimos la forma que tienen nuestros datos.
+
+En Python, la mejor herramienta para esto es:
+una `dataclass`
+
+```
+from dataclasses import dataclass, field
+from typing import Dict
+
+@dataclass(frozen=True)
+class AnalisisResultado:
+    """
+    Entidad que representa el resultado inmutable de un análisis de texto.
+    """
+    frecuencias: Dict[str, int] = field(default_factory=dict)
+    total_oraciones: int = 0
+    total_palabras: int = 0
+
+    def obtener_resumen(self) -> str:
+        """Un pequeño método de conveniencia para describir la entidad."""
+        return (f"Análisis con {self.total_palabras} palabras "
+                f"y {self.total_oraciones} oraciones.")
+```
+
+1. uso de @dataclass:
+En lugar de usar un diccionario simple ({})
+usamos una clase de datos
+nos da autocompletado en el editor
+permite que MyPy verifique que no estamos intentando
+sumar un string a total_oraciones, por ejemplo.
+
+2. parámetro frozen=True
+práctica clave en arquitecturas limpias y programación funcional
+
+Al hacer la entidad "congelada":
+Una vez que se crea el resultado del análisis
+no se puede modificar accidentalmente.
+
+Si necesitas cambiar algo, debes crear una instancia nueva.
+evita errores de estado lateral
+bugs donde una función modifica un objeto
+que otra función está usando
+
+3. default_factory=dict
+En Python, poner un diccionario vacío como valor por defecto directamente
+(frecuencias: dict = {})
+##### es un error común que puede causar que todas las instancias compartan el mismo diccionario en memoria
+`field(default_factory=dict)` asegura
+que cada análisis tenga su propio diccionario limpio
+
+4. Arquitectura Limpia
+Este archivo no importa nada externo
+solo cosas nativas de Python
+
+No sabe si el texto viene de una consola o de una base de datos.
+No sabe cómo se limpian las mayúsculas.
+
+Es puro:
+Si mañana decides cambiar de pytest a otro framework
+Es el corazón estable de tu aplicación.
+
+
+
+##### 2. Lógica/Aplicación/Usos/Servicios/Business/Transformations to Entity
+
+la capa de aplicación (o casos de uso)
+contiene las reglas de negocio específicas de tu programa
+
+Aquí es donde transformamos un párrafo de texto crudo
+en nuestra entidad AnalisisResultado
+
+Usando librería estándar:
+re para expresiones regulares
+collections para el conteo
+
+`logic.py`:
+
+```
+import re
+from collections import Counter
+from .domain import AnalisisResultado
+
+class AnalizadorService:
+    """
+    Servicio encargado de orquestar la lógica de análisis de texto.
+    Cumple con el caso de uso: 'Analizar un párrafo y extraer métricas'.
+    """
+
+    def analizar(self, texto: str) -> AnalisisResultado:
+        if not texto.strip():
+            return AnalisisResultado()
+
+        # 1. Contar oraciones antes de limpiar el texto
+        # Buscamos puntos, exclamaciones o interrogaciones
+        oraciones = re.findall(r'[.!?]+', texto)
+        total_oraciones = len(oraciones)
+
+        # 2. Limpiar texto para el conteo de palabras
+        # Pasamos a minúsculas y eliminamos lo que no sea letras o espacios
+        texto_limpio = re.sub(r'[^\w\s]', '', texto.lower())
+        palabras = texto_limpio.split()
+
+        # 3. Calcular frecuencias usando Counter (muy eficiente en Python)
+        frecuencias = dict(Counter(palabras))
+
+        # 4. Retornar la Entidad de Dominio
+        return AnalisisResultado(
+            frecuencias=frecuencias,
+            total_oraciones=total_oraciones,
+            total_palabras=len(palabras)
+        )
+```
+
+1. Independencia de la Interfaz
+AnalizadorService no usa input() ni print().
+
+Su única misión es procesar datos
+Si mañana decides que el texto llegue por una API web o un archivo
+esta clase no cambia
+##### Solo recibe un str y devuelve un AnalisisResultado.
+
+2. Expresiones Regulares (re)
+
+`re.findall(r'[.!?]+', texto)`:
+Encuentra grupos de signos de puntuación
+Usar + permite que "!!!" se cuente como el final de una sola oración, no tres
+
+`re.sub(r'[^\w\s]', '', ...)`:
+Limpia el texto de un plumazo eliminando comas, paréntesis y signos
+dejando solo palabras y espacios.
+
+3. collections.Counter
+una de las mejores herramientas de Python
+
+En lugar de hacer un bucle for manual
+y un if palabra in diccionario
+
+`Counter` hace el trabajo de forma optimizada y mucho más legible
+
+4. Regla de Dependencia
+Este archivo importa AnalisisResultado desde domain.py.
+
+La dirección es correcta:
+La Aplicación (capa externa)
+conoce al Dominio (capa interna)
+
+Dominio nunca sabrá que existe un AnalizadorService.
+
+5. Testing
+Al tener la lógica aislada en una clase/método analizar
+tus archivos de Pytest serán increíblemente sencillos:
+
+```
+# Ejemplo de lo que podrías hacer en tus tests
+def test_conteo_basico() -> None:
+    service = AnalizadorService()
+    resultado = service.analizar("Hola mundo. Hola!")
+    assert resultado.total_oraciones == 2
+    assert resultado.frecuencias["hola"] == 2
+```
+
+No hay necesidad de simular la consola ni lidiar con flujos de entrada/salida complejos
+testing puro sobre lógica pura
+
+
+
+##### 3. Interfaz/entrada-salida/Infraestructura/Adaptadores
+
+Capa más externa de la Arquitectura Limpia
+los Adaptadores de Infraestructura
+En esta capa es donde el programa toca el "mundo real".
+
+##### Aquí es donde decidimos que la entrada sea por teclado (CLI)
+##### y la salida sea por la terminal
+
+##### Si el día de mañana quisieras que este script fuera una página web o una aplicación de escritorio 
+##### solo tendrías que cambiar este archivo, dejando el dominio y la lógica intactos.
+
+`main.py`:
+
+```
+import sys
+from .logic import AnalizadorService
+
+def presentador_consola(resultado) -> None:
+    """
+    Función encargada de dar formato a la salida en la terminal.
+    Actúa como un 'Presenter' en Clean Architecture.
+    """
+    print("\n" + "="*30)
+    print(" RESULTADOS DEL ANÁLISIS")
+    print("="*30)
+    print(f"Oraciones detectadas: {resultado.total_oraciones}")
+    print(f"Palabras totales:     {resultado.total_palabras}")
+    print("-"*30)
+    print("Frecuencia de palabras:")
+    
+    # Ordenamos por frecuencia descendente para mayor utilidad
+    frecuencias_ordenadas = sorted(
+        resultado.frecuencias.items(), 
+        key=lambda item: item[1], 
+        reverse=True
+    )
+    
+    for palabra, cuenta in frecuencias_ordenadas[:10]:  # Top 10
+        print(f" - {palabra}: {cuenta}")
+    print("="*30 + "\n")
+
+def main() -> None:
+    """Orquestador principal (Entry Point)."""
+    service = AnalizadorService()
+    
+    print("Escribe o pega el párrafo a analizar (Presiona Enter dos veces para finalizar):")
+    
+    # Captura de múltiples líneas para párrafos largos
+    lineas = []
+    while True:
+        linea = input()
+        if not linea:
+            break
+        lineas.append(linea)
+    
+    texto_completo = " ".join(lineas)
+
+    if not texto_completo.strip():
+        print("Error: No se ingresó texto para analizar.")
+        sys.exit(1)
+
+    # Ejecución del Caso de Uso
+    resultado = service.analizar(texto_completo)
+
+    # Presentación de resultados
+    presentador_consola(resultado)
+
+if __name__ == "__main__":
+    main()
+```
+
+1. Orquestador (main)
+##### encargado de instanciar las dependencias: aquí creamos el AnalizadorService
+##### En arquitecturas más complejas, esto se conoce como Inyección de Dependencias
+
+##### El main sabe quién es el encargado de la lógica y quién de los datos, y los conecta.
+
+2. El Adaptador de Entrada (Input)
+nuestro adaptador de entrada es la función input().
+Hemos añadido una pequeña lógica para permitir párrafos multilínea
+útil si pegas texto directamente en tu terminal
+lo cual mejora la experiencia de usuario (UX) sin complicar el código
+
+3. Presentador (Output)
+
+función `presentador_consola`
+Su única responsabilidad es tomar la entidad de dominio
+AnalisisResultado y decidir cómo mostrarla
+
+4. Regla
+importaciones: main.py importa de logic.py.
+
+`Infrastructure -> Application -> Domain.`
+Nada de la lógica interna sabe que estamos usando print() o input() 
+Si quisiéramos testear este script
+llamaríamos a logic.py directamente
+saltándonos este main.py por completo.
+
+`uso de if __name__ == "__main__"`:
+asegura que el script sea importable como módulo
+sin ejecutarse accidentalmente
+
+Ej: Estructura
+
+```
+text_analyzer/
+├── analizador/                # Paquete principal (Lógica de negocio)
+│   ├── __init__.py            # Hace que la carpeta sea un paquete
+│   ├── domain.py              # Entidades (Capa de Dominio)
+│   ├── logic.py               # Casos de uso (Capa de Aplicación)
+│   └── cli.py                 # Adaptador de entrada (lo que antes era main.py)
+├── tests/                     # Carpeta de pruebas
+│   ├── __init__.py
+│   └── test_analizador.py     # Pruebas unitarias
+├── .gitignore                 # Archivos que Git debe ignorar
+├── pyproject.toml             # Configuración de uv y dependencias
+├── uv.lock                    # Seguro de versiones de uv
+├── README.md                  # Documentación del proyecto
+└── run.py                     # Punto de entrada rápido (opcional)
+```
+
+Ej: por carpetas de capas
+
+##### Package-per-Layer (carpeta por capa) vs Module-per-Layer (un archivo por capa)
+
+```
+text_analyzer/
+├── src/
+│   ├── domain/             # Entidades y Reglas de Negocio puras
+│   │   ├── __init__.py
+│   │   └── models.py
+│   ├── application/        # Casos de Uso (Servicios)
+│   │   ├── __init__.py
+│   │   └── analyzer_service.py
+│   └── infrastructure/     # Adaptadores (CLI, APIs, DBs)
+│       ├── __init__.py
+│       └── console_adapter.py
+├── tests/
+├── pyproject.toml
+└── run.py
+```
+
+
+##### Dataclass vs objeto y alternativas 
+
+
+
+##### DTO para capa lógica
 
 
 
 
-##### 2. Ejercicio:
+##### Testing 
+
+La estrategia de pruebas en Clean Architecture
+sigue la forma de una pirámide: muchas pruebas rápidas y aisladas en la base (el núcleo)
+y unas pocas pruebas más lentas y complejas en la cima (la interfaz).
+
+1. Capa domain.py: Pruebas de Estado
+Al ser la capa más interna
+las pruebas aquí son Unitarias y extremadamente rápidas
+
+No prueban "qué hace el programa"
+sino "cómo lucen los datos".
+
+`Validación de Estructura`:
+Comprobar que al instanciar AnalisisResultado
+los tipos de datos coincidan con lo definido
+(ej. que las frecuencias sean un diccionario).
+
+`Prueba de Inmutabilidad`:
+Intentar cambiar un valor después de crear la entidad
+Si usamos frozen=True
+el test debe confirmar que Python lanza un error.
+
+`Valores por Defecto`:
+Verificar que si pasamos un texto vacío,
+los contadores de la entidad empiecen en 0
+y no en None
+
+2. Capa de Aplicación (logic.py): Cerebro
+donde reside la mayor parte de nuestra estrategia
+Son Pruebas Unitarias de Lógica
+Como esta capa no conoce la consola
+podemos enviarle cientos de textos diferentes en milisegundos
+
+`Normalización (Case Insensitivity)`:
+Enviar un texto como "HOLA hola HoLa"
+y verificar que el resultado sea {'hola': 3}.
+
+`Gestión de Puntuación`:
+Validar que "casa,", "casa."
+y "¡casa!" se cuenten como la misma palabra "casa".
+
+`Delimitadores de Oraciones`:
+Probar textos con múltiples signos (..., !!!, ??)
+para asegurar que no cuente de más
+
+`Casos Borde (Edge Cases)`:
+¿Qué pasa si el texto solo tiene espacios?
+¿Qué pasa si el texto tiene números o emojis?
+¿Qué pasa con un párrafo de una sola palabra muy larga?
+
+3. Capa de Infraestructura: Pruebas de Integración
+probamos cómo encajan las piezas
+
+"pesadas" porque simulan la interacción con el sistema operativo
+
+`Prueba de Humo (Smoke Test)`:
+Ejecutar el flujo completo
+desde que el usuario ingresa un texto
+hasta que el presentador muestra los resultados en pantalla.
+
+`Manejo de Entrada Vacía`:
+Verificar que el adaptador de entrada gestione correctamente
+cuando el usuario presiona "Enter" sin escribir nada
+(que no rompa el script con un error feo).
+
+`Orden de Presentación`:
+Validar que el "Presentador" realmente muestre las palabras ordenadas
+de mayor a menor frecuencia (comportamiento visual).
+
+
+domain.py:
+Unitario
+Contratos de datos e inmutabilidad.
+
+logic.py:
+Unitario
+Reglas de limpieza y algoritmos de conteo.
+
+cli.py:
+Integración
+Conexión entre capas y formato de salida.
+
+
+
+##### __init__.py
+
+Históricamente, Python necesitaba que este archivo existiera (aunque estuviera vacío)
+para considerar que una carpeta era un paquete
+y no solo un montón de archivos tirados ahí.
+
+Es el primer código que se ejecuta cuando alguien hace import analizador
+
+Contenido:
+
+1. Vacío (lo más común):
+Marca que "esto es un paquete"
+
+2. Exportación de conveniencia (Filtro):
+Puedes usarlo para que los imports desde fuera sean más cortos
+
+`Sin nada en __init__.py`:
+El usuario debe hacer from analizador.logic import AnalizadorService
+
+`Con esto en __init__.py`:
+from .logic import AnalizadorService.
+
+El usuario ahora puede hacer simplemente from analizador import AnalizadorService
+Esto oculta la estructura interna (como logic.py)
+código más profesional
+
+3. Metadatos:
+A veces se usa para definir la versión del proyecto
+`__version__ = "0.1.0"`
+
+
+Cuando usas archivos __init__.py e imports relativos (con el punto)
+ya no puedes ejecutar el archivo directamente como python analizador/cli.py
+Python se quejará diciendo: "ImportError: attempted relative import with no known parent package".
+
+ocurre porque al ejecutar el archivo suelto
+Python "olvida" que ese archivo pertenece a un paquete
+Por eso es tan importante el archivo `run.py`
+que pusimos en la raíz: se encarga de llamar al paquete correctamente desde fuera.
+
+
+##### run.py
+
+punto de entrada (Entry Point)
+cuando esta se organiza como un paquete
+
+no se ejecuta los archivos internos de la lógica directamente
+(como python analizador/cli.py).
+En su lugar, usamos un lanzador en la raíz que se encarga de arrancar la maquinaria
+
+##### Su única misión es importar la función principal y ejecutarla:
+
+Código:
+
+```
+from analizador.cli import main
+
+if __name__ == "__main__":
+    main()
+```
+
+2. Necesidad y problema de los paquetes
+Como usamos imports relativos
+(el from .logic con punto)
+Python necesita entender que esos archivos
+forman parte de un "todo" llamado analizador.
+
+Si intentas correr el archivo interno: python analizador/cli.py -> ERROR
+Python no sabe quién es el "padre" de ese archivo y el punto (.) falla.
+
+Si usas run.py: Como este archivo está fuera de la carpeta analizador
+Python importa el paquete completo
+El contexto queda claro y todos los puntos (.)
+dentro del paquete funcionan perfectamente
+
+3. if `__name__ == "__main__"`:
+Sirve para diferenciar cuándo se está ejecutando un archivo
+de cuándo se está importando
+
+Si ejecutas python run.py
+Python asigna el nombre especial "__main__" a ese archivo
+La condición se cumple y el programa arranca ejecutando main().
+
+Si otro script importa run.py:
+El nombre ya no es "__main__", sino "run".
+La condición no se cumple y main() no se ejecuta solo
+
+Esto evita que, al querer usar una función de un archivo
+se dispare todo el programa accidentalmente
+
+
+Tener un run.py (o un main.py en la raíz):
+
+`Orden`: Mantienes la raíz del proyecto limpia
+Solo hay archivos de configuración y el lanzador
+Todo el código "sucio" de lógica está escondido en su carpeta correspondiente
+
+`Facilidad de uso`:
+es mucho más intuitivo escribir python run.py
+que andar buscando en qué carpeta está el archivo que inicia todo.
+
+`con uv`:
+podrías incluso definir un "script" en tu pyproject.toml
+que llame directamente a esa función main
+permitiendo que el usuario corra tu programa simplemente escribiendo
+uv run analizar-texto.
+
+Flujo:
+
+1. ejecuta `uv run python run.py`.
+
+2. run.py:
+Trae la función main desde el paquete analizador, sub-módulo cli.
+
+3. Python carga todo el paquete, resuelve los imports internos
+(los que tienen el punto .)
+y finalmente ejecuta la lógica de entrada de datos
+
+
+##### Estructura testing
+
+```
+text_analyzer/
+├── src/
+│   ├── domain/
+│   ├── logic/
+│   └── infra/
+├── tests/
+│   ├── __init__.py
+│   ├── conftest.py             # Configuraciones y fixtures globales
+│   ├── unit/                   # Pruebas rápidas (sin dependencias externas)
+│   │   ├── domain/
+│   │   │   └── test_entity.py
+│   │   └── logic/
+│   │       └── test_analyzer_service.py
+│   └── integration/            # Pruebas de adaptadores (IO, CLI, etc.)
+│       └── infra/
+│           └── test_cli.py
+```
+
+##### la carpeta de pruebas debe ser un espejo de la carpeta src
+permite encontrar el test de un módulo específico
+
+1. unit/domain/ (El Núcleo)
+Aquí pruebas que tus dataclasses se comporten bien.
+Son los tests más simples.
+
+Qué probar: Que la entidad sea inmutable, que acepte los tipos correctos y que sus valores por defecto funcionen.
+
+2. unit/logic/ (La Inteligencia)
+
+Son los tests más importantes.
+Aquí es donde "bombardeas" a tu AnalizadorService
+con diferentes textos
+
+Qué probar: Casos de texto vacío, textos con muchos símbolos, palabras repetidas, etc.
+Regla de oro: Aquí no debe haber nada relacionado con input() o print(). Solo lógica pura.
+
+3. integration/infra/ (Los Cables)
+Aquí pruebas cómo el código habla con el mundo real.
+
+Qué probar: Simular que un usuario escribe en la consola y verificar que el cli.py llama correctamente al servicio y muestra el formato esperado.
+Herramienta: Usarás Mocks para simular input().
+
+4. archivo tests/conftest.py
+especial en Pytest
+
+Sirve para definir Fixtures
+(datos de ejemplo) que se comparten entre varios archivos de test.
+
+##### En lugar de crear un AnalizadorService en cada test
+lo defines una vez en conftest.py
+Pytest se lo "inyecta" a los tests que lo necesiten.
+
+domain/entity.py:
+unit/domain/test_entity.py
+Unitario
+
+logic/analyzer_service.py:
+unit/logic/test_analyzer_service.py
+Unitario
+
+infra/cli.py:
+integration/infra/test_cli.py
+Integración
+
+Ejecutar tests:
+`uv run pytest`
+
+Cobertura:
+`uv run pytest --cov=src`
+
+Carpeta:
+`uv run pytest`
+
+uno a uno:
+`uv run pytest tests/unit/logic/test_analyzer_service.py`
+
+Ejecutar un Test específico dentro de un archivo:
+Si tu archivo tiene 20 tests y solo quieres ejecutar uno (por ejemplo, el que está fallando)
+ usa el operador `::`.
+`uv run pytest tests/unit/logic/test_analyzer_service.py::test_analizar_texto_vacio`
+
+
+Flujo de trabajo:
+
+-x (Exit on first failure): Se detiene en cuanto encuentra el primer error. Ideal para no inundar tu terminal de logs
+`uv run pytest -x`
+
+--lf (Last Failed): Solo ejecuta los tests que fallaron en la última pasada. Es magia pura para el flujo de corrección.
+
+uv run pytest --lf
+`-v` (Verbose): Muestra los nombres de los tests uno a uno con su estado [PASSED] o [FAILED] en lugar de solo puntitos.
+`uv run pytest -v`
+
+Rs:
+| `uv run pytest tests/` | Todo |
+| `uv run pytest path/to/file.py` | Un archivo |
+| `uv run pytest -k "nombre"` | Filtra por nombre |
+| `uv run pytest --lf` | Solo los fallidos previos |
+
+
+
+##### Flujo de Debugg
+
+###### Seguimos el rastro de la información a través de las capas
+###### Regla: cuanto más al centro esté el error, más grave es
+
+1. Localización del Síntoma (Capa de Infraestructura)
+
+Todo empieza cuando ejecutas python run.py
+y algo sale mal
+
+El error suele manifestarse en la terminal (Infraestructura).
+
+###### pregunta: ¿Es un error de entrada/salida o de proceso?
+###### Revisa el Traceback: . Si el error muere en cli.py antes de llamar al servicio, problema es cómo capturas los datos 
+(ej. el input() falló o sys.exit se disparó mal).
+
+Si el error viene de más adentro: No intentes arreglar la lógica en el CLI.
+
+2. Aislamiento con Tests (El "Filtro de Pureza")
+En lugar de seguir ejecutando el programa completo y escribir el párrafo a mano mil veces
+###### intentamos reproducir el error en un entorno controlado: crear tests que fallan con eso especifico.
+
+###### 1. Crea un test que falle:
+Si el analizador falla con caracteres especiales
+crea un test en tests/unit/logic/test_analyzer_service.py
+que use exactamente ese texto problemático.
+
+###### 2. Ejecuta solo ese test: uv run pytest -k "test_caso_problematico".
+
+###### 3. Resultado:
+¿El test falla? El problema está en la Lógica o el Dominio.
+¿El test pasa? El problema está en la Infraestructura
+(cómo el CLI le pasa los datos al servicio).
+
+3. Verificación de la Entidad (Capa de Dominio)
+Si el test falló, lo primero es mirar el "corazón".
+Clean Architecture protege el dominio por encima de todo.
+
+Buscar: ¿La dataclass permite los datos que le estamos enviando?
+Ej: Si AnalisisResultado espera un entero en total_palabras
+pero la lógica le envía un None, el error saltará aquí.
+
+Herramienta: MyPy es tu mejor amigo aquí
+Si MyPy dice Success
+el problema rara vez es la estructura de los datos,
+sino el algoritmo.
+
+4. Servicio (Capa de Aplicación/Lógica)
+donde vive el 90% de los bugs funcionales
+(regex mal formados, errores de cálculo, etc.).
+
+Debug: Como ya tienes el test del Paso 2
+puedes usar breakpoint() dentro de analyzer_service.py.
+
+Ejecuta el test:
+Cuando el código se detenga, inspecciona las variables locales
+(palabras, texto_limpio, frecuencias).
+
+Corrección: Ajusta el algoritmo
+Al estar en la capa de lógica
+sabes que no vas a romper la UI ni la base de datos
+solo estás arreglando "la inteligencia" del sistema.
+
+5. Cierre de Integración
+Una vez que el test unitario pasa, vuelves a la superficie
+
+1. Verificas que el cli.py reciba el objeto corregido.
+2. Ejecutas uv run python run.py.
+3. Verificas que el Presentador (función que hace los print):
+muestre los datos correctamente
+
+
+Rs:
+
+1. `Síntoma`
+Terminal / Logs
+Identificar en qué capa muere el programa.
+
+2. `Reproducción`
+Pytest
+"Mover el problema de la ""vida real"" a un test unitario."
+
+3. `Contrato`
+MyPy / Domain
+Asegurar que los datos son válidos y consistentes.
+
+4. `Lógica`
+Debugger / Breakpoint
+Arreglar el algoritmo en analyzer_service.py.
+
+5. `Verificación`
+Ruff / Pytest
+Asegurar que el arreglo no rompió otras capas.
+
+No ensucias tu lógica de negocio con prints de debug
+Arreglas el problema en el laboratorio (tests)
+luego lo despliegas a la producción (cli).
+
+
+
+##### Viaje por el debugger
+
+Al Ejecutar:
+
+uv run python run.py
+
+en Clean Architecture:
+debugger permitir ver cómo "viaja" el flujo de datos a través de las capas
+
+1. run.py → cli.py
+avanzar:
+n (Next/Siguiente) y s (Step Into/Entrar).
+
+n hasta llegar a la línea donde se llama a `main()`.
+En lugar de pasar de largo con n, presiona s.
+llevará automáticamente al archivo src/infra/cli.py
+
+2. Navegando la Interfaz (cli.py)
+dentro de la función main
+
+Sigue presionando n para ver cómo se definen las instrucciones y se imprimen
+Cuando el debugger llegue a la línea de `linea = input()`
+devolverá a la terminal "real" para que escribas algo
+
+bajando con n hasta la línea:
+`resultado = service.analizar(texto_completo)`
+
+3. Cerebro/Lógica (cli.py → analyzer_service.py)
+El adaptador de entrada (CLI)
+Le pasa la posta a la Capa de Lógica de Negocio.
+
+Presiona `s` sobre `service.analizar`
+Ahora estás en `src/logic/analyzer_service.py`
+
+Variable `texto` con el párrafo que escribiste
+Precionando `n`, verás cómo se crean `oraciones`, `texto_limpio` y el diccionario `frecuencias`
+
+Si ves que una regex no está limpiando lo que debería:
+momento para `ver el valor exacto` de texto_limpio
+
+4. Retorno con la Entidad (Dominio)
+Sigue con n hasta la última línea del servicio:
+`return AnalisisResultado(...).`
+
+Con n, PuDB te sacará del servicio y volverás a cli.py.
+El panel de Variables de cli.py, verás:
+`objeto resultado`
+seleccionas y presionas Enter
+abrirlo para ver
+`total_palabras, total_oraciones`
+
+5. Salida Final (Presentador)
+con `n` hasta `presentador_consola(resultado)`.
+`s` si quieres ver cómo se formatea el texto
+o simplemente n para terminar.
+presiona q para salir de PuDB
+
+###### Breakpoint: b. Ej error en linea x, ve allí; presiona b. Luego presiona c (Continue) para saltar directo a ese punto.
+
+
+##### Debug capa lógica: 90% errores. Momento de validar si tu "algoritmo" es correcto
+
+Ej:
+
+`oraciones`:
+"¿El regex detectó el punto final de ""nuevo!"" y ""texto.""?"
+
+`texto_limpio`:
+¿Se eliminaron los signos de exclamación y puntos? ¿Está todo en minúsculas?
+
+`frecuencias`:
+"¿Palabras como ""Hola"" y ""hola"" se agruparon (gracias al .lower()) o están separadas?"
+
+###### Interactividad: tecla (!)
+abrirá una pequeña consola de Python en la parte inferior
+puedes escribir
+`print(texto_limpio.upper())`
+probar ideas en caliente antes de escribir el código definitivo.
+
+En `Lógica`:
+
+Objeto `service` es efectivamente el `AnalizadorService`
+La variable `resultado` es ya la entidad `AnalisisResultado`
+La capa de `lógica` le entrega a la `infraestructura`
+
+El servicio termina su trabajo empaquetando todo en la entidad de dominio
+`frecuencias` ya es un diccionario procesado
+Al ejecutar ese return, la capa de lógica "muere" y devuelve el control.
+
+En `infraestructura`:
+Estamos de vuelta en cli.py
+`texto_completo`: la entrada bruta
+sigue ahí, pero ahora tenemos el `objeto resultado`
+
+La arquitectura ha transformado datos desordenados
+en información estructurada
+
+En `presentador`:
+Entramos en la función `presentador_consola`
+Tiene una misión única: decidir cómo se ve la información.
+
+Ej:
+AnalizadorService no sabe nada de "Top 10" ni de rayitas (---).
+Eso es estética, y la estética le pertenece a la Infraestructura
+###### Lógica de UI: `sorted(... items()[:10]` está aquí y no en el servicio
+
+Cada capa tiene sus propias variables:
+En el servicio, no podías ver las "instrucciones" del CLI
+Es `encapsulamiento`
+
+Contratos: La entidad AnalisisResultado
+"pasaporte" que permitió a los datos cruzar de la frontera de Lógica a Infraestructura sin perder su forma
+
+Con el debuger pudiste validar que el diccionario de frecuencias
+se formó correctamente antes de que el Presenter intentara imprimirlo
+
+
+##### IPython en PuBD
+
+PuDB te permite usar IPython como su consola interna
+En lugar de solo ver las variables
+puedes manipularlas en tiempo real con autocompletado y colores
+Si quieres probar si un cambio en el regex funciona mientras el programa está pausado
+
+Fuera de PuDB:
+Antes de escribir código en analyzer_service.py
+puedes abrir IPython para probar cómo se comporta collections.Counter
+o una expresión regular compleja
+`zona de prototipado`
+
+Dentro de PuDB:
+En cualquier momento del debug
+presiona ! o Ctrl + x
+entrar a la consola de IPython con todas las variables locales cargadas
+
+Comandos especiales: `Magics`
+empiezan con `%`.
+
+Comando | Acción | útilidad
+
+`obj?`:
+Muestra ayuda/docstring del objeto.
+###### Para ver qué métodos tiene tu AnalisisResultado.
+
+`obj??`:
+Muestra el código fuente del objeto.
+###### Para ver la implementación de tu servicio sin abrir el archivo.
+
+`%who`:
+Lista todas las variables definidas.
+###### Para ver qué tienes cargado en la capa de lógica.
+
+`%run path/to/file.py`:
+Ejecuta un script dentro de la sesión.
+###### Para cargar tu lógica sin salir de la consola.
+
+`%timeit`:
+###### Mide cuánto tarda en ejecutarse una línea.
+Para ver si tu regex es eficiente con párrafos grandes.
+
+`!comando`:
+"Ejecuta un comando del sistema (ls, cat, etc)."
+###### Para revisar archivos en tu carpeta sin cerrar la consola.
+
+
+Prototipado Rápido:
+Ej: mejorar el filtrado en `AnalyzerService`
+En lugar de editar, guardar y correr run.py:
+
+1. Abres `uv run ipython`.
+2. Importas tu lógica: `from src.logic.analyzer_service import AnalizadorService`.
+3. Instancias: `s = AnalizadorService()`.
+4. Pruebas: `s.analizar("Hola mundo!")`.
+5. Si algo no te gusta, pruebas el cambio ahí mismo:
+
+```python
+import re
+texto = "Hola mundo!"
+re.sub(r'[^\w\s]', '', texto) # ¿Funciona? Sí.
+```
+
+6. Testing: cuando estás seguro, llevas ese código a tu archivo .py.
+IPython guarda el historial de todo lo que escribes
+flecha arriba, autocompletará basándose en lo que empezaste a escribir
+cuando estás probando importaciones largas de Clean Architecture como from src.domain.entity import AnalisisResultado.
+
+
+###### Ej código en IPython
+
+
+
+
+##### Testing con 'dinamico' IPython
+
+PuDB y su integración con IPython:
+usarlo directamente con Pytest
+
+Necesitas un pequeño "ajuste" en cómo llamas a Pytest
+por defecto Pytest intenta usar el debugger básico de Python.
+
+Dos formas: automático y manual.
+
+1. automático (Recomendado):
+Pytest reconozca el flag --pudb
+lo ideal es instalar un pequeño plugin que conecte ambos mundos:
+
+`uv add pytest-pudb`
+
+Cada vez que un test falle, PuDB se abrirá automáticamente en la línea del error:
+`uv run pytest --pudb`
+
+2. Sin Plugins:
+función nativa de Python breakpoint().
+Solo tienes que decirle a tu sistema que "el comando para romper el código" es PuDB.
+`PYTHONBREAKPOINT=pudb.set_trace uv run pytest -s`
+
+-s es vital:
+Pytest suele "secuestrar" la salida de la terminal para mostrar sus propios reportes
+-s le dice: "Déjame la terminal libre para que PuDB pueda dibujar su interfaz".
+
+Flujo:
+
+1. Escribes un test en tests/unit/logic/test_analyzer_service.py
+para una nueva funcionalidad (por ejemplo, detectar hashtags #Python).
+
+2. Pones un breakpoint() justo antes de la línea que quieres probar en tu servicio
+
+3. Corres el test: PYTHONBREAKPOINT=pudb.set_trace uv run pytest -s.
+
+4. Se abre PuDB: Estás dentro del test, con el contexto de Pytest.
+
+5. Abres IPython (!): Pruebas tu regex para hashtags en tiempo real.
+
+6. Validas: Si el regex funciona en IPython, lo copias a tu código, quitas el breakpoint() y listo.
+
+
+`Debuggear App`:
+uv run pudb run.py
+El flujo real con input() y print().
+
+`Debuggear Test`:
+uv run pytest --pudb
+"Solo la función que estás probando, con datos falsos (fixtures)."
+
+
+
+
+##### Comandos uv, python, pubd y ipython
+
+uv init
+
+uv sync
+
+uv run python -m pudb run.py
+
+uv run python run.py
+
+uv run ruff check --fix src/infra/cli.py
+
+uv run mypy src/infra/cli.py
+
+uv run pytest test_main.py
+
+uv run pytest --pudb
+
+pytest --trace	Abre el debugger al inicio de cada test.
+Ideal para entender cómo fluyen los datos
+
+
+
+##### Trazado: Traceback
+
+pudb es una interfaz visual completa y no solo un intérprete de comandos
+ver el flujo de datos desde el segundo cero de cada test:
+
+1. Test por Test
+Si quieres analizar un test específico desde su primera línea,
+lo más limpio es usar breakpoint() al inicio de la función del test
+
+En tests/unit/logic/test_analyzer_service.py:
+
+```
+def test_analizar_texto_valido(service):
+    breakpoint()  # <--- PuDB se abrirá aquí mismo
+    texto = "Hola mundo"
+    resultado = service.analizar(texto)
+    assert resultado.total_palabras == 2
+```
+
+Para ejecutarlo y que PuDB tome el control, usa:
+
+```
+PYTHONBREAKPOINT=pudb.set_trace uv run pytest -s tests/unit/logic/test_analyzer_service.py
+```
+
+Al entrar, estarás en la capa de Tests
+Desde ahí, puedes presionar s (Step Into) para ver cómo el test "salta" hacia dentro de tu capa de Lógica
+la mejor forma de ver cómo se inyectan las dependencias.
+
+2. Modo Tráfico: Global
+Si quieres que todos los tests se detengan al iniciar
+(equivalente exacto a --trace)
+puedes usar un "Hook" de Pytest en tu archivo conftest.py.
+
+Ves cómo Pytest organiza la ejecución.
+En tests/conftest.py:
+
+```
+import pytest
+
+def pytest_runtest_setup(item):
+    # Esto se ejecuta ANTES de cada test
+    import pudb
+    pudb.set_trace()
+```
+
+Ahora, correr:
+`uv run pytest -s`
+
+Pytest se detendrá antes de ejecutar la lógica de cada test
+permitiéndote inspeccionar el entorno, las fixtures cargadas
+y las variables iniciales antes de que se procese nada.
+
+
+
+##### Stack y Traceback
+
+1. Stack: "Pila" de llamadas
+estructura de datos que representa el estado actual de ejecución
+LIFO: Last In, First Out
+para poner uno nuevo, lo pones arriba,
+y para sacar uno, tiene que ser el de arriba
+
+Ej: 
+run.py llama a main(). (Abajo de todo).
+main() llama a service.analizar(). (Se pone encima).
+analizar() llama a re.findall(). (Cima de la pila
+
+"Stack" te muestra exactamente esa pila.
+Si haces enter en algo de abajo, PuDB te lleva a ver las variables de esa función
+aunque ahora estés ejecutando la de arriba
+
+2. Traceback: "Autopsia"
+Informe que Python te entrega cuando el programa "muere" (lanza una excepción).
+Una foto del Stack en el momento exacto del desastre.
+Se lee de abajo hacia arriba (o de "lo más viejo a lo más nuevo").
+
+Ej: Traceback en tu Arquitectura
+Si tu regex fallara, verías algo así:
+
+```python
+Traceback (most recent call last):
+  File "run.py", line 4, in <module>
+    main()
+  File "src/infra/cli.py", line 45, in main
+    resultado = service.analizar(texto_completo)
+  File "src/logic/analyzer_service.py", line 18, in analizar
+    oraciones = re.findall(r"[.!?]+", None)  # <-- EL ERROR ESTÁ AQUÍ
+TypeError: expected string or bytes-like object
+```
+
+###### La última línea: Te dice qué pasó (TypeError).
+###### La penúltima línea: Te dice dónde ocurrió el fallo (Capa de Lógica).
+###### Las líneas anteriores: Te dicen quién causó que llegáramos ahí (Capa de Infraestructura).
+
+Debido a que tu código está desacoplado, un error puede originarse en una capa pero explotar en otra
+
+1. El error de "Mensajero":
+A veces el Traceback te dice que el error está
+en analyzer_service.py, , pero al mirar el Stack en PuDB
+te das cuenta de que el culpable es el cli.py
+que le envió un dato vacío (None) en lugar de un string.
+
+2. Pureza de Capas: Si ves en un Traceback que domain/entity.py
+está llamando a infra/cli.py, ¡alerta roja!
+El Traceback te acaba de confesar que rompiste la Regla de Dependencia
+las capas internas nunca deben llamar a las externas
+
+###### Ve directo a la última línea para saber el motivo: luego sube una o dos gradas para encontrar el archivo de tu proyecto (src/...)
+
+
+
+##### Retorno None
+
+```
+def presentador_consola(resultado: AnalisisResultado) -> None:
+
+def main() -> None:
+```
+
+##### None: significa que la función hace algo en lugar de calcular algo
+
+1. presentador_consola: El concepto de "Efecto Secundario" (Side Effect)
+función pertenece a la capa de Infraestructura
+Su única misión es transformar los datos de la entidad en píxeles
+
+técnico:
+###### La función no genera un nuevo dato que otra parte del código necesite procesar
+Su trabajo termina cuando el texto sale por el print().
+
+###### En programación, cuando una función modifica el mundo exterior
+(pantalla, archivo, base de datos)
+###### pero no devuelve un valor, se dice que tiene un "efecto secundario".
+
+diseño:
+Si presentador_consola devolviera algo (como un string formateado)
+estarías dividiendo la responsabilidad de "presentar"
+Al retornar None, queda claro que ella es el final del camino para esos datos
+
+2. main: El Orquestador o Punto de Entrada
+Inicia el servicio, pide los datos y llama al presentador
+
+Ciclo de Vida:
+El llamador de main suele ser el sistema operativo
+o el intérprete de Python (a través de run.py).
+Al sistema no le importa un valor de retorno
+le importa si el proceso terminó con éxito o error.
+
+Gestión de Errores:
+Si main necesitara comunicar un fallo, no lo hace retornando un valor
+(como return False) sino usando sys.exit(1).
+
+Podrías simplemente no poner nada:
+ventajas de incluirlo:
+
+1. Documentación Inmediata:
+No se debería intentar hacer algo como x = main().
+Ahorra tiempo de lectura
+
+2. MyPy:
+Si por error escribes un return "Ok"
+dentro de una función marcada como -> None
+MyPy te lanzará un error antes de que siquiera ejecutes el código.
+
+3. Clean Architecture:
+Separa las `Funciones Puras`:
+(calculan y retornan datos como AnalizadorService)
+de los `Procedimientos`:
+(los que ejecutan acciones de I/O, como en tu cli.py).
+
+Stack:
+En PuDB
+
+analizar(), al final tenías un valor en la pila de retorno (la entidad).
+presentador_consola(), al llegar al final, la pila de retorno simplemente dice None.
+
+
+
+
+##### DTO
+
+Data Transfer Object.
+
+En tu arquitectura actual, las capas están comunicadas
+pero están usando los "objetos reales" para hablar entre ellas.
+
+Conceptos
+
+1. Contenedor de Envío
+Un DTO es un objeto que no tiene lógica, solo datos.
+
+Ej: enviar un regalo por correo
+No envías el regalo suelto
+lo metes en una caja de cartón estándar con una etiqueta.
+
+Regalo: Entidad de Dominio
+rica, con métodos, reglas de negocio
+
+Caja es el DTO:
+estándar, ligera, solo para transporte
+
+2. DTO de Entrada (Input DTO)
+La función `analizar(self, texto: str)`
+recibe un simple string
+
+funciona, pero:
+¿qué pasa si el usuario quiere agregar opciones?
+ejemplo: ignorar mayúsculas
+filtrar palabras prohibidas o elegir el idioma.
+
+Sin DTO: Tu función empezaría a llenarse de parámetros
+`analizar(texto, idioma, ignorar_mayusculas, min_letras...)`.
+
+##### Con DTO: Creas un objeto llamado `AnalizarTextoRequest`
+El CLI llena ese objeto y se lo pasa al servicio
+
+Beneficio: La firma de tu función siempre es limpia
+`analizar(request)`
+
+3. DTO de Salida (Output DTO)
+Actualmente, tu capa de Lógica:
+`devuelve una Entidad de Dominio`
+AnalisisResultado, directamente al CLI.
+
+Problema a futuro?
+Si tu Entidad de Dominio cambia
+###### porque el negocio decide que ahora el análisis debe incluir metadatos privados
+que el usuario no debe ver
+el CLI se romperá.
+
+solución DTO:
+El servicio realiza el análisis
+crea la Entidad de Dominio
+y antes de salir de la capa de lógica,
+"mapea" (copia) los datos necesarios
+a un `AnalisisResultadoDTO`
+
+El CLI solo conoce el DTO, nunca toca la Entidad real.
+
+4. Interacción entre Capas (El Flujo de Datos)
+Movimiento de datos con DTOs
+
+Capa de Infraestructura (cli.py):
+1. Captura el texto de la terminal.
+2. Crea el Input DTO.
+3. Llama al servicio pasándole ese DTO.
+4. Recibe un Output DTO
+5. Muestra los datos en pantalla
+
+Capa de Lógica (service.py):
+1. Recibe el Input DTO.
+2. Extrae los datos y realiza el procesamiento (usando el Dominio si es necesario).
+3. Crea la Entidad de Dominio para validar reglas (ej. "un análisis no puede tener palabras negativas").
+4. Convierte la Entidad en un Output DTO.
+5. Retorna ese DTO.
+
+Capa de Dominio (entity.py):
+1. No conoce los DTOs.
+2. Vive en su burbuja de pureza, solo gestionando las reglas esenciales del análisis
+
+Modificaciones Necesarias:
+1. En Lógica: Crear un archivo de dtos.py o incluirlos al inicio del servicio.
+2. En el CLI: Cambiar la función presentador_consola para que acepte el DTO en lugar de la Entidad
+3. En el Servicio: Agregar un paso de "mapeo" al final de la función analizar.
+
+una aplicación real con miles de usuarios
+es lo que evita que el sistema colapse
+cuando haces un cambio
+
+interfaz de usuario (CLI) y mi lógica de negocio
+bien separadas:
+cambiar el corazón de mi sistema sin que la pantalla se entere.
+
+
+##### DTO: necesita de la capa Dominio y Lógica
+
+Cambiar el corazón del sistema sin que la pantalla se entere.
+Corazón: bloque central compuesto por el Dominio y la Lógica
+
+Pero más precisamente podría ser La Capa de Dominio (Entities)
+
+1. Capa de Dominio (Entities)
+Ej: si la app fuera un banco
+el "corazón" son las reglas matemáticas de cómo se calcula un interés o cómo se valida una transferencia
+Esas reglas existen incluso si el banco funcionara solo con papel y lápiz
+
+En el script:
+
+Dominio (AnalisisResultado) es el corazón:
+###### Define qué es un análisis exitoso.
+
+Lógica (AnalizadorService):
+###### Define cómo se ejecuta ese análisis paso a paso.
+
+Pantalla: no se entera
+Es el resultado del desacoplamiento:
+Ej: cambiando el "corazón" (dominio, entidad, lógica de negocio)
+
+1. Cambio en el Dominio:
+Decides que el análisis debe detectar también el "sentimiento" del texto (positivo/negativo).
+
+2. Cambio en la Lógica:
+Modificas el servicio para que use una librería de Inteligencia Artificial
+para detectar ese sentimiento.
+
+3. DTO:
+Como usas un 'Data Transfer Object'
+el servicio traduce toda esa complejidad de la IA
+a un simple contenedor de datos.
+
+Resultado: cli.py (pantalla)
+sigue recibiendo un objeto con etiquetas y números.
+No sabe si usaste un regex simple o un super cálculo
+Para la pantalla, nada ha cambiado.
+
+`Capa Externa` (Infraestructura/CLI):
+Es la piel. Intercambiable
+Hoy es la terminal, mañana podría ser una página web en React
+
+`Capa Media` (Lógica/Servicio):
+Cerebro, sabe coordinar las tareas.
+
+`Capa Interna` (Dominio):
+ADN. Define la esencia de lo que tu software hace.
+
+Protección del dominio:  
+usamos DTOs y separamos las capas por `fragilidad`
+
+Si el CLI conociera los detalles íntimos del Dominio
+cualquier cambio pequeño en él
+obligaría a reconstruir toda la piel/pantalla.
+
+Con un DTO, creas un `contrato`
+Mientras el contrato se cumpla
+cambiar el corazón entero (pasar de Python a C++, o de Regex a IA)
+y el resto del sistema seguirá funcionando como si nada.
+
+
+
+##### Código de DTO
+
+Crear un nuevo archivo en la capa de Lógica
+Los DTOs pertenecen a esta capa.
+###### Definen el "contrato" de entrada y salida de tus casos de uso
+
+1. Archivo de DTOs
+
+src/logic/dtos.py:
+`dataclasses` son ligeras y perfectas para transportar datos sin lógica.
+
+```
+from dataclasses import dataclass
+
+@dataclass(frozen=True)
+class AnalisisRequest:
+    """DTO de Entrada: Lo que la infraestructura le pide a la lógica."""
+    texto: str
+    # En el futuro podrías agregar: filtrar_stop_words: bool = False
+
+@dataclass(frozen=True)
+class AnalisisResponse:
+    """DTO de Salida: Lo que la lógica le devuelve a la infraestructura."""
+    frecuencias: dict[str, int]
+    total_oraciones: int
+    total_palabras: int
+    resumen: str  # Texto ya procesado para que el CLI no tenga que calcular nada
+```
+
+2. Actualizar el Servicio (Mapeador)
+
+modificamos src/logic/analyzer_service.py
+el servicio ahora actúa como un "traductor"
+entre los DTOs y el Corazón (Dominio).
+
+```
+import re
+from collections import Counter
+from src.domain.entity import AnalisisResultado
+from src.logic.dtos import AnalisisRequest, AnalisisResponse
+
+class AnalizadorService:
+    def analizar(self, request: AnalisisRequest) -> AnalisisResponse:
+        # Extraemos los datos del DTO de entrada
+        texto = request.texto
+        
+        if not texto.strip():
+            return AnalisisResponse(frecuencias={}, total_oraciones=0, total_palabras=0, resumen="Sin texto")
+
+        # --- Lógica de Negocio ---
+        oraciones = re.findall(r"[.!?]+", texto)
+        total_oraciones = len(oraciones)
+        texto_limpio = re.sub(r"[^\w\s]", "", texto.lower())
+        palabras = texto_limpio.split()
+        frecuencias = dict(Counter(palabras))
+
+        # --- Uso del Corazón (Dominio) ---
+        # Creamos la entidad para validar consistencia o usar sus métodos
+        entidad = AnalisisResultado(
+            frecuencias=frecuencias,
+            total_oraciones=total_oraciones,
+            total_palabras=len(palabras),
+        )
+
+        # --- Mapeo de Salida ---
+        # Transformamos la Entidad en un DTO de Respuesta
+        return AnalisisResponse(
+            frecuencias=entidad.frecuencias,
+            total_oraciones=entidad.total_oraciones,
+            total_palabras=entidad.total_palabras,
+            resumen=entidad.obtener_resumen() # El DTO ya lleva el string listo
+        )
+```
+
+3. Actualizar la Infraestructura (cli.py)
+
+Adaptamos src/infra/cli.py:
+para que use estos nuevos contenedores.
+
+```
+from src.logic.dtos import AnalisisRequest, AnalisisResponse
+from src.logic.analyzer_service import AnalizadorService
+
+def presentador_consola(response: AnalisisResponse) -> None:
+    # Fíjate que ahora 'response' es un DTO, no la entidad.
+    print("\n" + "=" * 30)
+    print(" RESULTADOS (VÍA DTO)")
+    print("=" * 30)
+    print(response.resumen) # Usamos el resumen que ya vino cocinado de la lógica
+    print("-" * 30)
+    # ... resto del print de frecuencias ...
+
+def main() -> None:
+    service = AnalizadorService()
+    # ... captura de texto_completo ...
+
+    # 1. Empaquetamos la petición en un DTO
+    peticion = AnalisisRequest(texto=texto_completo)
+
+    # 2. Enviamos el DTO y recibimos otro DTO
+    respuesta = service.analizar(peticion)
+
+    # 3. Entregamos la respuesta al presentador
+    presentador_consola(respuesta)
+```
+
+Desacoplamiento total:
+Si mañana decides que AnalisisResultado
+en el dominio necesita un campo nuevo
+llamado id_interno_db, el CLI no se entera
+El DTO de salida seguirá teniendo solo los 4 campos que la interfaz necesita.
+
+Claridad de Contratos: Al mirar dtos.py
+cualquier desarrollador entiende qué datos entran y salen del sistema
+sin tener que leer toda la lógica de los regex.
+
+Seguridad: La infraestructura ya no toca la "Entidad".
+Si la entidad tuviera métodos sensibles
+(como guardar_en_disco())
+el CLI no podría verlos porque solo tiene acceso al DTO
+que es un objeto plano.
+
+En presentador_consola usamos response.resumen:
+lógica de presentación que el servicio preparó usando la entidad de dominio
+hace que tu CLI sea "más tonto" y, por lo tanto, más fácil de mantener
+
+
+###### La Entidad (AnalisisResultado): Corazón, Representa la verdad del negocio
+Su estructura se define por cómo el dominio entiende un análisis
+Tiene un método (obtener_resumen) porque la entidad sabe cómo describirse a sí misma.
+
+###### DTO (AnalisisResponse): Es el "Mensaje".
+Es una estructura de datos muda
+No tiene métodos, solo campos.
+Su campo resumen no es un método, es un string ya calculado
+
+Protección: Desacoplamiento
+Si después decides guardar los datos en una base de datos
+
+1. Cambio en la Entidad: Tu AnalisisResultado
+ahora necesita un campo id: int y un timestamp: datetime
+para la base de datos.
+
+2. Si CLI: usara la Entidad
+tendrías que modificar el presentador_consola
+para que ignore esos nuevos campos o peor aún,
+el CLI empezaría a mostrar datos técnicos que el usuario no pidió
+
+3. Con DTO: Entidad crece
+pero AnalisisResponse se queda
+El servicio simplemente ignora el id y el timestamp
+al mapear el DTO de salida
+La pantalla nunca se entera de que ahora hay una base de datos.
+
+
+Contenido:
+detalle crítico
+
+Entidad: Tienes una función obtener_resumen().
+Esto es comportamiento.
+
+DTO: Tienes un atributo resumen: str
+Esto es dato.
+
+###### La lógica (el servicio) llamó al método de la entidad
+###### obtuvo el string, y lo metió en el DTO
+El CLI ya no tiene que llamar a funciones de lógica de negocio
+solo lee un string que ya viene listo para imprimir.
+
+
+Ej escala/crecimiento de la app:
+
+Característica | Entidad (Dominio) | DTO de Salida (Respuesta)
+
+`Campos`:
+"id, user_id, raw_text, frecuencias, metadata_db"
+"frecuencias, total_palabras, resumen, url_compartir"
+
+`Métodos`:
+"validar_consistencia(), serializar()"
+Ninguno (es solo una bolsa de datos)
+
+`Contexto`:
+Solo reglas de negocio puras.
+Optimizado para lo que el usuario quiere ver.
+
+
+
+##### Uso DTO
+
+Cuando un DTO deja de ser opcional para volverse indispensable:
+
+1. Comunicación entre Capas (Boundaries)
+Uso más común
+En arquitecturas limpias, las capas no deben "conocerse" íntimamente
+El DTO actúa como un pasaporte de datos
+
+Problema:
+Si pasas una entidad de base de datos directamente a la interfaz de usuario
+la interfaz se acopla a la estructura de la tabla.
+
+Solución:
+DTO viaja entre la capa de Lógica y la de Infraestructura
+Si la base de datos cambia
+(ej, pasas de SQL a NoSQL)
+el DTO permanece igual y la interfaz ni se entera.
+
+2. Seguridad y Exposición Selectiva
+##### No todos los datos del "corazón" del sistema deben ser visibles para el mundo exterior
+
+###### Ocultar datos sensibles: Una entidad Usuario puede tener campos como password_hash o secret_token.
+
+###### Filtrado: El DTO de respuesta solo incluirá nombre y email
+asegurando que nunca, por error, se envíen datos privados por la red o a la consola.
+
+3. Optimización del "Payload" (Carga Útil)
+Especialmente útil en aplicaciones web o sistemas distribuidos
+donde el ancho de banda y el rendimiento importan.
+
+Evitar el Over-fetching:
+Si una entidad tiene 50 campos pero tu pantalla solo muestra 3
+enviar la entidad completa es un desperdicio de memoria y red.
+
+Simplificación:
+DTO solo carga los 3 campos necesarios
+haciendo que la respuesta sea mucho más ligera y rápida de procesar
+
+4. Agregación y "Aplanamiento" de Datos
+##### A veces, lo que el usuario quiere ver no existe en una sola entidad
+sino que es un rompecabezas de varias.
+
+Agregación:
+DTO llamado ReporteMensualResponse
+puede recolectar datos de las entidades Venta, Cliente y Producto
+
+Aplanamiento (Flattening):
+Si tienes una estructura compleja como Pedido.Cliente.Direccion.CodigoPostal
+el DTO puede simplificarlo a un solo campo codigo_postal
+para que el receptor no tenga que navegar por una jerarquía profunda de objetos.
+
+5. Estabilidad del Contrato (Versionado
+Cuando trabajas en equipo o con clientes externos
+DTO es tu garantía de estabilidad.
+
+Escenario:
+Tienes una API que usan miles de personas
+Necesitas cambiar el nombre de una columna en tu base de datos de
+primer_nombre a nombre_pila
+
+`Sin DTO`:
+Todos tus clientes se rompen al instante porque el campo desapareció de la respuesta
+
+`Con DTO`:
+Cambias tu base de datos, pero el DTO sigue llamando al campo primer_nombre
+Internamente haces el mapeo
+y para el cliente externo nada ha cambiado
+
+Caso de Uso | Propósito Principal
+
+`Desacoplamiento`:
+Que la UI no dependa de cómo guardas los datos.
+
+`Seguridad`:
+"No exponer campos privados (IDs internos, passwords)."
+
+`Performance`:
+Enviar solo lo estrictamente necesario.
+
+`Simplicidad`:
+"Entregar datos listos para usar, sin lógica compleja."
+
+`Contratos`:
+Mantener la compatibilidad aunque el sistema interno evolucione.
+
+
+
+##### Testing Dominio
+
+Capa domain.py: Pruebas de Estado
+Al ser la capa más interna
+las pruebas aquí son Unitarias y extremadamente rápidas
+
+No prueban "qué hace el programa"
+sino "cómo lucen los datos".
+
+`Validación de Estructura`:
+Comprobar que al instanciar AnalisisResultado
+los tipos de datos coincidan con lo definido
+(ej. que las frecuencias sean un diccionario).
+
+`Prueba de Inmutabilidad`:
+Intentar cambiar un valor después de crear la entidad
+Si usamos frozen=True
+el test debe confirmar que Python lanza un error.
+
+`Valores por Defecto`:
+Verificar que si pasamos un texto vacío,
+los contadores de la entidad empiecen en 0
+y no en None
+
+
+Nuestra estrategia debe ser tan pura como la capa misma
+Dado que las entidades son el "corazón" del sistema
+las pruebas deben ser ultra rápidas, deben ser ultra rápidas
+enfocadas en la integridad de los datos y el comportamiento esencial
+
+tests/unit/domain/test_entity.py:
+
+1. Validación de Estado Inicial: Comprobar que la dataclass se instancia correctamente con los valores por defecto
+2. Verificación de Inmutabilidad: Como marcamos la entidad como frozen=True, debemos asegurar que nadie pueda cambiar los datos una vez creados. Esto protege la "verdad" de tu negocio.
+3. Prueba de Comportamiento (Lógica de Conveniencia): Validar que el método obtener_resumen formatea los strings exactamente como esperamos
+
+test_entity.py
+
+```
+import pytest
+from dataclasses import FrozenInstanceError
+from src.domain.entity import AnalisisResultado
+
+def test_entidad_valores_por_defecto():
+    """Valida que un análisis vacío sea consistente."""
+    resultado = AnalisisResultado()
+    
+    assert resultado.total_palabras == 0
+    assert resultado.total_oraciones == 0
+    assert resultado.frecuencias == {}
+
+def test_entidad_asignacion_valores():
+    """Valida que los datos pasados se guarden correctamente."""
+    frecuencias_test = {"python": 5, "clean": 3}
+    resultado = AnalisisResultado(
+        frecuencias=frecuencias_test,
+        total_oraciones=2,
+        total_palabras=10
+    )
+    
+    assert resultado.total_palabras == 10
+    assert resultado.total_oraciones == 2
+    assert resultado.frecuencias["python"] == 5
+
+def test_entidad_es_inmutable():
+    """
+    Garantiza que la entidad no pueda ser modificada (frozen=True).
+    Crucial para mantener la integridad en Clean Architecture.
+    """
+    resultado = AnalisisResultado(total_palabras=5)
+    
+    with pytest.raises(FrozenInstanceError):
+        resultado.total_palabras = 10 # Esto debe fallar
+
+def test_obtener_resumen_formato_correcto():
+    """Valida la lógica de presentación básica de la entidad."""
+    resultado = AnalisisResultado(total_palabras=100, total_oraciones=5)
+    esperado = "Análisis con 100 palabras y 5 oraciones."
+    
+    assert resultado.obtener_resumen() == esperado
+```
+
+
+Flujo del STLC:
+
+1. Análisis de Datos de Prueba:
+Hemos definido casos para un `estado vacío` (0)
+y un `estado poblado` (100).
+
+2. Ejecución: Al correr uv run pytest tests/unit/domain/test_entity.py
+Pytest buscará todas las funciones que empiecen con test_.
+
+3. Inmutabilidad (FrozenInstanceError):
+`frozen=True`: para evitar que un error en la capa de Infraestructura (como el CLI)
+"ensucie" accidentalmente los datos del Dominio.
+
+Importamos la entidad usando la ruta completa src.domain.entity
+El nombre del módulo viene directamente del nombre del archivo en el directorio del proyecto.
+
+
+
+##### Testing Lógica
+
+la estrategia cambia ligeramente respecto al Dominio
+en el Dominio probamos "qué es" el objeto
+
+En lógica vamos a probar `"qué hace" el sistema`
+
+AnalizadorService representa un Caso de Uso
+las pruebas deben garantizar que las reglas de transformación
+(como el conteo y la limpieza de texto) sean infalibles.
+
+1. Pruebas de Frontera (Edge Cases):
+Qué pasa si el usuario no escribe nada o solo presiona espacios?
+El servicio debe ser resiliente y no "romperse".
+
+2. Validación de Regex (Sentencias):
+Probar que las oraciones se cuenten correctamente incluso con puntuación acumulada
+(ej. !!! o ...).
+
+3. Normalización de Datos:
+Verificar que el conteo de palabras ignore mayúsculas y elimine caracteres especiales
+para que "Hola" y "hola!" cuenten como la misma palabra.
+
+4. Uso de Fixtures:
+En lugar de crear el servicio en cada función
+usamos una fixture de Pytest para mantener el código limpio y profesional
+
+test_analyzer_service.py
+
+```
+import pytest
+from src.logic.analyzer_service import AnalizadorService
+from src.domain.entity import AnalisisResultado
+
+@pytest.fixture
+def service():
+    """Fixture para proveer una instancia limpia del servicio en cada test."""
+    return AnalizadorService()
+
+def test_analizar_texto_vacio_retorna_entidad_vacia(service):
+    """Garantiza que el sistema maneje entradas nulas sin errores."""
+    resultado = service.analizar("   ")
+    
+    assert isinstance(resultado, AnalisisResultado)
+    assert resultado.total_palabras == 0
+    assert resultado.total_oraciones == 0
+
+def test_analizar_conteo_basico(service):
+    """Prueba funcional estándar con un párrafo simple."""
+    texto = "Hola mundo. Esto es una prueba."
+    resultado = service.analizar(texto)
+    
+    assert resultado.total_palabras == 6
+    assert resultado.total_oraciones == 2
+    assert resultado.frecuencias["hola"] == 1
+
+def test_analizar_puntuacion_compleja(service):
+    """Valida que el regex de oraciones detecte correctamente el final de las ideas."""
+    texto = "¿Qué tal? ¡Increíble! Esto funciona... genial."
+    resultado = service.analizar(texto)
+    
+    # ¿Qué tal? (1), ¡Increíble! (2), Esto funciona... (3), genial. (4)
+    assert resultado.total_oraciones == 4
+
+def test_analizar_normalizacion_y_limpieza(service):
+    """Verifica que 'Python', 'python' y 'python!!' sean tratados como la misma palabra."""
+    texto = "Python es genial, porque Python es potente."
+    resultado = service.analizar(texto)
+    
+    # La palabra 'python' debería aparecer 2 veces ignorando la coma
+    assert resultado.frecuencias["python"] == 2
+    assert "genial," not in resultado.frecuencias # Debe estar limpia
+    assert resultado.frecuencias["genial"] == 1
+```
+
+
+Entorno: STLC Fase 4
+Al ejecutar estos tests con uv run pytest, estás asegurando que tu entorno
+está ejecutando el código en un contenedor lógico aislado, libre de interferencias de otras librerías del sistema
+
+Ejecución: STLC Fase 5
+Si usas PuDB para debugear estos tests, verás cómo el Stack de Pytest llama a tu fixture
+antes de entrar a la función de prueba
+Ver cómo el objeto service se inyecta automáticamente en tus funciones.
+
+
+
+##### Testing Infraestructura/presentación
+
+Ya no estamos probando algoritmos puros en una "burbuja"
+##### testeando cómo nuestro código interactúa con el mundo exterior: el teclado (stdin) y la pantalla (stdout).
+
+Una Prueba de Integración:
+El desafío es que funciones como input() detienen la ejecución esperando a un humano
+y print() envía datos a la terminal sin devolver nada
+
+Simulacro de I/O:
+###### Para que tus tests corran de forma automática en tu terminal
+usaremos dos herramientas clave de Pytest:
+
+1. `monkeypatch / patch`:
+"Secuestraremos" la función input
+para que devuelva los strings que nosotros queramos automáticamente
+
+2. `capsys`: herramienta nativa de Pytest que captura todo lo que sale por print
+para que podamos inspeccionarlo como si fuera un string.
+
+3. `Captura de Excepciones`:
+Como main usa sys.exit(1)
+usaremos pytest.raises
+para confirmar que el programa "muere" correctamente cuando no hay entrada.
+
+test_cli.py
+tests/integration/infra/test_cli.py.
+
+```python
+
+import pytest
+from unittest.mock import patch
+from src.infra.cli import presentador_consola, main
+from src.domain.entity import AnalisisResultado
+
+# --- Tests de Presentación ---
+
+def test_presentador_consola_formato(capsys):
+    """Verifica que el formato visual en consola sea el esperado."""
+    resultado = AnalisisResultado(
+        frecuencias={"python": 2},
+        total_oraciones=1,
+        total_palabras=2
+    )
+    
+    presentador_consola(resultado)
+    
+    # Capturamos lo que se imprimió en urxvt
+    captured = capsys.readouterr()
+    
+    assert "RESULTADOS DEL ANÁLISIS" in captured.out
+    assert "Oraciones detectadas: 1" in captured.out
+    assert "python: 2" in captured.out
+
+# --- Tests de Flujo Completo (Main) ---
+
+def test_main_flujo_exitoso(capsys):
+    """Simula un usuario escribiendo un texto y terminando con doble Enter."""
+    entradas_usuario = ["Hola mundo.", ""] # El segundo string vacío rompe el 'while'
+    
+    with patch("builtins.input", side_effect=entradas_usuario):
+        main()
+    
+    captured = capsys.readouterr()
+    assert "Palabras totales:      2" in captured.out
+    assert "hola: 1" in captured.out
+
+def test_main_error_entrada_vacia(capsys):
+    """Verifica que el programa aborte correctamente si no hay texto."""
+    with patch("builtins.input", side_effect=["", ""]):
+        # Esperamos que el programa intente cerrar el proceso (sys.exit)
+        with pytest.raises(SystemExit) as excinfo:
+            main()
+    
+    # Verificamos que el código de salida sea 1 (Error)
+    assert excinfo.value.code == 1
+    
+    captured = capsys.readouterr()
+    assert "Error: No se ingresó texto" in captured.out
+```
+
+Aislamiento de la Infraestructura:
+No necesitas una persona física para probar tu interfaz.
+
+Validación del Contrato:
+asegurando que el CLI sabe interpretar la entidad AnalisisResultado
+que viene de las capas internas
+
+Robustez: Al testear el sys.exit(1)
+aseguras que tu script se comporte bien en un entorno
+permitiendo que otros procesos sepan si tu programa falló.
+
+
+##### pytest es el motor (el framework) y unittest.mock es el maletín de herramientas especializadas.
+
+1. Framework vs. La Herramienta:
+separar sus roles:
+
+pytest:
+software de terceros que se encarga de gestionar la ejecución
+Busca tus archivos test_*.py, maneja las fixtures, organiza los resultados y te da esos mensajes de error tan claros
+
+unittest.mock (La Utilidad):
+parte de la librería estándar de Python (no necesitas instalar nada extra).
+Su único propósito es el "simulacro".
+Provee herramientas para reemplazar partes de tu sistema con objetos falsos (Mocks) para aislarlos
+
+2. pytest y mock
+no reinventar la rueda si ya existe una excelente herramienta en la librería estándar de Python
+unittest.mock es tan potente y está tan bien probado que pytest simplemente lo abraza
+
+Categoría:
+Framework de pruebas (Terceros).
+Librería de simulación (Estándar).
+
+Responsabilidad:
+Correr los tests y reportar fallos.
+Aislar el código de dependencias externas.
+
+Sintaxis:
+Usa assert simple y decoradores @pytest.
+Usa contextos with patch(...) o decoradores.
+
+Poder Especial:
+Fixtures: Gestión inteligente del estado.
+Side effects: Simular errores o múltiples entradas.
+
+4. pytest-mock
+puente llamado pytest-mock
+que hace que esta interacción sea aún más elegante
+En lugar de importar patch, te permite usar una fixture llamada mocker.
+
+unittest.mock puro:
+
+```
+with patch("builtins.input", return_value="Hola"):
+    main()
+```
+
+plugin pytest-mock:
+
+```
+def test_main(mocker):
+	mocker.patch("builtins.input", return_value="Hola")
+	main()
+```
+
+
+##### Monkeypatch
+
+herramientas más potentes y versátiles que ofrece pytest de forma nativa
+
+monkeypatch es como un modificador dinámico que te permite alterar el comportamiento de objetos
+funciones o variables de entorno durante la ejecución de un test, y lo más importante
+deshace los cambios automáticamente al terminar el test.
+
+1. Modificación en Tiempo de Ejecución
+En Python, casi todo es modificable en tiempo de ejecución
+"Monkeypatching" se refiere a la técnica de reemplazar o extender código de forma dinámica
+
+El problema es que, si lo haces manualmente, podrías "ensuciar" otros tests
+La fixture monkeypatch de pytest soluciona esto garantizando que cualquier cambio sea temporal
+
+2. Funciones Principales
+La fixture monkeypatch provee varios métodos clave:
+
+`setattr(obj, name, value)`:
+Reemplaza un atributo o función de un objeto o módulo
+Es el que usarías para suplantar una función de tu AnalizadorService
+o incluso el input de Python
+
+`setitem(dic, key, value)`:
+Modifica una entrada en un diccionario
+Muy útil si tu código lee configuraciones de un dict global
+
+`setenv(name, value)`:
+Establece una variable de entorno
+Crucial si tu script de Linux depende de variables como PATH o USER.
+
+`delattr / delitem / delenv`:
+Elimina atributos, ítems o variables de entorno para probar cómo reacciona tu código ante datos faltantes
+
+3. Suplantando input
+vimos cómo usar patch de unittest
+
+harías lo mismo con monkeypatch
+
+```
+def test_main_con_monkeypatch(monkeypatch, capsys):
+    # Definimos una función falsa que simula al usuario
+    def input_falso(prompt=None):
+        return "Texto de prueba"
+
+    # Aplicamos el parche: reemplazamos 'input' en el módulo 'builtins'
+    monkeypatch.setattr("builtins.input", input_falso)
+    
+    # ... ejecutar lógica ...
+```
+
+monkeypatch vs. unittest.mock
+
+Limpieza:
+Automática al terminar la función del test.
+Requiere usar un bloque with o un decorador.
+
+Simplicidad:
+Ideal para cambios rápidos y sencillos.
+Mejor para mocks complejos con side_effects.
+
+Integración:
+Es una fixture nativa; no requiere imports extra.
+Requiere importar desde la librería estándar.
+
+Variables de Entorno:
+Tiene un método específico (setenv) muy limpio.
+"Se puede hacer, pero es más verboso."
+
+
+##### 2. Ejercicio: (Calculadora de Propinas Pro):
+
+Un script que pida el total de la cuenta,
+el porcentaje de propina y el número de personas.
+Debe validar que las entradas sean números positivos
+y devolver cuánto debe pagar cada uno
+
 
 
 
@@ -20422,5 +23548,288 @@ ignore mayúsculas y cuente cuántas oraciones hay
 
 
 ## Bash
+
+
+
+
+# SDLC: Software Development Life Cycle
+
+Abarca todo el desarrollo de software (planificación, diseño, codificación, pruebas) para entregar un producto
+El SDLC cubre todo el proceso desde el inicio hasta el fin, incluyendo la codificación y el mantenimiento
+
+Busca desarrollar software funcional de calidad
+###### En el SDLC participan analistas de negocio, desarrolladores y testers
+
+Comienza antes que STLC
+Requisitos, Diseño, Codificación, Pruebas, Despliegue
+
+1. Requisitos/Análisis
+2. Diseño
+3. Codificación
+4. Pruebas (donde entra STLC)
+5. Despliegue
+6. Mantenimiento
+
+
+Es el mapa de ruta que seguimos para que un proyecto
+para que no se convierta en un caos de carpetas y archivos sin sentido
+
+###### Es un proceso estructurado que garantiza que el software sea de alta calidad, se entregue a tiempo y, lo más importante, resuelva el problema para el que fue creado
+
+1. Planning
+Fase de "negocios y viabilidad".
+Se define el qué y el cuánto
+
+`Objetivo`: Determinar el alcance del proyecto
+los recursos necesarios (tiempo, dinero, equipo)
+y los riesgos potenciales.
+
+`Resultado`: Un plan de proyecto y una estimación de costos
+
+2. Requirement Analysis
+Donde hablamos con el cliente (o con nosotros mismos si es un proyecto personal)
+para entender exactamente qué debe hacer el software.
+
+`Requerimientos Funcionales`:
+Ej: "El sistema debe contar las palabras de un párrafo".
+
+`Requerimientos No Funcionales`:
+Ej: "El sistema debe ser rápido y ejecutarse en Linux ligero".
+
+`Resultado`:
+Documento SRS (Software Requirement Specification),
+Es la biblia del proyecto.
+
+3. Design
+Entra la arquitectura.
+Decidimos cómo se verá el "esqueleto" del sistema
+antes de escribir una sola línea de código lógico
+
+`Diseño de Alto Nivel (HDA)`:
+Elegir la arquitectura (ej. Clean Architecture)
+definir las capas y cómo se comunicarán
+
+`Diseño de Bajo Nivel (LDA)`:
+Esquemas de bases de datos
+diagramas de clases
+flujos de interfaz de usuario
+
+4. Implementation/Coding
+Fase de picar código
+
+`Objetivo`: Traducir los documentos de diseño en código ejecutable
+
+`Acciones`: Seguir estándares de codificación
+realizar code reviews y documentar el código
+Aplicar SOLID y KISS, etc
+
+5. Testing
+Donde el STLC se integra
+
+`Objetivo`: Encontrar errores (bugs) y asegurar que el software cumple con los requerimientos del paso 2
+
+`Acciones`: Pruebas unitarias con Pytest
+pruebas de integración y de usuario
+Si algo falla, se vuelve a la etapa de Desarrollo
+
+6. Deployment
+Una vez que el software es estable
+se lanza al mundo real
+(entorno de producción)
+
+Objetivo:
+Poner el producto a disposición de los usuarios finales
+
+Acciones:
+Configuración de servidores
+subida a la nube
+o empaquetado para distribución en repositorios
+
+7. Maintenance
+El software nunca está realmente "terminado".
+Es un organismo vivo.
+
+`Objetivo`: Corregir errores que no se detectaron antes
+actualizar el sistema para nuevos sistemas operativos
+o añadir pequeñas mejoras basadas en el feedback.
+
+`Dato`:
+Esta fase puede ocupar hasta el 80% del costo total de vida de un software
+
+
+## Ejecución práctica de para SDLC
+
+### Tecnicas, herramientas, software en cada etapa
+
+1. Planning 
+El objetivo es organizar el caos
+No necesitas software pesado, la simplicidad suele ganar.
+
+`Herramientas`: GitHub Issues o Trello (tableros Kanban).
+Para algo más minimalista en tu terminal, puedes usar archivos TODO.md
+o herramientas como taskwarrior.
+
+`Técnicas`:
+##### Método MoSCoW: Clasificar tareas en Must have (Obligatorio), Should have (Debería), Could have (Podría) y Won't have (No por ahora).
+
+`Estimación Ágil`: Calcular cuánto tiempo te llevará cada componente de tu arquitectura
+
+2. Requirement Analysis
+Defines el "contrato" de lo que vas a construir.
+
+Herramientas: Markdown
+estándar de la industria para documentación técnica
+Para diagramas de flujo rápidos, Excalidraw o draw.io.
+
+`Técnicas`:
+##### User Stories: "Como usuario, quiero pegar un párrafo para obtener las 10 palabras más frecuentes".
+##### Criterios de Aceptación: Definir qué condiciones deben cumplirse para decir que una tarea está "Terminada".
+
+3. Design
+Dibujas "corazón" y las capas de tu sistema
+antes de programar
+
+Herramientas: Figma para el diseño visual
+Para la arquitectura de software, Diagramas UML
+ej: mermaid.js para crear diagramas usando solo texto
+
+Técnicas:
+
+Clean Architecture: Definir tus entidades, casos de uso y DTOs.
+Definir tus entidades, casos de uso y DTOs
+
+Atomic Design:
+organizar componentes (Átomos, Moléculas, Organismos).
+
+4. Coding
+
+IDE/Editores
+Terminal
+Gestión de Paquetes: uv para Python (que ya usas por su velocidad) y Vite para React.
+
+Técnicas:
+SOLID y KISS: Principios que ya estás aplicando en tu analizador de texto.
+Type Hinting: Usar MyPy en Python para evitar errores de tipo antes de ejecutar.
+
+5. Testing
+Validación de arquitectura/código
+
+Lib de testing
+debugger
+
+Técnicas:
+TDD (Test Driven Development): Escribir el test antes que el código.
+
+Análisis de Cobertura: Asegurarte de que tus tests pasan por todas las líneas importantes de tu lógica.
+
+6. Deployment
+Llevar tu código de tu máquina al mundo exterior
+
+`Git`: Esencial para el control de versiones.
+`Netlify o Vercel`: Ideales para desplegar tu calculadora React de forma gratuita.
+`GitHub Actions`: Para crear un Pipeline de CI/CD que corra tus tests automáticamente cada vez que hagas un git push.
+
+Técnicas: `Integración Continua`
+asegurando que el nuevo código no rompa lo que ya funcionaba.
+
+7. Maintenance
+Etapa más larga.
+
+Herramientas: `Sentry` (monitorear errores en producción)
+o simplemente un buen sistema de Logging en tus scripts.
+
+Técnicas:
+Refactorización: Limpiar el código sin cambiar su funcionalidad.
+
+Code Review: Aunque trabajes solo, revisar tu propio código tras unos días te ayuda a encontrar mejoras.
+
+
+
+
+# STLC: Software Testing Life Cycle
+
+Enfocado exclusivamente en las fases de prueba para asegurar la calidad
+Se centra solo en las actividades de control de calidad.
+
+Busca verificar y validar que el software cumpla con los requisitos definidos
+###### El equipo principal es de control de calidad (QA).
+
+Comienza durante la fase de requisitos del SDLC
+Análisis, Planificación, Diseño, Ejecución, Cierre
+
+1. Análisis de requisitos
+2. Planificación de pruebas
+3. Diseño de casos de prueba
+4. Configuración del entorno
+5. Ejecución (Test Execution)
+6. Cierre (Test Closure)
+
+Proceso sistemático para garantizar que la arquitectura funcione bajo presión
+SDLC construye el producto, el STLC construye la confianza en ese producto.
+
+1. Requirement Analysis
+El equipo de QA (o tú mismo como desarrollador)
+analiza los requerimientos desde una perspectiva crítica
+Ej: Es esto testeable?
+
+`Acción`:
+Identificar qué funciones se probarán (funcionales)
+qué aspectos de rendimiento o seguridad se evaluarán
+(no funcionales).
+
+Ej script:
+Analizar si el requerimiento "contar oraciones" define qué pasa con los puntos suspensivos
+o las abreviaturas (ej. "Sr. Pérez").
+
+2. Test Planning
+Define la estrategia
+Momento de decidir el "alcance" y las herramientas.
+
+`Acción`:
+Determinar el esfuerzo, los recursos y seleccionar las herramientas (como Pytest).
+Se redacta el Test Plan
+
+`Decisión técnica`:
+Haremos solo pruebas unitarias de la lógica
+o también pruebas de integración para el CLI?
+
+3. Test Case Development
+Etapa de "escritura".
+Se crean los pasos detallados que se seguirán para validar el software.
+
+`Acción`:
+Escribir los scripts de prueba y preparar los datos de prueba
+(párrafos con emojis, textos vacíos, caracteres especiales).
+
+`código`:
+Las funciones test_debe_ignorar_emojis() dentro de la carpeta tests/.
+
+4. Test Environment Setup
+Antes de ejecutar, necesitas un laboratorio limpio
+##### El software debe probarse en un entorno que imite la realidad.
+
+`Acción`: Configurar hardware, software y servidores.
+
+5. Test Execution
+La verdad. Se corren los casos de prueba desarrollados en la etapa 3.
+
+Acción: Ejecutar los tests, comparar el resultado esperado con el real y reportar bugs
+
+Herramientas de apoyo: Si un test falla, aquí es donde entra PuDB o IPython para realizar la "autopsia" del error
+y encontrar la causa raíz en el Stack.
+
+6. Cierre del Ciclo (Test Closure)
+##### Una vez terminadas las pruebas, se analiza el proceso completo para aprender de él.
+
+Acción: Preparar el informe de resumen, verificar si se alcanzó la cobertura deseada
+discutir qué errores fueron los más comunes para evitarlos en el futuro.
+
+###### Resultado: Una métrica clara de la calidad del software antes de pasar al despliegue
+
+
+
+## Ejecución práctica de para STLC
+
+### Tecnicas, herramientas, software en cada etapa
 
 

@@ -13184,3 +13184,108 @@ export const ItemContainer = styled.li`
 ###### Ej: Si los tests de TodoPage o TodoList fallan después de modificar TodoItem, significa que la lógica de integración se rompió. 
 
 
+
+
+# Debug CSS
+
+1. Inspector de Elementos
+clic derecho sobre el elem
+selecciona "Inspeccionar".
+
+Pestaña "Styles":
+buscar el componente
+ver las reglas y especificidad
+si tachado con una línea horizontal, significa que otra regla de CSS tiene más peso (especificidad) y le está ganando.
+
+búsqueda:
+en la misma pestaña estilo, caja de búsqueda.
+Escribe la propiedad y verás exactamente qué valores están activos.
+
+2. Pestaña "Computed" (fuente de verdad)
+Al lado de Styles, no hay código
+sino el resultado final que el navegador está renderizando
+##### Si aquí describe la propiedad es porque se está aplicando
+
+3. Líneas del Grid
+Buscar el elemento que tiene el Grid
+Al lado de la palabra grid en el inspector
+pequeño botón o checkbox. Al activarlo
+el navegador dibujará líneas de colores sobre tu web mostrando las columnas y filas.
+
+
+## Debug componentes
+
+1. panel "Rendered by":
+exactamente quién es el "padre" que puso ese elemento ahí.
+
+Si dice Rendered by DashboardTemplate, ese styled.main es el contenedor genérico de tu estructura global
+Si dice Rendered by TodoTemplate, el styled.main es el contenedor específico de la lista de tareas
+
+Externo e interno:
+
+styled.main más externo:
+(el de DashboardTemplate)
+es el "agujero" del Grid donde metes todo el contenido
+
+mientras que el interno:
+(el de TodoTemplate) es el que organiza las tareas propiamente dichas.
+
+
+2. árbol de componentes: jerarquía
+
+La lista de componentes:
+se lee de arriba hacia abajo,
+desde el padre más inmediato hasta el ancestro más lejano
+
+##### Primero de la lista (Dueño Directo):
+componente que aparece arriba del todo
+##### es el que tiene la "propiedad" legal del elemento
+##### Es el componente que en su archivo .tsx tiene escrito algo como return <StyledMain>...</StyledMain>.
+
+##### Los siguientes (Padres/Contexto):
+##### Los que vienen debajo (TodoPage, App) son los que invocaron al dueño
+
+TodoPage renderizó a TodoTemplate, y App renderizó a TodoPage.
+Ej:
+
+```
+TodoTemplate
+TodoPage
+App
+```
+
+3. Source: ADN
+Debajo de la lista "Rendered by"
+##### sección source: indica el nombre del archivo y la línea exacta: TodoTemplate.tsx:7.
+
+confirma sin lugar a dudas que ese styled.main específico nació en la línea 7 de tu archivo TodoTemplate.
+
+4. Anatomía Visual en el Árbol (Panel Izquierdo)
+
+##### indentación:
+styled.main que tienes seleccionado está un nivel por debajo
+(hacia la derecha) de TodoTemplate
+indica que es un hijo directo de la lógica de ese componente.
+
+Si ves otro styled.main más arriba que está al mismo nivel que DashboardTemplate
+ese pertenecería a la estructura global de la aplicación.
+
+
+
+# Fix scroll
+
+##### pasarle el código de los elementos
+
+###### Que todos los elementos se queden quietos
+
+
+
+
+# Errores CSS activando desde consola
+
+
+# Tema claro y oscuro/dia-noche
+
+## Bases
+
+
