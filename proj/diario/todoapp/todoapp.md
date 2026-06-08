@@ -13278,14 +13278,4403 @@ ese pertenecería a la estructura global de la aplicación.
 
 ###### Que todos los elementos se queden quietos
 
+## Solución: Position
+
+### Position rompia inputs, efectos
+
+
+
+# Desbordamiento
+
+"desbordamiento" (overflow) es el sistema de alerta del navegador
+##### avisándote de que algo no cabe donde debería
+
+1. Significado
+##### Significa que uno o varios elementos hijos tienen un tamaño físico mayor que el espacio que sus contenedores les han asignado
+
+significa que la caja de la aplicación se está saliendo de los límites de la pantalla
+(lo más común es que sea a lo ancho, generando un desplazamiento horizontal inesperado).
+##### El contenido está "empujando" las paredes del layout hacia afuera.
+
+2. Consecuencias
+
+Scroll horizontal fantasma:
+El usuario podrá arrastrar la pantalla hacia los lados
+(especialmente notorio y molesto en dispositivos móviles)
+viendo un espacio en blanco innecesario a la derecha.
+
+Layout roto o recortado:
+Si en algún punto de la jerarquía aplicas un overflow: hidden
+
+el elemento desbordado no romperá la pantalla:
+pero su contenido se cortará y el usuario no podrá ver fragmentos de texto o botones.
+
+Inestabilidad con elementos fijos:
+Los componentes que dependan de position: sticky o position: fixed
+pueden empezar a calcular mal sus posiciones y comportarse de forma errática.
+
+3. Depende del contexto
+
+Cuándo es bueno: Cuando es intencional
+Por ejemplo, una tabla con decenas de columnas que quieres que tenga un scroll horizontal,
+o una lista de tarjetas tipo carrusel
+
+Cuándo es malo: Cuando aparece en el HTML y en la estructura principal del Grid
+Aquí no estás buscando que la estructura completa de la app se desplace
+Es un error de cálculo
+
+algún elemento interno tiene un ancho fijo
+un padding excesivo
+##### o un texto largo sin romper que está obligando al Grid a estirarse más allá del 100% de la pantalla.
+
+4. Rastrear el elemento desbordado
+
+1. Interactuar/click con el overflow directamente
+el navegador suele sombrear o rodear con líneas discontinuas en la pantalla el motivo exacto del desborde
+o te guiará visualmente hacia el componente hijo que está rompiendo la regla.
+
+2. Outline
+Ve a la pestaña de la consola de desarrollo (Console)
+o añade temporalmente esta regla en tus estilos globales:
+
+```
+* {
+  outline: 1px solid red !important;
+}
+```
+Esto dibujará un borde rojo alrededor de absolutamente cada etiqueta de la página sin alterar su tamaño real
+Si haces scroll hacia el lado desbordado
+verás instantáneamente qué caja es la que sobresale del límite limpio de la aplicación.
+
+3. Búsqueda binaria por eliminación (Modo rudo)
+
+Abre el Inspector de elementos
+Selecciona un bloque grande sospechoso
+(por ejemplo, el <main> o el <aside>)
+y presiona la tecla Supr (Delete) para borrarlo temporalmente del DOM del navegador.
+
+Si desapareció desbordamiento:
+El culpable estaba dentro de la sección que acabas de borrar
+Refresca la página (F5) y repite el proceso borrando elementos más pequeños dentro de esa sección hasta dar con la etiqueta exacta
+
+Si no desapareció:
+Refresca y prueba borrando otra sección.
+
+Ej:
+
+Sospechosos:
+componente de texto (Typography o inputs) que no tenga permitido envolver sus líneas (white-space: nowrap).
+
+Algún elemento con un ancho fijo en píxeles (ej. width: 450px) que en pantallas medianas
+o al sumarse con los paddings supere el espacio disponible en la columna del Grid.
+
+
+# Fix outline/maquetacion
+
+El global
+
+```
+* {
+  outline: 1px solid red !important;
+}
+```
+
+Aplicandolo junto a otras reglas
+
+```
+export const GlobalStyles = createGlobalStyle`
+  /* 1. Reset e Higiene CSS */
+  *, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    outline: 1px solid red !important;
+  }
+```
+
+
+Dibujará un borde rojo alrededor de absolutamente cada etiqueta de la página sin alterar su tamaño real
+##### Si haces scroll hacia el lado desbordado, verás instantáneamente qué caja es la que sobresale del límite limpio de la aplicación.
+
+Ej: textTruncate está causando desbordamiento
+Conflicto entre Flexbox y truncado de texto
+
+display: flex en un contenedor (como tu ítem de lista)
+y pones un elemento hijo (tu Typography)
+que tiene white-space: nowrap (para truncar el texto
+
+el navegador, por defecto, no permite que el texto se encoja por debajo de su tamaño intrínseco para evitar que se rompa.
+
+Typography le está diciendo al contenedor flex:
+"No me importa cuánto espacio me des, yo exijo el ancho completo de mi texto".
+
+Como el texto es largo, "empuja" las paredes del contenedor,
+ignorando el overflow: hidden que intentaste aplicar
+
+
+Opciones para solucionarlo:
+
+1. propiedad "min-width" en el hijo:
+min-width: 0 al componente que tiene el textTruncate
+le da permiso al navegador para ignorar el tamaño natural del texto y obligarlo a encogerse para ajustarse al contenedor padre.
+
+2. propiedad "flex-basis" o "flex-shrink":
+Puedes modificar la configuración del flex en el contenedor
+Si le indicas explícitamente al hijo que su flex-shrink es mayor a 0
+le estás autorizando a reducir su tamaño cuando el espacio escasea.
+
+3. Ajustar el comportamiento Flex del contenedor:
+En lugar de que el contenedor intente acomodar todo el tamaño del texto
+puedes indicarle que el hijo no debe ser "inflexible".
+
+En términos de diseño, esto asegura que el texto se corte
+con los puntos suspensivos (...) exactamente en el límite del contenedor y no un píxel más allá.
+
+aplicando la primera opción (min-width: 0) al elemento que envuelve al Typography
+o directamente al StyledTypography.
+
+La lista usa flex y ellipsis
+
+
+## Lineas de grid vs lineas de outline
+
+outline global
+viendo la huella física real de cada etiqueta
+
+Al cruzar la información de las líneas moradas
+(las pistas ideales que tu Grid quiere tener)
+
+con las líneas rojas
+(el espacio que los elementos realmente están ocupando)
+
+podemos extraer varias conclusiones conceptuales clave:
+
+### Qué detecta Outline:
+
+1. Discrepancia del "Espacio Fantasma":
+El error visual más engañoso en CSS ocurre cuando
+un elemento es transparente o no tiene fondo
+
+pero su caja sigue midiendo cientos de píxeles
+##### El outline revela que tu aplicación no sufre de un "margen rebelde",
+sino de un problema de hipertrofia de cajas:
+##### hay contenedores que se están estirando mucho más allá de su contenido visual
+
+2. Grid vs. Realidad:
+Las líneas moradas del inspector representan la estructura teórica de tu layout
+Cuando una línea roja cruza o supera una línea morada
+significa que el contenido ha "derrotado" a las restricciones del Grid
+obligando a la cuadrícula a deformarse para no romper el flujo del DOM.
+
+
+### Vista Móvil
+
+Desbordamiento es masivo y crítico:
+
+1. Estructura en Columna de una sola vía:
+Tu Grid ha hecho bien su trabajo de adaptabilidad básica
+ha apilado el header, el main, el sidebar y el footer uno debajo del otro en una sola columna.
+
+2. fuga hacia la derecha:
+enorme franja oscura del lado derecho del bloque central
+
+Las líneas rojas de los contenedores superiores (el encabezado y el contenedor global)
+se extienden de manera uniforme hacia el infinito derecho.
+
+significa que el ancho del viewport de un móvil no está definido por el tamaño de la pantalla
+sino por el elemento más ancho de toda la página
+
+Al haber un solo elemento rígido
+(probablemente el texto interno de una tarea larga que procesó el navegador antes de que recortaras la lista
+empuja el ancho global de todo el documento
+
+
+### Vista Escritorio
+
+comportamiento cambia sutilmente
+
+1. Falsa sensación de orden:
+Visualmente, la disposición en dos columnas (sidebar a la izquierda, main a la derecha)
+parece encajar dentro de los límites del diseño.
+
+2. Rigidez estructural:
+Si observas el límite lateral derecho de la columna de tareas (main),
+notarás que las líneas rojas de los ítems individuales de la lista finalizan exactamente donde termina la pista del Grid.
+##### Sin embargo, la línea roja del contenedor padre (el envoltorio de la app) sobresale de la pantalla.
+
+3. Resistencia a la compresión:
+Lo que ocurre aquí es que las tarjetas de las tareas
+tienen un ancho mínimo intrínseco dictado por sus elementos internos
+
+Al reducir la pantalla en escritorio, la columna derecha debería encogerse
+pero como el texto dice "no me puedo encoger más" debido al flexbox rígido
+el contenedor prefiere salirse de la pantalla antes que deformar el texto.
+
+outline te ha confirmado que tu maquetación no está rota por culpa del Grid principal en sí
+sí (las columnas y filas están bien distribuidas conceptualmente),
+sino por la inflexibilidad de los componentes hijos más pequeños.
+
+Tanto en móvil como en escritorio, el diseño se estira hacia la derecha
+porque las cajas de texto de los ítems de la lista le prohíben al navegador calcular un ancho menor al tamaño nativo de las palabras
+Al aplicar las soluciones de flexibilidad en los hijos (permitirles encogerse),
+todas esas líneas rojas exteriores se replegarán instantáneamente hacia el borde limpio de la pantalla
+
+
+### Quitando código truncate
+
+```
+textTruncate: css`
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  `,
+```
+
+ Antes:
+
+
+```typescript
+export const StyledTypography = styled.p<StyledProps>`
+  /* Aplicamos el estilo según la variante */
+  ${({ $variant }) => variantStyles[$variant]}
+  /* Ejemplo: Si queremos que el texto nunca rompa el layout */
+  ${mixins.textTruncate}
+`;
+```
+
+Después:
+
+```typescript
+export const StyledTypography = styled.p<StyledProps>`
+  /* Aplicamos el estilo según la variante */
+  ${({ $variant }) => variantStyles[$variant]}
+  min-width: 0
+`;
+```
+
+#### Efecto en la Aquitectura:
+
+##### Al quitar el mixin, eliminaste tres propiedades, entre ellas white-space: nowrap.
+
+Haber eliminado ${mixins.textTruncate} del componente base Typography
+
+1. 
+##### Un componente genérico de tipografía no debería obligar a todos los textos de la aplicación
+##### (como párrafos largos, descripciones o títulos)
+a cortarse en una sola línea con puntos suspensivos (...).
+Estabas limitando la reutilización de tu propio componente.
+
+
+#### Efecto secundario: Interfaz
+Al quitar el mixin, eliminaste tres propiedades, entre ellas white-space: nowrap.
+
+desbordamiento horizontal va a desaparecer por completo
+
+Ahora, los textos largos de tus tareas ya no se van a truncar con ...,
+sino que van a romper en múltiples líneas hacia abajo, haciendo que las tarjetas de las tareas crezcan verticalmente si el texto es muy largo
+
+
+#### Sugerencias y Ajustes Técnicos
+
+1. Ubicación de min-width: 0
+Aunque ponerlo en StyledTypography
+
+##### la regla de oro de Flexbox dice que min-width: 0 debe ir en el hijo directo del contenedor Flex.
+
+Si tu estructura es: ContenedorFlex (Tarjeta) -> StyledTypography
+entonces está perfecto ahí.
+
+##### Si tu estructura tiene un contenedor intermedio
+##### como un div que agrupa el texto, ese div intermedio es el que necesita el min-width: 0.
+
+
+### Mejora para el truncado
+
+Si en el componente de tareas sigues queriendo que el texto se corte elegantemente con ... en una sola línea
+tienes dos caminos limpios:
+
+1. Prop Condicional
+Pasar una prop TypeScript a tu tipografía (por ejemplo, $truncate)
+para que solo aplique el mixin cuando tú lo decidas.
+
+2. Especialización:
+En el archivo de tu lista de tareas
+crear un componente estilizado local que herede de tu tipografía
+y le añada el mixin solo para ese caso:
+
+```
+const TaskTitle = styled(Typography)
+```
+ahí dentro le clavas el textTruncate.
+
+
+# Romper palabras en Flexbox
+
+Div intermedio:
+
+```
+export const TextContainer = styled.div<TextProps>`
+  flex: 1;
+  transition: all 0.3s ease;
+  text-decoration: ${({ $isCompleted }) => ($isCompleted ? 'line-through' : 'none')};
+  opacity: ${({ $isCompleted }) => ($isCompleted ? 0.5 : 1)};
+  overflow-wrap: break-word;
+  word-break: break-word;
+  min-width: 0;
+
+`;
+```
+
+
+# Elemento con overflow (panel flex vert) vs sin overflow (panel flex horiz)
+
+## Elemento con overflow
+
+1. etiqueta desbordamiento (Overflow Badge):
+El inspector coloca este botón interactivo al lado del:
+<li> y del <ul>.
+
+## Código del elemento con desbordamiento
+
+TodoItem: li
+
+```
+export const ItemContainer = styled.li<StyledItemProps>`
+  ${mixins.glass}
+  ${mixins.flexCenter}
+  justify-content: space-between;
+  padding: ${({ theme }) => `${theme.spacing.sm} ${theme.spacing.md}`};
+  border-radius: ${({ theme }) => theme.borderRadius.lg};
+  gap: ${({ theme }) => theme.spacing.md};
+  list-style: none;
+  width: 100%;
+
+  /* Efecto Hover: se ilumina sutilmente al pasar el mouse */
+  &:hover {
+    background: oklch(100% 0 0 / 10%);
+    border-color: ${({ theme }) => theme.colors.primary}40;
+    transform: translateX(4px); /* Pequeño desplazamiento orgánico */
+  }
+
+  /* Si está completada, suavizamos su presencia */
+  ${({ $isCompleted }) =>
+    $isCompleted &&
+    css`
+      opacity: 0.7;
+      background: oklch(100% 0 0 / 2%);
+    `}
+`;
+```
+
+1. 
+##### Te está alertando de que ese contenedor físico mide menos que el contenido que lleva dentro
+forzando al navegador a crear un scroll horizontal invisible (o visible).
+
+2. 
+panel de "Flexibilidad" (Abajo a la derecha en debug-app53.jpg): Esta es la clave del problema
+##### El inspector te muestra un aviso crítico: "Tamaño mínimo: El elemento fue limitado a su tamaño mínimo".
+
+3. significado:
+Por defecto, en Flexbox los elementos tienen min-width: auto.
+El inspector te está avisando de que el <li> quiere encogerse para entrar en el Grid
+
+pero no puede porque el texto de su hijo (white-space: nowrap en el <p>,
+como se ve en la imagen 50) le impone un "suelo" rígido de anchura imposible de reducir.
+
+
+## Elemento sin overflow
+
+1. Desaparición de la alerta:
+Al inspeccionar el <label> (ContentWrapper), notas que ya no hay etiqueta de desbordamiento en sus hijos.
+
+Presencia de la regla salvadora:
+En los estilos aplicados del panel central, vemos explícitamente la regla min-width: 0; activa en .depFxp.
+
+El cambio en el panel derecho: El gráfico de Flexbox ahora muestra que la base y el tamaño final están liberados
+el elemento ya tiene permiso para encogerse tanto como la pantalla lo requiera, eliminando la presión sobre el <li>.
+
+
+## Regla que causa o regla que falta para el desborde
+
+1. Regla causante:
+
+Mirar `Badge` overflow:
+Busca la `etiqueta desbordamiento` en el árbol DOM.
+El inspector te marcará el contenedor que se está desparramando.
+
+Inspecciona los hijos profundos:
+Ve bajando en el árbol hasta llegar al texto textualmente rígido
+En tu caso, al llegar al <p> (en debug-app50.jpg),
+el inspector te muestra la propiedad white-space: nowrap;.
+Esa es la causante física: le prohíbe al texto saltar de línea, creando una línea infinita hacia la derecha
+
+2. Regla faltante: 
+
+panel de Flexbox/Rejilla del inspector:
+Si seleccionas un elemento hijo dentro de un Flexbox y el inspector te dice
+"El elemento fue limitado a su tamaño mínimo",
+te está dando el diagnóstico definitivo.
+
+solución matemática de Flexbox:
+Esa frase de la herramienta siempre significa
+que falta romper el piso mínimo por defecto
+
+##### Falta un min-width: 0; en el contenedor intermedio para permitirle encogerse
+
+##### O bien, falta un overflow: hidden; combinado con técnicas de truncado para que el hijo no empuje las paredes del padre
+
+##### Si haces clic directamente sobre la palabra desbordamiento en el árbol de etiquetas de Firefox
+##### la herramienta dibujará una línea punteada o un sombreado en la pantalla real mostrándote exactamente qué píxeles se están saliendo del contenedor y quién los está empujando
+
+
+
+# Maquetación movil
+
+1. minmax(0, 1fr): como "min-width: 0 de grid"
+Flexbox sufre de rigidez por culpa de los tamaños mínimos automáticos
+CSS Grid sufre exactamente del mismo mal.
+
+Cuando escribes `grid-template-columns: 1fr`;
+el navegador interpreta el 1fr
+de forma implícita como `minmax(auto, 1fr)`.
+
+Si algún elemento interno del main o del header tiene un ancho mínimo rebelde
+la pista del grid se estirará obligatoriamente superando el tamaño de la pantalla
+
+Solución Defensiva:
+Cambiar a `grid-template-columns: minmax(0, 1fr)`;.
+
+Esto rompe el piso mínimo del "auto" y le dice al Grid:
+"Puedes encogerte hasta cero si el viewport lo exige
+la pantalla manda, no tus hijos".
+
+2. Spacing Responsivo: No asfixies al móvil
+StyledMain y StyledSidebar tienen un padding estático:
+padding: ${({ theme }) => theme.spacing.xl};.
+
+problema: Si tu spacing.xl equivale a 24px o 32px
+en una pantalla móvil de 360px estás desperdiciando hasta 64px de espacio útil solo en los márgenes laterales del contenedor
+Esto "estruja" tus tarjetas de tareas hacia el centro, forzando saltos de línea innecesarios y provocando colapsos visuales.
+
+Solución: Enfoque Mobile-First:
+Empieza con un padding cómodo pero compacto en móvil
+(como spacing.md o spacing.sm)
+dentro del Media Query (min-width: 800px)
+
+3. Limpieza de Filas Explícitas
+
+Tienes la regla grid-template-rows: auto; declarada en la base móvil
+Al pasarle un solo valor (auto) a un grid que tiene 4 áreas apiladas verticalmente (header, main, sidebar, footer)
+solo le estás dando instrucciones a la primera fila; las otras tres quedan a merced del algoritmo implícito.
+
+Solución: Es mucho más limpio omitir esa propiedad en la vista móvil
+y dejar que el Grid calcule el flujo de filas de manera orgánica con su comportamiento nativo
+o bien definir las 4 filas de forma explícita si necesitas un control estricto de alturas.
+
+
+## Código maquetación movil
+
+```
+import styled from 'styled-components';
+
+export const TemplateWrapper = styled.div`
+  display: grid;
+  grid-template-areas: 
+    "header"
+    "main"
+    "sidebar"
+    "footer";
+  /* 1. Aplicamos diseño defensivo para evitar desbordamientos de pista */
+  grid-template-columns: minmax(0, 1fr);
+  min-height: 100vh;
+  width: 100%;
+  color: ${({ theme }) => theme.colors.textPrimary};
+  border-radius: 16px;
+  border: 1px solid ${({ theme }) => theme.colors.glassBorder};
+  
+  /* Retiramos el overflow: hidden si queremos que el scroll nativo fluya bien, 
+     o lo dejamos si controlamos el scroll internamente en las tarjetas */
+  overflow: hidden; 
+  
+  @media (min-width: 800px) {
+    grid-template-areas: 
+      "header header"
+      "sidebar main"
+      "footer footer";
+    grid-template-rows: auto 1fr auto;
+    grid-template-columns: auto 1fr;
+  }
+`;
+
+export const StyledHeader = styled.header`
+  grid-area: header;
+  position: sticky; /* Opcional: Excelente para dashboards */
+  top: 0;
+  z-index: 100;
+  /* Reducimos el espaciado horizontal en móvil para ganar aire */
+  padding: ${({ theme }) => theme.spacing.md};
+  background: ${({ theme }) => theme.colors.glass};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.glassBorder};
+
+  @media (min-width: 800px) {
+    padding: ${({ theme }) => theme.spacing.md} ${({ theme }) => theme.spacing.xl};
+  }
+`;
+
+export const StyledSidebar = styled.aside`
+  grid-area: sidebar;
+  /* Padding responsivo: más ajustado en móviles */
+  padding: ${({ theme }) => theme.spacing.md};
+  position: relative;
+  border-top: 1px solid ${({ theme }) => theme.colors.glassBorder};
+  align-self: start;
+  justify-self: center;
+  width: 100%; /* Asegura consistencia visual en la pila móvil */
+  
+  @media (min-width: 800px) {
+    padding: ${({ theme }) => theme.spacing.xl};
+    border-top: none;
+    border-right: 1px solid ${({ theme }) => theme.colors.glassBorder};
+    align-self: stretch;
+    justify-self: stretch;
+    width: auto;
+  }
+`;
+
+export const StyledMain = styled.main`
+  grid-area: main;
+  /* Espacio inteligente: cuidamos los costados en pantallas chicas */
+  padding: ${({ theme }) => theme.spacing.md};
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+
+  @media (min-width: 800px) {
+    padding: ${({ theme }) => theme.spacing.xl};
+  }
+`;
+
+export const StyledFooter = styled.footer`
+  grid-area: footer;
+  padding: ${({ theme }) => theme.spacing.md};
+  background: ${({ theme }) => theme.colors.glass};
+  border-top: 1px solid ${({ theme }) => theme.colors.glassBorder};
+  text-align: center;
+`;
+```
+
+##### Algunas se pueden evitar por diseño
+
+Ej:
+
+```
+import styled from 'styled-components';
+
+export const TemplateWrapper = styled.div`
+  display: grid;
+  grid-template-areas: 
+    "header"
+    "main"
+    "sidebar"
+    "footer";
+  grid-template-columns: 1fr;
+  grid-template-rows: auto;
+  min-height: 100vh;
+  width: 100%;
+  color: ${({ theme }) => theme.colors.textPrimary};
+  border-radius: 16px;
+  border: 1px solid ${({ theme }) => theme.colors.glassBorder};
+  overflow: hidden;
+  
+  @media (min-width: 800px) {
+    grid-template-areas: 
+      "header header"
+      "sidebar main"
+      "footer footer";
+    grid-template-rows: auto 1fr auto;
+    grid-template-columns: auto 1fr;
+  }
+`;
+
+export const StyledHeader = styled.header`
+  grid-area: header;
+  top: 0;
+  z-index: 100;
+  padding: ${({ theme }) => theme.spacing.md};
+  background: ${({ theme }) => theme.colors.glass};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.glassBorder};
+
+  @media (min-width: 800px) {
+    padding: ${({ theme }) => theme.spacing.md} ${({ theme }) => theme.spacing.xl};
+  }
+`;
+
+export const StyledSidebar = styled.aside`
+  grid-area: sidebar;
+  padding: ${({ theme }) => theme.spacing.md};
+  position: relative;
+  border-top: 1px solid ${({ theme }) => theme.colors.glassBorder};
+  align-self: start;
+  justify-self: center;
+  width: 100%;
+
+  @media (min-width: 800px) {
+    border-top: none;
+    border-right: 1px solid ${({ theme }) => theme.colors.glassBorder};
+    align-self: stretch;
+    justify-self: stretch;
+    padding: ${({ theme }) => theme.spacing.xl};
+    width: auto;
+  }
+`;
+
+export const StyledMain = styled.main`
+  grid-area: main;
+  padding: ${({ theme }) => theme.spacing.md};
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+
+  @media (min-width: 800px) {
+    padding: ${({ theme }) => theme.spacing.xl};
+  }
+`;
+
+export const StyledFooter = styled.footer`
+  grid-area: footer;
+  padding: ${({ theme }) => theme.spacing.md};
+  background: ${({ theme }) => theme.colors.glass};
+  border-top: 1px solid ${({ theme }) => theme.colors.glassBorder};
+  text-align: center;
+`;
+```
+
+
+
+# Maquetación escritorio
+
+nos enfrentamos a los dos grandes desafíos de las pantallas grandes
+
+1. proteger el espacio de trabajo contra desbordamientos masivos
+2. evitar que el diseño se deforme o se estire de más en monitores grandes o UltraWide
+
+código actual:
+estás a solo un par de detalles de tener un layout de nivel producción
+
+1. Trampa del 1fr (Secuela en Escritorio)
+En la vista móvil aplicamos con éxito minmax(0, 1fr)
+
+Sin embargo, al entrar en la Media Query de escritorio (@media (min-width: 800px)),
+reescribiste la propiedad como grid-template-columns: auto 1fr;.
+
+peligro: Al volver a usar 1fr a secas, el navegador vuelve a interpretar esa columna del main como minmax(auto, 1fr).
+
+Si en el futuro agregas un gráfico de estadísticas (Charts)
+una tabla de datos pesada o un bloque de código dentro de tus tareas
+
+la columna del main se estirará hacia la derecha rompiendo todo el Grid de escritorio.
+
+Mantén el blindaje usando minmax(0, 1fr) para la columna principal:
+
+```
+grid-template-columns: auto minmax(0, 1fr);
+```
+
+2. Estabilidad del Sidebar: (Evitar el salto de Layout o CLS)
+Tu columna para el sidebar está definida como auto.
+
+Esto significa que el ancho de la barra lateral dependerá exclusivamente de lo que metas dentro de ella.
+
+problema: Si el usuario inicia sesión y su nombre es largo, la barra se estirará
+Si navega a una sección con iconos más chicos, la barra se encogerá
+
+Este comportamiento causa Layout Shifts (cambios bruscos en la interfaz)
+que empujan al panel main de izquierda a derecha de forma inestable.
+
+##### solución: Define un ancho predecible, cómodo y elástico para la barra lateral usando un rango
+por ejemplo, entre 240px y 280px (o el tamaño que mejor se adapte a tu diseño):
+
+```
+grid-template-columns: minmax(240px, 280px) minmax(0, 1fr);
+```
+
+3. Legibilidad en Pantallas Gigantes (El tope del main)
+
+Tu componente StyledMain tiene un ancho del 100% y un flex centralizado.
+
+La buena práctica:
+En resoluciones de escritorio muy altas (como monitores 1080p o superiores)
+que una lista de tareas o un formulario se estiren a lo ancho de toda la pantalla es una mala experiencia visual
+
+(hace que el usuario tenga que mover mucho los ojos para ir de la tarea al botón de eliminar).
+
+##### solución: Lo ideal es limitar el ancho del contenedor interno del main o ponerle un max-width estratégico a la sección de la app
+para que el contenido respire en el centro del dashboard.
+
+
+## Código para maquetación de escritorio
+
+```
+import styled from 'styled-components';
+
+export const TemplateWrapper = styled.div`
+  display: grid;
+  grid-template-areas: 
+    "header"
+    "main"
+    "sidebar"
+    "footer";
+  grid-template-columns: minmax(0, 1fr);
+  min-height: 100vh;
+  width: 100%;
+  color: ${({ theme }) => theme.colors.textPrimary};
+  border-radius: 16px;
+  border: 1px solid ${({ theme }) => theme.colors.glassBorder};
+  
+  @media (min-width: 800px) {
+    grid-template-areas: 
+      "header header"
+      "sidebar main"
+      "footer footer";
+    grid-template-rows: auto 1fr auto;
+    
+    /* MEJOR PRÁCTICA: Sidebar estable + Main indestructible */
+    grid-template-columns: minmax(340px, 380px) minmax(0, 1fr);
+  }
+`;
+
+export const StyledHeader = styled.header`
+  grid-area: header;
+  top: 0;
+  z-index: 100;
+  padding: ${({ theme }) => theme.spacing.md};
+  background: ${({ theme }) => theme.colors.glass};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.glassBorder};
+
+  @media (min-width: 800px) {
+    padding: ${({ theme }) => theme.spacing.md} ${({ theme }) => theme.spacing.xl};
+  }
+`;
+
+export const StyledSidebar = styled.aside`
+  grid-area: sidebar;
+  padding: ${({ theme }) => theme.spacing.md};
+  position: relative;
+  border-top: 1px solid ${({ theme }) => theme.colors.glassBorder};
+  align-self: start;
+  justify-self: center;
+  width: 100%;
+
+  @media (min-width: 800px) {
+    border-top: none;
+    border-right: 1px solid ${({ theme }) => theme.colors.glassBorder};
+    align-self: stretch;
+    justify-self: stretch;
+    padding: ${({ theme }) => theme.spacing.xl};
+    width: auto; /* Cede el control del ancho al contenedor del Grid macro */
+  }
+`;
+
+export const StyledMain = styled.main`
+  grid-area: main;
+  padding: ${({ theme }) => theme.spacing.md};
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+
+  @media (min-width: 800px) {
+    padding: ${({ theme }) => theme.spacing.xl};
+    
+    /* MEJOR PRÁCTICA OPCIONAL: Si quieres limitar el estiramiento en monitores enormes */
+    & > * {
+      width: 100%;
+      max-width: 800px; /* Evita que la lista de todos se vuelva gigante */
+    }
+  }
+`;
+
+export const StyledFooter = styled.footer`
+  grid-area: footer;
+  padding: ${({ theme }) => theme.spacing.md};
+  background: ${({ theme }) => theme.colors.glass};
+  border-top: 1px solid ${({ theme }) => theme.colors.glassBorder};
+  text-align: center;
+`;
+```
+
+
+### Código anterior/respaldo: Dash/grid principal
+
+```
+import styled from 'styled-components';
+
+export const TemplateWrapper = styled.div`
+  display: grid;
+  grid-template-areas: 
+    "header"
+    "main"
+    "sidebar"
+    "footer";
+  grid-template-columns: minmax(0, 1fr);
+  min-height: 100vh;
+  width: 100%;
+  color: ${({ theme }) => theme.colors.textPrimary};
+  border-radius: 16px;
+  border: 1px solid ${({ theme }) => theme.colors.glassBorder};
+  
+  @media (min-width: 800px) {
+    grid-template-areas: 
+      "header header"
+      "sidebar main"
+      "footer footer";
+    grid-template-rows: auto 1fr auto;
+    grid-template-columns: auto 1fr;
+  }
+`;
+
+export const StyledHeader = styled.header`
+  grid-area: header;
+  top: 0;
+  z-index: 100;
+  padding: ${({ theme }) => theme.spacing.md};
+  background: ${({ theme }) => theme.colors.glass};
+  border-bottom: 1px solid ${({ theme }) => theme.colors.glassBorder};
+
+  @media (min-width: 800px) {
+    padding: ${({ theme }) => theme.spacing.md} ${({ theme }) => theme.spacing.xl};
+  }
+`;
+
+export const StyledSidebar = styled.aside`
+  grid-area: sidebar;
+  padding: ${({ theme }) => theme.spacing.md};
+  position: relative;
+  border-top: 1px solid ${({ theme }) => theme.colors.glassBorder};
+  align-self: start;
+  justify-self: center;
+  width: 100%;
+
+  @media (min-width: 800px) {
+    border-top: none;
+    border-right: 1px solid ${({ theme }) => theme.colors.glassBorder};
+    align-self: stretch;
+    justify-self: stretch;
+    padding: ${({ theme }) => theme.spacing.xl};
+    width: auto;
+  }
+`;
+
+export const StyledMain = styled.main`
+  grid-area: main;
+  padding: ${({ theme }) => theme.spacing.md};
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+
+  @media (min-width: 800px) {
+    padding: ${({ theme }) => theme.spacing.xl};
+  }
+`;
+
+export const StyledFooter = styled.footer`
+  grid-area: footer;
+  padding: ${({ theme }) => theme.spacing.md};
+  background: ${({ theme }) => theme.colors.glass};
+  border-top: 1px solid ${({ theme }) => theme.colors.glassBorder};
+  text-align: center;
+`;
+```
+
+
+
+
+
+# Maquetación del Main
+
+TodoTemplate
+
+Estilo:
+
+```
+import styled from 'styled-components';
+
+export const PageWrapper = styled.div`
+  width: 100%;
+  background: radial-gradient(
+    circle at top center,
+    oklch(25% 0.12 250) 0%,
+    ${({ theme }) => theme.colors.background} 100%
+  );
+  display: flex;
+  justify-content: center;
+  border-radius: 16px;
+  border: 1px solid ${({ theme }) => theme.colors.glassBorder};
+  padding: ${({ theme }) => theme.spacing.md} ${({ theme }) => theme.spacing.md};
+`;
+
+export const ContentContainer = styled.div`
+  width: 100%;
+  max-width: 700px;
+  display: flex;
+  flex-direction: column;
+  gap: ${({ theme }) => theme.spacing.xl};
+`;
+
+export const HeaderSection = styled.header`
+  text-align: center;
+  margin-bottom: ${({ theme }) => theme.spacing.xs};
+  
+  h1 {
+    margin-bottom: ${({ theme }) => theme.spacing.xs};
+    /* Un pequeño brillo de texto para el título */
+    text-shadow: 0 0 20px ${({ theme }) => theme.colors.primary}40;
+  }
+`;
+
+export const InputSection = styled.section`
+  top: ${({ theme }) => theme.spacing.md};
+  z-index: 10;
+  /* Añadimos un pequeño difuminado detrás cuando el input se queda pegado arriba */
+  &::before {
+    content: '';
+    inset: -10px;
+    background: ${({ theme }) => theme.colors.background}80;
+    backdrop-filter: blur(8px);
+    z-index: -1;
+    border-radius: ${({ theme }) => theme.borderRadius.lg};
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+`;
+
+export const ListSection = styled.section`
+  flex: 1;
+`;
+```
+
+
+## Movil
+
+TodoTemplate
+
+### Posibles cambios
+
+TodoTemplate al estar este componente contenido dentro de StyledMain
+de DashboardTemplate
+
+Hace "Efecto Muñeca Rusa"
+(demasiadas capas con bordes, fondos y paddings anidados).
+
+1. Bordes Anidados
+problema: DashboardTemplate ya tiene un borde, un fondo de cristal y un border-radius: 16px;.
+Al meterle a PageWrapper otro borde, otro radio de curvatura de 16px y un degradado radial propio
+en móviles se genera un ruido visual masivo que asfixia el contenido útil
+
+solución: En móviles, la página interna debe "fusionarse" de manera invisible con el contenedor principal del Dashboard
+Quitaremos los bordes, radios y degradados pesados en la vista base (móvil)
+y los activaremos únicamente en escritorios como un refinamiento estético.
+
+2. Densidad de Datos y Ajuste de Gaps
+problema: ContentContainer tiene un gap: ${({ theme }) => theme.spacing.xl};.
+
+Si tu spacing.xl es grande, la distancia vertical entre el título
+el input y la lista alejará demasiado los elementos en un teléfono, obligando al usuario a hacer scroll antes de tiempo.
+
+solución: Aplicar un enfoque responsivo escalonado: un gap más ajustado en móviles (spacing.md o lg)
+y expandirlo a xl al cruzar la barrera de los 800px.
+
+
+### Código de refactorización
+
+```
+import styled from 'styled-components';
+
+export const PageWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  
+  /* Mobile-First: En pantallas chicas eliminamos doble borde y fondo pesado */
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: ${({ theme }) => theme.spacing.sm}; /* Un respiro sutil */
+
+  @media (min-width: 800px) {
+    /* En escritorio se comporta como una tarjeta elegante flotante */
+    background: radial-gradient(
+      circle at top center,
+      oklch(25% 0.12 250) 0%,
+      ${({ theme }) => theme.colors.background} 100%
+    );
+    border-radius: 16px;
+    border: 1px solid ${({ theme }) => theme.colors.glassBorder};
+    padding: ${({ theme }) => theme.spacing.xl};
+  }
+`;
+
+export const ContentContainer = styled.div`
+  width: 100%;
+  max-width: 700px;
+  display: flex;
+  flex-direction: column;
+  /* Espaciado responsivo: comprimido en móvil, aireado en escritorio */
+  gap: ${({ theme }) => theme.spacing.md};
+
+  @media (min-width: 800px) {
+    gap: ${({ theme }) => theme.spacing.xl};
+  }
+`;
+
+export const HeaderSection = styled.header`
+  text-align: center;
+  margin-bottom: ${({ theme }) => theme.spacing.xs};
+  
+  h1 {
+    font-size: 1.8rem; /* Un poco más compacto en móviles */
+    margin-bottom: ${({ theme }) => theme.spacing.xs};
+    text-shadow: 0 0 20px ${({ theme }) => theme.colors.primary}40;
+  }
+
+  @media (min-width: 800px) {
+    h1 {
+      font-size: 2.5rem;
+    }
+  }
+`;
+
+export const InputSection = styled.section`
+  /* SOLUCIÓN AL BUG: Activamos el comportamiento pegajoso real */
+  position: sticky;
+  top: 0; /* Se alinea al ras del contenedor al hacer scroll */
+  z-index: 10;
+  padding: ${({ theme }) => theme.spacing.sm} 0;
+  
+  /* Fondo de respaldo sólido/semitransparente para ocultar el scroll inferior */
+  background: ${({ theme }) => theme.colors.background}; 
+
+  /* Tu excelente efecto de difuminado potenciado */
+  &::before {
+    content: '';
+    inset: -10px;
+    background: ${({ theme }) => theme.colors.background}80;
+    backdrop-filter: blur(8px);
+    z-index: -1;
+    border-radius: ${({ theme }) => theme.borderRadius.lg};
+    opacity: 1; /* Lo dejamos activo para suavizar los elementos que pasan por debajo */
+  }
+`;
+
+export const ListSection = styled.section`
+  flex: 1;
+  width: 100%;
+`;
+```
+
+Mejoras:
+
+1. sin asfixia:
+Al remover el doble borde del wrapper interno en móviles
+tu lista de tareas ganará todo el ancho real de la pantalla
+haciendo juego perfecto con las correcciones fluidas que le hicimos a TodoItem
+
+2. Scroll impecable
+Cuando tengas más de 10 tareas y deslices la pantalla hacia arriba
+verás cómo el input se ancla mágicamente al tope del viewport
+y las tareas se desvanecen por debajo gracias al backdrop-filter combinado con el nuevo position: sticky;.
+
+
+
+## Escritorio
+
+En móvil (donde buscamos eliminar capas y ganar densidad de datos),
+en escritorio el espacio sobra, 
+El objetivo principal aquí es generar jerarquía visual, legibilidad y acabados premium (efecto UI de escritorio),
+
+aprovechando al máximo ese contenedor flotante de max-width: 700px.
+de max-width: 700px.
+
+1. Principio de "Elevación Visual" (Glow e Iluminación Sutil)
+Ya que estás usando una estética oscura con tintes cibernéticos/cristal
+(oklch, glassBorder, text-shadow)
+la vista de escritorio es el escenario ideal para que el PageWrapper se sienta como una tarjeta flotante tridimensional sobre el fondo del dashboard
+
+mejora:
+Agregaremos una sombra proyectada profunda (box-shadow)
+combinada con una línea de luz interna (inset border)
+para simular un cristal pulido hiperrealista.
+
+2. Escalado Tipográfico y Ritmo Vertical:
+
+problema: En pantallas de escritorio, si mantienes los títulos y espaciados pequeños del móvil, el diseño se siente "tacaño"
+" o vacío, perdiendo el impacto visual del encabezado.
+
+mejora: Incrementamos el tamaño de fuente del h1 de manera responsiva
+y aumentamos ligeramente los gap verticales para que la transición entre el título
+el input y la lista de tareas se sienta espaciosa y ejecutiva.
+
+3. Sincronización del Sticky Input con el Layout Macro
+
+detalle técnico:
+Al declarar position: sticky; top: 0; en el InputSection para móviles
+el elemento se pega perfectamente al ras del navegador
+Pero ¡cuidado! En escritorio, tu DashboardTemplate tiene un StyledHeader.
+
+regla:
+Si tu cabecera global de la aplicación se mantiene fija arriba al hacer scroll
+el top: 0; del input colisionará o se esconderá detrás de ella
+Necesitamos asegurarnos de que la propiedad top tenga el margen suficiente para convivir armónicamente con el header macro
+
+
+### Código de refactorización
+
+```
+import styled from 'styled-components';
+
+export const PageWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  
+  /* ── VISTA MÓVIL (Base) ──
+     Eliminamos el doble borde y fondo para fusionarse limpiamente con el Dashboard */
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: ${({ theme }) => theme.spacing.sm};
+  transition: all 0.3s ease;
+
+  /* ── VISTA ESCRITORIO ── */
+  @media (min-width: 800px) {
+    background: radial-gradient(
+      circle at top center,
+      oklch(25% 0.12 250) 0%,
+      ${({ theme }) => theme.colors.background} 100%
+    );
+    border-radius: 24px; /* Un radio un poco más imponente */
+    border: 1px solid ${({ theme }) => theme.colors.glassBorder};
+    padding: ${({ theme }) => theme.spacing.xl};
+    
+    /* MEJOR PRÁCTICA: Sombra multicapa premium para dar profundidad */
+    box-shadow: 
+      0 30px 60px oklch(0% 0 0 / 30%),
+      inset 0 1px 0px oklch(100% 0 0 / 12%); /* Reflejo superior estilo cristal */
+  }
+`;
+
+export const ContentContainer = styled.div`
+  width: 100%;
+  max-width: 700px; /* La medida perfecta para que el ojo humano lea sin cansarse */
+  display: flex;
+  flex-direction: column;
+  gap: ${({ theme }) => theme.spacing.md};
+
+  @media (min-width: 800px) {
+    gap: ${({ theme }) => theme.spacing.xl};
+  }
+`;
+
+export const HeaderSection = styled.header`
+  text-align: center;
+  margin-bottom: ${({ theme }) => theme.spacing.xs};
+  
+  h1 {
+    font-size: 1.8rem;
+    margin-bottom: ${({ theme }) => theme.spacing.xs};
+    text-shadow: 0 0 20px ${({ theme }) => theme.colors.primary}40;
+    transition: font-size 0.3s ease;
+  }
+
+  @media (min-width: 800px) {
+    margin-bottom: ${({ theme }) => theme.spacing.md};
+    
+    h1 {
+      font-size: 2.6rem; /* Título imponente en pantallas grandes */
+    }
+  }
+`;
+
+export const InputSection = styled.section`
+  position: sticky;
+  /* TIP PRO: Si el header de tu app es fijo, suma su altura aquí (ej: top: 70px;) */
+  top: 0; 
+  z-index: 10;
+  padding: ${({ theme }) => theme.spacing.sm} 0;
+  background: ${({ theme }) => theme.colors.background};
+
+  &::before {
+    content: '';
+    inset: -10px;
+    background: ${({ theme }) => theme.colors.background}80;
+    backdrop-filter: blur(8px);
+    z-index: -1;
+    border-radius: ${({ theme }) => theme.borderRadius.lg};
+    opacity: 1;
+  }
+
+  @media (min-width: 800px) {
+    padding: ${({ theme }) => theme.spacing.md} 0;
+  }
+`;
+
+export const ListSection = styled.section`
+  flex: 1;
+  width: 100%;
+`;
+```
+
+
+
+# Fix: Error lógico: clickear en completadas / vista muestra 'No hay tareas pendientes'
+
+
+
+## Posibles código problematico:
+
+1. TodoPage
+
+```
+      <TodoTemplate
+        header={
+          <div>
+            <Typography variant="title">
+              {filter === 'all'
+                ? 'Mis Tareas'
+                : filter === 'pending'
+                  ? 'Pendientes'
+                  : 'Completadas'}
+            </Typography>
+            <Typography variant="body">
+              {stats.pending === 0
+                ? '¡Estás al día! No hay tareas pendientes.'
+                : `Tienes ${stats.pending} asuntos por resolver hoy.`}
+            </Typography>
+          </div>
+        }
+
+```
+
+
+2. Todolist
+
+```
+export const TodoList = ({
+  todos,
+  onToggleTodo,
+  onDeleteTodo,
+  isSearching,
+}: TodoListProps) => {
+  const hasTodos = todos.length > 0;
+
+  return (
+    <ListWrapper>
+      {!hasTodos ? (
+        <EmptyState>
+          {/* Cambiamos el icono y el texto según si es búsqueda o lista vacía */}
+          <span style={{ fontSize: '3rem', marginBottom: '1rem' }}>
+            {isSearching ? '🔍' : '📝'}
+          </span>
+
+          <Typography variant="body">
+            {isSearching ? 'No hay coincidencias' : 'No hay tareas pendientes'}
+          </Typography>
+
+          <Typography variant="body" style={{ marginTop: '8px' }}>
+            {isSearching
+              ? 'Prueba con otros términos o limpia el buscador.'
+              : '¡Añade algo para empezar el día!'}
+          </Typography>
+        </EmptyState>
+      ) : (
+        <StyledList>
+          {todos.map((todo) => (
+            <TodoItem
+              key={todo.id}
+              id={todo.id}
+              text={todo.content}
+              completed={todo.isCompleted}
+              onToggle={onToggleTodo}
+              onDelete={onDeleteTodo}
+            />
+          ))}
+        </StyledList>
+      )}
+    </ListWrapper>
+  );
+};
+```
+
+
+3. TodoItem
+
+```
+import { Checkbox } from '../../atoms/Checkbox/Checkbox';
+import { Typography } from '../../atoms/Typography/Typography';
+import { IconButton } from '../../atoms/IconButton/IconButton';
+import {
+  ItemContainer,
+  ContentWrapper,
+  TextContainer,
+} from './TodoItem.styles';
+
+interface TodoItemProps {
+  id: string;
+  text: string;
+  completed: boolean;
+  onToggle: (id: string) => void;
+  onDelete: (id: string) => void;
+}
+
+export const TodoItem = ({
+  id,
+  text,
+  completed,
+  onToggle,
+  onDelete,
+}: TodoItemProps) => {
+  const checkboxId = `todo-check-${id}`;
+
+  const handleToggle = () => onToggle(id);
+
+  const handleDelete = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    onDelete(id);
+  };
+
+  return (
+    <ItemContainer $isCompleted={completed}>
+      <ContentWrapper as="label" htmlFor={checkboxId}>
+        <Checkbox
+          id={checkboxId}
+          checked={completed}
+          onChange={handleToggle}
+          aria-label={
+            completed ? 'Marcar como pendiente' : 'Marcar como completada'
+          }
+        />
+        <TextContainer $isCompleted={completed}>
+          <Typography variant="body">{text}</Typography>
+        </TextContainer>
+      </ContentWrapper>
+
+      <IconButton
+        icon="🗑️" // SVG
+        label="Eliminar tarea"
+        onClick={handleDelete}
+      />
+    </ItemContainer>
+  );
+};
+
+```
+
+
+
+4. Hook
+
+```
+import { useReducer, useEffect, useMemo } from 'react';
+import { taskReducer, initialState } from '@/store/task.reducer';
+import { storageService } from '@/services/storage.service';
+import type { TaskFilter } from '@/core/task.entity';
+
+export const useTasks = () => {
+  // 1. Inicializamos el estado cargando desde el storage
+  const [state, dispatch] = useReducer(taskReducer, initialState, (init) => {
+    const savedTasks = storageService.load();
+    return savedTasks.length > 0 ? { ...init, tasks: savedTasks } : init;
+  });
+
+  // 2. Sincronización automática: cada vez que tasks cambie, guardamos
+  useEffect(() => {
+    storageService.save(state.tasks);
+  }, [state.tasks]);
+
+  // 3. Estado derivado: Filtrado combinado
+  const filteredTasks = useMemo(() => {
+    // Pre-procesamos la búsqueda una sola vez por cada cambio de query
+    const cleanQuery = (state.searchQuery || '').toString().toLowerCase();
+    const activeFilter = state.filter;
+
+    return state.tasks.filter((task) => {
+      // 1. Filtro de estado (muy rápido, comparaciones simples)
+      const matchesFilter =
+        activeFilter === 'all' ||
+        (activeFilter === 'pending' && !task.isCompleted) ||
+        (activeFilter === 'completed' && task.isCompleted);
+
+      // 2. Filtro de búsqueda (usamos cleanQuery ya procesada)
+      const matchesSearch = (task.content || '')
+        .toLowerCase()
+        .includes(cleanQuery);
+
+      return matchesFilter && matchesSearch;
+    });
+  }, [state.tasks, state.filter, state.searchQuery]);
+
+  // Estadísticas memoizadas
+  const stats = useMemo(
+    () => ({
+      total: state.tasks.length,
+      pending: state.tasks.filter((t) => !t.isCompleted).length,
+      completed: state.tasks.filter((t) => t.isCompleted).length,
+    }),
+    [state.tasks],
+  );
+
+  // 4. API pública del Hook (Acciones simplificadas)
+  const add = (content: string) =>
+    dispatch({ type: 'ADD_TASK', payload: content });
+  const toggle = (id: string) => dispatch({ type: 'TOGGLE_TASK', payload: id });
+  const remove = (id: string) => dispatch({ type: 'REMOVE_TASK', payload: id });
+  const setFilter = (filter: TaskFilter) =>
+    dispatch({ type: 'SET_FILTER', payload: filter });
+  const setSearchQuery = (query: string) =>
+    dispatch({ type: 'SET_SEARCH_QUERY', payload: query });
+  const clearCompleted = () => dispatch({ type: 'CLEAR_COMPLETED' });
+
+  return {
+    tasks: filteredTasks,
+    filter: state.filter,
+    searchQuery: state.searchQuery,
+    stats,
+    add,
+    toggle,
+    remove,
+    setFilter,
+    setSearchQuery,
+    clearCompleted,
+  };
+};
+
+```
+
+
+5. reducer
+
+```
+import type { Task, TaskFilter } from '@/core/task.entity';
+import * as TaskLogic from '@/core/task.logic';
+
+// Definimos el estado global de esta característica
+export interface TaskState {
+  tasks: Task[];
+  filter: TaskFilter;
+  searchQuery: string;
+}
+
+// Discriminante de acciones: El compilador sabrá qué payload tiene cada una
+export type TaskAction =
+  | { type: 'ADD_TASK'; payload: string }
+  | { type: 'TOGGLE_TASK'; payload: string }
+  | { type: 'REMOVE_TASK'; payload: string }
+  | { type: 'SET_FILTER'; payload: TaskFilter }
+  | { type: 'SET_SEARCH_QUERY'; payload: string }
+  | { type: 'CLEAR_COMPLETED' };
+
+export const initialState: TaskState = {
+  tasks: [],
+  filter: 'all',
+  searchQuery: '',
+};
+
+export const taskReducer = (
+  state: TaskState,
+  action: TaskAction,
+): TaskState => {
+  switch (action.type) {
+    case 'ADD_TASK':
+      // Usamos lógica de dominio
+      return {
+        ...state,
+        tasks: [...state.tasks, TaskLogic.createTask(action.payload)],
+      };
+
+    case 'TOGGLE_TASK':
+      return {
+        ...state,
+        tasks: state.tasks.map((t) =>
+          t.id === action.payload ? TaskLogic.toggleStatus(t) : t,
+        ),
+      };
+
+    case 'REMOVE_TASK':
+      return {
+        ...state,
+        tasks: state.tasks.filter((t) => t.id !== action.payload),
+      };
+
+    case 'SET_FILTER': {
+      const nextFilter =
+        state.filter === action.payload ? 'all' : action.payload;
+
+      return {
+        ...state,
+        filter: nextFilter,
+      };
+    }
+    
+    case 'SET_SEARCH_QUERY':
+      return { ...state, searchQuery: action.payload };
+
+    case 'CLEAR_COMPLETED':
+      return {
+        ...state,
+        tasks: state.tasks.filter((t) => !t.isCompleted),
+      };
+
+    default:
+      return state;
+  }
+};
+
+```
+
+
+
+# Fix: lupa del buscador se pisa con el cursor
+
+## Reproducción a través de los valores de estado:
+
+1. Cuando no hay tareas completadas y filtramos:
+por 'todas'
+
+el main devuelve a traves de `TodoList` dos textos:
+
+No hay tareas pendientes
+¡Añade algo para empezar el día! 
+
+
+2. Interactuan:
+
+filteritem
+todolist
+todopage
+
+tienen lógica renderizado 
+
+
+3. hook
+cuando no hay completadas
+
+Componentes:
+
+Ej:
+
+
+TodoList
+##### usa estado searching: Segun el valor de busqueda reemplaza la lista
+
+```
+import { TodoItem } from '../../molecules/TodoItem/TodoItem';
+import { Typography } from '../../atoms/Typography/Typography';
+import { ListWrapper, StyledList, EmptyState } from './TodoList.styles';
+import type { Task } from '@/core/task.entity';
+
+interface TodoListProps {
+  todos: Task[];
+  onToggleTodo: (id: string) => void;
+  onDeleteTodo: (id: string) => void;
+  isSearching: boolean;
+}
+
+export const TodoList = ({
+  todos,
+  onToggleTodo,
+  onDeleteTodo,
+  isSearching,
+}: TodoListProps) => {
+  const hasTodos = todos.length > 0;
+
+  return (
+    <ListWrapper>
+      {!hasTodos ? (
+        <EmptyState>
+          {/* Cambiamos el icono y el texto según si es búsqueda o lista vacía */}
+          <span style={{ fontSize: '3rem', marginBottom: '1rem' }}>
+            {isSearching ? '🔍' : '📝'}
+          </span>
+
+          <Typography variant="body">
+            {isSearching ? 'No hay coincidencias' : 'No hay tareas pendientes'}
+          </Typography>
+
+          <Typography variant="body" style={{ marginTop: '8px' }}>
+            {isSearching
+              ? 'Prueba con otros términos o limpia el buscador.'
+              : '¡Añade algo para empezar el día!'}
+          </Typography>
+        </EmptyState>
+      ) : (
+        <StyledList>
+          {todos.map((todo) => (
+            <TodoItem
+              key={todo.id}
+              id={todo.id}
+              text={todo.content}
+              completed={todo.isCompleted}
+              onToggle={onToggleTodo}
+              onDelete={onDeleteTodo}
+            />
+          ))}
+        </StyledList>
+      )}
+    </ListWrapper>
+  );
+};
+```
+
+
+TodoPage/todotemplate:
+##### usa estados: filter, stats
+
+```
+      <TodoTemplate
+        header={
+          <div>
+            <Typography variant="title">
+              {filter === 'all'
+                ? 'Mis Tareas'
+                : filter === 'pending'
+                  ? 'Pendientes'
+                  : 'Completadas'}
+            </Typography>
+            <Typography variant="body">
+              {stats.pending === 0
+                ? '¡Estás al día! No hay tareas pendientes.'
+                : `Tienes ${stats.pending} asuntos por resolver hoy.`}
+            </Typography>
+          </div>
+        }
+        inputSlot={<TodoInput onAdd={add} />}
+        listSlot={
+          /* 'tasks' filtrado por categoría 
+             y por búsqueda gracias al useMemo del hook.
+          */
+          <div data-testid="todo-list-container">
+            <TodoList
+              todos={tasks}
+              onToggleTodo={toggle}
+              onDeleteTodo={remove}
+              isSearching={searchQuery.trim().length > 0}
+            />
+          </div>
+        }
+      />
+
+```
+
+
+
+## Posible código conflictivo: reconstruir flujo/ruta component
+
+
+1. SearchInput
+
+Componente:
+
+```
+/*
+import { Input } from '../../atoms/Input/Input';
+import { SearchContainer, SearchIcon } from './SearchInput.styles';
+
+export const SearchInput = ({ value, onChange, placeholder = 'buscar...' }) => {
+  return (
+    <SearchContainer>
+      <SearchIcon>🔍</SearchIcon>
+      <Input value={value} onChange={onChange} placeholder={placeholder} />
+    </SearchContainer>
+  );
+};
+*/
+
+import { Input } from '../../atoms/Input/Input';
+import { SearchContainer, SearchIcon } from './SearchInput.styles';
+
+interface SearchInputProps {
+  value: string;
+  onChange: (value: string) => void;
+  onSearch?: () => void;
+  placeholder?: string;
+  className?: string;
+}
+
+export const SearchInput = ({
+  value,
+  onChange,
+  onSearch,
+  placeholder = 'Buscar tareas...',
+}: SearchInputProps) => {
+  return (
+    <SearchContainer>
+      <SearchIcon role="img" aria-label="Icono de búsqueda">
+        🔍
+      </SearchIcon>
+
+      <Input
+        value={value}
+        onChange={onChange}
+        onEnter={onSearch}
+        placeholder={placeholder}
+        type="text"
+      />
+    </SearchContainer>
+  );
+};
+
+```
+
+
+Estilo:
+
+```
+import styled from 'styled-components';
+
+export const SearchContainer = styled.div`
+  display: flex;
+  align-items: center;
+  position: relative;
+  width: 100%;
+`;
+
+export const SearchIcon = styled.span`
+  position: absolute;
+  left: 8px;
+  font-size: 0.9rem;
+  opacity: 0.5;
+  pointer-events: none; // Para que no interfiera al hacer click en el input
+`;
+
+export const StyledInput = styled.input`
+  width: 100%;
+  padding: 10px 12px 10px 36px; // Espacio extra a la izquierda para el icono
+  
+  /* Estilo Liquid Glass */
+  background: rgba(255, 255, 255, 0.05); 
+  backdrop-filter: blur(4px); // Efecto de desenfoque detrás del cristal
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  
+  color: #ffffff;
+  font-size: 0.9rem;
+  outline: none;
+  transition: all 0.2s ease-in-out;
+
+  &::placeholder {
+    color: rgba(255, 255, 255, 0.3);
+  }
+
+  &:focus {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.05);
+  }
+`;
+```
+
+
+2. Input
+
+Componente
+
+```
+import { StyledInput } from './Input.styles';
+
+interface InputProps {
+  value: string;
+  onChange: (value: string) => void;
+  placeholder?: string;
+  onEnter?: () => void;
+  disabled?: boolean;
+  type?: 'text' | 'password' | 'email' | 'number';
+}
+
+export const Input = ({
+  value,
+  onChange,
+  placeholder,
+  onEnter,
+  disabled = false,
+  type = 'text',
+}: InputProps) => {
+  // Manejador interno para extraer el valor
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onChange(e.target.value);
+  };
+
+  // Manejador interno para la tecla Enter
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && onEnter) {
+      onEnter();
+    }
+  };
+
+  return (
+    <StyledInput
+      type={type}
+      value={value}
+      onChange={handleChange}
+      onKeyDown={handleKeyDown}
+      placeholder={placeholder}
+      disabled={disabled}
+      aria-label={placeholder}
+    />
+  );
+};
+
+```
+
+Estilo
+
+```
+import styled from 'styled-components';
+import { mixins } from '../../../styles/mixins';
+
+export const StyledInput = styled.input`
+  /* 1. Base del diseño: Efecto Cristal */
+  ${mixins.glass}
+  
+  width: 100%;
+  padding: ${({ theme }) => `${theme.spacing.sm} ${theme.spacing.md}`};
+  border-radius: ${({ theme }) => theme.borderRadius.md};
+  
+  /* 2. Tipografía */
+  font-family: ${({ theme }) => theme.typography.fontFamily};
+  font-size: ${({ theme }) => theme.typography.fontSize.md};
+  color: ${({ theme }) => theme.colors.textPrimary};
+  
+  /* 3. Animación y Estados */
+  transition: ${({ theme }) => theme.transitions.default};
+
+  &::placeholder {
+    color: ${({ theme }) => theme.colors.textSecondary};
+    opacity: 0.7;
+  }
+
+  /* 4. Foco: Aplicamos el brillo "Electric Blue" */
+  &:focus {
+    ${mixins.electricGlow}
+    background: oklch(100% 0 0 / 12%); /* Aclaramos un poco el cristal al escribir */
+    outline: none;
+  }
+
+  /* 5. Estado Deshabilitado */
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    filter: grayscale(1);
+  }
+`;
+```
+
+
+
+# Herencia de estilos de un elemento a otro
+
+
+## Fix: box-shadow
+
+div externo:
+
+```
+  border-radius: 16px;
+  border: 1px solid ${({ theme }) => theme.colors.glassBorder};
+  
+  box-shadow: 
+    0 30px 60px oklch(0% 0 0 / 30%),
+    inset 0 1px 0px oklch(100% 0 0 / 12%); /* Reflejo superior estilo cristal */
+  }
+
+```
+
+div interno
+
+```
+  border-radius: 16px 16px 0px 0px;
+  border-bottom: 1px solid ${({ theme }) => theme.colors.glassBorder};
+
+  box-shadow: 
+    0 30px 60px oklch(0% 0 0 / 30%),
+    inset 0 1px 0px oklch(100% 0 0 / 12%); /* Reflejo superior estilo cristal */
+  }
+```
+
+
+# Fix logica condicional interna y renderizado
+
+TodoList tiene:
+
+```
+`todos.length > 0'` interno de TodoList. 
+```
+
+al filtrar por completadas (cuando no tenemos ninguna tarea hecha)
+nos muestra el renderizado condicional del componente 'TodoList'
+y no las tareas que tenemos que completar.
+
+TodoPage:
+consciente del contexto global (sabe qué filtro está activo y cuántas tareas hay en cada categoría),
+
+TodoList:
+intentando ser inteligente
+adivinando el estado vacío basándose únicamente en un booleano (isSearching).
+Al tener textos estáticos hardcoded
+rompe el Principio de Responsabilidad Única (SRP),
+un componente de presentación no debería dictar la lógica de negocio de los mensajes
+
+
+## Opciones
+
+1. Inversión de Control (Pasar textos o configuración por Props)
+En lugar de que la lista decida qué decir
+le quitamos esa responsabilidad y hacemos que el padre (TodoPage) se lo dicte
+
+Mecánica:
+TodoPage evalúa si estamos en "pendientes", "completadas" o "buscando"
+le pasa a TodoList propiedades exactas como emptyTitle, emptyDescription y emptyIcon.
+
+Ventaja Arquitectónica:
+TodoList vuelve a ser un componente "tonto" (puro de presentación).
+Es altamente reutilizable y cumple con los principios SOLID a la perfección
+Si mañana agregas una categoría "Urgentes", no tienes que modificar la lista en absoluto
+
+2. Delegación Total (Renderizado Condicional en el Padre)
+Si una lista está vacía, ¿realmente necesitamos renderizar el componente "Lista"?
+
+Mecánica: Extraemos ese bloque de EmptyState que vive dentro de TodoList
+y lo convertimos en su propio componente independiente (ej. EmptyFeedback).
+Luego, en TodoPage, hacemos un renderizado condicional
+si tasks.length es 0, mostramos <EmptyFeedback />;
+si hay tareas, renderizamos <TodoList />.
+
+Ventaja Arquitectónica: Máxima separación de preocupaciones
+La lista se dedicará exclusivamente a iterar un array que sabe que siempre tiene elementos
+El padre orquesta el flujo de la interfaz de usuario.
+
+3. Pasar el Filtro Activo (El camino rápido)
+Hacemos que TodoList sea más consciente de su entorno pasándole la variable de estado del filtro
+
+Mecánica: Le enviamos a TodoList una nueva prop llamada currentFilter
+(que puede ser 'all', 'pending', o 'completed').
+Dentro de TodoList, usamos un condicional múltiple (o un diccionario/mapa)
+para devolver el texto correcto según el filtro.
+
+Ventaja Arquitectónica: solución que requiere menos movimientos de refactorización estructural
+Sin embargo, acopla la lógica de negocio al componente de presentación
+(si cambias los nombres de los filtros en tu lógica global, tendrás que acordarte de cambiarlos dentro de la lista).
+
+
+## Opción 3: camino rapido
+
+1. Actualización de TodoList.tsx
+añadimos currentFilter a la interfaz y creamos una función helper
+(o un objeto de mapeo) que determine qué contenido mostrar cuando el arreglo de tareas esté vacío
+La búsqueda (isSearching) sigue teniendo prioridad absoluta:
+si el usuario escribe en el buscador y no hay resultados
+se muestra el estado de búsqueda sin importar el filtro en el que esté.
+
+```
+import { TodoItem } from '../../molecules/TodoItem/TodoItem';
+import { Typography } from '../../atoms/Typography/Typography';
+import { ListWrapper, StyledList, EmptyState } from './TodoList.styles';
+import type { Task } from '@/core/task.entity';
+
+// 1. Extendemos la interfaz para aceptar el tipo de filtro actual
+interface TodoListProps {
+  todos: Task[];
+  onToggleTodo: (id: string) => void;
+  onDeleteTodo: (id: string) => void;
+  isSearching: boolean;
+  currentFilter: 'all' | 'pending' | 'completed'; 
+}
+
+export const TodoList = ({
+  todos,
+  onToggleTodo,
+  onDeleteTodo,
+  isSearching,
+  currentFilter,
+}: TodoListProps) => {
+  const hasTodos = todos.length > 0;
+
+  // 2. Diccionario estático para resolver los mensajes según el contexto
+  const getEmptyStateContent = () => {
+    if (isSearching) {
+      return {
+        icon: '🔍',
+        title: 'No hay coincidencias',
+        description: 'Prueba con otros términos o limpia el buscador.',
+      };
+    }
+
+    const configs = {
+      all: {
+        icon: '📝',
+        title: 'No hay tareas',
+        description: '¡Añade algo para empezar el día!',
+      },
+      pending: {
+        icon: '⚡',
+        title: 'No hay tareas pendientes',
+        description: '¡Estás al día! No te queda ningún asunto por resolver.',
+      },
+      completed: {
+        icon: '✅',
+        title: 'No hay tareas completadas',
+        description: 'Aún no has terminado ninguna tarea. ¡Paso a paso!',
+      },
+    };
+
+    return configs[currentFilter];
+  };
+
+  const { icon, title, description } = getEmptyStateContent();
+
+  return (
+    <ListWrapper>
+      {!hasTodos ? (
+        <EmptyState>
+          <span style={{ fontSize: '3rem', marginBottom: '1rem' }}>
+            {icon}
+          </span>
+
+          <Typography variant="body" style={{ fontWeight: 'bold' }}>
+            {title}
+          </Typography>
+
+          <Typography variant="body" style={{ marginTop: '8px' }}>
+            {description}
+          </Typography>
+        </EmptyState>
+      ) : (
+        <StyledList>
+          {todos.map((todo) => (
+            <TodoItem
+              key={todo.id}
+              id={todo.id}
+              text={todo.content}
+              completed={todo.isCompleted}
+              onToggle={onToggleTodo}
+              onDelete={onDeleteTodo}
+            />
+          ))}
+        </StyledList>
+      )}
+    </ListWrapper>
+  );
+};
+```
+
+
+2. Actualización de TodoPage.tsx
+En el componente de la página, el único cambio necesario es inyectar el estado filter
+(que ya extraes del hook useTasks) directamente en la nueva prop currentFilter de <TodoList />.
+
+
+```
+<TodoTemplate
+        header={
+          <div>
+            <Typography variant="title">
+              {filter === 'all'
+                ? 'Mis Tareas'
+                : filter === 'pending'
+                  ? 'Pendientes'
+                  : 'Completadas'}
+            </Typography>
+            <Typography variant="body">
+              {stats.pending === 0
+                ? '¡Estás al día! No hay tareas pendientes.'
+                : `Tienes ${stats.pending} asuntos por resolver hoy.`}
+            </Typography>
+          </div>
+        }
+        inputSlot={<TodoInput onAdd={add} />}
+        listSlot={
+          <div data-testid="todo-list-container">
+            {/* ENLACE DE CONTEXTO: Pasamos la variable filter al hijo */}
+            <TodoList
+              todos={tasks}
+              onToggleTodo={toggle}
+              onDeleteTodo={remove}
+              isSearching={searchQuery.trim().length > 0}
+              currentFilter={filter} 
+            />
+          </div>
+        }
+      />
+```
+
+
+1. Eliminación de la lógica ciega:
+TodoList ya no asume de manera genérica que cualquier lista vacía significa que "no hay tareas pendientes"
+Ahora sabe con certeza matemática qué pestaña está mirando el usuario.
+
+2. Priorización del buscador:
+Al colocar la validación if (isSearching) al principio de la función getEmptyStateContent
+garantizamos que si el usuario está filtrando por "Completadas" y escribe algo en el input de búsqueda que no da resultados
+la app responderá correctamente con el icono de la lupa (🔍) y el texto de coincidencia no encontrada, en lugar del mensaje de categoría vacía.
+
+3. Escalabilidad limpia: Centralizar los textos dentro del objeto configs
+hace que modificar los copys o añadir nuevas vistas en el futuro sea sumamente sencillo
+ace que modificar los copys o añadir nuevas vistas en el futuro sea sumamente sencillo
+
+
+### Uso del tipo TaskFilter
+
+1. "Todas" y "Pendientes" parecían funcionar
+y no interferían con la búsqueda
+
+ilusión lógica (un falso positivo) debido a los textos fijos que tenías escritos en el código.
+##### hook de tu página (useTasks) ya hace el trabajo pesado de filtrar el arreglo de tareas antes de pasárselo a TodoList
+Por lo tanto, cuando una categoría no tiene elementos,
+el arreglo llega con una longitud de cero (todos.length > 0 es falso)
+en cualquiera de los tres casos.
+
+Al llegar ahí, si el usuario no está buscando nada (isSearching es falso),
+el componente siempre mostraba el texto por defecto: "No hay tareas pendientes".
+
+En el filtro 'Pendientes': El texto coincidía al 100% con lo que el usuario esperaba ver
+Si la pestaña está vacía, es verdad que "no hay tareas pendientes".
+
+En el filtro 'Todas': Si la aplicación está completamente vacía, decir "no hay tareas pendientes"
+técnicamente se siente aceptable para el usuario, por lo que no se percibía como un error.
+
+##### 'Completadas': Aquí se rompía la ilusión
+Si tenías 3 tareas pendientes y 0 completadas, el arreglo llegaba vacío.
+La aplicación te mostraba "No hay tareas pendientes", lo cual era contradictorio y confuso
+porque el usuario justamente estaba parado en la pestaña de completadas.
+
+La búsqueda (isSearching) nunca interfirió porque su lógica está blindada con un operador ternario
+si el usuario escribe, el mensaje cambia por completo al de la lupa, ocultando cualquier otro texto.
+
+
+### Código usando el tipo TaskFilter
+
+```
+import { TodoItem } from '../../molecules/TodoItem/TodoItem';
+import { Typography } from '../../atoms/Typography/Typography';
+import { ListWrapper, StyledList, EmptyState } from './TodoList.styles';
+// 1. Importamos el tipo TaskFilter junto con Task
+import type { Task, TaskFilter } from '@/core/task.entity';
+
+interface TodoListProps {
+  todos: Task[];
+  currentFilter: TaskFilter; // 2. Acoplamos fuertemente el componente al contrato de filtros del Core
+  onToggleTodo: (id: string) => void;
+  onDeleteTodo: (id: string) => void;
+  isSearching: boolean;
+}
+
+// 3. Definimos la estructura de lo que necesita un Empty State para renderizarse
+interface EmptyContent {
+  icon: string;
+  title: string;
+  description: string;
+}
+
+export const TodoList = ({
+  todos,
+  onToggleTodo,
+  onDeleteTodo,
+  isSearching,
+  currentFilter,
+}: TodoListProps) => {
+  const hasTodos = todos.length > 0;
+
+  // 4. MEJOR PRÁCTICA: Diccionario fuertemente tipado con Record<TaskFilter, EmptyContent>
+  // TypeScript te obligará a rellenar 'all', 'pending' y 'completed'. Si mañana agregas otro, romperá en compilación si lo olvidas.
+  const emptyStatesConfig: Record<TaskFilter, EmptyContent> = {
+    all: {
+      icon: '📝',
+      title: 'No hay tareas',
+      description: '¡Añade algo para empezar el día!',
+    },
+    pending: {
+      icon: '⚡',
+      title: 'No hay tareas pendientes',
+      description: '¡Felicidades! Estás completamente al día.',
+    },
+    completed: {
+      icon: '✅',
+      title: 'No hay tareas completadas',
+      description: 'Aún no has terminado ninguna tarea. ¡Paso a paso!',
+    },
+  };
+
+  // 5. Lógica de resolución limpia (Cortocircuito si está buscando)
+  const getEmptyContent = (): EmptyContent => {
+    if (isSearching) {
+      return {
+        icon: '🔍',
+        title: 'No hay coincidencias',
+        description: 'Prueba con otros términos o limpia el buscador.',
+      };
+    }
+    
+    // Si no está buscando, extrae la configuración directa del tipo mapeado
+    return emptyStatesConfig[currentFilter];
+  };
+
+  const { icon, title, description } = getEmptyContent();
+
+  return (
+    <ListWrapper>
+      {!hasTodos ? (
+        <EmptyState>
+          <span style={{ fontSize: '3rem', marginBottom: '1rem' }} role="img" aria-label="status">
+            {icon}
+          </span>
+
+          <Typography variant="body" style={{ fontWeight: 'bold' }}>
+            {title}
+          </Typography>
+
+          <Typography variant="body" style={{ marginTop: '8px', opacity: 0.8 }}>
+            {description}
+          </Typography>
+        </EmptyState>
+      ) : (
+        <StyledList>
+          {todos.map((todo) => (
+            <TodoItem
+              key={todo.id}
+              id={todo.id}
+              text={todo.content}
+              completed={todo.isCompleted}
+              onToggle={onToggleTodo}
+              onDelete={onDeleteTodo}
+            />
+          ))}
+        </StyledList>
+      )}
+    </ListWrapper>
+  );
+};
+```
+
+##### Uso del utilitario Record<Keys, Type>
+Al declarar Record<TaskFilter, EmptyContent>
+blindas el código. Si en el futuro tu jefe o cliente te pide añadir la categoría "Archivadas" o "Urgentes" al core
+en el momento en que modifiques core/task.entity.ts, este archivo TodoList.tsx se marcará en rojo inmediatamente
+avisándote de que te falta configurar el texto para esa nueva pestaña. Eso es diseño defensivo
+
+Separación de Intereses (Separation of Concerns): La función getEmptyContent encapsula la toma de decisiones algorítmicas
+dejando al ciclo de vida de React únicamente la tarea de pintar las propiedades destructuradas
+(icon, title, description).
+
+
+### Actualización TodoPage
+
+useTasks ya expone el estado filter
+hereda el tipo estricto TaskFilter
+debemos hacer es pasarle esa variable directamente a la nueva propiedad currentFilter de tu lista
+
+```
+import { useMemo } from 'react';
+import { useTasks } from '../../../hooks/useTasks';
+import { DashboardTemplate } from '../../templates/DashboardTemplate/DashboardTemplate';
+import { TodoTemplate } from '../../templates/TodoTemplate/TodoTemplate';
+import { TaskSidebar } from '../../organisms/TaskSidebar/TaskSidebar';
+import { TodoList } from '../../organisms/TodoList/TodoList';
+import { TodoInput } from '../../molecules/TodoInput/TodoInput';
+import { Typography } from '../../atoms/Typography/Typography';
+import { Button } from '../../atoms/Button/Button';
+
+export const TodoPage = () => {
+  // 1. Extraemos todo del hook, incluyendo 'filter' (vía TaskFilter)
+  const {
+    tasks,
+    add,
+    toggle,
+    remove,
+    filter, 
+    setFilter,
+    searchQuery,
+    setSearchQuery,
+    stats,
+    clearCompleted,
+  } = useTasks();
+
+  // 2. Mapeamos las categorías para el CategoryFilter
+  const categories = useMemo(
+    () => [
+      { id: 'all', label: 'Todas', count: stats.total },
+      { id: 'pending', label: 'Pendientes', count: stats.pending },
+      { id: 'completed', label: 'Completadas', count: stats.completed },
+    ],
+    [stats],
+  );
+
+  return (
+    <DashboardTemplate
+      header={<Typography variant="body">Liquid Task</Typography>}
+      sidebar={
+        <div>
+          <TaskSidebar
+            searchQuery={searchQuery}
+            onSearchChange={setSearchQuery}
+            categories={categories}
+            activeFilterId={filter}
+            onFilterChange={(id) => setFilter(id)}
+          />
+
+          {/* Botón de acción global del sidebar */}
+          {stats.completed > 0 && (
+            <div style={{ padding: '0 1rem 1rem 1rem', marginTop: '1.5rem' }}>
+              <Button
+                variant="secondary"
+                onClick={clearCompleted}
+                style={{ width: '100%' }}
+              >
+                Borrar completadas ({stats.completed})
+              </Button>
+            </div>
+          )}
+        </div>
+      }
+    >
+      <TodoTemplate
+        header={
+          <div>
+            <Typography variant="title">
+              {filter === 'all'
+                ? 'Mis Tareas'
+                : filter === 'pending'
+                  ? 'Pendientes'
+                  : 'Completadas'}
+            </Typography>
+            <Typography variant="body">
+              {stats.pending === 0
+                ? '¡Estás al día! No hay tareas pendientes.'
+                : `Tienes ${stats.pending} asuntos por resolver hoy.`}
+            </Typography>
+          </div>
+        }
+        inputSlot={<TodoInput onAdd={add} />}
+        listSlot={
+          /* 'tasks' filtrado por categoría 
+             y por búsqueda gracias al useMemo del hook.
+          */
+          <div data-testid="todo-list-container">
+            <TodoList
+              todos={tasks}
+              onToggleTodo={toggle}
+              onDeleteTodo={remove}
+              isSearching={searchQuery.trim().length > 0}
+              currentFilter={filter} // 👈 Sincronización exacta con el tipo TaskFilter
+            />
+          </div>
+        }
+      />
+    </DashboardTemplate>
+  );
+};
+```
+
+
+## Opción 1: Arquitectura. Inversión de control
+
+transforma un componente acoplado en una pieza de rompecabezas universal
+cambiamos por completo la dirección de la información
+
+en lugar de que el hijo "pregunte" o "deduzca" en qué pestaña está
+el padre simplemente le "da las órdenes" de qué pintar.
+
+1. TodoList: presentacional
+se vuelve completamente "agnóstico" al negocio
+No sabe qué es un filtro
+no sabe qué es una base de datos
+no sabe qué significa "Completadas" o "Pendientes".
+
+`Contrato de Entrada (Props) Redefinido`:
+El componente ya no recibe ni currentFilter ni isSearching
+Su nueva interfaz de TypeScript simplemente exige la lista de tareas (todos)
+y un nuevo paquete de datos opcional u obligatorio destinado al estado vacío
+(por ejemplo: emptyIcon, emptyTitle, emptyDescription).
+
+`Lógica de Renderizado Simplificada al Máximo`:
+El condicional principal sigue siendo el mismo (todos.length > 0).
+
+Si hay tareas, las itera.
+
+Si no hay tareas, abre el contenedor del estado vacío e inyecta directamente las variables que llegaron por las props
+sin hacer ninguna pregunta ni evaluar ninguna condición.
+
+2. TodoPage: orquestador
+Toda la "inteligencia" y el conocimiento del estado
+que antes queríamos meter en la lista
+ahora se quedan en su entorno natural: el componente de la página.
+
+`Mapeo`:
+Dentro de la página (idealmente envuelto en un useMemo para cuidar el rendimiento),
+creas la lógica que evalúa el estado actual de la aplicación
+Este motor revisa en tiempo real:
+¿El buscador tiene texto?
+¿Qué pestaña está activa en el sidebar?
+
+`Paquete de Contenido`:
+Basándose en esa evaluación, el motor de la página selecciona el juego exacto de textos e iconos
+(el "traje" del estado vacío) y lo guarda en una constante.
+
+`Distribución de Responsabilidades`:
+Al momento de renderizar la etiqueta <TodoList/>,
+la página le pasa las tareas ya filtradas y,
+además, le "inyecta" desglosado ese paquete de contenido que calculó previamente.
+
+
+Reutilización:
+Si mañana creas una sección totalmente diferente en la app
+(por ejemplo, una lista de "Proyectos" o "Categorías"),
+podrías reutilizar exactamente el mismo componente TodoList
+(renombrándolo a algo más genérico como DataList).
+Solo tendrías que pasarle los nuevos elementos
+y los nuevos textos de "No tienes proyectos creados".
+La lista funciona para todo.
+
+Mantenimiento Centralizado:
+Si los textos cambian por requerimiento de diseño o traducción
+ya sabes que no tienes que tocar ningún componente visual de la lista
+todo se edita desde la lógica central de la página o el hook.
+
+
+### Código
+
+Opcione sobre 'Envio de Información':
+
+1. Tres propiedades independientes:
+(emptyIcon, emptyTitle, emptyDescription)
+
+2. Agrupadas dentro de un único objeto de configuración:
+(Ejemplo, emptyStateConfig)
+
+
+La práctica más estándar y extendida:
+Ej, usados por grandes librerías de componentes como Material UI o Ant Design
+para este escenario es utilizar propiedades planas y explícitas
+(emptyIcon, emptyTitle, emptyDescription).
+
+##### Se prefiere por encima de un objeto agrupado porque evita lidiar con problemas de objetos undefined
+hace que definir valores por defecto (default props)
+sea sumamente sencillo y mantiene el tipado de TypeScript completamente limpio y directo en la firma del componente
+
+
+### 1. TodoList:
+
+```
+import { TodoItem } from '../../molecules/TodoItem/TodoItem';
+import { Typography } from '../../atoms/Typography/Typography';
+import { ListWrapper, StyledList, EmptyState } from './TodoList.styles';
+import type { Task } from '@/core/task.entity';
+
+// 1. Contrato limpio: Eliminamos toda lógica de filtros y búsquedas del negocio
+interface TodoListProps {
+  todos: Task[];
+  onToggleTodo: (id: string) => void;
+  onDeleteTodo: (id: string) => void;
+  
+  // Props de Inversión de Control (UI pura)
+  emptyIcon: string;
+  emptyTitle: string;
+  emptyDescription: string;
+}
+
+export const TodoList = ({
+  todos,
+  onToggleTodo,
+  onDeleteTodo,
+  emptyIcon,
+  emptyTitle,
+  emptyDescription,
+}: TodoListProps) => {
+  // 2. La única verdad del componente: ¿Hay o no hay elementos para renderizar?
+  const hasTodos = todos.length > 0;
+
+  return (
+    <ListWrapper>
+      {!hasTodos ? (
+        <EmptyState>
+          {/* 3. Renderizado ciego y directo de lo que ordene el padre */}
+          <span style={{ fontSize: '3rem', marginBottom: '1rem' }} role="img" aria-label="estado-vacio">
+            {emptyIcon}
+          </span>
+
+          <Typography variant="body" style={{ fontWeight: 'bold' }}>
+            {emptyTitle}
+          </Typography>
+
+          <Typography variant="body" style={{ marginTop: '8px', opacity: 0.8 }}>
+            {emptyDescription}
+          </Typography>
+        </EmptyState>
+      ) : (
+        <StyledList>
+          {todos.map((todo) => (
+            <TodoItem
+              key={todo.id}
+              id={todo.id}
+              text={todo.content}
+              completed={todo.isCompleted}
+              onToggle={onToggleTodo}
+              onDelete={onDeleteTodo}
+            />
+          ))}
+        </StyledList>
+      )}
+    </ListWrapper>
+  );
+};
+```
+
+Cambios:
+
+1. Sin diccionarios y condicionales internos: 
+Desaparecieron los if (isSearching) y los objetos de configuración que mapeaban los filtros
+El componente ya no tiene que "pensar".
+
+2. Aislamiento:
+Si el día de mañana decides cambiar las strings de los filtros de tu aplicación de inglés a español
+o decides conectarla a una API internacional
+TodoList no sufrirá ningún cambio.
+Su única misión en la vida es pintar lo que le manden.
+
+3. Declarativo, no imperativo:
+El bloque del JSX quedó reducido a su mínima expresión de legibilidad
+Si hasTodos es falso, inyecta directamente las variables.
+
+
+### 2. TodoPage
+
+Inversión de Control en el padre:
+centralizar toda la lógica de negocio dentro de TodoPage
+
+##### La página evaluará el estado global: global (si el usuario está buscando y qué filtro del sidebar tiene seleccionado) y
+calculará el "traje" exacto que debe ponerse el estado vacío antes de renderizar la lista.
+
+Para asegurar un excelente rendimiento y evitar recálculos innecesarios en cada render
+envolveremos esta lógica de selección en un hook useMemo.
+
+```
+import { useMemo } from 'react';
+import { useTasks } from '../../../hooks/useTasks';
+import { DashboardTemplate } from '../../templates/DashboardTemplate/DashboardTemplate';
+import { TodoTemplate } from '../../templates/TodoTemplate/TodoTemplate';
+import { TaskSidebar } from '../../organisms/TaskSidebar/TaskSidebar';
+import { TodoList } from '../../organisms/TodoList/TodoList';
+import { TodoInput } from '../../molecules/TodoInput/TodoInput';
+import { Typography } from '../../atoms/Typography/Typography';
+import { Button } from '../../atoms/Button/Button';
+
+export const TodoPage = () => {
+  const {
+    tasks,
+    add,
+    toggle,
+    remove,
+    filter,
+    setFilter,
+    searchQuery,
+    setSearchQuery,
+    stats,
+    clearCompleted,
+  } = useTasks();
+
+  // 1. Mapeamos las categorías para el CategoryFilter
+  const categories = useMemo(
+    () => [
+      { id: 'all', label: 'Todas', count: stats.total },
+      { id: 'pending', label: 'Pendientes', count: stats.pending },
+      { id: 'completed', label: 'Completadas', count: stats.completed },
+    ],
+    [stats],
+  );
+
+  // 2. Derivamos el estado binario de búsqueda
+  const isSearching = searchQuery.trim().length > 0;
+
+  // 3. INTELIGENCIA CENTRALIZADA: Calculamos los textos del Empty State aquí
+  const emptyStateProps = useMemo(() => {
+    // Prioridad Absoluta: Si el usuario escribe en el buscador
+    if (isSearching) {
+      return {
+        icon: '🔍',
+        title: 'No hay coincidencias',
+        description: 'Prueba con otros términos o limpia el buscador.',
+      };
+    }
+
+    // Diccionario de configuración basado en las reglas de negocio del Core
+    const configs = {
+      all: {
+        icon: '📝',
+        title: 'No hay tareas',
+        description: '¡Añade algo para empezar el día!',
+      },
+      pending: {
+        icon: '⚡',
+        title: 'No hay tareas pendientes',
+        description: '¡Felicidades! Estás completamente al día.',
+      },
+      completed: {
+        icon: '✅',
+        title: 'No hay tareas completadas',
+        description: 'Aún no has terminado ninguna tarea. ¡Paso a paso!',
+      },
+    };
+
+    return configs[filter];
+  }, [filter, isSearching]); // Solo se vuelve a calcular si cambia el filtro o el estado de búsqueda
+
+  return (
+    <DashboardTemplate
+      header={<Typography variant="body">Liquid Task</Typography>}
+      sidebar={
+        <div>
+          <TaskSidebar
+            searchQuery={searchQuery}
+            onSearchChange={setSearchQuery}
+            categories={categories}
+            activeFilterId={filter}
+            onFilterChange={(id) => setFilter(id)}
+          />
+
+          {/* Botón de acción global del sidebar */}
+          {stats.completed > 0 && (
+            <div style={{ padding: '0 1rem 1rem 1rem', marginTop: '1.5rem' }}>
+              <Button
+                variant="secondary"
+                onClick={clearCompleted}
+                style={{ width: '100%' }}
+              >
+                Borrar completadas ({stats.completed})
+              </Button>
+            </div>
+          )}
+        </div>
+      }
+    >
+      <TodoTemplate
+        header={
+          <div>
+            <Typography variant="title">
+              {filter === 'all'
+                ? 'Mis Tareas'
+                : filter === 'pending'
+                  ? 'Pendientes'
+                  : 'Completadas'}
+            </Typography>
+            <Typography variant="body">
+              {stats.pending === 0
+                ? '¡Estás al día! No hay tareas pendientes.'
+                : `Tienes ${stats.pending} asuntos por resolver hoy.`}
+            </Typography>
+          </div>
+        }
+        inputSlot={<TodoInput onAdd={add} />}
+        listSlot={
+          <div data-testid="todo-list-container">
+            {/* 4. INVERSIÓN DE CONTROL: Pasamos las propiedades planas calculadas */}
+            <TodoList
+              todos={tasks}
+              onToggleTodo={toggle}
+              onDeleteTodo={remove}
+              emptyIcon={emptyStateProps.icon}
+              emptyTitle={emptyStateProps.title}
+              emptyDescription={emptyStateProps.description}
+            />
+          </div>
+        }
+      />
+    </DashboardTemplate>
+  );
+};
+```
+
+Cambios:
+
+1. Uso de useMemo para la configuración
+Guardar la configuración en un useMemo garantiza que React no gaste ciclos de procesamiento recreando el objeto
+y reevaluando los condicionales en cada parpadeo de la aplicación (
+(por ejemplo, cuando el usuario escribe una letra en el input o cuando se completa una tarea).
+Solo mutará si detecta que la pestaña cambió o si se activa/desactiva la búsqueda.
+
+2. Inyección directa y desacoplada
+Al renderizar <TodoList/>, le entregamos el resultado del memo desglosado
+`emptyIcon={emptyStateProps.icon}`, etc
+La página actúa como el director de orquesta definitivo de la pantalla:
+sabe qué información provee el hook de datos (useTasks)
+y sabe exactamente cómo alimentar las necesidades visuales de la interfaz de la lista.
+
+2. Escalabilidad:
+##### Si el día de mañana los diseñadores de producto deciden cambiar el flujo de la aplicación
+(por ejemplo, que cuando no haya tareas completadas se muestre un botón de sugerencias en lugar de un texto)
+el cambio se realiza por completo dentro de la página
+o en un componente especializado de feedback
+dejando el archivo de la lista intacto y libre de efectos colaterales.
+
+
+Antes:
+
+```
+import { useMemo } from 'react';
+import { useTasks } from '../../../hooks/useTasks';
+import { DashboardTemplate } from '../../templates/DashboardTemplate/DashboardTemplate';
+import { TodoTemplate } from '../../templates/TodoTemplate/TodoTemplate';
+import { TaskSidebar } from '../../organisms/TaskSidebar/TaskSidebar'; // 👈 Cambiado por el nuevo
+import { TodoList } from '../../organisms/TodoList/TodoList';
+import { TodoInput } from '../../molecules/TodoInput/TodoInput';
+import { Typography } from '../../atoms/Typography/Typography';
+import { Button } from '../../atoms/Button/Button';
+
+export const TodoPage = () => {
+  // 1. Extraemos todo del hook, con las funciones
+  const {
+    tasks,
+    add,
+    toggle,
+    remove,
+    filter,
+    setFilter,
+    searchQuery,
+    setSearchQuery,
+    stats,
+    clearCompleted,
+  } = useTasks();
+
+  // 2. Mapeamos las categorías para el CategoryFilter
+  const categories = useMemo(
+    () => [
+      { id: 'all', label: 'Todas', count: stats.total },
+      { id: 'pending', label: 'Pendientes', count: stats.pending },
+      { id: 'completed', label: 'Completadas', count: stats.completed },
+    ],
+    [stats],
+  );
+
+  return (
+    <DashboardTemplate
+      header={<Typography variant="body">Liquid Task</Typography>}
+      sidebar={
+        <div>
+          <TaskSidebar
+            searchQuery={searchQuery}
+            onSearchChange={setSearchQuery}
+            categories={categories}
+            activeFilterId={filter}
+            onFilterChange={(id) => setFilter(id)}
+          />
+
+          {/* Botón de acción global del sidebar */}
+          {stats.completed > 0 && (
+            <div style={{ padding: '0 1rem 1rem 1rem', marginTop: '1.5rem' }}>
+              <Button
+                variant="secondary"
+                onClick={clearCompleted}
+                style={{ width: '100%' }}
+              >
+                Borrar completadas ({stats.completed})
+              </Button>
+            </div>
+          )}
+        </div>
+      }
+    >
+      <TodoTemplate
+        header={
+          <div>
+            <Typography variant="title">
+              {filter === 'all'
+                ? 'Mis Tareas'
+                : filter === 'pending'
+                  ? 'Pendientes'
+                  : 'Completadas'}
+            </Typography>
+            <Typography variant="body">
+              {stats.pending === 0
+                ? '¡Estás al día! No hay tareas pendientes.'
+                : `Tienes ${stats.pending} asuntos por resolver hoy.`}
+            </Typography>
+          </div>
+        }
+        inputSlot={<TodoInput onAdd={add} />}
+        listSlot={
+          /* 'tasks' filtrado por categoría 
+             y por búsqueda gracias al useMemo del hook.
+          */
+          <div data-testid="todo-list-container">
+            <TodoList
+              todos={tasks}
+              onToggleTodo={toggle}
+              onDeleteTodo={remove}
+              isSearching={searchQuery.trim().length > 0}
+            />
+          </div>
+        }
+      />
+    </DashboardTemplate>
+  );
+};
+```
+
+
+## Opción Puente/hack logica
 
 
 
 # Errores CSS activando desde consola
 
 
+
+
+# Fix animations, transitions, Interactividad
+
+Ej:
+
+TodoPage
+
+```
+import styled, { keyframes } from 'styled-components';
+
+const fadeIn = keyframes`
+  from { opacity: 0; }
+  to { opacity: 1; }
+`;
+
+export const StyledPage = styled.div`
+  width: 100%;
+  height: 100%;
+  animation: ${fadeIn} 0.6s ease-in-out;
+`;
+```
+
+Ej:
+
+global styles
+
+```
+  button {
+    cursor: pointer;
+    transition: ${({ theme }) => theme.transitions.default};
+    
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+  }
+
+```
+
+Ej: mixins
+
+```
+  interactive: css`
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    &:active {
+      transform: scale(0.98);
+    }
+
+```
+
+
+## 1. transform: rotate scale
+
+`transform: rotate(...) scale(...)`
+
+##### transform modifica la geometría del elemento en el espacio, (sin afectar la posición de los elementos que tiene alrededor)
+##### rotate y scale en la misma línea, estás aplicando dos operaciones secuenciales:
+
+1. 
+rotate(<ángulo>): Gira el elemento alrededor de un punto fijo (por defecto, su centro).
+Puedes usar grados (deg) o giros (turn).
+
+Un rotate(45deg) inclina el elemento hacia la derecha.
+
+2. 
+scale(<factor>): Cambia el tamaño del elemento
+Un valor de 1 es el tamaño original. scale(1.2)
+lo agranda un 20%, y scale(0.8) lo encoge un 20%.
+
+##### Practica para transform: orden de los factores sí altera el producto
+##### CSS lee las transformaciones de izquierda a derecha.
+
+1. 
+Si escribes rotate(45deg) scale(1.5)
+el navegador primero gira el elemento y luego lo agranda sobre sus nuevos ejes inclinados.
+
+2. 
+En la mayoría de los casos comunes
+(como un efecto hover en una tarjeta de tu dashboard)
+poner ambos hará que la tarjeta gire un poco y crezca suavemente hacia el frente
+dando un efecto tridimensional muy sutil
+
+
+
+## 2. transition: transform cubic-bezier
+
+`transition: transform <duración> cubic-bezier(...)`
+
+##### transition le dice al navegador:  Cuando la propiedad transform cambie (por ejemplo, al hacer hover), no hagas el cambio de golpe; hazlo de forma progresiva".
+
+1. 
+transform: Especifica que la transición solo se aplicará a los cambios geométricos
+(rotación, escala, posición),
+ignorando cambios en colores o fuentes.
+
+2. 
+<duración>: tiempo que tardará en completarse la animación
+(por ejemplo, 0.3s o 300ms).
+
+3. 
+cubic-bezier(x1, y1, x2, y2): magia de la animación física
+##### Define la curva de velocidad de la transición utilizando cuatro coordenadas
+##### En lugar de usar transiciones lineales y aburridas donde la velocidad es siempre la misma
+##### una curva Bézier te permite emular la física del mundo real (inercia, gravedad y aceleración).
+
+##### Las cuatro coordenadas controlan dos puntos de anclaje que estiran la curva de aceleración
+
+1. 
+Aceleración/Desaceleración (Efecto Pop):
+Puedes hacer que la animación empiece extremadamente rápido
+y se frene suavemente al final (cubic-bezier(0.25, 1, 0.5, 1)).
+
+2. 
+Efecto Anticipación o Rebote:
+Si juegas con valores negativos o mayores que 1 en el eje Y
+puedes lograr que el elemento se "encoja" un poco antes de crecer (anticipación)
+o que se pase de su tamaño final y luego regrese
+(efecto rebote/elástico).
+
+
+Ejemplo práctico en código:
+para una tarjeta o un botón interactivo
+la tarjeta no solo crecerá y se inclinará
+sino que gracias al cubic-bezier(0.34, 1.56, ...),
+sobrepasará ligeramente el tamaño 1.05 y se asentará con un rebote elástico muy premium
+similar a las interfaces de iOS o interfaces de videojuegos modernas
+
+```
+`export const InteractiveCard = styled.div`
+  /* Estado inicial */
+  transform: rotate(0deg) scale(1);
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); /* Curva con rebote */
+
+  &:hover {
+    /* Estado final al pasar el cursor */
+    transform: rotate(2deg) scale(1.05);
+  }
+`;
+```
+
+
+## 3. transition: 0.2s cubic-bezier
+
+##### atajos (shorthands) de la propiedad transition
+##### Al no especificar una propiedad concreta (como transform o opacity),
+##### ambas se aplican por defecto a all
+(cualquier propiedad CSS animable que cambie en el elemento).
+
+la diferencia en su duración
+y en su curva de aceleración cambia por completo
+la "sensación física" de la interfaz
+
+Para que funcione en tu navegador, cubic-bezier
+requiere obligatoriamente sus 4 coordenadas entre paréntesis, por ejemplo: cubic-bezier(0.4, 0, 0.2, 1).
+
+1. 
+Duración (0.2s / 200ms):
+punto dulce (sweet spot) de las micro-interacciones en la web moderna
+Es lo suficientemente rápido para que la interfaz se sienta responsiva e instantánea
+pero le da al ojo humano el tiempo justo (un parpadeo rápido)
+para captar el movimiento
+##### Ideal para botones, interruptores (switches) y efectos hover en tarjetas.
+
+2. 
+Efecto (cubic-bezier):
+##### Al usar una curva personalizada, estás buscando una firma de movimiento única para tu UI
+Dependiendo de los números que uses
+puedes hacer que el elemento tenga un "latigazo" al arrancar
+que se frene en seco de forma dramática
+o incluso que tenga un sutil efecto elástico
+(rebotar un poco antes de parar).
+
+
+
+## 4. transition: 0.1s ease-in-out
+
+1. 
+Duración (0.1s / 100ms):
+##### Esto es velocidad pura, casi imperceptible
+##### Se utiliza cuando quieres que un cambio sea prácticamente instantáneo
+pero sin la brusquedad de no tener ninguna transición
+##### Es el tiempo ideal para menús desplegables ultra-rápidos
+cambios de color en inputs al hacer foco, o text-shadows.
+
+2. 
+Efecto (ease-in-out):
+Esta es una curva matemática predefinida y perfectamente simétrica
+Lo que hace es acelerar suavemente al principio
+y desacelerar con la misma suavidad al final.
+
+
+Interfaz:
+A nivel de experiencia de usuario (UX),
+el comportamiento de ambas se percibe de formas muy distintas debido a la relación entre su tiempo y su aceleración:
+
+1. 
+Con 0.1s ease-in-out:
+Como el tiempo es tan ridículamente corto (100ms),
+la aceleración y desaceleración del ease-in-out apenas se llega a notar
+El usuario no va a ver la curva; simplemente va a sentir que el elemento cambió de estado de forma "blanda" y limpia
+en lugar de un salto tosco de fotogramas.
+
+2. 
+Con 0.2s cubic-bezier:
+Al duplicar el tiempo a 200ms, el cerebro ya tiene espacio para procesar la coreografía del movimiento
+Si configuras la curva para que sea una transición con inercia o rebote
+el usuario sí va a notar la personalidad del componente
+Se va a sentir más orgánico y estilizado.
+
+
+
+## 5. transition: all 0.2s cubic-bezier
+
+gran diferencia aquí es la palabra clave all
+En lugar de limitar la animación a una sola propiedad
+(como transform o opacity), le estás diciendo al navegador:
+##### "Cualquier propiedad CSS que cambie en este elemento se va a animar bajo las mismas reglas".
+
+Efecto Coordinado:
+Si tienes un botón en tu dashboard y al hacerle
+:hover cambias tres cosas al mismo tiempo
+(el color de fondo, el tamaño con un transform y la opacidad del texto)
+las tres transiciones ocurrirán en perfecta sincronía.
+
+Duración (0.2s): Todas las propiedades completarán su metamorfosis exactamente en 200 milisegundos
+
+Curva (cubic-bezier): Todas las propiedades acelerarán y desacelerarán siguiendo la misma física personalizada
+haciendo que el cambio de color de fondo "baile" al mismo ritmo elástico en que el botón se agranda
+
+Nota de rendimiento: Aunque all es muy cómodo porque te ahorra escribir código
+úsalo con moderación
+Animar propiedades que alteran el diseño de la página
+(como width, height, margin o top) usando all
+##### obliga al navegador a recalcular la geometría de toda la web en cada fotograma
+lo que puede causar caídas de FPS en dispositivos menos potentes
+Para micro-interacciones de alto rendimiento
+es mejor especificar solo las propiedades deseadas
+(ej. transition: transform 0.2s, background-color 0.2s).
+
+
+## 6. transform: scale
+
+transform: scale(...)
+La función scale (escala) es la herramienta nativa de CSS
+para alterar el tamaño visual de un elemento
+en un espacio de dos dimensiones (2D).
+
+Efecto Geométrico: Sin romper el Layout
+A diferencia de cambiar el width o el height de un componente
+(lo cual empujaría a los elementos de al lado para hacerles espacio)
+transform: scale cambia el tamaño como si fuera una capa de Photoshop por encima del lienzo
+El elemento crece o se encoge
+pero el espacio físico que ocupa en el documento sigue siendo exactamente el mismo que el original
+
+Variantes de uso:
+
+Escalado Uniforme (Un solo valor): scale(1.2)
+Agranda el elemento un 20% manteniendo perfectamente sus proporciones originales
+en los ejes X (horizontal) e Y (vertical).
+
+Escalado Independiente (Dos valores): scale(1.5, 0.8)
+El primer número estira el elemento horizontalmente (eje X al 150%)
+y el segundo lo aplasta verticalmente (eje Y al 80%)
+permitiéndote crear efectos de deformación elástica muy interesantes
+para animaciones de estilo cartoon o interfaces lúdicas.
+
+Escalados unidireccionales:
+También puedes usar scaleX(value) o scaleY(value)
+si solo necesitas modificar un eje específico de forma aislada
+
+Punto de anclaje:
+Por defecto, el escalado se realiza desde el centro exacto del elemento
+(transform-origin: center)
+Si el elemento crece, se expandirá uniformemente hacia arriba, abajo, izquierda y derecha.
+
+
+
+### Transform y transition: micro-interacciones modernas en la web 
+
+Permiten crear animaciones fluidas, orgánicas y con un rendimiento excelente
+##### ya que las transformaciones se procesan directamente en la tarjeta gráfica o GPU,
+##### sin obligar al navegador a recalcular el diseño de la página
+
+
+## 7. Animations de FilterItem
+
+FilterItem
+
+```
+const popIn = keyframes`
+  from { 
+    transform: scale(0); 
+    opacity: 0; 
+  }
+  to { 
+    transform: scale(1); 
+    opacity: 1; 
+  }
+`;
+``` 
+
+1. export const FilterContainer = styled.div<{ $isSelected: boolean }>`
+
+`transition: ${({ theme }) => theme.transitions.default};`
+
+2. export const BadgeWrapper = styled.div<{ $isVisible: boolean }>`
+
+```
+  /* Visible state */
+  ${({ $isVisible }) =>
+    $isVisible
+      ? css`
+          animation: ${popIn} 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        `
+      : css`
+          animation: none;
+        `}
+
+  /* Not visible */
+  opacity: ${({ $isVisible }) => ($isVisible ? 1 : 0)};
+  transition: opacity 0.2s ease;
+
+```
+
+
+### Keyframes
+
+1. 
+`const popIn = keyframes`
+
+función keyframes (importada de styled-components)
+equivalente a crear un guión gráfico o storyboard
+no estás diciendo cuándo ni cómo de rápido se va a mover algo
+solo estás definiendo la transformación pura del elemento
+desde su nacimiento hasta su estado final
+
+`from (o 0% del tiempo)`:
+Define el estado inicial del componente cuando aparece en el DOM
+scale(0)
+
+significa que el tamaño del componente es cero
+cero (invisible, un punto microscópico en el centro)
+y opacity: 0 lo hace completamente transparente.
+
+`to (o 100% del tiempo)`:
+Define el estado de destino
+scale(1) es su tamaño real y natural
+y opacity: 1 lo vuelve completamente opaco y visible.
+
+Al guardarlo en una variable const popIn
+Styled Components toma este bloque y le genera un nombre único aleatorio
+(ej. sc-keyframes-bXyZ)
+Esto evita que si tienes otras animaciones llamadas igual en tu proyecto, colisionen entre sí.
+
+
+2. rol de popIn dentro de la propiedad animation
+
+inyectas ${popIn} dentro de BadgeWrapper
+estás uniendo el guión gráfico con el reloj
+y la física del mundo real.
+
+La línea es un atajo (shorthand) de CSS
+`animation: [nombre] [duración] [curva de aprendizaje/velocidad];`
+
+Rol de ${popIn} (La Identidad):
+Le dice al navegador: "Quiero que uses los pasos que definimos arriba
+(pasar de escala 0 a 1 y de opacidad 0 a 1)"
+sin esto, el navegador no sabría qué propiedades cambiar.
+
+Rol de 0.3s (El Tiempo):
+##### Establece que todo el viaje desde el from hasta el to debe durar exactamente 300 milisegundos
+Es un tiempo ultra veloz, ideal para que la interfaz se sienta eléctrica y fluida
+
+3. Rol del cubic-bezier(0.175, 0.885, 0.32, 1.275) (La Física)
+
+Esta es la clave de todo tu componente
+Esta curva específica se conoce en animación como "Back Out"
+(Efecto de rebote por exceso).
+
+Si miras el último número (1.275),
+supera el límite del 1.0 (que representa el 100%).
+
+efecto visual: Cuando tu Badge se está mostrando
+viaja tan rápido que supera su tamaño original
+(llega a medir aproximadamente scale(1.1) o scale(1.15)
+y, en los últimos milisegundos de la animación
+##### se encoge un poco hasta asentarse perfectamente en scale(1).
+
+##### Cuando $isVisible pasa a ser true
+Badge no solo "aparece".
+##### Lo que hace es brotar desde el centro como una burbuja
+se agranda un poco más de la cuenta debido a la inercia del cubic-bezier;
+##### y rebota suavemente hasta clavarse en su tamaño final
+todo en menos de un tercio de segundo
+
+Si pasa a false, apaga la animación
+y hace un fade-out suave de 0.2s gracias al transition: opacity
+
+
+
+## 8. SearchInput
+
+1. export const StyledInput = styled.input`
+
+`transition: all 0.2s ease-in-out;`
+
+##### es la encargada de que el campo de búsqueda no se sienta rígido o "tosco" cuando el usuario interactúa con él
+##### Su objetivo principal es suavizar la transición entre el estado de reposo del input
+##### y el estado de enfoque (&:focus) cuando alguien hace clic para escribir
+
+`all` (El qué):
+##### Le dice al navegador que anime absolutamente cualquier propiedad CSS que cambie en el input
+En tu caso específico, cuando el usuario hace clic en el buscador para escribir
+escribir (:focus), cambian tres propiedades a la vez:
+
+1. El background se vuelve más opaco (pasa de opacidad 0.05 a 0.1).
+2. El border-color se ilumina (pasa de opacidad 0.1 a 0.3).
+3. Aparece un destello alrededor gracias al box-shadow.
+
+Gracias a all, las tres propiedades mutarán al mismo tiempo de forma coordinada
+
+`0.2s` (El cuánto):
+Establece que la animación tardará exactamente 200 milisegundos tanto en encenderse
+(cuando haces clic) como en apagarse (cuando haces clic fuera del input).
+
+Es un tiempo excelente para elementos de formulario
+el usuario percibe el cambio como algo inmediato y responsivo
+pero el ojo llega a notar la suavidad del efecto.
+
+`ease-in-out` (El cómo):
+Define la aceleración del cambio
+ease-in-out es una curva simétrica
+que hace que la animación comience despacio
+se acelere en el medio y se frene suavemente al llegar al final.
+
+Efecto de ux:
+Si no tuvieras esa línea de transition,
+al hacer clic en el buscador el fondo
+y el borde brillarían de golpe en un solo fotograma
+lo cual puede dar una sensación de interfaz barata o rígida.
+
+Con la transición activada:
+Al hacer clic en el input para buscar una tarea, verás un efecto "blando"
+y elegante donde la caja de texto se ilumina de forma orgánica,
+el borde se aclara gradualmente y la sombra del box-shadow se despliega como un sutil destello de luz neon detrás del cristal
+Al retirar el cursor, el buscador se "apaga" con la misma elegancia regresando a su estado translúcido original
+
+
+
+## 9. TodoItem
+
+1. export const ItemContainer = styled.li<StyledItemProps>`
+
+`transform: translateX(4px);`
+
+2. export const TextContainer = styled.div<TextProps>`
+
+`transition: all 0.3s ease;`
+
+
+##### uno responde a la interacción física del usuario con el puntero (:hover)
+
+##### el otro responde al cambio de estado del negocio en tu aplicación ($isCompleted).
+
+
+1. `transform: translateX(4px)`; en ItemContainer (El "Empujón" al pasar el mouse)
+se activa exclusivamente cuando el usuario pasa el cursor sobre la fila de la tarea (:hover).
+
+Efecto Visual: El elemento entero (<li>) se desplaza físicamente 4 píxeles hacia la derecha en el eje horizontal (X)
+Al retirar el mouse, el elemento regresa a su posición original (0px).
+
+Objetivo de UX: Rompe la rigidez de la lista
+Le da al usuario un feedback visual inmediato de "esta es la tarea que estás apuntando"
+levantando el elemento tridimensionalmente hacia la derecha.
+
+Precausión
+transform en el :hover, pero no una propiedad transition
+declarada en la base del componente
+(a menos que venga oculta dentro de ${mixins.glass}).
+Si tu mixin no la incluye, el desplazamiento de 4px
+ocurrirá de golpe (instantáneo) en un solo fotograma
+lo que puede verse un poco tosco
+Para que ese desplazamiento sea una seda
+ItemContainer necesitaría una línea como
+`transition: transform 0.2s ease;`.
+
+2. `transition: all 0.3s ease`; en TextContainer (El desvanecimiento de tarea completada)
+##### Esta instrucción no reacciona al mouse, sino a la mutación de la propiedad reactiva $isCompleted
+##### Cuando marcas el checkbox de la tarea, los estilos cambian
+la opacidad baja de 1 a 0.5 y aparece el line-through.
+
+Efecto Visual: Gracias al transition, el texto de la tarea no se vuelve semitransparente de inmediato
+El navegador calcula los fotogramas intermedios durante 300 milisegundos (0.3s).
+Verás cómo el texto se va apagando y desvaneciendo suavemente (un fade-out parcial)
+hasta quedar al 50% de intensidad.
+
+La curva ease: Hace que este desvanecimiento comience con un sutil impulso rápido
+rápido y se frene suavemente al llegar al final (opacidad 0.5),
+haciendo que la transición se perciba muy natural para el ojo humano
+
+Detalle:
+La propiedad text-decoration: line-through (la línea que tacha el texto)
+no es una propiedad animable por la mayoría de los navegadores
+Por lo tanto, la línea aparecerá de golpe en el instante en que haces clic
+pero la opacidad del texto sí se desvanecerá con la suavidad de los 0.3 segundos,
+mitigando ese salto brusco.
+
+
+
+## 10. DashboardPage
+
+```
+const fadeIn = keyframes`
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+`;
+```
+
+1. export const PageContainer = styled.div`
+
+`animation: ${fadeIn} 0.5s ease-out;`
+
+2. export const LoadingWrapper = styled.div`
+
+```
+animation: pulse 1.5s infinite;
+
+
+ @keyframes pulse {
+    0%,
+    100% {
+      opacity: 1;
+    }
+
+    50% {
+      opacity: 0.4;
+    }
+  }
+
+```
+
+
+##### pensadas para mejorar drásticamente lo que en UX llamamos rendimiento percibido
+perceived performance
+
+##### Su objetivo es que la aplicación se sienta viva
+##### fluida y que el paso de la pantalla de carga a los datos reales no sea un golpe brusco para los ojos del usuario
+
+1. 
+1 y 2. El Efecto de Entrada de la Página (fadeIn + PageContainer)
+
+##### coordinando el guión gráfico (keyframes)
+##### con la ejecución en el contenedor principal de tu página (<div class="PageContainer">).
+
+```
+const fadeIn = keyframes`
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+`;
+```
+
+from (Inicio):
+El contenedor de la página arranca siendo totalmente invisible (opacity: 0)
+y desplazado 10 píxeles hacia abajo (translateY(10px)) respecto a donde debería estar originalmente.
+
+to (Destino): El contenedor alcanza su opacidad total (opacity: 1)
+y regresa a su posición geométrica original (translateY(0)).
+
+2. 
+Ejecución (PageContainer)
+`animation: ${fadeIn} 0.5s ease-out;`
+configuras el reloj de la siguiente manera:
+
+0.5s (Duración): Toda la transición dura exactamente medio segundo.
+ease-out (Aceleración): La curva de velocidad arranca muy rápido y se frena suavemente al final.
+
+Efecto Visual Real en el HTML
+Cuando la página termina de cargar y este elemento se monta en el DOM
+el Dashboard entero no aparece de golpe
+emerge suavemente desde abajo
+
+Debido al ease-out,
+el contenido da la sensación de "aterrizar" de forma amortiguada en la pantalla
+como si flotara hacia su posición final mientras se vuelve visible
+Es el clásico efecto elegante de los sistemas operativos modernos de Apple o Windows al abrir una ventana.
+
+3. Latido de Carga (LoadingWrapper + pulse)
+Esta animación está contenida y auto-declarada dentro de los estilos de la pantalla de carga
+afectando específicamente a la etiqueta <span> (que seguramente contiene el texto "Cargando...").
+
+Ejecución y el Guión (pulse)
+
+```
+/* Ejecución en el span */
+animation: pulse 1.5s infinite;
+
+/* Guión de la animación */
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+```
+
+1.5s (Duración): Cada ciclo completo de la animación tarda segundo y medio.
+
+infinite (Bucle): No se detiene nunca; se repetirá en bucle mientras el componente esté montado
+
+ritmo de los porcentajes:
+
+Al 0% (inicio del ciclo):
+el texto es completamente opaco (opacity: 1).
+
+Al 50% (justo a los 0.75 segundos):
+el texto se desvanece de forma parcial hasta el 40% de visibilidad
+(opacity: 0.4).
+
+Al 100% (al llegar al segundo y medio)
+regresa a ser totalmente opaco (opacity: 1).
+
+
+Efecto Visual Real en el HTML:
+
+El elemento <span> (el texto de carga) adquiere un efecto de "respiración" u opacidad palpitante
+El texto brilla, se atenúa casi a la mitad y vuelve a brillar de manera continua y cíclica.
+
+Este efecto es un estándar absoluto en la industria
+industria (muy usado en las famosas barras grises de Skeleton Loading de YouTube o Facebook).
+Sirve para comunicarle inconscientemente al usuario: "La aplicación no se ha colgado, estamos trabajando de fondo para traer tus datos".
+
+
+Coreografía Global (UX):
+Al juntar ambas piezas en el Dashboard, la experiencia del usuario es impecable:
+
+1. Mientras la aplicación busca los datos
+ve un texto elegante en mayúsculas que respira suavemente
+en el centro de un fondo de cristal translúcido (LoadingWrapper).
+
+2. En el instante en que los datos llegan
+el estado cambia, el loader se desmonta y el contenido real (PageContainer)
+flota hacia arriba suavemente durante medio segundo
+coronando una transición de interfaz limpia y sumamente profesional.
+
+
+
+## 11. TodoPage
+
+```
+const fadeIn = keyframes`
+  from { opacity: 0; }
+  to { opacity: 1; }
+`;
+```
+
+1. export const StyledPage = styled.div`
+
+`animation: ${fadeIn} 0.6s ease-in-out;`
+
+
+
+En DashboardPage combinación de movimiento y opacidad
+En TodoPage estás aplicando una animación puramente atmosférica y sutil
+
+Es el clásico fundido a negro (o a blanco, según tu tema) del cine,
+pero aplicado al software.
+
+afecta visualmente al contenedor principal <div class="StyledPage">:
+
+1. Guión Gráfico (const fadeIn)
+define el cambio de estado más puro y limpio que existe en CSS: la visibilidad.
+
+```
+const fadeIn = keyframes`
+  from { opacity: 0; }
+  to { opacity: 1; }
+`;
+```
+
+from (0% del tiempo):
+El elemento arranca con opacidad cero
+Es completamente invisible y transparente
+permitiendo que se vea lo que sea que esté de fondo en la aplicación.
+
+to (100% del tiempo):
+El elemento llega a opacidad uno.
+Se vuelve 100% sólido, opaco y muestra sus colores y subcomponentes en su totalidad
+
+2. Ejecución en el HTML (StyledPage)
+Al asignarle este guión al contenedor de la página
+configuras el comportamiento a través de dos parámetros clave
+el tiempo y la aceleración.
+
+```
+animation: ${fadeIn} 0.6s ease-in-out;
+```
+
+`0.6s` (La Duración)
+Estableces que el fundido tarde 600 milisegundos en completarse
+
+poco más lenta que la animación del Dashboard (que duraba 0.5s).
+Al darle 100 milisegundos más
+buscando una transición más deliberada, suave y cinematográfica
+Evita que el cambio de pantalla se sienta abrupto para el usuario.
+
+`ease-in-out` (La Curva de Aceleración)
+curva matemática hace que el cambio de opacidad sea perfectamente simétrico y orgánico
+
+1. Inicio suave: Durante los primeros milisegundos
+la opacidad sube muy despacio (casi imperceptible).
+
+2. Aceleración central: En la mitad del tiempo
+el cambio de transparencia a opacidad se acelera drásticamente.
+
+3. Frenado final: Al acercarse al final del transcurso
+el ritmo se reduce para asentarse delicadamente en el 100% de opacidad
+
+
+Efecto Visual Real:
+usuario navega hacia la sección de tareas (TodoPage)
+este componente se monta en el DOM
+toda la página se disuelve suavemente desde el fondo para aparecer en la pantalla
+
+No hay saltos, no hay tirones hacia arriba o hacia abajo
+Es una transición flotante y etérea
+donde los elementos visuales del listado de tareas van ganando nitidez
+y presencia de manera sincronizada durante un poco más de medio segundo.
+
+
+Aviso UX:
+Esta animación es ideal para páginas de contenido denso
+Al no tener la propiedad transform: translateY (como tenías en el Dashboard)
+evitas que el cerebro del usuario tenga que procesar texto moviéndose verticalmente mientras intenta leerlo
+reduciendo la fatiga visual y enfocando la atención puramente en la aparición de la interfaz.
+
+
+
+
+# animations, transitions, Interactividad, transformaciones
+
+## 1. Interactividad: El Disparador
+puente de comunicación entre las intenciones del usuario
+(mover el mouse, hacer clic, usar el teclado)
+y los cambios visuales de la interfaz
+
+##### propiedad/herramienta más básica: Las Pseudo-clases de estado
+propiedad/herramienta más básica: Las Pseudo-clases de estado
+y la propiedad cursor.
+
+Funcionamiento: 
+##### Antes de mover o animar algo
+##### necesitas que el navegador detecte que el usuario está interactuando con el elemento
+Las pseudo-clases actúan como interruptores condicionales de CSS.
+
+##### 1. Estado en reposo
+
+```
+.boton {
+  background: blue;
+  cursor: pointer; //Indica que es interactivo
+}
+```
+
+##### 2. El "interruptor" se activa cuando el mouse pasa por encima
+
+```
+.boton:hover {
+  background: red; 
+}
+```
+
+##### rendimiento: La interactividad por sí sola cambia los estados de golpe (instantáneamente).
+##### Para que ese cambio de azul a rojo no sea un golpe seco para el ojo humano
+necesitamos el siguiente concepto
+
+
+## 2. Transiciones: Puente suave
+##### toma un cambio de estado instantáneo (como el del :hover)
+##### y calcula los estados intermedios a lo largo del tiempo para que el cambio sea progresivo y fluido.
+
+propiedad más básica: `transition-duration`
+aunque normalmente usamos el atajo transition
+
+Funcionamiento:
+Le dice al navegador:
+Cuando una propiedad cambie
+no saltes al resultado final de inmediato
+llévatela con calma durante X cantidad de tiempo
+
+```
+.boton {
+  background: blue;
+  /* Propiedad básica: Controla la velocidad del cambio */
+  transition: background 0.2s ease-in-out; 
+}
+
+.boton:hover {
+  background: red; /* Ahora cambia suavemente en 200 milisegundos */
+}
+```
+
+
+## 3. Transformaciones: Alterando el Espacio
+permiten modificar la geometría de un elemento
+moverlo, escalarlo, rotarlo o inclinarlo
+sin alterar el flujo del diseño de la página
+(no empuja a los elementos vecinos).
+
+propiedad más básica: transform
+
+Funcionamiento:
+Modifica la matriz visual del elemento en una capa de renderizado independiente
+##### Sus funciones principales son translate(), scale(), rotate() y skew().
+
+```
+.tarjeta {
+  /* Propiedad básica: Modifica tamaño y posición en su propia capa */
+  transform: scale(1) translateY(0);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.tarjeta:hover {
+  transform: scale(1.05) translateY(-4px); /* Se agranda y sube eficientemente */
+}
+```
+
+##### Secreto de optimización: Modificar width o height en una transición obliga al navegador a recalcular todo el diseño de la página (Reflow).
+##### Modificar transform: scale() hace exactamente lo mismo visualmente, pero se procesa directamente en la tarjeta de video (GPU), corriendo a 60 FPS fijos.
+
+
+## 4. Animaciones: Película Autónoma
+
+A diferencia de las transiciones
+##### (que necesitan un disparador como un :hover y solo van de un punto A a un punto B),
+
+las animaciones son autónomas
+##### Pueden ejecutarse solas al cargar la página
+##### pasar por decenas de estados intermedios y repetirse infinitamente
+
+##### La propiedad más básica: animation combinada con la regla @keyframes
+
+Funcionamiento:
+@keyframes define la línea de tiempo (el guion gráfico)
+animation configura cómo se va a reproducir esa línea de tiempo
+(duración, repeticiones, dirección).
+
+```
+/* 1. Definimos el guion gráfico con sus estaciones intermedias */
+@keyframes flotar {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+  100% { transform: translateY(0); }
+}
+
+.alerta {
+  /* 2. Propiedad básica: Aplica el guion de forma infinita */
+  animation: flotar 2s infinite ease-in-out;
+}
+```
+
+
+## Intro
+
+
+
+## Practicas
+
+
+
+
+## Animaciones más ligeras
+
+animaciones y efectos "glass" vuelen
+el secreto es entender cómo procesa el navegador los cambios visuales.
+
+### Regla de Oro: El Pipeline de Renderizado
+
+Cada vez que un elemento cambia en la pantalla
+el navegador pasa por tres etapas principales:
+
+1. Layout (Reflow):
+El navegador calcula el tamaño y la posición de los elementos
+Cambiar propiedades como width, height, margin, top o left
+obliga al navegador a recalcular toda la geometría de la página
+Es destructivo para el rendimiento.
+
+2. Paint (Repintado):
+El navegador dibuja los píxeles (colores, sombras, bordes).
+Cambiar background-color, color o box-shadow obliga a repintar el elemento
+Es costoso para la CPU/GPU.
+
+3. Composite (Composición):
+El navegador junta las "capas" ya dibujadas y las organiza en la pantalla
+La GPU maneja esta etapa directamente y es ultra rápida
+
+##### Truco: evitar por completo las etapas de Layout y Paint durante la animación
+##### , y forzar al navegador a trabajar únicamente en la etapa de Composite
+
+
+Tips:
+
+1. Anima exclusivamente 'Propiedades de Oro'
+Solo existen dos propiedades CSS que se ejecutan al 100%
+en la etapa de Composición (GPU)
+sin activar Layout ni Paint:
+
+##### transform (scale, rotate, translate, skew)
+##### opacity
+
+Mal (Pesado): Animar width: 100px a width: 200px
+para expandir un botón.
+
+##### Bien (Ligero): Dejar el botón en su tamaño final y animarlo usando transform: scaleX().
+
+2. Destierra el transition: all
+usar all obliga al navegador a vigilar y evaluar cada propiedad del elemento en cada fotograma
+Especifica siempre qué quieres mover:
+
+```
+/* Mal: Consume ciclos innecesarios */
+transition: all 0.2s ease;
+
+/* Bien: La GPU sabe exactamente qué procesar */
+transition: transform 0.2s ease, opacity 0.2s ease;
+```
+
+3. pseudo-elemento para box-shadow
+Las sombras complejas (como las de tu efecto Glass) son enemigas mortales de la GPU
+porque calcular los algoritmos de desenfoque (blur) en cada fotograma genera un "Paint" masivo
+
+Si quieres que una sombra aparezca suavemente al hacer :hover
+##### no archives una transición directo en el box-shadow.
+##### En su lugar, crea la sombra oculta en un pseudo-elemento y anima su opacidad
+
+Ej:
+
+```
+// OPTIMIZACIÓN EXTREMA DE SOMBRAS
+export const HeavyCard = styled.div`
+  position: relative;
+  
+  /* La sombra ya está dibujada de fondo, pero invisible */
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    border-radius: 16px;
+    box-shadow: 0 30px 60px oklch(0% 0 0 / 30%);
+    opacity: 0;
+    transition: opacity 0.3s ease; /* Animar opacidad es ultra ligero */
+    z-index: -1;
+  }
+
+  &:hover::before {
+    opacity: 1; /* La sombra "aparece" sin recalcular el Paint de la sombra */
+  }
+`;
+```
+
+4. will-change con moderación
+La propiedad will-change le avisa al navegador con anticipación qué propiedad va a cambiar
+para que cree una capa de composición separada en la GPU antes de que ocurra el movimiento.
+
+```
+export const FastBadge = styled.div`
+  will-change: transform, opacity;
+`;
+```
+
+Peligro: No se lo pongas a todos los elementos de la lista.
+Crear demasiadas capas en la GPU puede agotar la memoria de video del dispositivo y terminar ralentizando la web en celulares viejos
+Úsalo solo en elementos que se animen constantemente.
+
+5. filtros pesados (backdrop-filter)
+efecto cristal usa backdrop-filter: blur().
+Este filtro requiere que la GPU tome los píxeles que están detrás del elemento
+los desenfoque y los vuelva a pintar en tiempo real
+
+Si vas a mover o animar un contenedor con backdrop-filter
+(por ejemplo, con el fadeIn de la página)
+##### intenta que la duración sea corta (0.3s en vez de 1s)
+
+
+
+## Animación ligera caso por caso
+
+quitando la propiedad all y
+sincronizar tu arquitectura de estilos utilizando las variables de tu tema.
+
+##### A la GPU le da absolutamente igual cómo cambia la velocidad de la animación (la curva);
+##### lo único que le cuesta esfuerzo es qué tiene que dibujar en cada fotograma debido a ese cambio
+
+##### !!! Si tu animación da tirones
+
+1. Estás animando propiedades pesadas:
+Si tu animación altera el width, height, margin o top
+la CPU tiene que recalcular la geometría de toda la página 60 veces por segundo.
+
+2. Estás moviendo capas con filtros costosos:
+Si el elemento que estás moviendo con `transform`
+tiene un `backdrop-filter: blur()` (tu efecto glass) o un `box-shadow` gigante
+la GPU tiene que redibujar el desenfoque de los píxeles de fondo en cada micro-desplazamiento
+
+3. La duración es muy larga:
+Una animación de `1s` obliga a la GPU a mantener el esfuerzo
+el doble de tiempo que una de `0.5s`.
+
+
+## Tips para optimizar backdrop-filter: blur(), box-shadow pesados, blur(), elementos con transform
+
+1. backdrop-filter: blur():
+desenfoque de fondo es, matemáticamente, una de las operaciones más pesadas para un navegador
+Para pintar un backdrop-filter: blur(12px), la GPU tiene que:
+
+Copiar los píxeles de la textura que está detrás del elemento.
+Aplicar un algoritmo de desenfoque Gaussiano (un cálculo matemático por cada píxel).
+Pintar el resultado y luego encima dibujar el texto o contenido del contenedor.
+
+##### 1. Nunca animes el radio del blur: Evita pasar de blur(0px) a blur(12px)
+en una transición
+Esto obliga a la GPU a recalcular la matriz de desenfoque en cada fotograma
+Si quieres que el cristal aparezca, deja el blur(12px) fijo
+anima la opacidad (opacity) de todo el contenedor.
+
+##### 2. Reduce el área de superficie: No apliques backdrop-filter a contenedores gigantescos que ocupen el 100% de la pantalla si no es estrictamente necesario
+Mientras menos píxeles tenga que desenfocar la GPU, más rápido correrá.
+
+##### 3. Usa valores de blur moderados: Visualmente, diferencia entre blur(8px) y blur(20px) es mínima pero el esfuerzo matemático del navegador crece exponencialmente con el radio del desenfoque.
+
+
+2. Sombras pesadas (box-shadow) y filter: blur()
+Las sombras grandes y difusas (box-shadow: 0 30px 60px rgba(0,0,0,0.3))
+requieren calcular un desenfoque de vectores alrededor del elemento
+Si el elemento cambia de tamaño o de posición, el repintado (Paint) es masivo
+
+##### 4. Aísla la sombra en su propia capa de composición
+Si un elemento con una sombra pesada se va a mover
+(por ejemplo, con un transform),
+asegúrate de que tenga su propia capa en la GPU usando will-change: transform;.
+Esto evita que al moverse la sombra, el navegador tenga que repintar los elementos que están estáticos a su alrededor.
+
+##### 5. Evita la combinación letal (box-shadow + border-radius + Animación):
+Recortar esquinas redondeadas mientras se calcula el difuminado de una sombra en movimiento es un dolor de cabeza para los navegadores móviles
+Si un elemento se va a mover mucho, simplifica la sombra o reduce el border-radius.
+
+
+3. Elementos con transform (Manejo de Capas)
+Mover elementos con transform: translate() o scale() es excelente porque corre en la etapa de Composición de la GPU
+##### Sin embargo, abusar de esto puede causar lo que se conoce como "Explosión de Capas" (Layer Explosion),
+saturando la memoria de video (VRAM) del dispositivo.
+
+##### 6. propiedad contain: Esta es una joya oculta de CSS moderna
+Si tienes elementos independientes (como las tarjetas de tu lista de tareas),
+aplícales contain: paint; o contain: content;.
+Esto le dice al navegador: "Lo que sea que pase visualmente dentro de este contenedor muere aquí
+no inspecciones el resto de la página", ahorrando toneladas de ciclos de CPU.
+
+##### 7. No abuses de will-change: Colocar will-change
+en un CSS de forma global a decenas de elementos de una lista obligará al navegador a reservar memoria de la GPU
+para cada uno de ellos por adelantado
+lo que volverá la aplicación lenta y pesada en celulares antiguos
+Úsalo solo en componentes únicos y pesados
+(como un Modal, un Sidebar o el contenedor principal del Dashboard).
+
+##### 8. aceleración 3D con cabeza
+El truco clásico de forzar la aceleración por hardware usando
+transform: translateZ(0); o transform: translate3d(0,0,0);
+sigue siendo válido para navegadores viejos
+pero los navegadores modernos ya promueven automáticamente los transforms 2D a la GPU
+si detectan que es necesario. Confía primero en el estándar.
+
+
+
+### 1. theme
+
+```
+  transitions: {
+    default: '0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+    fast: '0.1s ease-in-out',
+  },
+```
+
+
+### 2. mixins
+
+```
+  interactive: css`
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+    &:active {
+      transform: scale(0.98);
+    }
+```
+
+transition: all
+##### este mixin solo altera el tamaño del elemento al hacer clic
+(scale(0.98))
+obligar al navegador a vigilar "todas" las propiedades es un desperdicio de recursos
+
+Especifica que la transición sea única y
+exclusivamente para `transform`
+
+Además, aprovecharemos las variables globales que ya definiste en tu theme.ts
+en lugar de duplicar el código del cubic-bezier.
+
+
+```
+// AHORA (Ultra-ligero y conectado al tema)
+interactive: css`
+  /* La GPU ahora solo vigila el cambio geométrico */
+  transition: transform ${({ theme }) => theme.transitions.default};
+
+  &:active {
+    transform: scale(0.98);
+  }
+`
+```
+
+
+### 3. SearchInput: situación critica (transition: all y backdrop-filter)
+
+combinando transition: all con backdrop-filter: blur(4px).
+Cuando el navegador ve all
+se ve obligado a monitorizar cada propiedad del elemento durante la transición
+
+Si a esto le sumas que el input tiene que calcular un desenfoque de fondo (blur),
+cualquier parpadeo innecesario puede causar micro-tirones al hacer clic en la barra de búsqueda
+
+&:focus, las únicas tres propiedades que realmente cambian son: background, border-color y box-shadow.
+
+En tu theme.ts definiste exactamente ese tiempo y curva como tu token rápido: fast: '0.1s ease-in-out'.
+
+
+### 4. TodoItem
+
+1. export const ItemContainer = styled.li<StyledItemProps>`
+
+`transform: translateX(4px);`
+
+2. export const TextContainer = styled.div<TextProps>`
+
+`transition: all 0.1s ease;`
+
+
+##### tenemos una "bomba de tiempo" para el rendimiento si la lista de tareas crece mucho
+(por ejemplo, si el usuario tiene 50 o 100 tareas renderizadas).
+
+1. caso de ItemContainer (El contenedor de la tarea)
+problema original: No tenía una propiedad transition declarada en su base
+El desplazamiento de 4px y los cambios de color al pasar el mouse ocurrían instantáneamente
+(de golpe), o peor aún, si el mixin heredaba algún all,
+vigilaba cosas pesadas del efecto glass en cada render.
+
+solución: Al declarar explícitamente transition: transform...,
+a GPU toma el control total del desplazamiento horizontal (translateX).
+Al aislar background y border-color, el navegador ignora los cálculos complejos del filtro de desenfoque
+(backdrop-filter) del cristal mientras la tarea se mueve.
+
+
+2. caso de TextContainer (El texto de la tarea)
+problema original: Usaba transition: all 0.1s ease.
+Cuando marcabas la tarea como completada
+el navegador intentaba buscar una forma de animar matemáticamente el tacho del texto (text-decoration: line-through).
+Como los navegadores no pueden calcular "estados intermedios" para una línea que tacha un texto (o está o no está),
+gastaba ciclos de reloj intentándolo en vano.
+
+solución: Cambiamos a transition: opacity... apuntando a tu token rápido
+theme.transitions.fast).
+Ahora, la línea del tachado aparece de golpe (como debe ser),
+pero el desvanecimiento del texto a opacidad 0.5 ocurre de forma sedosa, fluida y consumiendo cero recursos de CPU.
+
+
+### 5. 
+
+
+
+
+# Lista de animations, transitions, Interactividad en código
+
+
+## 1. theme
+
+```
+  transitions: {
+    default: '0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+    fast: '0.1s ease-in-out',
+  },
+```
+
+
+## 2. mixins
+
+```
+  interactive: css`
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+    &:active {
+      transform: scale(0.98);
+    }
+```
+
+
+## GlobalStyles en button
+
+```
+  transitions: {
+    default: '0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+```
+
+
+## 3. Checkbox
+
+`StyledCheckbox = styled.div<StyledCheckboxProps>`
+
+1. 
+transition: ${({ theme })
+=> theme.transitions.default};
+
+```
+  transitions: {
+    default: '0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+```
+
+2. 
+/* "Tick" */
+  &::after {
+	transform: rotate(45deg) scale(${({ $checked }) => ($checked ? 1 : 0)});
+    transition: transform 0.2s cubic-bezier(0.12, 0.4, 0.29, 1.46);
+
+
+## 4. IconButton
+
+```
+  /* Interactive States */
+  &:hover:not(:disabled) {
+    color: ${({ theme }) => theme.colors.primary};
+    background: ${({ theme }) => theme.colors.glass};
+    border-color: ${({ theme }) => theme.colors.glassBorder};
+    ${mixins.electricGlow}
+    transform: scale(1.1); /* Expansion */
+  }
+
+  &:active:not(:disabled) {
+    transform: scale(0.95);
+    filter: brightness(0.8);
+  }
+
+```
+
+
+## 5. Input
+
+transition: ${({ theme }) => theme.transitions.default};
+
+```
+  transitions: {
+    default: '0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+```
+
+
+## 6. FilterItem
+
+```
+const popIn = keyframes`
+  from { 
+    transform: scale(0); 
+    opacity: 0; 
+  }
+  to { 
+    transform: scale(1); 
+    opacity: 1; 
+  }
+`;
+``` 
+
+1. export const FilterContainer = styled.div<{ $isSelected: boolean }>`
+
+`transition: ${({ theme }) => theme.transitions.default};`
+
+2. export const BadgeWrapper = styled.div<{ $isVisible: boolean }>`
+
+```
+  /* Visible state */
+  ${({ $isVisible }) =>
+    $isVisible
+      ? css`
+          animation: ${popIn} 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        `
+      : css`
+          animation: none;
+        `}
+
+  /* Not visible */
+  opacity: ${({ $isVisible }) => ($isVisible ? 1 : 0)};
+  transition: opacity 0.2s ease;
+
+```
+
+
+## 7. InputGroup
+
+1. export const StyledInput = styled.input`
+
+transition: ${({ theme }) => theme.transitions.default};
+
+```
+  transitions: {
+    default: '0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+
+```
+
+
+## 8. SearchInput
+
+1. export const StyledInput = styled.input`
+
+`transition: all 0.2s ease-in-out;`
+
+
+## 9. TodoItem
+
+1. export const ItemContainer = styled.li<StyledItemProps>`
+
+`transform: translateX(4px);`
+
+2. export const TextContainer = styled.div<TextProps>`
+
+`transition: all 0.3s ease;`
+
+
+## 10. FilterPanel
+
+1. export const PanelContainer = styled.aside`
+
+`transition: ${({ theme }) => theme.transitions.default};`
+
+
+## 11. TaskSearch
+
+1. export const SearchSectionContainer = styled.section`
+
+`transition: ${({ theme }) => theme.transitions.default};` 
+
+
+## 12. TaskSidebar
+
+1. export const SidebarContainer = styled.aside`
+
+`transition: ${({ theme }) => theme.transitions.default};`
+
+
+## 13. DashboardPage
+
+```
+const fadeIn = keyframes`
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+`;
+```
+
+1. export const PageContainer = styled.div`
+
+`animation: ${fadeIn} 0.5s ease-out;`
+
+2. export const LoadingWrapper = styled.div`
+
+```
+animation: pulse 1.5s infinite;
+
+
+ @keyframes pulse {
+    0%,
+    100% {
+      opacity: 1;
+    }
+
+    50% {
+      opacity: 0.4;
+    }
+  }
+
+```
+
+
+## 14. TodoPage
+
+```
+const fadeIn = keyframes`
+  from { opacity: 0; }
+  to { opacity: 1; }
+`;
+```
+
+1. export const StyledPage = styled.div`
+
+`animation: ${fadeIn} 0.6s ease-in-out;`
+
+
+
+## Evitar all oculto en animaciones
+
+```
+transition: [property] [duration] [timing-function] [delay];.
+```
+
+##### ocurre cuando omites deliberadamente el primer parámetro (property).
+##### Si el navegador no ve un nombre de propiedad explícito
+##### por especificación rellena ese hueco con la palabra clave all.
+
+theme.ts,  tokens están guardados como strings que contienen solo el tiempo y la curva
+
+```
+default: '0.2s cubic-bezier(0.4, 0, 0.2, 1)'
+```
+
+Si en cualquier componente escribes:
+
+```
+transition: ${({ theme }) => theme.transitions.default};
+```
+
+Styled Components inyectará el string tal cual, resultando en este CSS nativo:
+
+```
+/* Lo que escribes */
+transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+/* Lo que el navegador interpreta por defecto */
+transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+```
+
+Peligro invisible:
+##### navegador lee all, se ve obligado a escanear el elemento en cada ciclo de renderizado
+##### Si ese elemento sufre un cambio en una propiedad pesada
+##### (como un filtro de cristal, una sombra o un cambio de tamaño),
+
+el navegador intentará interpolar matemáticamente ese cambio cuadro por cuadro
+disparando las etapas de Layout y Paint repetidamente
+en lugar de saltar directo a la Composición en la GPU.
+
+
+### Analisis de theme y mixins: al usarlo solo tenes que agregar propiedad a animar
+
+##### ventaja arquitectónica Al guardar tus tokens sin anteponerles una propiedad (es decir, guardar solo '0.2s ...')
+
+```
+/* Reutilización limpia y explícita */
+transition: background ${({ theme }) => theme.transitions.default},
+            color ${({ theme }) => theme.transitions.fast};
+```
+
+mixins:
+
+```
+interactive: css`
+  transition: transform ${({ theme }) => theme.transitions.default};
+
+  &:active {
+    transform: scale(0.98);
+  }
+`
+```
+
+1. Punto Fuerte (Rendimiento Limpio):
+A diferencia de tus componentes base, aquí SÍ fuiste explícito
+`transition: transform`
+perfecto para el rendimiento: el navegador sabe que solo debe vigilar la matriz de transformación
+y delega el esfuerzo al hardware de video (GPU).
+
+2. Conflicto de la Sobrescritura (Pisado de Estilos):
+Ej: IconButton
+
+```
+${mixins.interactive}
+transition: ${({ theme }) => theme.transitions.default}; /* ❌ ¡PUM! */
+```
+
+la última línea siempre gana
+Al poner la transición del theme abajo del mixin
+destruiste el transition: transform
+`lo cambiaste por un all oculto`.
+
+3. Físicas del :active:
+mixin aplica un sutil encogimiento de scale(0.98) al hacer clic
+Visualmente es muy elegante, pero al usar transitions.default (0.2s),
+tarda 200 milisegundos en bajar a ese tamaño
+
+En botones e interacciones táctiles directas
+200ms se siente esponjoso (como si el botón tuviera un retraso).
+
+
+
+## Transition 
+
+##### Para que una transición aporte algo, el elemento debe sufrir cambios de estado constantes (como un :hover, un :active, o un cambio de clases por Javascript).
+
+##### Ej: aside es un contenedor estático que simplemente organiza el espacio de la barra lateral, la transición se queda "escuchando" cambios que nunca van a ocurrir.
+
+##### El único escenario donde esta transición aportaría valor es si tu aplicación tiene un selector de tema (Dark/Light mode).
+
+Al cambiar el tema, el background-color y el border-color cambiarían, y la transición haría que el contenedor cambie de color suavemente en lugar de dar un parpadeo seco
+Pero de nuevo, para eso jamás usaríamos all.
+
+
+# Fix scrolls
+
+
+
+
+# Fix position
+
+
+
+# Fix archtc commts
+
+
+
 # Tema claro y oscuro/dia-noche
 
 ## Bases
+
+
+
+
+# Escalar
+
+agregar emociones
+
+## Arq: app/feat dentro de la app
+
+### Rutas, entidades, hooks, templates manejar todo eso
+
+1. tuday list: como esta ahorá agregando filtros y busc en header
+
+
+## 1. tuday list
+
+## 2. diary
+
+## 3. meets
+calendar
+
+## 4. emotions why
+
+
+
+
+# Separation of Concerns y SRP
 
 
