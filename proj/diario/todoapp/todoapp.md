@@ -17632,12 +17632,295 @@ Al cambiar el tema, el background-color y el border-color cambiarían, y la tran
 Pero de nuevo, para eso jamás usaríamos all.
 
 
+
 # Fix scrolls
 
+1. Anatomía del Scroll: 
+
+##### El Contenedor vs. El Contenido
+##### Para que el navegador entienda que debe activar un scroll, maneja dos conceptos espaciales que compiten entre sí
+
+
+`Scrollport` (La Ventana):
+área visual física que vos decidís asignarle a un elemento en la pantalla
+Tiene un ancho y un alto fijos
+En tu componente, este espacio delimitado debería ser tu lista de categorías.
+
+`Scrollable Overflow Area` (La cinta):
+Es el tamaño total que sumarían todos tus elementos hijos
+(las categorías) si los pusiéramos uno abajo del otro sin ningún límite
+
+##### Cuando la Cinta es más grande que la Ventana
+##### el navegador detecta un estado de Desborde (Overflow).
+##### Al configurar el desborde como "automático"
+##### el navegador traza una zona de interacción
+##### la barra de scroll o el soporte para el gesto táctil
+##### para permitirle al usuario desplazar la cinta detrás de la ventana
+
+
+2. Motor bajo el Capó: Renderización del movimiento
+
+Mover texto e imágenes en tiempo real a 60 o 120 fotogramas por segundo es costoso para la computadora
+Los navegadores modernos dividen este trabajo en tareas para no trabar la pantalla
+
+`Hilo Principal (Diseño y Pintura)`:
+El navegador calcula cuánto mide cada texto de tus categorías y de qué color es
+Esto lo hace una sola vez al cargar la lista.
+
+`Hilo del Compositor` (gpu):
+Una vez que todo está pintado,
+el navegador toma esa lista larga (la cinta) y la convierte en una textura gigante que envía a la tarjeta de video
+Cuando hacés scroll con el mouse o el dedo, el hilo principal se desentiende del asunto
+es la tarjeta de video la que simplemente "desliza" esa textura hacia arriba o hacia abajo
+Por eso el scroll se siente tan fluido y ligero.
+
+
+### Efecto del activar scroll automatico en el componente:
+
+```
+export const CategoryList = styled.ul`
+  /* Reset styles of the list */
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: ${({ theme }) => theme.spacing.sm};
+
+  /* smooth scroll */
+  overflow-y: auto;
+
+  /* li without extra margin */
+  li {
+    margin: 0;
+    padding: 0;
+  }
+```
+
+Para que esa instrucción de scroll funcione en el mundo real
+
+##### scroll vertical automático en la lista
+##### si las categorías superan el tamaño de la lista, les pondré una barra de scroll
+
+
+#### Condición para que funcione el scroll automatico
+
+##### Para que un elemento desborde, el contenedor necesita tener un techo físico (un límite de altura).
+
+##### Si la lista no tiene una altura máxima definida
+##### o si la sección principal que la contiene permite que sus hijos crezcan de forma ilimitada
+##### la lista se estirará hacia abajo indefinidamente para albergar a todas las categorías que le mandes.
+
+##### Al estirarse libremente, la Ventana crece al mismo tamaño que la Cinta
+##### Por lo tanto, para el navegador nunca habrá desborde dentro de la lista, el scroll interno jamás se activará
+
+##### !!! y el que terminará haciendo scroll para ver el contenido restante será el navegador entero (la página completa).
+
+##### !!! Para que este mecanismo funcione exactamente como lo planeaste en tu interfaz
+
+##### !!! ¿este filtro de categorías va a vivir dentro de un contenedor con altura fija
+##### (como una barra lateral con el tamaño de la pantalla)
+##### o tenés pensado limitar la altura de la lista directamente?
+
+
+
+### Personalizar la barra de desplazamiento
+
+```typescript
+export const StyledList = styled.ul`
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: ${({ theme }) => theme.spacing.sm};
+
+  /* Scrollbar */
+  max-height: 60vh;
+  overflow-y: auto;
+  padding-right: 8px;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: ${({ theme }) => theme.colors.glassBorder};
+    border-radius: ${({ theme }) => theme.borderRadius.full};
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: ${({ theme }) => theme.colors.primary}80;
+  }
+`;
+```
+
+
+#### Conceptos: delimitación dinámica, anatomía de la barra y ergonomía del espacio
+
+
+1. Delimitación Dinámica del Espacio
+
+`Techo Relativo a la Pantalla`:
+A diferencia de usar un tamaño fijo en píxeles
+limitar la altura máxima en base al alto de la ventana del navegador (unidades de Viewport Height)
+
+permite que la lista sea elástica
+Si la pantalla es gigante, la lista se estira
+si es pequeña (como un celular), se encoge automáticamente para no empujar el resto de la interfaz fuera de la pantalla
+
+`Desborde Inteligente`:
+Al configurar el desborde como "automático", el navegador actúa de forma económica
+Si tenés dos o tres tareas, la interfaz se mantiene limpia y sin barras visibles
+
+La zona de desplazamiento e interacción solo se materializa cuando la cantidad de tareas supera el límite físico que definiste
+
+
+2. Anatomía de la Barra de Desplazamiento Personalizada
+
+Para rediseñar la barra
+CSS divide este componente en tres piezas independientes
+que funcionan como un rompecabezas visual
+
+`Contenedor Global (Scrollbar)`:
+Es el área total vertical donde va a vivir la barra
+Al definir su ancho, determinás qué tan sutil o invasiva será
+En tu caso, elegiste un ancho delgado para mantener el minimalismo.
+
+`Carril de Desplazamiento (Track)`:
+Es la pista o el "camino" por el que viaja la barra
+Al dejarlo completamente transparente, lográs que la estética de tu fondo de cristal se luzca sin interrupciones
+eliminando esa típica canaleta gris opaca de los navegadores antiguos.
+
+`Barra de Arrastre (Thumb)`:
+Es el "pulgar" o la pieza visual que el usuario ve y arrastra
+Aquí aplicás la coherencia de tu sistema de diseño
+usa el mismo color de los bordes transparentes y bordes completamente redondeados para que parezca una píldora flotante
+
+`Reactividad Micro-interactiva (Hover)`:
+Las barras de scroll también responden a las intenciones del usuario
+Al pasar el mouse sobre la barra de arrastre, esta cambia de color (hacia tu color primario)
+lo que le da un valioso feedback visual al usuario indicándole que esa pieza es un objeto interactivo que puede agarrar
+
+
+3. Ergonomía Visual y el "Efecto Salto"
+
+`Colchón de Seguridad (Padding)`:
+Agregar un espacio extra en el lado derecho de la lista antes de la barra es una excelente práctica de diseño
+Si el contenido de la tarea tocara directamente la barra de scroll
+la interfaz se vería asfixiada
+Ese espacio actúa como un amortiguador visual
+
+`Prevención del Layout Shift`:
+Al dejar ese espacio reservado, cuando la barra de desplazamiento aparece de golpe porque se agregó una nueva tarea
+el texto del listado no sufre un "salto" brusco hacia la izquierda.
+La barra simplemente ocupa el espacio que ya estaba previsto para ella.
+
+
+
+### Practicas manejo scrollbar
+
+uno de los puntos donde más chocan el diseño visual
+la experiencia de usuario (UX) y el rendimiento técnico
+
+Una barra mal implementada puede romper la armonía de una interfaz
+causar saltos bruscos de contenido o frustrar a usuarios que navegan con teclados o pantallas táctiles
+
+
+1. Estabilidad Visual: Evitar el "Efecto Salto" (Layout Shift
+
+##### Uno de los problemas más comunes en aplicaciones dinámicas (como listas de tareas o chats)
+ocurre cuando la pantalla pasa de no tener scroll a tenerlo
+Al aparecer la barra, el navegador le resta entre 10 y 16 píxeles al ancho disponible,
+haciendo que todo el contenido "salte" bruscamente hacia la izquierda
+
+`solución moderna (scrollbar-gutter)`:
+Existe una propiedad nativa diseñada exclusivamente para esto:
+`scrollbar-gutter: stable`
+Le ordena al navegador que reserve preventivamente el espacio de la barra (el carril)
+incluso cuando el contenido es corto y la barra no es necesaria
+Así, la interfaz nunca sufre saltos
+
+
+`alternativa clásica (Espacio de reserva)`:
+Si no se usa la propiedad anterior, se debe planificar un amortiguador visual
+(como el padding-right que aplicaste en tu TodoList)
+para que la barra se materialice sobre un espacio vacío precalculado y no empuje los textos
+
+
+2. Compatibilidad entre Navegadores (Cross-Browser)
+
+El mundo de la personalización de scrollbars ha estado históricamente dividido
+##### mejor práctica actual es implementar una estrategia híbrida.
+
+`Estándar Oficial de la W3C`:
+Las propiedades modernas y oficiales son:
+`scrollbar-width`: (para controlar el grosor: auto, thin o none)
+`scrollbar-color`: (para definir los colores del thumb y del track en una sola línea).
+Motores modernos las soportan nativamente.
+
+`Legado de Webkit`: Los pseudoelementos ::-webkit-scrollbar
+ofrecen un control milimétrico (radios de borde, sombras, estados :hover específicos).
+
+`práctica ideal`: Declarar ambas soluciones en tu hoja de estilos o mixins globales
+De esta forma, garantizas que los usuarios de Firefox/Safari tengan una experiencia limpia basada en el estándar
+y los de Chrome/Edge disfruten de la personalización ultra detallada.
+
+
+3. Usabilidad y Accesibilidad (UX / UI)
+
+Una barra hermosa pero inutilizable destruye la experiencia
+
+Hay reglas de oro ergonómicas que no se deben romper:
+
+`Contraste Suficiente`:
+El thumb (la barra de arrastre) debe contrastar claramente con el fondo de la aplicación
+segun el estilo de la ui, asegúrate de que al pasar sobre un fondo claro u oscuro, la barra siga siendo visible.
+
+`Grosor Mínimo Razonable`:
+Reducir el ancho de la barra a 4px o menos la hace estéticamente minimalista
+pero se vuelve una pesadilla para usuarios con mouse que intentan clickearla y arrastrarla
+Un estándar seguro para barras delgadas es entre 6px y 8px
+
+`Interactividad Reactiva (:hover)`:
+Cambiar sutilmente la opacidad o el color del thumb cuando el usuario pasa el mouse por encima le confirma visualmente que el elemento es "agarrable"
+
+`Nunca rompas el Scroll Táctil`:
+En dispositivos móviles, las barras personalizadas suelen ignorarse
+porque el usuario arrastra con el dedo directamente sobre la pantalla.
+Asegúrate de usar siempre overflow-y: auto (y no scroll forzado)
+para que los sistemas operativos móviles manejen las inercias nativas de forma suave
+
+
+4. Rendimiento del Desplazamiento (Performance)
+
+##### !!! Hacer scroll obliga al navegador a pintar contenido nuevo constantemente a altas velocidades
+
+`Desplazamiento Suave con Criterio`:
+La propiedad scroll-behavior: smooth es fantástica para saltos de página o navegación por enlaces internos
+pero no se recomienda aplicarla de forma global a toda la aplicación (*)
+ya que puede interferir con componentes que necesitan reaccionar de forma inmediata
+(como paginaciones infinitas o layouts basados en Javascript).
+
+`Evitar Efectos Pesados en el Contenedor`:
+Si un contenedor tiene scroll activo
+evita llenarlo de propiedades que exijan cálculos matemáticos complejos en cada fotograma mientras se desplaza
+como sombras masivas (box-shadow), filtros de desenfoque dinámicos
+o opacidades intermedias en los hijos directos
+Deja que la GPU mueva la "textura" del scroll libremente
+
+La barra de scroll ideal es aquella que acompaña la estética de la aplicación de manera silenciosa
+no genera movimientos destructivos en el layout
+y es lo suficientemente visible para cumplir su función cuando el usuario la necesita
 
 
 
 # Fix position
+
 
 
 
@@ -17678,3 +17961,7 @@ calendar
 # Separation of Concerns y SRP
 
 
+
+# Estilizar fuentes
+
+## cursiv encab main 
