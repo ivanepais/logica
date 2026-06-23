@@ -1348,8 +1348,819 @@ o el servidor del servicio en la nube
 
 ### Problemas comunes de Redes
 
+Linux:
+no hay "Centro de redes y recursos compartidos"
+
+#### todo se reduce a interrogar al sistema mediante archivos de configuración y comandos de la suite iproute2
+##### (la versión moderna que reemplazó a los viejos comandos como ifconfig).
+
+Cuando un usuario de Linux (ya sea en un servidor corporativo o en una estación de trabajo)
+reporta problemas de red
+estos son los 5 escenarios comunes que vas a diagnosticar a diario en el Help Desk
+
+1. Dispositivo no recibe IP (Fallo de DHCP)
+
+##### Síntoma clásico: el usuario no tiene acceso a nada y, al revisar, la interfaz de red no tiene una dirección IP asignada o tiene una IP vacía
+En Linux, a diferencia de Windows, las interfaces pueden quedarse "dormidas" o desconfiguradas tras una suspensión
+
+`mentira técnica común`:
+Muchos técnicos junior todavía intentan usar `ifconfig`
+ifconfig está obsoleto desde hace años. Ahora `usamos ip`.
+
+Comando de diagnóstico:
+`ip a`
+Busca tu interfaz, que suele llamarse
+`eth0`, `enp3s0` para cable o `wlan0` para Wi-Fi
+Si no ves una línea que diga
+`inet 192.168.X.X`, no tienes IP
+
+solución de Help Desk:
+##### Forzar al cliente DHCP de Linux (dhclient)
+pedir una dirección nueva al router de la empresa:
+
+```
+sudo dhclient -r  # Libera la IP actual
+sudo dhclient -v  # Solicita una nueva IP mostrando el progreso
+```
+
+
+2. "Tengo Ping a Google pero no abren las páginas" (Fallo de DNS)
+
+El usuario te dice que no tiene internet, pero tú abres la terminal
+haces `ping 8.8.8.8` (la IP de Google) y responde perfectamente
+Sin embargo, haces `ping google.com` y da un error.
+
+En Linux:
+El archivo encargado de decirle a Linux a qué servidores DNS debe consultar
+(/etc/resolv.conf) se corrompió
+está vacío o fue mal escrito por el administrador de red.
+
+Comando de diagnóstico:
+
+```
+cat /etc/resolv.conf
+```
+
+(Deberías ver una línea como `nameserver 8.8.8.8` o la IP del DNS de tu empresa
+Si está vacío o apunta a una IP inexistente, ahí está el fallo).
+
+solución de Help Desk:
+En sistemas modernos con  `systemd`
+el DNS se gestiona de forma dinámica
+Puedes verificar el estado real con:
+
+```
+resolvectl status
+```
+
+Si necesitas una solución temporal de emergencia
+para que el usuario siga trabajando
+##### puedes editar el archivo a mano (sudo nano /etc/resolv.conf)
+##### y añadir un DNS público como nameserver 1.1.1.1.
+
+
+3. La interfaz está apagada o bloqueada por Software (RF-Kill)
+
+En laptops corporativas con Linux
+es muy común que el usuario toque sin querer el botón físico de "Modo Avión" 
+o que el sistema operativo apague la antena Wi-Fi para ahorrar energía y no sepa cómo volver a encenderla
+
+Comando de diagnóstico
+
+```
+nmcli dev status
+```
+(Este comando de NetworkManager te muestra el estado de todas las tarjetas
+##### Si dice `disconnected o unavailable`, la tarjeta está apagada).
+
+
+Bloqueo "fantasma" (RFKILL):
+Linux tiene un sistema de seguridad llamado `rfkill`
+que bloquea las conexiones por hardware o software. Compruébalo con:
+
+```
+rfkill list
+```
+
+solución de Help Desk:
+`Si ves que el Wi-Fi dice Soft blocked: yes`
+desbloquéalo instantáneamente con:
+
+```
+sudo rfkill unblock wifi
+sudo ip link set wlan0 up  # Enciende la interfaz lógicamente
+```
+
+
+4. Pérdida del Default Gateway (Problema de Enrutamiento)
+
+##### El usuario puede comunicarse con las computadoras de la oficina y puede imprimir
+##### pero cuando intenta salir a una dirección externa o a la VPN la conexión muere.
+
+##### Pasa porque Linux olvidó cuál es la "puerta de salida" (el router).
+
+Comando de diagnóstico:
+
+```
+ip route
+```
+
+(La primera línea debe empezar con la palabra default via [IP_DEL_ROUTER].
+Si esa línea no existe, la computadora está atrapada dentro de su propia red local).
+
+solución de Help Desk:
+Añadir la ruta por defecto manualmente
+(reemplazando por la IP del router de la oficina):
+
+```
+sudo ip route add default via 192.168.1.1
+```
+
+
+5. El Firewall local bloquea las conexiones entrantes
+
+Un desarrollador de la empresa montó un servicio web en su máquina Linux para mostrarle un avance a su mánager
+pero cuando el mánager intenta ingresar desde su propia computadora
+da un error de conexión rechazada.
+
+qué pasa: Las distribuciones Linux suelen venir con firewalls activos por defecto
+##### (UFW en Ubuntu/Debian o Firewalld en RedHat/Fedora)
+que bloquean todo el tráfico que viene de afuera por seguridad.
+
+Comando de diagnóstico:
+`sudo ufw status`
+
+##### Solución de Help Desk: No apagues el firewall por completo (eso rompería las políticas de seguridad).
+##### En su lugar, abre el puerto específico que el usuario necesita
+(por ejemplo, el puerto 8080):
+
+`sudo ufw allow 8080/tcp`
+
+
+#### Rs redes
+
+`ip a` -> ¿Tengo IP?
+`ip route` -> ¿Sé cómo salir a internet?
+`ping -c 4 8.8.8.8` -> ¿Tengo conexión física al exterior? (El -c 4 es vital en Linux, ya que a diferencia de Windows, el ping aquí es infinito a menos que lo limites o lo frenes con Ctrl + C).
+`nslookup google.com` -> ¿Funciona el traductor de nombres (DNS)?
+
 
 
 ### Tipos o clasificación 
+
+cuando manejas sistemas Linux
+(ya sea el servidor de la empresa
+un entorno de desarrollo o estaciones de trabajo)
+##### no necesitas diseñar la arquitectura de la red
+##### pero sí necesitas identificar en qué tipo de red está metido el usuario para saber dónde buscar el fallo
+
+1. Clasificación por Alcance Geográfico (La Infraestructura)
+
+`LAN (Local Area Network - Red de Área Local)`
+La red física de la oficina o de la casa del usuario conectado por cable (Ethernet) o Wi-Fi.
+Interconecta los equipos locales, impresoras y servidores locales
+
+Interfaz típica en Linux:
+`eth0, enp3s0 (cable), wlan0 (Wi-Fi)`.
+
+Uso en Help Desk:
+Es lo primero que revisas con `ip a`.
+Si el usuario no puede ver la impresora de la oficina
+el problema está bloqueado a nivel de LAN.
+
+
+`WAN (Wide Area Network - Red de Área Amplia)`:
+La red que conecta diferentes ciudades o países
+Para fines prácticos en Help Desk, la WAN es Internet.
+Es la red que provee el ISP (proveedor de internet).
+
+en Linux:
+Se identifica mediante la ruta por defecto en el comando
+`ip route`
+(el Default Gateway que te saca al exterior).
+
+Uso en Help Desk:
+Si el usuario tiene IP local pero no puede navegar a páginas externas
+el eslabón roto está en la conexión WAN.
+
+
+2. Clasificación Lógica y Virtual (El software de red)
+
+`VPN (Virtual Private Network - Red Privada Virtual)`
+Un túnel cifrado y seguro que viaja a través de la WAN (Internet)
+para conectar la computadora remota del usuario (en teletrabajo)
+con la LAN física de la empresa.
+
+en Linux:
+`tun0, tap0 (OpenVPN) o wg0 (WireGuard)`.
+
+Uso en Help Desk:
+Clásico ticket de "Estoy en mi casa y no puedo abrir el sistema interno".
+Revisas con `ip a` si la interfaz `tun0 o wg0`
+está activa y tiene una IP asignada por el servidor VPN corporativo.
+
+
+`VLAN (Virtual LAN - Red de Área Local Virtual)`
+Una segmentación lógica dentro del mismo switch físico
+Permite que la empresa separe, por ejemplo, la red de "Invitados" de la red de "Finanzas" o "Desarrolladores"
+para que no se vean entre sí por seguridad.
+
+en Linux:
+Se muestra como una subinterfaz etiquetada con un punto
+y el ID de la VLAN (ej. `eth0.10` para la VLAN 10).
+
+Uso en Help Desk:
+Si un desarrollador o administrador no puede acceder a un servidor
+a veces es porque conectó su cable en la boca del switch equivocada
+y quedó asignado a una VLAN sin permisos de acceso.
+
+
+`Loopback (Red de Retorno Local)`
+Una red puramente virtual e interna que tiene cada máquina Linux
+Sirve para que la computadora hable consigo misma
+Su dirección IP universal es siempre 127.0.0.1 (localhost).
+
+Linux: `lo`.
+
+en Help Desk:
+Es la prueba de vida de la tarjeta de red
+Si ejecutas `ping 127.0.0.1` y no responde
+el sistema operativo tiene los drivers de red completamente rotos
+o corruptos a nivel de software base.
+
+Loopback
+lo
+Verificar si el software de red del propio Linux funciona
+ping 127.0.0.1
+
+LAN
+`eth0 / wlan0`
+Conectarse al router de la oficina, impresoras y compañeros
+`ip a` (busca tu IP privada)
+
+WAN
+default via...
+Salir a Internet, servicios en la nube (SaaS), Teams, etc
+`ping 8.8.8.8 / ip route`
+
+VPN
+`tun0 / wg0`
+Acceder a los servidores internos de la empresa desde la casa.
+`systemctl status openvpn`
+
+VLAN
+`eth0.100`
+Aislar departamentos por seguridad dentro del mismo cableado.
+`ip -d link show`
+
+
+
+## Comandos esencales
+
+##### Son las herramientas de diagnóstico primario
+##### Cuando un usuario se queda sin conexión, no abres un panel de control
+##### abres la terminal e interrogas a la red secuencialmente para aislar el fallo
+
+1. ping: La prueba de vida (¿Me escuchas?)
+utiliza el protocolo ICMP (Internet Control Message Protocol) para enviar un paquete "Eco" a una dirección y esperar su retorno.
+##### Es la forma más rápida de saber si un dispositivo está encendido y conectado
+
+Utilidad:
+Comprobar conectividad física y de red básica
+Te permite aislar si el problema es del cliente o del destino.
+
+en Linux: A diferencia de Windows (que solo envía 4 paquetes y se detiene)
+el ping en Linux es infinito por defecto
+Si lo dejas corriendo, seguirá hasta el fin de los tiempos o hasta que lo frenes con Ctrl + C.
+
+Uso correcto en soporte:
+`ping -c 4 8.8.8.8`
+
+(El parámetro -c 4 le ordena enviar exactamente 4 paquetes y detenerse
+Si el packet loss es del 0%, la conexión física al exterior está perfecta).
+
+
+2. traceroute: El mapa del viaje (¿Dónde se corta el cable?)
+
+Mientras que ping te dice si llegas, traceroute (el equivalente al tracert de Windows)
+##### te muestra el camino exacto que recorre tu paquete, salto por salto (hop por hop)
+pasando por cada router hasta llegar al destino.
+
+Help Desk:
+Identificar el punto exacto de falla en la red corporativa o externa
+##### Si el usuario no llega a un servidor en la nube, traceroute te dirá si el paquete se muere en el router de tu oficina
+en el proveedor de internet (ISP) o en el destino.
+
+Uso correcto en soporte:
+
+```
+traceroute google.com
+```
+(Verás una lista numerada de IPs.
+Si a partir del salto 3 solo ves asteriscos (* * *),
+significa que el router del salto 3 está tirando tus paquetes o está caído).
+
+Si traceroute no está instalado en sistemas ligeros
+puedes usar `mtr google.com`, que combina ping y traceroute en una pantalla interactiva en tiempo real
+
+
+3. nslookup: El inspector del traductor (¿Funciona el DNS?)
+
+##### Comando realiza consultas directas a los servidores DNS (Domain Name System).
+Le preguntas por un nombre (como google.com)
+y te devuelve la dirección IP numérica que le corresponde.
+
+Utilidad:
+##### "Tengo ping a las IPs, pero el navegador no me carga ninguna página".
+Si nslookup falla o da Timeout, el servidor DNS del usuario está caído o mal configurado.
+
+Uso correcto en soporte:
+
+```
+nslookup intranet.empresa.local
+```
+
+(Te devolverá la IP del servidor interno
+Si quieres probar si el problema es del DNS local de la oficina
+puedes forzar a nslookup a consultar a un DNS externo
+por ejemplo el de Cloudflare, añadiendo la IP al final):
+
+`nslookup google.com 1.1.1.1`
+
+pro: En el mundo Linux moderno
+el comando nativo preferido por los administradores
+es `dig`, (ej. dig google.com),
+ya que ofrece mucha más información técnica de las respuestas DNS
+aunque nslookup sigue siendo el estándar multiplataforma.
+
+
+4. ip a (El reemplazo de ifconfig / ipconfig)
+
+punto crítico de actualización técnica: ipconfig es exclusivo de Windows
+En Linux, el comando tradicional era ifconfig (de la suite net-tools),
+pero actualmente está obsoleto y muchas distribuciones modernas ya no lo traen instalado por defecto
+
+##### Hoy usamos ip a (abreviatura de ip address show de la suite iproute2).
+
+Utilidad:
+Ver la configuración de red local del propio equipo.
+Aquí revisas qué tarjetas de red tiene el usuario (Ethernet, Wi-Fi, VPN)
+si están encendidas (UP) o apagadas (DOWN)
+y qué dirección IP y Máscara de Subred tienen asignadas.
+
+Uso correcto en soporte::
+`ip a`
+
+fijarse: Busca tu interfaz activa (ej. eth0 o wlan0).
+Revisa la línea que empieza con inet.
+Si ves una IP que empieza por 169.254.X.X
+el servicio DHCP de la oficina no le está dando IP al usuario
+(fallo de direccionamiento).
+
+
+### Flujo de diagnóstico en Help Desk:
+##### Cuando un usuario de Linux te diga "No tengo acceso al sistema"
+#### tu orden de ejecución en la terminal debería ser esta:
+
+##### Paso | Comando | Investigación
+
+1. `ip a`:
+¿Mi propia computadora tiene una IP válida asignada?
+
+2. `ping -c 4 [IP_Router]`:
+¿Puedo comunicarme con el router de la oficina (LAN)?
+
+3. `ping -c 4 1.1.1.1`:
+¿Tengo salida física hacia el mundo exterior (WAN/Internet)?
+
+4. `nslookup sistema.com` o `dig google.com`
+¿El traductor de nombres (DNS) funciona o está bloqueado?
+
+5. `traceroute sistema.com`:
+Si todo lo anterior está bien pero la app no abre
+¿en qué salto se pierde el paquete?
+
+
+
+
+# 2. Metodologías de Trabajo y Ciclo de Vida del Ticket
+
+Proceso y la estrategia
+
+El Módulo 1 trataba sobre cómo arreglar las cosas, este módulo trata sobre cómo gestionar el trabajo
+
+En una empresa mediana o grande
+no puedes simplemente gritar al pasillo "¡Ya arreglé la impresora!".
+##### Todo tiene que quedar registrado, medido y estandarizado.
+
+Ej: Una empresa con 500 empleados
+Al día, pueden entrar 80 solicitudes de soporte
+Desde "olvidé mi contraseña" hasta "el servidor de producción se está incendiando"
+
+Sin una metodología, el Help Desk se convierte en un juego de adivinanzas caótico
+donde el técnico atiende al usuario que grite más fuerte o al que le caiga mejor
+
+Las metodologías de trabajo
+(como ITIL, el estándar de la industria)
+transforman ese caos en una línea de ensamblaje ordenada
+
+Los Dos Pilares del Módulo:
+
+1. El Ciclo de Vida del Ticket
+Un ticket de soporte no es solo un correo electrónico glorificado
+es un documento vivo con un estado jurídico y técnico dentro de la empresa
+#### !!! Tiene un nacimiento (Apertura), una evolución (Diagnóstico, Escalado, Espera) y una muerte (Resolución y Cierre).
+#### !!! Aprenderás que cambiar el estado de un ticket a "Pendiente" o "En progreso" tiene implicaciones legales y comerciales para el departamento de TI.
+
+2. Las Métricas y Metodologías (SLA y KPIs)
+
+#### !!! Donde entra el negocio
+#### !!! Aprenderás a trabajar bajo la presión saludable de los SLA (Service Level Agreements)
+### !!! que son los tiempos límite que tienes para resolver un problema antes de que la empresa pierda dinero
+### !!! (por ejemplo: "un ticket crítico de finanzas debe resolverse en menos de 45 minutos").
+
+##### Filosofía Help Desk: Un buen técnico resuelve el problema técnico
+### !!! Un técnico extraordinario resuelve el problema técnico, documenta la solución para que nadie tenga que reinventar la rueda y cierra el ticket a tiempo para cumplir con los objetivos de la empresa
+
+
+
+
+## 1. Nacimiento, viaje y jubilación de un ticket
+
+##### En el marco de trabajo ITIL (Information Technology Infrastructure Library),
+##### que es el estándar de oro de la industria, un ticket no se "borra" ni se descarta
+##### pasa por un proceso riguroso para asegurar que el negocio siga funcionando y que quede un registro histórico
+
+#### Las 6 fases del Ciclo de Vida del Ticket
+
+1. Phase 1: Creación y Registro (Logging)
+
+El ticket nace
+Puede ser porque el usuario envió un correo a soporte@empresa.com
+abrió el portal de autoservicio (Jira/ServiceNow),
+o te llamó por teléfono y tú lo creaste manualmente
+
+##### dato clave: Un ticket mal registrado es un ticket mal resuelto
+##### Aquí debes capturar el nombre del usuario, su departamento
+##### el dispositivo afectado y una descripción clara del problema.
+
+Uso en Help Desk:
+Evita títulos vagos como "No anda".
+##### El registro correcto es: "Fallo de autenticación en VPN - Usuario remoto - Error de timeout".
+
+
+2. Phase 2: Clasificación y Priorización (Categorization)
+
+##### Una vez registrado, el sistema (o tú) debe categorizarlo
+(ej: Hardware > Impresoras o Software > Correo).
+#### Luego se le asigna una prioridad combinando dos factores
+##### el Impacto (a cuánta gente afecta) y la Urgencia (cuánto tiempo puede esperar el negocio).
+
+Realidad corporativa:
+##### Un Director General que no puede enviar un correo es Alta Prioridad
+##### Cincuenta empleados de atención al cliente que no pueden facturar es Prioridad Crítica (P1).
+##### Tu flujo de trabajo se detiene para atender estos últimos.
+
+
+3. Phase 3: Diagnóstico Inicial (Investigation and Diagnosis)
+
+#### !!! Donde aplicas lo aprendido en el Módulo 1.
+
+##### 1. Revisas los síntomas, lanzas comandos (si es red),
+##### 2. miras los logs y tratas de resolver el problema en el primer contacto (FCR - First Contact Resolution).
+
+`Estado del ticket`:
+##### 3. El ticket pasa de Abierto (Open) a En Progreso (In Progress).
+Esto le avisa al usuario y a tus jefes que ya hay un humano trabajando en ello
+
+
+4. Phase 4: Escalado (Escalation) - Opcional
+
+##### 4. pasa si el problema te supera o no tienes los permisos para resolverlo?
+##### (Por ejemplo, el switch principal del edificio se quemó y tú eres Help Desk Nivel 1).
+
+##### 5. El ticket se escala
+
+`Escalado Funcional (Horizontal)`:
+##### Pasas el ticket a un equipo especializado
+##### (Redes, Ciberseguridad, Administradores de Servidores - Nivel 2 o 3).
+
+`Escalado Jerárquico (Vertical)`:
+##### 6. Informas a tus superiores porque el problema es tan grave que requiere decisiones gerenciales o aprobación de presupuestos
+
+
+5. Phase 5: Resolución (Resolution)
+
+##### 7. Se encuentra la solución al problema
+(se cambió la RAM corrupta, se reinició el servicio, se restauró el DNS).
+
+`Estado del ticket`: Pasa a Resuelto (Resolved).
+
+`trampa del técnico`: Muchos confunden "Resuelto" con "Cerrado".
+##### En "Resuelto", el técnico ya hizo su trabajo, pero el ciclo aún no termina
+
+
+6. Phase 6: Cierre (Closure)
+
+El ticket muere oficialmente
+
+##### 8. El cierre ocurre cuando el usuario confirma que, efectivamente, todo funciona bien,
+##### o cuando el sistema lo cierra automáticamente tras 3 días de no recibir quejas del usuario.
+
+##### 9. Regla de oro: En esta fase se documenta la solución en la Base de Conocimientos (Knowledge Base).
+Si te tomó dos horas resolver un error extraño de Linux, escribe la solución de forma breve
+Así, cuando a un compañero le entre el mismo ticket la próxima semana, lo resolverá en dos minutos
+
+
+### El "Limbo" del Ticket: estado Pendiente (On Hold)
+
+##### Hay un estado especial que debes usar con inteligencia
+##### Pendiente de Terceros o Esperando respuesta del usuario.
+
+Consejo:
+##### Si el problema requiere que el usuario te pase una captura de pantalla y este se va a comer o no responde, debes pasar el ticket a "Pendiente" inmediatamente
+##### Si lo dejas "En progreso", el reloj del sistema seguirá corriendo en tu contra, afectando tus métricas individuales de tiempo de resolución.
+
+
+
+
+## 2. Prioridad (la matriz de Impacto vs. Urgencia)
+
+##### En un Help Desk colapsado con decenas de solicitudes entrantes
+##### 1. No puedes darte el lujo de atender los tickets por orden de llegada (First In, First Out).
+Si lo haces, podrías pasar dos horas configurando los colores de la pantalla de un usuario
+mientras el servidor de correo de la junta directiva está caído.
+
+Para evitar esto de forma objetiva y sin favoritismos
+##### 2. ITIL introdujo una fórmula matemática simple pero implacable.
+
+Dos Factores Determinantes:
+Para calcular la Prioridad de un ticket, debes separar mentalmente dos conceptos que los usuarios suelen confundir
+
+#### A. Impacto (¿A cuántos afecta?)
+
+##### Es la medida del daño que el problema causa al negocio
+##### Se evalúa mirando la infraestructura o la cantidad de personas detenidas
+
+#### Alto:
+##### Afecta a toda la empresa, a un departamento crítico
+##### (ej. Facturación) o a un servicio central (ej. la red Wi-Fi de toda la oficina)
+
+#### Medio:
+##### Afecta a un grupo reducido de usuarios o a un servicio secundario pero necesario
+
+#### Bajo:
+##### Afecta a un solo usuario y no interrumpe el trabajo de nadie más.
+
+
+#### B. Urgencia (Cuánto puede esperar?)
+###### Velocidad con la que el negocio necesita que se resuelva el problema
+###### Está muy ligada al tiempo y a si existen soluciones alternativas (workarounds).
+
+#### Alta:
+##### El negocio se está perdiendo dinero ahora mismo o la seguridad de la empresa está en riesgo inmediato (ej. sospecha de hackeo)
+##### No hay alternativa para seguir trabajando
+
+#### Media:
+##### El problema afecta la productividad, pero el usuario puede seguir trabajando usando un camino alternativo temporal
+
+#### Baja: 
+##### El problema no detiene el trabajo diario
+##### Puede agendarse para más tarde o para el día siguiente (ej. instalar un software secundario).
+
+
+### Matriz de Prioridad (Impacto x Urgencia)
+
+##### Cruzas estos dos ejes en el software de tickets (como Jira o ServiceNow),
+##### El sistema calcula automáticamente la Prioridad Final
+#### que va desde P1 (Crítica) hasta P4/P5 (Baja).
+
+
+Impacto \ Urgencia | Alta | Media | Baja
+
+Alto (High):
+P1 - Crítica
+P2 - Alta
+P3 - Media
+
+Medio (Medium):
+P2 - Alta
+P3 - Media
+P4 - Baja
+
+Bajo (Low):
+P3 - Media
+P4 - Baja
+P5 - Planificada
+
+
+
+### Casos Reales
+
+Ej: Tres escenarios típicos que te van a entrar en la bandeja:
+
+A:
+#### "Se cayó la base de datos del ERP de la empresa y los vendedores no pueden registrar ventas".
+Impacto: Alto (afecta a toda el área comercial).
+##### Urgencia: Alta (se está perdiendo dinero por minuto).
+Prioridad: P1 - Crítica. Dejas tu café y te pones a trabajar en esto ya.
+
+B:
+#### "A la Directora de Finanzas se le rompió el mouse justo antes de una presentación ejecutiva".
+Impacto: Bajo (afecta a una sola persona, aunque sea VIP).
+Urgencia: Alta (la presentación es en 15 minutos y no tiene cómo interactuar rápido).
+##### Prioridad: P3 - Media. (Aunque el usuario grite que es P1 porque es jefa, la matriz la ubica en P3.
+Sin embargo, por cortesía corporativa y "escalado jerárquico", vas y le cambias el mouse en 5 minutos).
+
+C:
+#### "El departamento de Marketing solicita la instalación de un nuevo editor de fotos
+para un proyecto que inicia el mes que viene".
+Impacto: Medio (afecta a un equipo completo).
+Urgencia: Baja (tienen un mes de margen).
+##### Prioridad: P4 - Baja. Se agenda y se procesa cuando la cola de tickets urgentes esté limpia.
+
+#### !!! Aprender a defender la matriz de prioridad ante los usuarios que creen que su problema es siempre el más importante
+
+
+
+## 3. Prioridades y SLAs (Acuerdos de Nivel de Servicio)
+
+Ahora que sabemos cómo priorizar un ticket
+##### Debemos entender qué pasa con el tiempo
+
+Concepto que dicta el ritmo cardíaco de cualquier Help Desk
+##### Los SLA (Service Level Agreements) y las Métricas de Rendimiento (KPIs).
+
+##### En el soporte corporativo, el tiempo no es subjetivo
+### !!! Un SLA es un compromiso contractual entre el departamento de TI y la empresa (o los clientes externos)
+#### que define exactamente cuánto tiempo tienes para atender y resolver un problema
+##### Si la prioridad es el "qué", el SLA es el cronómetro que te dice "para cuándo".
+
+1. Anatomía de un SLA: Los dos temporizadores
+
+#### 1. Cuando un ticket entra al sistema
+##### se activan dos relojes independientes que corren en cuenta regresiva
+Debes conocer la diferencia exacta entre ambos para no penalizar tus métricas:
+
+### A. SLA de Respuesta (Response SLA):
+#### Es el tiempo máximo que puede pasar desde que el usuario crea el ticket hasta que un técnico lo toma
+##### lo clasifica y cambia su estado a "En Progreso".
+
+#### 2. mensaje al usuario:
+"Hola, ya vi tu problema y me estoy encargando".
+##### Un SLA de respuesta rápido reduce drásticamente la ansiedad del cliente
+
+
+### B. SLA de Resolución (Resolution SLA)
+#### Tiempo total permitido para solucionar el problema por completo y cambiar el estado del ticket a "Resuelto".
+##### Este reloj es el más crítico para el negocio.
+
+
+2. Relación entre Prioridad y SLAs
+
+##### Los tiempos de los SLAs están directamente atados a la Matriz de Prioridad que vimos en la lección anterior
+#### 3. Un contrato de SLA estándar en la industria suele verse así:
+
+Prioridad del Ticket	SLA de Respuesta	SLA de Resolución   ¿El reloj se detiene por la noche?
+#### P1 - Crítica: 15 minutos; 2 a 4 horas; No. Corre 24/7 (Soporte On-Call).
+#### P2 - Alta: 1 hora; 8 horas (1 día laboral); Depende del contrato (generalmente horario hábil).
+#### P3 - Media: 4 horas; 24 a 48 horas; Sí. Solo cuenta en horas laborables (Business Hours).
+#### P4 - Baja: 8 horas; 3 a 5 días; Sí. Se procesa con calma.
+
+#### Regla del "Stop Clock":
+Como vimos antes, si pasas un ticket al estado "Esperando al Usuario"
+(porque necesitas que te envíe una captura o pruebe el equipo)
+o "Esperando a Proveedor" (compras de hardware), el SLA de resolución se pausa automáticamente
+
+Si olvidas cambiar el estado y el usuario se va de vacaciones
+el ticket romperá el SLA (SLA Breach) y la métrica se pondrá en rojo por tu culpa.
+
+
+3. KPIs: éxito en Help Desk
+
+##### Los gerentes de TI no leen los 500 tickets que cerraste
+#### Miran los Indicadores Clave de Rendimiento (KPIs).
+
+### MTTR (Mean Time to Resolution - Tiempo Medio de Resolución):
+#### !!! El promedio de tiempo que tardas en resolver los tickets
+Mientras más bajo sea tu MTTR, más eficiente eres aislando y solucionando problemas
+
+### FCR (First Contact Resolution - Resolución en el Primer Contacto):
+#### El porcentaje de tickets que resuelves en la misma llamada o chat inicial
+sin necesidad de escalar, transferir o esperar a que el usuario vuelva a llamar.
+Un FCR alto es el santo grial del Help Desk.
+
+### CSAT (Customer Satisfaction - Satisfacción del Cliente):
+#### La calificación que te da el usuario
+(las famosas estrellitas o encuestas al cerrar el ticket)
+##### !!! Puedes ser un genio de Linux, pero si eres grosero con el usuario, tu CSAT será bajo.
+
+
+Help Desk:
+##### El SLA no es tu enemigo, es tu escudo
+#### Te ayuda a decirle de forma educada a un usuario de prioridad baja
+##### "Entiendo tu prisa, pero el sistema me exige atender primero la caída del servidor para cumplir con el SLA de la empresa".
+
+
+
+
+## 4. Software de Help Desk
+
+Cómo se materializa todo esto en la pantalla de tu computadora.
+
+##### Cómo interactúan el ciclo de vida, las prioridades y los SLAs dentro del software de tickets
+(como Jira Service Management, ServiceNow o Zendesk), que será tu panel de control diario.
+
+
+Software de Tickets:
+
+#### 1. Cuando abras tu herramienta de gestión de servicios de TI (ITSM)
+No verás una bandeja de entrada desordenada como el correo electrónico
+
+Verás tres elementos clave:
+
+#### A. Colas de Trabajo (Queues):
+Los tickets se agrupan automáticamente en bandejas dinámicas según los filtros que tus jefes hayan configurado
+
+`Cola de P1/Incidentes Críticos`:
+##### !!! Siempre debe estar vacía
+Si entra algo ahí, parpadea en rojo.
+
+`Mi Cola (Assigned to me)`:
+##### Tu lista de tareas personal
+
+`Cola General (Unassigned)`:
+##### Tickets que acaban de entrar y que el equipo debe ir tomando según la prioridad
+
+
+#### B. Barra del SLA (El temporizador visible)
+##### Dentro de cada ticket, verás una barra de progreso con una cuenta regresiva
+(ej. "Quedan 2h 15m para resolver").
+##### Si la barra se pone en rojo, has "roto" el SLA
+##### !!! El software calcula esto automáticamente basándose en el horario comercial de la empresa
+
+
+#### C. Comentarios Públicos vs. Notas Internas (Crucial)
+##### !!! Esta es una de las mayores trampas para los técnicos novatos
+##### Al escribir en un ticket, tienes dos pestañas:
+
+`Respuesta al cliente (Public Comment)`:
+Lo que escribas aquí le llegará al correo al usuario
+#### !!! Debe ser formal, educado y claro
+
+`Nota interna (Internal Note)`:
+##### Solo la ven otros técnicos de TI.
+#### !!! Aquí es donde dejas los detalles técnicos crudos
+##### (ej: "El usuario metió mal la pata, le resetee el perfil porque la caché de la app estaba corrupta").
+
+
+
+
+# 3. Administración Centralizada de Identidades (Active Directory y Entra ID)
+
+## En Windows:
+herramienta corporativa más importante del mundo Windows:
+ Active Directory (Directorio Activo)
+ y su evolución en la nube, Microsoft Entra ID (anteriormente Azure AD).
+
+aprenderás cómo se gestionan 10,000 usuarios, sus computadoras
+sus contraseñas y sus permisos desde una sola consola centralizada
+
+Como técnico de Help Desk, pasarás entre el 30% y el 50% de tu día interactuando con esta herramienta
+
+Arquitectura básica:
+Qué son los Objetos, las Unidades Organizativas (OUs) y los Grupos de Seguridad
+
+Tareas del día a día:
+Creación de usuarios, desbloqueo de cuentas
+reseteo de contraseñas corporativas y asignación de permisos a carpetas de red
+
+GPOs (Group Policy Objects):
+Cómo se aplican políticas automáticas a miles de computadoras a la vez
+(por ejemplo, forzar a que todas las laptops de la empresa tengan el mismo fondo de pantalla
+bloqueen los puertos USB o instalen el antivirus automáticamente).
+
+
+Filosofía del Administrador:
+En una empresa, tú no eres el dueño de las computadoras;
+eres el guardián de las identidades
+Quien controla el Directorio Activo, controla los accesos de toda la organización
+
+
+## En Linux: 
+Mientras que Windows apuesta por el monopolio absoluto de Active Directory
+el ecosistema Linux aborda la administración centralizada con una filosofía completamente diferente
+modularidad, protocolos abiertos y herramientas conectables
+
+el panorama cambia de una sola consola empaquetada (Microsoft)
+a un conjunto de tecnologías que trabajan en equipo
+
+En el contexto de Help Desk
+necesitas entender cómo una máquina Linux se integra a la red de la empresa
+para que los usuarios inicien sesión con sus credenciales corporativas
+
+1. Equivalentes a Active Directory
+
+
 
 
