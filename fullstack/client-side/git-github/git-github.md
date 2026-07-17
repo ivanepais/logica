@@ -254,16 +254,16 @@ hotfix/*: Ramas para corregir errores en producción.
 release/*: Ramas para preparar una nueva versión de producción.
 
 Haz rebase en lugar de merge cuando sea apropiado:
-rebase permite mantener un historial lineal y limpio, evitando los "commits de merge" innecesarios
-úsalo solo para commits locales que no se hayan compartido con otros colaboradores.
-# Para rebasar tu rama actual en la rama develop
+#### rebase permite mantener un historial lineal y limpio, evitando los "commits de merge" innecesarios
+##### úsalo solo para commits locales que no se hayan compartido con otros colaboradores.
+##### Para rebasar tu rama actual en la rama develop
 git checkout feature/new-feature
 git rebase develop
 
 Evita force push en ramas compartidas:
 git push --force puede sobrescribir el trabajo de otros,
 causando pérdida de commits.
-si es necesario, trata de usar git push --force-with-lease
+##### si es necesario, trata de usar git push --force-with-lease
 seguro porque verifica si la rama ha cambiado desde tu último fetch
 
 .gitignore adecuado:

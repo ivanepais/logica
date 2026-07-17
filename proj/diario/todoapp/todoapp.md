@@ -301,7 +301,7 @@ solo modificas la lógica de la entidad en un solo lugar
 
 ##### Definición del lenguaje con el que la interfaz de usuario se comunica con el estado de la aplicación
 
-El Reducer no hace la lógica, lo hace hace el Dominio
+El Reducer no hace la lógica, lo hace el Dominio
 Orquesta la lógica
 
 Con Acciones Etiquetadas: `Acciones Etiquetadas`
@@ -555,7 +555,7 @@ Si no hay tareas, este componente decide qué mostrar
 Único Componente Smart
 Punto de unión donde la arquitectura de capas converge
 
-1. lama al Custom Hook `useTasks()`.
+1. Llama al Custom Hook `useTasks()`.
 2. `Inyecta los datos y las funciones a los Organismos`.
 3. No tiene lógica de negocio, solo reparte juego.
 
@@ -2327,7 +2327,7 @@ Para una ToDo app pequeña no es problema
 pero en una app con miles de registros, también envolveríamos esas stats en un useMemo
 
 
-Rs lógica:
+### !!! Rs lógica:
 
 1. Entidades y Reglas (Dominio)
 2. Gestión de Cambios (Reducer)
@@ -18325,7 +18325,620 @@ Al poner pointer-events: none, conviertes al icono en un "fantasma holográfico"
 
 # Renderización elegante
 
+Cuando hacemos un renderizado condicional clásico
 
+```
+{showButton && <Button />}
+```
+el elemento aparece o desaparece del DOM de golpe
+##### CSS no puede transicionar algo que ya no existe o que acaba de ser inyectado instantáneamente
+
+Para lograr una aparición y desaparición verdaderamente elegante
+un efecto Fade-in o Pop-in
+
+##### tenemos que manejar propiedades específicas que no rompan el rendimiento
+y elegir la estrategia de renderizado correcta
+
+
+### Propiedades Ideales
+
+##### modificamos únicamente propiedades que la tarjeta de video pueda procesar sin recalcular el layout
+
+`opacity`: Controla el fundido (pasa de 0 a 1).
+
+`transform (scale o translateY)`:
+toque "premium".
+##### En lugar de aparecer estático, el botón puede emerger desde abajo (translateY(10px))
+##### o expandirse suavemente (scale(0.95)).
+
+`visibility`: propiedad secreta de UX
+##### Si solo usas opacity: 0, el botón es invisible pero sigue estando ahí
+lo que significa que el usuario podría clickearlo por accidente
+o un lector de pantalla lo seguiría leyendo.
+`visibility: hidden` lo apaga por completo del mapa interactivo.
+
+
+1. Enfoque Puro CSS (Control por Props):
+
+### !!! Si el botón puede vivir permanentemente en el DOM
+solo querés ocultarlo/mostrarlo visualmente
+le pasamos una prop transitoria (con el prefijo $) a Styled Components.
+
+```
+import styled from 'styled-components';
+
+interface AnimatedButtonProps {
+  $isVisible: boolean;
+}
+
+export const AnimatedButton = styled.button<AnimatedButtonProps>`
+  /* Estilos base del botón */
+  padding: ${({ theme }) => theme.spacing.md} ${({ theme }) => theme.spacing.lg};
+  background: ${({ theme }) => theme.colors.primary};
+  color: white;
+  border: none;
+  border-radius: 8px;
+
+  /* 🚀 LA MAGIA DE LA TRANSICIÓN:
+     Pasamos opacity y transform de forma fluida.
+     'visibility' cambia instantáneamente pero espera a que termine la opacidad. */
+  transition: opacity ${({ theme }) => theme.transitions.default},
+              transform ${({ theme }) => theme.transitions.default},
+              visibility ${({ theme }) => theme.transitions.default};
+
+  /* 🎭 ESTADOS */
+  ${({ $isVisible }) =>
+    $isVisible
+      ? `
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        visibility: visible;
+      `
+      : `
+        opacity: 0;
+        transform: translateY(8px) scale(0.95);
+        visibility: hidden;
+      `}
+`;
+```
+
+
+2. Renderizado Real (Montar/Desmontar del DOM)
+
+### !!! Si por rendimiento o lógica de negocio el botón tiene que desaparecer por completo del HTML cuando no se usa ({show && <Button />}),
+La entrada es fácil con CSS Keyframes, pero la salida requiere ayuda
+
+1. Entrada (Mounting) con Keyframes
+
+##### Cuando el componente se monta, podemos forzar una animación de entrada inmediata
+
+```
+import styled, { keyframes } from 'styled-components';
+
+const fadeInIn = keyframes`
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+`;
+
+export const MountingButton = styled.button`
+  /* Al montarse, ejecuta la animación una sola vez */
+  animation: ${fadeInIn} ${({ theme }) => theme.transitions.default} forwards;
+`;
+```
+
+
+2. Salida (Unmounting)
+
+trampa: si el estado de React cambia a false
+React borra el botón del DOM en el acto 
+impidiendo que veas cualquier animación de salida
+
+Para resolver esto de forma elegante en el desarrollo moderno, tenés dos opciones
+
+1. Vía Javascript Nativo: Crear un hook personalizado
+(useDelayUnmount) que mantenga el componente vivo durante 200ms adicionales
+mientras cambia una clase de CSS para que se desvanezca antes de destruirse
+
+2. Estándar de la Industria (Framer Motion): Si tu app va a tener muchas transiciones de entrada/salida de componentes que se renderizan condicionalmente
+la librería de cabecera es Framer Motion usando su componente <AnimatePresence>.
+Se encarga de congelar el desmontaje de React hasta que la animación de salida de CSS termine por completo.
+
+Para este botón en específico que estás armando
+
+
+
+
+# px y rem
+
+## !!! El elemento debería estirarse si el usuario aumenta el tamaño de la letra de su navegador por comodidad o accesibilidad?
+
+`px`:
+Un píxel es un píxel.
+Si defines algo en 20px, medirá 20px
+en una pantalla de 8K,
+en un celular viejo y sin importar si el usuario tiene problemas de vista y configuró su navegador para ver todo más grande
+
+`rem` (Relativo al Root):
+Toma como base el tamaño de fuente del elemento raíz (<html>).
+Por defecto en todos los navegadores, 1rem = 16px
+
+#### !!! Si el usuario cambia su configuración a "Texto Grande",
+##### el navegador pasa el mínimo a 24px
+por lo que automáticamente 1rem pasa a valer 24px. Tudo escala en proporción
+
+
+1. Padding, Margin y Gap: `rem`
+
+Si el texto de un botón o de una tarjeta crece porque el usuario aumentó la fuente,
+el espacio alrededor de ese texto (padding) y la separación con otros elementos (margin/gap) deben crecer en proporción
+
+peligro del px:
+Si usas un texto gigante metido dentro de un botón con padding: 8px (fijo en píxeles)
+el texto se va a desbordar del botón o va a quedar visualmente asfixiado
+rompiendo la armonía estética
+
+
+2. Width y Height: Depende del contexto
+
+rem:
+Se usa para contenedores cuyo tamaño dependa directamente del texto que llevan dentro
+ancho máximo de una tarjeta de blog o el ancho de un input de texto
+Si la letra crece, el input y la tarjeta necesitan ser más anchos para que el texto no se corte bruscamente
+
+px:
+para elementos rígidos u objetos multimedia que tienen un tamaño de archivo físico real
+El contenedor de una foto de perfil (Avatar) de 40px x 40px
+el tamaño de un icono SVG, o el grosor de una barra lateral decorativa
+##### Una imagen de 40 píxeles nativos se va a ver borrosa si la fuerzas a estirarse mediante rem
+solo porque el usuario agrandó la letra de la página.
+
+
+3. Porcentajes (%) y Viewport (vw / vh)
+
+Para estructuras grandes de layouts
+ej, grilla ocupa el 100% del ancho o que una sección mide 100vh de alto
+no usas ni px ni rem
+
+##### Dejas que el tamaño responda directamente a la geometría física de la pantalla
+
+
+4. Borders y Box-shadows: px
+detalles visuales micro-métricos, siempre px
+
+##### Un borde elegante de 1px debe seguir siendo una línea fina y nítida de un solo píxel
+sin importar si el usuario lee la página con lupa o con letra gigante
+
+Si defines un borde como 0.0625rem (1px equivalente)
+y el usuario aumenta la fuente al doble, el borde pasará a medir 2px
+volviéndose tosco y arruinando el minimalismo del diseño visual
+
+
+## Referencia 
+
+`Typography` (font-size):
+rem (Siempre) 
+Regla estricta de accesibilidad web (W3C).
+
+`Padding / Margin / Gap`:
+rem (Recomendado)
+Mantiene las proporciones de "aire" visual cuando el texto escala.
+
+`Borders (border-width)`:
+px
+Evita que las líneas finas se vuelvan gruesas y borrosas.
+
+`Box Shadows`:
+px
+Mantiene la definición de la sombra idéntica.
+
+`Componentes de texto (Cards, Inputs)`:
+rem o %
+Permite que las cajas crezcan si el texto de adentro crece
+
+`Multimedia / Componentes fijos (Images, Icons)`:
+Protege los assets estáticos de deformaciones de píxeles.
+
+
+
+## html 100% vs 62.5%
+
+React y TypeScript, la balanza se inclina fuertemente hacia html { font-size: 100%; },
+Si tu theme.ts ya define los valores, el desarrollador no tiene que andar haciendo divisiones por 16 en su cabeza
+
+
+## dividir o multiplicar valores del theme
+
+```
+export const CustomBox = styled.div`
+  // Divide el espacio medio a la mitad (si md es 1rem, esto dará 0.5rem)
+  padding: calc(${({ theme }) => theme.spacing.md} / 2);
+
+  // También funciona para multiplicar si necesitas más espacio
+  margin-bottom: calc(${({ theme }) => theme.spacing.xl} * 1.5);
+`;
+```
+
+
+
+
+# Elementos sigan al ancho ventana
+
+que los elementos internos sigan el ancho de ventana/contenedor
+sobre todo cuando se hacen chicos
+
+que se estiren, que no haya una dominancia de los
+elementos, que ellos no dicten al ancho del contenedor
+que el contenedor dicte el estiramiento de los elem internos
+
+
+## Revisar elementos
+
+### Atoms y molecules: width 100%
+
+### molecules
+
+#### TodoItem
+
+```
+  min-width: 0; /* avoid content breakage */
+
+``` 
+
+### Organisms: width 100%
+
+
+#### TaskSidebar: excepción en mediaquerie:  width: 280px;
+
+```
+export const SidebarContainer = styled.aside`
+  display: flex;
+  flex-direction: column;
+  width: 100%; 
+  height: fit-content;
+  min-height: auto;
+
+  @media (width >= 800px) {
+    width: 280px;
+  }
+  background-color: ${({ theme }) => theme.colors.glass};
+  border-radius: ${({ theme }) => theme.borderRadius.md};
+  border: 1px solid ${({ theme }) => theme.colors.glassBorder};
+  padding: ${({ theme }) => theme.spacing.lg} 0;
+`;
+
+```
+
+
+#### TodoList: max-width 800px
+
+```
+import styled from 'styled-components';
+
+export const ListWrapper = styled.section`
+  display: flex;
+  flex-direction: column;
+  gap: ${({ theme }) => theme.spacing.md};
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+`;
+
+export const EmptyState = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: ${({ theme }) => theme.spacing.xl};
+  text-align: center;
+  gap: ${({ theme }) => theme.spacing.md};
+
+  /* Empty State */
+  opacity: 0.6;
+  filter: grayscale(1);
+`;
+
+export const StyledList = styled.ul`
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: ${({ theme }) => theme.spacing.sm};
+
+  /* Scrollbar */
+  max-height: 60vh;
+  overflow-y: auto;
+  padding-right: 8px;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: ${({ theme }) => theme.colors.glassBorder};
+    border-radius: ${({ theme }) => theme.borderRadius.full};
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: ${({ theme }) => theme.colors.primary}80;
+  }
+`;
+
+
+```
+
+
+### Templates
+
+##### Dashtemaplate
+
+```
+
+import styled from 'styled-components';
+import { mixins } from '../../../styles/mixins';
+
+export const TemplateWrapper = styled.div`
+  display: grid;
+  grid-template-areas:
+    'header'
+    'main'
+    'sidebar'
+    'footer';
+  grid-template-columns: minmax(0, 1fr);
+  min-height: 100vh;
+  width: 100%;
+  color: ${({ theme }) => theme.colors.textPrimary};
+  border-radius: ${({ theme }) => theme.borderRadius.md};
+  border: 1px solid ${({ theme }) => theme.colors.glassBorder};
+
+  @media (width >= 800px) {
+    grid-template:
+      'header header' auto
+      'sidebar main' 1fr
+      'footer footer' auto / auto minmax(0, 1fr);
+  }
+`;
+
+export const StyledHeader = styled.header`
+  grid-area: header;
+  top: 0;
+  z-index: 100;
+  padding: ${({ theme }) => theme.spacing.md};
+  background: ${({ theme }) => theme.colors.glass};
+  border-radius: 16px 16px 0 0;
+  border-bottom: 1px solid ${({ theme }) => theme.colors.glassBorder};
+  
+  @media (width >= 800px) {
+    padding: ${({ theme }) => theme.spacing.md}
+      ${({ theme }) => theme.spacing.xl};
+  }
+`;
+
+export const StyledSidebar = styled.aside`
+  grid-area: sidebar;
+  padding: ${({ theme }) => theme.spacing.md};
+  position: relative;
+  border-top: 1px solid ${({ theme }) => theme.colors.glassBorder};
+  place-self: start center;
+  width: 100%;
+
+  @media (width >= 800px) {
+    border-top: none;
+    border-right: 1px solid ${({ theme }) => theme.colors.glassBorder};
+    place-self: stretch stretch;
+    padding: ${({ theme }) => theme.spacing.xl};
+    width: auto;
+  }
+`;
+
+export const StyledMain = styled.main`
+  grid-area: main;
+  padding: ${({ theme }) => theme.spacing.md};
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+
+  @media (width >= 800px) {
+    padding: ${({ theme }) => theme.spacing.xl};
+
+    & > * {
+      width: 100%;
+      max-width: 800px;
+    }
+  }
+`;
+
+export const StyledFooter = styled.footer`
+  grid-area: footer;
+  padding: ${({ theme }) => theme.spacing.md};
+  background: ${({ theme }) => theme.colors.glass};
+  border-top: 1px solid ${({ theme }) => theme.colors.glassBorder};
+  text-align: center;
+`;
+
+```
+
+
+##### TodoTemplate
+
+
+```
+
+import styled from 'styled-components';
+import { mixins } from '../../../styles/mixins';
+
+export const PageWrapper = styled.div`
+  width: 100%;
+  background: radial-gradient(
+    circle at top center,
+    oklch(25% 0.12 250deg) 0%,
+    ${({ theme }) => theme.colors.background} 100%
+  );
+  display: flex;
+  justify-content: center;
+  border-radius: ${({ theme }) => theme.borderRadius.md};
+  border: 1px solid ${({ theme }) => theme.colors.glassBorder};
+  padding: ${({ theme }) => theme.spacing.md} ${({ theme }) => theme.spacing.md};
+`;
+
+export const ContentContainer = styled.div`
+  width: 100%;
+  max-width: 700px;
+  display: flex;
+  flex-direction: column;
+  gap: ${({ theme }) => theme.spacing.xl};
+`;
+
+export const HeaderSection = styled.header`
+  text-align: center;
+  margin-bottom: ${({ theme }) => theme.spacing.xs};
+
+  h1 {
+    margin-bottom: ${({ theme }) => theme.spacing.xs};
+    text-shadow: 0 0 20px ${({ theme }) => theme.colors.primary}40;
+  }
+`;
+
+export const InputSection = styled.section`
+  top: ${({ theme }) => theme.spacing.md};
+`;
+
+export const ListSection = styled.section`
+  flex: 1;
+  width: 100%;
+`;
+
+```
+
+
+
+### Page
+
+#### TodoPage
+
+```
+import styled, { keyframes } from 'styled-components';
+
+const fadeIn = keyframes`
+  from { opacity: 0; }
+  to { opacity: 1; }
+`;
+
+export const StyledPage = styled.div`
+  width: 100%;
+  height: 100%;
+  animation: ${fadeIn} ${({ theme }) => theme.transitions.default};
+`;
+
+```
+
+
+## Conceptos
+
+el panel de la derecha se "acobarda" y se achica
+pero cuando metés una súper tarea larga
+el panel se estira de golpe empujando toda la interfaz hacia los lados.
+
+### !!! diseño de interfaces UI, a esto se lo conoce como la batalla entre "Hug Contents" (Abrazar el contenido) y "Fill Container" (Llenar el contenedor).
+#### componentes están calculando su tamaño basándose en lo que llevan dentro, en lugar de obedecer la estructura de la grilla superior
+
+
+1. Tamaño Intrínseco vs. Extrínseco
+
+Tamaño Intrínseco (estado actual):
+Ocurre cuando un elemento dice: "Yo mido lo que mida mi hijo más grande".
+
+Si el texto es corto, la caja es chica
+si el texto es kilométrico, la caja explota hacia los lados
+
+##### CSS maneja esto internamente con valores automáticos o palabras clave como max-content o fit-content.
+
+
+Tamaño Extrínseco (El objetivo a lograr):
+Ocurre cuando el diseño se dicta desde afuera hacia adentro
+
+El contenedor padre (la ventana o el layout principal) dice: "
+tenés asignado este 100% de espacio disponible, no me importa si adentro tenés una sola palabra o cien".
+
+
+2. Propiedades de Flexbox
+
+
+1. trío flex-grow, flex-shrink y flex-basis
+Cuando un elemento es hijo directo de un contenedor flex
+su ancho ya no se rige tanto por la propiedad width, sino por este "acuerdo tripartito":
+
+flex-grow: 1;: Le dice al elemento: "Si sobra espacio libre en la pantalla, estirate de forma obligatoria hasta rellenar el contenedor
+Esto evitará que el panel derecho se quede corto como en la tercera imagen.
+
+flex-shrink: 1;: Le dice al elemento: "Si la pantalla se achica, tenés permiso para encogerte en lugar de romper el layout y desbordarte".
+
+flex-basis: 0; o auto;: Es el punto de partida del cálculo
+Configurar un flex-basis correcto evita que el ancho inicial dependa del largo del texto de la tarea
+
+
+2. align-items: stretch
+Por defecto, los contenedores Flex tienen align-items: stretch.
+Esto hace que los hijos se estiren automáticamente para cubrir todo el eje opuesto
+
+Si en algún contenedor padre se cambió esto a flex-start o center,
+los elementos pierden la orden de estirarse y colapsan alrededor de su contenido mínimo
+
+
+3. Propiedades de Control de Límites
+
+##### Para blindar los componentes y asegurar que el texto largo no "empuje" las paredes del contenedor (como pasa en tu cuarta imagen), usamos restricciones explícitas:
+
+width: 100%; o inline-size: 100%;: Fuerza a un elemento de bloque (o un hijo flex) a ocupar la totalidad del ancho de su celda asignada, ignorando el tamaño del texto
+
+min-width: 0; (El secreto ninja de Flexbox): Por defecto, los hijos de un contenedor Flex tienen un min-width implícito de auto (que equivale a min-content).
+Esto significa que si el texto es larguísimo, Flexbox prefiere romper el diseño antes que cortar el texto
+
+Poner min-width: 0; rompe esa regla nativa y le dice a Flexbox: "Podés achicar esta caja tanto como sea necesario, nosotros nos encargamos de que el texto adentro se adapte".
+
+
+4. texto: Control de desbordamiento
+
+Una vez que lográs que el contenedor sea rígido y dictado por la pantalla, el texto súper largo va a intentar salirse de los bordes
+Ahí entran en juego las propiedades de flujo de texto:
+
+word-break: break-word; o overflow-wrap: anywhere;:
+Fuerzan al texto largo a saltar de línea automáticamente cuando llega al borde de la caja
+haciendo que el componente crezca hacia abajo (vertical) y nunca hacia los costados (horizontal).
+
+
+
+
+# Fix bloque de código y media
+
+```
+export const SidebarContainer = styled.aside`
+  display: flex;
+  flex-direction: column;
+  width: 100%; 
+  height: fit-content;
+  min-height: auto;
+
+  @media (width >= 800px) {
+    width: 280px;
+  }
+  background-color: ${({ theme }) => theme.colors.glass};
+  border-radius: ${({ theme }) => theme.borderRadius.md};
+  border: 1px solid ${({ theme }) => theme.colors.glassBorder};
+  padding: ${({ theme }) => theme.spacing.lg} 0;
+`;
+```
 
 
 
@@ -18341,7 +18954,5602 @@ Al poner pointer-events: none, conviertes al icono en un "fantasma holográfico"
 
 
 
+
+# CSS vars
+
+
+
+
+# Guia Cierre dev
+
+1. Testing Robusto (Vitest + React Testing Library)
+
+Antes de mostrar la app visualmente
+aseguramos que los cimientos de la lógica no se rompan
+
+Pruebas Unitarias de Lógica Pura:
+Testear los reducers, hooks personalizados o utilidades de filtrado usando Vitest
+(Aprovechá test.each para combinaciones de filtros de tareas).
+
+Pruebas de Componentes Atómicos:
+Verificar que componentes clave (como tu Typography o los inputs de tareas) rendericen los estilos según sus props
+
+Pruebas de Integración (User Flows):
+Crear el flujo completo en un test:
+"El usuario escribe una tarea -> Aprieta Enter -> La tarea aparece en la lista -> Cambia de categoría
+
+
+2. Aislamiento y Catálogo de UI (Storybook)
+
+Storybook demuestra que sabés trabajar a escala empresarial
+aislando los componentes de la base de datos o estados globales pesados
+
+`Configuración del Entorno`:
+Asegurar que Storybook tenga acceso al ThemeProvider de tus Styled Components en su archivo .storybook/preview.tsx
+para que los colores del theme.ts (como Inter o Pacifico) se vean bien
+
+`Historias de Componentes Atómicos`:
+Crear las .stories.tsx para tus variantes de Typography
+Button, y los contenedores translúcidos (Glass).
+
+`Historias de Componentes Complejos`:
+Documentar los estados de la TaskSidebar o las tarjetas de tareas individuales
+(Estado: Pendiente, Completada, En foco).
+
+
+3. Optimización y Limpieza de Código
+
+Un entorno de producción no puede llevar "residuos" de la etapa de desarrollo
+
+`Auditoría de Logs y Comentarios`:
+Eliminar todos los console.log de debug y secciones de código comentadas
+
+`Performance`:
+Asegurar que los efectos visuales complejos (como el backdrop-filter de tu diseño Glass) no causen caídas de frames en el renderizado al alternar tareas rápidamente
+
+`Production Build Check`:
+Ejecutar `npm run build` en tu entorno local para confirmar que TypeScript no tire ningún error estricto de tipado de último momento en los archivos de compilación
+
+
+4. Despliegue Profesional (CI/CD)
+
+La app tiene que estar viva en la web
+
+`Deploy en Producción`:
+Subir la app a plataformas veloces como Vercel o Netlify conectadas directo a tu rama main
+
+`Pipeline Automatizado`:
+Configurar una GitHub Action ultra-simple que corra los tests de Vitest automáticamente cada vez que hagas un push
+bloqueando el despliegue si algún test falla
+Eso demuestra disciplina de ingeniería real
+
+
+5. README: Carta de Presentación
+
+Reclutadores técnicos o Managers irán directo al README antes de clonar tu código
+
+`Explicación de Decisiones Técnicas`:
+Explicar detalladamente por qué elegiste separar las cosas con Clean Architecture / DDD
+y cómo estructuraste los componentes con Atomic Design
+
+`Showcase Visual`:
+GIFs o capturas de pantalla de alta calidad
+
+
+
+
+# Storybook
+
+##### Storybook es un laboratorio de aislamiento para tus componentes
+##### Permite sacar esa "ventana" (tu botón, tu checkbox, tu sidebar) de la aplicación
+##### llevártela a un entorno flotante y probar cómo reacciona en un banco de pruebas sin necesidad de levantar el backend, iniciar sesión, ni navegar por toda la app.
+
+Cuando una aplicación escala, probar los componentes dentro de la app se vuelve pesado
+Storybook resuelve esto ofreciéndote tres superpoderes
+
+1. `Desarrollo aislado`:
+Podés crear un componente desde cero sin siquiera tener una página donde renderizarlo todavía
+
+2. `Documentación viva`:
+Actúa como un catálogo interactivo de tu interfaz
+Cualquier desarrollador (o diseñador) puede entrar y ver qué componentes ya existen para no duplicar código
+
+3. `Estados al alcance de un clic`:
+Cómo se ve tu tarjeta de tareas si el texto es larguísimo?
+Y si está en estado de carga? ¿Y si tira error?
+En Storybook podés simular todos estos escenarios en segundos usando controles visuales
+
+
+## 1. Story: una historia
+
+##### Representa un estado específico de un componente.
+
+##### Si tenés un componente Button, vas a crear un archivo al lado llamado Button.stories.tsx
+Dentro de ese archivo, vas a escribir "historias" para cada una de sus facetas
+una historia para el botón activo, otra para el botón deshabilitado
+otra para el botón con un ícono, etc.
+
+##### Así se ve la anatomía de una historia básica en código moderno (formato CSF):
+
+```typescript
+
+import type { Meta, StoryObj } from '@storybook/react';
+import { Button } from './Button';
+
+// 1. Configuración general del componente
+const meta: Meta<typeof Button> = {
+  title: 'Atoms/Button', // Cómo se va a organizar en la barra lateral de Storybook
+  component: Button,
+};
+export default meta;
+
+type Story = StoryObj<typeof Button>;
+
+// 2. Historia 1: El botón en su estado primario
+export const Primary: Story = {
+  args: {
+    $variant: 'primary',
+    children: 'Añadir tarea',
+  },
+};
+
+// 3. Historia 2: El botón cuando está deshabilitado
+export const Disabled: Story = {
+  args: {
+    $variant: 'primary',
+    disabled: true,
+    children: 'Cargando...',
+  },
+};
+```
+
+
+## 2. Interacción con la story
+
+Al ejecutar el comando de Storybook
+se abre una pestaña en tu navegador (normalmente en el puerto localhost:6006)
+que es totalmente independiente de tu aplicación Vite
+
+La pantalla se divide en tres grandes secciones:
+
+1. barra lateral/sidebar:
+Un árbol de carpetas con todos tus componentes organizados
+(siguiendo tu estructura de Atomic Design: Atoms, Molecules, Organisms).
+
+2. lienzo (Canvas):
+El centro del escenario donde se renderiza tu componente aislado para que interactúes con él
+(hacer clics, ver hovers, probar responsividad).
+
+3. panel de controles (Addons):
+Abajo o al costado tenés perillas y cajas de texto
+Podés cambiar el texto del componente en tiempo real o activar un checkbox de tipo booleano
+(como $checked: true/false)
+para ver cómo cambia el diseño instantáneamente sin tocar el código
+
+
+Storybook tiene un ecosistema propio con conceptos
+hacen ver el desarrollo de interfaces de otra manera
+
+
+## 3. Motor de datos: Args (Arguments)
+
+En el mundo de React, hablas de props
+##### En Storybook, esas props se mapean directamente a algo llamado Args
+
+##### Los Args son simplemente un objeto JavaScript donde definís los datos que va a recibir tu componente
+para una historia en particular
+Storybook los lee dinámicamente y genera de forma automática el Panel de Controles en la interfaz web
+
+Si tu componente Checkbox tiene un arg llamado $checked: true
+##### vas a ver un switch interactivo en la pantalla de Storybook
+Si lo desactivas con el mouse, el arg cambia a false en tiempo real y el componente se re-renderiza 
+
+
+## 4. Envoltorio: Decorators (Decoradores)
+
+Concepto más importante para tu proyecto actual
+Un componente aislado
+
+Si intentás renderizar tu StyledCheckbox completamente solo en Storybook
+la app va a crasear instantáneamente
+Porque tus estilos usan ${({ theme }) => theme.colors.primary}, y fuera de tu app no existe el ThemeProvider
+
+##### Un Decorator es una función que envuelve a tu historia dentro de otro componente
+ponerle el traje al componente antes de lanzarlo al lienzo.
+
+Podés crear un decorador global que envuelva a todas tus historias dentro de tu <ThemeProvider theme="{theme}"> y tus <GlobalStyles/>.
+
+Podés crear un decorador específico para que un componente se renderice centrado en la pantalla o con un fondo oscuro de prueba
+
+
+## 5. Configuración y metadatos: Parameters (Parámetros)
+
+##### Mientras que los Args controlan el comportamiento interno del componente
+##### los Parameters controlan el comportamiento del propio Storybook alrededor de ese componente
+Son metadatos estáticos.
+
+`Backgrounds`:
+Forzar a que un componente
+renderice siempre sobre un fondo azul oscuro para que se note el contraste translúcido
+ignorando el fondo blanco por defecto de Storybook
+
+`Viewport`:
+Simular que la historia se abra directamente con las dimensiones de un iPhone
+o una tablet para testear la responsividad de tu TaskSidebar
+
+`Layout`:
+Decirle a Storybook si el componente debe ir pegado arriba a la izquierda
+o perfectamente centrado en el lienzo (layout: 'centered').
+
+
+## 6. Ecosistema Addons (Complementos)
+
+Storybook por sí solo es una pizarra en blanco
+Todo lo divertido ocurre gracias a los Addons
+que son plugins preinstalados (o que podés agregar vos)
+para expandir la consola de control inferior
+
+Los más cruciales para tu día a día son:
+
+`Actions`:
+Permite "espiar" eventos
+Si tu botón tiene un onClick, el addon de Actions va a capturar ese clic y te va a mostrar en una consola interna
+"El usuario hizo clic y envió estos datos".
+Sirve para probar interactividad sin tener una base de datos real detrás
+
+`A11y (Accessibility)`:
+Corre una auditoría de accesibilidad militar en tiempo real sobre tu componente
+Te va a avisar si el contraste entre el texto y tu fondo Glass es muy bajo
+o si a tu input oculto del Checkbox le falta una etiqueta adecuada para lectores de pantalla
+
+
+## 7. Formato MDX (Código + Documentación)
+
+Tradicionalmente, las historias se escriben en archivos .stories.tsx
+Pero Storybook permite usar MDX (.stories.mdx)
+que es una combinación espectacular de Markdown clásico con componentes de React vivos
+
+Esto te permite escribir documentación en texto plano para tu portfolio
+("Este componente maneja el estado visual de las tareas...")
+y, en medio del texto, incrustar un botón real y funcional para que la persona que lee la documentación pueda hacerle clic ahí mismo
+Esto te eleva el nivel del proyecto a un estándar de librería de diseño como Tailwind o Material UI
+
+
+
+## Proceso
+
+1. Instalación e Inicialización
+punto de partida para Vite + TypeScript.
+
+`Comando de inicialización`:
+Ejecutamos el instalador oficial de Storybook.
+
+`Inspección de archivos`:
+Entender las dos cosas nuevas que van a aparecer en tu proyecto
+
+carpeta .storybook: cerebro de la herramienta
+
+scripts nuevos en tu package.json
+storybook para levantar el servidor local
+y build-storybook para compilarlo
+
+
+2. Configuración del Entorno
+
+Fase más crítica
+Si saltamos esto, tus Styled Components van a fallar por falta de contexto
+
+`Inyección del Theme y Estilos Globales`:
+Modificar el archivo de configuración interna de Storybook
+(.storybook/preview.tsx)
+para envolver todas las historias de forma automática con tu ThemeProvider
+(pasándole tu theme.ts) y tus GlobalStyles.ts.
+
+`Carga de Fuentes en Storybook`:
+Asegurarnos de que Storybook tenga acceso a las fuentes Inter y Pacifico
+de Google Fonts, ya que el archivo index.html de tu app principal no se comparte con Storybook
+
+
+3. Primer Componente Aislado (Nivel: Átomo)
+Arrancamos con lo más simple para validar que la configuración de la Fase 2 funcione
+
+`Elegir ej`:
+Crear el archivo Typography.stories.tsx al lado de tu componente de tipografía
+
+`Definir variantes estáticas`:
+Crear historias para el texto base (body)
+y tu título principal con la fuente cursiva (appTitle).
+
+`Verificación`:
+Levantar Storybook, entrar al navegador y comprobar que los estilos
+y tipografías se vean idénticos a tu app real.
+
+
+4. Componentes con Estado e Interactividad
+(Nivel: Molécula)
+
+Subimos la apuesta con componentes que reaccionan a las acciones del usuario
+
+`Checkbox`: Crear Checkbox.stories.tsx
+##### Configurar la prop $checked para que aparezca como un switch interactivo en la barra inferior de Storybook
+permitiéndote prender y apagar el tick de la tarea con un clic
+
+`Captura de Eventos (Actions)`:
+Configurar la prop onChange para que, cuando hagas clic en el checkbox
+Storybook te muestre un log en su consola diciendo
+"El evento de cambio fue disparado con éxito".
+
+
+5. Componentes Estructurales:
+Nivel: Organismo
+
+piezas más grandes de tu arquitectura
+
+
+`Aislar la TaskSidebar`:
+Crear la historia para tu barra lateral
+
+`Simulación de Props Complejas`:
+Pasar una lista de categorías fijas (falsas o mockeadas)
+para ver cómo se renderiza la barra con las diferentes secciones
+sin necesidad de que la base de datos
+o el estado global de la aplicación estén activos
+
+
+6. Compilación y Despliegue
+
+`Compilación Estática`:
+Correr el comando de build para transformar todo tu catálogo de Storybook en una carpeta con archivos HTML, CSS y JS puros
+
+`Deploy Independiente`:
+Subir este catálogo a una URL pública
+Vercel, Netlify o GitHub Pages
+
+Así, en tu portfolio de desarrollador vas a poder poner dos links
+uno para usar la Today App y otro para auditar tu Librería de Componentes en Storybook
+
+
+
+## 1. Instalación e iniciacion
+
+En Vite + TypeScript
+Storybook ya viene preparado para reconocerlo de forma automática
+sin que tengamos que renegar con configuraciones pesadas de Webpack
+
+Estar en la raíz de tu proyecto en la terminal
+
+1. Comando de Inicialización
+
+Ejecutá el inicializador oficial de Storybook
+Este comando va a examinar tu package.json
+va a detectar que usás React + Vite + TS y va a descargar exactamente lo que necesitás
+
+`npx storybook@latest init`
+
+Vas a ver que empieza a instalar dependencias y, a mitad del proceso
+te va a preguntar si querés compilar el proyecto o correr un asistente
+Dejá que termine por completo
+Puede tardar un par de minutos dependiendo de tu conexión
+
+
+2. Inspección
+Una vez que el comando finalice con éxito, vas a notar que tu estructura de archivos se modificó ligeramente
+
+carpeta .storybook/
+Esta carpeta oculta (tiene un punto adelante) controla cómo funciona la herramienta
+
+Adentro vas a encontrar dos archivos cruciales:
+
+`main.ts`:
+configuración principal
+Acá se define dónde va a ir a buscar Storybook tus archivos de historias
+(por defecto busca cualquier archivo .stories.tsx)
+y qué tecnologías usa para compilar (Vite).
+
+`preview.ts`:
+Controla cómo se van a renderizar tus componentes dentro del lienzo
+Acá es donde en el próximo paso vamos a meter el traje para styled components
+
+
+carpeta src/stories/: los ej
+
+Storybook te va a regalar un par de componentes de ejemplo (un botón
+una cabecera, una página entera) con sus respectivas historias para que veas cómo se estructuran
+
+Dejalos ahí para ver su código
+más adelante borrarlos para no ensuciar el src
+
+
+Actualización en tu package.json
+
+archivo de configuración de Node
+vas a ver que en la sección de "scripts" se agregaron dos líneas nuevas
+
+```
+"scripts": {
+  "dev": "vite",
+  "build": "tsc && vite build",
+  "storybook": "storybook dev -p 6006",
+  "build-storybook": "storybook build"
+}
+```
+
+
+3. Laboratorio
+
+verificar que la instalación base
+levantar el servidor local exclusivo de Storybook ejecutando el nuevo script
+
+`npm run storybook`
+Este comando va a compilar tus componentes en segundo plano y, cuando termine
+va a abrir automáticamente una pestaña en tu navegador en la dirección
+http://localhost:6006
+
+Vas a ver el panel de control de Storybook con la barra lateral izquierda llena de los componentes de ejemplo que te mencioné antes
+Jugá un poco con los controles inferiores de esos ejemplos para familiarizarte con la interfaz
+
+
+
+### Compilar el proyecto o correr un asistente
+
+Cuando ejecutás npx storybook@latest init
+la consola analiza tu proyecto y frena
+
+para pedirte confirmación sobre estos puntos:
+
+1. Asistente de Onboarding: Onboarding Wizard
+
+"Do you want to run the Storybook onboarding wizard?" (¿Querés correr el asistente de bienvenida?).
+
+`SÍ (y)`: Storybook va a inyectar la carpeta src/stories
+con los componentes de ejemplo que te mencioné antes (el botón, la cabecera, etc.).
+Además, cuando prendas el servidor por primera vez, te va a guiar con un cartel
+flotante tipo "tour guiado" por la interfaz web para enseñarte dónde están los controles
+
+`NO (n)`: Te va a dejar el entorno completamente vacío
+una pizarra en blanco lista para que vos crees tus propias historias desde cero
+
+recomendación
+sirve muchísimo tener un archivo de referencia para copiar y pegar la estructura inicial cuando armemos tus propias historias
+
+
+2. Plugin de ESLint (Configuración de código)
+
+A veces, si detecta que usás un linter en tu proyecto Vite, te va a preguntar:
+"Do you want to install eslint-plugin-storybook?"
+
+un plugin oficial que analiza tus archivos .stories.tsx mientras programás
+Si escribís mal una historia o usás una sintaxis vieja, tu editor de código
+te lo va a marcar con una línea roja y te va a sugerir cómo arreglarlo
+
+SÍ. Te ayuda a mantener el código limpio y con buenas prácticas corporativas
+
+
+3. Telemetría sin datos personales
+datos de rendimiento anónimos a sus servidores
+ejemplo, cuánto tardó en compilar tu proyecto
+
+
+4. Ejecutar el servidor
+arrancar el entorno en ese mismo instante
+
+si-y: 
+ejecuta el comando `npm run storybook` por vos.
+
+
+
+### Compatibilidad en librerias y frameworks
+
+
+
+
+## '.stories.tsx'  y '.stories.mdx':
+
+1. .stories.tsx
+archivo TypeScript
+basado en un estándar llamado CSF (Component Story Format).
+
+Acá no escribís texto narrativo
+##### escribís código estructurado en forma de objetos de JavaScript
+para declarar los estados de tus componentes.
+
+uso principal:
+Desarrollar, probar e interactuar
+##### Es el lugar donde definís los Args (las props interactivas)
+capturás los eventos con Actions y donde herramientas como Playwright o Vitest
+van a entrar a correr los testeos automatizados.
+
+usarlo: El 95% del tiempo mientras estás construyendo tu app
+Cada vez que crees un átomo, molécula u organismo
+##### su archivo de cabecera va a ser un .stories.tsx.
+
+
+2. .mdx: Vidriera / Documentación
+formato que combina Markdown clásico (para escribir texto con formato simple)
+##### con la capacidad de renderizar componentes de React en vivo en el medio del texto
+
+##### usarlo: Cuando querés documentar cosas globales de tu proyecto que no son un componente único
+Ej: Una página de bienvenida para tu portfolio explicando la arquitectura de la app 
+Una guía visual de tus Tokens de Diseño (una página que muestre la paleta de colores de tu theme.ts
+el stack de fuentes de Linux/Windows/Mac que acabamos de pulir, o las reglas de tus efectos Glass).
+
+
+3. archivo .mdx y .stories.tsx
+Storybook moderno se separaron los roles
+
+Declarás la lógica y el comportamiento puro de tu componente en tu archivo .stories.tsx.
+
+##### Si querés armar una página de documentación hermosa para tu portfolio, creás un archivo .mdx al lado
+##### escribís texto normal en Markdown e importás la historia desde el archivo .tsx usando etiquetas especiales de Storybook.
+
+Ej:
+
+```
+{/* Ejemplo conceptual de un archivo .mdx moderno */}
+
+# Mi Componente de Botón
+
+Este botón maneja los clics principales de la Today App usando el diseño *Liquid Glass*.
+
+Aquí puedes ver cómo luce en su estado principal:
+
+<Canvas of={ButtonStories.Primary} />
+```
+
+toda tu interfaz la vas a programar en archivos .stories.tsx.
+Dejaremos los archivos .mdx únicamente si al final queremos armar una sección de "Guía de Estilos"
+
+
+
+
+## 2. Configuración del Entorno
+
+Fase más crítica
+Si saltamos esto, tus Styled Components van a fallar por falta de contexto
+
+##### darles el entorno que necesitan para que no se rompan al buscar tu paleta de colores o tus fuentes
+##### la clave está en usar un Decorator (Decorador) global
+
+##### Esto va a envolver a absolutamente todas las historias que crees dentro de tu <ThemeProvider>
+Esto va a envolver a absolutamente todas las historias que crees dentro de tu <ThemeProvider>
+
+
+1. Verificar o renombrar preview.ts a preview.tsx
+Paso crítico de TypeScript
+
+Ir a carpeta .storybook/ en la raíz de tu proyecto
+El instalador por defecto suele crear un archivo llamado preview.ts
+Como adentro vamos a escribir etiquetas de React (JSX)
+cambiale el nombre o la extensión a preview.tsx (agregándole la x al final).
+
+Si no lo hacés, TypeScript va a tirar un error de sintaxis gigante.
+
+
+2. Modificar el archivo preview.tsx
+Inyectar el ThemeProvider
+
+Abrí ese archivo preview.tsx y reemplazá todo su contenido por el siguiente código
+Asegurate de ajustar las rutas de importación de tu theme y tus GlobalStyles
+según dónde los tengas exactamente en tu carpeta src/styles:
+
+```
+import type { Preview } from "@storybook/react";
+import { ThemeProvider } from "styled-components";
+import { theme } from "../src/styles/theme"; 
+import { GlobalStyles } from "../src/styles/GlobalStyles";
+
+const preview: Preview = {
+  parameters: {
+    controls: {
+      matchers: {
+        color: /(background|color)$/i,
+        date: /Date$/i,
+      },
+    },
+  },
+  // El decorador envuelve cada historia en el entorno de Styled Components
+  decorators: [
+    (Story) => (       
+
+
+      
+    ),
+  ],
+};
+
+export default preview;
+```
+
+
+3. Inyectar las Fuentes de Google Fonts
+Crear preview-head.html
+
+Storybook corre en un entorno HTML totalmente aislado del index.html de tu aplicación
+Para que reconozca tus fuentes tipográficas (como Inter o las fuentes cursivas de tu título)
+
+creá un archivo nuevo dentro de la carpeta .storybook/ llamado exactamente preview-head.html
+(sin src/, directo adentro de .storybook/).
+
+Pegale este bloque de código para traer las tipografías:
+
+```
+<!-- Carga de fuentes para el catálogo de Storybook -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Caveat:wght@400;700&family=Pacifico&display=swap" rel="stylesheet">
+```
+
+##### Storybook renderiza tus componentes dentro de un <iframe> aislado
+(una página web adentro de otra)
+Antes de cargar los componentes, estas etiquetas se meterán en el <head> de ese iframe"
+
+te asegurás de que tanto Inter para los textos limpios, como Pacifico o Caveat si usás para los títulos cursivos de la app
+
+
+4. Verificación:
+Una vez guardados los cambios en esos dos archivos de la carpeta .storybook/,
+
+`npm run storybook`
+
+
+
+
+## 3. Primer componente aislado  (Nivel: Átomo)
+Arrancamos con lo más simple para validar que la configuración de la Fase 2 funcione
+
+##### nos permite testear el laboratorio con un componente que no tiene dependencias lógicas pesadas (como estados o llamadas a APIs).
+Solo recibe texto y lo renderiza con estilo.
+
+Crear la historia el componente de Tipografía (o el texto base de tu app).
+Va a validar si Storybook está leyendo bien las Google Fonts que inyectamos en el preview-head.html y el ThemeProvider.
+
+
+1. .stories.tsx
+
+En la carpeta del componente 
+creá uno nuevo llamado exactamente Typography.stories.tsx.
+
+código estructurado bajo el estándar moderno de Storybook (CSF 3):
+
+```
+import type { Meta, StoryObj } from '@storybook/react';
+import { Typography } from './Typography'; // Ajustá la ruta si es necesario
+
+// 1. Configuración general del componente en el catálogo
+const meta: Meta<typeof Typography> = {
+  title: 'Atoms/Typography', // Cómo se va a ver en el árbol de la barra lateral
+  component: Typography,
+  tags: ['autodocs'], // Esto genera una página de documentación automática espectacular
+  argTypes: {
+    // Esto le dice a Storybook cómo renderizar los controles inferiores
+    variant: {
+      control: 'select',
+      options: ['title', 'subtitle', 'body', 'caption'],
+    },
+  },
+};
+
+export default meta;
+type Story = StoryObj<typeof Typography>;
+
+// 2. Definición de las Historias (los diferentes estados)
+
+// Variantes para el Título Principal (Usando Pacifico/Caveat)
+export const AppTitle: Story = {
+  args: {
+    variant: 'title',
+    children: 'Today App',
+  },
+};
+
+// Variante para el Cuerpo del texto (Usando Inter)
+export const BodyText: Story = {
+  args: {
+    variant: 'body',
+    children: 'Escribí una nueva tarea para mantener el foco en tu día.',
+  },
+};
+
+// Variante para textos de alerta o secundarios
+export const CaptionText: Story = {
+  args: {
+    variant: 'caption',
+    children: 'Completada a las 14:15',
+  },
+};
+```
+
+
+2. Anatomía del archivo
+
+`meta (Export por defecto)`:
+identidad del componente
+"componente se llama Typography y quiero que lo guardes en el estante de Atoms"
+
+`argTypes`: poder
+decirle que variant es un select con esas opciones
+Storybook te va a armar un menú desplegable en la barra inferior de la web para que cambies de estilo con un clic
+
+`export const (Export nombrados)`:
+Cada uno de ellos es una Historia individual
+Storybook los va a listar debajo de Typography
+en la barra lateral para que puedas saltar de uno a otro al instante
+
+
+3. Verificar
+
+`npm run storybook`
+http://localhost:6006
+
+mirá la barra lateral
+##### ver que apareció una carpeta llamada Atoms
+##### adentro vas a tener tu componente Typography con sus tres historias
+##### AppTitle, BodyText, CaptionText
+
+
+4. Auditar en este paso:
+
+`Fuentes`:
+Seleccioná AppTitle
+Se ve con tu tipografía cursiva fluida?
+Seleccioná BodyText.
+Usa la fuente limpia Inter?
+
+`Controles`:
+clic en la pestaña "Controls" abajo en la pantalla
+Intentá cambiar el texto en la caja de children
+o alternar las opciones del selector de variant
+Si el texto en pantalla cambia en tiempo real con los estilos de tu theme.ts
+tu entorno de Storybook está oficialmente sincronizado al 100%.
+
+
+
+## 4. Componentes con Estado e Interactividad
+(Nivel: Molécula)
+
+Subimos la apuesta con componentes que reaccionan a las acciones del usuario
+
+Storybook: por defecto, es un entorno "tonto"
+##### que solo refleja las props que le pasamos (stateless).
+
+Si tenés un componente Checkbox y le hacés clic en la pantalla
+el tick no se va a prender ni apagar solo
+##### porque en Storybook no hay un estado global que esté manejando ese cambio
+
+##### Para resolver esto y poder probar la interactividad real de tu diseño
+##### Usamos dos poderes: Actions (para espiar los eventos) y una función Render personalizada (para simular el estado interno).
+
+
+1. Código: Checkbox.stories.tsx
+
+En la carpeta de Checkbox, crear la story
+##### metamos este setup avanzado
+##### usando el método moderno fn() de Storybook para espiar los clics:
+
+```
+import type { Meta, StoryObj } from '@storybook/react';
+import { fn } from '@storybook/test'; // Captura eventos de forma nativa
+import { Checkbox } from './Checkbox';
+import { useState } from 'react';
+
+const meta: Meta<typeof Checkbox> = {
+  title: 'Molecules/Checkbox',
+  component: Checkbox,
+  tags: ['autodocs'],
+  // Le dice a Storybook: "Cualquier prop que empiece con 'on' (como onChange), espiala"
+  args: { 
+    onChange: fn(),
+  },
+};
+
+export default meta;
+type Story = StoryObj<typeof Checkbox>;
+
+// 1. Estado estático: Desmarcado
+export const Unchecked: Story = {
+  args: {
+    $checked: false,
+    label: 'Aprender arquitectura Clean de software',
+  },
+};
+
+// 2. Estado estático: Marcado
+export const Checked: Story = {
+  args: {
+    $checked: true,
+    label: 'Configurar Storybook con Styled Components',
+  },
+};
+
+// 3. LA MAGIA: Simulación de estado real e interactivo
+export const InteractiveSimulation: Story = {
+  args: {
+    label: 'Haceme clic para testear el efecto Glass',
+  },
+  render: (args) => {
+    // Creamos un estado local temporario dentro del laboratorio de Storybook
+    const [isChecked, setIsChecked] = useState(false);
+    
+    return (
+      <Checkbox
+        {...args}
+        $checked={isChecked}
+        onChange={(e) => {
+          setIsChecked(!isChecked); // Cambia el estado visual
+          args.onChange(e); // Ejecuta la acción para que quede registrada en la consola inferior
+        }}
+      />
+    );
+  },
+};
+```
+
+
+2. Flujo de verificación
+
+comprobar que molécula reaccione como en la vida real
+##### sigamos estos pasos en la interfaz web de Storybook
+
+1. Inspeccionar los estados estáticos
+Pestañas Unchecked y Checked
+
+Hacé clic en las historias Unchecked y Checked en la barra lateral
+Sirven para auditar que el diseño visual sea el correcto en ambos extremos estáticos sin necesidad de hacer clic
+
+2. Probar el interruptor interactivo
+Pestaña InteractiveSimulation
+
+Entrá a InteractiveSimulation
+Hacé clic arriba del checkbox
+Gracias a la función render con el useState que le metimos
+el componente debería prender y apagar el tick fluidamente
+mostrando las transiciones CSS de tu diseño
+
+3. Auditar la pestaña Actions
+Consola inferior
+
+Mientras hacés clics en la simulación interactiva
+mirá el panel inferior de Storybook y seleccioná la pestaña "Actions".
+Vas a ver que cada clic imprime un log interactivo en tiempo real
+Si lo desplegaste
+te muestra todo el evento nativo de React con el target y los datos del input
+
+
+### !!! Play Function: automatizar test
+
+
+
+## 5. Componentes Estructurales: Nivel: Organismo
+Las piezas más grandes de tu arquitectura
+
+##### !!! Organismos es donde realmente se ve el retorno de inversión de usar Storybook
+
+Un organismo es una estructura grande de la interfaz
+TaskSidebar o una grilla completa de tareas
+
+##### !!! Estos componentes suelen estar acoplados a contextos globales gigantes
+##### !!! llamadas a bases de datos o estados complejos
+
+##### Si intentás renderizarlos de una, la pantalla explota
+
+##### !!! En el laboratorio de Storybook, el truco consiste en aislar el diseño usando datos simulados (Mock Data).
+
+#### !!! Estructurar la historia de un organismo simulando diferentes escenarios de la vida real
+##### !!! cuando está cargando, cuando no tiene tareas y cuando está lleno
+
+
+1. Código: TaskSidebar.stories.tsx
+necesita una lista de categorías y saber cuál está seleccionada
+
+##### En lugar de conectar tu base de datos real
+##### creamos los mocks directamente en el archivo de la historia
+
+```
+import type { Meta, StoryObj } from '@storybook/react';
+import { fn } from '@storybook/test';
+import { TaskSidebar } from './TaskSidebar';
+import { useState } from 'react';
+
+// 1. Datos simulados (Mock Data) que imitan lo que vendría del backend
+const mockCategories = [
+  { id: '1', name: 'Personal', taskCount: 5, icon: 'user' },
+  { id: '2', name: 'Trabajo', taskCount: 12, icon: 'briefcase' },
+  { id: '3', name: 'Estudio', taskCount: 3, icon: 'book' },
+];
+
+const meta: Meta<typeof TaskSidebar> = {
+  title: 'Organisms/TaskSidebar',
+  component: TaskSidebar,
+  tags: ['autodocs'],
+  parameters: {
+    // Forzamos un layout que ocupe toda la pantalla para ver el sidebar en su entorno natural
+    layout: 'fullscreen', 
+  },
+  args: {
+    onSelectCategory: fn(),
+    onAddCategory: fn(),
+  },
+};
+
+export default meta;
+type Story = StoryObj<typeof TaskSidebar>;
+
+// Estado 1: La vista por defecto con datos cargados
+export const Default: Story = {
+  args: {
+    categories: mockCategories,
+    activeCategoryId: '1',
+  },
+};
+
+// Estado 2: ¿Qué pasa si el usuario es nuevo y no tiene categorías creadas?
+export const EmptyState: Story = {
+  args: {
+    categories: [],
+    activeCategoryId: '',
+  },
+};
+
+// Estado 3: Simulación interactiva de navegación
+export const InteractiveNavigation: Story = {
+  render: (args) => {
+    const [activeId, setActiveId] = useState('1');
+    
+    return (
+      <div style={{ display: 'flex', height: '100vh' }}>
+        <TaskSidebar
+          {...args}
+          categories={mockCategories}
+          activeCategoryId={activeId}
+          onSelectCategory={(id) => {
+            setActiveId(id);
+            args.onSelectCategory(id);
+          }}
+        />
+        <main style={{ padding: '20px', color: 'white', background: '#1a1a1a', flex: 1 }}>
+          <h2>Contenido de la categoría seleccionada: {activeId}</h2>
+        </main>
+      </div>
+    );
+  },
+};
+```
+
+
+2. Aprendizajes
+
+Control absoluto de los "Edge Cases" (Casos límite):
+
+`Historia EmptyState`:
+Poder ver cómo reacciona el diseño
+cuando la lista está vacía sin tener que borrar tu base de datos real
+es una ventaja competitiva
+permite diseñar el cartel de "No hay categorías creadas aún" con total comodidad
+asegurándote de que no se rompan las proporciones de la barra lateral
+
+`layout fullscreen`:
+Al agregar layout: 'fullscreen' en params
+quitamos el margen acolchonado que Storybook le pone por defecto a los componentes
+Así, el Sidebar se pega al borde izquierdo de la pantalla
+##### comportándose exactamente igual a cómo se vería en el monitor del usuario final
+
+
+### Testing automatizado con el Test Runner
+
+
+
+## 6. Compilar y desplegar
+
+
+### Compilación Estática
+
+#### !!! Transformamos todo nuestro entorno de desarrollo en un producto terminado
+##### ligero y listo para ser consumido por cualquiera en internet
+##### !!! sin necesidad de que tengan Node.js o Vite corriendo en sus computadoras
+
+1. Comando de Compilación
+
+En terminal, en raíz (sin que este corriendo el servidor de desarrollo de storybook)
+##### ejecutar el script de build que se agregó automáticamente a tu package.json`
+
+`npm run build-storybook`
+En las versiones más recientes de Storybook,
+este script simplemente ejecuta `storybook build` por detrás
+
+
+2. Build
+Storybook despierta a su compilador
+en este caso usa el motor ultraveloz de Vite
+
+Vite empieza a escanear tu proyecto de la siguiente manera
+
+1. Busca tu archivo .storybook/main.ts
+para saber qué carpetas mirar.
+
+2. Rastrea absolutamente todos tus archivos 
+stories.tsx (y .stories.mdx si tuvieras
+
+3. Sigue los hilos de las importaciones:
+analiza tus átomos, moléculas, organismos, tu theme.ts y tus GlobalStyles.ts.
+
+4. Empaquetado (Bundling):
+Traduce todo ese código TypeScript
+JSX y las funciones de simulación de React a JavaScript clásico (ES5/ES6)
+CSS optimizado que cualquier navegador del planeta (Chrome, Safari, Firefox) pueda entender de forma nativa.
+
+
+3. Resultado: en la carpeta `storybook-static/`
+
+La terminal dice "Success"
+notar que apareció una carpeta nueva en la raíz de tu proyecto llamada storybook-static/.
+
+##### Vas a ver que es una página web común y corriente
+
+`index.html`: La entrada principal
+estructura de la interfaz de Storybook
+la barra lateral, los paneles inferiores, el menú oscuro/claro
+
+`iframe.html`: Laboratorio
+lienzo aislado donde se renderizan tus componentes reales
+sin que interfieran con la interfaz exterior.
+
+`assets/`:
+carpeta llena de archivos .js y .css minificados
+(comprimidos al máximo para que pesen lo menos posible)
+contienen la lógica de tus componentes y de la Today App.
+
+`sb-common-assets/ y otros`:
+Fuentes internas e íconos que usa Storybook para verse lindo
+
+
+Poder para el portfolio:
+
+1. Cero costo de servidor:
+Al ser archivos estáticos puros (HTML, CSS, JS)
+no necesitás pagar un servidor en la nube que corra Node.js las 24 horas
+Lo podés alojar en servicios gratuitos que sirven archivos estáticos a la velocidad de la luz
+
+2. Independencia absoluta:
+Tu Storybook estático no necesita estar conectado a tu aplicación principal para funcionar
+Podés mandar el link de esa carpeta a un reclutador
+va a poder interactuar con tu Checkbox o tu TaskSidebar de forma ultraveloz sin clonar nada en su computadora
+
+3. Documentación viva: 
+Si mañana actualizás el diseño de un componente
+y volvés a compilar, la documentación se actualiza sola.
+
+
+
+### Deploy en url pública
+
+
+#### Github Pages
+
+##### automatizar esto usando la terminal con una herramienta clásica llamada gh-pages.
+
+1. Instalar el paquete gh-pages
+Instalación en modo desarrollo
+
+En la raíz
+comando para instalar la herramienta
+se va a encargar de crear una rama oculta en tu repositorio
+y subir los archivos compilados
+
+`npm install gh-pages --save-dev`
+
+
+2. scripts de automatización
+Modificar package.json
+
+Abrí tu archivo package.json y, dentro de la sección de "scripts"
+agrega estas dos líneas nuevas al final
+
+##### Esto conecta la fase de compilación que vimos recién con la fase de subida
+
+```
+"scripts": {
+  "predeploy": "npm run build-storybook",
+  "deploy": "gh-pages -d storybook-static"
+}
+```
+
+Cuando ejecutes el comando de despliegue, "predeploy"
+se va a ejecutar solo primero para borrar la carpeta vieja
+y compilar el Storybook más fresco
+
+Después, "deploy" va a agarrar la carpeta storybook-static
+y la va a mandar a GitHub
+
+
+3. Repo en GitHub
+Subida inicial
+
+##### Antes de lanzar el despliegue, asegurate de tener todos tus cambios actuales commiteados y subidos a tu repositorio principal de GitHub
+
+verificarlo tirando un rápido
+
+```
+git push origin main
+```
+
+
+4. Comando de despliegue
+Lanzamiento a la web
+
+Ejecutá el comando
+
+```
+npm run deploy
+```
+
+La terminal va a compilar todo (vas a ver el proceso de Vite)
+) y al final va a decir "Published".
+
+Por detrás, el paquete creó una rama llamada gh-pages
+en tu GitHub y subió solo los archivos estáticos ahí.
+
+
+5. Activar GitHub Pages en tu repositorio
+Configuración final en la web
+
+Tu cuenta de GitHub en el navegador
+entrá al repositorio de tu proyecto y seguí estos tres clics:
+
+1. Hacé clic en la pestaña Settings (Configuración) arriba a la derecha.
+2. En el menú lateral izquierdo, buscá la sección Pages.
+3. En el apartado Build and deployment:
+asegurate de que la fuente sea "Deploy from a branch"
+y que la rama (Branch) seleccionada sea gh-pages
+(en la carpeta /root)
+Dale a Save.
+
+GitHub va a tardar entre 1 y 2 minutos en procesar los archivos por primera vez
+Arriba de todo en esa misma pantalla de Settings -> Pages
+te va a aparecer un cartel verde con tu link público oficial
+
+va a tener una estructura parecida:
+`[https://tu-usuario-github.github.io/tu-nombre-de-repositorio/](https://tu-usuario-github.github.io/tu-nombre-de-repositorio/)`
+
+##### Detalle técnico clave: GitHub Pages aloja tu proyecto en una subcarpeta
+con el nombre de tu repositorio al final
+las rutas relativas que genera Storybook por defecto en su versión moderna van a encajar a la perfección
+sin que tengas que configurar ningún "base path" raro en tus archivos de configuración
+
+#### A partir de ahora, cada vez que crees un componente nuevo o mejores el diseño
+##### solo tenés que tirar npm run deploy
+en tu terminal y tu catálogo público se va a actualizar solo en minutos
+
+
+
+#### Vercel
+
+##### En Vercel no necesitás compilar nada en tu computadora ni instalar paquetes extra como gh-pages.
+##### Vercel se conecta directamente a tu repositorio de GitHub
+##### cada vez que hacés un git push a tu rama principal
+##### sus servidores detectan el cambio, compilan tu Storybook en la nube y lo actualizan en
+
+Es el estándar de la industria actual para flujos de Integración Continua (CI/CD).
+
+Despliegue Automatizado en Vercel:
+
+1. Conectar tu cuenta de GitHub
+Paso inicial en la nube
+
+Cuenta gratuita de vercel.com
+opción de registrarte usando tu cuenta de GitHub
+##### Esto le da permisos a Vercel para leer tus repositorios.
+
+
+2. Importar repo
+Selección de proyecto
+
+En el panel principal de Vercel
+hacé clic en el botón "Add New..." y luego en "Project".
+Vas a ver una lista con tus repositorios de GitHub
+Buscá el de tu Today App y hacé clic en "Import".
+
+
+3. Configurar comandos de Storybook
+crucial
+
+Antes de hacer clic en Deploy
+##### desplegá la sección llamada "Build and Output Settings".
+Vercel por defecto va a intentar compilar tu aplicación de React normal
+Para decirle que mapee tu Storybook
+##### tenés que cambiar la configuración para que quede exactamente así:
+
+Framework Preset:
+Elegí `Other` (o dejalo en `Vite`
+si lo detecta, pero desactivando los comandos automáticos).
+
+Build Command:
+Activá el `interruptor (override)` y escribí:
+`npm run build-storybook`
+
+Output Directory:
+Activá el `interruptor` y escribí:
+`storybook-static`
+
+
+4. Deploy
+
+Con esos dos campos cambiados: click en deploy
+##### Vercel va a clonar tu repositorio en sus servidores
+##### va a instalar las dependencias de Node de forma oculta
+##### y va a correr el proceso de compilación estática.
+
+
+Lo siguiente:
+la pantalla va a tirar papelitos digitales
+te va a dar una URL pública gratuita
+
+`tu-proyecto.vercel.app`
+
+`Automatización total`:
+Te olvidás de los comandos de la terminal
+creás tus historias, hacés git commit -m "nuevo atomo" y git push
+Vercel se encarga del resto en segundo plano
+
+`Production Ready`:
+##### Las URLs de Vercel suelen cargar un pelín más rápido que las de GitHub Pages
+##### gracias a su red de distribución global (CDN) optimizada.
+
+
+Portfolio:
+##### Si en el mismo repositorio tenés tu aplicación de React y tu Storybook
+##### podés crear dos proyectos separados en Vercel apuntando al mismo repositorio de GitHub
+
+##### A uno lo configurás con los comandos normales de Vite para que despliegue la app
+##### al otro le ponés estos comandos de Storybook
+##### Así tenés dos links profesionales
+
+
+
+
+#### Netlify
+
+Como vercel, velocidad y simplicidad
+
+##### Netlify se conecta a tu GitHub y automatiza todo el flujo:
+##### detecta tu git push, compila en la nube y actualiza tu URL pública
+
+El proceso es casi idéntico
+solo cambian un par de nombres en los casilleros de configuración
+
+1. Cuenta
+registrate o iniciá sesión usando tu cuenta de GitHub
+De esta forma, Netlify tendrá acceso seguro a tus repositorios públicos y privados
+
+2. Importar un nuevo sitio desde Git
+Selección del origen
+
+En tu panel principal (Dashboard)
+hacé clic en el botón "Add new site"
+seleccioná la opción "Import an existing project".
+En la lista de proveedores de Git, elegí GitHub
+seleccioná el repositorio de tu app.
+
+3. Comandos del System Build
+Configuración crítica
+
+Netlify va a escanear tu proyecto
+Desplazá la pantalla hacia abajo hasta la sección llamada "Build settings"
+(Configuración de compilación) y completá los casilleros exactamente con estos datos
+
+`Build command`:
+npm run build-storybook
+
+`Publish directory`:
+storybook-static
+
+Asegurate de borrar cualquier comando automático que Netlify intente adivinar por defecto
+como npm run build o la carpeta dist, para que se enfoque solo en Storybook)
+
+
+4. Despliegue
+
+Clic en botón ''Deploy projectX'
+que está al final de la página
+##### Netlify va a levantar un servidor en segundo plano
+##### instalará tus dependencias y compilará la carpeta estática.
+
+
+Netfily y portfolio:
+
+`Cambiar el nombre de la URL`:
+Netlify te va a asignar un subdominio aleatorio bastante feo
+(algo como magnificent-unicorn-12345.netlify.app).
+
+Podés cambiarlo:
+Site configuration -> Site details -> Change site name
+ponerle algo profesional como tu-nombre-storybook.netlify.app totalmente gratis
+
+Deploys de previsualización (Deploy Previews):
+Si en el futuro trabajás con ramas de Git (por ejemplo, creás una rama feature/nueva-tarea)
+cada vez que subas esa rama o abras un Pull Request
+Netlify te va a generar una URL temporal única para esa rama
+Esto te permite testear cómo se ve un componente nuevo en la nube
+antes de fusionarlo con tu rama principal.
+
+
+
+# Ecosistema de hosting estático y JAMstack
+
+Fuera de GitHub Pages, Vercel y Netlify
+
+1. Cloudflare Pages:
+maneja una de las redes de servidores más grandes del planeta
+Su servicio de Pages es un rival directo de Vercel y Netlify con una ventaja brutal
+su plan gratuito incluye ancho de banda e integraciones de Git ilimitadas
+
+funciona: Te logueás con GitHub
+seleccionás el repositorio
+y en la configuración de build ponés los mismos datos de siempre
+npm run build-storybook y storybook-static.
+
+Ideal para: Rendimiento extremo
+Al estar montado sobre la CDN de Cloudflare
+tu Storybook va a cargar de forma instantánea desde cualquier rincón del mundo
+
+
+2. Surge.sh: para terminal
+
+saltearte por completo las interfaces web
+las cuentas en plataformas pesadas y los clics
+
+Surge es la definición de minimalismo
+##### servicio de hosting estático que se maneja 100% desde la consola
+
+funciona: Compilás tu Storybook localmente con npm run build-storybook
+Después, instalás su CLI y lo subís con dos comandos:
+
+```
+npm install -g surge
+surge storybook-static/
+```
+
+La primera vez te pide un mail y una contraseña ahí mismo en la terminal
+te genera una URL aleatoria (que podés editar) y listo.
+Tu proyecto ya está en vivo
+
+Ideal para: Flujos de trabajo ligeros y minimalistas
+directo desde tu entorno Linux sin intermediarios
+
+
+3. Render.com: alternativa moderna a Heroku
+
+Se volvió hiperpopular para desplegar aplicaciones Full Stack (Node, Python, Go, bases de datos),
+pero tiene una sección excelente y gratuita para Static Sites.
+
+Se conecta a tu GitHub igual que Vercel
+Detecta los cambios automáticamente
+compila en la nube usando tus scripts de Storybook.
+
+Ideal para: Si a futuro pensás expandir tu portfolio con aplicaciones que requieran un backend real en Python o Node
+tener todo centralizado en el mismo panel de Render es comodísimo
+
+
+4. Firebase Hosting
+plataforma de infraestructura para desarrolladores de Google
+
+requiere un par de pasos extra de configuración en tu máquina
+una de las opciones más sólidas y profesionales del mercado.
+
+funciona: Instalás las firebase-tools
+iniciás sesión desde la consola y ejecutás firebase init
+Te va a armar un archivo de configuración en tu proyecto
+donde le indicás que tu carpeta pública es storybook-static
+Para subir cambios, tirás firebase deploy.
+
+Ideal para: Sumar "Experiencia en herramientas de Google Cloud / Firebase"
+algo que muchas empresas valoran positivamente.
+
+
+
+# 3. Build: Production Build Check
+
+Optimización y limpieza del código
+
+Ejecutar `npm run build` en tu entorno local para confirmar que TypeScript
+no tire ningún error estricto de tipado de último momento en los archivos de compilación
+
+Toca empaquetar la Today App real para que los usuarios puedan usarla
+
+##### Entender qué hacemos y qué diferencia hay entre el entorno de desarrollo y uno de producción
+
+Como se comporta 'Production Build Check' por detrás
+
+1. Modo Desarrollo: npm run dev: una mentira
+Mientras construías tu app con Vite
+todo cargaba a la velocidad de la luz
+Si cometías un error menor de tipado, a veces la app seguía corriendo igual en el navegador
+
+Por qué?
+
+#### Vite en Desarrollo:
+Prioriza la velocidad
+##### Transpila tu código TypeScript a JavaScript quitando los tipos "a lo bruto"
+##### sin verificar si son 100% correctos, para que veas los cambios al instante
+
+#### Vite en Producción (build):
+Se terminan las contemplaciones
+Antes de armar los archivos finales
+##### Vite despierta al compilador oficial de TypeScript (tsc)
+##### le pide una auditoría estricta de todo tu proyecto
+##### Si encuentra una sola inconsistencia, frena el proceso y no te deja compilar
+
+
+2. Proceso de Auditoría
+
+Cuando lancemos el proceso de compilación
+##### el sistema va a ejecutar un flujo en cadena de tres pasos invisibles
+
+```
+[Tu Código Source] ──>
+[TypeScript Check (tsc)] ──>
+[Vite Bundler] ──>
+[Carpeta dist/]
+```
+
+1. `Type-Checking (tsc --noEmit)`:
+#### TypeScript va a leer cada archivo de tu carpeta src/.
+##### Va a revisar que las props que definimos en los átomos coincidan con lo que mandamos en los organismos
+##### que no haya variables muertas y que ninguna interfaz esté rota
+
+2. `Minificación y Compresión`:
+#### Si el chequeo pasa en limpio, Vite toma el control
+##### Agarra tus Styled Components, tus componentes de React y tus lógica en TypeScript
+##### remueve comentarios
+##### acorta nombres de variables y comprime todo en archivos JS y CSS ultra ligeros
+
+3. `Generación de la carpeta dist/`:
+#### El resultado final caerá en una carpeta llamada dist/ (distribution)
+que es el equivalente a la carpeta storybook-static que armamos antes
+pero para tu aplicación real.
+
+
+3. Puntos de Dolor a tener en cuenta
+
+#### Cuando un proyecto pasa por su primer build estricto
+##### es totalmente normal que salten errores
+
+TypeScript cuida que tu app no se rompa en producción
+
+#### Los errores más comunes que vamos a salir a cazar son:
+
+#### 1. Imports huerfanos: Dejaste un import { useState } from 'react'
+en un archivo donde al final no usaste ningún estado
+##### En desarrollo no pasa nada, pero en producción salta como advertencia o error
+
+#### 2. Props faltantes o mal tipadas: Cambiaste la interfaz de un componente
+a mitad de camino y te olvidaste de actualizar el componente padre que lo llamaba
+
+#### 3. any: Si tenés configurado TypeScript de forma estricta 
+usar any en algún parámetro puede hacer que el build explote.
+
+
+Poder garantizar que tu código pasa un npm run build
+con las reglas estrictas de TypeScript activadas (strict: true en tu tsconfig.json)
+demuestra que escribís código sólido
+
+
+## Comandos Build y configs
+
+1. Comandos
+
+dos comandos que ya vienen preparados en tu package.json
+
+`npm run build`:
+comando principal
+Despierta al compilador de TypeScript para auditar los archivos
+luego a Vite para empaquetar todo
+Si todo sale bien, te genera la carpeta dist/.
+
+`npm run preview`
+comando es clave
+No sirve para compilar, sino para probar localmente el resultado del build
+Levanta un servidor web local superligero que sirve los archivos reales de la carpeta dist/.
+
+
+2. Configs a revisar
+
+en `package.json`:
+
+sección de "scripts
+script de "build".
+
+Debería decir algo como "build": "tsc && vite build"
+(o tsc -b && vite build).
+
+tsc al principio es el comando de TypeScript
+significa que tu proyecto efectivamente va a exigir que no haya errores de tipado para poder compilar
+
+
+`tsconfig.json` o `tsconfig.app.json`:
+qué tan estricto se va a poner TypeScript durante el build
+banderas dentro de `compilerOptions`:
+
+`strict: true`:
+modo Dios de TypeScript
+Activa todas las verificaciones estrictas
+Si está en true, va a tener un estándar de calidad altísimo.
+
+`noUnusedLocals` y `noUnusedParameters`:
+Si estas reglas están en true, el build va a fallar
+si dejaste alguna variable o importación colgada que declaraste
+pero nunca usaste en el código
+clásico error que en desarrollo pasa de largo pero en producción traba todo
+
+
+## npm run preview vs npm run build
+
+Si intentás correr npm run preview sin build
+la consola te va a tirar un error (o va a leer una versión vieja de tu código)
+##### porque todavía no existe la carpeta con los archivos terminados.
+
+npm run build es cocinar
+npm run preview es probarlo
+
+`npm run build`:
+TypeScript para auditar tu código
+Vite para comprimir todo
+Si todo está en orden con tus tipos y componentes
+va a crear una carpeta fresca llamada dist/ en tu proyecto
+con el código de producción
+
+`npm run preview`:
+Lo ejecutamos recién cuando el paso 1 haya terminado con éxito
+cuando la terminal te diga que el build fue exitoso
+##### Abre un servidor web local que apunta directamente adentro de esa carpeta dist/ recién creada
+resultado: Te da un link para que entres desde tu navegador a testear la Today App
+tal cual como la vería un usuario en internet.
+
+
+npm run build:
+
+Pantalla Verde/Limpia:
+Vite te muestra un desglose de cuánto pesan tus archivos .js y .css
+te dice que terminó con éxito.
+
+Pantalla Roja (Errores de TypeScript):
+El compilador frena el build y te dice exactamente en qué línea
+y archivo hay una incoherencia de tipos.
+
+
+
+## Chequeo de errores del compilador
+
+Comando:
+
+```
+npx tsc --noEmit
+```
+
+npx ejecuta herramientas de node
+tsc: lanza el compilador
+--noEmit: audita y muestra errores sin generar archivo/carpeta
+
+package.json en scripts:
+
+```
+"scripts": {
+  "dev": "vite",
+  "build": "tsc && vite build",
+  "preview": "vite preview",
+  "check": "tsc --noEmit" 
+}
+```
+
+
+
+
+# Deploy en producción
+
+En el desarrollo profesional con Git y plataformas modernas (como Vercel o Netlify)
+el despliegue no es un proceso manual de subir archivos por FTP
+es un flujo automatizado (CI/CD).
+
+
+1. Rama de Producción: main
+Antes de conectar cualquier servicio en la nube
+tu arquitectura local tiene que estar ordenada.
+
+`main`:
+debe contener la versión exacta, testeada y estable que querés que vea el mundo
+
+`desarrollo previo`:
+de la rama de desarrollo ya debe estar fusionado ahí
+La nube va a tomar a main como la verdad absoluta para los usuarios reales
+
+
+2. Puente: repo remoto
+Las plataformas miran la nube.
+
+`Crear un repositorio vacío`:
+en tu cuenta de GitHub (o GitLab).
+
+`Repo como intermediario automatizado`:
+Tu único trabajo a partir de ahí será enviar tu código local a ese servidor remoto
+
+
+3. Vinculación y Permisos de la Plataforma
+OAuth
+
+elijas Vercel o Netlify
+el proceso de inicio de sesión se realiza idealmente a través de tu cuenta de GitHub
+
+`Otorgás un permiso seguro a la plataforma`:
+para que pueda "escuchar" lo que pasa en tu repositorio
+
+`Es el núcleo de la Integración Continua (CI)`:
+la plataforma se queda esperando pacientemente a que haya novedades
+
+
+4. Definición del "Contrato de Construcción":
+Build Settings
+
+Cuando importás tu proyecto en Vercel o Netlify
+La plataforma detectará automáticamente que estás usando Vite y React
+
+Hay que verificar tres parámetros clave en su interfaz web
+
+`Command (Comando de compilación)`:
+Le indicamos a la plataforma que ejecute exactamente el mismo comando que usás localmente para compilar
+npm run build
+
+`Output Directory (Carpeta de salida)`:
+Le especificamos que el resultado final estará en la carpeta dist
+El servidor web de producción solo servirá lo que esté dentro de esa carpeta
+
+`Rama Raíz`:
+Le indicamos que apunte explícitamente a tu rama main para el despliegue de producción
+
+
+5. Disparador Automatizado (Despliegue Continuo - CD)
+Una vez configurado, el flujo se vuelve completamente automático y ocurre la magia del CI/CD
+
+Cada vez que realices cambios y los envíes a la rama main en GitHub,
+la plataforma interceptará el evento
+
+En sus propios servidores, de forma aislada
+instalará las dependencias, ejecutará el build
+y, si todo tiene éxito, actualizará tu URL pública en cuestión de segundos
+
+
+El poder en las ramas en la nube:
+En este flujo es que si en el futuro subís cambios a tu otra rama (developer)
+Vercel o Netlify lo detectarán y crearán una `Preview Deployment`
+URL de prueba temporal
+Va a permitir ver cómo quedan tus nuevas funciones en internet
+antes de aprobarlas y pasarlas a la rama main
+
+
+## Repo remoto
+
+1. Entrá a tu cuenta de GitHub
+clic en el botón "New" (Nuevo repositorio)
+
+Repository name:
+nombre representativo
+Ej: today-app
+
+Public / Private:
+Public: reclutadores y otros desarrolladores necesitan poder ver tu código fuente.
+
+Donde dice "Initialize this repository with..."
+no marques ninguna casilla
+Dejá desmarcadas las opciones de Add a README file, Add .gitignore y Choose a license.
+
+proyecto local ya tiene su propio historial, su .gitignore y sus archivos
+Si creás un repositorio con un README en la nube
+Git va a detectar que los historiales son completamente distintos y te va a bloquear el primer envío
+##### Necesitamos que el repositorio remoto nazca 100% vacío
+
+
+2. Vincular tu terminal local con el servidor remoto
+
+Al crear el repositorio vacío
+la plataforma te va a mostrar una pantalla con varias URLs
+Buscá la que dice HTTPS (o SSH si tenés configuradas tus llaves) y copiala
+
+Debería verse algo así:
+`[https://github.com/tu-usuario/today-app.git](https://github.com/tu-usuario/today-app.git)`.
+
+abrí tu terminal dentro de la carpeta del proyecto
+`(~/todoapp`
+Ejecutar los comandos
+
+1. En la rama de producción:
+`git switch main`
+
+2. Crear el puente (Remote):
+El comando le dice a tu Git local que a partir de ahora existe
+un servidor remoto en internet llamado origin apuntando a esa URL
+
+`git remote add origin https://github.com/tu-usuario/today-app.git`
+
+3. Verificar puente
+Que el enlace se hizo bien
+`git remote -v`
+
+dos líneas (una para fetch y otra para push)
+mostrando la URL de tu repositorio
+
+
+3. Subir código
+##### Con el puente enviamos todo tu historial local a la nube
+
+1. Subir rama principal (main)
+`git push -u origin main`
+
+##### -u: Establece una relación de seguimiento (upstream).
+Le dice a tu computadora que, de ahora en más
+cada vez que estés en la rama `main` y quieras subir o bajar cambios
+te va a alcanzar con escribir simplemente `git push` o `git pull`
+sin tener que especificar `origin main` todo el tiempo
+
+2. Subir rama de desarrollo (developer)
+flujo ordenado con una rama de desarrollo
+##### excelente práctica subirla también para que tu portfolio refleje cómo trabajás en el día a día
+
+```
+git switch developer
+git push -u origin developer
+```
+
+Si refrescás la página de GitHub en tu navegador, vas a ver toda la estructura de carpetas de tu aplicación desplegada con su historial de commits intacto
+El código ya está seguro en la nube, y ambas ramas están sincronizadas
+##### El puente para el despliegue automático quedó completamente listo
+
+
+
+# Readme: conceptos/estructura
+
+Carta de presentación de tu software
+reclutador o un colega desarrollador
+lo primero que va a leer
+
+crearlo ahora de forma local en tu rama de desarrollo, commitearlo
+pasarlo a la rama principal y subirlo te va a servir como una práctica espectacular para fijar el flujo de Git que acabamos de armar
+
+Un buen README no necesita ser una enciclopedia
+sino un documento directo, ordenado y estratégico.
+
+1. Título e Introducción Impactante
+
+Nombre: El título del proyecto en la cabecera
+
+Elevador Pitch:
+Una o dos oraciones cortas que expliquen qué es la aplicación
+qué problema resuelve y a quién va dirigida
+
+Evitá descripciones genéricas como "proyecto para practicar"; vendelo como un producto real
+
+2. Acceso Directo (La Demo)
+
+Enlace en Vivo:
+Un botón o enlace destacado que lleve directamente a la aplicación web ya desplegada en internet
+Los reclutadores suelen tener poco tiempo
+si pueden hacer clic y probar la app de inmediato
+ganás muchísimos puntos
+
+3. Características Principales (Features)
+
+Valor Agregado:
+Una lista con viñetas de las funciones más importantes que programaste
+por ejemplo: persistencia de datos, filtros avanzados
+animaciones de interfaz, atajos de teclado, o soporte para modos visuales
+
+4. Stack Tecnológico
+
+Herramientas Utilizadas:
+Una lista organizada de los lenguajes
+librerías principales, empaquetadores y herramientas de estilos
+que componen la arquitectura de la aplicación
+
+Justificación Breve:
+No solo listes los nombres
+si hay alguna tecnología clave
+##### se valora mucho que menciones por qué la elegiste
+
+5. Arquitectura y Decisiones de Diseño
+
+Separación de Concernimientos:
+Explicá brevemente cómo organizaste la estructura de carpetas del proyecto
+y qué patrones de diseño o principios arquitectónicos aplicaste
+para que el código sea limpio, escalable y mantenible
+
+Esto demuestra que no solo tirás código que funciona
+sino que pensás la solución antes de escribirla.
+
+6. Guía de Instalación y Configuración Local
+
+Prerrequisitos:
+Qué herramientas básicas necesita tener instaladas otra persona en su computadora
+para correr tu proyecto
+(como el entorno de ejecución o el gestor de paquetes)
+
+Paso a Paso:
+Los pasos lógicos explicados textualmente para clonar el repositorio
+instalar las dependencias necesarias y levantar el servidor de desarrollo local
+
+7. Suite de Pruebas (Testing)
+
+Estrategia de Calidad:
+Una breve mención sobre cómo implementaste las pruebas en el proyecto
+(pruebas unitarias, de componentes, etc.)
+la explicación de cómo cualquier otra persona puede ejecutar esas pruebas localmente
+para verificar que todo funcione de forma correcta.
+
+
+
+## Formateo de estructura
+
+La industria del software adoptó ciertas convenciones de formato utilizando Markdown
+
+##### La clave es combinar jerarquía visual, elementos gráficos discretos y estructuras que diferencien el texto narrativo de las instrucciones operativas
+
+1. Título e Introducción
+
+Jerarquía Superior (H1):
+nombre del proyecto va en el tamaño de fuente más grande disponible en la parte superior
+
+Badges Visuales (Escudos):
+Justo debajo del título, se estila colocar una línea de "badges" dinámicos
+(pequeñas etiquetas gráficas de colores)
+que muestran el stack principal, el estado del build o la cobertura de tests
+Esto da un impacto visual inmediato antes de leer la primera palabra
+
+Párrafo Limpio:
+La introducción va en texto plano
+sin decoraciones, ocupando no más de tres líneas
+
+2. Acceso Directo: Demo
+
+Bloques de Cita (Blockquotes):
+Para que el enlace no se pierda en el texto
+se lo encierra en un bloque destacado (una línea vertical al costado).
+
+Negrita y Emojis:
+Se acompaña con un emoji de un enlace o una pantalla
+texto en negrita para obligar al ojo del lector a frenar ahí.
+
+3. Características Principales (Features)
+
+Subencabezados (H2): Para abrir la sección de forma clara
+
+Listas con Viñetas (Bullet Points): Cada funcionalidad debe ser un ítem independiente
+
+Negrita de Impacto Inicial: El truco profesional aquí es poner en negrita las primeras dos o tres palabras de la viñeta
+(el concepto técnico) y luego continuar con el texto normal
+Esto permite una lectura escaneada súper veloz
+
+4. Stack Tecnológico
+
+Tablas de Markdown:
+los proyectos profesionales suelen usar una tabla con columnas bien definidas
+ejemplo: una columna para la Categoría (Fronend, Testing, Estilos)
+y otra para las Tecnologías utilizadas
+Esto demuestra orden y estructura mental.
+
+5. Arquitectura y Estructura de Carpetas
+
+Bloques de Código de Texto Plano:
+Para mostrar cómo organizaste tu código
+se suele dibujar un "árbol de directorios"
+visual simplificado utilizando caracteres de texto dentro de un bloque gris monolítico
+Esto separa tu explicación teórica de la representación visual de tu arquitectura
+(así se nota a primera vista tu separación de componentes, hooks, contextos, etc.).
+
+6. Instalación, Configuración y Testing
+
+Listas Numeradas:
+A diferencia de las características, los procesos de configuración son secuenciales
+Se usan números estrictos para indicar el orden cronológico de los pasos
+
+Bloques de Código de Consola:
+Cada vez que el usuario tenga que ejecutar una acción en su terminal
+esa instrucción debe ir aislada en un bloque de código oscuro de una sola línea
+El texto explica el "qué" y el bloque de código contiene el "cómo" listo para ser copiado y pegado con un clic.
+
+
+Regla:
+uso de emojis moderados al inicio de cada encabezado secundario (H2
+rompe la monotonía del fondo blanco o negro de GitHub
+actúa como ancla visual para organizar la lectura de arriba hacia abajo
+
+
+## 1. Título e introducción
+
+```
+# 🎯 Today App
+
+[![React](https://img.shields.io/badge/React-19.0-61dafb?style=flat-square&logo=react)](https://react.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178c6?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
+[![Vite](https://img.shields.io/badge/Vite-6.0-646cff?style=flat-square&logo=vite)](https://vite.dev/)
+
+Una aplicación web de productividad minimalista diseñada para optimizar la gestión de tareas diarias mediante una interfaz fluida, un motor de rendimiento ligero y persistencia de datos local confiable. El proyecto fue desarrollado bajo un enfoque estricto en la separación de responsabilidades y principios de arquitectura limpia para garantizar un código altamente escalable y mantenible.
+```
+
+`Jerarquía Superior (H1)`: Usamos un único símbolo # acompañado de un emoji sutil
+Esto crea un encabezado limpio y de máximo tamaño que define la identidad del repositorio al instante
+
+`Badges Visuales (Escudos)`: En lugar de gastar líneas de texto listando tecnologías
+usamos las imágenes dinámicas de img.shields.io con la opción ?style=flat-square
+Esto le da un aspecto plano, moderno y corporativo
+transmitiendo tu stack tecnológico principal en un milisegundo de forma ultra escaneable
+
+`Párrafo Limpio`: Cambiamos el clásico enfoque de principiante
+("Este es mi proyecto para practicar" o "Hice esta app para aprender")
+por una descripción orientada a producto
+Usar conceptos técnicos clave como separación de responsabilidades arquitectura limpia y escalabilidad
+le demuestra a cualquier equipo de tecnología que entendés los estándares de la industria
+y que programás con criterio profesional.
+
+
+
+## 2. Acceso Directo: demo
+
+Para esta sección la clave es la brevedad extrema
+Un reclutador no quiere leer un párrafo largo
+para encontrar el botón de probar la app
+quiere ver el enlace parpadeando frente a sus ojos
+
+Usando la estructura
+Bloque de cita, negritas y emojis
+
+```
+## 💻 Demo en Vivo
+
+> 🚀 **¡Probá la aplicación en tiempo real!** Podés interactuar con el producto final desplegado en producción haciendo clic en el siguiente enlace: **[today-app.vercel.app](https://tu-url-de-despliegue.vercel.app)**
+```
+
+
+Encabezado (H2):
+Usamos ## para abrir una sección secundaria clara
+El emoji de la computadora da la pauta de que entramos a la sección interactiva.
+
+Bloque de Cita (>):
+Al encerrar la línea con el símbolo >, GitHub le mete un fondo gris sutil
+y una barra vertical azul o gris a la izquierda
+Esto aísla el texto del resto del documento, convirtiéndolo en un imán para los ojos
+
+Negrita y Emojis de Acción:
+El cohete y la frase en negrita funcionan como un llamado a la acción (CTA) de nivel profesional.
+
+Enlace Camuflado:
+En lugar de pegar la URL cruda y fea (como [https://today-app-98723.vercel.app](https://today-app-98723.vercel.app)), usamos
+formato de Markdown [texto](url) para que el enlace se vea limpio, estético y simule un dominio propio impecable
+
+
+
+## 3. Características Principales (Features)
+
+##### los reclutadores técnicos suelen buscar palabras específicas
+palabras clave o keywords
+##### para evaluar tu nivel técnico de un solo vistazo.
+
+aplicando la estructura:
+el bloque para tu aplicación queda redactado de una forma muy profesional
+
+```
+## 🌟 Características Principales
+
+* **Arquitectura de Estado Predictible:** Implementación de un flujo de datos centralizado mediante `useReducer` y `Context API` para garantizar la consistencia del estado global sin comprometer el rendimiento.
+* **Componentes Modulares y Estilizados:** Interfaz minimalista construida íntegramente con `Styled Components`, asegurando un aislamiento absoluto de estilos y un diseño altamente responsivo.
+* **Búsqueda y Filtrado Dinámico:** Sistema de consultas ágil en tiempo real integrado en la interfaz para segmentar y localizar tareas de forma inmediata.
+* **Persistencia de Datos Local:** Almacenamiento e integración nativa con el almacenamiento del navegador para salvaguardar la información del usuario de manera fluida entre sesiones.
+* **Navegación Fluida:** Distribución ergonómica de paneles mediante una barra lateral dedicada (`TaskSidebar`) que optimiza el espacio de trabajo en pantalla.
+```
+
+
+Negrita de Impacto Inicial:
+Si te fijás bien, un lector puede simplemente bajar los ojos verticalmente leyendo solo las negritas
+("Arquitectura de Estado...", "Componentes Modulares...", "Búsqueda y Filtrado...")
+e interpretar perfectamente la complejidad del proyecto en menos de 3 segundos
+
+### !!! Vocabulario de Nivel Senior:
+En lugar de escribir "Usa Context para que ande bien" u "Organicé los botones en un costado"
+el formato utiliza términos formales de ingeniería de software como flujo de datos centralizado
+aislamiento absoluto de estilos y distribución ergonómica
+Eso demuestra un criterio de desarrollo maduro.
+
+
+
+## 4. Stack Tecnológico: Tablas de Markdown
+
+##### Cuadro comparativo que transmite madurez técnica, organización y claridad absoluta
+
+Para presentar las herramientas principales de tu stack moderno
+cuales incluyen React, Vite, TypeScript y soluciones CSS-in-JS como Styled Components
+##### el formato estructurado de una tabla le permite a cualquier evaluador entender la arquitectura de tu aplicación en un segundo
+
+```
+## 🛠️ Stack Tecnológico
+
+| Categoría | Tecnología | Propósito / Justificación |
+| :--- | :--- | :--- |
+| **Core Frontend** | React | Construcción de una interfaz de usuario declarativa, eficiente y basada en componentes modulares. |
+| **Lenguaje** | TypeScript | Implementación de tipado estricto para garantizar la robustez del código y prevenir errores en desarrollo. |
+| **Empaquetador** | Vite | Entorno de desarrollo ultra veloz, hot-reload inmediato y optimización avanzada del build de producción. |
+| **Estilos** | Styled Components | Estilos encapsulados a nivel de componente (CSS-in-JS), facilitando el mantenimiento y evitando colisiones globales. |
+| **Entorno de Pruebas** | Vitest | Suite de testing moderna y de alto rendimiento, totalmente integrada con la configuración nativa del empaquetador. |
+```
+
+Alineación Justificada (:---):
+Al colocar los dos puntos a la izquierda en la segunda línea del código de la tabla
+forzamos a que todo el texto de las celdas se alinee perfectamente hacia la izquierda
+Esto facilita muchísimo la lectura vertical en pantallas de cualquier tamaño
+
+Columna de "Propósito / Justificación":
+Este es el toque clave para diferenciarte
+Muchos desarrolladores principiantes solo listan los nombres de las tecnologías
+Al añadir una columna que explica por qué se usó cada herramienta
+(por ejemplo, destacar el tipado estricto de TypeScript o el encapsulamiento de Styled Components)
+le demostrás al reclutador que elegís tus herramientas con criterio de ingeniería y no por moda
+
+
+
+## 5. Arquitectura y Decisiones de Diseño
+
+Separación de Concernimientos:
+Explicá brevemente cómo organizaste la estructura de carpetas del proyecto
+y qué patrones de diseño o principios arquitectónicos aplicaste
+para que el código sea limpio, escalable y mantenible
+
+Esto demuestra que no solo tirás código que funciona
+sino que pensás la solución antes de escribirla.
+
+
+Arquitectura y Estructura de Carpetas:
+
+##### Imán para los líderes técnicos o arquitectos de software que revisen tu portfolio
+Mostrar un árbol de directorios limpio y ordenado
+planificación de la escalabilidad de una aplicación
+evitando el antipatrón de tirar todos los componentes en una sola carpeta gigante
+
+se utiliza un bloque de código de texto plano (```text)
+dibuja las ramas del proyecto de forma geométrica y ultra entendible
+
+```
+## 🏗️ Arquitectura y Estructura de Carpetas
+
+El proyecto implementa un enfoque modular basado en la separación absoluta de responsabilidades (Separation of Concerns). Los componentes visuales, la lógica de estado global y los esquemas de tipado se encuentran estrictamente desacoplados:
+
+text
+src/
+├── assets/             # Recursos estáticos (esquemas SVG, iconos, favicon)
+├── components/         # Componentes de la interfaz de usuario (UI)
+│   ├── common/         # Componentes atómicos reutilizables (Botones, Inputs)
+│   └── layout/         # Componentes estructurales de la aplicación
+│       └── TaskSidebar/# Panel lateral de tareas encapsulado con sus estilos
+├── context/            # Gestión de estado global (Context API + useReducer)
+│   ├── TaskContext.tsx # Proveedor de contexto y estado unificado
+│   └── taskReducer.ts  # Lógica de transiciones de estado predictible
+├── hooks/              # Ganchos personalizados (Custom Hooks) para lógica extraída
+├── types/              # Definiciones y contratos de tipos estrictos de TypeScript
+├── App.tsx             # Componente raíz y Orquestador de la aplicación
+└── main.tsx            # Punto de entrada de la aplicación y renderizado en el DOM
+```
+
+Bloque Monolítico en Texto Plano text:
+especificarle a Markdown que el bloque es tipo `text`
+evitamos que intente colorear las palabras al azar como si fuera JavaScript
+Mantiene una fuente monoespaciada gris perfecta
+donde cada espacio cuenta para dibujar las ramas (`├──`, `│`, `└──`).
+
+Comentarios Alineados (`#`):
+Colocar comentarios breves a la derecha de cada directorio clave
+explica al evaluador el `rol` de cada carpeta
+
+Demostración de Encapsulamiento:
+Al mostrar explícitamente que TaskSidebar es una carpeta autónoma
+donde pondrás su lógica y sus estilos es saber rechazar otras opciones atractivas para mantener el enfoque lineal.
+
+
+
+## 6. Instalación, Configuración y Testing
+
+Puramente operativa y sumamente importante
+garantiza que cualquier otro desarrollador
+##### o un líder técnico que quiera evaluar tu código en su máquina
+##### pueda clonar tu proyecto y levantarlo en cuestión de segundos sin adivinar qué comandos usar
+
+Para reflejar un proceso secuencial y ordenado, combinamos listas numeradas
+para establecer la línea de tiempo del proceso
+con bloques de código de consola aislados
+para que las instrucciones de la terminal queden listas para copiar y pegar
+
+```
+## 🚀 Instalación y Ejecución Local
+
+Para levantar el entorno de desarrollo local y ejecutar la aplicación en tu computadora, seguí estos pasos secuenciales:
+
+1. **Clonar el repositorio:**
+   Descargá una copia completa del proyecto a tu máquina local mediante la terminal.
+   sh
+   git clone [https://github.com/tu-usuario/today-app.git](https://github.com/tu-usuario/today-app.git)
+```
+
+1. Acceder al directorio:
+Navegá hacia la carpeta raíz donde se encuentra la configuración del proyecto.
+
+```
+cd today-app
+```
+
+2. Instalar dependencias:
+Descargá e instalá todos los paquetes y librerías necesarias especificadas en el archivo de configuración
+
+```
+npm install
+```
+
+3. Iniciar el servidor de desarrollo
+Levantá el servidor local para visualizar y probar la aplicación en tiempo real en tu navegador
+
+```
+npm run dev
+```
+
+
+Suite de Pruebas (Testing):
+
+El proyecto cuenta con una cobertura de pruebas automatizadas
+para validar la consistencia de la lógica de negocio y las transiciones del estado global.
+
+Ejecutar tests en modo interactivo (Watch Mode):
+Ideal para el flujo de trabajo diario mientras modificás el código fuente
+
+```
+npm run test
+```
+
+Ejecutar tests en modo de producción (CI Run)
+Realiza una pasada única y completa de toda la suite de pruebas, ideal para entornos de integración continua
+
+```
+npm run test:run
+```
+
+
+Contrato de Bloques:
+Especificar `sh` o `bash` en la apertura del bloque de código, resaltado de sintaxis propio de la terminal
+El comando se aísla por completo, 
+facilitando que el usuario haga doble clic y lo copie
+
+Separación del "Qué" y el "Cómo:
+El texto de la lista numerada explica la acción teórica
+de manera breve y profesional (el "qué"), 
+mientras que la caja oscura representa la ejecución técnica exacta (el "cómo").
+Esto evita confusiones o líneas de comando eternas difíciles de asimilar
+
+Mención del Entorno de Pruebas:
+Agregar una sección específica para los tests
+(Vitest en tu caso) le da un peso tremendo a tu portfolio
+Demuestra que considerás el control de calidad
+como una parte fundamental del ciclo de vida del software
+habilidad altamente valorada en ambientes corporativos
+
+
+
+# Vinculación y Permisos de la Plataforma (OAuth)
+
+Ya sea que elijas Vercel o Netlify, el proceso de inicio de sesión se realiza idealmente a través de tu cuenta de GitHub.
+Al hacer esto, le otorgás un permiso seguro a la plataforma para que pueda "escuchar" lo que pasa en tu repositorio.
+
+Esto es el núcleo de la Integración Continua (CI):
+la plataforma se queda esperando pacientemente a que haya novedades en tu código
+    
+
+Crear un pacto digital seguro entre tu cuenta de GitHub y la plataforma de despliegue (Vercel o Netlify).
+En lugar de crear un usuario y contraseña nuevos en Vercel, usás tu identidad de GitHub como pasaporte
+
+Bajo el capó, este proceso se divide en tres conceptos clave que hacen que la magia de la automatización funcione de manera segura y profesional
+
+1. OAuth (Autenticación Delegada)
+OAuth es un estándar de seguridad de la industria
+Cuando hacés clic en "Sign in with GitHub" en Vercel o Netlify, se abre una ventana emergente de GitHub que te pregunta si aceptás el enlace
+
+Seguridad absoluta: Vercel nunca ve ni almacena tu contraseña de GitHub.
+
+La Llave (Token): Al aceptar, GitHub le genera a Vercel un token (una llave digital única y encriptada)
+que sirve exclusivamente para que la plataforma pueda entrar a tu cuenta a leer tu código
+y que vos podés revocar en cualquier momento desde los ajustes de GitHub
+
+2. Definición del Alcance (Scope)
+Durante este apretón de manos, la plataforma te va a preguntar qué nivel de acceso querés otorgarle
+La industria ofrece dos caminos
+
+Acceso Total: Le das permiso para ver todos los repositorios de tu cuenta (actuales y futuros)
+Es el camino más rápido si vas a subir muchos proyectos de portfolio.
+
+Acceso Seleccionado (Recomendado por seguridad): Podés elegir explícitamente darle acceso únicamente al repositorio de tu aplicación
+Si mañana creás otro proyecto, vas a tener que autorizarlo manualmente
+Esta granularidad demuestra un excelente criterio de seguridad informática
+
+3. El Sistema de Alertas (Webhooks)
+donde nace la Integración Continua (CI).
+Al finalizar la vinculación, Vercel instala un Webhook en tu repositorio de GitHub de forma invisible.
+
+Webhook:
+GitHub se compromete a llamar a Vercel de inmediato cada vez que ocurra un evento importante en tu repositorio
+
+Práctica:
+Una vez que este puente de permisos está construido
+tu flujo de trabajo cambia para siempre porque la nube se encarga del trabajo pesado
+
+1. Vos trabajás localmente, hacés tus commits y tirás un git push origin main
+2. El código llega a GitHub.
+3. GitHub se da cuenta del cambio y, gracias al permiso OAuth, activa el Webhook
+4. Vercel se despierta, descarga ese código nuevo usando su llave digital
+ejecuta el npm run build en sus propios servidores y actualiza la web de forma automática
+
+
+## GitHub Pages
+
+Desplegar una aplicación construida con Vite + React + TypeScript
+en GitHub Pages requiere un par de pasos extra de configuración en comparación con Vercel o Netlify.
+
+##### Esto se debe a que GitHub Pages está diseñado originalmente para sitios estáticos simples
+##### y, por defecto, no sabe cómo compilar un proyecto de Vite ni cómo manejar las rutas de una SPA (Single Page Application).
+
+Como estás trabajando de forma ordenada con Git
+##### realiza todo este proceso parado en tu rama developer.
+
+1. Modificar el `base` en vite.config.ts
+##### Por defecto, Vite compila el proyecto asumiendo que se va a subir a la raíz de un dominio (ej. tuweb.com).
+
+##### Pero en GitHub Pages, tu web vivirá en una subcarpeta con el nombre de tu repositorio
+
+`https://tu-usuario.github.io/nombre-del-repo/.`
+
+##### !!! Si no le avisás esto a Vite, la página va a quedar en blanco porque no va a encontrar los archivos CSS ni JavaScript
+
+Abrí tu archivo vite.config.ts en la raíz y agregá la propiedad base:
+
+```
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+
+export default defineConfig({
+  plugins: [react()],
+  base: '/nombre-de-tu-repositorio/', // ⚠️ Reemplazá esto por el nombre exacto de tu repo en GitHub
+})
+```
+
+2. Instalar el paquete de automatización
+
+Para no tener que subir los archivos compilados a mano
+##### usamos una librería oficial de la comunidad de Node llamada gh-pages
+se encargará de crear una rama oculta en tu GitHub y subir el código limpio ahí.
+
+`npm install gh-pages --save-dev`
+
+3. Configurar los scripts en package.json
+
+archivo `package.json` y buscá la sección de `"scripts"`.
+Al final de la lista de comandos, agregá estas dos nuevas líneas
+
+```
+"scripts": {
+  "dev": "vite",
+  "build": "tsc && vite build",
+  "lint": "eslint .",
+  "preview": "vite preview",
+  "predeploy": "npm run build",
+  "deploy": "gh-pages -d dist"
+}
+```
+
+`predeploy`: Se ejecuta automáticamente antes de subir la web
+Se asegura de compilar el código TypeScript y generar la carpeta de producción (dist).
+
+`deploy`: Toma la carpeta dist recién creada y la empuja directamente a GitHub
+
+4. Guardar cambios y ejecutar el despliegue
+
+Ahora que configuraste tu entorno local, es hora de hacer el primer envío
+
+```
+# 1. Guardar tus cambios en Git local
+git add .
+git commit -m "chore: add github pages deployment configuration"
+
+# 2. Subir tus cambios a tu rama remota
+git push origin developer
+
+# 3. ¡Ejecutar el despliegue!
+npm run deploy
+```
+
+##### Al ejecutar npm run deploy: la terminal te va a pedir tus credenciales de GitHub (si no las tenés guardadas) y tras unos segundos verás el mensaje "Published".
+
+5. Activar la rama en GitHub
+
+##### Cuando ejecutaste el comando anterior, la librería creó una nueva rama en tu repositorio remoto llamada gh-pages
+##### donde guardó únicamente el código compilado para internet
+
+##### Ahora hay que decirle a GitHub que muestre esa rama:
+
+Entrá a tu repositorio en la web de GitHub.
+
+Andá a la pestaña de ⚙️ Settings (Configuración) en el menú superior.
+
+En la barra lateral izquierda, buscá la sección Pages.
+
+Donde dice Build and deployment -> Source
+asegurate de que esté seleccionado "Deploy from a branch".
+
+Abajo, en Branch, cambiá main por gh-pages
+(la carpeta dejala en /root) y dale al botón Save (Guardar).
+
+
+Aplicación en vivo: 
+En la parte superior de esa misma pantalla de Settings -> Pages
+GitHub te va a mostrar un recuadro verde con la URL pública de tu aplicación
+(puede tardar un minuto en procesar el primer despliegue).
+
+#### !!! A partir de ahora, cada vez que hagas un cambio en tu código y quieras actualizar la web en vivo
+solo tendrás que ejecutar el comando:
+
+`npm run deploy`
+
+tip profesional:
+Ahora que ya tenés la URL real de tu aplicación provista por GitHub Pages
+podés volver a tu archivo README.md local
+##### reemplazar el marcador de posición que dejamos en la sección de "Demo en Vivo"
+##### por este enlace real, hacer el commit y subirlo a tu rama main
+
+
+
+# Automatización y GitHub Actions
+
+##### !!!El método que configuramos en el paso anterior usando el paquete gh-pages es lo que en la industria llamamos un flujo semiautomático
+La automatización está en el script (npm run deploy se encarga de compilar y subir todo solo)
+##### pero el disparador sigue siendo manual: tenés que ejecutarlo vos en tu terminal local.
+
+Si querés lograr la verdadera magia del Despliegue Continuo (CD) en GitHub Pages
+#### !!! donde vos te olvidás de compilar y la nube lo hace sola cada vez que hacés un git push
+
+##### el proceso cambia de herramientas y pasa a usar GitHub Actions
+
+
+#### !!! Funcionamiento conceptual del circuito 100% automatizado
+
+### CD Puro con GitHub Actions
+
+#### !!! En lugar de usar tu computadora para compilar el proyecto y generar la carpeta dist
+le delegamos ese trabajo pesado a los servidores de GitHub
+El flujo se transforma en esto
+
+
+1. Evento de Disparo (The Trigger)
+##### !!! Vos terminás de programar una funcionalidad en tu rama developer
+##### hacés el merge a main y ejecutás el clásico comando de Git:
+
+`git push origin main`
+
+Acá termina el trabajo humano
+No tocás ningún comando de despliegue.
+
+
+2. Activación del Flujo (Workflow)
+GitHub recibe tus archivos de código fuente (los archivos .ts, .tsx, etc.).
+Al llegar a la rama main, GitHub revisa una carpeta oculta dentro de tu proyecto llamada .github/workflows/.
+##### Si encuentra ahí adentro un archivo de configuración (una "receta" en formato YAML)
+#### !!! se activa la alarma de Integración Continua (CI).
+
+
+3. La Máquina Virtual en la Nube (Runner)
+##### GitHub te presta una computadora virtual en sus propios servidores (un contenedor Linux) de forma gratuita
+De forma invisible para vos, esa máquina realiza las siguientes tareas secuenciales:
+
+Clona el código que acabás de subir.
+
+Instala Node.js y todas las dependencias de tu package.json.
+
+Ejecuta tu suite de pruebas (npm run test:run) para asegurar que no rompiste nada.
+
+Si los tests pasan con éxito, ejecuta el compilador (npm run build).
+
+
+4. Publicación Nativa (The Deployment)
+
+Una vez que la máquina virtual generó la carpeta dist
+utiliza una acción interna de GitHub para tomar esos archivos estáticos
+y "inyectarlos" directamente en el servidor web de GitHub Pages.
+
+
+##### Las empresas grandes no usan flujos manuales usan pipelines de Actions, Jenkins o GitLab CI
+
+
+
+## Github Pages y Github Actions vs Vercel o Netlify
+
+dependiendo de si querés destacar tu capacidad de diseño de producto
+o tus habilidades de infraestructura (DevOps).
+
+GitHub Pages + Actions vs. Vercel / Netlify
+
+
+1. Configuración Inicial:
+
+gh:
+Compleja (Requiere escribir tu propio archivo YAML de CI/CD).
+
+vr,n:
+Ultra simple (Tres clics mediante interfaz web).
+
+2. Manejo de Rutas (SPA)
+
+Con "trucos" (Da error 404 al recargar rutas internas).
+
+Nativo y transparente (Redirecciona todo a index.html).
+
+3. Despliegues de Prueba
+
+No tiene (Solo ves la web final en main).
+
+Preview Deployments automáticos para cada rama o PR.
+
+4. Portfolio
+
+Alto impacto técnico (conocimiento de automatización).
+
+Alto impacto visual (flujo de producto)
+
+
+### GitHub Pages + Actions: 'flex' devops
+
+#### !!! Es como armar tu propio servidor: configurás la infraestructura vos mismo
+
+Ventaja:
+perfil de GitHub
+Al ver la pestaña "Actions" con un historial de ejecuciones exitosas
+demuestra conocimiento en configurar un pipeline (una tubería de procesos automatizados) real
+habilidad fundamental en el desarrollo profesional
+
+Problema: SPAs
+GitHub Pages está pensado para archivos estáticos reales
+Si usás navegación interna en tu app (como React Router)
+
+y el usuario entra a [tuweb.com/dashboard](https://tuweb.com/dashboard)
+y aprieta F5 (recargar), la página va a dar un error 404
+
+##### GitHub va a buscar una carpeta física llamada dashboard que no existe
+porque en React todo lo maneja JavaScript internamente desde un único archivo
+
+##### Para solucionarlo, tenés que configurar un script tramposo
+##### que duplique el index o usar rutas con hash (/#/dashboard), lo cual no queda muy estético.
+
+
+### Vercel o Netlify
+
+##### Estas plataformas fueron creadas específicamente para el ecosistema moderno de React, Vite y Next.js
+Saben exactamente qué estás subiendo y cómo optimizarlo.
+
+Ventaja: 
+
+Previews de Ramas
+##### Si hacés un cambio en tu rama developer y abrís un Pull Request hacia main
+Vercel te genera una URL única y temporal de esa rama de forma automática
+
+##### Podés mandarle ese enlace a cualquiera para que pruebe la nueva funcionalidad antes de que impacte en la web principal
+imita al 100% el flujo de trabajo de las empresas de tecnología de primer nivel
+
+Rutas Perfectas:
+Manejan el enrutamiento del lado del cliente a la perfección
+Con solo configurar un archivo de una línea, la plataforma entiende que si un usuario recarga
+[tuweb.com/dashboard](https://tuweb.com/dashboard)
+tiene que servirle el index.html principal
+dejar que React se encargue del resto
+
+
+
+# GitHubPages y GitHub Actions
+
+Método nativo moderno de GitHub:
+
+Gracias a las Actions actuales
+ya no necesitamos crear una rama extra fea como gh-pages
+ni instalar paquetes raros en Node
+
+GitHub Actions puede compilar tu código en una máquina virtual, empaquetarlo y publicarlo directamente en los servidores de Pages
+
+
+## Práctica GitHub Actions
+
+Configurando cd pipeline
+
+
+### Pipeline de CD
+
+##### Proceso desde rama develop
+
+
+1. archivo vite.config.ts
+##### Vite necesita saber que va a correr en una subcarpeta
+
+Asegurate de que tu archivo vite.config.ts en la raíz tenga la propiedad base
+con el nombre exacto de tu repositorio de GitHub:
+
+```
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+
+export default defineConfig({
+  plugins: [react()],
+  base: '/nombre-de-tu-repositorio/', // ⚠️ Reemplazalo por el nombre de tu repo entre barras
+})
+```
+
+
+2. Receta Automatización: Workflow YAML
+
+##### Los servidores de GitHub buscan las automatizaciones dentro de una estructura de carpetas muy específica
+
+1. En la raíz de tu proyecto creá una carpeta llamada .github
+
+2. Adentro de esa carpeta, creá otra llamada workflows
+
+3. Adentro de workflows, creá un archivo llamado deploy.yml
+
+La estructura en tu árbol de directorios debe quedar exactamente así:
+
+```
+tu-proyecto/
+├── .github/
+│   └── workflows/
+│       └── deploy.yml  <--- ¡ACÁ VA EL ARCHIVO!
+├── src/
+├── package.json
+└── vite.config.ts
+```
+
+#### !!! Abrí ese archivo deploy.yml, su código:
+
+```
+name: Despliegue Continuo (CI/CD) a GitHub Pages
+
+on:
+  push:
+    branches: [ "main" ] # 🚀 El flujo se dispara únicamente cuando empujamos código a main
+
+# Configura los permisos del GITHUB_TOKEN para permitir el despliegue nativo
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Evita ejecuciones simultáneas si hacés pushes muy seguidos
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest # Corre sobre una máquina virtual Linux limpia
+    steps:
+      - name: 📥 Descargar código fuente
+        uses: actions/checkout@v4
+
+      - name: 🟢 Configurar entorno de Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm' # Cachea las dependencias para que los builds futuros sean ultra veloces
+
+      - name: 📦 Instalar dependencias
+        run: npm ci # Instalación limpia y estricta basada en el package-lock.json
+
+      - name: 🏗️ Compilar aplicación (Build)
+        run: npm run build
+
+      - name: ⚙️ Configurar las Pages de GitHub
+        uses: actions/configure-pages@v4
+
+      - name: 📤 Subir el resultado de producción (Artifact)
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './dist' # Sube únicamente la carpeta compilada por Vite
+
+      - name: 🚀 Desplegar en vivo
+        id: deployment
+        uses: actions/deploy-pages@v4
+```
+
+
+3. Switch en la web de GitHub
+
+##### Para que GitHub acepte que una Action maneje la web en lugar de una rama
+tenemos que avisarle en la configuración de la nube
+
+Entrá a tu repositorio en la web de GitHub.
+
+pestaña superior de ⚙️ Settings (Configuración).
+
+menú izquierdo, hacé clic en Pages.
+
+sección Build and deployment -> Source:
+desplegá las opciones y cambiá "Deploy from a branch" por GitHub
+
+
+## Flujo real con github pages y github actions
+
+```
+# 1. Guardá los archivos de configuración en tu rama developer
+git add .
+git commit -m "ci: setup github actions native deployment pipeline"
+git push origin developer
+
+# 2. Ahora, pasate a la rama main para simular un despliegue de producción
+git checkout main
+git merge developer  # Traés los cambios aprobados de developer a main
+
+# 3. ¡Disparás el pipeline!
+git push origin main
+```
+
+Al hacer ese último git push origin main
+ir a la web de tu repositorio en GitHub
+Si hacés clic en la pestaña "Actions" (en el menú superior),
+##### vas a ver tu flujo parpadeando en amarillo con el mensaje "Despliegue Continuo (CI/CD) a GitHub Pages".
+
+Podés hacer clic en él para ver en tiempo real cómo la máquina virtual de Linux se enciende
+instala Node, compila tu proyecto de Vite y lo sube a internet
+Cuando se ponga en verde, ¡tu app estará oficialmente en producción!
+
+
+
+
+# Type-Aware Linting (strictTypeChecked), eslint-plugin-react-x y eslint-plugin-react-dom
+
+
+```
+React + TypeScript + Vite
+
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+
+Currently, two official plugins are available:
+
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+
+React Compiler
+
+The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+
+Note: This will impact Vite dev & build performances.
+
+## Expanding the ESLint configuration
+
+If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+
+
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
+
+      // Remove tseslint.configs.recommended and replace with this
+      tseslint.configs.recommendedTypeChecked,
+      // Alternatively, use this for stricter rules
+      tseslint.configs.strictTypeChecked,
+      // Optionally, add this for stylistic rules
+      tseslint.configs.stylisticTypeChecked,
+
+      // Other configs...
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
+
+You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+
+
+// eslint.config.js
+import reactX from 'eslint-plugin-react-x'
+import reactDom from 'eslint-plugin-react-dom'
+
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
+      // Enable lint rules for React
+      reactX.configs['recommended-typescript'],
+      // Enable lint rules for React DOM
+      reactDom.configs.recommended,
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
+
+```
+
+Configuración actual:
+usa el nuevo formato Flat Config nativo
+la utilidad defineConfig de ESLint
+
+Necesitamos instalar las librerías y luego inyectar la configuración del parser
+(el analizador que lee tu tsconfig.json)
+
+1. Instalar los nuevos plugins
+Antes de modificar el archivo
+ejecutar: `npm install eslint-plugin-react-x eslint-plugin-react-dom --save-dev`
+
+2. Actualizar eslint.config.js
+
+```
+import js from '@eslint/js'
+import globals from 'globals'
+import reactHooks from 'eslint-plugin-react-hooks'
+import reactRefresh from 'eslint-plugin-react-refresh'
+import tseslint from 'typescript-eslint'
+import reactX from 'eslint-plugin-react-x' // Nuevo
+import reactDom from 'eslint-plugin-react-dom' // Nuevo
+import { defineConfig, globalIgnores } from 'eslint/config'
+import eslintConfigPrettier from 'eslint-config-prettier'
+
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      js.configs.recommended,
+      tseslint.configs.strictTypeChecked, // Cambiado de 'recommended' a 'strictTypeChecked'
+      reactHooks.configs.flat.recommended,
+      reactRefresh.configs.vite,
+      reactX.configs['recommended-typescript'], // Nuevas reglas de React
+      reactDom.configs.recommended, // Nuevas reglas de React DOM
+    ],
+    languageOptions: {
+      ecmaVersion: 2020,
+      globals: globals.browser,
+      parserOptions: { // Bloque REQUISITO para Type-Aware Linting
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+    },
+  },
+  eslintConfigPrettier,
+])
+```
+
+`Activación de parserOptions`:
+Al agregar project y tsconfigRootDir
+Ahora puede leer la configuración real de tu compilador de TypeScript
+permite que funcionen las reglas basadas en tipos (como detectar promesas olvidadas o awaits innecesarios).
+
+`Evolución a strictTypeChecked`:
+Reemplazamos la configuración recomendada básica de TypeScript
+por la estricta con conocimiento de tipos
+va a elevar la vara de calidad de tu código drásticamente
+
+`Ecosistema moderno de React`:
+Agregamos reactX y reactDom
+##### Estas configuraciones analizan que uses de forma óptima los hooks
+##### que manejes correctamente las propiedades de los elementos del DOM virtual
+##### que respetes los estándares modernos de React 19.
+
+#### Una vez que guardes el archivo, ejecutá npm run lint en tu terminal
+##### Es completamente normal que la primera vez aparezcan varias líneas rojas de advertencias que antes pasaban desapercibidas
+
+
+
+
+
+
+# Errores compilador
+
+
+
+
+
+
+# Github workflow
+
+
+regla:
+La rama main es sagrada y solo tiene código 100% terminado y sin errores
+Todo el trabajo sucio, las pruebas y las funciones nuevas se hacen en ramas secundarias
+
+1. Sincronizar antes de empezar
+Antes de tocar una sola línea de código
+asegurate de tener en tu PC lo último que esté en la nube
+útil si editaste algo desde la web de GitHub o desde otra máquina
+
+```
+git switch develop
+git pull origin develop
+```
+
+2. Crear una rama para la tarea
+Aislar el trabajo
+Nunca programes directo en develop ni en main
+Crear una rama específica saliendo desde develop
+
+```
+git switch -c feat/history
+
+```
+Escribí tu código, hacé tus pruebas locales en Vite y asegurate de que todo funcione.
+
+3. Guardar cambios locales de forma limpia
+Commits atómicos
+
+No esperes a terminar toda la app para hacer un commit
+Hacé guardados pequeños
+##### Cuando termines una sub-tarea (ej. los estilos del historial)
+
+```
+git status
+git add .
+git commit -m "feat: add basic layout and styles for history component"
+```
+
+4. Fusionar el trabajo en desarrollo
+Integración local
+
+##### Cuando tu funcionalidad esté 100% terminada y probada en su rama
+llegó el momento de llevarla a la rama de integración (develop).
+##### Primero, volvés a develop y te asegurás de que esté actualizada:
+
+```
+git switch develop
+```
+Traés los cambios de tu rama terminada hacia develop:
+
+```
+git merge feat/history
+```
+
+5. Respaldar en la nube
+Push seguro
+
+##### Ahora que tu rama develop local tiene el código nuevo
+##### subila a GitHub para que tu trabajo quede respaldado en internet:
+
+```
+git push origin develop
+```
+
+Una vez que verificás que todo subió bien
+podés borrar tu rama temporal local con git branch -d feat/history
+para mantener la terminal limpia
+
+6. Lanzar a producción (main)
+Solo cuando cerrás una versión
+
+Terminaste una tanda grande de funciones y la app es totalmente estable?
+hora de actualizar tu portfolio público (main).
+
+```
+git switch main
+git merge develop
+git push origin main
+```
+
+Si tenés configurado GitHub Pages en la rama main
+este último push disparará el deploy automático a internet.
+
+
+Mandamientos de Seguridad
+
+1. Usá tu comando git tree antes de hacer un Push:
+Te va a permitir ver visualmente si estás parado en la rama correcta
+y si tus ramas locales van en línea recta con las de GitHub.
+
+2. No uses git push -f (fuerza):
+La bandera de forzar borra el historial del servidor para acomodarlo a tu máquina
+Si algo no sube, es porque te falta hacer un pull antes
+no porque debas romper el servidor.
+
+3. Los archivos pesados o secretos no se suben:
+Asegurate de que carpetas como node_modules/ o archivos de configuración local .env estén escritos dentro de tu archivo .gitignore antes de hacer el primer git add.
+
+
+
+## Fetch y Rebase
+
+
+### Fetch:
+
+`git pull`
+#### !!! El problema de git pull es que es un comando "gordo": hace un git fetch y un git merge todo junto y a ciegas
+
+git fetch es la versión segura
+conectarse a GitHub, bajarse toda la información de lo que cambiaron tus ramas en la nube
+pero no toca nada de tu código local
+
+Actualiza tus ramas de seguimiento remoto (las que en tu comando git tree
+aparecen como origin/main o origin/develop).
+
+Te permite "espiar" qué hay de nuevo en el servidor antes de decidir integrar esos cambios a tus ramas locales.
+
+
+
+### Rebase: 
+
+Cuando querés integrar los cambios de una rama a otra
+(por ejemplo, actualizar tu rama feat/nueva con lo último que subiste a develop)
+la opción obvia es git merge
+Sin embargo, merge genera un commit extra automático que dice "Merge branch 'develop' into...".
+##### Si hacés esto seguido, tu historial se vuelve un nudo de líneas cruzadas (efecto espagueti).
+
+git rebase (re-basar) cambia la base de tu rama
+En lugar de unir las ramas con un nudo
+##### desarma temporalmente los commits que hiciste en tu rama
+se trae lo último de la rama padre, y vuelve a clavar tus commits uno por uno arriba de todo
+como si recién los hubieras programado hoy.
+
+
+## Flujo con fetch y rebase
+
+el flujo diario para actualizar tu rama de trabajo sin ensuciar el historial sigue esta secuencia exacta:
+
+1. Traer metadatos de la nube
+Estás parado en tu rama de desarrollo o de características y querés actualizarte
+
+```
+git fetch origin
+```
+Ahora tu Git local ya sabe exactamente qué hay de nuevo en GitHub sin haberte alterado tus archivos.
+
+2. Actualizar la rama base en local
+Te pasás un segundo a tu rama de integración local para ponerla al día con lo que acabás de descargar:
+
+```
+git switch develop
+git merge origin/develop
+```
+Como no tocaste develop en local, este merge se hace de forma directa y limpia (Fast-forward).
+
+3. Aplicar el Rebase en tu rama
+Volvés a tu rama de trabajo (por ejemplo, chore/github)
+y ejecutás el rebase contra develop:
+
+```
+git switch chore/github
+git rebase develop
+```
+
+Git va a levantar tus commits
+va a poner abajo lo nuevo de develop
+y va a acomodar tus commits arriba de todo en una línea recta perfecta
+
+
+##### Nunca apliques git rebase sobre una rama que ya subiste a GitHub y que otras personas están usando
+##### Como el rebase reescribe la historia (cambia los hashes de los commits),
+##### si modificás el pasado de una rama pública vas a desincronizar las computadoras de todo tu equipo
+
+
+## Error git rebase: simulación
+
+git rebase sobre algo que ya subiste a GitHub
+el rebase destruye los commits viejos y crea unos nuevos (con hashes diferentes).
+alterando el pasado
+
+Si GitHub ya conoce el pasado viejo y vos le aparecés con un pasado nuevo
+las dos realidades chocan.
+
+1. Comienzo
+Todo viene marchando bien
+Estás trabajando en tu rama chore/github
+Hacés un commit, todo funciona y lo subís a GitHub para tener un respaldo
+
+En tu PC (Local): A ---> B (chore/github)
+En GitHub (Remoto): A ---> B (chore/github)
+
+##### Hasta acá, las dos computadoras están sincronizadas en el commit B. Es un espejo perfecto.
+
+2. Error del rebase
+
+##### Te das cuenta de que la rama develop avanzó con cambios nuevos de la estructura de la app.
+
+#### !!! tirás un `git rebase develop` dentro de tu rama `chore/github`: 
+##### !!! Nunca apliques git rebase sobre una rama que ya subiste a GitHub y que otras personas están usando
+
+
+Git hace su magia: agarra tus commits A y B, los desclava
+mete lo nuevo de develop abajo
+y vuelve a clavar tus cambios arriba
+Pero al hacer esto, sus documentos de identidad (hashes) cambian
+Ahora se llaman A' y B'.
+
+En tu PC (Local): [Cosas nuevas de develop] ---> A' ---> B' (chore/github)
+En GitHub (Remoto): Se quedó en el pasado: A ---> B (chore/github)
+
+3. Choque
+
+Terminaste de trabajar y querés actualizar GitHub.
+Escribís el comando clásico:
+
+`git push origin chore/github`
+GitHub recibe la petición, mira tu historial nuevo (A' -> B'), mira su propio historial (A -> B),
+se da cuenta de que los hashes no coinciden y te rebota el push
+
+```
+! [rejected]        chore/github -> chore/github (non-fast-forward)
+error: failed to push some refs to 'https://github.com/tu-usuario/today-app.git'
+hint: Updates were rejected because the tip of your current branch is behind
+hint: its remote counterpart. Integrate the remote changes (e.g. 'git pull ...')
+```
+
+Salidas:
+
+#### !!! Ante este error, la terminal te da una "pista" (hint): te dice que tires un git pull. ¡Esa es la trampa!
+
+##### El camino incorrecto (Hacer el git pull)
+Si entrás en pánico y hacés caso a la pista tirando git pull
+Git va a intentar resolver el problema haciendo un merge
+entre tu rama rebasada (A'->B') y la rama vieja de GitHub (A->B).
+
+resultado: Tu historial se va a duplicar
+Vas a ver los mismos commits repetidos con nombres parecidos
+se te van a mezclar los archivos y probablemente te estallen conflictos de código inexplicables por toda la pantalla
+
+Tu git tree se convierte en un nudo de espagueti.
+
+
+### Forzar el Push
+Si sabés lo que estás haciendo y ejecutás:
+
+`git push origin chore/github --force`
+Le estás diciendo a GitHub: "No me importa tu opinión, borrá tu historial viejo de A->B
+poné mi nuevo historial de A'->B'".
+GitHub obedece y el espejo se vuelve a alinear.
+
+#### !!! Se diseñó para equipos de trabajo.
+Si compartieras este repositorio con otro programador y ese compañero ya se hubiera bajado a su PC tu rama vieja con el commit B
+en el momento en que vos tirás un --force y le cambiás la historia en GitHub
+le arruinás la vida a tu compañero. Su Git va a colapsar cuando intente sincronizar.
+
+
+tu portfolio personal
+vos sos el único desarrollador que toca este código
+si hacés un rebase local y GitHub te lo rechaza
+podés tirar un git push --force-with-lease
+(una versión más segura de la fuerza) sin culpa alguna
+
+Nadie más se va a ver afectado por tu cambio de historia
+vas a lograr que tu GitHub mantenga esa línea recta perfecta
+y ultra profesional que buscan los reclutadores.
+
+
+### --force-with-lease 
+
+1. Descargar el estado actual de GitHub
+Trae los cambios que tus compañeros de equipo hayan subido al repositorio remoto
+
+`git fetch origin`
+
+2. Aplicar Rebase sobre la rama remota actualizada
+En lugar de moverte a main, hacer pull y regresar, puedes rebasear directamente tu rama actual usando la referencia remota que acabas de descargar
+
+`git rebase origin/main`
+
+##### Si hay conflictos de código: Git detendrá el proceso en el commit conflictivo
+Editas los archivos para resolverlos, los añades al área de preparación con git add ., y ejecutas git rebase --continue
+#### !!! Nunca hagas un nuevo commit en medio de un rebase
+
+3. Subir tus cambios limpiamente a GitHub
+Como el rebase reescribe el historial (crea nuevos hashes SHA para tus commits)
+GitHub rechazará un envío normal
+Debes forzar el envío de manera segura
+
+`git push origin feature-branch --force-with-lease`
+
+El parámetro --force-with-lease es una buena práctica crucial
+##### interrumpe el push si alguien más subió commits a tu rama remota mientras trabajabas
+evitando que pises código ajeno
+
+
+
+## Pull Request hacia main
+
+```
+# 1) Obtener el repo
+git clone https://github.com/usuario/repo.git
+cd repo
+
+# 2) Crear una rama de trabajo
+git checkout -b feature/mi-cambio
+
+# 3) Trabajar y revisar cambios
+git status
+git diff
+
+# 4) Preparar y guardar cambios
+git add .
+git commit -m "Describe el cambio"
+
+# 5) Subir la rama a GitHub
+git push -u origin feature/mi-cambio
+```
+
+Luego, en GitHub, normalmente haces un Pull Request
+hacia main o master.
+
+Para mantenerte al día con cambios remotos:
+
+```
+git fetch origin
+git pull origin main
+```
+
+Un flujo más completo y común en equipo es:
+
+```
+git checkout main
+git pull origin main
+git checkout -b feature/mi-cambio
+# trabajar...
+git add .
+git commit -m "Mensaje claro"
+git push -u origin feature/mi-cambio
+# PR en GitHub
+```
+
+
+### Con Rebase
+
+#### git rebase entra sobre todo cuando quieres poner tu rama encima de la punta actual de otra rama
+##### normalmente main, para mantener un historial más lineal.
+
+```
+git checkout feature/mi-cambio
+git fetch origin
+git rebase origin/main
+```
+
+`sirve cuando`:
+trabajaste un tiempo en tu rama y main avanzó,
+quieres actualizar tu rama sin crear un commit de merge,
+prefieres un historial más limpio y lineal
+
+Ej: si tu rama salió de main hace unos días y mientras tanto otros cambios entraron a main
+con rebase “reaplicas” tus commits arriba de los commits nuevos de main.
+
+`Cuándo usarlo más seguido`:
+en una rama local o personal,
+antes de abrir un Pull Request,
+para traer cambios de main a tu feature branch
+
+`Cuándo evitarlo`:
+en ramas compartidas donde otras personas ya basaron trabajo encima, porque reescribe el historial y puede complicar al equipo
+
+`La diferencia simple con merge es`:
+merge: conserva la historia tal como ocurrió, pero puede crear commits de merge.
+
+`rebase`:
+reordena tus commits para que parezcan hechos sobre la versión más nueva de la rama base
+
+
+#### Flujo práctico: fetch, rebase y --force-with-lease
+
+```
+git checkout feature/mi-cambio
+git fetch origin
+git rebase origin/main
+git push --force-with-lease
+```
+
+##### --force-with-lease suele ser necesario porque rebase cambia los hashes de los commits.
+
+
+
+## Flujo historial limpio: evitar pull, merge y usar fetch y rebase con --force si es necesario
+
+Ej: rama feature
+
+trabajando en feature/login.
+
+```
+# Actualizar referencias remotas
+git fetch origin
+
+# Ir a tu rama
+git switch feature/login
+
+# Reaplicar tu trabajo sobre la última versión de main
+git rebase origin/main
+
+# Resolver conflictos si aparecen
+git add ...
+git rebase --continue
+
+# Subir la rama
+git push --force-with-lease
+```
+
+Ese flujo produce un historial lineal y limpio.
+
+
+#### Sobre git pull: casos
+
+1. rama personal
+En este caso sí es habitual evitar pull y hacer explícitamente:
+
+```
+git fetch
+git rebase origin/main
+```
+
+Más claro porque separa dos operaciones:
+
+```
+fetch → descarga información
+rebase → decide cómo integrarla
+```
+
+2. Configurar pull para que haga rebase
+Muchos desarrolladores sí usan pull, pero configurado así:
+
+`git config --global pull.rebase true`
+
+Entonces
+
+`git pull`
+
+Equivalente a:
+
+```
+git fetch
+git rebase
+```
+
+evita los commits de merge automáticos que produce un git pull tradicional
+
+También es común:
+
+```
+git pull --rebase
+```
+
+3. Rama principal (main)
+normalmente no haces rebase.
+
+```
+git switch main
+git pull origin main
+```
+
+No suele ser necesario hacer push --force sobre main.
+
+
+
+--force-with-lease:
+Solo cuando un rebase cambia el historial después de que ya habías hecho un push
+
+```
+A---B---C  main
+     \
+      D---E   feature
+```
+
+Subes la rama:
+
+`origin/feature -> D-E`
+
+Haces:
+
+```
+git fetch
+git rebase origin/main
+```
+
+tu historial es
+
+```
+A---B---C  main
+         \
+          D'---E'
+```
+Los commits D' y E' tienen hashes nuevos.
+
+Git rechazará:
+`git push`
+porque el historial cambió.
+
+Entonces haces
+`git push --force-with-lease`
+
+
+Flujo:
+
+```
+git switch main
+git pull
+
+git switch -c feature/nueva-funcionalidad
+
+# trabajar...
+
+
+git add .
+git commit -m "Implementa X"
+
+# antes de subir o abrir PR
+git fetch origin
+git rebase origin/main
+
+git push --force-with-lease
+```
+
+Este flujo mantiene un historial lineal, evita commits de merge innecesarios y hace explícita la actualización de la rama con los cambios más recientes de main.
+
+##### el historial limpio no depende solo de usar rebase en tu rama
+##### sino también de cómo se fusionan los Pull Requests
+
+#### !!! Muchos equipos configuran GitHub para usar "Rebase and merge" o "Squash and merge"
+##### evitando los merge commits en main
+
+
+### Ciclo de vida de una rama
+
+No trabajar sobre main, cada vez que empieces algo nuevo:
+
+1. Sincroniza: `git checkout main` y luego `git pull origin main`.
+2. Crea la rama: `git checkout -b feat/mi-tarea`.
+3. Trabaja: Haz tus commits atómicos.
+4. Sube la rama: `git push origin feat/mi-tarea`.
+5. `Pull Request`: En GitHub/GitLab, abre el PR.
+Aquí es donde ocurre la magia: tests automáticos, revisión de compañeros y discusión.
+6. Merge y Limpieza: Una vez aceptado,
+`fusiona y borra la rama (tanto en local como en remoto)`
+para no acumular "ramas fantasma".
+
+Una rama nunca debería vivir más de 2 o 3 días.
+Las ramas largas traen grandes conflictos
+Si una tarea es muy grande, dividirla en ramas más pequeñas
+ej. `feat/login-ui`, `feat/login-api`, `feat/login-validation`)
+
+
+
+
+## Proyecto
+
+1. Git Init
+preparar el terreno localmente antes de subirlo a la nube
+(GitHub, GitLab, Bitbucket).
+
+```
+git init
+```
+
+Si necesitas especificar el nombre de la rama principal
+al inicializar, puedes usar
+
+`git init -b <nombre-rama>`
+
+`git status`
+
+2. Crear archivo .gitignore:
+No querrás subir carpetas pesadas como node_modules
+archivos de configuración personal o ejecutables
+
+Puedes usar `gitignore.io` para generar uno según tu lenguaje o framework
+
+3. Initial Commit
+
+```
+git add .
+git commit -m "chore: initial commit with readme and gitignore"
+```
+
+
+### Remote
+
+Conexión al mundo:
+Una vez tienes tu historial local, necesitas un lugar donde respaldarlo
+
+1. Crear repo remoto
+
+2. Vincula repo local con el remoto
+
+```
+git remote add origin https://github.com/usuario/tu-proyecto.git
+```
+
+3. Subir rama principal
+
+```
+git branch -M main  # Asegura que la rama se llame 'main'
+git push -u origin main
+```
+
+
+### Feature Branch Workflow
+
+Nunca se trabaja directamente sobre main
+
+1. Sincronización
+Antes de empezar algo nuevo
+asegúrate de tener lo último de tus compañeros
+
+```
+git checkout main
+git pull origin main
+```
+
+2. Creación de rama
+Rama descriptiva para tu tarea
+
+```
+git checkout -b feature/login-integration
+```
+
+3. Trabajo y Commits
+Hacer cambios pequeños y frecuentes siguiendo la nomenclatura
+feat:, fix:, etc
+
+```
+git add .
+git commit -m "feat: add login service with jwt"
+```
+
+Publicación y Pull Request (PR)
+Sube tu rama y abre una solicitud de cambios en una plataforma
+para que alguien revise tu código
+
+```
+git push origin feature/login-integration
+```
+
+
+
+## Local develop branch
+
+1. Sincronizar antes de empezar
+tener en tu PC lo último que esté en la nube
+
+```
+git checkout develop
+git pull origin develop
+```
+
+2. Crear rama para la tarea
+Nunca programes directo en develop ni en main
+
+
+```
+git checkout -b feat/historial-component
+```
+
+3. Guardar cambios locales de forma limpia
+Commits atómicos
+
+guardados pequeños
+Cuando termines una sub-tarea (por ejemplo, los estilos del historial):
+
+```
+git status
+git add .
+git commit -m "feat: add basic layout and styles for history component"
+```
+
+4. Fusionar el trabajo en desarrollo
+Integración local
+funcionalidad esté 100% terminada y probada
+
+```
+git checkout develop
+```
+
+Traés los cambios de tu rama terminada hacia develop:
+
+```
+git merge feat/historial-component
+```
+
+5. Respaldar en la nube
+Push seguro
+
+rama develop local tiene el código nuevo
+subila a GitHub para que tu trabajo quede respaldado en internet
+
+```
+git push origin develop
+```
+
+6. Lanzar a producción (main)
+Solo cuando cerrás una versión
+Terminaste una tanda grande de funciones y la app es totalmente estable?
+
+hora de actualizar tu portfolio público (main).
+
+```
+git checkout main
+git merge develop
+git push origin main
+```
+
+
+
+## Flujo en equipo
+
+1. Sincronizar el estado global
+Antes de tocar el teclado
+
+Repositorio remoto en GitHub es la única fuente de verdad
+Al arrancar el día, vas a bajarte lo que tus compañeros terminaron el día anterior:
+
+```
+git checkout develop
+git fetch origin
+git pull origin develop
+```
+
+2. Crear tu rama de tarea
+Aislamiento absoluto
+
+Cada ticket de Jira o tarea del tablero de tu equipo se resuelve en su propia rama aislada
+El nombre suele incluir el tipo de tarea y el número de ticket:
+
+```
+git checkout -b feat/TASK-104-login-validation
+```
+programás con total libertad. Si rompés algo, solo se rompe tu rama.
+
+3. Commits limpios y descriptivos
+Trabajo diario
+
+A medida que avanzás, hacés commits atómicos
+En equipos, los mensajes de commit suelen seguir un estándar
+Ej: Conventional Commits
+
+```
+git add .
+git commit -m "feat(auth): add regex validation for corporate emails"
+```
+
+4. Publicar la rama en GitHub
+Subir propuesta
+
+Cuando terminás la funcionalidad en tu máquina
+subís tu rama para que tus compañeros puedan verla
+No estás tocando el código del proyecto general todavía
+solo estás subiendo tu rama de trabajo:
+
+```
+git push -u origin feat/TASK-104-login-validation
+```
+
+5. Abrir Pull Request (PR)
+trabajo en equipo
+
+Entrás a la web de GitHub
+va a detectar tu push
+"Compare & pull request".
+
+escribís un resumen de qué hiciste, qué archivos tocaste y adjuntás capturas de pantalla si modificaste la interfaz visual
+Estás pidiendo permiso formal para fusionar tu código
+
+6. Code Review e Integración Continua
+Control de calidad
+
+Compañeros (Peers): Revisan tu código línea por línea en GitHub
+te dejan comentarios, dudas o te piden correcciones.
+
+Bots (CI/CD): GitHub Actions ejecuta automáticamente tus pruebas de código (Pytest, Jest, etc.)
+y revisa que el formateo cumpla con las reglas del equipo.
+
+Si te piden cambios, los programás
+hacés un commit normal y tirás git push
+El PR se actualiza solo en la web.
+
+7. Merge y limpieza en la nube
+Cierre de ciclo
+
+Una vez que tu PR tiene las aprobaciones necesarias 
+(los famosos Approve de tus compañeros) y las pruebas pasaron en verde
+Un desarrollador Senior o vos mismo le dan al botón "Merge pull request" desde la web de GitHub.
+El código se fusiona de forma segura en la nube
+Finalmente, borrás la rama desde la misma web para no acumular basura
+
+
+Practicas
+
+PRs:
+Dejá comentarios constructivos y explicá el "por qué" si sugerís un cambio
+
+ramas cortas:
+No abras un Pull Request con 50 archivos modificados y 2000 líneas de código
+imposible de revisar para tus compañeros
+##### preferible abrir tres PRs pequeños y modulares que uno gigante que bloquee al equipo
+
+Actualizarse:
+Si estás trabajando en una funcionalidad que te lleva 3 o 4 días
+ejecutá git fetch y hacé un git rebase develop
+o git merge develop si tu equipo prefiere mantener la cronología estricta
+en tu rama local al menos una vez al día
+Así evitás encontrarte con una montaña de conflictos el último día.
+
+
+
+
+# Flyer de la app
+
+## Composición/componentes
+
+Su único y gran objetivo:
+##### es generar una conversión digital (una descarga o un registro) a partir de un soporte físico o visual rápido
+
+Por eso, su diseño y estructura no se dejan al azar
+##### se basan en un conjunto de conceptos psicológicos, de marketing y de experiencia de usuario (UX) muy específicos
+
+
+Conceptos clave en los que se fundamenta
+
+1. Hero Shot: Mockup del Dispositivo
+Concepto visual central
+Nunca se muestra la interfaz de la app flotando en el aire
+##### se muestra renderizada dentro de un smartphone de última generación
+Esto ayuda a que el cerebro del usuario asimile instantáneamente el contexto:
+"Esto es software para mi teléfono".
+Además, la pantalla del mockup debe mostrar la función más atractiva o limpia de la interfaz
+
+2. Propuesta Única de Valor (UVP)
+##### Responde a la pregunta del usuario: ¿Qué gano yo con esto?
+##### No explica qué hace la app, sino qué problema resuelve
+
+#### Mal ejemplo (Basado en características): "App de base de datos relacional para tareas cotidianas".
+
+#### !!! Buen ejemplo (Basado en valor): "Organizá tu día y ganá dos horas libres".
+
+3. Fricción Cero: Puente QR
+En un flyer físico, nadie se va a poner a tipear una URL larga ni a buscar un nombre genérico en la tienda de aplicaciones
+#### !!! El concepto aquí es eliminar la fricción mediante un Código QR dinámico en un lugar altamente visible
+El usuario apunta con la cámara y cae directo en la tienda de descargas.
+
+4. Disparadores de Confianza (Social Proof)
+#### Instalar una app requiere un voto de confianza (por el espacio en disco y los datos personales).
+#### !!! El flyer se basa en la prueba social para romper esa barrera. Se usan micro-elementos visuales como: "4.8 ★ en App Store"
+##### "+10k descargas" o el logo de algún medio tecnológico que haya hablado de la app
+
+5. Beneficios sobre Características (Benefits vs. Features)
+#### !!! El espacio es extremadamente limitado (la gente escanea un flyer en menos de 3 segundos).
+Por eso se aplica el concepto de resumir la app en máximo 3 puntos clave
+#### !!! enfocados siempre en el beneficio humano
+##### (ej: "Ahorrá dinero", "Sincronizá con tu equipo") y
+y no en el lenguaje técnico (ej: "Algoritmo optimizado en Node.js").
+
+6. Minimalismo y Espacio Negativo
+En diseño de interfaces y marketing de apps
+#### "Menos es más": Un flyer saturado de texto da la sensación de que la aplicación va a ser difícil de usar
+##### !!! El uso de mucho espacio vacío (espacio negativo)
+##### guía el ojo del usuario directamente hacia el título, las pantallas de la app y el botón de descarga
+
+Regla de Marketing de Apps:
+#### El flyer no tiene que vender toda la aplicación
+##### !!! solo tiene que convencer al usuario de que vale la pena escanear el código para ver más
+
+
+
+## 1. Hero Shot
+
+app renderizada en el dispositivo compatible
+no se muestra flotando en el flyer
+
+Es la imagen que va a captar la atención
+##### Definir qué concepto visual vamos a mostrar
+
+
+### Opciones/Ejemplo
+
+1. Héroe del "Check" (Enfoque en la Satisfacción)
+
+##### Este concepto se centra en el momento de mayor satisfacción para el usuario
+##### cuando completa una tarea
+Es un enfoque muy directo y aspiracional.
+
+`Mockup`: Un smartphone moderno, oscuro, centrado en el flyer, quizás con un ligero ángulo.
+
+`Contenido de Pantalla`: basado en el estado real actual de la app
+Mostramos el cuadro de "Mis Tareas".
+El campo de entrada ("¿Qué hay que hacer hoy?") debe estar vacío o con un texto muy simple
+Debajo, mostramos solo 2 o 3 tareas de ejemplo muy claras y sencillas.
+
+Detalle clave:
+Una de las tareas de ejemplo debe tener el check azul marcado
+y la tarea tachada de forma muy visible
+justo como se ve en la captura.
+
+##### Por qué funciona: Vende la sensación de control y logro
+El check azul resalta mucho sobre el fondo oscuro
+Es simple y comunica la función principal de la app en un microsegundo.
+
+
+2. Mapa del Día (Enfoque en la Organización Total)
+
+Este concepto muestra que la app no es solo para anotar
+##### sino para tener un control estratégico de tu día entero
+usando los filtros y categorías inferiores de la interfaz.
+
+Mockup: Un smartphone centrado, en vista frontal.
+
+Contenido de Pantalla:
+Mostramos toda la pantalla móvil
+El cuadro de "Mis Tareas" puede tener varias tareas (unas 5 o 6) para dar sensación de un día lleno.
+
+Detalle:
+Resaltamos visualmente (mediante iluminación o un ligero zoom en esa área)
+la sección de "CATEGORÍAS" en la parte inferior
+Aseguramos que los números de conteo (como el "2" en "Todas") sean muy legibles
+
+##### Por qué funciona: Vende el concepto de organización y estructura
+Atrae a personas que se sienten abrumadas y buscan una herramienta que les ayude a priorizar rápidamente usando los filtros
+(Todas, Pendientes, Completadas).
+
+
+3. Combo de Versatilidad: Enfoque en la Flexibilidad
+
+##### Este concepto combina los elementos visuales
+##### para mostrar que la aplicación se adapta a cualquier contexto, sea móvil o escritorio
+
+El Mockup: Una composición de dos dispositivos: un smartphone oscuro en primer plano
+y un portátil oscuro abierto justo detrás, ligeramente desplazado.
+
+Contenido de Pantalla:
+En el smartphone, mostramos la interfaz móvil
+enfocada en el botón de "Añadir tarea".
+
+pantalla del portátil
+mostramos la versión de escritorio
+mostrando la vista más amplia con las categorías a la izquierda
+
+##### Por qué funciona: Vende profesionalismo y adaptabilidad
+El usuario entiende que puede gestionar sus tareas tanto si está fuera con el teléfono como si está trabajando en la oficina frente al ordenador
+
+
+
+## 2. Propuesta Única de Valor (UVP)
+
+Pregunta del usuario: ¿Qué gano yo con esto?
+No explica qué hace la app, sino qué problema resuelve
+
+Mal ejemplo (Basado en características): "App de base de datos relacional para tareas cotidianas".
+Buen ejemplo (Basado en valor): "Organizá tu día y ganá dos horas libres".
+
+
+Ej app today:
+##### La propia interfaz ya nos da la pista clave
+El texto principal dice: "Tienes X asuntos por resolver hoy".
+##### No dice "organiza tu vida", ni "proyectos a largo plazo". Habla del hoy.
+
+##### La UVP para el flyer tiene que ser un título corto
+##### potente y que prometa un beneficio inmediato
+
+Opciones:
+
+1. Enfoque en el Presente (Un día a la vez)
+
+Este concepto se alinea directo con el nombre de la app
+a personas que se sienten abrumadas por listas de tareas interminables
+buscan simplificar su enfoque al día en curso.
+
+`Título`: Un día a la vez, sin complicaciones
+
+`Subtítulo` (bajada): Organizá tus tareas de hoy
+eliminá el ruido visual y tomá el control de tu rutina con un solo toque
+
+`Por qué funciona`: Transmite calma
+El usuario siente que la app le va a quitar un peso de encima
+al invitarlo a enfocarse solo en lo inmediato
+
+
+2. Enfoque Minimalista (Cero Ruido Mental)
+
+Este explota la estética de las capturas
+Va dirigido a usuarios que odian las apps llenas de botones
+publicidad o configuraciones complejas.
+
+`Título`: Tu día, sin rodeos
+
+`Subtítulo` (bajada): Una interfaz limpia y oscura diseñada para lo único que importa: anotar tus pendientes
+filtrarlos al instante y tacharlos de la lista.
+
+`Por qué funciona`: Conecta el diseño visual con la utilidad
+Promete rapidez ("sin rodeos") y eficiencia extrema
+algo muy valorado en el ecosistema dev y tech.
+
+
+3. Enfoque en la Acción (Productividad Directa)
+
+Enfoque más activo y motivacional
+muy centrado en la satisfacción de completar objetivos
+el "Check" azul que resalta en tu interfaz móvil
+
+`Título`: Menos pendientes, más control
+
+`Subtítulo` (bajada): Transformá tus ideas en tareas resueltas.
+Buscá, categorizá y limpiá tu día con la velocidad que necesitás
+
+`Por qué funciona`: Aspiracional.
+##### Habla al deseo del usuario de ser más productivo y de terminar el día con la lista vacía
+(o con el botón de "Borrar completadas" listo para presionar).
+
+
+Tip de Copywriting:
+En los flyers, el título de la UVP suele ir en la tipografía más grande arriba de todo
+el subtítulo funciona como el puente que conecta ese beneficio con la imagen del teléfono que definimos antes
+
+
+
+## 3. Cero: Puente QR
+
+En un flyer físico, nadie se va a poner a tipear una URL larga ni a buscar un nombre genérico en la tienda de aplicaciones
+Eliminar la fricción mediante un Código QR dinámico en un lugar altamente visible
+El usuario apunta con la cámara y cae directo en la tienda de descargas.
+
+1. Herramientas para generar el código QR
+
+Para un flyer, no te sirve cualquier generador online que te baje una imagen pixelada
+Necesitás alta resolución (preferentemente formatos vectoriales como SVG)
+y la capacidad de personalizar los colores para que combinen con la estética dark mode de tu aplicación
+
+`QR Code Monkey` (Gratuito y Profesional):
+Te permite generar códigos QR estáticos de alta resolución sin registrarte
+Lo mejor es que podés cambiarle el color exacto (usando el código HEX del azul o gris de tu app)
+y te permite descargarlo en SVG o PDF
+que son los formatos que los diseñadores o imprentas necesitan para que no se pixele.
+
+`Canva / Adobe Express` (Integrados):
+Si decidís armar el flyer usando estas plataformas, ambas tienen herramientas nativas de QR
+Solo pegás el enlace de GitHub Pages y te genera el código directamente dentro del lienzo de diseño
+
+`Short.io o Bitly` (Para QR Dinámico):
+Si querés medir el éxito de tu flyer (saber cuánta gente real escaneó el código)
+estas herramientas te permiten crear un enlace acortado que rastrea las métricas y te genera el QR automáticamente
+Si el día de mañana la URL de tu app cambia
+el código QR sigue sirviendo porque podés cambiar el destino desde la plataforma
+
+
+2. Ubicación y Estrategia
+
+##### El posicionamiento del QR responde a cómo lee el cerebro humano
+
+#### !!! Cuando miramos un flyer, nuestros ojos suelen hacer un recorrido en forma de "Z":
+##### empezamos arriba a la izquierda (título), nos movemos a la derecha
+##### empezamos arriba a la izquierda (título), nos movemos a la derecha
+##### (donde va a estar tu Hero Shot del teléfono) y terminamos en la esquina inferior derecha.
+
+#### !!! Por eso, la esquina inferior derecha es el punto de cierre (o zona de acción).
+Ahí es donde debe ir el QR
+
+
+### Diseño para que el QR sea efectivo
+
+`Tamaño importa`:
+Si el flyer es impreso (tamaño folleto común A5 o similar)
+el QR debe medir como mínimo 2x2 cm
+Si es más chico, a las cámaras de los celulares de gama media les cuesta enfocarlo
+
+`Contraste absoluto`:
+Como tu app es oscura
+el flyer probablemente herede esos tonos oscuros tan elegantes
+El QR necesita un "área de respeto" o borde blanco/claro alrededor
+Si pegás el código negro directamente sobre un fondo azul oscuro
+las cámaras no van a poder leerlo porque no distinguen los cuadrados.
+
+`Nunca lo dejes solo`: Llamado a la Acción
+##### Un código QR flotando sin texto genera desconfianza
+#### !!! Siempre, justo al lado o arriba del código, debe haber un micro-texto instructivo (CTA).
+
+
+### Texto para acompañar al QR:
+
+"Escaneá con tu cámara y empezá a organizar tu día ahora."
+(O algo más directo como: "Escaneá para probar la app en vivo").
+
+
+
+### Flyer repo
+
+#### Consideraciones
+
+1. Código QR se transforma en un enlace directo
+
+```
+([![...](...)])
+```
+
+En un README.md, poner un código QR es un error de experiencia de usuario (UX).
+#### !!! El reclutador ya está navegando en su computadora o teléfono
+##### !!!! obligarlo a sacar el celular para escanear la pantalla es sumarle fricción
+
+`Solución`:
+El flyer completo (o un botón diseñado dentro de él) debe ser clickeable
+En Markdown podés envolver la imagen del flyer para que, al hacerle clic
+abra directamente tu app en GitHub Pages
+
+
+2. Formato horizontal (Banner) vs. Vertical (Folleto)
+
+Los flyers tradicionales son verticales (proporción 4:3 o A5).
+##### !!! En un README.md, un diseño excesivamente vertical obliga al usuario a hacer demasiado scroll para empezar a ver el código
+
+`Solución`: El "flyer" para GitHub suele funcionar mejor con formato de Banner Horizontal
+(tipo portada de LinkedIn o Twitter) o un cuadrado estilizado
+Queremos que impacte visualmente apenas cargue el repositorio
+pero sin tapar todo el contenido de texto
+
+
+3. Adaptabilidad al Modo Oscuro y Claro de GitHub
+
+##### GitHub permite a los usuarios elegir entre fondo blanco, gris o negro
+Si diseñás un flyer con fondo transparente y usás texto oscuro
+el usuario que tenga GitHub en modo oscuro no va a poder leer nada.
+
+`solución`:
+Para un flyer publicitario complejo, lo más seguro es usar un fondo sólido
+(por ejemplo, el azul/gris oscuro de la propia identidad de tu Today app). Así
+Así te asegurás de que el flyer se vea idéntico e impecable
+sin importar cómo tenga configurado el navegador el visitante
+
+
+4. Público objetivo cambia (Recrutadores y Devs)
+
+A la gente en la calle no le importa qué tecnología usaste
+pero en GitHub sí.
+El flyer de tu README puede (y debe) lucir orgulloso los logos o etiquetas de tus herramientas
+
+`solución`: En una esquina o al pie del banner, queda muy profesional incluir micro-badges estéticos que digan
+React, TypeScript, Vite, Vitest. Es un flechazo directo al ojo del reclutador.
+
+
+5. Optimización de peso
+
+Un flyer pesado tarda en cargar
+Si el README.md se queda en blanco por 3 segundos mientras descarga una imagen gigante
+el visitante se va.
+
+#### !!! solución: Exportar el diseño final en formatos modernos como .webp o un .png fuertemente comprimido
+##### !!! No debería pesar más de 200-300 KB.
+
+
+
+
+## 4. Disparadores de Confianza (Social Proof)
+Instalar una app requiere un voto de confianza (por el espacio en disco y los datos personales).
+##### El flyer se basa en la prueba social para romper esa barrera. Se usan micro-elementos visuales como: "4.8 ★ en App Store"
+"+10k descargas" o el logo de algún medio tecnológico que haya hablado de la app
+
+Cuando un usuario de a pie ve un flyer de una aplicación
+la primera pregunta inconsciente que se hace no es qué hace la app, sino
+##### Esto es seguro o me va a meter un virus / robar los datos / llenar el teléfono de publicidad?".
+
+#### !!! Instalar una aplicación nueva requiere que el usuario sacrifique tres cosas valiosas
+##### su almacenamiento, su tiempo y su privacidad
+
+Los Disparadores de Confianza (o Social Proof) están ahí para decirle
+Tranquilo, un montón de gente ya la probó y es segura".
+
+En un flyer el espacio es oro, no podés meter un texto largo
+Tenés que usar micro-elementos visuales
+
+
+Disparadores de Confianza para el Flyer
+
+1. Sistema de Estrellas: el más efectivo
+
+Lenguaje universal de internet
+El cerebro humano ya está programado para asociar las 5 estrellas con calidad
+
+`Cómo se ve en el flyer`: Los logos minimalistas de la App Store y Google Play acompañados de una puntuación
+
+Ejemplos:
+“4.9 ★★★★★ en la App Store”
+“La app de tareas mejor valorada (4.8★)”
+
+
+2. Volumen de Comunidad (Validación por masa)
+
+A la gente le gusta ir a donde va la gente
+Si ven que miles de personas ya la descargaron
+el miedo a ser el "conejillo de indias" desaparece.
+
+`Cómo se ve en el flyer`: Números redondos y grandes, usualmente acompañados de un signo más (+).
+
+Ej:
+“+10,000 personas ya organizan su día con nosotros.”
+“Más de 50k descargas en todo el mundo.”
+
+
+3. Micro-Reseñas: Testimonios de 5 palabras
+
+##### Un testimonio largo en un flyer no se lee
+#### Necesitás un "gancho" ultra corto entre comillas que represente el alivio del usuario.
+
+`Cómo se ve en el flyer`: Una frase muy cortita en cursiva, abajo de todo o cerca del teléfono.
+
+Ej: 
+“'Por fin una app que entiendo a la primera.' – Laura G.”
+##### “'Simple, rápida y sin vueltas.' – Carlos M.”
+
+
+4. Sellos: Garantía de Paz Mental
+
+##### A veces la confianza no viene de cuánta gente la usa
+#### !!! sino de lo que la app no hace
+
+Para el público general, el miedo a la publicidad invasiva o a que les vendan los datos es enorme
+
+`Cómo se ve en el flyer`:
+Pequeños iconos o frases secundarias cerca del botón de descarga.
+
+Ej:
+##### “100% Libre de anuncios molestos.”
+##### “Tus datos son tuyos: 100% Privada.”
+
+
+### Sin saturar el flyer
+
+En el diseño, estos elementos funcionan como "satélites
+No son el título principal ni la imagen central
+suelen ir en un tamaño de letra más chico, ubicados estratégicamente:
+
+`Arriba del título principal`:
+Como un pequeño cintillo
+(ej: "Súmate a los más de 10k usuarios").
+
+`Al pie, rodeando al código QR`: 
+Justo al lado de las tiendas de descarga
+para dar el empujón final antes de que la persona escanee el código
+
+
+
+## 5. Beneficios sobre Características (Benefits vs. Features)
+
+El espacio es extremadamente limitado (la gente escanea un flyer en menos de 3 segundos).
+Por eso se aplica el concepto de resumir la app en máximo 3 puntos clave
+enfocados siempre en el beneficio humano
+(ej: "Ahorrá dinero", "Sincronizá con tu equipo") y
+y no en el lenguaje técnico (ej: "Algoritmo optimizado en Node.js").
+
+En el marketing de aplicaciones existe una realidad brutal: a la gente no le importa tu código
+le importa su vida.
+
+Cuando alguien mira un papel o un folleto digital por 3 segundos
+su cerebro está buscando una razón para no tirarlo a la basura
+Si ponés una lista de especificaciones técnicas (Características)
+el cerebro se cansa y se desconecta
+
+##### Si le mostrás cómo su vida va a ser mejor o más fácil (Beneficios), captás su atención
+
+
+Característica vs. Beneficio
+
+#### !!! La característica describe el cómo o el qué (la parte técnica)
+#### !!! mientras que el beneficio describe el para qué (el impacto humano).
+
+1. `Característica Técnica (Feature)`:
+
+"Base de datos local indexada con motor de búsqueda rápido."
+"Arquitectura ligera con consumo de menos de 15MB de RAM."
+"Filtros dinámicos por categorías (Pendientes/Completadas)."
+
+2. `Beneficio Humano (Benefit)`:
+
+"Encontrá lo que buscás en un segundo." (Ahorro de tiempo).
+"No ralentiza tu teléfono ni gasta tu batería." (Paz mental).
+"Vaciá tu mente y organizá tu día sin esfuerzo." (Alivio del estrés).
+
+
+### Regla de los 3 Puntos Clave
+
+¿Por qué tres y no cinco o diez?
+
+#### Porque el cerebro humano es un buscador de patrones ultra eficiente y ama los grupos de tres
+(la famosa Regla del Tres).
+Es el equilibrio perfecto: es suficiente información para ser convincente
+pero no la suficiente como para abrumar.
+
+##### Estos 3 puntos suelen estructurarse con un micro-icono estético
+seguido de una sola línea de texto de alto impacto
+
+### !!! Para asegurarte de que estás escribiendo beneficios puros en esos 3 puntos
+#### !!! pasá cada frase por el filtro del "¿Y eso qué?".
+
+##### Escribís: "Tiene modo oscuro nativo."
+##### Te preguntás: ¿Y eso qué?
+##### Respondés: "Evita que te canses la vista."
+##### Te volvés a preguntar: ¿Y eso qué?
+#### !!! Resultado final para el flyer: "Cuidá tus ojos: diseñado para usar de noche sin cansarte."
+
+
+Visualmente, estos 3 puntos van ubicados en el cuerpo central del diseño, generalmente al lado o debajo del Hero Shot del teléfono
+Se leen como una lista rápida:
+
+##### Beneficio 1 - Tiempo: Tomá el control de tu rutina en menos de dos minutos.
+##### Beneficio 2 - Rapidez: Anotá, filtrá y tachá tus pendientes sin rodeos ni menús lentos.
+##### Beneficio 3 - Privacidad: Tus datos son tuyos. 100% privado y libre de anuncios molestos.
+
+### !!! De un solo vistazo de 3 segundos, el usuario ya entendió que la app es rápida, fácil de usar y segura.
+
+
+
+## 6. Minimalismo y Espacio Negativo
+
+En diseño de interfaces y marketing de apps
+"Menos es más": Un flyer saturado de texto da la sensación de que la aplicación va a ser difícil de usar
+El uso de mucho espacio vacío (espacio negativo)
+Guía el ojo del usuario directamente hacia el título, las pantallas de la app y el botón de descarga
+
+##### El Espacio Negativo (o espacio en blanco) no es "espacio desperdiciado"
+es un elemento de diseño activo
+
+##### En el marketing de aplicaciones, es el recurso más potente para comunicar una idea clave antes de que el usuario instale nada
+que tu software es intuitivo y fácil de usar
+
+El desorden visual genera rechazo inmediato
+Cuando una persona ve un folleto saturado
+lleno de textos pegados, flechas y colores compitiendo entre sí
+su cerebro asume instantáneamente que la aplicación va a ser igual de caótica, lenta y difícil de entender
+
+##### Concepto psicológico y de diseño para guiar al público
+
+1. El reflejo de la Experiencia de Usuario (UX)
+
+##### Existe una correlación directa entre cómo luce la publicidad de un producto digital
+##### !!! y cómo el usuario percibe su calidad técnica
+
+#### Flyer saturado: Transmite ruido mental, complejidad y burocracia digital
+El usuario piensa: "Paso, no tengo tiempo para aprender a usar esto".
+
+#### Flyer minimalista: Transmite velocidad, ligereza y modernidad
+Al ver aire y orden, el cerebro se relaja y asume que la aplicación se maneja sin esfuerzo
+El diseño respira, por lo tanto, el usuario siente que va a respirar al usarla
+
+
+2. Reducción de la Carga Cognitiva
+
+#### !!! El cerebro humano tiene un límite de atención muy bajo cuando escanea publicidad rápida (esos famosos 3 segundos).
+##### Si le das 10 elementos para mirar al mismo tiempo, no mira ninguno; se satura y descarta el flyer.
+
+##### Al dejar amplias zonas vacías alrededor de los elementos importantes estás reduciendo la "carga cognitiva".
+Le estás haciendo el trabajo fácil al cerebro del lector
+permitiéndole absorber el mensaje sin esfuerzo.
+
+
+3. Autopista Visual: Jerarquía de Enfoque
+
+El espacio negativo funciona como las líneas de una autopista: no son el destino
+##### guían al auto para que no se desvíe
+
+```
+[ Espacio Vacío ]  ➡️  1. PROPUESTA ÚNICA DE VALOR (Título grande)
+                                │
+                        [ Espacio Vacío ]
+                                │
+                                ▼
+                        2. HERO SHOT (El teléfono con tu interfaz limpia)
+                                │
+                        [ Espacio Vacío ]
+                                │
+                                ▼
+ [ Espacio Vacío ]  ➡️  3. BOTÓN DE ACCIÓN / QR (La descarga)
+```
+
+secreto:
+El espacio vacío actúa como un reflector en un escenario oscuro
+Si todo el escenario está iluminado (lleno de texto), nadie sabe a dónde mirar
+##### Si apagas las luces y dejas un solo foco sobre el actor (el título o el QR), el 100% de las miradas van ahí
+
+
+Rs:
+
+Ej:
+
+1. Un `Hero Shot` limpio enfocado en el "Check" y la satisfacción.
+
+2. Una `UVP` potente centrada en resolver el día a día sin complicaciones.
+
+3. `Fricción cero` mediante un acceso directo y claro.
+
+4. `Disparadores de confianza` que eliminen los miedos del usuario.
+
+5. `3 Beneficios humanos directos` en lugar de tecnicismos.
+
+6. Un `diseño minimalista con mucho aire` para que todo lo anterior resalte
+
+
+Regla de Marketing de Apps:
+#### El flyer no tiene que vender toda la aplicación
+##### !!! solo tiene que convencer al usuario de que vale la pena escanear el código para ver más
+
+
+
+# Diseño gráfico del flyer app
+
+## Conceptos
+
+Encargado de traducir toda esa psicología de marketing en formas, fuentes, colores y espacios que entren por los ojos de inmediato
+En el diseño gráfico de un flyer para una aplicación móvil
+##### todo se basa en principios de composición visual que buscan un impacto estético limpio y moderno
+
+
+1. Jerarquía Visual: orden de lectura
+
+##### Es el arte de decidir qué va a ver el usuario primero, segundo y tercero mediante el uso del tamaño, el peso de las letras y la ubicación.
+
+`se aplica`: El título (UVP) se lleva el tamaño de letra más grande y grueso
+el Hero Shot (teléfono) se lleva el protagonismo del espacio central
+y los textos secundarios o legales se diseñan en tamaños pequeños y sutiles
+
+
+2. Contraste Cromático: Psicología del color
+
+No se eligen colores "porque quedan lindos"
+##### colores por cómo contrastan entre sí y qué transmiten.
+
+`se aplica`:
+Como las apps modernas suelen usar entornos oscuros
+el flyer utiliza un fondo oscuro sólido
+##### pero genera puntos de luz o acentos con colores de alta visibilidad
+(como el azul eléctrico de los checks o botones)
+##### para iluminar los elementos donde el usuario tiene que hacer clic o escanear
+
+
+3. Maridaje Tipográfico: Fuentes Modernas
+
+##### En tecnología, la tipografía define la personalidad del producto
+usar máximo dos familias tipográficas que contrasten bien entre sí.
+
+`se aplica`:
+Se descartan por completo las fuentes clásicas con serifas (como Times New Roman)
+se eligen fuentes Sans-Serif (como Inter, Roboto o SF Pro).
+##### Son limpias, geométricas, ultra legibles en tamaños chicos y transmiten modernidad y fluidez técnica
+
+
+4. Composición, Peso y Balance
+
+##### Es la distribución de los elementos en el lienzo para que el diseño no se sienta "pesado" de un solo lado o se caiga visualmente
+
+`se aplica`:
+##### Se suele usar un balance asimétrico muy elegante
+por ejemplo, los textos alineados a la izquierda en la mitad superior
+el smartphone con el Hero Shot rompiendo el lienzo en la mitad derecha o inferior
+##### equilibrando el peso del texto con la fuerza visual de la imagen
+
+
+5. Profundidad y Capas (Efecto 3D)
+
+##### Un flyer plano es aburrido
+El diseño gráfico moderno busca que la interfaz de la app "cobre vida" en el papel o la pantalla mediante capas sutiles.
+
+`se aplica`:
+Se usan sombras paralelas muy suaves (drop shadows)
+sutiles gradientes de luz de fondo o efectos de cristal de fondo
+#####Esto hace que el dispositivo parezca flotar con tridimensionalidad sobre el flyer, despegándose del fondo
+
+
+6. Grilla y Alineación: estructura invisible
+ 
+Aunque el usuario no la vea
+##### todo el diseño se monta sobre una cuadrícula matemática estricta
+
+`se aplica`:
+Nada flota al azar
+El borde izquierdo del título se alinea perfectamente con el borde de los iconos de los beneficios
+el QR se alinea con los márgenes del flyer
+Esto crea una sensación inconsciente de orden, prolijidad y profesionalismo
+
+
+Rs:
+El diseño gráfico de apps se aleja de lo recargado
+Su meta es la sofisticación geométrica
+usar la menor cantidad de elementos posibles
+pero estructurados con tanta precisión que el resultado se sienta premium, tecnológico y limpio
+
+
+
+## Diseño real del flyer
+
+### 1. Jerarquía Visual: orden de lectura
+
+Opciones:
+
+1. El Flujo Vertical Directo (Lectura en "I")
+estructura es excelente para folletos clásicos (verticales) o publicaciones digitales de redes sociales
+Guía el ojo de arriba hacia abajo en una sola línea limpia.
+
+`1º Ojo (Foco Principal)`:
+El título de la UVP grande y centrado arriba (ej: "Un día a la vez, sin complicaciones").
+
+`2º Ojo (Evidencia Visual)`:
+El celular con la pantalla/vista, flotando justo debajo del título
+El ojo cae naturalmente de las palabras a la imagen de la app.
+
+`3º Ojo (Argumentación)`:
+Tres columnas cortas o tres filas bien espaciadas debajo del celular
+detallando los 3 beneficios humanos (rapidez, limpieza, privacidad).
+
+`4º Ojo (Cierre de Acción)`:
+La base del flyer, donde se coloca el código QR centrado junto a los disparadores de confianza ("4.9 ★★★★★").
+
+
+2. El Balance Cruzado (Lectura en "Z")
+Esta opción es la más utilizada en el marketing de aterrizaje (landing pages) y flyers modernos
+Juega con la tendencia natural de Occidente de leer de izquierda a derecha y de arriba a abajo
+
+`1º Ojo (El Gancho)`:
+Esquina superior izquierda
+El logo estilizado de Today app seguido inmediatamente por el título principal (UVP) en tipografía pesada
+
+`2º Ojo (El Peso Visual)`:
+Mitad derecha completa del flyer
+El smartphone con el Hero Shot de la app de forma masiva
+rompiendo los márgenes para dar tridimensionalidad
+El ojo viaja del título hacia la derecha para ver cómo es la app
+
+`3º Ojo (El Detalle)`:
+Mitad inferior izquierda (abajo del título).
+Los 3 beneficios clave ordenados en una lista vertical muy limpia
+con iconos azules a juego con los de la app
+
+`4º Ojo (El Anclaje)`:
+Esquina inferior derecha (debajo del celular).
+El código QR con el llamado a la acción
+El recorrido visual termina exactamente donde el usuario puede tomar acción para descargarla
+
+
+3. Enfoque "Producto Primero" (Invertido)
+Esta estructura rompe el molde tradicional y pone el peso absoluto en la interfaz estética de tu aplicación
+Es ideal si queremos que el diseño oscuro y limpio de la app sea el que enamore a primera vist<
+
+`1º Ojo (Impacto de Pantalla)`:
+El smartphone se muestra gigante y ligeramente inclinado en el centro del lienzo, ocupando casi el 60% del flyer
+El ojo va directo al cuadro azul de "Mis Tareas".
+
+`2º Ojo (La Promesa)`:
+El título (UVP) se ubica justo al lado o superpuesto elegantemente en el fondo con letras blancas
+que contrasten con el fondo oscuro
+
+`3º y 4º Ojo (Conversión Minimalista)`:
+Los beneficios se reducen a palabras clave ultra cortas alrededor del teléfono
+y la base se reserva por completo para un QR limpio aislado por mucho espacio vacío.
+
+
+Rs contenido de Jerarquía:
+
+Nivel 1: Título de la UVP (Mensaje emocional).
+Nivel 2: Imagen del Teléfono (Interfaz real de la app).
+Nivel 3: Los 3 Beneficios (El porqué la necesitan).
+Nivel 4: QR + Estrellas de confianza (El cierre seguro).
+
+
+
+### 2. Contraste Cromático: Psicología del color
+
+colores para guiar el ojo y despertar emociones
+aplicación ya tiene una identidad visual
+modo oscuro impecable (grises y azules muy profundos) con un azul eléctrico brillante
+
+1. Oscuro Premium: Inmersión Total
+
+Consiste en replicar exactamente la atmósfera dark mode de la app en todo el lienzo del flyer
+
+`Fondo del flyer`:
+mismo tono azul/gris casi negro del fondo de tu app.
+
+`Texto principal`:
+Blanco puro para la Propuesta de Valor
+garantizando una legibilidad del 100%.
+
+`Color de Acento (El imán)`:
+El azul eléctrico
+Este color se reserva únicamente para tres cosas:
+el marco del QR, los iconos de los 3 beneficios y la palabra clave del título.
+
+`Psicología`:
+El negro/azul oscuro transmite sofisticación, elegancia y profesionalismo
+Al público general le da la sensación de ser una herramienta "premium" y moderna
+Además, cansa mucho menos la vista al mirarlo en pantallas
+
+
+2. Efecto Neón / Aura Lumínica: Contraste de Profundidad
+
+Mantiene la base oscura
+pero añade una fuente de luz artificial detrás del teléfono para despegarlo del fondo
+
+`Fondo del flyer`: Gris oscuro mate
+
+`truco gráfico`:
+Justo detrás del Hero Shot (el smartphone),
+colocamos un degradado radial suave (un resplandor o aura)
+que vaya del azul eléctrico de tu app hacia la transparencia
+
+`Psicología`:
+El azul brillante genera calma, confianza y tecnología
+Al ponerle ese "brillo" por detrás al teléfono, creás un efecto 3D inmediato
+El ojo del usuario es atraído por la luz hacia el centro del flyer
+haciendo imposible ignorar la pantalla de tu app.
+
+
+3. Minimalismo Stark: Alto Contraste Dual
+
+##### Enfoque más radical y directo, inspirado en marcas tecnológicas de vanguardia
+
+Fondo del flyer: Negro absoluto (#000000).
+
+Textos y Elementos: Blanco tiza para los textos y gris muy tenue para las líneas divisorias.
+
+toque de color: azul eléctrico se usa con extrema escasez
+Solo se pinta de azul el botón de acción final (el llamado a la descarga) o el código QR.
+
+Psicología: Al eliminar distractores y usar el negro puro
+el flyer grita "eficiencia extrema".
+Es ideal para transmitir que Today app es una herramienta rápida, ligera y enfocada en eliminar el ruido mental del usuario
+
+
+Ej: Opción 2 (Efecto Neón / Aura Lumínica)
+la que mejor va a funcionar. Al tener una interfaz oscura
+si usás un fondo completamente plano (como la Opción 1),
+el teléfono podría mimetizarse demasiado y perder impacto
+Ese sutil resplandor azul detrás del celular va a hacer que la pantalla de tus capturas se destaque de una manera increíble
+
+
+
+### 3. Maridaje Tipográfico: Fuentes Modernas
+
+el logo principal de Today app utiliza una fuente de estilo script (cursiva/manuscrita) muy amigable
+mientras que todo el resto de la interfaz (los textos de "Mis Tareas", los botones y los filtros) usa una tipografía sans-serif limpia, geométrica y moderna
+
+Para el flyer publicitario enfocado al público general
+el logo se mantiene con su fuente original
+pero para los textos de marketing (la Propuesta de Valor, los beneficios y los llamados a la acción)
+necesitamos un maridaje tipográfico que mantenga esa estética tecnológica, limpia y legible.
+
+
+1. Estilo Tech: Inter + Plus Jakarta Sans
+
+combinación reina en el diseño de interfaces y marketing digital de vanguardia
+Es ultra limpia y grita "profesionalismo".
+
+`Título (UVP)`: Inter (en peso Bold o Extra Bold).
+Es una fuente diseñada específicamente para pantallas; es robusta
+muy seria y tiene una simetría perfecta que transmite orden inmediato
+
+`Cuerpo (Beneficios y QR):`: Plus Jakarta Sans (en peso Regular o Medium).
+Es una tipografía con una sutil personalidad moderna, muy abierta y aireada
+lo que la hace sumamente fácil de leer en tamaños pequeños sobre fondos oscuros.
+
+
+2. Geometría Amigable: Poppins + Inter
+
+busca suavizar la estética tecnológica para hacerla más cercana
+y atractiva para el usuario común que busca simplicidad
+
+Título (UVP): Poppins. Semi Bold o Bold
+Es una fuente puramente geométrica
+Sus letras redondas (como la 'o' o la 'p') son círculos casi perfectos
+Transmite dinamismo, juventud y es muy agradable a la vista
+
+Cuerpo (Beneficios y QR): Inter (en peso Regular).
+Al ser más neutra, equilibra la fuerte personalidad redondeada de Poppins
+haciendo que los bloques de texto secundarios se vean ordenados y descansados
+
+
+3. Fuerza y Contraste: Montserrat + Roboto
+
+clásico del diseño que nunca falla
+cuando se busca un impacto visual fuerte y directo en soportes publicitarios.
+
+Título (UVP): Montserrat (en peso Black o Heavy).
+Es una fuente inspirada en los carteles urbanos tradicionales
+Es ancha, pesada y tiene muchísima fuerza visual
+En mayúsculas o minúsculas, se adueña del primer lugar en la jerarquía de lectura
+
+Cuerpo (Beneficios y QR): Roboto (en peso Regular).
+Desarrollada por Google, es una fuente Neo-Grotesca muy estructurada
+Su diseño ligeramente condensado permite meter información de forma muy prolija sin que se sienta apretada
+
+
+Modo Oscuro en Tipografía:
+Al diseñar un flyer con fondo oscuro, ocurre un fenómeno óptico: el texto blanco o brillante sobre fondo negro parece expandirse
+y verse más grueso de lo que realmente es (efecto de irradiación).
+
+Por eso, para los textos de los beneficios y datos del QR, la regla de oro es darle un poquito de "aire" horizontal
+(aumentar el letter-spacing o tracking un 2% o 3%) y evitar usar pesos ultra-delgados (Thin o Light)
+ya que el fondo oscuro se los puede "comer" y dificultar la lectura a la distancia.
+
+
+
+
+### 4. Composición, Peso y Balance
+
+##### se encargan de la física invisible del flyer
+un diseño necesita distribuir sus elementos visuales para que el ojo no se sienta "pesado" o incómodo al mirarlo
+
+El desafío es colocar los textos y el QR para contrarrestar ese peso y lograr un diseño perfectamente equilibrado
+
+Opciones:
+
+
+1. Balance Asimétrico (Split Moderno): Izquierda / Derecha
+
+Disposición más corporativa y tecnológica
+Divide el flyer mentalmente en dos mitades verticales
+
+Lado Izquierdo (Carga textual):
+Colocamos el título (UVP) arriba, los 3 beneficios en el medio y el código QR abajo a la izquierda
+
+Lado Derecho (Carga visual):
+Colocamos el smartphone con la captura, ocupando todo el alto de la mitad derecha.
+
+#### Lograr balance
+Aunque el texto parece "más ligero" que una imagen
+al usar tipografía blanca y gruesa (Bold) sobre el fondo oscuro
+el bloque de texto de la izquierda logra igualar el peso visual del teléfono de la derecha
+El diseño se siente estable y súper prolijo.
+
+
+2. Balance Simétrico (Eje Central): Efecto Póster
+
+Esta opción es pura estabilidad y minimalismo
+Ideal si querés transmitir que la app es un oasis de orden y calma
+
+Distribución
+Todos los elementos se alinean rigurosamente al centro del flyer
+
+Arriba: Título principal centrado.
+
+Centro: El smartphone en vista totalmente frontal, bien grande, dominando el corazón del flyer.
+
+Abajo: Los 3 beneficios distribuidos en tres columnas sutiles una al lado de la otra, y debajo de ellos, el QR centrado con las estrellas de confianza.
+
+Balance: Es un espejo matemático
+El peso se distribuye equitativamente de izquierda a derecha
+Para que no sea aburrido, el "teléfono" del centro debe ser el rey absoluto, usando el resplandor azul de fondo
+para darle tridimensionalidad
+
+
+3. Balance Dinámico: Perspectiva Flotante (Tensión Visual)
+
+##### opción es más arriesgada y moderna
+muy utilizada en la publicidad de aplicaciones de productividad de última generación
+
+Distribución: Rompemos la grilla recta.
+
+smartphone
+se coloca en la esquina inferior derecha, pero rotado unos 15 grados en perspectiva 3D e inclinado
+
+título principal (UVP) se coloca en la esquina superior izquierda
+
+Balance:
+Al inclinar el teléfono, generás una línea diagonal imaginaria que cruza el flyer.
+El peso masivo del teléfono abajo a la derecha se compensa dinámicamente con el espacio vacío (espacio negativo)
+arriba a la derecha y la fuerza del título arriba a la izquierda
+Es un diseño que transmite movimiento, velocidad y modernidad
+
+
+Rs: peso visual para fondos oscuros
+Como el fondo de tu app es oscuro, si elegimos un fondo oscuro para el flyer, las zonas con texto blanco van a brillar mucho.
+
+Si elegimos la Opción 1 (Split), el flyer se lee como un libro de izquierda a derecha de forma impecable.
+
+Si elegimos la Opción 3 (Dinámica), el flyer se va a ver increíblemente moderno y estilizado, ideal para captar la atención de un público joven o del sector tecnológico.
+
+
+
+### 5. Profundidad y Capas (Efecto 3D)
+
+##### El secreto para que un flyer no parezca un diseño aburrido, plano o amateur
+En el marketing de aplicaciones, este concepto sirve para simular que el teléfono y la interfaz son objetos reales, tangibles y modernos
+que "flotan" sobre el lienzo, generando un impacto visual mucho más inmersivo.
+
+donde los bloques de tareas ya están contenidos en tarjetas con sutiles bordes redondeados
+tenemos la estructura perfecta para jugar con la tridimensionalidad.
+
+
+1. Elementos "Pop-out": interfaz que escapa
+
+Es una de las tendencias más fuertes y vistosas en el diseño de apps actual
+Consiste en romper la barrera de la pantalla del teléfono
+
+idea: 
+smartphone
+está de fondo, pero extraemos un elemento de la interfaz
+(por ejemplo, la fila de la tarea realizada con su check azul brillante o el botón de "Añadir")
+y lo hacemos flotar físicamente por fuera del teléfono, un nivel más arriba.
+
+3D:
+Se le aplica una sombra paralela (drop shadow) más fuerte y definida a ese elemento suelto que al propio teléfono
+El ojo interpreta que esa tarea está suspendida en el aire, flotando hacia el usuario.
+
+
+2. Elevación por Sombra Ambiental: Soft Shadows
+
+enfoque más sutil, elegante y purista
+Se basa en las reglas del diseño de interfaces moderno (Material Design / Apple Design Guidelines).
+
+idea:
+El teléfono se coloca completo en el flyer
+pero simulamos que hay una fuente de luz blanca viniendo desde la esquina superior izquierda del lienzo
+
+3D:
+Detrás del smartphone se proyecta una sombra extremadamente suave
+difusa y larga hacia la derecha y abajo
+No es una sombra negra y dura, sino un degradado grisáceo transparente muy sutil
+Esto hace que el teléfono parezca despegarse unos centímetros del fondo del flyer
+cobrando un volumen espectacular
+
+
+3. Superposición de Tarjetas en cristal
+juega con la profundidad del fondo
+creando capas texturizadas detrás del dispositivo.
+
+idea:
+El fondo del flyer es oscuro
+pero justo detrás del teléfono colocamos una o dos tarjetas geométricas semi-transparentes que imitan el vidrio esmerilado
+
+3D:
+Estas tarjetas desenfocan suavemente lo que hay detrás y dejan traslucir un poco del resplandor azul de la app
+Al colocar el teléfono arriba de esta capa de "cristal", creás tres niveles de profundidad claros
+Fondo oscuro ➡ Tarjeta de cristal ➡ Smartphone.
+
+
+Ej: Opción 1 (Elementos Pop-out) combinada con la Opción 2 (Sombra Ambiental)
+Si hacés que el teléfono flote con una sombra suave
+y además sacás el cuadro de "Mis Tareas" o el "Check azul" un poquito hacia afuera de la pantalla 
+el flyer va a tener una fuerza visual tremenda que obligará a cualquiera a detener la mirada
+
+
+
+### 6. Grilla y Alineación: estructura invisible
+
+Estructura del flyer
+Aunque el público general no note las líneas de la cuadrícula
+su cerebro percibe inmediatamente el orden matemático
+
+Si las cosas están desalineadas aunque sea por un par de píxeles
+el flyer se siente "barato" o descuidado
+
+En cambio, una alineación milimétrica transmite la sensación de que la aplicación detrás de ese flyer está bien programada
+es robusta y es confiable
+
+Ej: la aplicación ya tiene una estructura interna de bloques impecable, con contenedores de bordes redondeados y textos perfectamente alineados a la izquierda (como en la sección "Categorías" o las tareas).
+El flyer debería heredar esa misma disciplina visual.
+
+
+1. Grilla Suiza Estricta (Alineación a Ras)
+
+enfoque clásico del diseño minimalista europeo
+Se basa en un eje vertical implacable a la izquierda.
+
+Funcionamiento:
+Se traza una línea invisible (un margen generoso) en el lado izquierdo del flyer
+El logotipo, el primer carácter de la UVP (título),
+los iconos de los 3 beneficios y el borde del bloque de texto inferior se alinean exactamente sobre esa misma línea
+Nada se desplaza ni un milímetro
+
+Balance con el Hero Shot:
+El smartphone se coloca a la derecha, y su borde superior se alinea perfectamente con la línea base del título
+mientras que su borde inferior se alinea con la base del código QR
+
+Funcionamiento:
+Transmite una tremenda sensación de ingeniería, limpieza y seriedad técnica
+Ideal para una app de productividad porque el orden del flyer refleja el orden que la app promete darle a tu día
+
+
+2. Sistema de Bloques Modulares
+Tendencia absoluta en el diseño de interfaces de marcas como Apple o Microsoft
+se adapta de forma nativa a la identidad de tu app.
+
+Funcionamiento: 
+El flyer se divide en "tarjetas" o contenedores independientes con bordes redondeados
+(copiando el estilo de los bloques oscuros que ves en tus capturas de pantalla).
+
+Un bloque grande y vertical contiene el celular.
+Un bloque horizontal arriba contiene la UVP.
+Un bloque alargado contiene los 3 beneficios.
+Un bloque cuadrado pequeño abajo contiene el QR.
+
+Alineación:
+Todos estos bloques se separan por una distancia idéntica
+(por ejemplo, un espacio de 16px o 24px entre tarjeta y tarjeta).
+
+Funcionamiento: ultra moderno
+Visualmente le comunica al usuario cómo funciona la app antes de leerla
+es modular, organizada y estructurada por categorías
+
+
+3. Grilla Dinámica "Asimétrica": Regla de Tercios
+
+Divide el lienzo en una matriz de 3x3 líneas invisibles y coloca los elementos clave en las intersecciones
+(los puntos de mayor impacto visual para el ojo humano).
+
+Funcionamiento:
+El celular con tu interfaz no se centra
+se desplaza ocupando exactamente los dos tercios de la derecha
+El texto de la UVP ocupa el tercio superior izquierdo
+y los beneficios caen en el tercio medio izquierdo
+
+Alineación:
+Los elementos se alinean buscando el "peso de compensación".
+Si el teléfono abajo a la derecha es muy pesado,
+se deja el tercio superior derecho completamente vacío (espacio negativo puro) para que el diseño respire
+
+Funcionamiento:
+Se siente menos rígido y más artístico
+Atrae la mirada de forma muy fluida y orgánica
+guiando el recorrido visual en la "Z"
+
+
+#### Regla profesional: Independientemente de la opción, los márgenes externos del flyer
+(el aire que queda entre los elementos y el borde físico del lienzo)
+deben ser exactamente iguales arriba, abajo, a la izquierda y a la derecha
+Eso encuadra el diseño y lo hace lucir.
+
+
+
+
+# Config Técnica de Configuración (Para el Canvas)
+
+
+#### Medidas sugeridas: 1080 x 1350 px (Formato vertical de alto impacto, ideal para pantallas y distribución digital).
+
+#### Colores base:
+
+Fondo del flyer:
+Azul/gris oscuro profundo (tomado del fondo de la app).
+
+Color de acento:
+Azul eléctrico (tomado de los botones de check de la interfaz).
+
+Textos:
+Blanco puro (#FFFFFF) para títulos y Gris claro (#9CA3AF) para descripciones.
+
+
+#### Tipografías:
+
+Inter (para títulos pesados) y Plus Jakarta Sans (para los bloques de beneficios).
+
+
+### Estructura de Capas y Composición
+
+1. Capa 1 (Fondo): Fondo sólido oscuro
+En la mitad derecha del lienzo, un degradado radial (brillo/aura)
+muy suave en color azul eléctrico que se desvanece hacia los bordes.
+
+2. Capa 2 (Textos y Datos): Toda la información alineada
+estrictamente a la izquierda ocupando el 50% izquierdo del flyer
+
+3. Capa 3 (Hero Shot - El Teléfono):
+En la mitad derecha, centrado sobre el aura azul
+un mockup de smartphone moderno en color negro o gris oscuro.
+
+4. Capa 4 (Efecto 3D Pop-Out):
+El bloque superior de la interfaz de la app
+("Mis Tareas" junto con la fila de la tarea resuelta con el check azul) se duplica
+se agranda un 5% y se extrae por fuera de la pantalla del teléfono hacia la izquierda
+aplicando una sombra paralela difusa para que parezca flotar sobre el flyer.
+
+
+Copywriting
+texto exacto organizado por su jerarquía de lectura en el diseño:
+
+1. `Bloque Superior Izquierdo - El Gancho`
+
+Micro-texto de confianza
+confianza (Tamaño 14pt, Gris claro, Mayúsculas, Tracking +3%):
++10,000 PERSONAS YA SIMPLIFICARON SU RUTINA
+
+
+2. `Bloque Central Izquierdo - La Promesa`
+
+Título Principal / UVP
+(Tamaño 56pt, Inter Bold, Blanco, Alineado a la izquierda):
+Tu día, sin rodeos
+
+Subtítulo
+(Tamaño 18pt, Plus Jakarta Sans Regular, Gris claro):
+"Una interfaz limpia y oscura diseñada para lo único que importa: anotar tus pendientes, filtrarlos al instante y liberar espacio mental."
+
+
+3. `Bloque Inferior Izquierdo - Los 3 Beneficios Humanos`
+
+(Dispuestos verticalmente, cada uno precedido por un micro-icono de check azul eléctrico idéntico al de la app)
+
+Productividad inmediata:
+Tomá el control de tus asuntos en menos de dos minutos.
+
+Enfoque absoluto:
+Filtrá por categorías y eliminá el ruido visual de un solo toque.
+
+Paz mental:
+Sin anuncios molestos y con privacidad absoluta. Tus datos son tuyos.
+
+
+`Bloque de Cierre - Pie del Flyer`
+
+Texto de validación:
+Tamaño 16pt, Inter SemiBold, Blanco, centrado debajo de los beneficios
+4.9 ★★★★★ de valoración en tiendas de aplicaciones
+
+
+
+## SVG exportable a png
+
+```
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1350" width="1080" height="1350" style="background-color: #0b0f17; font-family: 'Inter', system-ui, -apple-system, sans-serif;">
+  
+  <!-- DEFINICIONES: Gradientes y efectos -->
+  <defs>
+    <!-- El aura azul eléctrico para el Hero Shot de la derecha -->
+    <radialGradient id="blueAura" cx="70%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#0052ff" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#0b0f17" stop-opacity="0"/>
+    </radialGradient>
+    
+    <!-- Sombra suave para el efecto 3D del teléfono -->
+    <filter id="dropShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <drop-shadow dx="10" dy="20" stdDeviation="25" flood-color="#000000" flood-opacity="0.5"/>
+    </filter>
+  </defs>
+
+  <!-- CAPA 1: Resplandor de fondo (Aura) -->
+  <rect width="1080" height="1350" fill="url(#blueAura)" />
+
+  <!-- CAPA 2: Textos (Mitad Izquierda) -->
+  <!-- Margen izquierdo estricto a 100px -->
+  <g transform="translate(100, 0)">
+    
+    <!-- Social Proof / Cintillo superior -->
+    <text y="220" fill="#9CA3AF" font-size="14" font-weight="700" letter-spacing="3" font-family="monospace">
+      +10,000 PERSONAS YA SIMPLIFICARON SU RUTINA
+    </text>
+    
+    <!-- Propuesta Única de Valor (UVP) -->
+    <text y="320" fill="#FFFFFF" font-size="64" font-weight="800" letter-spacing="-1">
+      Tu día, sin rodeos.
+    </text>
+    
+    <!-- Subtítulo / Bajada -->
+    <text y="390" fill="#9CA3AF" font-size="20" font-weight="400" width="450">
+      <tspan x="0" dy="0">Una interfaz limpia y oscura diseñada para lo</tspan>
+      <tspan x="0" dy="28">único que importa: anotar tus pendientes, </tspan>
+      <tspan x="0" dy="28">filtrarlos al instante y liberar espacio mental.</tspan>
+    </text>
+    
+    <!-- Bloque de Beneficios (Con viñetas simulando el check azul) -->
+    <g transform="translate(0, 560)">
+      <!-- Beneficio 1 -->
+      <circle cx="15" cy="5" r="12" fill="#0052ff" />
+      <path d="M10 5 L14 9 L20 2" stroke="#FFFFFF" stroke-width="2" fill="none" />
+      <text x="45" y="12" fill="#FFFFFF" font-size="20" font-weight="700">Productividad inmediata</text>
+      <text x="45" y="38" fill="#9CA3AF" font-size="16">Tomá el control de tus asuntos en menos de dos minutos.</text>
+      
+      <!-- Beneficio 2 -->
+      <g transform="translate(0, 90)">
+        <circle cx="15" cy="5" r="12" fill="#0052ff" />
+        <path d="M10 5 L14 9 L20 2" stroke="#FFFFFF" stroke-width="2" fill="none" />
+        <text x="45" y="12" fill="#FFFFFF" font-size="20" font-weight="700">Enfoque absoluto</text>
+        <text x="45" y="38" fill="#9CA3AF" font-size="16">Filtrá por categorías y eliminá el ruido visual de un toque.</text>
+      </g>
+      
+      <!-- Beneficio 3 -->
+      <g transform="translate(0, 180)">
+        <circle cx="15" cy="5" r="12" fill="#0052ff" />
+        <path d="M10 5 L14 9 L20 2" stroke="#FFFFFF" stroke-width="2" fill="none" />
+        <text x="45" y="12" fill="#FFFFFF" font-size="20" font-weight="700">Paz mental</text>
+        <text x="45" y="38" fill="#9CA3AF" font-size="16">Sin anuncios molestos y con privacidad absoluta. Tus datos son tuyos.</text>
+      </g>
+    </g>
+    
+    <!-- Disparador de Confianza Inferior -->
+    <text y="1150" fill="#FFFFFF" font-size="18" font-weight="600">
+      4.9 ★★★★★ <tspan fill="#9CA3AF" font-weight="400"> de valoración en tiendas de aplicaciones</tspan>
+    </text>
+  </g>
+
+  <!-- CAPA 3: Placeholder para el Hero Shot (Mitad Derecha) -->
+  <!-- Aquí es donde colocarías el recorte del smartphone con la captura de la app -->
+  <g transform="translate(680, 675) rotate(-5)" filter="url(#dropShadow)">
+    <!-- Cuerpo del teléfono simulado -->
+    <rect x="-180" y="-350" width="360" height="700" rx="40" fill="#1e293b" stroke="#334155" stroke-width="4" />
+    <!-- Pantalla interna -->
+    <rect x="-165" y="-335" width="330" height="670" rx="25" fill="#0f172a" />
+    
+    <!-- Texto guía para el diseño visual -->
+    <text x="0" y="0" fill="#475569" font-size="16" font-weight="700" text-anchor="middle">
+      [ Inserta aquí la captura ]
+    </text>
+    <text x="0" y="25" fill="#334155" font-size="12" text-anchor="middle">
+      Screenshot 2026-07-06
+    </text>
+  </g>
+  
+</svg>
+
+```
+
+
+
+# Flyer para github
+
+## Estrategia
+
+1. Target Técnico (Reclutadores y Tech Leads)
+
+A diferencia del flyer masivo, aquí tu cliente ideal
+##### busca competencia técnica, orden y modernidad.
+
+estrategia:
+El banner no debe vender "humo" ni verse como una publicidad invasiva de internet
+##### Debe lucir como el encabezado de un producto de software serio, maduro y profesional
+##### El tono pasa de ser puramente emocional a ser funcional y arquitectónico.
+
+
+2. Contexto Inmediato: regla de los 2 segundos
+
+Cuando alguien entra a tu repositorio
+##### el banner debe responder tres preguntas críticas de un solo vistazo
+
+#### Qué es este proyecto? (Nombre y categoría).
+
+#### Qué problema resuelve? (Propuesta de valor técnica/funcional).
+
+#### Está terminado y vivo? (Sensación de producto listo para producción).
+
+
+3. Validación de Stack: palabras claves
+
+Los reclutadores buscan tecnologías específicas (keywords) para filtrar candidatos
+Si la descripción del puesto dice "React y TypeScript", eso es lo primero que sus ojos necesitan rastrear
+
+estrategia
+##### El banner debe integrar de manera orgánica los logos o nombres del stack principal
+(por ejemplo: React, Vite, TypeScript).
+Esto actúa como una certificación visual instantánea:
+el visitante sabe que está en el lugar correcto sin tener que buscar el archivo package.json.
+
+
+4. Banner como Portal (Call to Action Web)
+
+GitHub no hay papel ni cámaras de celular escaneando
+El banner es un elemento interactivo dentro de un navegador web
+
+estrategia:
+El banner debe diseñarse pensando en que será un enlace directo a la aplicación en vivo (Live Demo).
+##### En el marketing de repositorios, reducir la fricción significa que el reclutador pueda hacer clic en tu banner y ver la aplicación funcionando en Vercel, Netlify o GitHub Pages de inmediato
+
+
+5. El Concepto de "Readme Hero Shot"
+
+En el flyer general usábamos el teléfono completo para simular realidad
+En GitHub, el formato es horizontal y la pantalla del usuario suele ser una computadora
+
+estrategia:
+En lugar de mostrar un celular entero que obligaría a recortar la imagen o achicarla
+se utiliza un "recorte de pantalla de escritorio" o una composición donde la interfaz de la app se asoma de forma horizontal
+destacando componentes específicos (como tu sistema de filtros por categorías o la barra de búsqueda limpia).
+Muestra la calidad del código a través de la fineza de la interfaz
+
+
+
+## Diseño gráfico banner horizontal
+
+En el README de un portafolio profesional de desarrollo
+el banner no es solo un adorno; es una declaración de intenciones de ingeniería y diseño gráfico aplicado
+
+1. Relación de Aspecto Horizontal y Flujo Lateral (Ratios 3:1 o 4:1)
+
+En pantallas de escritorio, el lienzo se estira considerablemente (las medidas estándar para GitHub suelen ser 1280 x 420 px o 1200 x 400 px).
+
+concepto:
+Se abandona la lectura vertical y se adopta un flujo estrictamente lateral de izquierda a derecha
+El diseño debe estructurarse para que el ojo realice un recorrido limpio:
+el texto y la información técnica anclan la mirada en el extremo izquierdo
+y el peso visual gráfico se desplaza hacia el extremo derecho.
+
+
+2. Integración Dinámica de "Badges" e Isotipos: Stack Tecnológico
+
+Para un perfil técnico que busca destacar en la industria, las tecnologías no son solo texto
+son elementos de diseño gráfico
+
+concepto:
+Los logos de herramientas como React, Vite o TypeScript se tratan como micro-componentes visuales
+Se deben alinear perfectamente usando una grilla horizontal
+manteniendo una escala uniforme y un espacio idéntico entre ellos (gap constante).
+No deben competir en tamaño con el título
+sino actuar como una firma visual de arquitectura moderna en la base del texto.
+
+
+3. Adaptabilidad al Entorno
+
+GitHub es una plataforma viva que los usuarios configuran en modo claro o modo oscuro
+El banner vivirá embebido en este entorno web.
+
+concepto:
+Para asegurar que el banner se vea impecable sin importar la configuración del visitante
+se aplica un diseño con un fondo sólido y cerrado (como el azul/gris profundo de la aplicación)
+delimitado por un sutil borde perimetral, o se trabaja con transparencias milimétricas
+Al mantener un fondo propio y oscuro, la interfaz de la aplicación conserva su atmósfera premium nativa
+
+
+4. Encuadre de Interfaz Estilizado: Browser Mockup vs. Celular
+
+Colocar un smartphone completo y vertical en un banner horizontal obliga a reducir tanto su tamaño
+que la interfaz de la app se vuelve ilegible, rompiendo la composición.
+
+concepto:
+Se utiliza el concepto de recorte de ventana (Browser Mockup) o un zoom enfocado
+En lugar de mostrar todo el dispositivo, se toma la sección más limpia de la interfaz de escritorio o móvil y se expande de manera horizontal en el lado derec
+Se puede encapsular en una estructura que simule una ventana de navegador web minimalista con tres micro-botones en la esquina superior
+transmitiendo prolijidad en el desarrollo web
+
+
+5. Equilibrio Asimétrico de Pesos
+
+formato horizontal es muy propenso a verse "vacío" o "aburrido" si se centra todo de forma simétrica
+
+concepto:
+Se aplica un balance asimétrico donde el bloque de texto izquierdo
+(Título + Subtítulo técnico) equilibra la masa visual del elemento gráfico de la derecha
+(la captura de la app). Al usar un fondo oscuro común, el espacio negativo
+(el vacío que queda en el centro del banner) actúa como el conector invisible
+que permite que ambos bloques respiren sin saturar la pantalla del reclutador
+
+
+6. Tipografía Escalada para Pantallas (Legibilidad a Corta Distancia)
+
+El usuario que lee un README está frente a un monitor a pocos centímetros de distancia
+buscando procesar información rápidamente.
+
+concepto:
+Se busca un contraste tipográfico marcado. El título del proyecto requiere una fuente sans-serif geométrica con un peso muy pesado
+(Bold o Black) para fijar el nombre de inmediato
+mientras que los textos de soporte técnico se diseñan con un tamaño considerablemente menor
+y un espaciado horizontal (tracking) ligeramente amplio
+reflejando la limpieza de un entorno de desarrollo minimalista.
+
+
+
+## Ficha Técnica de Configuración para el Canvas horizontal
+
+para que el lienzo horizontal tenga las proporciones exactas y los colores perfectamente calibrados con la identidad de la aplicación
+
+A diferencia del flyer, acá configuramos el espacio pensando en monitores y en la densidad de píxeles ideal
+para que los textos de arquitectura técnica y los componentes visuales se vean ultra nítidos.
+
+
+1. Dimensiones y Lienzo (Canvas)
+
+`Tamaño Recomendado`: 1280 x 420 px
+
+`Relación de Aspecto`: ~3:1
+(El estándar de oro para encabezados de repositorios en GitHub que no saturan la pantalla al cargar la página).
+
+`Resolución`: 72 ppi (píxeles por pulgada) es suficiente para entornos web
+pero si lo diseñás en un entorno vectorial como Figma, exportalo a @2x (2560 x 840 px) para que en pantallas Retina o 4K se vea perfectamente nítido
+
+
+2. Paleta de Colores (Fidelidad de la App)
+
+Para mantener una consistencia absoluta con los entornos oscuros y profesionales
+extraemos los tonos directamente de tus capturas de pantalla:
+
+`Fondo Principal`: #0b0f19
+Fondo sólido del lienzo (Modo Oscuro)
+
+`Acento Eléctrico`: #0052ff
+Resplandor del Hero Shot y color de los Badges técnicos.
+
+`Texto Primario`: #ffffff
+Título principal del proyecto (Máximo contraste).
+
+`Texto Secundario`: #9ca3af
+Descripciones técnicas y etiquetas secundarias.
+
+`Borde del Contenedor`: #1e293b
+Línea perimetral sutil si decidís encuadrar la interfaz.
+
+
+3. font-family 3. Sistema Tipográfico y Pesos
+
+Combinación Tech-Premium que se adapta perfectamente a la estética limpia de un código bien estructurado
+
+`Fuente Principal (Títulos)`: Inter
+
+Peso para el Nombre de la App:
+800 (Extra Bold) o 900 (Black).
+
+Letter-spacing (Tracking): -0.02em
+(Letras ligeramente juntas para dar sensación de robustez).
+
+
+`Fuente Secundaria (Subtítulos y Badges)`:
+Plus Jakarta Sans o Sytem Mono (para detalles del stack).
+
+Peso para la descripción: 400 (Regular) o 500 (Medium).
+
+Letter-spacing (Tracking): 0.05em
+(Letras un poco más separadas para facilitar la lectura rápida en monitores).
+
+
+4. Distribución de la Grilla (Layout Asimétrico)
+
+El lienzo se estructura mediante una división asimétrica de espacios utilizando márgenes internos (padding)
+estrictos para asegurar el minimalismo:
+
+`Margen de Seguridad Perimetral`:
+80 px (Ningún texto o elemento clave toca los bordes del banner).
+
+`Zona Izquierda (55% del ancho)`:
+Bloque de información y arquitectura técnica.
+
+Alineación: Todo justificado estrictamente a la izquierda.
+
+Elementos: Título de la app ➡ Subtítulo técnico ➡ Fila horizontal de Badges de tecnologías
+(React, Vite, TypeScript).
+
+`Zona Derecha (45% del ancho)`:
+Zona de Impacto Visual (Hero Shot).
+
+Elemento: Se presenta recortada limpiamente dentro de una ventana de navegador simulada
+que parece asomarse o flotar desde el borde derecho
+
+
+
+## SVG estructurado para convertirlo a png
+
+Este diseño implementa de forma exacta los conceptos estratégicos y gráficos que fijamos
+una relación de aspecto aproximada de 3:1 (1280 x 420 px), una disposición asimétrica que prioriza el perfil técnico
+un fondo oscuro integrado que combina con el entorno de GitHub
+una representación vectorizada impecable de la interfaz horizontal
+
+guardalo en un archivo llamado banner.svg
+estará listo para subir a tu repositorio o arrastrarlo a herramientas como Figma
+
+```
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 420" width="1280" height="420" style="background-color: #0b0f17; font-family: 'Inter', system-ui, -apple-system, sans-serif;">
+  
+  <!-- DEFINICIONES: Efectos, sombras y luces -->
+  <defs>
+    <!-- Aura azul eléctrico de fondo para iluminar el mockup de la derecha -->
+    <radialGradient id="techGlow" cx="80%" cy="50%" r="60%">
+      <stop offset="0%" stop-color="#0052ff" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#0b0f17" stop-opacity="0"/>
+    </radialGradient>
+    
+    <!-- Sombra proyectada del navegador para simular elevación 3D -->
+    <filter id="browserShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <drop-shadow dx="8" dy="16" stdDeviation="20" flood-color="#000000" flood-opacity="0.6"/>
+    </filter>
+  </defs>
+
+  <!-- CAPA 1: Fondo Lumínico Asimétrico -->
+  <rect width="1280" height="420" fill="url(#techGlow)" />
+
+  <!-- CAPA 2: Bloque de Información Técnica (Extremo Izquierdo) -->
+  <!-- Alineación milimétrica con un margen izquierdo de 80px -->
+  <g transform="translate(80, 0)">
+    
+    <!-- Nombre de la aplicación (Logo tipográfico) -->
+    <text y="130" fill="#FFFFFF" font-size="52" font-weight="900" letter-spacing="-1.5">
+      Today app
+    </text>
+    
+    <!-- Propuesta de valor técnica (Subtítulo en dos líneas equilibradas) -->
+    <text y="185" fill="#9CA3AF" font-size="18" font-weight="400" line-height="1.5">
+      <tspan x="0" dy="0">A minimalist, high-performance task manager built for</tspan>
+      <tspan x="0" dy="26">clean architecture and structured daily productivity.</tspan>
+    </text>
+    
+    <!-- CAPA 2B: Fila de Badges del Stack Tecnológico (Alineación horizontal con brecha constante) -->
+    <g transform="translate(0, 260)">
+      <!-- Badge: React -->
+      <g transform="translate(0, 0)">
+        <rect width="78" height="28" rx="6" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+        <text x="39" y="18" fill="#0052ff" font-size="12" font-weight="700" text-anchor="middle" letter-spacing="0.5">REACT</text>
+      </g>
+      <!-- Badge: TypeScript -->
+      <g transform="translate(90, 0)">
+        <rect width="114" height="28" rx="6" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+        <text x="57" y="18" fill="#3178c6" font-size="12" font-weight="700" text-anchor="middle" letter-spacing="0.5">TYPESCRIPT</text>
+      </g>
+      <!-- Badge: Vite -->
+      <g transform="translate(216, 0)">
+        <rect width="64" height="28" rx="6" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+        <text x="32" y="18" fill="#ffc517" font-size="12" font-weight="700" text-anchor="middle" letter-spacing="0.5">VITE</text>
+      </g>
+    </g>
+  </g>
+
+  <!-- CAPA 3: Browser Mockup Estilizado (Extremo Derecho) -->
+  <!-- Inspirado en la composición de la captura horizontal Screenshot 2026-07-06 at 14-24-05 Today app_2.png -->
+  <g transform="translate(680, 50)" filter="url(#browserShadow)">
+    
+    <!-- Estructura externa del navegador (Ventana contenedora) -->
+    <rect width="560" height="320" rx="12" fill="#161d2a" stroke="#222f43" stroke-width="2" />
+    
+    <!-- Barra superior de control (Estilo ventanas macOS/Linux) -->
+    <path d="M0,34 L560,34" stroke="#222f43" stroke-width="1.5" />
+    <!-- Botones de cerrar, minimizar y maximizar -->
+    <circle cx="20" cy="17" r="5" fill="#ef4444" opacity="0.8" />
+    <circle cx="36" cy="17" r="5" fill="#eab308" opacity="0.8" />
+    <circle cx="52" cy="17" r="5" fill="#22c55e" opacity="0.8" />
+    <!-- Barra de direcciones URL simulada -->
+    <rect x="90" y="7" width="380" height="20" rx="6" fill="#0b0f17" opacity="0.6" />
+    <text x="280" y="21" fill="#4b5563" font-size="10" text-anchor="middle">localhost:3000</text>
+
+    <!-- CUERPO INTERNO: Replicando la distribución horizontal de la interfaz real -->
+    <g transform="translate(0, 34)">
+      
+      <!-- Panel Izquierdo: Barra lateral de Categorías de la app -->
+      <g transform="translate(20, 20)">
+        <!-- Título de sección "TAREAS" -->
+        <rect width="50" height="8" rx="2" fill="#4b5563" opacity="0.4" />
+        <!-- Input "Buscar..." -->
+        <rect y="16" width="130" height="24" rx="6" fill="#0b0f17" stroke="#222f43" stroke-width="1" />
+        <circle cx="12" cy="28" r="3" stroke="#4b5563" stroke-width="1" fill="none" />
+        
+        <!-- Sección CATEGORÍAS -->
+        <rect y="54" width="70" height="8" rx="2" fill="#4b5563" opacity="0.4" />
+        <!-- Fila: Todas (Seleccionada con el check azul) -->
+        <g transform="translate(0, 72)">
+          <rect width="130" height="24" rx="6" fill="#222f43" opacity="0.4" />
+          <circle cx="12" cy="12" r="6" fill="#0052ff" />
+          <path d="M9 12 L11 14 L15 10" stroke="#FFFFFF" stroke-width="1.5" fill="none" />
+          <rect x="26" y="8" width="40" height="8" rx="2" fill="#FFFFFF" opacity="0.9" />
+          <circle cx="118" cy="12" r="7" fill="#0052ff" />
+        </g>
+        <!-- Fila: Pendientes -->
+        <g transform="translate(0, 104)">
+          <circle cx="12" cy="12" r="6" stroke="#4b5563" stroke-width="1.5" fill="none" />
+          <rect x="26" y="8" width="55" height="8" rx="2" fill="#9CA3AF" opacity="0.6" />
+        </g>
+        <!-- Fila: Completadas -->
+        <g transform="translate(0, 136)">
+          <circle cx="12" cy="12" r="6" stroke="#4b5563" stroke-width="1.5" fill="none" />
+          <rect x="26" y="8" width="60" height="8" rx="2" fill="#9CA3AF" opacity="0.6" />
+        </g>
+        
+        <!-- Botón inferior: Borrar completadas -->
+        <rect y="180" width="130" height="24" rx="6" fill="#0b0f17" stroke="#222f43" stroke-width="1" />
+        <rect x="20" y="188" width="90" height="8" rx="2" fill="#9CA3AF" opacity="0.5" />
+      </g>
+
+      <!-- Línea divisoria central nativa de la app -->
+      <path d="M170,0 L170,286" stroke="#222f43" stroke-width="1" />
+
+      <!-- Panel Derecho: Tablero Principal de Tareas ("Mis Tareas") -->
+      <g transform="translate(190, 20)">
+        <!-- Contenedor principal azul oscuro -->
+        <rect width="350" height="246" rx="10" fill="#001a4d" fill-opacity="0.4" stroke="#002b80" stroke-width="1" />
+        
+        <!-- Títulos superiores -->
+        <text x="175" y="30" fill="#FFFFFF" font-size="16" font-weight="700" text-anchor="middle">Mis Tareas</text>
+        <text x="175" y="48" fill="#9CA3AF" font-size="11" text-anchor="middle">Tienes 1 asuntos por resolver hoy.</text>
+        
+        <!-- Input superior de agregar tarea -->
+        <rect x="20" y="64" width="230" height="28" rx="6" fill="#0b0f17" stroke="#003399" stroke-width="1" />
+        <rect x="32" y="74" width="110" height="8" rx="2" fill="#4b5563" opacity="0.6" />
+        <!-- Botón Añadir -->
+        <rect x="260" y="64" width="70" height="28" rx="6" fill="#222f43" />
+        <rect x="277" y="74" width="36" height="8" rx="2" fill="#FFFFFF" opacity="0.8" />
+        
+        <!-- Lista de Tareas Internas -->
+        <!-- Tarea 1: Realizada (fix task list) -->
+        <g transform="translate(20, 106)">
+          <rect width="310" height="34" rx="8" fill="#0b0f17" stroke="#222f43" stroke-width="1" opacity="0.6" />
+          <circle cx="16" cy="17" r="7" fill="#0052ff" />
+          <path d="M13 17 L15 19 L19 14" stroke="#FFFFFF" stroke-width="1.5" fill="none" />
+          <rect x="36" y="13" width="70" height="8" rx="2" fill="#9CA3AF" opacity="0.4" /> <!-- Línea de texto tachada sim -->
+          <!-- Icono papelera -->
+          <rect x="282" y="11" width="12" height="12" rx="2" fill="#ef4444" opacity="0.3" />
+        </g>
+        
+        <!-- Tarea 2: Pendiente (fix style) -->
+        <g transform="translate(20, 150)">
+          <rect width="310" height="34" rx="8" fill="#0b0f17" stroke="#002b80" stroke-width="1" />
+          <circle cx="16" cy="17" r="7" stroke="#4b5563" stroke-width="1.5" fill="none" />
+          <rect x="36" y="13" width="55" height="8" rx="2" fill="#FFFFFF" opacity="0.9" />
+          <!-- Icono papelera -->
+          <rect x="282" y="11" width="12" height="12" rx="2" fill="#ef4444" opacity="0.3" />
+        </g>
+      </g>
+      
+    </g>
+  </g>
+</svg>
+
+```
+
+
+#### Integración para GitHub
+
+Para añadir este banner directamente a la parte superior de tu archivo README.md, tienes dos opciones
+
+1. Vía assets del repositorio
+Sube el archivo banner.svg a una carpeta de imágenes (ej. assets/)
+dentro de tu repositorio y enlázalo al principio del README.md con la siguiente línea de Markdown
+
+`![Today App Banner](assets/banner.svg)`
+
+
+2. Centrado e Interactivo:
+Si deseas que quede perfectamente centrado y actúe como un enlace directo hacia la demo en vivo de tu aplicación
+puedes embeberlo usando etiquetas HTML estructuradas
+
+```
+<p align="center">
+  <a href="https://tu-live-demo.vercel.app">
+    <img src="assets/banner.svg" alt="Today App Banner" width="100%">
+  </a>
+</p>
+```
+
+
+### Ubicación del banner
+
+```
+<!-- LÍNEA 1: BANNER HORIZONTAL ANCLADO A LA DEMO EN VIVO -->
+<p align="center">
+  <a href="https://tu-live-demo.vercel.app">
+    <img src="assets/banner.png" alt="Today App Banner" width="100%">
+  </a>
+</p>
+
+<!-- Una sola línea descriptiva debajo del banner para SEO y contexto rápido -->
+> A minimalist, high-performance task manager built for clean architecture and structured daily productivity.
+
+## 🔗 App en vivo / probar app
+
+Aquí puedes ver y probar la aplicación en producción:
+* 🌐 **Live Demo:** [Visitar Today App](https://tu-live-demo.vercel.app)
+
+```
+
+
+
+### Versión corregida
+
+```
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 420" width="1280" height="420" style="background-color: #0b0f17; font-family: 'Inter', system-ui, -apple-system, sans-serif;">
+  
+  <!-- DEFINICIONES: Efectos, sombras y luces -->
+  <defs>
+    <!-- Aura azul eléctrico de fondo para iluminar el mockup de la derecha -->
+    <radialGradient id="techGlow" cx="80%" cy="50%" r="60%">
+      <stop offset="0%" stop-color="#0052ff" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#0b0f17" stop-opacity="0"/>
+    </radialGradient>
+    
+    <!-- CORREGIDO: Sombra proyectada del navegador usando feDropShadow -->
+    <filter id="browserShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="8" dy="16" stdDeviation="20" flood-color="#000000" flood-opacity="0.6"/>
+    </filter>
+  </defs>
+
+  <!-- CAPA 1: Fondo Lumínico Asimétrico -->
+  <rect width="1280" height="420" fill="url(#techGlow)" />
+
+  <!-- CAPA 2: Bloque de Información Técnica (Extremo Izquierdo) -->
+  <g transform="translate(80, 0)">
+    
+    <!-- Nombre de la aplicación (Logo tipográfico) -->
+    <text y="130" fill="#FFFFFF" font-size="52" font-weight="900" letter-spacing="-1.5">
+      Today app
+    </text>
+    
+    <!-- Propuesta de valor técnica -->
+    <text y="185" fill="#9CA3AF" font-size="18" font-weight="400" line-height="1.5">
+      <tspan x="0" dy="0">A minimalist, high-performance task manager built for</tspan>
+      <tspan x="0" dy="26">clean architecture and structured daily productivity.</tspan>
+    </text>
+    
+    <!-- Fila de Badges del Stack Tecnológico -->
+    <g transform="translate(0, 260)">
+      <!-- Badge: React -->
+      <g transform="translate(0, 0)">
+        <rect width="78" height="28" rx="6" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+        <text x="39" y="18" fill="#0052ff" font-size="12" font-weight="700" text-anchor="middle" letter-spacing="0.5">REACT</text>
+      </g>
+      <!-- Badge: TypeScript -->
+      <g transform="translate(90, 0)">
+        <rect width="114" height="28" rx="6" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+        <text x="57" y="18" fill="#3178c6" font-size="12" font-weight="700" text-anchor="middle" letter-spacing="0.5">TYPESCRIPT</text>
+      </g>
+      <!-- Badge: Vite -->
+      <g transform="translate(216, 0)">
+        <rect width="64" height="28" rx="6" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+        <text x="32" y="18" fill="#ffc517" font-size="12" font-weight="700" text-anchor="middle" letter-spacing="0.5">VITE</text>
+      </g>
+    </g>
+  </g>
+
+  <!-- CAPA 3: Browser Mockup Estilizado (Extremo Derecho) -->
+  <g transform="translate(680, 50)" filter="url(#browserShadow)">
+    
+    <!-- Estructura externa del navegador (Ventana contenedora) -->
+    <rect width="560" height="320" rx="12" fill="#161d2a" stroke="#222f43" stroke-width="2" />
+    
+    <!-- Barra superior de control -->
+    <path d="M0,34 L560,34" stroke="#222f43" stroke-width="1.5" />
+    <!-- Botones de cerrar, minimizar y maximizar -->
+    <circle cx="20" cy="17" r="5" fill="#ef4444" opacity="0.8" />
+    <circle cx="36" cy="17" r="5" fill="#eab308" opacity="0.8" />
+    <circle cx="52" cy="17" r="5" fill="#22c55e" opacity="0.8" />
+    <!-- Barra de direcciones URL simulada -->
+    <rect x="90" y="7" width="380" height="20" rx="6" fill="#0b0f17" opacity="0.6" />
+    <text x="280" y="21" fill="#4b5563" font-size="10" text-anchor="middle">localhost:3000</text>
+
+    <!-- CUERPO INTERNO: Interfaz de la app -->
+    <g transform="translate(0, 34)">
+      
+      <!-- Panel Izquierdo: Barra lateral de Categorías -->
+      <g transform="translate(20, 20)">
+        <!-- Título de sección "TAREAS" -->
+        <rect width="50" height="8" rx="2" fill="#4b5563" opacity="0.4" />
+        <!-- Input "Buscar..." -->
+        <rect y="16" width="130" height="24" rx="6" fill="#0b0f17" stroke="#222f43" stroke-width="1" />
+        <circle cx="12" cy="28" r="3" stroke="#4b5563" stroke-width="1" fill="none" />
+        
+        <!-- Sección CATEGORÍAS -->
+        <rect y="54" width="70" height="8" rx="2" fill="#4b5563" opacity="0.4" />
+        <!-- Fila: Todas -->
+        <g transform="translate(0, 72)">
+          <rect width="130" height="24" rx="6" fill="#222f43" opacity="0.4" />
+          <circle cx="12" cy="12" r="6" fill="#0052ff" />
+          <path d="M9 12 L11 14 L15 10" stroke="#FFFFFF" stroke-width="1.5" fill="none" />
+          <rect x="26" y="8" width="40" height="8" rx="2" fill="#FFFFFF" opacity="0.9" />
+          <circle cx="118" cy="12" r="7" fill="#0052ff" />
+        </g>
+        <!-- Fila: Pendientes -->
+        <g transform="translate(0, 104)">
+          <circle cx="12" cy="12" r="6" stroke="#4b5563" stroke-width="1.5" fill="none" />
+          <rect x="26" y="8" width="55" height="8" rx="2" fill="#9CA3AF" opacity="0.6" />
+        </g>
+        <!-- Fila: Completadas -->
+        <g transform="translate(0, 136)">
+          <circle cx="12" cy="12" r="6" stroke="#4b5563" stroke-width="1.5" fill="none" />
+          <rect x="26" y="8" width="60" height="8" rx="2" fill="#9CA3AF" opacity="0.6" />
+        </g>
+        
+        <!-- Botón inferior -->
+        <rect y="180" width="130" height="24" rx="6" fill="#0b0f17" stroke="#222f43" stroke-width="1" />
+        <rect x="20" y="188" width="90" height="8" rx="2" fill="#9CA3AF" opacity="0.5" />
+      </g>
+
+      <!-- Línea divisoria central -->
+      <path d="M170,0 L170,286" stroke="#222f43" stroke-width="1" />
+
+      <!-- Panel Derecho: Tablero Principal ("Mis Tareas") -->
+      <g transform="translate(190, 20)">
+        <rect width="350" height="246" rx="10" fill="#001a4d" fill-opacity="0.4" stroke="#002b80" stroke-width="1" />
+        
+        <text x="175" y="30" fill="#FFFFFF" font-size="16" font-weight="700" text-anchor="middle">Mis Tareas</text>
+        <text x="175" y="48" fill="#9CA3AF" font-size="11" text-anchor="middle">Tienes 1 asuntos por resolver hoy.</text>
+        
+        <!-- Input superior -->
+        <rect x="20" y="64" width="230" height="28" rx="6" fill="#0b0f17" stroke="#003399" stroke-width="1" />
+        <rect x="32" y="74" width="110" height="8" rx="2" fill="#4b5563" opacity="0.6" />
+        <!-- Botón Añadir -->
+        <rect x="260" y="64" width="70" height="28" rx="6" fill="#222f43" />
+        <rect x="277" y="74" width="36" height="8" rx="2" fill="#FFFFFF" opacity="0.8" />
+        
+        <!-- Lista de Tareas -->
+        <!-- Tarea 1: Realizada -->
+        <g transform="translate(20, 106)">
+          <rect width="310" height="34" rx="8" fill="#0b0f17" stroke="#222f43" stroke-width="1" opacity="0.6" />
+          <circle cx="16" cy="17" r="7" fill="#0052ff" />
+          <path d="M13 17 L15 19 L19 14" stroke="#FFFFFF" stroke-width="1.5" fill="none" />
+          <rect x="36" y="13" width="70" height="8" rx="2" fill="#9CA3AF" opacity="0.4" />
+          <rect x="282" y="11" width="12" height="12" rx="2" fill="#ef4444" opacity="0.3" />
+        </g>
+        
+        <!-- Tarea 2: Pendiente -->
+        <g transform="translate(20, 150)">
+          <rect width="310" height="34" rx="8" fill="#0b0f17" stroke="#002b80" stroke-width="1" />
+          <circle cx="16" cy="17" r="7" stroke="#4b5563" stroke-width="1.5" fill="none" />
+          <rect x="36" y="13" width="55" height="8" rx="2" fill="#FFFFFF" opacity="0.9" />
+          <rect x="282" y="11" width="12" height="12" rx="2" fill="#ef4444" opacity="0.3" />
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>
+
+```
+
+
+### Tip build - github
+
+si la imagen del banner (o capturas de pantalla) la vas a usar únicamente para el README.md de tu repositorio
+##### y no se muestra dentro de tu aplicación de React, no la metas en src/assets/ ni en public/.
+
+##### Ponerlo en la carpeta .github/assets/banner.svg
+
+# SVG o png en readme github
+
+Ambos formatos conviven, pero tienen objetivos y comportamientos muy diferentes dentro de GitHub
+No hay un único estándar absoluto, sino un "estándar de seguridad" (PNG) y un "estándar premium moderno" (SVG).
+
+
+1. Estándar seguro: PNG en Alta Resolución (@2x o @3x) 
+
+Muchos de los grandes proyectos de código abierto (y la mayoría de los desarrolladores) eligen PNG
+pero con un truco: lo exportan al doble o triple de su tamaño real
+(por ejemplo, diseñar a 1280x420 pero exportar a 2560x840).
+
+estándar: GitHub es una plataforma multiplataforma
+Un usuario puede ver tu repositorio desde un iPhone, una PC con Windows, una Mac con pantalla Retina o una distribución de Linux
+El PNG es un mapa de bits cerrado: se va a ver exactamente igual
+con los mismos píxeles y el mismo espaciado, en cualquier pantalla del mundo
+
+ventaja oculta: No depende de las tipografías del usuario
+Si usas una fuente premium en tu diseño, el PNG ya la tiene "pintada
+
+desventaja: Si no lo exportas en alta resolución (@2x)
+en pantallas 4K o pantallas Retina de Apple se puede notar ligeramente borroso (pixelado) en los bordes de los textos
+
+
+2. estándar moderno: SVG (Vectores Optimizados)
+
+Grandes empresas de software con repositorios ultra estéticos
+(como Vercel, Supabase, Tailwind o Raycast) suelen usar SVG para sus banners y logos en GitHub
+
+elegido por los diseñadores/devs premium: Es escalable hasta el infinito.
+No importa si el reclutador tiene un monitor de 8K, los textos y los bordes de la interfaz de tu app se verán tan nítidos como si fueran código real
+Además, pesa apenas unos pocos kilobytes, lo que hace que el README cargue instantáneamente
+
+gran "pero" de GitHub con los SVG: Por motivos de seguridad (evitar ataques de inyección de código)
+GitHub sanitiza los archivos SVG
+Esto significa que si tu SVG tiene animaciones complejas en JavaScript o estilos CSS muy avanzados
+GitHub los va a bloquear y el banner podría romperse o no mostrarse.
+
+problema de las fuentes: Si dejas el texto como código (<text>),
+el navegador del usuario intentará renderizarlo con las fuentes que tenga instaladas
+lo solucionamos usando familias del sistema (system-ui, -apple-system),
+por lo que se adaptará de forma limpia y moderna al sistema operativo del usuario
+pero no se verá exactamente igual en Windows que en Mac.
+
+
+Recomendaciones:
+
+1. control absoluto y cero sorpresas (Recomendado):
+Código SVG arrastralo dentro de Figma (u otra herramienta de diseño)
+asegúrate de que todo esté en su lugar, y exportalo como PNG a @2x (2560 x 840 px).
+Sube ese PNG a tu GitHub
+Se va a ver increíblemente nítido, no va a pesar nada y te garantizás que todos los reclutadores vean exactamente la misma tipografía y balance
+
+2. Nitidez matemática
+Usar el archivo .svg directamente
+El código optimizado para la sanitización de GitHub (no usa recursos externos ni scripts)
+las fuentes están protegidas con selectores nativos del sistema para que no se rompan
+
+
+
+
+
+# Descripción del proj para ATS
+
+
+
+
 # Escalar
+
 
 agregar emociones
 
@@ -18371,3 +24579,9 @@ calendar
 # Estilizar fuentes
 
 ## cursiv encab main 
+
+
+
+
+
+
