@@ -21501,13 +21501,13 @@ La estructura en tu árbol de directorios debe quedar exactamente así:
 tu-proyecto/
 ├── .github/
 │   └── workflows/
-│       └── deploy.yml  <--- ¡ACÁ VA EL ARCHIVO!
+│       └── deploy.yml  <--- file
 ├── src/
 ├── package.json
 └── vite.config.ts
 ```
 
-#### !!! Abrí ese archivo deploy.yml, su código:
+#### archivo deploy.yml, su código:
 
 ```
 name: Despliegue Continuo (CI/CD) a GitHub Pages

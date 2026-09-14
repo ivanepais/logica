@@ -12062,8 +12062,2711 @@ portfolioContent
 
 
 
+### PortfolioContent mínimo válido
+
+reemplazar:
+`const portfolioContent = {} as PortfolioContent;`
+
+
+por:
+
+```
+const portfolioContent: PortfolioContent = {
+  profile: {
+    fullName: 'Test User',
+    role: 'Frontend Developer',
+    headline: 'Test headline',
+    summary: 'Test summary',
+  },
+
+  projects: [
+    {
+      id: 'project-1',
+      title: 'Test Project',
+      description: 'Test project description',
+      technologies: ['Angular'],
+      featured: true,
+    },
+  ],
+
+  skills: [
+    {
+      id: 'skill-1',
+      name: 'Angular',
+      featured: true,
+    },
+  ],
+
+  experiences: [
+    {
+      id: 'experience-1',
+      company: 'Test Company',
+      role: 'Frontend Developer',
+      startDate: '2024-01',
+      summary: 'Test experience summary',
+      featured: true,
+    },
+  ],
+
+  education: [
+    {
+      id: 'education-1',
+      institution: 'Test University',
+      degree: 'Computer Science',
+      startDate: '2020-01',
+      endDate: '2024-01',
+      featured: true,
+    },
+  ],
+
+  socialLinks: [
+    {
+      platform: 'github',
+      label: 'GitHub',
+      url: 'https://github.com/test',
+    },
+  ],
+
+  contact: {
+    email: 'test@example.com',
+    availableForWork: true,
+  },
+};
+```
+
+##### TypeScript ahora valida realmente el fixture contra PortfolioContent y contra todas sus entidades.
+
+
+Usando valores minimos: los obligatorios
+dejando los opcionales
+
+
+Flujo:
+
+GetPortfolioContentUseCase
+        ↓
+PortfolioContentPort
+        ↓
+fixture mínimo válido
+        ↓
+resultado esperado
+
+
+
+### Testear error: propaga el error del puerto
+
+```
+it('debería propagar el error del puerto', async () => {
+  const error = new Error('Error al obtener el portfolio');
+
+  const getPortfolioContent = vi
+    .fn()
+    .mockRejectedValue(error);
+
+  const portfolioContentPort: PortfolioContentPort = {
+    getPortfolioContent,
+  };
+
+  const useCase = new GetPortfolioContentUseCase(
+    portfolioContentPort,
+  );
+
+  await expect(useCase.execute()).rejects.toBe(error);
+});
+```
+
+PortfolioContentPort
+        ↓
+    reject(error)
+        ↓
+GetPortfolioContentUseCase
+        ↓
+   execute()
+        ↓
+    mismo error
+
+
+`.rejects.toBe(error)`.
+
+execute() devuelve una Promise y queremos verificar que esa promesa rechaza con exactamente la misma instancia de error
+
+
+
 
 # Testing Capa Infraestructure
+
+##### Application prueba reglas/orquestación
+
+#### Infrastructure prueba que las adaptaciones hacia/desde el mundo externo funcionan correctamente
+
+Infrastructure
+├── adapter
+├── DTO
+└── mapper
+
+Tienen diferente forma/tecnica de testing
+
+
+### 1. Adapter
+Es normalmente la pieza de Infrastructure que más interesa testear.
+
+JsonPortfolioContentAdapter
+        ↓
+lee JSON
+        ↓
+mapper
+        ↓
+PortfolioContent
+
+#### Adapter tiene comportamiento real: obtiene datos; accede a una fuente externa; utiliza un mapper; maneja errores; entrega el contrato que espera Application
+
+
+Unit testing con dependencias aisladas:
+Si el adapter recibe un loader, HTTP client o filesystem abstraction, podemos sustituirlo por un stub/mock
+
+Adapter
+  ↓
+fake external dependency
+
+permite probar el adapter sin realizar IO real
+
+
+##### Integration testing
+Si queremos comprobar la interacción real entre:
+
+adapter
+  ↓
+JSON
+  ↓
+mapper
+
+utilizamos datos reales o una fuente real controlada
+Para un JSON estático local, este nivel puede ser particularmente útil.
+
+
+##### Contract testing
+
+adapter implementa: PortfolioContentPort
+podemos verificar que la salida cumple el contrato esperado.
+
+
+
+## 2. DTO 
+
+Distingir
+
+Un DTO como
+
+`interface PortfolioContentDto { ... }`
+
+##### es normalmente solo un tipo.
+
+##### Como ocurría con PortfolioContentPort, un interface no tiene comportamiento runtime
+
+no suele necesitar un unit test propio.
+
+debemos probar es que los datos externos realmente pueden transformarse al DTO esperado
+
+el JSON tiene:
+profile
+projects
+skills
+
+##### el test del adapter/mapper detectará si falta algo o cambió la estructura
+
+
+Runtime validation:
+
+##### Aquí puede aparecer una técnica adicional si los DTO llegan de una fuente que no controlamos:
+
+JSON / API
+   ↓
+runtime validation
+   ↓
+DTO
+
+Con librerías/schema validation podemos comprobar:
+
+propiedades requeridas;
+tipos;
+enums;
+arrays;
+formatos.
+
+Pero si el JSON es local, versionado y controlado por nosotros, probablemente no necesitamos introducir validación runtime inmediatamente
+
+
+
+## 3. Mapper
+
+unit testing.
+
+
+Supongamos:
+
+PortfolioContentDto
+        ↓
+PortfolioContent
+
+
+probar:
+
+input conocido
+    ↓
+mapper
+    ↓
+output esperado
+
+
+##### Es una transformación determinista y normalmente pura.
+
+El test puede ser muy preciso
+
+todos los campos requeridos se transforman;
+opcionales se mantienen correctamente;
+arrays se transforman correctamente;
+valores no se pierden;
+nombres distintos (image_url → imageUrl, por ejemplo) se mapean correctamente;
+transformaciones especiales funcionan;
+valores inesperados se manejan según el contrato
+
+Para un mapper, normalmente no necesitamos Angular, TestBed, HTTP ni IO
+
+
+4. Happy path
+
+Para Infrastructure necesitamos probar el escenario normal:
+
+fuente externa válida
+      ↓
+DTO válido
+      ↓
+mapper
+      ↓
+Domain/Application model válido
+
+
+Es el equivalente al happy path que hicimos en Application
+pero ahora estamos verificando adaptación de datos.
+
+
+## 5. Error paths
+
+#### Importantes en Infrastructure: aparecen errores que no existen en la capa de dominio
+
+##### !!! archivo inexistente
+##### !!! JSON inválido
+##### !!! HTTP 500
+##### !!! timeout
+##### !!! respuesta incompleta
+##### !!! formato inesperado
+
+##### Dependiendo del adapter, deberíamos probar los errores relevantes.
+
+JSON inválido
+    ↓
+adapter
+    ↓
+error esperado
+
+
+No necesariamente debemos probar todos los errores imaginables; solo los que forman parte del contrato y del comportamiento real.
+
+
+6. Edge cases
+
+##### Infrastructure es un buen lugar para probar datos problemáticos:
+
+#### `[]`: arrays vacíos
+
+#### `null`: valores faltantes, cuando el DTO lo permita;
+
+#### strings vacíos;
+
+campos opcionales ausentes;
+
+colecciones grandes;
+
+valores inesperados.
+
+
+##### Aquí importa especialmente que el mapper no haga transformaciones accidentales.
+
+
+## 7. Fixture testing
+
+Para adapters y mappers suele ser muy útil tener fixtures
+
+fixtures/
+├── portfolio.valid.json
+├── portfolio.empty.json
+└── portfolio.invalid.json
+
+Entonces podemos probar transformaciones con datos representativos y reproducibles
+
+Tiene mucho sentido porque ya tenemos un JSON de contenido.
+
+
+8. Snapshot testing
+
+Puede ser útil pero no lo usaría como estrategia principal
+
+DTO
+ ↓
+mapper
+ ↓
+snapshot
+
+Puede detectar cambios grandes en la estructura
+
+Pero para un mapper prefiero aserciones explícitas sobre campos importantes
+Los snapshots pueden volverse ruidosos y aceptar cambios involuntarios simplemente porque actualizamos el snapshot
+
+
+9. Mutation testing
+
+Al igual que en Application, es una técnica avanzada
+
+En Infrastructure puede ser interesante para mappers:
+
+source.field
+ ↓
+mutation
+ ↓
+destination.otherField
+
+y comprobar si los tests detectan el error.
+No lo introduciría inicialmente.
+
+
+## 10. Tests de integración entre adapter + mapper
+
+Particularmente interesante para tu arquitectura
+
+JSON real
+   ↓
+Adapter
+   ↓
+Mapper real
+   ↓
+PortfolioContent
+
+
+#### detecta problemas que los unit tests separados podrían no encontrar:
+
+DTO cambió
+    ↓
+mapper esperaba otra estructura
+    ↓
+adapter falla
+
+##### portfolio con JSON local, probablemente sea uno de los tests de mayor valor
+
+
+11. TestBed
+
+Igual que en Application, no usaría TestBed automáticamente.
+
+tenemos mapper: es una función/clase pura → unit test normal.
+
+Si tenemos: Adapter → fetch/http
+
+podemos utilizar herramientas de testing HTTP o mocks/fakes apropiados.
+
+
+TestBed solo cuando realmente necesitemos probar la integración con Angular DI o providers.
+
+
+Tests:
+
+Infrastructure
+│
+├── Mapper
+│   └── Unit tests
+│
+├── DTO
+│   └── normalmente sin test propio
+│
+└── Adapter
+    ├── Unit tests
+    └── Integration tests
+
+
+Niveles:
+
+Mapper
+→ transformación correcta
+
+Adapter unit
+→ comportamiento con dependencias externas simuladas
+
+Adapter integration
+→ fuente real/controlada + mapper real
+
+Contract
+→ cumple PortfolioContentPort
+
+
+Para adapter actual
+
+JSON local
+    ↓
+mapper
+    ↓
+PortfolioContent
+
+
+yo no empezaría con una enorme suite de Infrastructure.
+
+
+1. Mapper
+→ happy path
+→ opcionales / edge cases relevantes
+
+2. Adapter
+→ obtiene datos correctamente
+→ errores relevantes
+
+3. Integration
+→ JSON real → PortfolioContent
+
+
+El DTO probablemente no tendría un .spec.ts propio.
+
+Distinción respecto de Application
+
+
+   
+
+
+## Testing Archivo mapper: src/app/infraestructure/mappers/portfolio-content.mapper.ts.
+
+#### Tiene comportamiento real y determinista de lo más más importantes
+
+PortfolioContentDto
+        ↓
+PortfolioContentMapper.toDomain()
+        ↓
+PortfolioContent
+
+No depende de Angular, HTTP, archivos ni estado externo. Eso hace que podamos probarlo de manera muy aislada.
+
+
+## 1. Testear: responsabilidad (transformar correctamente cada parte del DTO al modelo que consume Application/Domain)
+
+``
+PortfolioContentDto
+├── profile       → Profile
+├── projects[]    → Project[]
+├── skills[]      → Skill[]
+├── experiences[] → Experience[]
+├── education[]   → Education[]
+├── socialLinks[] → SocialLink[]
+└── contact       → Contact
+```
+
+##### el test debería centrarse en transformaciones, no en implementación interna
+
+
+2. Test crítico / indispensable
+
+Primero: test principal:
+
+toDomain transforma correctamente un DTO completo
+
+Conceptualmente:
+
+given:
+  PortfolioContentDto válido
+
+when:
+  PortfolioContentMapper.toDomain(dto)
+
+then:
+  devuelve un PortfolioContent equivalente al esperado
+
+
+Verifica que el mapper completo está conectado correctamente:
+
+```
+toDomain()
+ ├── profile()
+ ├── project()
+ ├── skill()
+ ├── experience()
+ ├── education()
+ ├── socialLink()
+ └── contact()
+```
+
+Prueba de integración interna del mapper
+
+
+Siguiendo con el test:
+Mapper tiene varias decisiones específicas que merecen pruebas propias.
+
+Profile
+Necesitamos comprobar que:
+fullName
+role
+headline
+summary
+avatarUrl
+
+Contact y SocialLink
+
+y los opcionales que se consumen
+
+
+conviene verificarlo como parte del mapping porque platform es un union type
+
+
+Un valor representativo es suficiente.
+No necesitamos probar las siete 'platform'/s
+
+
+4. Project: más interesante
+comportamiento
+
+Project
+├── repository? 
+└── demo?
+
+el mapper hace:
+```
+repository: dto.repository
+  ? this.projectLink(dto.repository)
+  : undefined
+```
+
+y lo mismo con demo.
+
+necesitamos comprobar dos variantes
+
+
+Con links
+repository → ProjectLink
+demo       → ProjectLink
+
+
+Sin links
+repository → undefined
+demo       → undefined
+
+
+caso importante porque el mapper está tomando una decisión explícita
+
+
+5. skill
+
+id
+name
+category
+level
+featured
+
+particularmente opcionales
+category?
+level?
+
+tener:
+skill con category/level
+
+otro escenario donde estén ausentes
+
+No hace falta hacer un test por cada valor de:
+
+basic
+intermediate
+advanced
+
+porque el mapper no transforma esos valores; simplemente los copia.
+
+
+6. Experience
+
+aparece una transformación concreta
+
+```
+endDate: dto.endDate ?? undefined
+```
+
+merece un test específico.
+
+DTO:
+endDate = "2025-01"
+
+→
+
+Domain:
+endDate = "2025-01"
+
+y
+
+DTO:
+endDate = null
+
+→
+
+Domain:
+endDate = undefined
+
+una regla de transformación.
+
+
+debemos comprobar:
+achievements
+opcional
+
+
+## Testing Arrays
+
+Todos estos campos son colecciones:
+
+```
+projects[]
+skills[]
+experiences[]
+education[]
+socialLinks[]
+```
+
+comprobar que:
+
+se conservan todos los elementos;
+se conserva el orden;
+cada elemento es transformado.
+
+comprobar un caso de: `[]`
+para garantizar que un array vacío siga siendo un array vacío.
+
+
+9. Casos edge
+
+Priorizar:
+
+1. DTO completo válido
+2. arrays vacíos
+3. repository ausente
+4. demo ausente
+5. endDate = null
+6. opcionales ausentes
+
+No valores absurdos como:
+
+"id": ""
+"title": null
+
+##### si el DTO ya está validado antes del mapper. Eso pertenece a validación de DTO, no al mapper.
+
+
+
+10. testear cada método privado?
+
+No directamente.
+
+No haría:
+
+test contact()
+test socialLink()
+test profile()
+...
+
+como si fueran API pública.
+
+Esos métodos existen como detalles de implementación
+
+`PortfolioContentMapper.toDomain()`
+
+observamos el resultado.
+
+```
+toDomain(dto)
+    ↓
+resultado esperado
+```
+
+Si profile() falla, el test de toDomain() debe detectarlo.
+mantiene los tests menos acoplados a la estructura interna del mapper.
+
+
+11. Mocks
+
+Sin teting. Este mapper no tiene dependencias externas.
+
+No necesitamos:
+mock;
+spy;
+stub;
+TestBed;
+Angular DI.
+
+
+##### Es una transformación pura:
+
+input → output
+
+unit test simple
+
+
+12. fixtures: tienen sentido
+
+fixture conceptual
+
+PortfolioContentDto
+└── válido y representativo
+
+posiblemente variantes:
+
+valid
+with-optional-fields
+without-optional-fields
+empty-collections
+
+inicialmente con un fixture válido bien diseñado alcanza
+
+
+13. probar referencias
+
+mapper hace:
+`technologies: dto.technologies`
+
+y
+
+`achievements: dto.achievements`
+
+
+#### significa que está reutilizando esas referencias, no creando copias.
+##### No testearía esto salvo que sea una decisión contractual.
+
+
+Lo importante es:
+¿el resultado tiene los valores correctos?
+
+No:
+¿creó una copia o reutilizó el array?
+Eso último sería detalle de implementación.
+
+
+14. Cobertura
+
+```
+PortfolioContentMapper
+│
+├── toDomain
+│   ├── profile
+│   ├── projects
+│   │   ├── repository
+│   │   └── demo
+│   ├── skills
+│   ├── experiences
+│   │   └── endDate null → undefined
+│   ├── education
+│   │   └── endDate null → undefined
+│   ├── socialLinks
+│   └── contact
+│
+└── arrays / opcionales
+```
+
+necesitamos cubrir las decisiones de transformación
+
+
+Test:
+
+1. toDomain()
+   → transforma correctamente un DTO completo
+
+2. toDomain()
+   → conserva correctamente arrays vacíos
+
+3. toDomain()
+   → transforma repository/demo opcionales
+
+4. toDomain()
+   → transforma null de endDate a undefined
+
+##### cubrimos una proporción muy importante del comportamiento real.
+
+Este mapper es mecánico; si el fixture está bien elegido, pocos tests pueden darle bastante confianza.
+
+
+
+## Test Archivo portfolio-content.mapper.ts
+   
+Crear el fixture mínimo válido de PortfolioContentDto
+`src/app/infrastructure/dtos/portfolio-content.dto.ts`
+
+el mapper usa propiedades específicas de ese DTO
+
+dto.profile
+dto.projects
+dto.skills
+dto.experiences
+dto.education
+dto.socialLinks
+dto.contact
+
+Necesitamos conocer los tipos concretos de los elementos internos
+
+repository?
+demo?
+endDate?
+achievements?
+
+queremos probar:
+
+PortfolioContentDto
+        ↓
+PortfolioContentMapper
+        ↓
+PortfolioContent
+
+
+
+### Agregando fixture
+
+
+Todavía no escribimos el spec completo ni agregamos aserciones.
+
+La idea es cubrir, desde el fixture, las decisiones relevantes del mapper:
+
+un repository;
+un demo;
+opcionales presentes;
+opcionales ausentes;
+endDate con null;
+arrays con elementos;
+todos los bloques principales
+
+```
+const portfolioContentDto: PortfolioContentDto = {
+  profile: {
+    fullName: 'Test User',
+    role: 'Frontend Developer',
+    headline: 'Test headline',
+    summary: 'Test summary',
+    avatarUrl: '/avatar.jpg',
+  },
+
+  projects: [
+    {
+      id: 'project-1',
+      title: 'Project One',
+      description: 'Project description',
+      imageUrl: '/project.jpg',
+      technologies: ['Angular', 'TypeScript'],
+      repository: {
+        label: 'GitHub',
+        url: 'https://github.com/test/project',
+      },
+      demo: {
+        label: 'Demo',
+        url: 'https://example.com/project',
+      },
+      featured: true,
+    },
+  ],
+
+  skills: [
+    {
+      id: 'skill-1',
+      name: 'Angular',
+      category: 'Frontend',
+      level: 'advanced',
+      featured: true,
+    },
+  ],
+
+  experiences: [
+    {
+      id: 'experience-1',
+      company: 'Test Company',
+      role: 'Frontend Developer',
+      startDate: '2024-01',
+      endDate: null,
+      summary: 'Test experience summary',
+      achievements: ['Achievement one'],
+      featured: true,
+    },
+  ],
+
+  education: [
+    {
+      id: 'education-1',
+      institution: 'Test University',
+      degree: 'Computer Science',
+      startDate: '2020-01',
+      endDate: '2024-01',
+      summary: 'Test education summary',
+      featured: true,
+    },
+  ],
+
+  socialLinks: [
+    {
+      platform: 'github',
+      label: 'GitHub',
+      url: 'https://github.com/test',
+    },
+  ],
+
+  contact: {
+    email: 'test@example.com',
+    location: 'Argentina',
+    availableForWork: true,
+    timezone: 'America/Argentina/Buenos_Aires',
+  },
+};
+```
+
+No queremos solamente "datos de prueba".
+##### Queremos que el fixture nos permita detectar las transformaciones relevantes del mapper
+
+Ej:
+
+Project
+├── repository → ProjectLink
+├── demo       → ProjectLink
+└── imageUrl   → mantiene valor
+
+y
+
+Experience
+└── endDate: null
+        ↓
+     undefined
+
+mientras ed usa:
+
+endDate: "2024-01"
+        ↓
+endDate: "2024-01"
+
+
+##### podemos distinguir posteriormente ambos comportamientos
+
+dejamos presentes:     
+
+profile.avatarUrl
+skill.category
+skill.level
+experience.achievements
+education.summary
+contact.location
+contact.timezone
+
+para comprobar que los opcionales realmente se mapean cuando existen.
+
+
+### Estructura y el fixture
+
+portfolio-content.mapper.spec.ts
+
+```
+import { describe, expect, it } from 'vitest';
+
+import {
+  PortfolioContentDto,
+} from '../dtos/portfolio-content.dto';
+
+import { PortfolioContentMapper } from './portfolio-content.mapper';
+
+describe('PortfolioContentMapper', () => {
+  const portfolioContentDto: PortfolioContentDto = {
+    profile: {
+      fullName: 'Test User',
+      role: 'Frontend Developer',
+      headline: 'Test headline',
+      summary: 'Test summary',
+      avatarUrl: '/avatar.jpg',
+    },
+
+    projects: [
+      {
+        id: 'project-1',
+        title: 'Project One',
+        description: 'Project description',
+        imageUrl: '/project.jpg',
+        technologies: ['Angular', 'TypeScript'],
+        repository: {
+          label: 'GitHub',
+          url: 'https://github.com/test/project',
+        },
+        demo: {
+          label: 'Demo',
+          url: 'https://example.com/project',
+        },
+        featured: true,
+      },
+    ],
+
+    skills: [
+      {
+        id: 'skill-1',
+        name: 'Angular',
+        category: 'Frontend',
+        level: 'advanced',
+        featured: true,
+      },
+    ],
+
+    experiences: [
+      {
+        id: 'experience-1',
+        company: 'Test Company',
+        role: 'Frontend Developer',
+        startDate: '2024-01',
+        endDate: null,
+        summary: 'Test experience summary',
+        achievements: ['Achievement one'],
+        featured: true,
+      },
+    ],
+
+    education: [
+      {
+        id: 'education-1',
+        institution: 'Test University',
+        degree: 'Computer Science',
+        startDate: '2020-01',
+        endDate: '2024-01',
+        summary: 'Test education summary',
+        featured: true,
+      },
+    ],
+
+    socialLinks: [
+      {
+        platform: 'github',
+        label: 'GitHub',
+        url: 'https://github.com/test',
+      },
+    ],
+
+    contact: {
+      email: 'test@example.com',
+      location: 'Argentina',
+      availableForWork: true,
+      timezone: 'America/Argentina/Buenos_Aires',
+    },
+  };
+
+  it('debería transformar un PortfolioContentDto a PortfolioContent', () => {
+    const result = PortfolioContentMapper.toDomain(
+      portfolioContentDto,
+    );
+
+    // La primera aserción la agregaremos en el siguiente paso.
+    expect(result).toBeDefined();
+  });
+});
+```
+
+comprobamos:
+
+PortfolioContentDto
+        ↓
+PortfolioContentMapper.toDomain()
+        ↓
+resultado definido
+
+
+no estamos validando ningún campo
+
+
+### Comprobar el bloque profile: aserción se transforma correctamente
+
+Reemplazamos el comentario y expect(result).toBeDefined() por:
+
+```
+expect(result.profile).toEqual({
+  fullName: 'Test User',
+  role: 'Frontend Developer',
+  headline: 'Test headline',
+  summary: 'Test summary',
+  avatarUrl: '/avatar.jpg',
+});
+```
+
+
+Queda:
+
+```
+
+it('debería transformar un PortfolioContentDto a PortfolioContent', () => {
+  const result = PortfolioContentMapper.toDomain(
+    portfolioContentDto,
+  );
+
+  expect(result.profile).toEqual({
+    fullName: 'Test User',
+    role: 'Frontend Developer',
+    headline: 'Test headline',
+    summary: 'Test summary',
+    avatarUrl: '/avatar.jpg',
+  });
+});
+```
+
+
+comprobando
+
+solamente:
+
+ProfileDto
+   ↓
+mapper.profile()
+   ↓
+Profile
+
+
+no estamos comprobando todavía:
+
+projects;
+skills;
+experience;
+education;
+socialLinks;
+contact.
+
+toEqual() es apropiado porque queremos comparar la estructura y los valores, no identidad de referencia
+
+
+### agregamos aserción de projects
+
+incluyendo los dos ProjectLink para verificar que el mapper también transforma repository y demo
+
+
+```
+expect(result.projects).toEqual([
+  {
+    id: 'project-1',
+    title: 'Project One',
+    description: 'Project description',
+    imageUrl: '/project.jpg',
+    technologies: ['Angular', 'TypeScript'],
+    repository: {
+      label: 'GitHub',
+      url: 'https://github.com/test/project',
+    },
+    demo: {
+      label: 'Demo',
+      url: 'https://example.com/project',
+    },
+    featured: true,
+  },
+]);
+```
+
+
+Resulta
+
+```
+it('debería transformar un PortfolioContentDto a PortfolioContent', () => {
+  const result = PortfolioContentMapper.toDomain(
+    portfolioContentDto,
+  );
+
+  expect(result.profile).toEqual({
+    fullName: 'Test User',
+    role: 'Frontend Developer',
+    headline: 'Test headline',
+    summary: 'Test summary',
+    avatarUrl: '/avatar.jpg',
+  });
+
+  expect(result.projects).toEqual([
+    {
+      id: 'project-1',
+      title: 'Project One',
+      description: 'Project description',
+      imageUrl: '/project.jpg',
+      technologies: ['Angular', 'TypeScript'],
+      repository: {
+        label: 'GitHub',
+        url: 'https://github.com/test/project',
+      },
+      demo: {
+        label: 'Demo',
+        url: 'https://example.com/project',
+      },
+      featured: true,
+    },
+  ]);
+});
+```
+
+Tenemos:
+
+```
+it('debería transformar un PortfolioContentDto a PortfolioContent', () => {
+  const result = PortfolioContentMapper.toDomain(
+    portfolioContentDto,
+  );
+
+  expect(result.profile).toEqual({
+    fullName: 'Test User',
+    role: 'Frontend Developer',
+    headline: 'Test headline',
+    summary: 'Test summary',
+    avatarUrl: '/avatar.jpg',
+  });
+
+  expect(result.projects).toEqual([
+    {
+      id: 'project-1',
+      title: 'Project One',
+      description: 'Project description',
+      imageUrl: '/project.jpg',
+      technologies: ['Angular', 'TypeScript'],
+      repository: {
+        label: 'GitHub',
+        url: 'https://github.com/test/project',
+      },
+      demo: {
+        label: 'Demo',
+        url: 'https://example.com/project',
+      },
+      featured: true,
+    },
+  ]);
+});
+```
+
+
+comprobamos
+
+
+```
+ProjectDto
+├── campos simples
+├── technologies
+├── repository → ProjectLink
+└── demo       → ProjectLink
+```
+
+dejamos pendientes skills, experiences, education, socialLinks y contact
+
+
+
+### agregamos aserción de skills
+
+```
+expect(result.skills).toEqual([
+  {
+    id: 'skill-1',
+    name: 'Angular',
+    category: 'Frontend',
+    level: 'advanced',
+    featured: true,
+  },
+]);
+```
+
+comprueba que el mapper conserva correctamente:
+
+id
+name
+category
+level
+featured
+
+No necesitamos probar por separado basic, intermediate y advanced, porque el mapper no transforma esos valores; simplemente los copia
+
+
+### agregamos experiences
+
+verificamos la transformación
+endDate: null del DTO a endDate: undefined en el dominio
+
+```
+expect(result.experiences).toEqual([
+  {
+    id: 'experience-1',
+    company: 'Test Company',
+    role: 'Frontend Developer',
+    startDate: '2024-01',
+    endDate: undefined,
+    summary: 'Test experience summary',
+    achievements: ['Achievement one'],
+    featured: true,
+  },
+]);
+```
+
+especialmente importante
+
+DTO
+endDate: null
+      ↓
+Mapper
+      ↓
+Domain
+endDate: undefined
+
+
+prueba regla real de transformación del mapper:
+`endDate: dto.endDate ?? undefined`
+
+
+
+### Sigamos con education
+
+```
+expect(result.education).toEqual([
+  {
+    id: 'education-1',
+    institution: 'Test University',
+    degree: 'Computer Science',
+    startDate: '2020-01',
+    endDate: '2024-01',
+    summary: 'Test education summary',
+    featured: true,
+  },
+]);
+```
+
+comprobamos también que endDate con un valor real se conserve:
+
+DTO
+endDate: "2024-01"
+      ↓
+Mapper
+      ↓
+Domain
+endDate: "2024-01"
+
+
+### agregamos aserción socialLinks
+
+```
+expect(result.socialLinks).toEqual([
+  {
+    platform: 'github',
+    label: 'GitHub',
+    url: 'https://github.com/test',
+  },
+]);
+```
+
+comprueba la transformación:
+
+
+SocialLinkDto
+    ↓
+socialLink()
+    ↓
+SocialLink
+
+
+verifica:
+
+platform
+label
+url
+
+
+
+### Agregamos contact
+
+expect(result.contact).toEqual({
+  email: 'test@example.com',
+  location: 'Argentina',
+  availableForWork: true,
+  timezone: 'America/Argentina/Buenos_Aires',
+});
+
+
+
+
+## Test para opcionales
+
+repository ausente → undefined
+demo ausente       → undefined
+endDate null       → undefined
+
+
+##### Necesitamos un segundo escenario de test, separado del test del DTO completo
+La idea es comprobar las decisiones explícitas del mapper, no volver a verificar todos los campos.
+
+Casos especialmente relevantes:
+
+1. Project.repository
+
+El mapper hace:
+
+```
+repository presente → ProjectLink
+repository ausente  → undefined
+```
+
+Necesitamos un proyecto sin repository y comprobar que el dominio obtiene:
+`repository: undefined`
+
+
+2. Project.demo ausente
+
+Exactamente lo mismo:
+
+```
+demo presente → ProjectLink
+demo ausente  → undefined
+```
+
+Conviene probar ambos porque son dos propiedades independientes.
+
+
+3. Experience.endDate = null
+
+especialmente importante porque no es simplemente un campo opcional. El DTO admite explícitamente:
+
+`endDate?: string | null`
+
+y el mapper transforma:
+
+```
+null
+  ↓
+undefined
+```
+
+Necesitamos comprobar esa normalización
+
+
+Otros opcionales:
+
+Profile.avatarUrl?
+Project.imageUrl?
+Skill.category?
+Skill.level?
+Experience.achievements?
+Education.endDate?
+Education.summary?
+Contact.location?
+Contact.timezone?
+
+primer test ya cubre opcionales presentes
+podemos decidir qué ausencias tienen comportamiento especial.
+
+particularmente:
+
+avatarUrl ausente
+imageUrl ausente
+category ausente
+level ausente
+achievements ausente
+summary ausente
+location ausente
+timezone ausente
+
+
+##### Son casos de propagación directa El mapper simplemente copia la propiedad: `DTO → Domain`
+
+No existe una transformación especial.
+
+En cambio
+
+Experience.endDate
+Education.endDate
+Project.repository
+Project.demo
+
+##### Tienen lógica que vale la pena cubrir.
+
+
+Concepto en los test
+
+Test 1
+DTO completo
+  ↓
+todos los campos principales correctos
+
+Test 2
+DTO con opcionales ausentes/null
+  ↓
+repository → undefined
+demo → undefined
+experience.endDate null → undefined
+
+evitar duplicar todo el PortfolioContentDto
+ideal sería partir del fixture existente y crear una variante mínima para este escenario.
+
+No necesitamos mocks, spies ni Angular TestBed. Sigue siendo un unit test puro del mapper.
+
+
+### fixture 2
+
+```
+const portfolioContentDtoWithoutOptionals: PortfolioContentDto = {
+  ...portfolioContentDto,
+
+  projects: [
+    {
+      id: 'project-2',
+      title: 'Project Without Links',
+      description: 'Project description',
+      technologies: ['Angular'],
+      featured: false,
+    },
+  ],
+
+  experiences: [
+    {
+      id: 'experience-2',
+      company: 'Test Company',
+      role: 'Frontend Developer',
+      startDate: '2024-01',
+      endDate: null,
+      summary: 'Test experience summary',
+      featured: false,
+    },
+  ],
+};
+```
+
+
+### Agregamos aserción repository y demo undefined
+
+```
+it('debería convertir los links opcionales ausentes a undefined', () => {
+  const result = PortfolioContentMapper.toDomain(
+    portfolioContentDtoWithoutOptionals,
+  );
+
+  expect(result.projects[0].repository).toBeUndefined();
+  expect(result.projects[0].demo).toBeUndefined();
+});
+```
+
+enfocada exclusivamente en esta transformación
+
+DTO
+├── repository: ausente
+└── demo: ausente
+        ↓
+     mapper
+        ↓
+Domain
+├── repository: undefined
+└── demo: undefined
+
+
+
+### Agregar endDate y achievements
+
+```
+expect(result.experiences[0].endDate).toBeUndefined();
+expect(result.experiences[0].achievements).toBeUndefined();
+```
+
+Resulta
+
+```
+it('debería convertir los opcionales ausentes a undefined', () => {
+  const result = PortfolioContentMapper.toDomain(
+    portfolioContentDtoWithoutOptionals,
+  );
+
+  expect(result.projects[0].repository).toBeUndefined();
+  expect(result.projects[0].demo).toBeUndefined();
+
+  expect(result.experiences[0].endDate).toBeUndefined();
+  expect(result.experiences[0].achievements).toBeUndefined();
+});
+```
+
+Estamos verificando dos comportamientos distintos
+
+Project
+repository ausente → undefined
+demo ausente       → undefined
+
+Experience
+endDate = null     → undefined
+achievements ausente → undefined
+
+
+endDate es especialmente importante porque el mapper hace explícitamente:
+`dto.endDate ?? undefined`
+
+Mientras que achievements simplemente se propaga.
+
+
+
+## Comprobar arrays vacíos
+
+verifica que el mapper no introduce elementos ni rompe una colección vacía.
+
+creamos una variante mínima del DTO:
+
+```
+const portfolioContentDtoWithEmptyCollections: PortfolioContentDto = {
+  ...portfolioContentDto,
+  projects: [],
+  skills: [],
+  experiences: [],
+  education: [],
+  socialLinks: [],
+};
+```
+
+no agregamos el test ni las aserciones
+
+
+
+#### agregando test para las colecciones vacías y una única aserción por cada colección
+
+ ```
+it('debería conservar las colecciones vacías', () => {
+  const result = PortfolioContentMapper.toDomain(
+    portfolioContentDtoWithEmptyCollections,
+  );
+
+  expect(result.projects).toEqual([]);
+  expect(result.skills).toEqual([]);
+  expect(result.experiences).toEqual([]);
+  expect(result.education).toEqual([]);
+  expect(result.socialLinks).toEqual([]);
+});
+ ```
+
+Comprobando
+
+```
+DTO
+├── projects: []
+├── skills: []
+├── experiences: []
+├── education: []
+└── socialLinks: []
+        ↓
+     mapper
+        ↓
+Domain
+├── projects: []
+├── skills: []
+├── experiences: []
+├── education: []
+└── socialLinks: []
+```
+
+Cubre el comportamiento:
+
+```
+dto.projects.map(...)
+dto.skills.map(...)
+dto.experiences.map(...)
+dto.education.map(...)
+dto.socialLinks.map(...)
+```
+
+##### map() sobre una colección vacía debe producir otra colección vacía.
+
+
+
+
+## Testing adapter
+
+##### Cambia el tipo de testing porque el adapter tiene comportamiento de Infrastructure
+
+La primera cuestión será identificar exactamente qué hace nuestro adapter actual:
+
+```
+fuente externa
+    ↓
+adapter
+    ↓
+DTO
+    ↓
+mapper
+    ↓
+PortfolioContent
+```
+
+##### dependiendo de si lee un JSON mediante HttpClient, fetch, un servicio propio, etc., decidiremos entre:
+
+unit test con dependencia externa simulada;
+test de integración con el JSON real;
+o ambos.
+
+
+
+## Responsabilidades del adapter
+
+HttpClient
+   ↓
+portfolio-content.json
+   ↓
+PortfolioContentDto
+   ↓
+PortfolioContentMapper.toDomain()
+   ↓
+PortfolioContent
+
+
+probar:
+
+1. petición HTTP correcta
+
+El adapter debe solicitar exactamente:
+`assets/content/portfolio-content.json`
+
+necesitamos comprobar:
+
+método HTTP: GET;
+URL correcta;
+que se realiza la petición una vez.
+
+Esto es importante porque un cambio accidental en la ruta rompería toda la aplicación.
+
+
+2. Convierte la respuesta y devuelve el dominio
+
+probar:
+
+respuesta HTTP (DTO)
+        ↓
+PortfolioContentMapper
+        ↓
+PortfolioContent
+
+que:
+`getPortfolioContent()`
+
+no devuelve el DTO directamente, sino el resultado de:
+`PortfolioContentMapper.toDomain(dto)`
+
+##### Este punto conecta Infrastructure con Application.
+
+
+
+### mockear el HttpClient
+
+no usaría un mock manual.
+
+
+Angular proporciona `HttpTestingController`
+
+concepto:
+
+JsonPortfolioContentAdapter
+          ↓
+      HttpClient
+          ↓
+ HttpTestingController
+          ↓
+simula respuesta HTTP
+
+Así no hacemos ninguna petición real.
+
+
+Podemos controlar:
+`GET /assets/content/portfolio-content.json`
+y proporcionar nuestro PortfolioContentDto de prueba.
+
+
+
+### mockear el mapper
+
+decisión
+
+Para el unit test del adapter, podríamos sustituir el mapper:
+
+
+Adapter
+   ↓
+HttpClient fake
+   ↓
+DTO
+   ↓
+Mapper fake
+   ↓
+PortfolioContent
+
+
+comprobar que el adapter delega correctamente
+
+
+#### usar el mapper real
+
+tenemos tests independientes del mapper
+
+##### podemos probar la integración:
+
+HttpClient
+    ↓
+Adapter
+    ↓
+Mapper real
+    ↓
+PortfolioContent
+
+
+
+### Tests
+
+1. GET correcto
+
+getPortfolioContent()
+        ↓
+GET assets/content/portfolio-content.json
+
+Comprobamos método y URL.
+
+
+2. transforma el DTO
+
+Le damos un DTO conocido:
+
+HTTP response
+    ↓
+PortfolioContentDto
+
+comprobamos que obtenemos: PortfolioContent
+transformación esperada
+
+
+3. propaga errores HTTP
+
+Simulamos:
+
+```
+HTTP 404 / 500
+       ↓
+HttpClient error
+       ↓
+getPortfolioContent()
+       ↓
+Promise rejects
+```
+
+El adapter actualmente no captura el error, por lo que esperamos que se propague.
+
+
+### probar firstValueFrom(): no
+
+escribir un test del estilo:
+"firstValueFrom convierte Observable en Promise".
+
+pertenece a RxJS.
+debe verificar el comportamiento de nuestro adapter, no de las librerías que utiliza.
+
+
+### inject(HttpClient)?: no
+
+se cubre indirectamente al configurar el entorno de testing de Angular:
+
+TestBed
+  ↓
+HttpClientTesting
+  ↓
+HttpClient
+
+
+### unit o integration
+
+zona intermedia muy útil:
+
+JsonPortfolioContentAdapter
+        ↓
+HttpClientTesting
+        ↓
+HttpTestingController
+        ↓
+PortfolioContentMapper real
+
+
+##### No hay red ni servidor real, pero sí estamos probando la integración de varias piezas de Infrastructure
+
+
+preparar únicamente el entorno del spec del adapter: TestBed, HttpClientTesting y HttpTestingController
+
+
+
+## Archivo spec adapter
+
+para adapter
+
+Angular TestBed
++
+provideHttpClient()
++
+provideHttpClientTesting()
++
+HttpTestingController
+
+
+Preparar entorno spec del adapter: TestBed, HttpClientTesting y HttpTestingController.
+
+json-portfolio-content.adapter.spec.ts
+
+```
+import { TestBed } from '@angular/core/testing';
+import {
+  provideHttpClient,
+  withFetch,
+} from '@angular/common/http';
+import {
+  HttpTestingController,
+  provideHttpClientTesting,
+} from '@angular/common/http/testing';
+import { describe, beforeEach, afterEach, it, expect } from 'vitest';
+
+import { JsonPortfolioContentAdapter } from './json-portfolio-content.adapter';
+
+describe('JsonPortfolioContentAdapter', () => {
+  let adapter: JsonPortfolioContentAdapter;
+  let httpTestingController: HttpTestingController;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [
+        provideHttpClient(withFetch()),
+        provideHttpClientTesting(),
+      ],
+    });
+
+    adapter = TestBed.inject(JsonPortfolioContentAdapter);
+    httpTestingController = TestBed.inject(
+      HttpTestingController,
+    );
+  });
+
+  afterEach(() => {
+    httpTestingController.verify();
+  });
+});
+```
+
+TestBed
+├── HttpClient
+│
+├── HttpTestingController
+│
+└── JsonPortfolioContentAdapter
+
+
+##### HttpTestingController nos permitirá interceptar posteriormente: GET assets/content/portfolio-content.json; sin realizar una petición real.
+
+##### httpTestingController.verify(); permitirá detectar requests pendientes al terminar cada test
+
+Sin comportamiento
+
+
+### Agregar llamada a adapter.getPortfolioContent() y capturar request con HttpTestingController.
+
+hacemos solo la primera request
+comprobamos que el adapter utilice GET sobre la URL correcta
+
+Todavía sin responder la request ni comprobar el PortfolioContent
+
+agregamos en describe
+
+```
+it('debería realizar un GET al contenido del portfolio', async () => {
+  const promise = adapter.getPortfolioContent();
+
+  const request = httpTestingController.expectOne(
+    'assets/content/portfolio-content.json',
+  );
+
+  expect(request.request.method).toBe('GET');
+});
+```
+
+adapter.getPortfolioContent()
+        ↓
+HttpClient.get(...)
+        ↓
+HttpTestingController
+        ↓
+expectOne(...)
+
+
+##### expectOne() verifica que existe exactamente una request con esa URL.
+
+y
+
+##### expect(request.request.method).toBe('GET');
+verifica explícitamente el método HTTP.
+
+
+### Detalle
+promise queda pendiente porque todavía no hemos respondido la request
+Es intencional
+
+##### haremos request.flush(...) con nuestro PortfolioContentDto de prueba para completar la Promise
+
+evitando mezclar:
+
+1. request correcta
+2. respuesta correcta
+3. mapping correcto
+4. errores HTTP
+
+
+
+### Agregar respuesta de la request
+
+responder la request con un PortfolioContentDto válido para que la Promise pueda completarse.
+
+portfolioContentDto será nuestro fixture válido de PortfolioContentDto.
+
+tenemos el fixture que usamos para el mapper, reutilizamos el mismo concepto.
+
+Donde portfolioContentDto será nuestro fixture válido de PortfolioContentDto.
+
+
+Flujo:
+
+adapter.getPortfolioContent()
+        ↓
+GET
+        ↓
+HttpTestingController
+        ↓
+request.flush(dto)
+        ↓
+HttpClient recibe respuesta
+        ↓
+firstValueFrom(...)
+        ↓
+Promise resuelta
+
+
+Todavía no comprobamos el resultado del adapter
+siguiente paso: verificar que después de recibir el DTO devuelve un PortfolioContent correctamente mapeado
+
+
+```
+import { TestBed } from '@angular/core/testing';
+import {
+  provideHttpClient,
+  withFetch,
+} from '@angular/common/http';
+import {
+  HttpTestingController,
+  provideHttpClientTesting,
+} from '@angular/common/http/testing';
+import {
+  afterEach,
+  beforeEach,
+  describe,
+  expect,
+  it,
+} from 'vitest';
+
+import { PortfolioContentDto } from '../dtos/portfolio-content.dto';
+
+import { JsonPortfolioContentAdapter } from './json-portfolio-content.adapter';
+
+describe('JsonPortfolioContentAdapter', () => {
+  let adapter: JsonPortfolioContentAdapter;
+  let httpTestingController: HttpTestingController;
+
+  const portfolioContentDto: PortfolioContentDto = {
+    profile: {
+      fullName: 'Test User',
+      role: 'Frontend Developer',
+      headline: 'Test headline',
+      summary: 'Test summary',
+      avatarUrl: '/avatar.jpg',
+    },
+
+    projects: [
+      {
+        id: 'project-1',
+        title: 'Project One',
+        description: 'Project description',
+        imageUrl: '/project.jpg',
+        technologies: ['Angular', 'TypeScript'],
+        repository: {
+          label: 'GitHub',
+          url: 'https://github.com/test/project',
+        },
+        demo: {
+          label: 'Demo',
+          url: 'https://example.com/project',
+        },
+        featured: true,
+      },
+    ],
+
+    skills: [
+      {
+        id: 'skill-1',
+        name: 'Angular',
+        category: 'Frontend',
+        level: 'advanced',
+        featured: true,
+      },
+    ],
+
+    experiences: [
+      {
+        id: 'experience-1',
+        company: 'Test Company',
+        role: 'Frontend Developer',
+        startDate: '2024-01',
+        endDate: null,
+        summary: 'Test experience summary',
+        achievements: ['Achievement one'],
+        featured: true,
+      },
+    ],
+
+    education: [
+      {
+        id: 'education-1',
+        institution: 'Test University',
+        degree: 'Computer Science',
+        startDate: '2020-01',
+        endDate: '2024-01',
+        summary: 'Test education summary',
+        featured: true,
+      },
+    ],
+
+    socialLinks: [
+      {
+        platform: 'github',
+        label: 'GitHub',
+        url: 'https://github.com/test',
+      },
+    ],
+
+    contact: {
+      email: 'test@example.com',
+      location: 'Argentina',
+      availableForWork: true,
+      timezone: 'America/Argentina/Buenos_Aires',
+    },
+  };
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [
+        provideHttpClient(withFetch()),
+        provideHttpClientTesting(),
+      ],
+    });
+
+    adapter = TestBed.inject(JsonPortfolioContentAdapter);
+
+    httpTestingController = TestBed.inject(
+      HttpTestingController,
+    );
+  });
+
+  afterEach(() => {
+    httpTestingController.verify();
+  });
+
+  it('debería realizar un GET al contenido del portfolio', async () => {
+    const promise = adapter.getPortfolioContent();
+
+    const request = httpTestingController.expectOne(
+      'assets/content/portfolio-content.json',
+    );
+
+    expect(request.request.method).toBe('GET');
+
+    request.flush(portfolioContentDto);
+
+    await promise;
+  });
+});
+```
+
+
+
+### Agregar aserción devuelve PortfolioContent
+
+```
+import { TestBed } from '@angular/core/testing';
+import {
+  provideHttpClient,
+  withFetch,
+} from '@angular/common/http';
+import {
+  HttpTestingController,
+  provideHttpClientTesting,
+} from '@angular/common/http/testing';
+import { describe, beforeEach, afterEach, it, expect } from 'vitest';
+
+import {
+  PortfolioContentDto,
+} from '../dtos/portfolio-content.dto';
+
+
+import { JsonPortfolioContentAdapter } from './json-portfolio-content.adapter';
+
+describe('JsonPortfolioContentAdapter', () => {
+  let adapter: JsonPortfolioContentAdapter;
+  let httpTestingController: HttpTestingController;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [
+        provideHttpClient(withFetch()),
+        provideHttpClientTesting(),
+      ],
+    });
+
+    adapter = TestBed.inject(JsonPortfolioContentAdapter);
+    httpTestingController = TestBed.inject(
+      HttpTestingController,
+    );
+  });
+
+  afterEach(() => {
+    httpTestingController.verify();
+  });
+
+  const portfolioContentDto: PortfolioContentDto = {
+    profile: {
+      fullName: 'Test User',
+      role: 'Frontend Developer',
+      headline: 'Test headline',
+      summary: 'Test summary',
+      avatarUrl: '/avatar.jpg',
+    },
+
+    projects: [
+      {
+        id: 'project-1',
+        title: 'Project One',
+        description: 'Project description',
+        imageUrl: '/project.jpg',
+        technologies: ['Angular', 'TypeScript'],
+        repository: {
+          label: 'GitHub',
+          url: 'https://github.com/test/project',
+        },
+        demo: {
+          label: 'Demo',
+          url: 'https://example.com/project',
+        },
+        featured: true,
+      },
+    ],
+
+    skills: [
+      {
+        id: 'skill-1',
+        name: 'Angular',
+        category: 'Frontend',
+        level: 'advanced',
+        featured: true,
+      },
+    ],
+
+    experiences: [
+      {
+        id: 'experience-1',
+        company: 'Test Company',
+        role: 'Frontend Developer',
+        startDate: '2024-01',
+        endDate: null,
+        summary: 'Test experience summary',
+        achievements: ['Achievement one'],
+        featured: true,
+      },
+    ],
+
+    education: [
+      {
+        id: 'education-1',
+        institution: 'Test University',
+        degree: 'Computer Science',
+        startDate: '2020-01',
+        endDate: '2024-01',
+        summary: 'Test education summary',
+        featured: true,
+      },
+    ],
+
+    socialLinks: [
+      {
+        platform: 'github',
+        label: 'GitHub',
+        url: 'https://github.com/test',
+      },
+    ],
+
+    contact: {
+      email: 'test@example.com',
+      location: 'Argentina',
+      availableForWork: true,
+      timezone: 'America/Argentina/Buenos_Aires',
+    },
+  };
+
+  it('debería realizar un GET al contenido del portfolio', async () => {
+    const promise = adapter.getPortfolioContent();
+
+    const request = httpTestingController.expectOne(
+      'assets/content/portfolio-content.json',
+    );
+
+    expect(request.request.method).toBe('GET');
+    
+    request.flush(portfolioContentDto);
+
+    const result = await promise;
+
+    expect(result).toEqual({
+      profile: {
+        fullName: 'Test User',
+        role: 'Frontend Developer',
+        headline: 'Test headline',
+        summary: 'Test summary',
+        avatarUrl: '/avatar.jpg',
+      },
+
+      projects: [
+        {
+          id: 'project-1',
+          title: 'Project One',
+          description: 'Project description',
+          imageUrl: '/project.jpg',
+          technologies: ['Angular', 'TypeScript'],
+          repository: {
+            label: 'GitHub',
+            url: 'https://github.com/test/project',
+          },
+          demo: {
+            label: 'Demo',
+            url: 'https://example.com/project',
+          },
+          featured: true,
+        },
+      ],
+
+      skills: [
+        {
+          id: 'skill-1',
+          name: 'Angular',
+          category: 'Frontend',
+          level: 'advanced',
+          featured: true,
+        },
+      ],
+
+      experiences: [
+        {
+          id: 'experience-1',
+          company: 'Test Company',
+          role: 'Frontend Developer',
+          startDate: '2024-01',
+          endDate: undefined,
+          summary: 'Test experience summary',
+          achievements: ['Achievement one'],
+          featured: true,
+        },
+      ],
+
+      education: [
+        {
+          id: 'education-1',
+          institution: 'Test University',
+          degree: 'Computer Science',
+          startDate: '2020-01',
+          endDate: '2024-01',
+          summary: 'Test education summary',
+          featured: true,
+        },
+      ],
+
+      socialLinks: [
+        {
+          platform: 'github',
+          label: 'GitHub',
+          url: 'https://github.com/test',
+        },
+      ],
+
+      contact: {
+        email: 'test@example.com',
+        location: 'Argentina',
+        availableForWork: true,
+        timezone: 'America/Argentina/Buenos_Aires',
+      },
+    });
+  });
+});
+```
+
+Flujo
+
+GET
+ ↓
+PortfolioContentDto
+ ↓
+PortfolioContentMapper.toDomain()
+ ↓
+PortfolioContent
+ ↓
+result
+
+
+endDate llega como null en el DTO, pero esperamos undefined en el dominio
+
+el test del adapter también confirma la integración con el mapper real.
+
+
+
+### Agregar respuesta a la request
+
+```
+  it('debería propagar un error HTTP', async () => {
+    const promise = adapter.getPortfolioContent();
+
+    const request = httpTestingController.expectOne(
+      'assets/content/portfolio-content.json', 
+    );
+    
+    request.flush(null, {
+      status: 500,
+      statusText: 'Internal Server Error',
+    });
+
+    await expect(promise).rejects.toThrow();
+  });
+```
+
+
+Resulta:
+
+```
+import { TestBed } from '@angular/core/testing';
+import {
+  provideHttpClient,
+} from '@angular/common/http';
+import {
+  HttpTestingController,
+  provideHttpClientTesting,
+} from '@angular/common/http/testing';
+import { describe, beforeEach, afterEach, it, expect } from 'vitest';
+
+import {
+  PortfolioContentDto,
+} from '../dtos/portfolio-content.dto';
+
+import { JsonPortfolioContentAdapter } from './json-portfolio-content.adapter';
+
+describe('JsonPortfolioContentAdapter', () => {
+  let adapter: JsonPortfolioContentAdapter;
+  let httpTestingController: HttpTestingController;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+      ],
+    });
+
+    adapter = TestBed.inject(JsonPortfolioContentAdapter);
+
+    httpTestingController = TestBed.inject(
+      HttpTestingController,
+    );
+  });
+
+  afterEach(() => {
+    TestBed.inject(HttpTestingController).verify();
+  });
+
+  const portfolioContentDto: PortfolioContentDto = {
+    profile: {
+      fullName: 'Test User',
+      role: 'Frontend Developer',
+      headline: 'Test headline',
+      summary: 'Test summary',
+      avatarUrl: '/avatar.jpg',
+    },
+
+    projects: [
+      {
+        id: 'project-1',
+        title: 'Project One',
+        description: 'Project description',
+        imageUrl: '/project.jpg',
+        technologies: ['Angular', 'TypeScript'],
+        repository: {
+          label: 'GitHub',
+          url: 'https://github.com/test/project',
+        },
+        demo: {
+          label: 'Demo',
+          url: 'https://example.com/project',
+        },
+        featured: true,
+      },
+    ],
+
+    skills: [
+      {
+        id: 'skill-1',
+        name: 'Angular',
+        category: 'Frontend',
+        level: 'advanced',
+        featured: true,
+      },
+    ],
+
+    experiences: [
+      {
+        id: 'experience-1',
+        company: 'Test Company',
+        role: 'Frontend Developer',
+        startDate: '2024-01',
+        endDate: null,
+        summary: 'Test experience summary',
+        achievements: ['Achievement one'],
+        featured: true,
+      },
+    ],
+
+    education: [
+      {
+        id: 'education-1',
+        institution: 'Test University',
+        degree: 'Computer Science',
+        startDate: '2020-01',
+        endDate: '2024-01',
+        summary: 'Test education summary',
+        featured: true,
+      },
+    ],
+
+    socialLinks: [
+      {
+        platform: 'github',
+        label: 'GitHub',
+        url: 'https://github.com/test',
+      },
+    ],
+
+    contact: {
+      email: 'test@example.com',
+      location: 'Argentina',
+      availableForWork: true,
+      timezone: 'America/Argentina/Buenos_Aires',
+    },
+  };
+
+  it('debería realizar un GET al contenido del portfolio', async () => {
+    const promise = adapter.getPortfolioContent();
+
+    const request = httpTestingController.expectOne(
+      'assets/content/portfolio-content.json',
+    );
+
+    expect(request.request.method).toBe('GET');
+    
+    request.flush(portfolioContentDto);
+
+    const result = await promise;
+
+    expect(result).toEqual({
+      profile: {
+        fullName: 'Test User',
+        role: 'Frontend Developer',
+        headline: 'Test headline',
+        summary: 'Test summary',
+        avatarUrl: '/avatar.jpg',
+      },
+
+      projects: [
+        {
+          id: 'project-1',
+          title: 'Project One',
+          description: 'Project description',
+          imageUrl: '/project.jpg',
+          technologies: ['Angular', 'TypeScript'],
+          repository: {
+            label: 'GitHub',
+            url: 'https://github.com/test/project',
+          },
+          demo: {
+            label: 'Demo',
+            url: 'https://example.com/project',
+          },
+          featured: true,
+        },
+      ],
+
+      skills: [
+        {
+          id: 'skill-1',
+          name: 'Angular',
+          category: 'Frontend',
+          level: 'advanced',
+          featured: true,
+        },
+      ],
+
+      experiences: [
+        {
+          id: 'experience-1',
+          company: 'Test Company',
+          role: 'Frontend Developer',
+          startDate: '2024-01',
+          endDate: undefined,
+          summary: 'Test experience summary',
+          achievements: ['Achievement one'],
+          featured: true,
+        },
+      ],
+
+      education: [
+        {
+          id: 'education-1',
+          institution: 'Test University',
+          degree: 'Computer Science',
+          startDate: '2020-01',
+          endDate: '2024-01',
+          summary: 'Test education summary',
+          featured: true,
+        },
+      ],
+
+      socialLinks: [
+        {
+          platform: 'github',
+          label: 'GitHub',
+          url: 'https://github.com/test',
+        },
+      ],
+
+      contact: {
+        email: 'test@example.com',
+        location: 'Argentina',
+        availableForWork: true,
+        timezone: 'America/Argentina/Buenos_Aires',
+      },
+    });
+  });
+
+  it('debería propagar un error HTTP', async () => {
+    const promise = adapter.getPortfolioContent();
+
+    const request = httpTestingController.expectOne(
+      'assets/content/portfolio-content.json', 
+    );
+    
+    request.flush(null, {
+      status: 500,
+      statusText: 'Internal Server Error',
+    });
+
+    await expect(promise).rejects.toThrow();
+  });
+});
+```
 
 
 
@@ -12071,7 +14774,4683 @@ portfolioContent
 # Testing Capa Presentation
 
 
+## Técnicas
 
+##### Comportamiento visible para el usuario y composición de la UI.
+
+
+1. Component testing
+Es la técnica principal para los componentes.
+
+probar:
+
+Input
+  ↓
+Component
+  ↓
+DOM
+
+
+y, cuando corresponda:
+
+User interaction
+  ↓
+Component
+  ↓
+Output / state / DOM
+
+
+##### Nos interesa comprobar qué ve y qué puede hacer el usuario
+no cómo Angular construyó internamente el componente.
+
+
+HeroSection
+
+profile input
+   ↓
+render
+   ↓
+nombre visible
+rol visible
+headline visible
+
+##### No necesitamos comprobar que Angular ejecutó determinada interpolación.
+
+
+2. Testear @Input()
+
+Section components reciben datos mediante @Input
+
+HeroSection
+└── @Input() profile
+
+Podemos comprobar:
+
+que un input válido produce el contenido esperado;
+que datos opcionales se muestran/ocultan correctamente;
+que cambios en el input actualizan la vista.
+
+especialmente útil para:
+
+ContactSection
+ProjectsSection
+SkillsSection
+ExperienceSection
+
+
+3. Conditional rendering
+
+Angular tiene mucho:
+@if
+@for
+
+Objetivos principales de los tests de Presentation es comprobar las condiciones observables.
+
+Contact
+├── location presente     → visible
+└── location ausente      → no visible
+
+Project
+├── repository presente   → link visible
+└── repository ausente    → link ausente
+
+merece test porque es comportamiento de UI.
+
+
+4. List rendering
+componentes que usan @for:
+
+projects[]
+skills[]
+socialLinks[]
+
+comprobar
+
+input array
+   ↓
+N elementos en DOM
+
+opcionalmente:
+
+orden;
+contenido;
+elementos condicionales.
+
+No necesitamos comprobar el funcionamiento interno de @for.
+
+
+5. User interaction testing
+
+componente tiene interacción
+
+click
+submit
+keyboard
+hover/focus cuando sea relevante
+
+simular acciones reales
+
+preferir:
+interacción del usuario
+
+sobre:
+invocación manual de métodos privados/públicos
+
+
+si existe un botón:
+click
+ ↓
+acción
+ ↓
+DOM/state
+
+se prueba esa secuencia.
+
+
+6. Accessibility testing
+
+Presentation tiene bastante valor
+
+comprobar conceptos como:
+
+roles;
+accessible names;
+headings;
+links;
+labels;
+estados ARIA;
+navegación por teclado
+
+En lugar de:
+`querySelector('.some-class')`
+
+preferible consultar elementos por roles o nombres accesibles cuando sea posible.
+
+hace que el test refleje cómo una persona y una tecnología asistiva perciben la interfaz
+
+
+7. Component isolation
+
+Componente de sección probarse aislado de Infrastructure.
+
+ProjectsSection
+        ↓
+projects input
+        ↓
+DOM
+
+
+No queremos:
+
+ProjectsSection
+ ↓
+Facade
+ ↓
+HTTP
+ ↓
+JSON
+
+
+pertenece a otro nivel.
+
+
+8. Shallow vs integrated component testing
+
+dos enfoques
+
+
+Shallow:
+Probamos un componente con sus dependencias hijas simuladas.
+
+Page
+├── Header (stub)
+├── Hero (stub)
+└── Projects (stub)
+
+probar lógica propia del Page sin arrastrar toda la UI
+
+
+Integrated
+Renderizamos hijos reales:
+
+Page
+├── Header real
+├── Hero real
+└── Projects real
+
+
+Verifica composición y puede detectar problemas de integración entre componentes.
+usaría ambos solo cuando aporten valor
+
+
+9. Testing del PortfolioFacade
+
+cambia el enfoque
+
+Presentation y Application
+
+Component
+   ↓
+PortfolioFacade
+   ↓
+UseCase
+
+
+Si el facade tiene estado, signals o carga de datos, sí merece unit testing.
+
+
+comprobar cosas como:
+
+load()
+ ↓
+use case.execute()
+ ↓
+state cambia
+
+loading
+success
+error
+
+si esos estados existen.
+
+facade debería probarse usando el use case como test double, no el adapter real
+
+
+10. Testing del PortfolioPageComponent
+
+Page normalmente cumple una responsabilidad de composición.
+
+PortfolioPage
+├── consume facade
+├── pasa profile → Hero
+├── pasa projects → Projects
+└── pasa skills → Skills
+
+Facade state
+   ↓
+Page
+   ↓
+child inputs
+
+
+No hace falta volver a probar dentro del Page que:
+ProjectsSection
+
+
+11. Testing del PortfolioLayoutComponent
+
+Layout suele ser incluso más sencillo.
+
+debemos comprobar:
+
+que el contenido principal se compone;
+navegación relevante;
+header/footer;
+router outlet, si existe;
+elementos globales como BackToTop;
+estructura básica
+
+
+12. Routing / navigation testing
+
+Si Presentation incluye routing, podemos probar
+
+navegación
+ ↓
+ruta
+ ↓
+componente correcto
+
+solamente si realmente tenemos lógica de routing relevante.
+
+
+13. Facade state testing
+
+Si PortfolioFacade usa signals, observables o estado derivado, podemos probar propiedades del estado.
+
+initial
+   ↓
+load
+   ↓
+loading
+   ↓
+success
+
+o
+
+useCase reject
+   ↓
+error state
+
+útil porque el facade suele representar el estado que consume la UI.
+
+
+14. Async testing
+
+Presentation suele tener bastante comportamiento asíncrono:
+
+promises;
+observables;
+signals;
+whenStable;
+cambios posteriores al render
+
+probar el resultado observable después de la operación, evitando tests que dependan de tiempos arbitrarios
+
+
+15. Testing de estados vacíos y edge cases de UI
+
+projects = []
+→ no cards
+
+skills = []
+→ sección vacía / comportamiento esperado
+
+location = undefined
+→ location no aparece
+
+repository = undefined
+→ botón GitHub no aparece
+
+
+16. Visual regression testing
+
+otra categoría:
+##### no comprobamos solo DOM/comportamiento, sino apariencia visual:
+
+render
+ ↓
+screenshot
+ ↓
+comparación
+
+Herramientas como Playwright o Storybook pueden servir.
+
+
+17. E2E testing
+
+Browser real
+   ↓
+App completa
+   ↓
+usuario
+
+
+probar:
+
+entra al portfolio
+ ↓
+ve Hero
+ ↓
+navega a Projects
+ ↓
+abre GitHub
+ ↓
+contacto
+
+
+
+Tests:
+
+Presentation
+│
+├── PortfolioFacade
+│   └── Unit tests
+│
+├── PortfolioPageComponent
+│   └── Component tests
+│
+├── PortfolioLayoutComponent
+│   └── Component/integration tests
+│
+└── Section components
+    └── Component tests
+
+Component
+→ ¿qué renderiza?
+
+Input
+→ ¿cómo reacciona al dato?
+
+Interaction
+→ ¿qué pasa cuando el usuario actúa?
+
+Facade
+→ ¿cómo cambia el estado?
+
+Page/Layout
+→ ¿cómo compone la UI?    
+
+
+
+## 1. Service/portfolio-facade.ts
+
+Responsabilidad
+
+Component
+↓
+PortfolioFacade
+↓
+GetPortfolioContentUseCase
+
+delegar la operación al caso de uso;
+devolver exactamente el resultado del caso de uso;
+propagar cualquier error proveniente del caso de uso
+
+actúa como frontera entre Presentation y Application
+
+asegurar que:
+
+Facade
+    ↓
+Use Case
+
+permanece correctamente conectado
+
+
+1. crítico 1: Delegación
+
+Verificar que:
+
+load()
+    ↓
+getPortfolioContentUseCase.execute()
+
+sea invocado.
+
+confirma que el facade realmente utiliza el caso de uso esperado.
+
+
+2. crítico 2: Resultado exitoso
+
+useCase.execute()
+↓
+PortfolioContent
+↓
+facade.load()
+
+devuelve exactamente el mismo resultado.
+
+El facade no debería modificar datos.
+
+
+3. Propagación de errores
+
+useCase.execute()
+    ↓
+error
+    ↓
+facade.load()
+
+rechaza la Promise con el mismo error
+
+Actualmente el facade no captura ni transforma errores.
+
+
+### Código
+
+1. estructura mínima
+sin agregar todavía ninguna aserción de comportamiento
+
+Como PortfolioFacade depende de GetPortfolioContentUseCase
+##### en el unit test debemos sustituir el caso de uso real por un test double.
+
+spec:
+
+```
+import { TestBed } from '@angular/core/testing';
+import { describe, beforeEach, expect, it, vi } from 'vitest';
+
+import { GetPortfolioContentUseCase } from '@application/use-cases/get-portfolio-content.use-case';
+
+import { PortfolioFacade } from './portfolio.facade';
+
+describe('PortfolioFacade', () => {
+  let facade: PortfolioFacade;
+
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [
+        PortfolioFacade,
+        {
+          provide: GetPortfolioContentUseCase,
+          useValue: {
+            execute: vi.fn(),
+          },
+        },
+      ],
+    });
+
+    facade = TestBed.inject(PortfolioFacade);
+  });
+});
+```
+
+PortfolioFacade
+      │
+      ▼
+GetPortfolioContentUseCase
+      │
+      ▼
+     fake
+
+
+preparando el entorno para que Angular pueda resolver:
+`inject(GetPortfolioContentUseCase)`
+
+sin utilizar el caso de uso real.
+
+
+2. PortfolioContent
+capturar el fake execute() para poder comprobar que load() realmente lo llama
+
+guardamos una referencia al execute() falso para poder espiarlo
+
+Agregamos una variable:
+`let execute: ReturnType<typeof vi.fn>;`
+
+en el beforeEach:
+```
+beforeEach(() => {
+  execute = vi.fn();
+
+  TestBed.configureTestingModule({
+    providers: [
+      PortfolioFacade,
+      {
+        provide: GetPortfolioContentUseCase,
+        useValue: {
+          execute,
+        },
+      },
+    ],
+  });
+
+  facade = TestBed.inject(PortfolioFacade);
+});
+```
+
+Resulta:
+
+```
+import { TestBed } from '@angular/core/testing';
+import { describe, beforeEach, expect, it, vi } from 'vitest';
+
+import { GetPortfolioContentUseCase } from '@application/use-cases/get-portfolio-content.use-case';
+
+import { PortfolioFacade } from './portfolio.facade';
+
+describe('PortfolioFacade', () => {
+  let facade: PortfolioFacade;
+  let execute: ReturnType<typeof vi.fn>;
+
+  beforeEach(() => {
+    execute = vi.fn();
+
+    TestBed.configureTestingModule({
+      providers: [
+        PortfolioFacade,
+        {
+          provide: GetPortfolioContentUseCase,
+          useValue: {
+            execute,
+          },
+        },
+      ],
+    });
+
+    facade = TestBed.inject(PortfolioFacade);
+  });
+});
+```
+
+Todavía no llamamos load() ni hacemos ninguna aserción
+
+
+3. load() invoca execute().
+
+primer test crítico: que load() delega en execute().
+
+```
+it('debería ejecutar el caso de uso al cargar el contenido', () => {
+  facade.load();
+
+  expect(execute).toHaveBeenCalledOnce();
+});
+```
+
+Flujo:
+
+facade.load()
+    ↓
+getPortfolioContentUseCase.execute()
+    ↓
+execute()
+    ↓
+llamada una vez
+
+
+sin valor de retorno ni comprobamos PortfolioContent.
+
+
+4. critico: load() devuelve exactamente el resultado producido por el caso de uso.
+
+hacer que nuestro execute falso devuelva un PortfolioContent conocido
+Para evitar duplicar todavía todo el fixture, podemos usar un objeto mínimo tipado
+
+```
+import { PortfolioContent } from '@application/ports/portfolio-content.port';
+
+it('debería devolver el contenido obtenido por el caso de uso', async () => {
+  const portfolioContent = {} as PortfolioContent;
+
+  execute.mockResolvedValue(portfolioContent);
+
+  const result = await facade.load();
+
+  expect(result).toBe(portfolioContent);
+});
+```
+
+execute()
+   ↓
+PortfolioContent conocido
+   ↓
+facade.load()
+   ↓
+result
+   ↓
+mismo PortfolioContent ✅
+
+usamos el mínimo placeholder
+
+
+5. propagación del error
+
+Facade hace:
+
+```
+load(): Promise<PortfolioContent> {
+  return this.getPortfolioContentUseCase.execute();
+}
+```
+
+No captura ni transforma errores. Por tanto, debemos documentar que:
+
+UseCase
+   ↓
+reject(error)
+   ↓
+Facade.load()
+   ↓
+reject(same error)
+
+
+
+
+## Hero ui test
+
+##### transforma un @Input() profile en contenido visible.
+
+test principal:
+Dado un Profile, el Hero debe renderizar correctamente la información esencial
+
+Profile
+  ↓
+@Input()
+  ↓
+HeroSection
+  ↓
+DOM
+
+los cuatro valores que realmente renderiza
+
+profile.fullName → <h1>
+profile.role     → <p>
+profile.headline → <p>
+profile.summary  → <p>
+
+"Test User"
+"Frontend Developer"
+"Test headline"
+"Test summary"
+
+
+comprobar <h1>
+indirectamente
+
+es parte del comportamiento semántico del componente y además representa el nombre principal
+
+
+```
+import { TestBed } from '@angular/core/testing';
+import { ComponentFixture } from '@angular/core/testing';
+import { describe, beforeEach, expect, it } from 'vitest';
+
+import { Profile } from '@domain/profile.entity';
+
+import { HeroSectionComponent } from './hero-section.component';
+
+describe('HeroSectionComponent', () => {
+  let fixture: ComponentFixture<HeroSectionComponent>;
+  let component: HeroSectionComponent;
+
+  const profile: Profile = {
+    fullName: 'Test User',
+    role: 'Frontend Developer',
+    headline: 'Test headline',
+    summary: 'Test summary',
+  };
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [HeroSectionComponent],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(HeroSectionComponent);
+    component = fixture.componentInstance;
+
+    component.profile = profile;
+
+    fixture.detectChanges();
+  });
+
+  it('debería mostrar el nombre del perfil', () => {
+	  const heading = fixture.nativeElement.querySelector('h1');
+
+	  expect(heading?.textContent).toContain(profile.fullName);
+	});
+});
+```
+
+
+
+## Projects ui test
+
+
+iterar una colección
+dos ramas condicionales por proyecto: repository y demo.
+
+1. Renderiza los datos esenciales de cada proyecto
+comprobar que, dado un projects válido, aparecen
+
+title
+description
+technologies
+
+Project One
+Project description
+Angular · TypeScript
+
+cubre:
+
+projects[]
+   ↓
+@for
+   ↓
+article
+   ├── title
+   ├── description
+   └── technologies.join(' · ')
+
+No hace falta probar id directamente porque solo se utiliza para track
+
+
+2. Renderiza repository y demo si existen
+
+comportamiento importante, hay dos @if.
+
+cuando están presentes:
+
+```
+repository
+   ↓
+<a href="...">GitHub</a>
+
+demo
+   ↓
+<a href="...">Demo</a>
+```
+
+no solo que aparecen: también conviene comprobar sus href, porque el mapper ya garantiza la estructura del dominio pero el componente es responsable de convertir esos datos en enlaces
+
+verificamos:
+
+project.repository.url → href
+project.repository.label → texto
+
+lo mismo para demo.
+
+
+3. No muestra los links cuando no existen
+
+Este es el caso contrario de los @if:
+repository → ausente → no hay link
+demo       → ausente → no hay link
+
+condición importante, es lógica de Presentation
+usar queryByRole() para comprobar que el enlace no existe.
+
+
+4. Colección vacía
+
+recomendable pero no estrictamente imprescindible:
+
+projects = []
+   ↓
+@for
+   ↓
+0 articles
+
+cubre un estado válido de la UI.
+
+
+fixture:
+usando dos proyectos:
+
+Project A
+→ repository + demo
+
+Project B
+→ sin repository + sin demo
+
+permite cubrir las dos ramas en un mismo escenario sin duplicar demasiado contenido
+
+
+1. fixture mínimo
+
+```
+import { render, screen } from '@testing-library/angular';
+import { describe, expect, it } from 'vitest';
+
+import { Project } from '@domain/project.entity';
+
+import { ProjectsSectionComponent } from './projects-section.component';
+
+describe('ProjectsSectionComponent', () => {
+  const projects: readonly Project[] = [
+    {
+      id: 'project-1',
+      title: 'Project One',
+      description: 'Project description',
+      technologies: ['Angular', 'TypeScript'],
+      repository: {
+        label: 'GitHub',
+        url: 'https://github.com/test/project',
+      },
+      demo: {
+        label: 'Demo',
+        url: 'https://example.com/project',
+      },
+      featured: true,
+    },
+  ];
+});
+```
+
+2. render() del componente con projects como @Input().
+
+```
+it('debería mostrar los datos del proyecto', async () => {
+  await render(ProjectsSectionComponent, {
+    componentInputs: {
+      projects,
+    },
+  });
+});
+
+```
+
+projects[]
+   ↓
+render(ProjectsSectionComponent)
+   ↓
+@Input() projects
+   ↓
+@for
+   ↓
+DOM
+
+
+
+3. verificación del título
+
+Después del render():
+
+`expect(screen.getByRole('heading', { name: projects[0].title })).toBeTruthy();`
+
+
+Test:
+
+```
+it('debería mostrar los datos del proyecto', async () => {
+  await render(ProjectsSectionComponent, {
+    componentInputs: {
+      projects,
+    },
+  });
+
+  expect(
+    screen.getByRole('heading', {
+      name: projects[0].title,
+    }),
+  ).toBeTruthy();
+});
+```
+
+verifica
+
+```
+projects[0].title
+       ↓
+<h3>
+       ↓
+heading encontrado
+```
+
+
+
+4. verificación de description
+
+`expect(screen.getByText(projects[0].description)).toBeTruthy();`
+
+```
+it('debería mostrar los datos del proyecto', async () => {
+  await render(ProjectsSectionComponent, {
+    componentInputs: {
+      projects,
+    },
+  });
+
+  expect(
+    screen.getByRole('heading', {
+      name: projects[0].title,
+    }),
+  ).toBeTruthy();
+
+  expect(
+    screen.getByText(projects[0].description),
+  ).toBeTruthy();
+});
+```
+
+projects[0].description
+        ↓
+<p>
+        ↓
+texto visible
+
+
+verificar technologies, incluyendo su transformación mediante join(' · ').
+
+
+5. verificar technologies
+
+project.technologies.join(' · ')
+
+```
+expect(
+  screen.getByText(
+    projects[0].technologies.join(' · '),
+  ),
+).toBeTruthy();
+```
+
+Test:
+
+```
+it('debería mostrar los datos del proyecto', async () => {
+  await render(ProjectsSectionComponent, {
+    componentInputs: {
+      projects,
+    },
+  });
+
+  expect(
+    screen.getByRole('heading', {
+      name: projects[0].title,
+    }),
+  ).toBeTruthy();
+
+  expect(
+    screen.getByText(projects[0].description),
+  ).toBeTruthy();
+
+  expect(
+    screen.getByText(
+      projects[0].technologies.join(' · '),
+    ),
+  ).toBeTruthy();
+});
+```
+
+
+6. repo cuando existe
+
+```
+const repositoryLink = screen.getByRole('link', {
+  name: projects[0].repository!.label,
+});
+
+expect(
+  repositoryLink.getAttribute('href'),
+).toBe(projects[0].repository!.url);
+
+```
+
+
+```
+it('debería mostrar los datos del proyecto', async () => {
+  await render(ProjectsSectionComponent, {
+    componentInputs: {
+      projects,
+    },
+  });
+
+  expect(
+    screen.getByRole('heading', {
+      name: projects[0].title,
+    }),
+  ).toBeTruthy();
+
+  expect(
+    screen.getByText(projects[0].description),
+  ).toBeTruthy();
+
+  expect(
+    screen.getByText(
+      projects[0].technologies.join(' · '),
+    ),
+  ).toBeTruthy();
+
+  const repositoryLink = screen.getByRole('link', {
+    name: projects[0].repository!.label,
+  });
+
+  expect(
+    repositoryLink.getAttribute('href'),
+  ).toBe(projects[0].repository!.url);
+});
+
+```
+Usamos getAttribute(), toHaveAttribute() no está disponible en la config
+
+
+
+7. demo cuando existe
+
+```
+const demoLink = screen.getByRole('link', {
+  name: projects[0].demo!.label,
+});
+
+expect(
+  demoLink.getAttribute('href'),
+).toBe(projects[0].demo!.url);
+```
+
+test:
+
+```
+it('debería mostrar los datos del proyecto', async () => {
+  await render(ProjectsSectionComponent, {
+    componentInputs: {
+      projects,
+    },
+  });
+
+  expect(
+    screen.getByRole('heading', {
+      name: projects[0].title,
+    }),
+  ).toBeTruthy();
+
+  expect(
+    screen.getByText(projects[0].description),
+  ).toBeTruthy();
+
+  expect(
+    screen.getByText(
+      projects[0].technologies.join(' · '),
+    ),
+  ).toBeTruthy();
+
+  const repositoryLink = screen.getByRole('link', {
+    name: projects[0].repository!.label,
+  });
+
+  expect(
+    repositoryLink.getAttribute('href'),
+  ).toBe(projects[0].repository!.url);
+
+  const demoLink = screen.getByRole('link', {
+    name: projects[0].demo!.label,
+  });
+
+  expect(
+    demoLink.getAttribute('href'),
+  ).toBe(projects[0].demo!.url);
+});
+```
+
+
+8. segundo fixture
+
+```
+const projectWithoutLinks: Project = {
+  id: 'project-2',
+  title: 'Project Without Links',
+  description: 'Project without repository or demo',
+  technologies: ['Angular'],
+  featured: false,
+};
+```
+
+
+
+9. renderizar projects sin links
+
+segundo test y su render().
+
+```
+it('no debería mostrar los links opcionales cuando no existen', async () => {
+  await render(ProjectsSectionComponent, {
+    componentInputs: {
+      projects: [projectWithoutLinks],
+    },
+  });
+});
+```
+
+projectWithoutLinks
+        ↓
+repository → ausente
+demo       → ausente
+        ↓
+ProjectsSectionComponent
+        ↓
+@if (repository) → false
+@if (demo)       → false
+
+
+
+10. sin repo
+
+el link:
+
+```
+expect(
+  screen.queryByRole('link', {
+    name: projectWithoutLinks.repository?.label ?? 'GitHub',
+  }),
+).toBeNull();
+```
+
+opción más limpia:
+como sabemos que no existe repository, podemos usar directamente el label que tendría el proyecto completo
+aunque esto añade una suposición.
+
+mejor:
+aserción sobre la ausencia de cualquier enlace GitHub
+utilizando el nombre que usamos en nuestro fixture principal:
+
+```
+expect(
+  screen.queryByRole('link', { name: 'GitHub' }),
+).toBeNull();
+```
+
+
+test:
+
+```
+it('no debería mostrar los links opcionales cuando no existen', async () => {
+  await render(ProjectsSectionComponent, {
+    componentInputs: {
+      projects: [projectWithoutLinks],
+    },
+  });
+
+  expect(
+    screen.queryByRole('link', { name: 'GitHub' }),
+  ).toBeNull();
+});
+```
+
+repository ausente
+        ↓
+@if (project.repository)
+        ↓
+false
+        ↓
+link "GitHub" no existe
+
+
+
+11. sin demo
+
+```
+expect(
+  screen.queryByRole('link', { name: 'Demo' }),
+).toBeNull();
+```
+
+test:
+
+```
+it('no debería mostrar los links opcionales cuando no existen', async () => {
+  await render(ProjectsSectionComponent, {
+    componentInputs: {
+      projects: [projectWithoutLinks],
+    },
+  });
+
+  expect(
+    screen.queryByRole('link', { name: 'GitHub' }),
+  ).toBeNull();
+
+  expect(
+    screen.queryByRole('link', { name: 'Demo' }),
+  ).toBeNull();
+});
+```
+
+
+12. Colección vacía
+
+```
+const emptyProjects: readonly Project[] = [];
+```
+
+```
+const projects: readonly Project[] = [
+  {
+    id: 'project-1',
+    title: 'Project One',
+    description: 'Project description',
+    technologies: ['Angular', 'TypeScript'],
+    repository: {
+      label: 'GitHub',
+      url: 'https://github.com/test/project',
+    },
+    demo: {
+      label: 'Demo',
+      url: 'https://example.com/project',
+    },
+    featured: true,
+  },
+];
+
+const projectWithoutLinks: Project = {
+  id: 'project-2',
+  title: 'Project Without Links',
+  description: 'Project without repository or demo',
+  technologies: ['Angular'],
+  featured: false,
+};
+
+const emptyProjects: readonly Project[] = [];
+```
+
+
+
+13. renderizar ProjectsSectionComponent con emptyProjects
+
+colección vacía y render
+
+```
+it('no debería mostrar proyectos cuando la colección está vacía', async () => {
+  await render(ProjectsSectionComponent, {
+    componentInputs: {
+      projects: emptyProjects,
+    },
+  });
+});
+```
+
+emptyProjects = []
+       ↓
+ProjectsSectionComponent
+       ↓
+@for
+       ↓
+ningún <article>
+
+
+
+14. no se renderiza ningún proyecto.
+
+no podemos consultar directamente “cualquier <article>” con queryByRole
+
+una forma es comprobar que no aparece el título conocido de nuestro fixture
+
+```
+expect(
+  screen.queryByRole('heading', {
+    name: projects[0].title,
+  }),
+).toBeNull();
+```
+
+test:
+
+```
+it('no debería mostrar proyectos cuando la colección está vacía', async () => {
+  await render(ProjectsSectionComponent, {
+    componentInputs: {
+      projects: emptyProjects,
+    },
+  });
+
+  expect(
+    screen.queryByRole('heading', {
+      name: projects[0].title,
+    }),
+  ).toBeNull();
+});
+```
+
+
+
+
+
+## Skills ui test
+
+recibir una colección de Skill y renderizar un elemento por cada skill
+
+1. Renderiza todas las skills
+
+skills[]
+   ↓
+@Input()
+   ↓
+@for
+   ↓
+DOM
+
+comprobar que cada skill.name aparece en la UI.
+
+["Angular", "TypeScript", "Node.js"]
+        ↓
+3 elementos visibles
+
+No necesitamos comprobar específicamente skill.id, featured, category o level, porque este componente no los utiliza
+
+
+2. Maneja correctamente una colección vacía
+
+@for (skill of skills; track skill.id)
+
+conviene comprobar:
+
+skills = []
+   ↓
+ninguna skill renderizada
+
+caso importante porque representa una colección válida sin elementos.
+
+
+probar el track skill.id:
+detalle de implementación del @for.
+
+si alguna vez hubiera lógica dinámica compleja
+es que actualizar la colección produce el DOM esperado
+
+por ahora es innecesario
+
+
+probar Skill completo
+El componente solamente consume:
+
+skill.name
+skill.id
+
+id se usa internamente para tracking y name para renderizado.
+
+
+Fixture puede ser mínimo
+id
+name
+featured
+
+featured es obligatorio en el dominio, aunque el componente no lo use
+
+No necesitamos agregar category ni level.
+
+
+Queries:
+
+skill.name
+    ↓
+screen.getByText(skill.name)
+
+en vacío:
+screen.queryByText(...)
+
+aunque, si tenemos varias skills, getAllByText() también puede ser útil dependiendo de qué queramos comprobar.
+
+
+1. spec y el fixture mínimo de Skill.
+
+```
+import { render, screen } from '@testing-library/angular';
+import { describe, expect, it } from 'vitest';
+
+import { Skill } from '@domain/skill.entity';
+
+import { SkillsSectionComponent } from './skills-section.component';
+
+describe('SkillsSectionComponent', () => {
+  const skills: readonly Skill[] = [
+    {
+      id: 'skill-1',
+      name: 'Angular',
+      featured: true,
+    },
+    {
+      id: 'skill-2',
+      name: 'TypeScript',
+      featured: false,
+    },
+  ];
+});
+```
+
+preparamos los datos:
+skills[]
+├── Angular
+└── TypeScript
+
+Usamos dos elementos porque así podremos comprobar posteriormente que @for realmente renderiza más de una skill.
+
+
+2. render del componente con skills como input.
+
+```
+it('debería mostrar las skills recibidas', async () => {
+  await render(SkillsSectionComponent, {
+    componentInputs: {
+      skills,
+    },
+  });
+});
+```
+
+no comprobamos ningún elemento
+
+
+
+3. verificar skill
+
+expect(screen.getByText('Angular')).toBeTruthy();
+
+```
+it('debería mostrar las skills recibidas', async () => {
+  await render(SkillsSectionComponent, {
+    componentInputs: {
+      skills,
+    },
+  });
+
+  expect(screen.getByText('Angular')).toBeTruthy();
+});
+```
+
+
+4. segunda verificación
+
+expect(screen.getByText('TypeScript')).toBeTruthy();
+
+```
+it('debería mostrar las skills recibidas', async () => {
+  await render(SkillsSectionComponent, {
+    componentInputs: {
+      skills,
+    },
+  });
+
+  expect(screen.getByText('Angular')).toBeTruthy();
+  expect(screen.getByText('TypeScript')).toBeTruthy();
+});
+```
+
+
+5. variante con la colección vacía
+
+const emptySkills: readonly Skill[] = [];
+
+```
+const skills: readonly Skill[] = [
+  {
+    id: 'skill-1',
+    name: 'Angular',
+    featured: true,
+  },
+  {
+    id: 'skill-2',
+    name: 'TypeScript',
+    featured: false,
+  },
+];
+
+const emptySkills: readonly Skill[] = [];
+```
+
+
+6. test emptySkills
+
+sin decidir qué elemento concreto consultar.
+
+```
+it('no debería mostrar skills cuando la colección está vacía', async () => {
+  await render(SkillsSectionComponent, {
+    componentInputs: {
+      skills: emptySkills,
+    },
+  });
+});
+```
+
+
+7. Comproba que skill no aparece cuando está vacía
+
+Usamos queryByText() porque esperamos que el elemento no exista:
+
+```
+it('no debería mostrar skills cuando la colección está vacía', async () => {
+  await render(SkillsSectionComponent, {
+    componentInputs: {
+      skills: emptySkills,
+    },
+  });
+
+  expect(screen.queryByText('Angular')).toBeNull();
+});
+```
+
+
+## Contact ui test
+
+Mostrar datos y dos decisiones de UI:
+
+location puede existir o no.
+availableForWork cambia el texto mostrado
+
+email se convierte en un enlace mailto:.
+
+1. Renderizar email y generar correctamente el mailto
+
+contact.email
+    ↓
+<a href="mailto:...">
+    ↓
+email visible
+
+comprobar:
+texto visible → contact.email
+href           → mailto:contact.email
+
+
+2. Mostrar location cuando existe
+
+@if (contact.location)
+
+verificar:
+
+location = "Argentina"
+        ↓
+"Argentina" visible
+
+
+3. Mostrar correctamente los dos estados de availableForWork
+
+decisión de comportamiento:
+
+true
+ ↓
+"Disponible para nuevas oportunidades"
+
+false
+ ↓
+"No disponible actualmente"
+
+Se hace dos escenarios del mismo test lógico
+o como dos tests separados si queremos mensajes de fallo más
+
+Lo importante es cubrir ambas ramas.
+
+
+#### Angular Testing Library:
+
+email
+→ getByRole('link', { name: contact.email })
+
+location
+→ getByText(contact.location)
+
+estado
+→ getByText('Disponible...')
+
+
+para comprobar que location no está:
+queryByText(...)
+
+getBy...
+→ espero que exista
+
+queryBy...
+→ podría no existir
+
+
+Rs: cubrir
+
+email → link correcto
+location → condicional
+availableForWork → true / false
+
+
+1. Escenario base: email, location, availableForWork
+
+```
+
+import { render, screen } from '@testing-library/angular';
+import { describe, expect, it } from 'vitest';
+
+import { Contact } from '@domain/contact.entity';
+
+import { ContactSectionComponent } from './contact-section.component';
+
+describe('ContactSectionComponent', () => {
+  const contact: Contact = {
+    email: 'test@example.com',
+    location: 'Argentina',
+    availableForWork: true,
+  };
+});
+```
+
+2. render del componente
+
+```
+it('debería mostrar la información de contacto', async () => {
+  await render(ContactSectionComponent, {
+    componentInputs: {
+      contact,
+    },
+  });
+});
+```
+
+contact
+  ↓
+render(ContactSectionComponent)
+  ↓
+@Input() contact
+  ↓
+DOM
+
+
+3. email y su enlace mailto:.
+
+Angular Testing Library, buscamos el enlace por su rol y nombre accesible:
+
+```
+const emailLink = screen.getByRole('link', {
+  name: contact.email,
+});
+
+expect(emailLink).toHaveAttribute(
+  'href',
+  `mailto:${contact.email}`,
+);
+```
+
+test:
+
+```
+
+it('debería mostrar la información de contacto', async () => {
+  await render(ContactSectionComponent, {
+    componentInputs: {
+      contact,
+    },
+  });
+
+  const emailLink = screen.getByRole('link', {
+    name: contact.email,
+  });
+
+  expect(emailLink).toHaveAttribute(
+    'href',
+    `mailto:${contact.email}`,
+  );
+});
+```
+
+detalle importante: toHaveAttribute() pertenece a las aserciones de Testing Library/Jest DOM
+Si tu configuración actual no lo reconoce
+
+Vitest conoce expect(), pero TypeScript no conoce las extensiones de jest-dom como toHaveAttribute().
+
+1. Opción A — usar getAttribute()
+
+```
+expect(emailLink.getAttribute('href')).toBe(
+  `mailto:${contact.email}`,
+);
+```
+
+2. configurar jest-dom
+
+podríamos incorporar @testing-library/jest-dom y su setup para poder utilizar:
+
+toHaveAttribute()
+toBeVisible()
+toBeInTheDocument()
+
+
+
+4. location cuando está presente.
+
+```
+it('debería mostrar la información de contacto', async () => {
+  await render(ContactSectionComponent, {
+    componentInputs: {
+      contact,
+    },
+  });
+
+  const emailLink = screen.getByRole('link', {
+    name: contact.email,
+  });
+
+  expect(emailLink.getAttribute('href')).toBe(
+    `mailto:${contact.email}`,
+  );
+
+  const location = screen.getByText(contact.location!);
+
+  expect(location).toBeTruthy();
+});
+```
+
+Usamos ! porque nuestro fixture define location y sabemos que para este escenario concreto existe.
+
+
+5. location no existe
+
+```
+it('no debería mostrar la ubicación cuando no está disponible', async () => {
+  await render(ContactSectionComponent, {
+    componentInputs: {
+      contact: {
+        email: contact.email,
+        availableForWork: contact.availableForWork,
+      },
+    },
+  });
+
+  expect(screen.queryByText(contact.location!)).toBeNull();
+});
+```
+
+getByText(...)
+→ espera que exista
+→ lanza error si no existe
+
+queryByText(...)
+→ permite que no exista
+→ devuelve null
+
+
+contact.location
+      ↓
+    ausente
+      ↓
+@if (contact.location)
+      ↓
+     false
+      ↓
+elemento NO renderizado
+
+
+
+6. availableForWork
+
+nuestro fixture ya tiene: availableForWork: true
+
+```
+
+it('debería indicar que está disponible para nuevas oportunidades', async () => {
+  await render(ContactSectionComponent, {
+    componentInputs: {
+      contact,
+    },
+  });
+
+  expect(
+    screen.getByText('Disponible para nuevas oportunidades'),
+  ).toBeTruthy();
+});
+```
+
+
+7. availableForWork false
+
+```
+it('debería indicar que no está disponible actualmente', async () => {
+  await render(ContactSectionComponent, {
+    componentInputs: {
+      contact: {
+        ...contact,
+        availableForWork: false,
+      },
+    },
+  });
+
+  expect(
+    screen.getByText('No disponible actualmente'),
+  ).toBeTruthy();
+});
+```
+
+
+
+
+## PortfolioHeader ui test
+
+#### Maneja dos inputs, renderizado condicional, una colección de links y una transformación específica para email.
+
+
+1. Renderiza el avatar cuando avatarUrl existe
+
+La condición es:
+
+profile.avatarUrl
+      ↓
+@if
+      ↓
+<img>
+
+
+comprobar que:
+
+src  → profile.avatarUrl
+alt  → profile.fullName
+
+alt es especialmente importante porque forma parte de la accesibilidad.
+
+
+2. No renderiza avatar cuando avatarUrl no existe
+
+La otra rama del @if:
+
+avatarUrl ausente
+      ↓
+no <img>
+
+merece cobertura porque es comportamiento real del componente
+
+
+3. Renderiza social links y transforma correctamente email
+
+dos comportamientos dentro del @for
+
+link normal:
+
+platform = github
+url      = https://github.com/...
+        ↓
+href = https://github.com/...
+
+Para email:
+
+platform = email
+url      = user@example.com
+        ↓
+href = mailto:user@example.com
+
+
+importante porque sí existe lógica propia del componente:
+
+```
+link.platform === 'email'
+  ? 'mailto:' + link.url
+  : link.url
+```
+
+comprobaría:
+
+link.label → texto visible
+link.href  → URL correcta
+
+caso email.
+
+
+4. Renderiza CV cuando hay social links
+
+@if (socialLinks.length)
+
+Debemos comprobar que aparece:
+href = ../../../assets/public/documents/cv.pdf
+
+
+Caso adicional:
+
+socialLinks = []
+    ↓
+@if (socialLinks.length)
+    ↓
+nav no existe
+    ↓
+CV tampoco existe
+
+
+Suite:
+
+PortfolioHeaderComponent
+│
+├── avatar presente
+│   ├── src correcto
+│   └── alt correcto
+│
+├── avatar ausente
+│   └── img no existe
+│
+├── social links presentes
+│   ├── link normal correcto
+│   ├── email → mailto correcto
+│   └── CV visible + href correcto
+│
+└── social links vacíos
+    └── nav/CV no se renderizan
+
+
+Estrategia
+
+avatar
+→ getByRole('img', { name: profile.fullName })
+
+social links
+→ getByRole('link', { name: link.label })
+
+CV
+→ getByRole('link', { name: 'CV' })
+
+nav
+→ getByRole('navigation', { name: 'Social Networks' })
+
+
+ramas negativas:
+queryByRole(...)
+    
+
+Dos niveles de condicionalidad:
+
+socialLinks.length
+    ↓
+   nav
+    ↓
+@for links
+    +
+   CV
+
+
+transformación especial dentro del @for para email.
+
+
+1. spec y fixture
+
+el componente recibe dos @Input(), necesitamos preparar:
+un Profile;
+una colección de SocialLink
+   
+```
+import { render, screen } from '@testing-library/angular';
+import { describe, expect, it } from 'vitest';
+
+import { Profile } from '@domain/profile.entity';
+import { SocialLink } from '@domain/social-link.entity';
+
+import { PortfolioHeaderComponent } from './portfolio-header.component';
+
+describe('PortfolioHeaderComponent', () => {
+  const profile: Profile = {
+    fullName: 'Test User',
+    role: 'Frontend Developer',
+    headline: 'Test headline',
+    summary: 'Test summary',
+    avatarUrl: '/avatar.jpg',
+  };
+
+  const socialLinks: readonly SocialLink[] = [
+    {
+      platform: 'github',
+      label: 'GitHub',
+      url: 'https://github.com/test',
+    },
+    {
+      platform: 'email',
+      label: 'Email',
+      url: 'test@example.com',
+    },
+  ];
+});
+```
+
+Elegimos:
+
+profile
+└── avatarUrl presente
+
+socialLinks
+├── github → URL normal
+└── email  → deberá convertirse en mailto:
+
+
+permite cubrir posteriormente las dos variantes importantes del href.
+
+
+2. render() pasando ambos inputs
+
+```
+it('debería mostrar la información del header', async () => {
+  await render(PortfolioHeaderComponent, {
+    componentInputs: {
+      profile,
+      socialLinks,
+    },
+  });
+});
+```
+
+profile
+socialLinks
+    ↓
+render(PortfolioHeaderComponent)
+    ↓
+@Input()
+    ↓
+DOM
+
+
+3. avatar si existe y accesibilidad
+
+avatar cuando avatarUrl está presente.
+
+el componente renderiza:
+
+```
+<img
+  [src]="profile.avatarUrl"
+  [alt]="profile.fullName"
+/>
+```
+
+Localizarlo por su nombre accesible, que proviene de alt:
+
+```
+const avatar = screen.getByRole('img', {
+  name: profile.fullName,
+});
+
+expect(avatar.getAttribute('src')).toBe(profile.avatarUrl);
+```
+
+queda:
+
+```
+it('debería mostrar la información del header', async () => {
+  await render(PortfolioHeaderComponent, {
+    componentInputs: {
+      profile,
+      socialLinks,
+    },
+  });
+
+  const avatar = screen.getByRole('img', {
+    name: profile.fullName,
+  });
+
+  expect(avatar.getAttribute('src')).toBe(profile.avatarUrl);
+});
+```
+
+
+comprobando:
+
+```
+profile.avatarUrl
+      ↓
+<img src="...">
+      ↓
+src correcto ✅
+
+profile.fullName
+      ↓
+<img alt="...">
+      ↓
+nombre accesible ✅
+```
+
+
+4. socialLink
+
+GitHub, donde platform !== 'email'.
+
+```
+const githubLink = screen.getByRole('link', {
+  name: socialLinks[0].label,
+});
+
+expect(
+  githubLink.getAttribute('href'),
+).toBe(socialLinks[0].url);
+```
+
+Resulta:
+
+```
+it('debería mostrar la información del header', async () => {
+  await render(PortfolioHeaderComponent, {
+    componentInputs: {
+      profile,
+      socialLinks,
+    },
+  });
+
+  const avatar = screen.getByRole('img', {
+    name: profile.fullName,
+  });
+
+  expect(avatar.getAttribute('src')).toBe(profile.avatarUrl);
+
+  const githubLink = screen.getByRole('link', {
+    name: socialLinks[0].label,
+  });
+
+  expect(
+    githubLink.getAttribute('href'),
+  ).toBe(socialLinks[0].url);
+});
+```
+
+comprobando:
+
+platform = github
+        ↓
+href = socialLinks[0].url
+        ↓
+URL correcta
+
+
+
+5. caso especial: email
+
+```
+link.platform === 'email'
+  ? 'mailto:' + link.url
+  : link.url
+```
+
+Agregamos:
+
+```
+const emailLink = screen.getByRole('link', {
+  name: socialLinks[1].label,
+});
+
+expect(
+  emailLink.getAttribute('href'),
+).toBe(`mailto:${socialLinks[1].url}`);
+```
+
+Resulta:
+
+```
+it('debería mostrar la información del header', async () => {
+  await render(PortfolioHeaderComponent, {
+    componentInputs: {
+      profile,
+      socialLinks,
+    },
+  });
+
+  const avatar = screen.getByRole('img', {
+    name: profile.fullName,
+  });
+
+  expect(avatar.getAttribute('src')).toBe(profile.avatarUrl);
+
+  const githubLink = screen.getByRole('link', {
+    name: socialLinks[0].label,
+  });
+
+  expect(
+    githubLink.getAttribute('href'),
+  ).toBe(socialLinks[0].url);
+
+  const emailLink = screen.getByRole('link', {
+    name: socialLinks[1].label,
+  });
+
+  expect(
+    emailLink.getAttribute('href'),
+  ).toBe(`mailto:${socialLinks[1].url}`);
+});
+```
+
+cubrimos las dos ramas de la expresión
+
+platform !== 'email'
+→ href = url                 
+
+platform === 'email'
+→ href = mailto:url
+
+
+6. cv
+
+cuando socialLinks tiene elementos.
+
+```
+const cvLink = screen.getByRole('link', {
+  name: 'CV',
+});
+
+expect(
+  cvLink.getAttribute('href'),
+).toBe('../../../assets/public/documents/cv.pdf');
+```
+
+Resulta:
+
+```
+it('debería mostrar la información del header', async () => {
+  await render(PortfolioHeaderComponent, {
+    componentInputs: {
+      profile,
+      socialLinks,
+    },
+  });
+
+  const avatar = screen.getByRole('img', {
+    name: profile.fullName,
+  });
+
+  expect(avatar.getAttribute('src')).toBe(profile.avatarUrl);
+
+  const githubLink = screen.getByRole('link', {
+    name: socialLinks[0].label,
+  });
+
+  expect(
+    githubLink.getAttribute('href'),
+  ).toBe(socialLinks[0].url);
+
+  const emailLink = screen.getByRole('link', {
+    name: socialLinks[1].label,
+  });
+
+  expect(
+    emailLink.getAttribute('href'),
+  ).toBe(`mailto:${socialLinks[1].url}`);
+
+  const cvLink = screen.getByRole('link', {
+    name: 'CV',
+  });
+
+  expect(
+    cvLink.getAttribute('href'),
+  ).toBe('../../../assets/public/documents/cv.pdf');
+});
+```
+
+socialLinks.length > 0
+        ↓
+CV
+        ↓
+href correcto
+
+
+
+7.  rama negativa del avatar: cuando profile.avatarUrl no existe
+
+no debe aparecer ningún <img>.
+
+creamos un Profile específico para ese escenario
+
+```
+const profileWithoutAvatar: Profile = {
+  ...profile,
+  avatarUrl: undefined,
+};
+```
+
+Lo colocamos junto a nuestro fixture profile
+
+```
+const profile: Profile = {
+  fullName: 'Test User',
+  role: 'Frontend Developer',
+  headline: 'Test headline',
+  summary: 'Test summary',
+  avatarUrl: '/avatar.jpg',
+};
+
+const profileWithoutAvatar: Profile = {
+  ...profile,
+  avatarUrl: undefined,
+};
+```
+
+
+
+8. renderizar PortfolioHeaderComponent con profileWithoutAvatar
+
+render() del escenario sin avatar.
+
+```
+it('no debería mostrar el avatar cuando no existe', async () => {
+  await render(PortfolioHeaderComponent, {
+    componentInputs: {
+      profile: profileWithoutAvatar,
+      socialLinks,
+    },
+  });
+});
+```
+
+profileWithoutAvatar
+        ↓
+avatarUrl = undefined
+        ↓
+@if (profile.avatarUrl)
+        ↓
+false
+        ↓
+<img> no debería renderizarse
+
+
+
+9. img no existe
+
+agregamos solo la aserción para verificar que el avatar no existe.
+
+```
+expect(
+  screen.queryByRole('img', {
+    name: profile.fullName,
+  }),
+).toBeNull();
+```
+
+Resulta:
+
+```
+it('no debería mostrar el avatar cuando no existe', async () => {
+  await render(PortfolioHeaderComponent, {
+    componentInputs: {
+      profile: profileWithoutAvatar,
+      socialLinks,
+    },
+  });
+
+  expect(
+    screen.queryByRole('img', {
+      name: profile.fullName,
+    }),
+  ).toBeNull();
+});
+```
+
+avatarUrl = undefined
+       ↓
+@if (profile.avatarUrl)
+       ↓
+false
+       ↓
+<img> no existe 
+
+
+
+10.fixture para socialLinks vacío.
+
+junto a socialLinks:
+`const emptySocialLinks: readonly SocialLink[] = [];`
+
+```
+const socialLinks: readonly SocialLink[] = [
+  {
+    platform: 'github',
+    label: 'GitHub',
+    url: 'https://github.com/test',
+  },
+  {
+    platform: 'email',
+    label: 'Email',
+    url: 'test@example.com',
+  },
+];
+
+const emptySocialLinks: readonly SocialLink[] = [];
+```
+
+escenario:
+
+socialLinks = []
+      ↓
+@if (socialLinks.length)
+      ↓
+false
+      ↓
+<nav> no debería renderizarse
+CV tampoco debería renderizarse
+
+
+
+10. render() con emptySocialLinks
+
+creamos solo el test para socialLinks vacío y hacemos el render().
+
+```
+it('no debería mostrar las redes sociales ni el CV cuando no hay links', async () => {
+  await render(PortfolioHeaderComponent, {
+    componentInputs: {
+      profile,
+      socialLinks: emptySocialLinks,
+    },
+  });
+});
+```
+
+queda:
+
+socialLinks = []
+      ↓
+@if (socialLinks.length)
+      ↓
+false
+      ↓
+<nav> no se renderiza
+CV tampoco se renderiza
+
+
+
+11. nav no existe
+
+nav no se renderiza cuando socialLinks está vacío.
+
+```
+expect(
+  screen.queryByRole('navigation', {
+    name: 'Social Networks',
+  }),
+).toBeNull();
+```
+
+resulta:
+
+```
+it('no debería mostrar las redes sociales ni el CV cuando no hay links', async () => {
+  await render(PortfolioHeaderComponent, {
+    componentInputs: {
+      profile,
+      socialLinks: emptySocialLinks,
+    },
+  });
+
+  expect(
+    screen.queryByRole('navigation', {
+      name: 'Social Networks',
+    }),
+  ).toBeNull();
+});
+```
+
+comprobamos:
+
+socialLinks = []
+      ↓
+@if (socialLinks.length)
+      ↓
+false
+      ↓
+<nav aria-label="Social Networks">
+
+
+12. CV tampoco existe cuando socialLinks está vacío
+
+```
+expect(
+  screen.queryByRole('link', {
+    name: 'CV',
+  }),
+).toBeNull();
+```
+
+```
+it('no debería mostrar las redes sociales ni el CV cuando no hay links', async () => {
+  await render(PortfolioHeaderComponent, {
+    componentInputs: {
+      profile,
+      socialLinks: emptySocialLinks,
+    },
+  });
+
+  expect(
+    screen.queryByRole('navigation', {
+      name: 'Social Networks',
+    }),
+  ).toBeNull();
+
+  expect(
+    screen.queryByRole('link', {
+      name: 'CV',
+    }),
+  ).toBeNull();
+});
+```
+
+cubrimos la rama negativa completa:
+socialLinks = []
+      ↓
+@if (socialLinks.length)
+      ↓
+false
+      ├── nav
+      └── CV
+
+
+      
+
+## BackToTop ui test
+
+no tiene inputs, estado, eventos ni dependencias
+
+único comportamiento:
+único comportamiento
+
+1. Renderiza el enlace con el nombre accesible correcto
+
+aria-label="Back to Top"
+
+debemos comprobar que el usuario puede encontrarlo como un link con ese nombre accesible
+
+<a>
+  aria-label="Back to Top"
+        ↓
+accessible name
+        ↓
+"Back to Top"
+
+test valida la parte semántica del componente
+
+
+2. enlace apunta a #top
+
+comportamiento funcional real
+
+comprobamos:
+
+click/navigation target
+        ↓
+href="#top"
+
+usar getAttribute().
+
+
+Código:
+
+##### Patrón: fixture/configuración mínima → render → una aserción por paso.
+
+ 
+1. spec
+
+```
+import { render, screen } from '@testing-library/angular';
+import { describe, expect, it } from 'vitest';
+
+import { BackToTopComponent } from './back-to-top.component';
+
+describe('BackToTopComponent', () => {
+});
+```
+
+2. renderizar BackToTopComponent.
+
+```
+it('debería renderizar el enlace para volver al inicio', async () => {
+  await render(BackToTopComponent);
+});
+
+```
+
+BackToTopComponent
+        ↓
+      render()
+        ↓
+       DOM
+
+
+3. comprobación/aserción del link
+
+mediante su nombre accesible
+
+Después de render():
+       
+```
+expect(
+  screen.getByRole('link', {
+    name: 'Back to Top',
+  }),
+).toBeTruthy();
+```
+
+
+test:
+
+```
+it('debería renderizar el enlace para volver al inicio', async () => {
+  await render(BackToTopComponent);
+
+  expect(
+    screen.getByRole('link', {
+      name: 'Back to Top',
+    }),
+  ).toBeTruthy();
+});
+```
+
+verificando
+
+
+<a aria-label="Back to Top">
+        ↓
+accessible name
+        ↓
+"Back to Top"
+
+
+
+4. Comprobar href
+
+reutilizamos el mismo enlace y comprobamos solo su destino #top.
+
+dentro del mismo test:
+
+```
+const link = screen.getByRole('link', {
+  name: 'Back to Top',
+});
+
+expect(link.getAttribute('href')).toBe('#top');
+```
+
+Resulta:
+
+```
+it('debería renderizar el enlace para volver al inicio', async () => {
+  await render(BackToTopComponent);
+
+  const link = screen.getByRole('link', {
+    name: 'Back to Top',
+  });
+
+  expect(link).toBeTruthy();
+  expect(link.getAttribute('href')).toBe('#top');
+});
+```
+
+
+
+## Portfolio Layout Component
+
+layout/componente de composición
+
+Su responsabilidad es principalmente:
+
+inputs
+  ↓
+composición de Header + content + Footer + BackToTop
+
+
+1. Renderiza la composición principal
+
+Verificar que el layout integra sus piezas principales:
+
+PortfolioLayout
+├── PortfolioHeader
+├── <main>
+├── footer
+└── BackToTop
+
+
+2. Pasa correctamente profile y socialLinks al Header
+
+<app-portfolio-header
+  [profile]="profile"
+  [socialLinks]="socialLinks"
+/>
+
+comprobar que el componente hijo recibe los datos correctos.
+
+decisión:
+No necesitamos repetir toda la prueba de PortfolioHeaderComponent
+
+Solo queremos comprobar la composición:
+suele hacerse mediante un child component real o un stub, dependiendo de cuánto queramos aislar el layout
+un stub sería perfectamente razonable.
+
+
+3. Renderiza correctamente footerTextEste sí es comportamiento propio del layout:
+
+comportamiento propio del layout:
+
+<footer>
+  <p>{{ footerText }}</p>
+</footer>
+
+comprobar:
+
+footerText
+    ↓
+<footer>
+    ↓
+texto visible
+
+
+ng-content
+layout tiene una responsabilidad explícita de proyectar contenido.
+comprobación en el primer test de composición:
+
+contenido proyectado
+       ↓
+    <main>
+       ↓
+contenido visible
+
+responsabilidad real del componente
+
+
+id="top"
+parte del comportamiento de composición
+
+el destino de:
+BackToTop → href="#top"
+
+No hace falta convertirlo en un test aislado necesariamente.
+
+Podemos verificar que el contenedor raíz existe con id="top".
+
+
+Tests:
+
+1. debería componer el layout y mostrar sus elementos principales
+2. debería proyectar el contenido dentro de main
+3. debería mostrar footerText
+
+dentro del primero podemos comprobar también la existencia del header y BackToTop
+sin repetir sus comportamientos internos.
+
+
+Componente reales o stubs:
+depende de qué responsabilidad queremos atribuirle al test.
+
+stubs para PortfolioHeaderComponent y BackToTopComponent
+
+PortfolioLayout
+├── recibe inputs
+├── los pasa al Header
+├── proyecta contenido
+├── muestra footer
+└── incluye BackToTop
+
+tenemos tests propios para: PortfolioHeaderComponent y BackToTopComponent 
+
+si usamos los componentes reales en el test del layout, podríamos terminar haciendo esto:
+
+PortfolioLayout
+   ↓
+PortfolioHeader real
+   ↓
+testea nuevamente avatar/socialLinks
+
+y
+
+PortfolioLayout
+   ↓
+BackToTop real
+   ↓
+testea nuevamente href="#top"
+
+duplicación y acoplamiento
+
+
+Con stubs
+reducir la prueba a:
+
+PortfolioLayout
+   │
+   ├── PortfolioHeaderStub
+   ├── ng-content
+   ├── footer
+   └── BackToTopStub
+
+Y preguntarnos exclusivamente:
+
+¿El layout compone correctamente sus hijos?
+¿Pasa los inputs correctos?
+¿Proyecta contenido?
+¿Muestra footerText?
+
+hace que el test sea mucho más preciso.
+
+
+Comprobar
+
+<app-portfolio-header
+  [profile]="profile"
+  [socialLinks]="socialLinks"
+/>
+
+##### recibe correctamente los inputs, el stub debería aceptar esos mismos inputs.
+
+PortfolioLayout
+      ↓
+PortfolioHeaderStub
+      ├── profile
+      └── socialLinks
+
+podemos comprobar la composición, sin ejecutar la implementación real del Header.
+
+
+BackToTop: No necesitamos pasarle datos porque no tiene inputs:
+Es solo el selector <app-back-to-top />
+
+
+#### !!! Inconveniente: los stubs pueden ocultar problemas de integración entre el layout y los componentes reales.
+
+podrían ocurrir:
+
+Selector incorrecto
+Input incorrectamente nombrado
+Output inexistente
+
+Pero para eso tenemos otra posibilidad: un test de integración más pequeño en un nivel superior
+
+
+Estrategia:
+
+Section tests
+→ componente real aislado
+
+Layout tests
+→ hijos stubbed
+
+Page tests
+→ probablemente hijos stubbed
+
+Facade tests
+→ UseCase stubbed
+
+E2E
+→ componentes reales + aplicación completa
+
+
+Separación:
+
+unit/component
+       ↓
+responsabilidad propia
+
+integration
+       ↓
+composición
+
+E2E
+       ↓
+flujo real del usuario
+
+
+PortfolioLayout:
+stubs para PortfolioHeaderComponent y BackToTopComponent
+contenido real proyectado para comprobar ng-content.
+
+
+
+
+# Portfolio Page
+
+carga asíncrona + estado de carga + composición de toda la página.
+
+
+1. Muestra el estado de carga inicialmente
+
+Estado inicial:
+`content = signal<PortfolioContent | null>(null);`
+
+Template:
+
+```
+@if (content(); as portfolio) {
+  ...
+} @else {
+  <p>Cargando portfolio...</p>
+}
+```
+
+Comprobar:
+
+content = null
+      ↓
+"Cargando portfolio..."
+
+
+Comportamiento propio de la página
+
+
+2. Carga el portfolio mediante la facade
+
+ngOnInit() hace:
+
+```
+const portfolio = await this.portfolioFacade.load();
+this.content.set(portfolio);
+```
+
+PortfolioPage
+      ↓
+PortfolioFacade.load()
+      ↓
+obtiene PortfolioContent
+      ↓
+content.set(...)
+
+##### stubear PortfolioFacade
+
+
+3. Renderiza la página cuando la carga termina
+
+Cuando load() resuelve:
+
+PortfolioContent
+      ↓
+content()
+      ↓
+@if true
+      ↓
+PortfolioLayout
+      ↓
+Hero
+Contact
+Projects
+Skills
+
+El test más importante de todo el componente.
+
+
+
+4. Pasa correctamente los datos a los hijos
+
+<app-portfolio-layout
+  [profile]="portfolio.profile"
+  [socialLinks]="portfolio.socialLinks"
+  [footerText]="footerText"
+>
+
+<app-hero-section [profile]="portfolio.profile" />
+<app-contact-section [contact]="portfolio.contact" />
+<app-projects-section [projects]="portfolio.projects" />
+<app-skills-section [skills]="portfolio.skills" />
+
+
+La responsabilidad de PortfolioPageComponent es conectar correctamente esos datos.
+
+stubs para todos esos componentes hijos:
+
+PortfolioPage
+├── PortfolioLayoutStub
+├── HeroSectionStub
+├── ContactSectionStub
+├── ProjectsSectionStub
+└── SkillsSectionStub
+
+hacer visible en cada stub qué input recibió y verificar el contrato de composición
+
+
+
+Error:
+
+`const portfolio = await this.portfolioFacade.load();`
+
+no hay try/catch.
+Si load() rechaza la Promise, el componente no tiene estado de error propio.
+no existe ningún comportamiento de UI asociado a ese error.
+
+
+Si posteriormente agregamos:
+loading
+success
+error
+
+tendría sentido:
+load() reject
+    ↓
+mensaje de error
+
+
+footerText:
+comprobar que:
+readonly footerText = '© 2026 Tu Nombre. Todos los derechos reservados.';
+
+
+
+1. spec y PortfolioContent
+
+```
+import { render, screen } from '@testing-library/angular';
+import { describe, expect, it, vi } from 'vitest';
+
+import { PortfolioContent } from '@application/ports/portfolio-content.port';
+import { PortfolioFacade } from '../services/portfolio.facade';
+
+import { PortfolioPageComponent } from './portfolio-page.component';
+
+describe('PortfolioPageComponent', () => {
+  const portfolioContent: PortfolioContent = {
+    profile: {
+      fullName: 'Test User',
+      role: 'Frontend Developer',
+      headline: 'Test headline',
+      summary: 'Test summary',
+      avatarUrl: '/avatar.jpg',
+    },
+    socialLinks: [
+      {
+        platform: 'github',
+        label: 'GitHub',
+        url: 'https://github.com/test',
+      },
+    ],
+    contact: {
+      email: 'test@example.com',
+      location: 'Argentina',
+      availableForWork: true,
+    },
+    projects: [],
+    skills: [],
+  };
+});
+```
+
+dato que PortfolioPageComponent recibe de:
+portfolioFacade.load()
+
+PortfolioFacade
+      ↓
+PortfolioContent
+      ↓
+PortfolioPageComponent
+
+
+2. stub de PortfolioFacade
+
+Como PortfolioPageComponent ejecuta:
+this.portfolioFacade.load()
+
+stub necesita únicamente ese método:
+
+```
+const portfolioFacadeStub = {
+  load: vi.fn(),
+};
+```
+
+dentro del describe:
+
+```
+describe('PortfolioPageComponent', () => {
+  const portfolioContent: PortfolioContent = {
+    // ...
+  };
+
+  const portfolioFacadeStub = {
+    load: vi.fn(),
+  };
+});
+```
+
+PortfolioPageComponent
+        ↓
+PortfolioFacade
+        ↓
+load()
+        ↓
+vi.fn()
+
+no configuramos render() ni indicamos qué debe devolver load().
+
+
+3. configurar el PortfolioFacadeStub como dependencia del componente
+
+importar TestBed:
+
+`import { TestBed } from '@angular/core/testing';`.
+
+
+luego dentro del test posterior, indicarle a Angular:
+
+```
+providers: [
+  {
+    provide: PortfolioFacade,
+    useValue: portfolioFacadeStub,
+  },
+],
+```
+
+
+4. Sin importar TestBed
+
+##### Angular Testing Library puede configurar los providers directamente en render().
+
+no necesitamos importar TestBed manualmente para este caso
+
+hacemos solo el render() con el stub de PortfolioFacade:
+
+```
+it('debería mostrar el estado de carga inicialmente', async () => {
+  await render(PortfolioPageComponent, {
+    providers: [
+      {
+        provide: PortfolioFacade,
+        useValue: portfolioFacadeStub,
+      },
+    ],
+  });
+});
+```
+
+no configuramos qué devuelve load().
+
+PortfolioPageComponent
+        ↓
+    inject()
+        ↓
+ PortfolioFacade
+        ↓
+portfolioFacadeStub
+
+
+
+5. configurar load() para que no resuelva inmediatamente podamos observar estado inicial "Cargando portfolio...".
+
+load() del stub quede pendiente.
+
+Para eso, dentro de nuestro test agregamos:
+
+```
+portfolioFacadeStub.load.mockReturnValue(
+  new Promise(() => {}),
+);
+```
+
+```
+
+it('debería mostrar el estado de carga inicialmente', async () => {
+  portfolioFacadeStub.load.mockReturnValue(
+    new Promise(() => {}),
+  );
+
+  await render(PortfolioPageComponent, {
+    providers: [
+      {
+        provide: PortfolioFacade,
+        useValue: portfolioFacadeStub,
+      },
+    ],
+  });
+});
+```
+
+ngOnInit()
+   ↓
+facade.load()
+   ↓
+Promise pendiente
+   ↓
+await no termina
+   ↓
+content() sigue siendo null
+   ↓
+"Cargando portfolio..." 
+
+
+
+6. aserción del estado de carga
+
+```
+expect(
+  screen.getByText('Cargando portfolio...'),
+).toBeTruthy();
+```
+
+Test:
+
+```
+it('debería mostrar el estado de carga inicialmente', async () => {
+  portfolioFacadeStub.load.mockReturnValue(
+    new Promise(() => {}),
+  );
+
+  await render(PortfolioPageComponent, {
+    providers: [
+      {
+        provide: PortfolioFacade,
+        useValue: portfolioFacadeStub,
+      },
+    ],
+  });
+
+  expect(
+    screen.getByText('Cargando portfolio...'),
+  ).toBeTruthy();
+});
+```
+
+Comprobar:
+
+load() pendiente
+    ↓
+content() === null
+    ↓
+@if (...) → false
+    ↓
+"Cargando portfolio..."
+
+
+Cubre estado inicial de carga.
+
+
+7. comprobar que PortfolioFacade.load() se ejecuta.
+
+comprobación de que PortfolioFacade.load() fue ejecutado
+
+Después del render() podemos añadir:
+
+`expect(portfolioFacadeStub.load).toHaveBeenCalledOnce();`
+
+```
+it('debería mostrar el estado de carga inicialmente', async () => {
+  portfolioFacadeStub.load.mockReturnValue(
+    new Promise(() => {}),
+  );
+
+  await render(PortfolioPageComponent, {
+    providers: [
+      {
+        provide: PortfolioFacade,
+        useValue: portfolioFacadeStub,
+      },
+    ],
+  });
+
+  expect(
+    screen.getByText('Cargando portfolio...'),
+  ).toBeTruthy();
+
+  expect(
+    portfolioFacadeStub.load,
+  ).toHaveBeenCalledOnce();
+});
+```
+
+comprobando
+
+PortfolioPage
+    ↓
+ngOnInit()
+    ↓
+portfolioFacade.load()
+    ↓
+stub.load
+
+
+##### verifica la interacción de la página con su dependencia
+
+
+8. load() devuelve portfolioContent
+
+transición de loading a contenido cargado
+
+```
+it('debería mostrar el portfolio cuando la carga finaliza', async () => {
+  portfolioFacadeStub.load.mockResolvedValue(
+    portfolioContent,
+  );
+});
+```
+
+hacemos
+
+load()
+  ↓
+Promise resuelta
+  ↓
+portfolioContent
+
+
+9. configurar render() con el PortfolioFacade stub
+
+render() al segundo test, usando el mismo portfolioFacadeStub.
+
+```
+it('debería mostrar el portfolio cuando la carga finaliza', async () => {
+  portfolioFacadeStub.load.mockResolvedValue(
+    portfolioContent,
+  );
+
+  await render(PortfolioPageComponent, {
+    providers: [
+      {
+        provide: PortfolioFacade,
+        useValue: portfolioFacadeStub,
+      },
+    ],
+  });
+});
+```
+
+PortfolioPageComponent
+        ↓
+PortfolioFacadeStub
+        ↓
+load()
+        ↓
+Promise<PortfolioContent>
+        ↓
+portfolioContent
+
+
+10. desaparece Cargando portfolio....
+
+estado de carga desaparece cuando load() devuelve el portfolio
+
+```
+expect(
+  screen.queryByText('Cargando portfolio...'),
+).toBeNull();
+```
+
+```
+
+it('debería mostrar el portfolio cuando la carga finaliza', async () => {
+  portfolioFacadeStub.load.mockResolvedValue(
+    portfolioContent,
+  );
+
+  await render(PortfolioPageComponent, {
+    providers: [
+      {
+        provide: PortfolioFacade,
+        useValue: portfolioFacadeStub,
+    },
+  });
+
+  expect(
+    screen.queryByText('Cargando portfolio...'),
+  ).toBeNull();
+});
+```
+
+load() resuelve
+    ↓
+content.set(portfolio)
+    ↓
+@if (content())
+    ↓
+"Cargando portfolio..." X
+
+
+11. PortfolioLayoutStubComponent
+
+queremos comprobar la composición de PortfolioPageComponent
+sin volver a ejecutar los tests que ya hicimos para PortfolioLayoutComponent
+
+```
+@Component({
+  selector: 'app-portfolio-layout',
+  template: '<ng-content />',
+  standalone: true,
+})
+class PortfolioLayoutStubComponent {
+  @Input({ required: true })
+  profile!: Profile;
+
+  @Input({ required: true })
+  socialLinks!: readonly SocialLink[];
+
+  @Input({ required: true })
+  footerText!: string;
+}
+```
+
+Necesitamos:
+
+```
+import { Component, Input } from '@angular/core';
+```
+
+stub representa:
+
+PortfolioPage
+      ↓
+PortfolioLayoutStub
+      ↓
+<ng-content />
+
+
+
+12. sustituir el PortfolioLayoutComponent real por este stub en el test de carga
+
+##### Como PortfolioPageComponent es standalone y tiene PortfolioLayoutComponent en sus imports, usamos overrideComponent().
+
+necesitamos importar PortfolioLayoutComponent
+`import { PortfolioLayoutComponent } from '../layouts/portfolio-layout.component';`
+
+dentro del test, antes de render():
+
+```
+TestBed.overrideComponent(PortfolioPageComponent, {
+  remove: {
+    imports: [PortfolioLayoutComponent],
+  },
+  add: {
+    imports: [PortfolioLayoutStubComponent],
+  },
+});
+
+```
+
+comienzo del test queda:
+
+```
+it('debería mostrar el portfolio cuando la carga finaliza', async () => {
+  portfolioFacadeStub.load.mockResolvedValue(
+    portfolioContent,
+  );
+
+  TestBed.overrideComponent(PortfolioPageComponent, {
+    remove: {
+      imports: [PortfolioLayoutComponent],
+    },
+    add: {
+      imports: [PortfolioLayoutStubComponent],
+    },
+  });
+
+  await render(PortfolioPageComponent, {
+    providers: [
+      {
+        provide: PortfolioFacade,
+        useValue: portfolioFacadeStub,
+      },
+    ],
+  });
+
+  expect(
+    screen.queryByText('Cargando portfolio...'),
+  ).toBeNull();
+});
+```
+
+
+13. comprobar que el PortfolioLayoutStub recibió el profile correcto.
+
+hacemos que el stub muestre profile.fullName:
+
+```
+template: `
+  <span data-testid="portfolio-layout-profile">
+    {{ profile.fullName }}
+  </span>
+  <ng-content />
+`,
+```
+
+añadimos
+
+```
+expect(
+  screen.getByTestId('portfolio-layout-profile').textContent,
+).toContain(portfolioContent.profile.fullName);
+```
+
+portfolioContent.profile
+        ↓
+[profile]
+        ↓
+PortfolioLayoutStub
+        ↓
+profile.fullName
+        ↓
+DOM
+
+
+14. socialLinks llega correctamente al PortfolioLayoutStub
+
+```
+template: `
+  <span data-testid="portfolio-layout-profile">
+    {{ profile.fullName }}
+  </span>
+
+  <span data-testid="portfolio-layout-social-links">
+    {{ socialLinks.length }}
+  </span>
+
+  <ng-content />
+`,
+```
+
+agregamos:
+
+```
+expect(
+  screen.getByTestId('portfolio-layout-social-links').textContent,
+).toContain(
+  portfolioContent.socialLinks.length.toString(),
+);
+```
+
+portfolioContent.socialLinks
+        ↓
+[socialLinks]
+        ↓
+PortfolioLayoutStub
+        ↓
+socialLinks.length
+        ↓
+DOM 
+
+
+15. footerText que PortfolioPageComponent pasa al PortfolioLayoutStub
+
+
+```
+template: `
+  <span data-testid="portfolio-layout-profile">
+    {{ profile.fullName }}
+  </span>
+
+  <span data-testid="portfolio-layout-social-links">
+    {{ socialLinks.length }}
+  </span>
+
+  <span data-testid="portfolio-layout-footer-text">
+    {{ footerText }}
+  </span>
+
+  <ng-content />
+`,
+```
+
+```
+expect(
+  screen.getByTestId('portfolio-layout-footer-text').textContent,
+).toContain(
+  '© 2026 Tu Nombre. Todos los derechos reservados.',
+);
+```
+
+
+16. stub de HeroSectionComponent
+
+creamos stub de HeroSectionComponent
+
+la página pasa:
+`<app-hero-section [profile]="portfolio.profile" />`
+
+el stub necesita únicamente recibir profile:
+
+```
+@Component({
+  selector: 'app-hero-section',
+  template: `
+    <span data-testid="hero-profile">
+      {{ profile.fullName }}
+    </span>
+  `,
+  standalone: true,
+})
+class HeroSectionStubComponent {
+  @Input({ required: true })
+  profile!: Profile;
+}
+```
+
+PortfolioPage
+      ↓
+HeroSectionStub
+      ↓
+[profile]
+      ↓
+profile.fullName
+
+
+no lo añadimos al override ni al render().
+
+
+17. importar el HeroSectionComponent real para poder reemplazarlo por este stub.
+
+import del componente real HeroSectionComponent
+necesitamos identificarlo en el remove de overrideComponent().
+
+`import { HeroSectionComponent } from '../sections/hero-section.component';`
+
+después podamos hacer:
+
+```
+remove: {
+  imports: [
+    HeroSectionComponent,
+  ],
+}
+```
+
+reemplazarlo por:
+
+```
+add: {
+  imports: [
+    HeroSectionStubComponent,
+  ],
+}
+```
+
+no modificamos el overrideComponent().
+
+añadir únicamente el reemplazo para HeroSection
+
+
+
+18. reemplazo para HeroSection
+
+hacemos solo el reemplazo de HeroSectionComponent por su stub dentro del overrideComponent()
+
+```
+TestBed.overrideComponent(PortfolioPageComponent, {
+  remove: {
+    imports: [
+      PortfolioLayoutComponent,
+      HeroSectionComponent,
+    ],
+  },
+  add: {
+    imports: [
+      PortfolioLayoutStubComponent,
+      HeroSectionStubComponent,
+    ],
+  },
+});
+```
+
+
+19. comprobar que HeroSectionStubComponent recibe el profile correcto
+
+agregamos solo la comprobación de que HeroSectionStubComponent recibe el profile correcto
+
+Nuestro stub ya expone:
+
+<span data-testid="hero-profile">
+  {{ profile.fullName }}
+</span>
+
+
+añadimos al test:
+
+```
+expect(
+  screen.getByTestId('hero-profile').textContent,
+).toContain(
+  portfolioContent.profile.fullName,
+);
+```
+
+comprobación
+
+portfolioContent.profile
+        ↓
+[profile]
+        ↓
+HeroSectionStub
+        ↓
+profile.fullName
+        ↓
+DOM
+
+
+20. crear stub de ContactSectionComponent.
+
+página pasa:
+
+`<app-contact-section [contact]="portfolio.contact" />``
+
+el stub necesita contact
+
+```
+@Component({
+  selector: 'app-contact-section',
+  template: `
+    <span data-testid="contact-email">
+      {{ contact.email }}
+    </span>
+  `,
+  standalone: true,
+})
+class ContactSectionStubComponent {
+  @Input({ required: true })
+  contact!: Contact;
+}
+```
+
+
+importar Contact
+
+`import { Contact } from '@domain/contact.entity';`
+
+
+PortfolioPage
+      ↓
+ContactSectionStub
+      ↓
+[contact]
+      ↓
+contact.email
+
+
+21. import del componente real ContactSectionComponent para poder reemplazarlo en el overrideComponent().
+
+`import { ContactSectionComponent } from '../sections/contact-section.component';`
+
+Después podremos indicar:
+
+```
+remove: {
+  imports: [
+    ContactSectionComponent,
+  ],
+}
+
+```
+
+sustituirlo por:
+
+```
+add: {
+  imports: [
+    ContactSectionStubComponent,
+  ],
+}
+```
+
+no modificamos el overrideComponent().
+
+
+22. reemplazo de ContactSectionComponent por su stub
+
+Modificamos el overrideComponent() que ya tenemos
+
+```
+TestBed.overrideComponent(PortfolioPageComponent, {
+  remove: {
+    imports: [
+      PortfolioLayoutComponent,
+      HeroSectionComponent,
+      ContactSectionComponent,
+    ],
+  },
+  add: {
+    imports: [
+      PortfolioLayoutStubComponent,
+      HeroSectionStubComponent,
+      ContactSectionStubComponent,
+    ],
+  },
+});
+```
+
+La composición queda:
+
+```
+PortfolioPageComponent
+│
+├── X PortfolioLayoutComponent
+├── X HeroSectionComponent
+├── X ContactSectionComponent
+│
+├── PortfolioLayoutStubComponent
+├── HeroSectionStubComponent
+└── ContactSectionStubComponent
+```
+
+
+23. ContactSectionStubComponent recibe el contact correcto
+
+Nuestro stub ya expone:
+
+```
+<span data-testid="contact-email">
+  {{ contact.email }}
+</span>
+```
+
+```
+expect(
+  screen.getByTestId('contact-email').textContent,
+).toContain(
+  portfolioContent.contact.email,
+);
+```
+
+portfolioContent.contact
+        ↓
+[contact]
+        ↓
+ContactSectionStub
+        ↓
+contact.email
+        ↓
+DOM
+
+
+24. stub de ProjectsSectionComponent.
+
+`<app-projects-section [projects]="portfolio.projects" />`
+
+stub necesita stub necesita
+
+```
+@Component({
+  selector: 'app-projects-section',
+  template: `
+    <span data-testid="projects-count">
+      {{ projects.length }}
+    </span>
+  `,
+  standalone: true,
+})
+class ProjectsSectionStubComponent {
+  @Input({ required: true })
+  projects!: readonly Project[];
+}
+
+```
+
+necesitamos importar Project:
+
+`import { Project } from '@domain/project.entity';`
+
+
+25. import del componente real ProjectsSectionComponent.
+
+`import del componente real ProjectsSectionComponent.`
+
+Lo necesitamos para poder indicarle posteriormente a overrideComponent():
+
+```
+remove: {
+  imports: [
+    ProjectsSectionComponent,
+  ],
+},
+```
+
+y sustituirlo por ProjectsSectionStubComponent.
+
+
+26. reemplazo de ProjectsSectionComponent por su stub en el overrideComponent().
+
+Modificamos:
+
+```
+TestBed.overrideComponent(PortfolioPageComponent, {
+  remove: {
+    imports: [
+      PortfolioLayoutComponent,
+      HeroSectionComponent,
+      ContactSectionComponent,
+      ProjectsSectionComponent,
+    ],
+  },
+  add: {
+    imports: [
+      PortfolioLayoutStubComponent,
+      HeroSectionStubComponent,
+      ContactSectionStubComponent,
+      ProjectsSectionStubComponent,
+    ],
+  },
+});
+
+```
+
+
+27. projects recibe ProjectsSectionStubComponent.
+
+```
+<span data-testid="projects-count">
+  {{ projects.length }}
+</span>
+```
+
+portfolioContent.projects
+        ↓
+[projects]
+        ↓
+ProjectsSectionStub
+        ↓
+projects.length
+        ↓
+DOM
+
+
+
+28. stub SkillsSectionComponent
+
+`<app-skills-section [skills]="portfolio.skills" />`
+
+stub necesita únicamente skills
+
+```
+@Component({
+  selector: 'app-skills-section',
+  template: `
+    <span data-testid="skills-count">
+      {{ skills.length }}
+    </span>
+  `,
+  standalone: true,
+})
+class SkillsSectionStubComponent {
+  @Input({ required: true })
+  skills!: readonly Skill[];
+}
+```
+ 
+importar Skill:
+
+`import { Skill } from '@domain/skill.entity';`
+
+PortfolioPage
+      ↓
+SkillsSectionStub
+      ↓
+[skills]
+      ↓
+skills.length
+
+
+29. import del componente real SkillsSectionComponent.
+
+agregamos:
+`import { SkillsSectionComponent } from '../sections/skills-section.component';`
+
+Lo necesitamos para poder reemplazarlo posteriormente en overrideComponent():
+
+```
+remove: {
+  imports: [
+    SkillsSectionComponent,
+  ],
+}
+```
+
+no modificamos el overrideComponent() ni hacemos ninguna aserción
+
+
+30. añadir SkillsSectionComponent al remove y SkillsSectionStubComponent al add.
+
+Modificamos el overrideComponent():
+
+```
+TestBed.overrideComponent(PortfolioPageComponent, {
+  remove: {
+    imports: [
+      PortfolioLayoutComponent,
+      HeroSectionComponent,
+      ContactSectionComponent,
+      ProjectsSectionComponent,
+      SkillsSectionComponent,
+    ],
+  },
+  add: {
+    imports: [
+      PortfolioLayoutStubComponent,
+      HeroSectionStubComponent,
+      ContactSectionStubComponent,
+      ProjectsSectionStubComponent,
+      SkillsSectionStubComponent,
+    ],
+  },
+});
+```
+
+
+32. SkillsSectionStubComponent recibe skills
+
+stub expone:
+
+```
+<span data-testid="skills-count">
+  {{ skills.length }}
+</span>
+```
+
+agregamos:
+
+```
+expect(
+  screen.getByTestId('skills-count').textContent,
+).toContain(
+  portfolioContent.skills.length.toString(),
+);
+```
+
+portfolioContent.skills
+        ↓
+[skills]
+        ↓
+SkillsSectionStub
+        ↓
+skills.length
+        ↓
+DOM
+
+
+33. load() fue llamado
+
+Después del render():
+
+```
+expect(
+  portfolioFacadeStub.load,
+).toHaveBeenCalledOnce();
+```
+
+Test queda:
+
+```
+await render(PortfolioPageComponent, {
+  providers: [
+    {
+      provide: PortfolioFacade,
+      useValue: portfolioFacadeStub,
+    },
+  ],
+});
+
+expect(
+  screen.queryByText('Cargando portfolio...'),
+).toBeNull();
+
+expect(
+  portfolioFacadeStub.load,
+).toHaveBeenCalledOnce();
+```
+
+PortfolioPage
+    ↓
+ngOnInit()
+    ↓
+PortfolioFacade.load()
+    ↓
+load() llamado una vez
+
+
+34. comprobar la composición HeroSectionStubComponent
+
+### corregir: new Promise(() => {}) puede dejar render() esperando indefinidamente, porque ngOnInit() también queda pendiente
+
+##### Para el test del estado inicial, es más seguro no bloquear load(). Podemos hacer que devuelva un Promise que no afecte al objetivo del test y comprobar el estado inicial de otra manera
+
+
+API actual de Angular Testing Library: render() permite desactivar la detección automática inicial con detectChangesOnRender: false
+luego podemos ejecutar manualmente fixture.detectChanges().
+permite observar el estado inicial sin dejar render() esperando una Promise pendiente
+
+Reemplazamos:
+
+`await render(PortfolioPageComponent, {`
+
+por:
+
+`const { fixture } = await render(PortfolioPageComponent, {`
+
+añadimos:
+
+```
+detectChangesOnRender: false,
+```
+
+Queda:
+
+```
+const { fixture } = await render(PortfolioPageComponent, {
+  detectChangesOnRender: false,
+  providers: [
+    {
+      provide: PortfolioFacade,
+      useValue: portfolioFacadeStub,
+    },
+  ],
+});
+```
+
+
+35. fixture.detectChanges() para activar ngOnInit() manualmente
+
+`fixture.detectChanges();`
+
+```
+it('debería mostrar el estado de carga inicialmente', async () => {
+  const { fixture } = await render(PortfolioPageComponent, {
+    detectChangesOnRender: false,
+    providers: [
+      {
+        provide: PortfolioFacade,
+        useValue: portfolioFacadeStub,
+      },
+    ],
+  });
+
+  fixture.detectChanges();
+});
+```
+
+detalle: en este momento load() debe devolver una Promise pendiente para que content() siga siendo null después de iniciar ngOnInit()
+
+hemos agregado fixture.detectChanges().
+
+
+36. configurar nuevamente portfolioFacadeStub.load para ese estado inicial
+
+agregamos solo la configuración de load() pendiente, antes de render().
+
+```
+portfolioFacadeStub.load.mockReturnValue(
+  new Promise(() => {}),
+);
+```
+
+El test queda:
+
+```
+it('debería mostrar el estado de carga inicialmente', async () => {
+  portfolioFacadeStub.load.mockReturnValue(
+    new Promise(() => {}),
+  );
+
+  const { fixture } = await render(PortfolioPageComponent, {
+    detectChangesOnRender: false,
+    providers: [
+      {
+        provide: PortfolioFacade,
+        useValue: portfolioFacadeStub,
+      },
+    ],
+  });
+
+  fixture.detectChanges();
+});
+```
+
+load() → Promise pendiente
+        ↓
+render sin change detection
+        ↓
+fixture.detectChanges()
+        ↓
+ngOnInit()
+        ↓
+await load() queda pendiente
+        ↓
+content() sigue siendo null
+
+
+37. volver a añadir la aserción de "Cargando portfolio...",
+
+```
+expect(
+  screen.getByText('Cargando portfolio...'),
+).toBeTruthy();
+``` 
+
+```
+it('debería mostrar el estado de carga inicialmente', async () => {
+  portfolioFacadeStub.load.mockReturnValue(
+    new Promise(() => {}),
+  );
+
+  const { fixture } = await render(PortfolioPageComponent, {
+    detectChangesOnRender: false,
+    providers: [
+      {
+        provide: PortfolioFacade,
+        useValue: portfolioFacadeStub,
+      },
+    ],
+  });
+
+  fixture.detectChanges();
+
+  expect(
+    screen.getByText('Cargando portfolio...'),
+  ).toBeTruthy();
+});
+
+```
+
+
+38. comprobar load() una
+
+```
+expect(
+  portfolioFacadeStub.load,
+).toHaveBeenCalledOnce();
+```
+
+```
+it('debería mostrar el estado de carga inicialmente', async () => {
+  portfolioFacadeStub.load.mockReturnValue(
+    new Promise(() => {}),
+  );
+
+  const { fixture } = await render(PortfolioPageComponent, {
+    detectChangesOnRender: false,
+    providers: [
+      {
+        provide: PortfolioFacade,
+        useValue: portfolioFacadeStub,
+      },
+    ],
+  });
+
+  fixture.detectChanges();
+
+  expect(
+    screen.getByText('Cargando portfolio...'),
+  ).toBeTruthy();
+
+  expect(
+    portfolioFacadeStub.load,
+  ).toHaveBeenCalledOnce();
+});
+```
+
+test cubre exactamente dos cosas:
+content inicial → estado de carga
+ngOnInit()       → load() una vez  
+
+
+39. evitar que el historial del mock del primer test contamine el segundo
+
+Al comienzo del test de carga completada, agregamos:
+
+```
+portfolioFacadeStub.load.mockClear();
+```
+
+queda:
+
+```
+it('debería mostrar el portfolio cuando la carga finaliza', async () => {
+  portfolioFacadeStub.load.mockClear();
+
+  portfolioFacadeStub.load.mockResolvedValue(
+    portfolioContent,
+  );
+
+  // ...
+});
+```
+
+Test 1
+load() → llamado 1 vez
+        ↓
+mockClear()
+        ↓
+Test 2
+load() → historial limpio
+
+
+
+40. renderizar PortfolioPageComponent con el PortfolioFacadeStub
+
+```
+await render(PortfolioPageComponent, {
+  providers: [
+    {
+      provide: PortfolioFacade,
+      useValue: portfolioFacadeStub,
+    },
+  ],
+});
+```
+
+El test queda, por ahora:
+
+```
+it('debería mostrar el portfolio cuando la carga finaliza', async () => {
+  portfolioFacadeStub.load.mockClear();
+
+  portfolioFacadeStub.load.mockResolvedValue(
+    portfolioContent,
+  );
+
+  await render(PortfolioPageComponent, {
+    providers: [
+      {
+        provide: PortfolioFacade,
+        useValue: portfolioFacadeStub,
+      },
+    ],
+  });
+});
+```
+
+load() ya resuelve con portfolioContent, la inicialización puede completar y actualizar content.
+
+
+41. aserción de que el estado de carga desapareció.
+
+```
+expect(
+  screen.queryByText('Cargando portfolio...'),
+).toBeNull();
+```
+
+```
+it('debería mostrar el portfolio cuando la carga finaliza', async () => {
+  portfolioFacadeStub.load.mockClear();
+
+  portfolioFacadeStub.load.mockResolvedValue(
+    portfolioContent,
+  );
+
+  await render(PortfolioPageComponent, {
+    providers: [
+      {
+        provide: PortfolioFacade,
+        useValue: portfolioFacadeStub,
+      },
+    ],
+  });
+
+  expect(
+    screen.queryByText('Cargando portfolio...'),
+  ).toBeNull();
+});
+```
+
+
+42. comprobar que PortfolioFacade.load() fue llamado una vez en el escenario de carga completada.
+
+```
+expect(
+  portfolioFacadeStub.load,
+).toHaveBeenCalledOnce();
+```
+
+```
+it('debería mostrar el portfolio cuando la carga finaliza', async () => {
+  portfolioFacadeStub.load.mockClear();
+
+  portfolioFacadeStub.load.mockResolvedValue(
+    portfolioContent,
+  );
+
+  await render(PortfolioPageComponent, {
+    providers: [
+      {
+        provide: PortfolioFacade,
+        useValue: portfolioFacadeStub,
+      },
+    ],
+  });
+
+  expect(
+    screen.queryByText('Cargando portfolio...'),
+  ).toBeNull();
+
+  expect(
+    portfolioFacadeStub.load,
+  ).toHaveBeenCalledOnce();
+});
+```
+
+
+43. introducir el PortfolioLayoutStubComponent para probar la composición de la página.
+
+```
+it('debería mostrar el portfolio cuando la carga finaliza', async () => {
+  portfolioFacadeStub.load.mockClear();
+
+  portfolioFacadeStub.load.mockResolvedValue(
+    portfolioContent,
+  );
+
+  TestBed.overrideComponent(PortfolioPageComponent, {
+    remove: {
+      imports: [PortfolioLayoutComponent],
+    },
+    add: {
+      imports: [PortfolioLayoutStubComponent],
+    },
+  });
+
+  await render(PortfolioPageComponent, {
+    providers: [
+      {
+        provide: PortfolioFacade,
+        useValue: portfolioFacadeStub,
+      },
+    ],
+  });
+
+  expect(
+    screen.queryByText('Cargando portfolio...'),
+  ).toBeNull();
+
+  expect(
+    portfolioFacadeStub.load,
+  ).toHaveBeenCalledOnce();
+});
+```
+
+
+43. PortfolioLayoutStubComponent se renderiza
+
+```
+<span data-testid="portfolio-layout-profile">
+  {{ profile.fullName }}
+</span>
+```
+
+```
+expect(
+  screen.getByTestId('portfolio-layout-profile'),
+).toBeTruthy();
+```
+
+```
+
+expect(
+  screen.queryByText('Cargando portfolio...'),
+).toBeNull();
+
+expect(
+  portfolioFacadeStub.load,
+).toHaveBeenCalledOnce();
+
+expect(
+  screen.getByTestId('portfolio-layout-profile'),
+).toBeTruthy();
+```
+
+
+44. profile fue pasado correctamente al PortfolioLayoutStubComponent
+
+stub muestra:
+```
+<span data-testid="portfolio-layout-profile">
+  {{ profile.fullName }}
+</span>
+```
+
+```
+expect(
+  screen.getByTestId('portfolio-layout-profile').textContent,
+).toContain(
+  portfolioContent.profile.fullName,
+);
+```
+
+
+45. socialLinks
+
+```
+<span data-testid="portfolio-layout-social-links">
+  {{ socialLinks.length }}
+</span>
+```
+
+```
+expect(
+  screen.getByTestId('portfolio-layout-social-links').textContent,
+).toContain(
+  portfolioContent.socialLinks.length.toString(),
+);
+```
+
+portfolioContent.socialLinks
+        ↓
+[socialLinks]
+        ↓
+PortfolioLayoutStub
+        ↓
+socialLinks.length
+        ↓
+DOM
+
+
+46. footerText
+
+```
+<span data-testid="portfolio-layout-footer-text">
+  {{ footerText }}
+</span>
+```
+
+```
+expect(
+  screen.getByTestId('portfolio-layout-footer-text').textContent,
+).toContain(
+  '© 2026 Tu Nombre. Todos los derechos reservados.',
+);
+```
+
+
+47. hero
+
+```
+<span data-testid="hero-profile">
+  {{ profile.fullName }}
+</span>
+```
+
+```
+expect(
+  screen.getByTestId('hero-profile').textContent,
+).toContain(
+  portfolioContent.profile.fullName,
+);
+```
+
+
+48. contact
+
+```
+<span data-testid="contact-email">
+  {{ contact.email }}
+</span>
+```
+
+```
+expect(
+  screen.getByTestId('contact-email').textContent,
+).toContain(
+  portfolioContent.contact.email,
+);
+```
+
+
+49. projects
+
+ProjectsSectionStubComponent recibe projects
+
+```
+<span data-testid="projects-count">
+  {{ projects.length }}
+</span>
+
+```
+
+```
+expect(
+  screen.getByTestId('projects-count').textContent,
+).toContain(
+  portfolioContent.projects.length.toString(),
+);
+```
+
+50. skills
+
+comprobamos solo que SkillsSectionStubComponent recibe skills correctamente
+
+```
+<span data-testid="skills-count">
+  {{ skills.length }}
+</span>
+```
+
+```
+expect(
+  screen.getByTestId('skills-count').textContent,
+).toContain(
+  portfolioContent.skills.length.toString(),
+);
+```
+
+
+51. composición
+
+La página ya se encarga de pasar al layout los cuatro componentes:
+
+<app-hero-section ... />
+<app-contact-section ... />
+<app-projects-section ... />
+<app-skills-section ... />
+
+ya comprobamos cada una de esas conexiones mediante los stubs.
+
+la siguiente pieza necesaria es comprobar que SkillsSectionStubComponent está realmente presente
+de forma análoga a lo que hicimos con el layout. Como el stub ya tiene data-testid="skills-count", esa misma consulta ya demuestra su presencia:
+
+```
+expect(
+  screen.getByTestId('skills-count'),
+).toBeTruthy();
+```
+
+detalle: nuestra aserción actual ya hace exactamente esa consulta:
+
+```
+expect(
+  screen.getByTestId('skills-count').textContent,
+).toContain(
+  portfolioContent.skills.length.toString(),
+);
+```
+
+hemos terminado la parte de composición de PortfolioPageComponent
+
+
+52. devolver realmente PortfolioFacade.load().
+
+en el component tenemos: 
+```
+const portfolio = await this.portfolioFacade.load();
+this.content.set(portfolio);
+```
+
+content definido como:
+
+`signal<PortfolioContent | null>(null);`
+
+necesitamos un test de load() → null
+conocer el tipo de retorno de PortfolioFacade.load().
+
+
+
+Así que no necesitamos un test load() → null para PortfolioPageComponent.
+
+El null de:
+
+readonly content = signal<PortfolioContent | null>(null);
+
+representa únicamente el estado inicial antes de que termine la carga, no un posible resultado exitoso de load().
 
 
 # Cuestionario Testing
@@ -12092,8 +19471,102 @@ Analicemos si es necesario que tenga testing.
 De ser así, qué necesitaría?
 
 
-## 3. Testing esencial/critico/indispensable para archivo
+
+## 3. Testing esencial/critico/indispensable/minimo para archivo
+
+
+
 
 
 
 ## 4. Código testing pieza a pieza
+
+
+
+# TestBed y ATL
+
+TestBed sigue siendo apropiado cuando queremos controlar aspectos más específicos de Angular
+
+providers
+DI
+injection tokens
+routing
+pipes/directives específicas
+overrides
+configuración compleja
+integración profunda
+
+
+
+
+# Uso de fixtures
+
+
+## Uso en ui components
+
+
+
+# Host component y ng content
+
+
+
+# Calidad código
+
+1. Durante desarrollo
+Después de hacer un cambio:
+
+npm run type-check
+npm run lint
+npm run format
+npm test/ng test
+
+
+2. Antes de commit
+interesa detectar todo:
+
+format
+   ↓
+format:check
+   ↓
+type-check
+   ↓
+lint
+   ↓
+test
+   ↓
+build
+
+
+npm run format
+npm run format:check
+
+npm run format
+npm run type-check
+npm run lint
+npm test
+npm run build
+
+
+CI
+├── format:check
+├── type-check
+├── lint
+├── test
+└── build
+
+
+### Desarrollo
+
+npm run format
+npm run type-check
+npm run lint
+npm test
+npm run build
+
+### CI
+
+npm run format:check
+npm run type-check
+npm run lint
+npm test
+npm run build
