@@ -19510,6 +19510,25 @@ integración profunda
 
 
 
+
+# grid tailw
+
+```
+    <article
+      class="border-border bg-surface rounded-2xl border p-6 shadow-sm transition-shadow hover:shadow-md md:[&:last-child:nth-child(odd)]:col-span-2"
+    >
+
+```
+
+
+
+# Cursiv head lett
+
+
+
+
+
+
 # Calidad código
 
 1. Durante desarrollo

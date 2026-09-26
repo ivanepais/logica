@@ -143,7 +143,7 @@ Renderizado condicional, manejo de listas y eventos sintéticos.
 Refactorización, buenas prácticas de código y optimización de rendimiento (Lighthouse).
 Despliegue continuo (CD) en plataformas en la nube como Vercel, Netlify o GitHub Pages.
 Checklist de calidad: validación de sintaxis, pruebas de usabilidad y compatibilidad entre navegadores
- 
+
 
 
 
@@ -156,7 +156,7 @@ Arquitectura sobre Express/Fastify
 Instalación del CLI (@nestjs/cli) y creación del primer proyecto.
 Estructura de archivos de una aplicación NestJS (main.ts, app.module.ts, etc.).
 
- 
+
 ## 2. Arquitectura: Controladores y Servicios)
 
 `Controladores (@Controller)`:
@@ -388,7 +388,7 @@ import { AppModule } from './app.module';
 async function bootstrap() {
   // Crea la instancia de NestJS usando el AppModule
   const app = await NestFactory.create(AppModule);
-  
+
   // Escucha peticiones en el puerto 3000
   await app.listen(3000);
 }
@@ -576,7 +576,7 @@ con la certeza de que las rutas principales no se romperán en producción.
 
 
 
- 
+
 # 2. Arquitectura: Controladores y Servicios
 
 `Controladores (@Controller)`:
@@ -807,7 +807,7 @@ Autorización por Roles: Verificar si el usuario autenticado posee los permisos 
 
 
 
-## 1. Arquitectura y Conceptos Básicos 
+## 1. Arquitectura y Conceptos Básicos
 
 Su arquitectura se basa en tres componentes principales
 
@@ -987,7 +987,7 @@ import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  
+
   // Activa validación automática en todos los endpoints
   app.useGlobalPipes(
     new ValidationPipe({
@@ -1182,7 +1182,7 @@ npm install --save-dev @types/passport-jwt @types/bcrypt
 nest g module auth
 nest g service auth
 nest g controller auth
-``` 
+```
 
 3. Configurar el AuthModule
 
@@ -1378,7 +1378,7 @@ Al acceder a http://localhost:3000/api/docs desde el navegador, verás la interf
 En desarrollo real jamás se deben hardcodear credenciales, puertos o llaves secretas en el código
 NestJS proporciona el módulo @nestjs/config (basado en dotenv) para gestionar variables de entorno de forma centralizada
 
-1. 
+1.
 
 `npm install @nestjs/config`
 
@@ -1599,10 +1599,10 @@ describe('TasksController (e2e)', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
-    
+
     // Importante: Aplicar los mismos pipes del entorno real
     app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
-    
+
     await app.init();
   });
 
@@ -1793,7 +1793,7 @@ bootstrap();
 
 # Control gastos personales: Expense Tracker API
 
-Enfoque: 
+Enfoque:
 Agregación de datos y filtrado avanzado.
 
 Aprendizaje:
@@ -1814,7 +1814,7 @@ clasificarlos por categorías, establecer presupuestos mensuales y consultar res
 Arquitectura Modular:
 
 Feature Modules y Common Module
- 
+
 ```
 src/
 ├── categories/             # Módulo de categorías (Comida, Servicios, Sueldo, etc.)
@@ -1932,13 +1932,13 @@ Arquitectura modular, persistencia de datos y la seguridad
 
 Inyección de Dependencias e Inversión de Control (IoC): Principio central de NestJS para desacoplar componentes.
 
-Módulos (@Module): Organización de la aplicación en bloques funcionales delimitados que encapsulan controladores y proveedores.  
+Módulos (@Module): Organización de la aplicación en bloques funcionales delimitados que encapsulan controladores y proveedores.
 
 Controladores (@Controller): Manejo de solicitudes HTTP entrantes, enrutamiento (@Get, @Post, @Put, @Delete) y lectura de parámetros (@Param, @Query, @Body).
 
 Proveedores / Servicios (@Injectable): Encapsulación de la lógica de negocio consumida por controladores mediante el constructor.
 
-Nest CLI: Comandos de generación de código (nest new, nest g module, nest g controller, nest g service).  
+Nest CLI: Comandos de generación de código (nest new, nest g module, nest g controller, nest g service).
 
 Práctica: Crear un CRUD en memoria para un recurso simple (ejemplo: tareas o productos) dividiendo responsabilidades entre controlador, módulo y servicio.
 
@@ -1966,15 +1966,15 @@ Entidades: Mapeo de objetos TypeScript a tablas mediante decoradores.
 
 Patrón Repositorio / Consultas: Operaciones de lectura y escritura (find, save, update, delete).
 
-Relaciones: Modelado de asociaciones entre tablas (Uno a Uno, Uno a Muchos, Muchos a Muchos).  
+Relaciones: Modelado de asociaciones entre tablas (Uno a Uno, Uno a Muchos, Muchos a Muchos).
 
 Práctica: Reemplazar el almacenamiento en memoria por una base de datos PostgreSQL conectada mediante Docker y TypeORM/Prisma.
 
 
 
-## 4. Seguridad y Ciclo de Vida de la Solicitud 
+## 4. Seguridad y Ciclo de Vida de la Solicitud
 
-Middlewares: Procesamiento de solicitudes HTTP previa llegada a la ruta target.  
+Middlewares: Procesamiento de solicitudes HTTP previa llegada a la ruta target.
 
 Guards (Guardias): Control de acceso e instanciación de reglas de autorización (RBAC).
 
@@ -2071,7 +2071,7 @@ Diseñar una API de Control de Gastos Personales
 orden lógico
 modelación conceptual hasta la integración de las capas transversales de seguridad y analítica
 
-1. Planificación del Dominio y Modelo de Datos 
+1. Planificación del Dominio y Modelo de Datos
 
 `Definición de Entidades`: Identificar los elementos fundamentales del sistema: Categoría (ej. Comida, Transporte, Sueldo) y Transacción (cada movimiento monetario).
 
@@ -2576,7 +2576,7 @@ npm run build (Equivalente a nest build): Compila el código TypeScript a JavaSc
 # Conceptos
 
 
-# 1. 
+# 1.
 
 ## 1. Inversión de Control (IoC): El cambio de mentalidad
 
@@ -2611,7 +2611,7 @@ export class UsersController {
   constructor() {
     // Si UsersService cambia y exige parámetros en su constructor,
     // rompes el controlador y tendrás que modificarlo aquí.
-    this.userService = new UsersService(); 
+    this.userService = new UsersService();
   }
 }
 ```
@@ -2720,12 +2720,12 @@ e inyecta la instancia de `AppService` en su constructor.
 
 ```
 Contenedor IoC
-Nest Container  
+Nest Container
 [Provider Map]
    |
 4. Inject
    |
-AppController   
+AppController
 @Controller()
 
 ```
@@ -2743,7 +2743,7 @@ export class AppController {
 Rs:
 
 ```
-									  2.Build				
+									  2.Build
 AppModule	    ->		Contendor IoC  -> AppService
 @Module({...}) 1. reg       |			  @Injectable())
 						 4. Inject     3. Instanc
@@ -2753,7 +2753,7 @@ AppModule	    ->		Contendor IoC  -> AppService
 
 1. Module: providers
 2. Injectable: class, methods
-3. Resolución: ioc container, token 
+3. Resolución: ioc container, token
 4. Controller: inyección class, methds
 ```
 
@@ -2946,7 +2946,7 @@ export class ProductsController {
   // PUT /products/15
   @Put(':id')
   update(
-    @Param('id') id: string, 
+    @Param('id') id: string,
     @Body() updateData: { name?: string; price?: number }
   ) {
     return this.productsService.update(id, updateData);
@@ -2979,7 +2979,7 @@ Puedes cambiar el código HTTP devuelto importando el decorador y utilizando el 
 
 ## 4. Proveedores y Servicios (@Injectable): Encapsulación de la lógica de negocio.
 
-##### regla de oro: controladores "delgados" (thin controllers) 
+##### regla de oro: controladores "delgados" (thin controllers)
 ##### transferir toda la lógica de negocio a los Proveedores (Providers).
 
 #### Un Servicio es la variante más común de un proveedor
@@ -4277,7 +4277,7 @@ Difícil de rastrear en herramientas de monitoreo.,"Integración nativa con Sent
 
 
 
-### Usos generales filtro personalizado 
+### Usos generales filtro personalizado
 
 1. Mapeo Automático de Errores de Base de Datos (Prisma / TypeORM)
 
@@ -4463,7 +4463,7 @@ a través de un servicio inyectable: ConfigService.
 Inyec. Depend: Se inyecta formalmente en constructores mediante IoC.
 Testing: Sencillo. Se pasa un mock de ConfigService en la suite de pruebas
 Validación de Esquema: Permite validar al arrancar la app (Fail Fast). Si falta una variable requerida, no inicia.
-Tipado Estático: Permite parsear automáticamente a number, boolean y obtener autocompletado 
+Tipado Estático: Permite parsear automáticamente a number, boolean y obtener autocompletado
 
 
 2. Código
@@ -4520,7 +4520,7 @@ export class TasksService {
     // Lectura de variables con tipos de datos
     const env = this.configService.get<string>('ENVIRONMENT');
     const port = this.configService.get<number>('PORT');
-    
+
     console.log(`Ejecutando en modo ${env} en el puerto ${port}`);
   }
 
@@ -4833,7 +4833,7 @@ redis://localhost:6379
 
 
 
-### Motivos: ConfigService, ConfigModule y Validación con Joi 
+### Motivos: ConfigService, ConfigModule y Validación con Joi
 
 #### Carga (ConfigModule) → Validación (Joi) → Consumo (ConfigService).
 
@@ -4943,7 +4943,7 @@ if (environment === 'development') {
 }
 ```
 
-b. Control de detalles de error en el ExceptionFilter 
+b. Control de detalles de error en el ExceptionFilter
 
 ```
 // http-exception.filter.ts
@@ -4953,7 +4953,7 @@ response.status(status).json({
   statusCode: status,
   message: exception.message,
   // Muestra el Stack Trace técnico completo solo en desarrollo para debugging, lo oculta en producción
-  stack: isDev ? exception.stack : undefined, 
+  stack: isDev ? exception.stack : undefined,
 });
 ```
 
@@ -4961,8 +4961,8 @@ c. Ajuste de CORS (Seguridad de origen)
 
 ```
 app.enableCors({
-  origin: environment === 'production' 
-    ? 'https://mi-frontend-real.com' 
+  origin: environment === 'production'
+    ? 'https://mi-frontend-real.com'
     : '*', // En dev permite peticiones desde cualquier origen
 });
 ```
@@ -4985,11 +4985,11 @@ import * as Joi from 'joi';
       isGlobal: true,
       validationSchema: Joi.object({
         // Fuerza a que PORT sea un número y asigna 3000 si no existe
-        PORT: Joi.number().default(3000), 
+        PORT: Joi.number().default(3000),
         // Solo permite estos 3 valores exactos; si pones "dev", la app no arranca
-        ENVIRONMENT: Joi.string().valid('development', 'production', 'test').default('development'), 
+        ENVIRONMENT: Joi.string().valid('development', 'production', 'test').default('development'),
         // Exige que sea un texto no vacío
-        API_PREFIX: Joi.string().default('api/v1'), 
+        API_PREFIX: Joi.string().default('api/v1'),
       }),
     }),
     TasksModule,
@@ -5207,7 +5207,7 @@ curl -X POST http://localhost:3000/tasks \
   }'
 ```
 
-  
+
 Resp exitosa
 
 ```
@@ -5703,14 +5703,14 @@ Hooks de ciclo de vida más comunes:
 #### Código integral
 
 ```
-import { 
-  Entity, 
-  PrimaryGeneratedColumn, 
-  Column, 
-  CreateDateColumn, 
-  UpdateDateColumn, 
-  BeforeInsert, 
-  BeforeUpdate 
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  BeforeInsert,
+  BeforeUpdate
 } from 'typeorm';
 
 @Entity('tasks') // 1. DECORADOR DE ENTIDAD: Asigna la tabla 'tasks' en PostgreSQL
@@ -5976,13 +5976,13 @@ import { TasksModule } from './tasks/tasks.module';
         username: configService.get<string>('DB_USERNAME'),
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_DATABASE'),
-        
+
         // Carga automáticamente entidades registradas en módulos hijos
         autoLoadEntities: true,
 
         // Sincroniza automáticamente cambios de entidades con la BD en desarrollo.
         // WARNING: NUNCA usar synchronize: true en PRODUCCIÓN (usar migraciones).
-        synchronize: true, 
+        synchronize: true,
       }),
     }),
 
@@ -6159,7 +6159,7 @@ Evita mezclar las tablas del task-manager con las de otros proyectos alojados en
 
 ```
 const env = this.configService.get<string>('ENVIRONMENT');
-const port = this.configService.get<number>('PORT');   
+const port = this.configService.get<number>('PORT');
 ```
 
 #### !!! Permite pasar tipos de datos como parámetros a funciones, clases o interfaces
@@ -6174,7 +6174,7 @@ Sin genéricos, tendrías dos problemas:
 
 ```
 // TypeScript no sabe qué tipo de dato devuelve, asume 'any'
-const port = this.configService.get('PORT'); 
+const port = this.configService.get('PORT');
 port.toUpperCase(); // TypeScript lo permite en compilación, pero FALLA en ejecución porque un número no tiene .toUpperCase()
 ```
 
@@ -6184,7 +6184,7 @@ port.toUpperCase(); // TypeScript lo permite en compilación, pero FALLA en ejec
 getStringConfig('ENVIRONMENT');
 getNumberConfig('PORT');
 getBooleanConfig('IS_ACTIVE');
-```    
+```
 
 #### Los genéricos resuelven esto permitiendo que el método sea flexible pero manteniendo un tipado 100% estricto.
 
@@ -6248,7 +6248,7 @@ Sin el genérico <TaskEntity>, el repositorio no sabría qué tabla ni qué colu
 
 
 
-    
+
 ### Funcion con generico y sin generico
 
 
@@ -6375,10 +6375,10 @@ Flujo:
 AppModule (forRootAsync)
 ──> Conecta la aplicación a la DB
 		|
-TasksModule (forFeature([TaskEntity]))		
+TasksModule (forFeature([TaskEntity]))
 ──> prepara la conexión para TaskEntity
 		|
-TasksService (@InjectRepository(TaskEntity))		
+TasksService (@InjectRepository(TaskEntity))
 ──> Conecta el servicio para usarlo
 ```
 
@@ -6583,7 +6583,7 @@ export class TasksService {
     // 1. Inyección del repositorio de TypeORM para la tabla 'tasks'
     @InjectRepository(TaskEntity)
     private readonly taskRepository: Repository<TaskEntity>,
-    
+
     // 2. Mantenemos ConfigService si necesitas leer variables de entorno en el servicio
     private readonly configService: ConfigService,
   ) {
@@ -6710,10 +6710,10 @@ export class TasksController {
 
 #### Cambios
 
-##### 1. Retorno de Promesas (Promise<TaskEntity>): Dado que las operaciones con la base de datos son de entrada/salida (I/O) asíncronas 
+##### 1. Retorno de Promesas (Promise<TaskEntity>): Dado que las operaciones con la base de datos son de entrada/salida (I/O) asíncronas
 el controlador debe marcarse como async y especificar que retornará una Promise con la entidad de respuesta
 
-##### 2. Reemplazo de la Interfaz por TaskEntity: Se eliminó la importación type { Task } y en su lugar se utiliza TaskEntity 
+##### 2. Reemplazo de la Interfaz por TaskEntity: Se eliminó la importación type { Task } y en su lugar se utiliza TaskEntity
 que representa el modelo persistido con TypeORM
 
 ##### 3. Uso opcional de ParseUUIDPipe: Agregamos el pipe nativo de NestJS @Param('id', ParseUUIDPipe) en las rutas con id
@@ -6840,7 +6840,7 @@ Flags o estados binarios (true/false).
 Fechas exactas con hora (y zona horaria).
 
 
-##### 8. object/Array / jsonb 
+##### 8. object/Array / jsonb
 Objetos JSON complejos e indexables.
 { nullable: true }
 
@@ -7212,7 +7212,7 @@ previniendo fallos en tiempo de ejecución por faltantes de configuración.
 Docker Engine / Contenedor PostgreSQL:
 #### Aísla el motor de base de datos (PostgreSQL) dentro de un contenedor,
 ##### garantizando un entorno uniforme, reproducible y portable para el almacenamiento de datos.
-    
+
 
 2. Módulos de NestJS (Estructura y Orquestación)
 
@@ -7370,7 +7370,7 @@ Cuando buscas rendimiento puro y no necesitas el objeto actualizado de vuelta.
 ### delete() vs remove()
 
 #### delete(id | criteria) (Recomendado para casos simples):
- 
+
 Ejecuta un comando SQL directo sin cargar primero el registro en memoria
 Retorna un objeto DeleteResult que indica cuántas filas fueron afectadas (result.affected).
 
@@ -7406,7 +7406,7 @@ o cuando se manejan eliminaciones en cascada de relaciones complejas.
 
 
 
-# 4. Relaciones: Modelado de asociaciones entre tablas (Uno a Uno, Uno a Muchos, Muchos a Muchos).  
+# 4. Relaciones: Modelado de asociaciones entre tablas (Uno a Uno, Uno a Muchos, Muchos a Muchos).
 
 Definen cómo se interconectan los datos dentro de un modelo relacional
 ##### Su objetivo principal es organizar la información sin duplicación y garantizar la integridad referencial mediante el uso de Claves Foráneas (Foreign Keys).
@@ -7815,7 +7815,7 @@ El usuario necesita filtrar por categorías o proyectos creados dinámicamente.
 La tarea empieza a almacenar datos muy pesados (adjuntos, logs de auditoría largos)
 que sobrecargan las consultas SELECT * FROM tasks habituales
 justificando mover esos datos a una relación 1:1.
-    
+
 
 
 ## Relaciones Autorreferenciadas
@@ -8721,7 +8721,7 @@ Se creará un contenedor nuevo conectado al volumen existente
 Recrea el contenedor de la base de datos:
 
 `docker compose up -d`
- 
+
 
 5. Consultar la tabla en el nuevo contenedor
 Validación final de la persistencia
@@ -8730,7 +8730,7 @@ Vuelve a lanzar la consulta SQL sobre el nuevo contenedor:
 
 `docker exec -it tasks_postgres_db psql -U postgres -d tasks_db -c "SELECT * FROM test_persistence;"`
 
- 
+
 #### Al ejecutar docker compose down, Docker destruye la instancia del contenedor
 #### pero conserva la carpeta física montada en /var/lib/postgresql/data dentro del volumen nombrado postgres_data
 ##### Cuando docker compose up -d arranca la nueva instancia, PostgreSQL detecta que la base de datos ya está inicializada en ese directorio y la monta inmediatamente con todos tus registros intactos
@@ -8786,7 +8786,7 @@ Configuración inicial: Modificar permisos de base de datos o revisar la estruct
 
 
 
-### Usando curl para la nueva arquitectura 
+### Usando curl para la nueva arquitectura
 
 1. Crear una tarea (POST)
 Inserta un nuevo registro a través de NestJS hacia PostgreSQL
@@ -8977,7 +8977,7 @@ await this.taskRepository.softDelete(id);
 
 
 ### 2. Patrones Complejos e Imprescindibles
- 
+
 Las aplicaciones reales requieren lógica más avanzada para responder a comportamientos habituales de navegación y seguridad
 
 #### A. Autenticación e Inicio de Sesión (Login)
@@ -8988,12 +8988,12 @@ Las aplicaciones reales requieren lógica más avanzada para responder a comport
 
 ```
 SELECT id, email, password_hash FROM users WHERE email = 'usuario@email.com';
-``` 
+```
 
 ```
-const user = await this.userRepository.findOne({ 
-  where: { email }, 
-  select: ['id', 'email', 'passwordHash'] 
+const user = await this.userRepository.findOne({
+  where: { email },
+  select: ['id', 'email', 'passwordHash']
 });
 ```
 
@@ -9009,9 +9009,9 @@ const user = await this.userRepository.findOne({
 ##### Se construye una consulta condicional (QueryBuilder) agregando cláusulas WHERE y coincidencias parciales con ILIKE (en PostgreSQL).
 
 ```
-SELECT * FROM task 
-WHERE title ILIKE '%Docker%' 
-  AND status = 'pending' 
+SELECT * FROM task
+WHERE title ILIKE '%Docker%'
+  AND status = 'pending'
 ORDER BY created_at DESC;
 ```
 
@@ -9020,7 +9020,7 @@ await this.taskRepository.createQueryBuilder('task')
   .where('task.title ILIKE :search', { search: `%${search}%` })
   .andWhere('task.status = :status', { status })
   .getMany();
-```    
+```
 
 
 
@@ -9453,7 +9453,7 @@ Operaciones internas en la transacción:
 Verificar que el estado del asiento sea disponible.
 Cambiar el estado a bloqueado_temporalmente fijando un temporizador de 10 minutos.
 Asignar la reserva previa al user_id del comprador
-    
+
 falla sin transacción: Overbooking
 Dos usuarios haciendo clic en la misma fracción de segundo terminan comprando la misma entrada o la misma habitación de hotel
 
@@ -9467,7 +9467,7 @@ Insertar las credenciales básicas en la tabla principal (User).
 Crear la fila de detalles en la tabla de perfil (UserProfile).
 Asignar los permisos por defecto en la tabla pivote de roles (UserRole).
 Insertar el token de verificación de email en la tabla de tokens (EmailVerification).
-        
+
 falla sin transacción:
 Creas una fila en User, pero si falla la creación del perfil o los roles, la app arrojará errores de pantalla blanca (null pointer / undefined) cada vez que ese usuario intente iniciar sesión
 
@@ -10176,7 +10176,7 @@ curl -X POST http://localhost:3000/api/v1/auth/register \
     "fullName": "Juan Pérez"
   }'
 ```
-  
+
 2. Inicio de Sesión (POST /api/v1/auth/login)
 
 ```
@@ -10671,7 +10671,7 @@ Al reiniciar el servidor NestJS con synchronize: true en TypeORM, se recrearán 
 
 ## Registro
 
-1. Registrar el Usuario A 
+1. Registrar el Usuario A
 
 ```
 curl -i -X POST http://localhost:3000/api/v1/auth/register \
@@ -10936,6 +10936,8 @@ categories: CategoryEntity[];
 
 
 4. DTOs para Categorías
+
+carpeta/archivo: src/categories/dto/create-category.dto.ts
 
 ```
 import { IsString, IsNotEmpty, MaxLength, IsOptional, Matches } from 'class-validator';
@@ -11380,7 +11382,7 @@ curl -s -X POST http://localhost:3000/api/v1/categories \
     "name": "Urgente",
     "color": "#E74C3C"
   }' | jq .
-  
+
 ```
 
 
@@ -11438,7 +11440,7 @@ resp:
     ]
   }
 ]
-``` 
+```
 
 
 5. Actualizar Tarea (Sincronizar Categorías)
@@ -11455,7 +11457,3993 @@ curl -s -X PUT http://localhost:3000/api/v1/tasks/UUID_TAREA \
   }' | jq .
 ```
 
+
+
+
+
+# Soft Delete, Paginación y Filtros Dinámicos
+
+Teniendo las entidades
+implementar paginación y filtros que incluyan búsqueda por categoría o estado (completed).
+
+Agregar @DeleteDateColumn() en TaskEntity para borrado lógico (softRemove() / restore()).
+Crear DTO genérico de paginación (PaginationDto: page, limit)
+Añadir filtros dinámicos en GET /tasks (completed, search, categoryId).
+
+Crear un DTO genérico de paginación (limit, page) y respuestas estructuradas ({ data, total, page, lastPage }).
+Implementar borrado lógico (Soft Delete) en la entidad Task mediante @DeleteDateColumn
+
+Retornar miles de registros en un GET /tasks colapsaría la memoria de Node.js y la base de datos
+la paginación es obligatoria para la escalabilidad.
+
+Integridad de Datos: En sistemas comerciales reales nunca se borran filas físicamente (DELETE)
+se archivan para auditorías y recuperación ante errores.
+
+
+## Motivos
+
+#### Preservar la integridad histórica, seguridad operacional y la recuperabilidad de la información en sistemas en producción
+
+##### 1. Recuperación ante errores humanos (Undelete): Permite a los usuarios o administradores deshacer un borrado accidental de forma instantánea mediante un simple PATCH
+sin depender de restauraciones costosas desde copias de seguridad de la base de datos.
+
+##### 2. Integridad referencial e histórica: Evita romper registros o métricas del pasado
+Si un informe o métrica de productividad se calculó sobre tareas existentes
+La eliminación física (HARD DELETE) alteraría los reportes históricos o rompería claves foráneas en tablas relacionadas
+
+##### 3. Auditoría y cumplimiento normativo (Compliance): En muchas industrias se exige conservar la trazabilidad completa del ciclo de vida de los datos
+incluyendo el timestamp exacto (deletedAt) en el que la información dejó de estar activa y qué usuario ejecutó la acción.
+
+##### 4. Analítica de negocio y Business Intelligence (BI): Mantiene la información disponible para análisis de patrones de uso, como medir qué porcentaje de tareas creadas se descartan vs. cuántas se completan
+o calcular el tiempo medio de permanencia de un ítem antes de ser descartado.
+
+##### 5. Protección contra fallos masivos: Actúa como una capa de contención. En caso de bugs en el backend o scripts maliciosos que ejecuten borrados masivos
+los datos permanecen físicamente intactos en PostgreSQL, permitiendo un UPDATE tasks SET deletedAt = NULL para recuperar el estado original.
+
+
+1. Modificar TaskEntity
+Agrega el decorador @DeleteDateColumn()
+
+Edita src/tasks/entities/task.entity.ts
+e importa @DeleteDateColumn() desde TypeORM.
+
+```
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  DeleteDateColumn,
+  ManyToOne,
+  ManyToMany,
+  JoinTable,
+} from 'typeorm';
+import { User } from '../../users/entities/user.entity';
+import { CategoryEntity } from '../../categories/entities/category.entity';
+
+@Entity('tasks')
+export class TaskEntity {
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
+
+  @Column({ type: 'varchar', length: 100 })
+  title: string;
+
+  @Column({ type: 'text', nullable: true })
+  description?: string;
+
+  @Column({ type: 'boolean', default: false })
+  completed: boolean;
+
+  @CreateDateColumn({ type: 'timestamp' })
+  createdAt: Date;
+
+  @UpdateDateColumn({ type: 'timestamp' })
+  updatedAt: Date;
+
+  @DeleteDateColumn({ type: 'timestamp', nullable: true })
+  deletedAt?: Date;
+
+  @ManyToOne(() => User, (user) => user.tasks, { onDelete: 'CASCADE', eager: false })
+  user: User;
+
+  @ManyToMany(() => CategoryEntity, (category) => category.tasks)
+  @JoinTable({ name: 'tasks_categories' })
+  categories: CategoryEntity[];
+}
+```
+
+
+2. Actualizar TasksService
+Sustituye remove() por softRemove() y agrega restore()
+En src/tasks/tasks.service.ts, actualiza el método remove() para hacer borrado lógico y crea el método restore().
+
+```
+// Borrado lógico (Soft Delete)
+  async remove(id: string, user: User): Promise<void> {
+    const task = await this.findOne(id, user);
+    await this.taskRepository.softRemove(task);
+  }
+
+  // Restaurar una tarea previamente borrada
+  async restore(id: string, user: User): Promise<TaskEntity> {
+    const task = await this.taskRepository.findOne({
+      where: { id, user: { id: user.id } },
+      withDeleted: true, // Permite encontrar registros con deletedAt !== null
+      relations: { categories: true },
+    });
+
+    if (!task) {
+      throw new NotFoundException(`La tarea con ID "${id}" no existe.`);
+    }
+
+    if (!task.deletedAt) {
+      return task; // Ya estaba activa
+    }
+
+    return await this.taskRepository.recover(task);
+  }
+```
+
+
+3. Actualizar TasksController
+Expón el nuevo endpoint PATCH /tasks/:id/restore
+
+En src/tasks/tasks.controller.ts, agrega el método restore.
+
+```
+@Patch(':id/restore')
+  restore(
+    @Param('id', ParseUUIDPipe) id: string,
+    @GetUser() user: User,
+  ) {
+    return this.tasksService.restore(id, user);
+  }
+```
+
+
+#### TypeORM ignora automáticamente los registros que tengan deletedAt !== null en todas las consultas habituales (find, findOne, etc.).
+
+Al ejecutar DELETE /tasks/:id, la columna deletedAt se completará con el timestamp actual.
+
+Un posterior GET /tasks omitirá la tarea borrada automáticamente.
+
+Al invocar PATCH /tasks/:id/restore
+se utiliza withDeleted: true
+para recuperar la entidad y la función recover() limpia el campo deletedAt.
+
+
+
+### Probar soft delete
+
+1. Eliminar Lógicamente la Tarea
+Ejecuta DELETE para establecer el campo deletedAt
+
+```
+# Reemplaza $TASK_ID con un ID activo de tu base de datos
+curl -s -X DELETE http://localhost:3000/api/v1/tasks/$TASK_ID \
+  -H "Authorization: Bearer $TOKEN" | jq .
+```
+
+Si el endpoint no retorna cuerpo de respuesta (status 204 No Content), el comando finalizará en silencio y con éxito
+
+
+2. Verificar Omisión en el Listado Generales y por ID
+Comprueba que la tarea borrada es filtrada automáticamente por TypeORM
+
+Listado general (No debe incluir la tarea eliminada)
+
+```
+curl -s -X GET http://localhost:3000/api/v1/tasks \
+  -H "Authorization: Bearer $TOKEN" | jq .
+```
+
+Consulta individual por ID (Debe retornar 404 Not Found)
+
+```
+curl -s -X GET http://localhost:3000/api/v1/tasks/$TASK_ID \
+  -H "Authorization: Bearer $TOKEN" | jq .
+```
+
+
+3. Restaurar tarea 
+
+Invoca el nuevo endpoint PATCH para revertir el deletedAt a null
+
+```
+curl -s -X PATCH http://localhost:3000/api/v1/tasks/$TASK_ID/restore \
+  -H "Authorization: Bearer $TOKEN" | jq .
+```
+
+Respuesta esperada:
+
+```
+{
+  "id": "0ab8f893-dbbe-4af8-b390-3842fc86d4fd",
+  "title": "Configurar Modulo 3 del Backend",
+  "description": "Implementar Soft Delete y Paginación",
+  "completed": false,
+  "createdAt": "2026-09-15T04:58:39.392Z",
+  "updatedAt": "2026-09-15T05:15:00.000Z",
+  "deletedAt": null,
+  "categories": [...]
+}
+```
+
+
+4. Confirmar Recuperación de la Tarea
+Verifica que el recurso vuelve a estar accesible
+
+```
+curl -s -X GET http://localhost:3000/api/v1/tasks/$TASK_ID \
+  -H "Authorization: Bearer $TOKEN" | jq .
+```
+
+
+
+## Paginación y Filtros
+
+#### Paginación por metadatos (limit, page) y filtrado dinámico (completed, search, categoryId) en la consulta GET /tasks.
+
+
+1. PaginationQueryDto
+#### DTO para capturar y transformar query params
+pagination-query.dto.ts
+Usaremos class-transformer para castear los parámetros recibidos por la URL.
+
+```
+import { IsOptional, IsInt, Min, Max, IsBoolean, IsString, IsUUID } from 'class-validator';
+import { Type, Transform } from 'class-transformer';
+
+export class PaginationQueryDto {
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  @Max(100)
+  limit?: number = 10;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  page?: number = 1;
+
+  @IsOptional()
+  @Transform(({ value }) => (value === 'true' ? true : value === 'false' ? false : value))
+  @IsBoolean()
+  completed?: boolean;
+
+  @IsOptional()
+  @IsString()
+  search?: string;
+
+  @IsOptional()
+  @IsUUID('4')
+  categoryId?: string;
+}
+```
+
+
+2. Actualizar TasksService
+QueryBuilder para aplicar filtros condicionales y paginación
+tasks.service.ts, actualiza findAll utilizando SelectQueryBuilder
+para encadenar los filtros dinámicamente y calcular los metadatos de respuesta
+
+```
+import { PaginationQueryDto } from './dto/pagination-query.dto';
+
+  async findAll(queryDto: PaginationQueryDto, user: User) {
+    const { limit = 10, page = 1, completed, search, categoryId } = queryDto;
+    const skip = (page - 1) * limit;
+
+    const query = this.taskRepository.createQueryBuilder('task')
+      .leftJoinAndSelect('task.categories', 'category')
+      .where('task.userId = :userId', { userId: user.id });
+
+    // Filtro por estado completed
+    if (completed !== undefined) {
+      query.andWhere('task.completed = :completed', { completed });
+    }
+
+    // Búsqueda insensible a mayúsculas en título o descripción
+    if (search) {
+      query.andWhere(
+        '(task.title ILIKE :search OR task.description ILIKE :search)',
+        { search: `%${search}%` },
+      );
+    }
+
+    // Filtro por categoría asociada
+    if (categoryId) {
+      query.andWhere('category.id = :categoryId', { categoryId });
+    }
+
+    const [data, total] = await query
+      .orderBy('task.createdAt', 'DESC')
+      .take(limit)
+      .skip(skip)
+      .getManyAndCount();
+
+    return {
+      data,
+      meta: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      },
+    };
+  }
+```
+
+
+3. Actualizar TasksController
+Vincula el DTO en el decorador @Query()
+tasks.controller.ts, modifica el método @Get() para recibir los parámetros de la URL.
+
+```
+import { PaginationQueryDto } from './dto/pagination-query.dto';
+
+  @Get()
+  findAll(
+    @Query() paginationQueryDto: PaginationQueryDto,
+    @GetUser() user: User,
+  ) {
+    return this.tasksService.findAll(paginationQueryDto, user);
+  }
+```
+
+
+
+### Prueba paginación y filtro con curl
+
+1. Paginación Básica (limit y page)
+Limita el número de resultados devueltos e indica la página
+
+```
+curl -s -X GET "http://localhost:3000/api/v1/tasks?limit=2&page=1" \
+  -H "Authorization: Bearer $TOKEN" | jq .
+```
+
+Observa en la respuesta la estructura del objeto meta
+(total, page, limit, totalPages).
+
+
+2. Filtro por Estado (completed)
+Filtra por estado completado o pendiente
+
+```
+# Tareas completadas:
+curl -s -X GET "http://localhost:3000/api/v1/tasks?completed=true" \
+  -H "Authorization: Bearer $TOKEN" | jq .
+
+# Tareas pendientes:
+curl -s -X GET "http://localhost:3000/api/v1/tasks?completed=false" \
+  -H "Authorization: Bearer $TOKEN" | jq .
+```
+
+
+3. Búsqueda por Texto (search)
+Búsqueda de texto parcial (insensible a mayúsculas/minúsculas)
+
+```
+curl -s -X GET "http://localhost:3000/api/v1/tasks?search=Backend" \
+  -H "Authorization: Bearer $TOKEN" | jq .
+```
+
+
+4. Filtro por Categoría (categoryId)
+Filtra las tareas asociadas a un ID de categoría específico
+
+```
+# Reemplaza $CAT_ID por un UUID de categoría existente
+curl -s -X GET "http://localhost:3000/api/v1/tasks?categoryId=$CAT_ID" \
+  -H "Authorization: Bearer $TOKEN" | jq .
+```
+
+
+5. Combinación de Filtros y Paginación
+Prueba la combinación de múltiples query params simultáneamente
+
+```
+curl -s -X GET "http://localhost:3000/api/v1/tasks?search=Modulo&completed=false&limit=5&page=1" \
+  -H "Authorization: Bearer $TOKEN" | jq .
+```
+
+
+#### Respuesta
+
+```
+{
+  "data": [
+    {
+      "id": "7f61495f-64c8-42ad-aea8-6b6603984c70",
+      "title": "Probar aislamiento de tareas",
+      "description": "Verificar que esta tarea solo la vea usuario1",
+      "completed": false,
+      "createdAt": "2026-09-15T19:02:10.149Z",
+      "updatedAt": "2026-09-15T19:48:58.981Z",
+      "deletedAt": null,
+      "categories": []
+    }
+  ],
+  "meta": {
+    "total": 1,
+    "page": 1,
+    "limit": 2,
+    "totalPages": 1
+  }
+}
+
+```
+
+Bloque data y meta:
+patrón estándar para consumo de APIs paginadas en clientes Web/Mobile
+
+data (Listado de entidades):
+Contiene las tareas pertenecientes al usuario autenticado en la página solicitada.
+Aislamiento multi-inquilino (Multitenancy): Solo devuelve la tarea creada por el usuario asociado al JWT.
+Soft Delete activo: deletedAt: null confirma que la tarea está activa. TypeORM excluyó automáticamente cualquier registro lógicamente borrado.
+Relaciones: categories: [] confirma que la relación N:M fue consultada (mediante leftJoinAndSelect), aunque esta tarea no tiene categorías asignadas
+    
+meta (Metadatos de control para el frontend):total: 1: Número total de registros existentes en la base de datos que coinciden con los filtros del usuario.page: 1: Página actual que se está visualizando (?page=1).limit: 2: Límite máximo de elementos devueltos por respuesta (?limit=2).totalPages: 1: Páginas totales disponibles, calculadas dinámicamente mediante
+##### total/limit = 1 / 2 = 1. Permite a la interfaz cliente saber si debe habilitar o deshabilitar la navegación a un botón "Siguiente".
+
+
+
+
+
+# Decorar controller, dto, entity
+
+## Controller:
+Define los endpoints, verbos HTTP, parámetros de URL y respuestas HTTP.
+@ApiTags, @ApiOperation, @ApiResponse, @ApiParam, @ApiBearerAuth
+
+
+## DTOs: 
+Definen el contrato de entrada (lo que envía el cliente en body o query).
+@ApiProperty, @ApiPropertyOptional
+
+
+## Entity: parcial / opcional
+Solo si la devuelves directamente como respuesta
+(@ApiResponse({ type: TaskEntity })).
+@ApiProperty en los atributos de la entidad
+
+
+### Probar
+
+Servidor de desarrollo
+Recompila el proyecto para que el plugin AST de nest-cli.json regenere los metadatos de Swagger:
+
+npm run start:dev
+
+
+interfaz de Swagger UI
+
+Accede desde el navegador a:
+http://localhost:3000/api/docs
+
+
+prueba interactivo
+
+Token JWT (Auth)
+en el grupo Auth, despliega POST /auth/login (o POST /auth/register).
+clic en Try it out.
+petición con tus credenciales.    
+respuesta 200 OK, copia el accessToken del JSON.
+
+
+Autenticar la sesión
+
+Ve a la parte superior de la página y haz clic en el botón verde Authorize (candado).
+Pega el accessToken en el campo del modal y presiona Authorize.
+Cierra el modal. Ahora todas las peticiones enviarán la cabecera Authorization: Bearer <token>.
+
+
+Probar endpoints protegidos (Categories y Tasks)
+
+Despliega POST /categories en el grupo Categories
+clic en Try it out, envía un nombre de categoría y un color (ej. #FF5733).
+Verifica que devuelva 201 Created.
+
+POST /tasks en Tasks, pasa el categoryId creado en categoryIds
+confirma que la respuesta incluya el detalle completo de la tarea.
+
+
+
+### Inspección
+
+##### Sección Schemas (al pie de página): Revisa que las entidades User, TaskEntity y CategoryEntity no tengan campos sensibles (como password) ni entren en bucles infinitos
+
+##### Validación de DTOs: Comprueba que los campos requeridos estén marcados con un asterisco rojo, que las descripciones de los decoradores (minLength, example, regex) se visualicen en los modelos de petición.
+
+
+
+respuestas y Schemas de NestJS/Swagger
+
+
+Incompatibilidad de Arreglos en @ApiResponse:
+Si un endpoint devuelve una lista (CategoryEntity[]),
+en el decorador debe indicarse de forma explícita el arreglo
+@ApiResponse({ status: 200, type: [CategoryEntity] }).
+Si se omite el [], Swagger dibujará un único objeto en la UI.
+
+Respuestas Paginadas o Envueltas (Wrappers):
+Si los endpoints de búsqueda devuelven una estructura envolvente como { data: T[], total: number, page: number },
+indicar type: TaskEntity dibujará solo la entidad y no el wrapper JSON de paginación real
+
+Listas vacías en relaciones (categories: [] o undefined):
+Si en el modelo decoraste @ApiPropertyOptional({ type: () => [CategoryEntity] })
+pero en TypeORM la consulta no hace relations: ['categories'],
+Swagger mostrará el campo en el schema pero la respuesta real vendrá vacía o sin la propiedad.
+
+Nombres de esquemas en la UI:
+Por defecto Swagger nombra los esquemas según la clase (CategoryEntity, TaskEntity, User).
+Si deseas limpiar la UI para que se llamen Category o Task,
+se especifica en la entidad mediante el decorador @ApiSchema({ name: 'Category' }).
+
+
+
+
+## Interfaz swagger/OpenAPI
+
+
+Sin Candado (Rutas Públicas): Los endpoints del grupo Auth (/api/v1/auth/register y /api/v1/auth/login) no llevan el ícono
+significa que no tienen el decorador @ApiBearerAuth(), lo cual es correcto porque son rutas anónimas donde el usuario no posee un token aún
+
+Cerrado en los Endpoints: Aparece en las rutas de Tasks y Categories
+Indica que requieren autenticación HTTP Bearer JWT
+Dado que el botón superior global Authorize aparece en verde y con el candado cerrado,
+significa que ya introdujiste un token JWT válido en Swagger UI
+Al hacer clic en "Try it out" en cualquiera de estas rutas
+Swagger enviará automáticamente el header Authorization: Bearer <token>.
+
+Candado Abierto: Si cierras la sesión en el botón global Authorize
+estos candados pasarán a mostrarse abiertos
+forma en que Swagger te advierte
+ruta requiere token, pero aún no has autenticado tu sesión en la UI
+
+
+
+### Observaciones
+
+Prefijo de Versionado Consistente: Todos los endpoints incluyen la convención /api/v1
+excelente práctica para mantenibilidad y evolutividad.
+
+Soft Delete: Se observa la ruta PATCH /api/v1/tasks/{id}/restore
+#### confirmando que el módulo de tareas implementa borrado lógico y recuperación de recursos.
+
+Modelos de Entrada Registrados:
+#### En la sección inferior Schemas figuran todos los DTOs de entrada
+(CreateTaskDto, UpdateTaskDto, RegisterUserDto, etc.)
+#### lo que permite a los consumidores de la API consultar los tipos de datos y restricciones antes de realizar las peticiones
+
+
+
+## Pruebas en la UI
+
+flujo lógico:
+orden estricto de dependencias
+autenticación, creación de datos maestros (categorías) y gestión del recurso principal (tareas).
+
+
+1. Módulo Auth (Obtener credenciales)
+POST /api/v1/auth/register (si requieres crear el usuario)
+o directamente POST /api/v1/auth/login.
+
+Ejecuta la petición con Try it out
+y copia el accessToken que devuelve la respuesta 200 OK.
+
+
+2. Autorización Global en la UI
+click botón verde Authorize, esquina superior derecha.
+
+Pega el token JWT copiado (sin la palabra Bearer), presiona Authorize.
+Los candados de los endpoints cambiarán a estado cerrado
+
+
+3. Categories (Crear dependencias)
+
+POST /api/v1/categories:
+Crea al menos una categoría enviando name y color (ej. #FF5733).
+
+Copia el id (UUID v4) retornado en la respuesta para poder asignarlo a tus tareas
+GET /api/v1/categories: Revisa que liste correctamente las categorías creadas para el usuario actual.
+
+
+4. Tasks
+
+POST /api/v1/tasks: Crea una nueva tarea incluyendo el id de la categoría en el arreglo categoryIds.
+GET /api/v1/tasks: Consulta el listado general verificando la paginación y que la relación con categorías se devuelva estructurada.
+GET /api/v1/tasks/{id}: Consulta el detalle por UUID.
+PUT /api/v1/tasks/{id}: Actualiza campos parciales o asigna nuevas categorías.
+DELETE /api/v1/tasks/{id}: Comprueba la eliminación lógica (soft delete).
+PATCH /api/v1/tasks/{id}/restore: Restaura la tarea previamente eliminada para verificar la recuperación de datos.
+
+
+
+## datos maestros y el recurso principal
+
+### Maestros:
+#### Son entidades de referencia y catálogo que estructuran, clasifican o agrupan la información dentro del sistema
+
+Propósito:
+Proveer dimensiones de clasificación y filtrado para la información operativa
+
+Frecuencia de cambio:
+Baja. Se crean o editan esporádicamente
+(ej. definir etiquetas como "Trabajo", "Finanzas" o "Urgente").
+
+Independencia
+Existen por sí mismas
+##### una categoría puede crearse antes de que existan tareas asignadas a ella.
+
+Aislamiento por usuario: En un entorno multi-tenant, actúan como catálogos personalizados para cada usuario
+
+
+### Recurso Principal
+
+#### Entidad transaccional alrededor de la cual orbita la razón de ser de la aplicación (Core Domain).
+
+Propósito:
+Representar los elementos operativos reales que el usuario gestiona activamente
+
+Frecuencia de cambio:
+Tienen un ciclo de vida muy dinámico
+creación constante, actualización de estados, marcado como completadas, soft delete y restauración
+
+Dependencia:
+Consumen datos maestros
+(se vinculan mediante @ManyToMany con CategoryEntity)
+pertenecen a un usuario específico (@ManyToOne con User).
+
+
+
+### Errores
+
+Petición en Swagger UI (Try it out -> Execute)
+la API devuelve una respuesta de error
+la sección Responses se actualiza inmediatamente mostrando los siguientes elementos
+
+1. Código de Estado HTTP (Server response)
+Muestra el código devuelto resaltado visualmente en rojo u naranja según la gravedad:
+
+400 Bad Request: Datos de entrada no válidos.
+401 Unauthorized: Falta el token JWT o expiró.
+404 Not Found: El recurso no existe en PostgreSQL.
+409 Conflict: Violación de restricción (ej. correo duplicado).
+500 Internal Server Error: Excepción no controlada en el servidor
+
+
+2. Cuerpo de la Respuesta (Response body)
+Renderiza el objeto JSON formateado que emite el filtro de excepciones de NestJS:
+
+Ejemplo de error de validación (400 Bad Request vía class-validator):
+
+```
+{
+  "statusCode": 400,
+  "message": [
+    "El correo electrónico no tiene un formato válido",
+    "La contraseña debe contener al menos una letra mayúscula, una minúscula y un número"
+  ],
+  "error": "Bad Request"
+}
+```
+
+Ejemplo de error de autenticación (401 Unauthorized):
+
+```
+{
+  "statusCode": 401,
+  "message": "Unauthorized"
+}
+```
+
+
+3. Mapeo con la Documentación (@ApiResponse)
+
+Si el código HTTP recibido coincide con uno de los decoradores @ApiResponse que configuraste en el controlador
+Swagger resaltará la descripción descriptiva que redactaste para ese escenario.
+
+4. Errores de Conexión o Red (Server Down / CORS)
+Si el backend de NestJS se cae o hay un problema de CORS, no se genera una respuesta HTTP válida
+En su lugar, Swagger despliega una caja roja de alerta con el mensaje:
+
+TypeError: Failed to fetch
+
+
+
+
+
+# Normalización, Validación, Sanitización en Backend
+
+
+
+
+### 1. Punto de Entrada
+
+Herramienta/Ubicación:
+RegisterUserDto + ValidationPipe
+
+#### Sanitización y Validación: Limpia minúsculas/espacios (class-transformer) y valida formato, longitud y tipos (class-validator).
+
+
+### 2. Lógica de Negocio
+UsersService
+Reglas del Dominio: Verificación de duplicados en BD, encriptación de contraseña (bcrypt) y orquestación.
+
+
+### 3. Esquema / Persistencia
+User Entity
+Restricciones de BD: Tipos de datos, nulabilidad, índices y unicidad (@Column({ unique: true })).
+
+
+Evitar @BeforeInsert / @BeforeUpdate para normalización
+El ORM muta el objeto silenciosamente justo antes de persistir, lo que dificulta seguir el flujo en tests unitarios
+Inconsistencia con QueryBuilder: Los hooks de TypeORM no se ejecutan cuando usas createQueryBuilder().insert() o update()
+dejando huecos de seguridad si confías la normalización a la entidad
+Principio de Responsabilidad Única: La entidad representa la estructura de la tabla en PostgreSQL
+##### no debe preocuparse por procesar inputs del usuario.
+
+
+Ej: Centralizar en el DTO
+
+La forma idónea de sanitizar e inspeccionar la entrada en NestJS es dentro del DTO
+utilizando class-transformer y class-validator:
+
+```
+import { IsEmail, IsString, MinLength, MaxLength } from 'class-validator';
+import { Transform } from 'class-transformer';
+
+export class RegisterUserDto {
+  @IsEmail({}, { message: 'El correo electrónico no es válido' })
+  @Transform(({ value }) => value?.toLowerCase().trim())
+  readonly email: string;
+
+  @IsString()
+  @MinLength(3)
+  @MaxLength(30)
+  @Transform(({ value }) => value?.trim())
+  readonly userName: string;
+
+  @IsString()
+  @MinLength(8, { message: 'La contraseña debe tener al menos 8 caracteres' })
+  readonly password: string;
+}
+```
+
+#### Al activar el ValidationPipe global en main.ts con { transform: true }
+los valores llegan al servicio completamente limpios, validados y normalizados
+eliminando la necesidad de llamar a .toLowerCase().trim() en el servicio o en la entidad
+
+
+
+
+
+## Terminología
+
+
+### 1. Sanitización: Seguridad
+
+#### Seguridad: Eliminar o neutralizar contenido peligroso.
+Modificación: Sí (limpia)
+Ej: Eliminar etiquetas <script> para prevenir ataques XSS
+
+Limpia la entrada del usuario antes de que toque la lógica interna para evitar inyecciones (XSS, SQL Injection, Command Injection).
+Remueve o escapa caracteres peligrosos
+Pasar un texto HTML como `<p>Hola</p><script>stealCookies()</script>` a través de un sanitizador resulta en <p>Hola</p>.
+
+
+### 2. Normalización: Estandarización
+
+#### Consistencia: Estandarizar el formato para almacenamiento y búsquedas.
+Modificación: Sí (transforma)
+Ej: Convertir PEPE@Gmail.com a pepe@gmail.com.
+
+Asegura que datos semánticamente iguales se almacenen de forma idéntica en la base de datos
+Previene duplicados lógicos y facilita índices y búsquedas.
+
+Transforma el dato a su forma canónica.
+Ej:
+Aplicar .toLowerCase().trim() a correos electrónicos.
+Formatear números telefónicos al estándar internacional E.164 (+54911...).
+Convertir fechas recibidas en hora local a ISO UTC (2026-09-17T00:00:00.000Z).
+
+
+### 3. Validación: Reglas y Contratos
+
+### Integridad: Verificar si el dato cumple los requisitos exigidos
+Modificación: No (aprueba o rechaza)
+Ej: Comprobar si password tiene al menos 8 caracteres.
+
+Comprueba que el dato (ya limpio y estandarizado) cumpla con el tipo, estructura y rango esperados
+Si falla, interrumpe la petición lanzando una excepción (ej. 400 Bad Request).
+
+Inspección booleana (valida o falla).
+Ej: Verificar que @IsEmail() sea un formato de correo real o @Min(18) para la edad.
+
+
+#### Orden: Sanitizar, Normalizar y Validar
+
+```
+Entrada HTTP (Raw) ──> Sanitizar ──> Normalizar ──> Validar ──> Servicio / BD
+```
+
+#### Si ejecutas la validación antes de la normalización, rechazarás peticiones válidas por errores insignificantes
+##### por ejemplo, rechazar un email correcto solo porque el usuario dejó un espacio accidental al final
+
+
+
+## Sanitización esencial
+
+1. Texto enriquecido y HTML (Prevención de XSS):
+Eliminación o escapado de etiquetas <script>, <iframe>
+objetos incrustados y atributos de eventos (onload, onerror) en comentarios, descripciones o entradas de texto
+
+2. Nombres y rutas de archivos (Prevención de Path Traversal):
+Limpieza de secuencias de navegación de directorio (../, ..\)
+y bytes nulos (\0) que buscan acceder a archivos sensibles del sistema operativo.
+
+3. Insumos para comandos del sistema (Prevención de Command Injection):
+Neutralización de metacaracteres de consola (como ;, |, &&, $)
+si la aplicación necesita interactuar con el sistema operativo.
+
+4. Entradas de búsqueda y texto libre (Inyecciones NoSQL / Motores de Búsqueda):
+Eliminación de operadores especiales (como $ en MongoDB)
+o comodines que puedan alterar la lógica de las consultas.
+
+5. Caracteres de control y caracteres invisibles (Prevención de Log Forging):
+Eliminación de saltos de línea (\n, \r) o secuencias Unicode ocultas
+para evitar que un usuario manipule los logs del sistema o evada filtros
+
+
+### Lugar de Sanitización en backend
+
+#### Borde de Entrada / Capa de Transporte (HTTP Boundary).
+Se ejecuta en el momento exacto en que la petición HTTP ingresa a la aplicación
+Debe procesarse en los Pipes, Middlewares o DTOs, antes de que los datos toquen la Capa de Servicios (Lógica de Negocio)
+o la Capa de Persistencia (Base de Datos).
+La regla es: ningún dato "sucio" debe circular dentro de las capas internas del sistema.
+
+
+### Herramientas de sanitización
+
+`class-transformer` (Integrado en NestJS): Trabaja junto con los DTOs para aplicar transformaciones directas sobre las propiedades de entrada antes de ser validadas
+`validator.js` (Librería base de class-validator): Aporta funciones de sanitización nativas para escapar caracteres HTML, eliminar caracteres de control ASCII o aplicar listas negras de símbolos prohibidos
+`sanitize-html / DOMPurify`: Librerías especializadas en Node.js para analizar bloques enteros de código HTML y eliminar cualquier elemento malicioso manteniendo únicamente las etiquetas de formato permitidas
+`Helmet`: Middleware a nivel de aplicación que sanitiza y blinda las cabeceras HTTP de entrada y salida para mitigar vectores de ataque comunes en el navegador
+
+
+
+
+## Normalización esencial
+
+1. Correos electrónicos y nombres de usuario:
+Eliminación de espacios en blanco (trim) y conversión a minúsculas (lowercase) para evitar duplicados lógicos en la base de datos
+datos (por ejemplo, tratar Pepe@email.com y pepe@email.com como el mismo registro).
+
+2. Fechas y horas (Timestamps):
+Conversión de entradas en horas locales, marcas de tiempo Unix o formatos heterogéneos al estándar internacional ISO 8601 en formato UTC (YYYY-MM-DDTHH:mm:ss.sssZ).
+
+3. Números de teléfono:
+Transformación de formatos locales con espacios, guiones o paréntesis al estándar internacional E.164
+(por ejemplo, convertir (011) 4567-8901 a +541145678901).
+
+4. Codificación Unicode y diacríticos:
+Normalización de texto (forma NFKC) para remover tildes o caracteres compuestos
+asegurar que cadenas visualmente idénticas tengan la misma representación binaria
+
+5. Identificadores y códigos (SKUs, cupones, documentos):
+Eliminación de símbolos no alfanuméricos y forzado a mayúsculas
+para optimizar búsquedas e índices en la base de datos.
+
+6. Valores monetarios y decimales:
+Estandarización de separadores (convertir comas a puntos decimales) y ajuste a una precisión fija
+
+
+
+### Lugar de Normalización en el backend
+
+#### Capa de Transporte / Borde de Entrada (DTOs y Pipes)
+
+Se ejecuta justo después de la sanitización y estrictamente antes de la validación
+El objetivo es transformar el payload recibido a su forma canónica para que la regla de validación evalúe el dato final correcto
+Si la normalización se hiciera después de la validación
+la API rechazaría peticiones válidas por diferencias de formato insignificantes.
+
+
+### Herramientas de Normalización
+
+`class-transformer` (Librería principal en NestJS): Proporciona el decorador @Transform()
+que permite ejecutar funciones de mutación pura sobre cualquier propiedad de un DTO al recibir la petición.
+
+`ValidationPipe` (con la opción transform: true): Pipe global de NestJS que activa la instanciación de las clases DTO y aplica automáticamente las reglas de transformación definidas en class-transformer.
+
+`validator.js`: Módulo subyacente que ofrece normalización avanzada de correos (elimina puntos innecesarios en Gmail, remueve etiquetas de alias con +, etc.).
+
+`Custom NestJS Pipes` (PipeTransform): Módulos personalizados que transforman parámetros de ruta (@Param), variables de consulta (@Query) o el cuerpo entero (@Body) antes de llegar al controlador.
+
+Librerías especializadas:
+
+google-libphonenumber: Normalización precisa de teléfonos por código de país.
+dayjs / date-fns: Parseo y estandarización de fechas hacia UTC.
+slugify: Conversión de títulos o texto libre a cadenas limpias aptas para URLs.
+
+
+
+
+## Validación esencial
+
+1. Estructura y Tipos de Datos:
+Comprobar que una propiedad pertenezca al tipo primitivo o complejo esperado
+(string, number, boolean, array, UUID v4, JSON).
+
+2. Presencia y Nulabilidad:
+Determinar si un campo es obligatorio
+opcional o si explícitamente no permite valores null o undefined.
+
+3. Rangos y Longitudes:
+Verificar límites numéricos (mínimos/máximos) y longitud de cadenas
+(ej. contraseñas de al menos 8 caracteres, nombres de 3 a 50 caracteres).
+
+4. Formatos y Patrones Específicos:
+Evaluar el cumplimiento de especificaciones estándar
+(correo electrónico, URL, IP, fechas)
+o reglas complejas mediante expresiones regulares (Regex).
+
+5. Listas Blancas y Enums:
+Garantizar que el valor recibido coincida exactamente con uno de los elementos permitidos en una enumeración o lista cerrada
+(ej. roles: 'admin' | 'user').
+
+6. Integridad Semántica y de Dominio:
+Verificar reglas de negocio cruzadas
+(ej. que una fecha de finalización sea posterior a la de inicio)
+o comprobar si un recurso relacionado existe antes de procesarlo.
+
+
+
+### Lugar de Validación en el backend
+
+#### Dos capas distintas según el tipo de regla que se evalúe
+
+#### 1. Capa de Transporte / Borde de Entrada (DTOs):
+##### Responsabilidad: Valida sintaxis, formato, presencia y tipos de datos.
+
+Momento: Se ejecuta en el momento en que la petición HTTP ingresa, justo después de sanitizar y normalizar
+Si falla, interrumpe la ejecución devolviendo una respuesta 400 Bad Request antes de ejecutar cualquier código de servicio.
+
+
+#### 2. Capa de Servicios / Dominio (Lógica de Negocio):
+##### Responsabilidad: Valida reglas de negocio avanzadas y contexto con la base de datos.
+
+Momento: Se ejecuta dentro de los métodos del servicio cuando requiere consultar el estado del sistema
+(ej. verificar si un correo ya existe, validar si el usuario tiene saldo suficiente o comprobar restricciones de permisos).
+Si falla, lanza excepciones HTTP como 409 Conflict, 403 Forbidden o 422 Unprocessable Entity
+
+Como última línea de defensa opera la Capa de Persistencia / BD mediante restricciones a nivel de esquema como NOT NULL, UNIQUE, FOREIGN KEY y CHECK
+
+
+
+
+### Herramientas de Validación
+
+class-validator: La herramienta estándar por excelencia en NestJS
+Permite aplicar reglas mediante decoradores de metadatos directamente en las propiedades de las clases DTO (@IsEmail(), @IsString(), @MinLength()).
+
+ValidationPipe: Pipe nativo de NestJS que intercepta las peticiones, evalúa las instancias del DTO contra class-validator
+y genera respuestas formateadas con el detalle de todos los errores encontrados.
+
+Zod (nestjs-zod / @anatine/zod-nestjs): Alternativa moderna basada en validación de esquemas e inferencia estricta de tipos de TypeScript sin depender de decoradores de metadatos
+
+Pipes Personalizados (PipeTransform): Clases que implementan la interfaz PipeTransform para ejecutar validaciones a medida sobre parámetros de ruta (@Param),
+parámetros de consulta (@Query) o archivos subidos (ParseFilePipe).
+
+Decoradores Personalizados (registerDecorator): Mecanismo de class-validator para empaquetar reglas de validación reutilizables
+(ej. un decorador @IsEqualTo('password') para confirmar la repetición de la clave).
+
+
+
+
+
+
+# Migraciones
+
+Migraciones de Base de Datos (Desactivar synchronize: true)
+
+Una vez que el esquema de base de datos está congelado y probado en desarrollo
+es el momento ideal para desactivar synchronize: true y generar la primera migración SQL inicial con TypeORM CLI.
+
+Configurar el DataSource para TypeORM CLI.
+Crear scripts en package.json (migration:generate, migration:run, migration:revert).
+Probar el flujo de ejecución de migraciones en Docker.
+
+#### Configurar el CLI de TypeORM para generar y ejecutar archivos de migración SQL (typeorm migration:generate / run) y desactivar synchronize: true.
+La opción synchronize: true es ideal para arrancar, pero peligrosa en producción porque puede alterar o borrar columnas con datos reales
+##### Las migraciones proporcionan control de versiones declarativo e inmutable del esquema de la base de datos
+
+
+
+## Las migraciones de base de datos son archivos de código que funcionan como un sistema de control de versiones para el esquema de tu base de datos
+Permiten evolucionar la estructura de las tablas de forma segura, auditada y reproducible sin perder los datos existentes
+
+### Riesgo de synchronize: true
+##### Durante la fase inicial de desarrollo, activar synchronize: true en TypeORM resulta muy práctico porque sincroniza automáticamente la base de datos con tus entidades cada vez que el servidor arranca
+
+Sin embargo, en entornos de pruebas avanzadas o producción es peligroso por las siguientes razones
+
+1. Pérdida accidental de datos:
+Si renombras o eliminas una propiedad en una entidad, TypeORM puede ejecutar de forma transparente un DROP COLUMN o DROP TABLE al reiniciar
+
+2. Falta de control:
+No permite revisar ni validar las sentencias SQL que se van a ejecutar antes de que afecten a la base de datos.
+
+3. Inestabilidad en el despliegue:
+Los cambios automáticos en el arranque pueden provocar bloqueos de tablas (table locks) o fallos imprevistos en sistemas concurrentes.
+
+
+## Anatomía de una Migración
+Cada migración es un archivo inmutable que contiene dos métodos obligatorios
+
+### 1. up(): Define las sentencias SQL o acciones necesarias para aplicar los nuevos cambios (por ejemplo, CREATE TABLE, ADD COLUMN).
+
+### 2. down(): Contiene las sentencias inversas para revertir exactamente lo que hizo up() en caso de requerir un rollback
+
+
+### Flujo de ejecución
+
+#### 1. Detección de diferencias: El CLI de TypeORM compara la definición actual de tus entidades con la estructura real de la base de datos.
+
+#### 2. Generación del archivo: Se crea un archivo TypeScript/SQL con un identificador de tiempo (timestamp) único que incluye las sentencias DDL correspondientes.
+
+#### 3. Tabla de control: La base de datos mantiene una tabla interna (generalmente llamada migrations).
+Al ejecutar las migraciones, el ORM lee esta tabla y solo aplica los archivos cuyo timestamp no figure en el registro
+
+
+### Entorno de desarrollo y Docker
+
+Consistencia:
+Garantiza que todos los miembros del equipo, el entorno de pruebas en Docker y el servidor de producción compartan exactamente la misma estructura de datos
+
+Trazabilidad en Git:
+Cada alteración al esquema viaja junto con el código fuente que la necesita.
+
+Despliegues automatizados:
+Permite ejecutar las migraciones mediante scripts durante la inicialización de los contenedores o pipelines de CI/CD antes de levantar la aplicación.
+
+
+## Flujo con migraciones: sustituye los cambios automáticos e impredecibles por un proceso estructurado en 5 etapas dentro de tu ciclo de desarrollo
+
+1. Modificación del Modelo: Modificas tus entidades en TypeScript (user.entity.ts, task.entity.ts), agregando, alterando o eliminando columnas y relaciones
+
+2. Generación Automática: Ejecutas el comando de generación CLI
+TypeORM compara el estado de tus entidades contra el esquema actual de PostgreSQL
+crea un archivo TypeScript con un sello de tiempo (timestamp) en src/migrations/.
+
+3. Revisión Humana (Paso crítico): Abres el archivo generado y auditas las sentencias SQL en los métodos up() (aplicar) y down() (revertir).
+#### Si TypeORM malinterpretó un cambio (por ejemplo
+##### interpretó un renombre de columna como un DROP y un ADD), lo ajustas manualmente para proteger los datos.
+
+4. Ejecución Local: Ejecutas el comando de aplicación de migraciones
+TypeORM corre la función up() en PostgreSQL y registra el nombre del archivo en la tabla interna de control migrations.
+
+#### 5. Versionado en Git: Subes el archivo .ts de la migración al repositorio
+Tus compañeros de equipo simplemente hacen git pull y ejecutan el comando para sincronizar su base de datos local al instante
+
+
+```
+[Código TypeScript + Migraciones]
+──> [Build / CI Pipeline]
+──> [Ejecutar migration:run]
+──> [Iniciar NestJS API]
+```
+
+Secuencia de Arranque:
+Al desplegar en producción o iniciar contenedores Docker
+el contenedor ejecuta migration:run de forma automatizada antes de arrancar el servidor HTTP de NestJS.
+
+#### Control de Fallos (Rollback): Si una migración falla en producción o genera comportamientos no deseados, ejecutas migration:revert
+para disparar el método down() y regresar exactamente a la versión anterior.
+
+
+
+
+
+## Sobre fallos en migraciones
+
+#### TypeORM no comprende la intención detrás de tus cambios de código
+únicamente compara la foto estática de tus entidades contra la estructura viva de la base de datos
+##### deduce el camino SQL directo para igualarlas.
+
+
+
+### 1. Malinterpretación de TypeORM
+
+Renombrado de columnas (Pérdida de datos): Si cambias el nombre de la propiedad fullName a name en tu entidad, TypeORM no deduce que fue un renombrado
+Interpreta que eliminaste fullName y creaste un campo nuevo name
+Generará un DROP COLUMN "fullName" (destruyendo los datos existentes)
+y un ADD COLUMN "name", en lugar de ejecutar un RENAME COLUMN.
+
+Cambios en tipos de datos: Si cambias un campo de string (varchar) a number (integer), TypeORM generará un ALTER COLUMN ... TYPE integer
+Durante la ejecución en PostgreSQL, la migración fallará si hay texto guardado que no pueda ser transformado automáticamente a entero
+
+Refactorización de relaciones: Si cambias una relación @ManyToOne a @ManyToMany
+el CLI generará sentencias para eliminar la clave foránea antigua y crear una tabla intermedia
+dejando huérfanas o eliminando las relaciones que ya estaban guardadas.
+
+
+### 2. Control de Fallos (Rollback)
+
+Razones de fallo o comportamientos indeseados en producción
+
+Bloqueo exclusivo de tablas (Table Locking): En tablas transaccionales con miles o millones de registros (como tasks)
+agregar una columna o crear un índice sin la instrucción CONCURRENTLY aplica un bloqueo de lectura/escritura (ACCESS EXCLUSIVE LOCK).
+Las peticiones HTTP de los usuarios colapsarán por Timeout hasta que termine la migración.
+
+Restricciones NOT NULL con datos preexistentes: Agregar un campo obligatorio (nullable: false) a una tabla que ya contiene registros en producción
+sin haber especificado un valor por defecto (default) o una estrategia de relleno previa
+provocará que PostgreSQL aborte la migración con el error column "x" contains null values.
+
+Desalineación con contenedores en ejecución (Zero-Downtime): Si la migración se ejecuta antes de reemplazar el código de la API y la migración borra o renombra un campo
+la versión previa de tu servidor NestJS que todavía está activa empezará a lanzar excepciones 500 Internal Server Error al intentar consultar columnas que ya no existen
+
+
+
+## Prevenir fallos
+
+#### Auditoría manual de la migración, patrones de cambios no destructivos (Expand/Contract), estrategias de bajo bloqueo en PostgreSQL.
+
+
+### 1. Auditoría y correcciones manuales en el archivo generado
+
+Corregir renombrados de columnas:
+##### 1. Si TypeORM genera un dropColumn seguido de un addColumn
+borra esas líneas en el archivo .ts generado y sustitúyelas por:
+
+```
+await queryRunner.renameColumn('tasks', 'old_name', 'new_name');
+```
+
+Estrategia para nuevas columnas NOT NULL:
+Si la tabla ya tiene filas en producción, nunca crees una columna como nullable: false, de golpe
+Aplica un proceso en 3 pasos dentro de la misma migración up():
+
+```
+// 1. Agregar columna como nullable o con valor por defecto
+await queryRunner.query(`ALTER TABLE "tasks" ADD "status" varchar NULL`);
+
+// 2. Llenar los registros existentes
+await queryRunner.query(`UPDATE "tasks" SET "status" = 'PENDING' WHERE "status" IS NULL`);
+
+// 3. Forzar la restricción NOT NULL
+await queryRunner.query(`ALTER TABLE "tasks" ALTER COLUMN "status" SET NOT NULL`);
+```
+
+
+
+### 2. Patrón de Despliegue Expand/Contract (Zero-Downtime)
+
+Para evitar que la API falle mientras se despliega la nueva versión del código
+nunca borres ni renombres columnas directamente. Divide el cambio en dos despliegues
+
+1. Fase de Expansión (Migración 1 + Despliegue 1):
+Agrega las nuevas columnas dejando las viejas activas
+El servidor actual sigue leyendo/escribiendo sin romperse.
+
+2. Fase de Transición:
+Despliega el nuevo código que escribe en ambas columnas o solo en la nueva
+
+3. Fase de Contracción (Migración 2 + Despliegue 2):
+Una vez verificado que todo funciona con la nueva estructura
+ejecutas una migración posterior para eliminar la columna antigua
+
+
+
+### 3. Prevención de bloqueos de tabla (Table Locks)
+
+Índices sin bloqueo (CONCURRENTLY):
+Crear un índice en una tabla poblada bloquea las escrituras
+Para evitarlo, deshabilita la transacción en esa migración específica
+usa la instrucción de PostgreSQL CONCURRENTLY:
+
+```
+export class AddTaskIndex1680000000000 implements MigrationInterface {
+  // Desactiva la transacción automática de TypeORM para permitir CONCURRENTLY
+  transaction = false;
+
+  public async up(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query(`CREATE INDEX CONCURRENTLY "IDX_TASKS_USER" ON "tasks" ("userId")`);
+  }
+
+  public async down(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query(`DROP INDEX CONCURRENTLY "IDX_TASKS_USER"`);
+  }
+}
+```
+
+
+
+### 4. Regla de oro: Probar migration:run y migration:revert
+
+Antes de subir la migración al repositorio:
+
+#### 1. Ejecuta npm run migration:run en tu entorno local con datos de prueba.
+
+#### 2. Inmediatamente ejecuta npm run migration:revert para asegurar que el método down() restaura el esquema exactamente al estado anterior sin fallos
+
+
+
+
+## Unix timestamp en milisegundos
+
+número 1680000000000 es un sello de tiempo
+representa el momento exacto en que fue creada la migración.
+
+TypeORM exige esta convención por tres motivos clave:
+
+Orden estricto de ejecución: Las modificaciones a la base de datos deben aplicarse secuencialmente
+TypeORM lee todos los archivos de migración y los ordena de menor a mayor según su timestamp (1680000000000 se ejecutará siempre antes que 1690000000000).
+
+Seguimiento en la tabla migrations: Cuando ejecutas migration:run, TypeORM revisa la tabla de control en PostgreSQL.
+Si el identificador AddTaskIndex1680000000000 ya existe en esa tabla, se la salta;
+si no está, ejecuta el método up() y guarda el nombre de la clase como registro.
+
+Unicidad de clases en TypeScript: Evita colisiones de nombres en el scope global del proyecto
+Puedes generar dos migraciones que agreguen índices en momentos distintos (ej. AddTaskIndex1680000000000 hoy
+y AddTaskIndex1720000000000 dentro de tres meses) sin que los nombres de las clases entren en conflicto.
+
+
+El CLI calcula este valor automáticamente invocando Date.now() al ejecutar npm run migration:generate
+vinculándolo tanto al nombre del archivo (1680000000000-AddTaskIndex.ts) como a la definición de la clase.
+
+
+
+## Antes de la migración
+
+auditar 6 puntos clave en la configuración
+las entidades y la base de datos para asegurar que
+el CLI trabaje de forma limpia y sin errores de conexión.
+
+
+1. Estado de la Base de Datos PostgreSQL (Punto crítico)
+
+Si la base de datos está VACÍA: TypeORM comparará tus entidades contra un esquema sin tablas y generará todo el DDL inicial
+(CREATE TABLE "users", CREATE TABLE "tasks", etc.) dentro del método up().
+Este es el escenario ideal para la primera migración.
+
+Si la base de datos YA TIENE tablas (creadas por synchronize: true previa):
+TypeORM no encontrará diferencias y generará un archivo de migración con los métodos up() y down() vacíos.
+
+
+2. Desactivación de synchronize: false
+Verifica que en el módulo de TypeORM de tu API (app.module.ts o equivalente)
+la propiedad de sincronización esté deshabilitada
+
+`synchronize: false,`
+
+
+3. Configuración de src/database/data-source.ts
+Asegúrate de que data-source.ts cargue las variables de entorno con dotenv
+apunte a las rutas correctas de entidades y migraciones:
+
+```
+import { DataSource } from 'typeorm';
+import * as dotenv from 'dotenv';
+
+dotenv.config();
+
+export const AppDataSource = new DataSource({
+  type: 'postgres',
+  host: process.env.DB_HOST || 'localhost',
+  port: parseInt(process.env.DB_PORT || '5432', 10),
+  username: process.env.DB_USERNAME || 'postgres',
+  password: process.env.DB_PASSWORD || 'postgres',
+  database: process.env.DB_NAME || 'taskdb',
+  entities: [__dirname + '/../**/*.entity{.ts,.js}'],
+  migrations: [__dirname + '/migrations/*{.ts,.js}'],
+  synchronize: false,
+});
+```
+
+
+4. Exportación e importación de Entidades
+Verifica que todas tus entidades (User, Task, Category, etc.) tengan el decorador @Entity()
+() y que el patrón de búsqueda __dirname + '/../**/*.entity{.ts,.js}' las encuentre
+Si una entidad no está importada o detectada, TypeORM asumirá que la tabla debe ser eliminada.
+
+
+5. Script CLI en package.json
+Confirma que el script incluya tsconfig-paths/register para que el CLI de TypeORM pueda resolver los alias de rutas
+(@/users/...) definidos en tu tsconfig.json:
+
+```
+"typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js -d src/database/data-source.ts",
+"migration:generate": "npm run typeorm -- migration:generate src/database/migrations/InitialSchema"
+```
+
+
+6. PostgreSQL ejecutándose en Docker
+Asegúrate de que el contenedor de PostgreSQL esté arriba y que la base de datos definida en .env exista
+y sea accesible desde el localhost o la red de Docker.
+
+
+
+## Base de datos limpia (vacía) para primera migración
+
+#### TypeORM detecta que no existe ninguna tabla en PostgreSQL y la compara contra tus entidades en TypeScript
+Resultado: El CLI genera un archivo de migración InitialSchema con el DDL completo
+(CREATE TABLE "users", CREATE TABLE "tasks", claves foráneas e índices) dentro del método up().
+
+#### Flujo de ejecución:
+
+```
+# 1. Genera la migración inicial completa
+npm run migration:generate
+
+# 2. Crea las tablas en PostgreSQL y registra la migración en la tabla 'migrations'
+npm run migration:run
+```
+
+
+## Base de datos (ocupada) para primera migración
+
+tablas creadas previamente con synchronize: true
+
+TypeORM encuentra que la base de datos ya coincide con tus entidades
+Si ejecutas migration:generate, el CLI no detectará diferencias y lanzará el aviso "No changes in database schema were found" o generará un archivo con up() y down() vacíos.
+
+A (Recomendada para entorno local/desarrollo): Resetear la BD
+Como estás en desarrollo, la mejor práctica es limpiar la base de datos para que la migración inicial sea la única fuente de verdad
+
+Vacía la base de datos local (ejecutando en PostgreSQL DROP SCHEMA public CASCADE; CREATE SCHEMA public; o recreando el contenedor con docker compose down -v).
+
+Ejecuta npm run migration:generate sobre la BD limpia.
+
+Ejecuta npm run migration:generate sobre la BD limpia.
+
+
+B (Si necesitas conservar los datos locales): Marcar como ejecutada (Baseline)
+
+Genera el archivo InitialSchema en una base de datos vacía o temporal.
+
+En tu base de datos actual, crea manualmente la tabla de control migrations e inserta el registro del archivo generado para que TypeORM
+sepa que ese esquema ya está aplicado y no intente recrear las tablas (table "users" already exists).
+
+
+
+## Migraciones esenciales
+
+Necesidad absoluta en el momento en que la aplicación deja de ser un prototipo desechable en una sola máquina y empieza a manejar datos reales o trabajo colaborativo.
+
+`Entornos de Producción y Staging`: En servidores reales, activar la sincronización automática (synchronize: true)
+puede borrar o alterar tablas enteras con datos de clientes reales
+Las migraciones son la única forma segura e inmutable de alterar el esquema.
+
+`Evolución de Tablas con Datos Existentes`: Si necesitas modificar una tabla que ya tiene miles de registros
+(por ejemplo, agregar una columna obligatoria NOT NULL, dividir tablas o renombrar un campo)
+las migraciones te permiten ejecutar scripts de transición para transformar la información sin destruirla.
+
+`Desarrollo Colaborativo (Git)`: Cuando varios programadores trabajan en el mismo proyecto, las migraciones actúan como el control de versiones de la base de datos
+Al hacer git pull, cada desarrollador ejecuta los nuevos archivos para tener exactamente la misma estructura local que sus compañeros
+
+`Despliegues Automáticos (CI/CD y Docker)`: En pipelines de despliegue automatizados, la base de datos debe actualizarse de manera autónoma y desatendida
+(npm run migration:run) antes de que los contenedores levanten el nuevo código de la API.
+
+`Historial, Auditoría y Rollback`: Permiten saber con precisión qué cambio se hizo, cuándo y por qué
+Además, si un despliegue falla en producción, los métodos down() permiten ejecutar un rollback controlado para regresar la base de datos a su estado anterior
+
+
+## Primera Migración
+
+#### flujo de migraciones con TypeORM CLI de forma independiente a la ejecución de NestJS
+estructuraremos tres archivos clave en la raíz y dentro de src/database.
+
+1. Archivo de conexión para TypeORM CLI (src/database/data-source.ts)
+
+Este archivo le da acceso directo al CLI a la base de datos sin levantar la aplicación entera de NestJS.
+
+```
+import { DataSource } from 'typeorm';
+import * as dotenv from 'dotenv';
+
+dotenv.config();
+
+export const AppDataSource = new DataSource({
+  type: 'postgres',
+  host: process.env.DB_HOST || 'localhost',
+  port: parseInt(process.env.DB_PORT || '5432', 10),
+  username: process.env.DB_USERNAME || 'postgres',
+  password: process.env.DB_PASSWORD || 'postgres',
+  database: process.env.DB_NAME || 'taskdb',
+  entities: [__dirname + '/../**/*.entity{.ts,.js}'],
+  migrations: [__dirname + '/migrations/*{.ts,.js}'],
+  synchronize: false,
+});
+```
+
+
+2. Desactivar sincronización automática (src/app.module.ts)
+
+Asegúrate de que la configuración de TypeORM en NestJS tenga synchronize: false para evitar colisiones con el CLI.
+
+```
+import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+
+@Module({
+  imports: [
+    TypeOrmModule.forRoot({
+      type: 'postgres',
+      host: process.env.DB_HOST,
+      port: +process.env.DB_PORT,
+      username: process.env.DB_USERNAME,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
+      autoLoadEntities: true,
+      synchronize: false, // Inhabilitado para dar paso al control por migraciones
+    }),
+  ],
+})
+export class AppModule {}
+```
+
+
+3. Scripts de ejecución en package.json
+
+Añade los siguientes comandos dentro de la sección "scripts" de tu package.json
+Utilizan tsconfig-paths para resolver rutas relativas y alias de TypeScript:
+
+```
+"scripts": {
+  "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js -d src/database/data-source.ts",
+  "migration:generate": "npm run typeorm -- migration:generate src/database/migrations/InitialSchema",
+  "migration:run": "npm run typeorm -- migration:run",
+  "migration:revert": "npm run typeorm -- migration:revert"
+}
+```
+
+
+4. Estructura de carpetas requerida
+
+Asegúrate de tener creada la carpeta contenedora para que el CLI guarde allí las clases TypeScript generadas:
+
+```
+src/
+└── database/
+    ├── data-source.ts
+    └── migrations/ se generarán los archivos de migración
+```
+
+
+
+
+## Checkeo post migration run
+
+
+### 1. Probar la Reversibilidad (Rollback / Revert)
+
+##### la migración se puede deshacer sin romper la base de datos
+prueba que el método down() de TypeORM está bien construido
+
+1. rollback
+
+```
+npm run migration:revert
+```
+
+2. Verifica en PostgreSQL o mediante tu cliente SQL que los cambios se revirtieron correctamente
+
+3. Vuelve a aplicar la migración:
+
+```
+npm run migration:run
+```
+
+
+
+### 2. Revisión del archivo de migración (Code Review)
+
+archivo TypeScript generado en tu carpeta de migraciones
+
+#### sentencia SQL en up() coincida exactamente con los cambios que deseabas en el esquema
+(tipos de datos, claves foráneas, restricciones ON DELETE).
+
+#### Que no incluya cambios no deseados o colaterales que TypeORM haya detectado automáticamente por diferencia de modelos
+
+#### Que los nombres de las tablas e índices mantengan las convenciones de tu proyecto
+
+
+
+### 3. Prueba en Base de Datos Limpia (Clean Slate Test)
+
+A veces las migraciones funcionan de forma incremental, pero fallan cuando se ejecutan en una base de datos totalmente nueva desde cero
+
+1. Eliminar el volumen/contenedor actual de PostgreSQL
+
+```
+docker compose down -v
+docker compose up -d
+```
+
+2. Correr las migraciones en la base de datos vacía:
+
+```
+npm run migration:run
+```
+
+3. Levantar la app (npm run start:dev) y confirmar que inicia sin fallos.
+
+
+
+### 4. Configurar la estrategia para Producción y CI/CD
+
+1. synchronize: false: Confirmar que en la configuración de TypeORM para entornos de staging o production la opción synchronize esté deshabilitada
+
+2. Ejecución automática de migraciones: Configurar el pipeline de CI/CD o el script de inicio del contenedor Docker para ejecutar npm run migration:run antes de iniciar la API en producción.
+
+
+
+### Config migraciones para Producción (src/ vs dist/)
+
+##### En desarrollo, ts-node lee los archivos .ts en src/database/migrations/.
+
+##### en producción (tras ejecutar npm run build), Node.js ejecuta código compilado JavaScript desde dist/.
+
+Revisa que tu archivo data-source.ts maneje dinámicamente la ruta de las migraciones para cargar archivos .js compilados en producción y .ts en desarrollo:
+
+```
+// src/database/data-source.ts
+import { DataSource } from 'typeorm';
+import { config } from 'dotenv';
+
+config();
+
+export const AppDataSource = new DataSource({
+  type: 'postgres',
+  host: process.env.DB_HOST,
+  port: parseInt(process.env.DB_PORT || '5432', 10),
+  username: process.env.DB_USERNAME,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  entities: [process.env.NODE_ENV === 'production' ? 'dist/**/*.entity.js' : 'src/**/*.entity.ts'],
+  migrations: [process.env.NODE_ENV === 'production' ? 'dist/database/migrations/*.js' : 'src/database/migrations/*.ts'],
+  synchronize: false, // NUNCA true en producción
+  logging: process.env.NODE_ENV === 'development',
+});
+```
+
+
+### Automatización en el ciclo de despliegue (Docker / Scripts)
+
+Evitar ejecutar las migraciones manualmente en el servidor, asegúrate de configurar los scripts del package.json o la entrada del contenedor Docker
+
+```
+"scripts": {
+  "build": "nest build",
+  "migration:run:prod": "typeorm-ts-node-commonjs migration:run -d dist/database/data-source.js",
+  "start:prod": "npm run migration:run:prod && node dist/main"
+}
+```
+
+Entrypoint en Dockerfile / docker-compose
+
+```
+# docker-compose.yml
+services:
+  api:
+    build: .
+    command: sh -c "npm run migration:run && node dist/main"
+    depends_on:
+      - postgres
+```
+
+
+
+## Code Review SQL
+
+Revisar el código SQL generado, inspecciona las sentencias dentro de los métodos up() y down()
+
+
+### 1. Tipos de Datos y Convenciones Naming
+
+Nombres: Tablas y columnas deben estar estrictamente en snake_case
+(ej. user_id, created_at, task_categories).
+
+Zona Horaria: Las columnas de fecha deben ser TIMESTAMP WITH TIME ZONE (timestamptz).
+Evita TIMESTAMP a menos que sea un caso explícito sin zona horaria.
+
+UUID: Las claves primarias deben usar uuid con valor por defecto uuid_generate_v4().
+
+##### Nulabilidad: Columnas opcionales (como description o deleted_at) no deben incluir NOT NULL.
+
+```
+"created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
+"deleted_at" TIMESTAMP WITH TIME ZONE,
+"id" uuid NOT NULL DEFAULT uuid_generate_v4()
+```
+
+
+### 2. Reglas de Aislamiento y Unicidad (Multi-Tenancy)
+
+Unicidad por Usuario: Restricciones únicas de negocio no deben ser globales a menos que el dato lo exija
+
+##### Categorías: Deben ser únicas por usuario, no globales (UNIQUE ("name", "user_id")).
+
+```
+CONSTRAINT "UQ_categories_name_user" UNIQUE ("name", "user_id")
+```
+
+##### Usuarios: El email debe ser único globalmente (UNIQUE ("email")).
+
+
+
+### 3. Integridad Referencial y Reglas ON DELETE
+
+Revisa el comportamiento en cascada de las claves foráneas (FK):
+
+Relaciones Padre-Hijo: tasks y categories apuntando a users deben tener ON DELETE CASCADE para eliminar datos huérfanos al borrar una cuenta
+
+Tabla Intermedia (task_categories): Debe tener ON DELETE CASCADE tanto para task_id como para category_id
+Si se borra una tarea o una categoría, el vínculo intermedio se borra automáticamente sin lanzar error de FK.
+
+```
+ALTER TABLE "task_categories" 
+ADD CONSTRAINT "FK_task" FOREIGN KEY ("task_id") 
+REFERENCES "tasks"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+```
+
+
+### 4. Índices y Rendimiento
+
+índices explícitos para las consultas más frecuentes:
+
+##### Foreign Keys: Todas las columnas user_id, task_id y category_id deben tener un índice (CREATE INDEX).
+
+##### Compuestos: Si filtras frecuentemente por dos columnas a la vez
+(por ejemplo, ver tareas de un usuario por su estado), debe existir un índice compuesto.
+
+```
+(Optimiza: WHERE user_id = $1 AND completed = $2):
+CREATE INDEX "IDX_tasks_user_completed" ON "tasks" ("user_id", "completed");
+```
+
+
+
+### 5. Simetría y Reversibilidad Estricta (up vs down)
+
+##### El método down() debe revertir el método up() en orden inverso estricto de dependencias
+para no romper restricciones de FK al hacer migration:revert:
+
+1. Eliminar restricciones FK de tablas hijas (DROP CONSTRAINT).
+
+2. Eliminar índices (DROP INDEX).
+
+3. Eliminar tablas hijas (DROP TABLE "task_categories").
+
+4. Eliminar tablas padre (DROP TABLE "categories", DROP TABLE "tasks", DROP TABLE "users").
+
+
+#### Ej Rechazado en Review
+
+Fecha:
+"created_at" TIMESTAMP NOT NULL
+
+Relación Task-User:
+FOREIGN KEY ("user_id") REFERENCES "users"("id") (Falta CASCADE)
+
+Unicidad Categorías:
+CONSTRAINT "UQ_name" UNIQUE ("name")
+(Impide a 2 usuarios usar el mismo nombre)
+
+Índices:
+Sin índices en columnas user_id
+
+
+#### Ej Aprobado en Review
+
+Fecha:
+"created_at" TIMESTAMP WITH TIME ZONE NOT NULL
+
+Relación Task-User:
+FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE
+
+Unicidad Categorías:
+CONSTRAINT "UQ_name_user" UNIQUE ("name", "user_id")
+
+Índices:
+CREATE INDEX "IDX_user" ON "tasks" ("user_id")
+
+
+En las siguientes líneas de tu método up()
+debes verificar que TypeORM haya generado:
+
+1. Clave Foránea (FK): Una instrucción ALTER TABLE "tasks" ADD CONSTRAINT que vincule "user_id" con "users"("id") incluyendo ON DELETE CASCADE.
+
+2. Índices de Rendimiento: Un CREATE INDEX sobre "user_id" para optimizar el filtrado de tareas por usuario.
+
+
+
+### Índices de Rendimiento: Un CREATE INDEX sobre "user_id" para optimizar el filtrado de tareas por usuario.
+En un sistema multi-inquilino (multi-tenant), la consulta más frecuente al listar tareas es:
+WHERE user_id = $1 AND completed = $2 (por ejemplo, "obtener todas las tareas pendientes pepe)
+Al colocar user_id como la primera columna del índice compuesto
+PostgreSQL filtra primero por el inquilino en tiempo O(log N)
+luego descarta por estado al instante sin hacer un escaneo completo (Seq Scan).
+
+
+### Tabla de Usuarios: CREATE TABLE "users"
+
+id:
+uuid NOT NULL DEFAULT uuid_generate_v4()
+Clave primaria UUID v4 automática.
+
+email:
+character varying(255) NOT NULL
+Longitud limitada y obligatorio.
+
+password:
+character varying NOT NULL
+Espacio suficiente para hash Argon2/Bcrypt.
+
+user_name:
+character varying(100) NOT NULL
+Mapeo correcto de userName a user_name
+
+is_active:
+boolean NOT NULL DEFAULT true
+Booleano en snake_case con default seguro.
+
+roles:
+text array NOT NULL DEFAULT '{user}'
+Usa el tipo nativo de PostgreSQL text[].
+
+created_at:
+TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
+Uso estricto de timestamptz.
+
+updated_at:
+TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
+Uso estricto de timestamptz.
+
+deleted_at:
+TIMESTAMP WITH TIME ZONE
+Nullable para soportar la lógica de Soft Delete.
+
+UQ_email:
+UNIQUE ("email")
+Restricción de unicidad global obligatoria para login.
+
+PK:
+PRIMARY KEY ("id")
+Clave primaria explícita.
+
+
+
+### Tabla de Categorías: CREATE TABLE "categories"
+
+id:
+uuid NOT NULL DEFAULT uuid_generate_v4()
+Clave primaria UUID v4.
+
+name:
+character varying(50) NOT NULL
+Nombre con límite adecuado
+
+color:
+character varying(7) NOT NULL DEFAULT '#4A90E2'
+Tamaño exacto para código Hexadecimal (#RRGGBB) y color por defecto.
+
+created_at:
+TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
+Uso estricto de timestamptz.
+
+updated_at:
+TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
+Uso estricto de timestamptz
+
+deleted_at:
+(No existe)
+Confirma la regla de negocio: Categorías usa Hard Delete (a diferencia de tasks y users).
+
+user_id:
+uuid NOT NULL
+Campo obligatorio para el aislamiento multi-tenant.
+
+UQ_name_user:
+UNIQUE ("name", "user_id")
+Excelente. Restricción de unicidad compuesta
+Impide que un usuario duplique nombres de categorías
+pero permite que dos usuarios distintos tengan una categoría llamada "Trabajo"
+
+PK:
+PRIMARY KEY ("id")
+Clave primaria explícita
+
+
+
+### Índice de FK: CREATE INDEX ... ON "categories" ("user_id")
+
+Cada vez que un usuario abra la pantalla o consulte GET /categories, la API ejecutará:
+
+```
+SELECT * FROM categories WHERE user_id = $1;
+```
+Este índice garantiza que PostgreSQL encuentre las categorías del usuario al instante en tiempo O(log N) sin necesidad de recorrer la tabla entera.
+
+
+
+### Estructura de la tabla intermedia y sus índices para la relación @ManyToMany entre tasks y categories
+
+#### 1. Tabla Intermedia: CREATE TABLE "task_categories"
+
+task_id:
+uuid NOT NULL
+Coincide exactamente con el tipo UUID de tasks.id.
+
+category_id:
+uuid NOT NULL
+Coincide exactamente con el tipo UUID de categories.id.
+
+PK_task_categories:
+PRIMARY KEY ("task_id", "category_id")
+##### Excelente. Clave primaria compuesta. Esto impide a nivel de base de datos que una misma categoría se asigne dos veces a la misma tarea
+
+
+#### 2. Índices de Uniones (JOINs): CREATE INDEX
+
+IDX_3d8679... ON "task_categories" ("task_id"):
+Optimiza las consultas Task -> Categories
+(ej. "obtener las categorías de la tarea X").
+
+IDX_c980a2... ON "task_categories" ("category_id"):
+Optimiza las consultas Category -> Tasks
+(ej. "obtener todas las tareas de la categoría Y")
+
+##### Al realizar un JOIN entre tasks y categories en PostgreSQL, sin estos dos índices la base de datos tendría que hacer un escaneo secuencial (Seq Scan) de toda la tabla task_categories
+Con ellos, la búsqueda se realiza en tiempo logarítmico O(log N).
+
+
+
+### Restricciones de clave foránea (Foreign Keys) en tasks y categories
+
+#### 1. tasks -> users: ON DELETE CASCADE
+
+Origen / Destino:
+tasks.user_id -> users.id
+Mapeo estricto de la entidad Task hacia el propietario
+
+ON DELETE:
+CASCADE
+Excelente. Si un usuario elimina su cuenta, PostgreSQL limpiará automáticamente todas sus tareas de la base de datos sin dejar registros huérfanos.
+
+ON UPDATE:
+NO ACTION
+Al usar UUIDs v4 inmutables como clave primaria, la clave de un usuario nunca cambia.
+
+
+#### 2. categories -> users: ON DELETE CASCADE
+
+Origen / Destino:
+categories.user_id -> users.id
+Mapeo estricto de la entidad Category hacia el propietario.
+
+ON DELETE:
+CASCADE
+Excelente. Al borrar el usuario, se borran también sus categorías personalizadas de forma limpia.
+
+ON UPDATE:
+NO ACTION
+Comportamiento estándar y seguro
+
+
+#### Seguridad Multi-Tenant
+
+Reglas activas a nivel de motor SQL:
+
+Garantizas la integridad referencial: Es imposible insertar una tarea o categoría con un user_id que no exista en la tabla users.
+
+Cumples con la eliminación limpia de cuenta (Derecho al olvido): Un solo DELETE FROM users WHERE id = $1
+elimina en cascada todo el ecosistema del usuario (users $\rightarrow$ tasks y categories).
+
+
+
+### Alter Table: versión completa de las dos restricciones anteriores
+
+Los identificadores largos (FK_db55af84c226af9dce y FK_2296b7fe012d95646fa)
+son los nombres de restricción generados automáticamente por TypeORM mediante hashing determinista
+para evitar colisiones de nombres dentro del esquema de PostgreSQL.
+
+Restricciones Completas:
+
+Restricción: FK_db55af84c226af9d | Tabla origen: tasks.user_id | Tabla referencia: users.id | Regla ON DELETE: CASCADE
+Limpieza automática de tareas al eliminar al usuario.
+
+Restricción: FK_2296b7fe012d95646fa | Tabla origne: categories.user_id | Tabla referencia: users.id | Regla ON DELETE: CASCADE  
+Limpieza automática de categorías al eliminar al usuario
+
+
+
+### Claves foráneas que conectan la tabla intermedia task_categories con tasks y categories.
+
+sentencias sobre la tabla intermedia task_categories, el método up()
+
+FK_3d8679...:
+task_categories.task_id
+tasks.id
+CASCADE
+Excelente. Si una tarea se elimina físicamente de la base de datos
+las filas vinculadas en la tabla intermedia se borran automáticamente
+
+FK_c980a2...:
+task_categories.category_id
+categories.id
+CASCADE
+Crítico para Hard Delete. Como definimos que las categorías sufren un borrado físico (Hard Delete),
+sin ON DELETE CASCADE PostgreSQL bloquearía el borrado con un error de clave foránea al intentar eliminar una categoría asignada
+Con esta regla, el vínculo se disuelve limpiamente
+
+
+
+### método down() debe deshacer las operaciones en el orden inverso estricto en el que se crearon en up() para no fallar por restricciones de dependencia:
+
+1. DROP CONSTRAINT en task_categories (desconectar las FKs).
+2. DROP CONSTRAINT en categories y tasks (desconectar las FKs hacia users).
+3. DROP INDEX en todas las tablas.
+4. DROP TABLE "task_categories".
+5. DROP TABLE "categories", DROP TABLE "tasks", DROP TABLE "users".
+
+Exactamente el orden que ejecutó PostgreSQL con éxito cuando corriste npm run migration:revert anteriormente
+
+##### Al revertir una migración, remover primero las restricciones de clave foránea (Foreign Keys) en la capa más externa es la regla fundamental para evitar errores de dependencia en PostgreSQL.
+
+1. 
+Sentencia:
+ALTER TABLE "task_categories" DROP CONSTRAINT "FK_c980a..."
+
+acción:
+Elimina FK category_id -> categories
+
+##### Desconecta la tabla intermedia de las categorías antes de intentar borrar cualquier tabla.
+
+2. 
+Sentencia:
+ALTER TABLE "task_categories" DROP CONSTRAINT "FK_3d867..."
+
+acción:
+Elimina FK task_id -> tasks
+
+##### Desconecta la tabla intermedia de las tareas.
+
+3. 
+ALTER TABLE "task_categories" DROP CONSTRAINT "FK_3d867..."
+Elimina FK task_id -> tasks
+Desconecta la tabla intermedia de las tareas.
+Si intentaras hacer DROP TABLE "users" primero, PostgreSQL abortaría la operación inmediatamente con
+4. 
+ALTER TABLE "categories" DROP CONSTRAINT "FK_2296b..."
+Elimina FK user_id -> users
+Libera la tabla categories de su dependencia con users.
+
+5. 
+ALTER TABLE "tasks" DROP CONSTRAINT "FK_db55a..."
+Elimina FK user_id -> users
+Libera la tabla tasks de su dependencia con users.
+
+Si intentaras hacer DROP TABLE "users" primero, PostgreSQL abortaría la operación inmediatamente con el error
+cannot drop table users because other objects depend on it.
+
+Al eliminar primero todas las Foreign Keys, las tablas quedan "desacopladas",
+listas para eliminar sus índices y posteriormente las tablas completas sin conflictos de integridad.
+
+
+
+### Limpieza indices y tablas
+
+DROP INDEX "IDX_c980a2..." / DROP INDEX "IDX_3d8679..."
+Índices de task_categories
+Limpia los índices de las claves foráneas de la tabla intermedia.
+
+DROP TABLE "task_categories"
+Tabla Intermedia
+Se elimina primero por ser la tabla dependiente (hoja).
+
+DROP INDEX "IDX_2296b7...":
+Índice en categories
+Limpieza del índice de user_id.
+
+DROP TABLE "categories"
+Tabla categories
+Eliminada de forma segura tras desconectar sus relaciones.
+
+DROP TABLE "users"
+Tabla users
+Eliminada de forma segura tras desconectar las FKs que la apuntaban
+
+DROP INDEX "IDX_afe2dc..."
+Índice compuesto en tasks
+Limpieza del índice ("user_id", "completed").
+
+DROP TABLE "tasks"
+Tabla tasks
+Eliminada finalmente sin dejar rastro en el esquema.
+
+
+
+
+## Data-source prod
+
+
+```
+// src/database/data-source.ts
+import { DataSource } from 'typeorm';
+import * as dotenv from 'dotenv';
+
+dotenv.config();
+
+export const AppDataSource = new DataSource({
+  type: 'postgres',
+  host: process.env.DB_HOST || 'localhost',
+  port: parseInt(process.env.DB_PORT || '5432', 10),
+  username: process.env.DB_USERNAME || 'postgres',
+  password: process.env.DB_PASSWORD || 'postgres',
+  database: process.env.DB_DATABASE || 'taskmanager_db',
+  entities: [__dirname + '/../**/*.entity{.ts,.js}'],
+  migrations: [__dirname + '/migrations/*{.ts,.js}'],
+  synchronize: false,
+});
+```
+
+Uso de __dirname con globs {.ts,.js}: Si este archivo está ubicado en src/database/data-source.ts, en desarrollo __dirname apunta a src/database (buscando .ts), y tras el build apunta a dist/database (buscando .js).
+
+synchronize: false: Configuración obligatoria y correcta para un flujo basado en migraciones.
+
+
+Detalle clave para Docker (DB_HOST):
+
+1. Cuando ejecutes la API en tu máquina local (npm run start:dev), DB_HOST será localhost.
+
+2. Cuando ejecutes la API dentro de un contenedor Docker, DB_HOST debe ser postgres_db (el nombre del servicio en el docker-compose.yml),
+ya que dentro de la red interna de Docker los contenedores se comunican por el nombre del servicio, no por localhost
+
+
+Audit de docker-compose.yml:
+
+contenedor de la base de datos:
+
+1. Usa una imagen ligera (postgres:15-alpine).
+
+2. Mapea variables de entorno desde el .env.
+
+3. Incluye un healthcheck con pg_isready
+fundamental para asegurar que la base de datos esté lista antes de que NestJS intente conectar o correr migraciones
+
+4. Mantiene la persistencia de datos mediante el volumen nombrado postgres_data.
+
+
+Agregar el servicio de NestJS a Docker Compose
+completar la infraestructura de desarrollo y producción containerizada
+necesitamos incluir la API NestJS en el docker-compose.yml y crear su Dockerfile.
+
+1. dockerfile
+
+```
+
+# Dockerfile
+FROM node:20-alpine AS builder
+
+WORKDIR /usr/src/app
+
+COPY package*.json ./
+RUN npm ci
+
+COPY . .
+RUN npm run build
+
+# Stage final de producción
+FROM node:20-alpine AS runner
+
+WORKDIR /usr/src/app
+
+COPY package*.json ./
+RUN npm ci --only=production
+
+COPY --from=builder /usr/src/app/dist ./dist
+COPY --from=builder /usr/src/app/node_modules ./node_modules
+
+EXPOSE 3000
+
+CMD ["sh", "-c", "npx typeorm-ts-node-commonjs migration:run -d dist/database/data-source.js && node dist/main.js"]
+```
+
+
+2. docker-compose.yml Unificado (API + DB)
+
+```
+version: '3.8'
+
+services:
+  postgres_db:
+    image: postgres:15-alpine
+    container_name: tasks_postgres_db
+    restart: always
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_DATABASE}
+    ports:
+      - "${DB_PORT}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME} -d ${DB_DATABASE}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: tasks_nestjs_api
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+      DB_HOST: postgres_db # Nombre del servicio en Docker
+      DB_PORT: 5432
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_DATABASE: ${DB_DATABASE}
+      JWT_SECRET: ${JWT_SECRET}
+    depends_on:
+      postgres_db:
+        condition: service_healthy # Espera a que PostgreSQL responda al healthcheck
+
+volumes:
+  postgres_data:
+```
+
+1. Al ejecutar `docker compose up --build`:
+
+2. Docker inicia `postgres_db` y ejecuta el `healthcheck` con `pg_isready`.
+
+3. El `contenedor api` espera a que `postgres_db declare estado healthy`.
+
+4. Una vez lista la base de datos, api ejecuta automáticamente migration:run sobre dist/database/data-source.js.
+
+5. Si las migraciones aplican con éxito, arranca el servidor NestJS (node dist/main.js).
+
+
+
+
+## Env producción
+
+```
+PORT=3000
+ENVIRONMENT=development
+API_PREFIX=api/v1
+
+DB_HOST=localhost
+DB_PORT=5432
+DB_USERNAME=postgres
+DB_PASSWORD=postgres
+DB_DATABASE=taskmanager_db
+
+JWT_SECRET=dev_secret_key_123!
+JWT_EXPIRES_IN=1d
+```
+
+
+### Cambios
+
+1. Entorno de Ejecución
+
+ENVIRONMENT=development -> Debe cambiarse a production (o NODE_ENV=production)
+Activa optimizaciones de rendimiento en frameworks (como NestJS/Express)
+oculta la exposición de stack traces o errores internos hacia el cliente
+desactiva logs extremadamente verbosos
+
+2. Autenticación y JWT
+
+JWT_SECRET: reemplazado por una clave secreta larga y aleatoria
+cualquiera podría descifrar o falsificar tokens JWT con permisos de administrador en tu API.
+
+generar una clave segura mediante la terminal:
+`openssl rand -base64 32`
+
+JWT_EXPIRES_IN=1d
+En producción se recomienda utilizar tiempos de expiración para Access Tokens más cortos (ej. 15m o 1h) acompañados de un esquema de Refresh Tokens
+Si la arquitectura actual solo usa Access Tokens, 1d es funcional pero requiere una rotación estricta de secretos.
+
+
+3. Base de Datos
+
+#### DB_HOST=localhost
+En un entorno de producción, la base de datos rara vez vive en el mismo entorno que la aplicación (localhost).
+
+Si usas Docker Compose, el host será el nombre del servicio (ej. postgres o db).
+
+Si usas una base de datos administrada (AWS RDS, Supabase, Neon, Render PostgreSQL)
+debe ser el URL o Endpoint provisto por el proveedor (ej. ep-xyz.us-east-1.aws.neon.tech).
+
+
+#### DB_USERNAME=postgres y DB_PASSWORD=postgres
+Credenciales genéricas y débiles
+Nunca debes usar la cuenta de superusuario por defecto (postgres) ni contraseñas sin complejidad
+Crea un usuario dedicado para la aplicación con permisos limitados solo a la base de datos del proyecto (taskmanager_db)
+asigna una contraseña robusta.
+
+
+#### SSL/TLS para la DB
+En producción la mayoría de proveedores de PostgreSQL exigen conexiones cifradas
+requerirás variables como DB_SSL=true.
+
+
+4. Puerto de la Aplicación
+
+PORT=3000: En plataformas PaaS (Render, Railway, Heroku, Fly.io
+la plataforma inyecta dinámicamente la variable PORT
+Asegúrate de que el código del servidor escuche process.env.PORT || 3000.
+
+
+
+5. Gestion
+
+Inclusión en .gitignore: Asegúrate de que .env
+y .env.production estén en tu .gitignore
+
+Inyección por Plataforma: Configura estas variables directamente en el panel de administración de tu proveedor Cloud
+(Render Environment Variables, Railway Variables, Docker Secrets, AWS SSM Parameter Store, etc.).
+
+
+
+## Env dev, env exampl y env prod
+
+.env (o .env.development):
+Credenciales y variables para desarrollo local (localhost).
+va en .gitignore
+
+.env.example:
+Plantilla con la lista de variables requeridas y valores ficticios/de ejemplo.
+Sirve como guía para otros desarrolladores
+
+.env.production:
+Credenciales de producción o staging.
+va en .gitignore
+
+
+.env.example:
+
+
+```
+# Servidor
+PORT=3000
+ENVIRONMENT=development
+API_PREFIX=api/v1
+
+# Base de Datos
+DB_HOST=localhost
+DB_PORT=5432
+DB_USERNAME=postgres
+DB_PASSWORD=your_password_here
+DB_DATABASE=taskmanager_db
+
+# Seguridad
+JWT_SECRET=change_this_to_a_secure_random_key_in_prod
+JWT_EXPIRES_IN=1d
+```
+
+
+### Configuración en NestJS (ConfigModule)
+
+
+app.module.ts, puedes configurar @nestjs/config
+cargue el archivo correspondiente según la variable de entorno NODE_ENV
+
+```
+import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+
+@Module({
+  imports: [
+    ConfigModule.forRoot({
+      envFilePath: `.env.${process.env.NODE_ENV || 'development'}`,
+      isGlobal: true,
+    }),
+    // ...resto de módulos
+  ],
+})
+export class AppModule {}
+```
+
+#### Si NODE_ENV=development (o no está definido), buscará .env.development o .env
+
+#### Si NODE_ENV=production, buscará .env.production.
+
+
+git:
+
+```
+# Entornos y credenciales
+.env
+.env.local
+.env.development
+.env.production
+
+# Excepción para la plantilla
+!.env.example
+```
+
+
+### Producción Real
+
+archivo .env.production localmente para probar la build compilada
+en servidores o contenedores reales (Docker, Render, Railway, AWS) no se suele subir un archivo físico.
+
+En su lugar, las variables se inyectan directamente en el entorno del contenedor a través de:
+
+bloque environment de tu docker-compose.yml
+panel de administración de variables de tu proveedor Cloud.
+gestor de secretos (como AWS Secrets Manager o Kubernetes Secrets).
+
+
+
+
+
+# Estrategia Refresh token
+
+1. Access Token (AT): Vida corta (ej. 15m), firmada con JWT_SECRET.
+Se envía en cada petición en la cabecera Authorization: Bearer <token>.
+
+2. Refresh Token (RT): Vida larga (ej. 7d), firmada con JWT_REFRESH_SECRET
+Se guarda hasheada en la base de datos por usuario
+(para revocación remota en logout o brechas de seguridad).
+
+3. Rotación de Refresh Tokens: Cada vez que el cliente pide renovar su AT, se le expide un nuevo RT y se invalida el anterior.
+
+
+## Modificación de la Entidad User y Variables de Entorno
+
+1. Agregar columna para el Refresh Token hasheado
+
+Debes agregar el campo hashedRefreshToken a tu UserEntity (src/users/entities/user.entity.ts).
+Debe ser nullable porque al hacer logout o antes del primer login será null.
+
+```
+// src/users/entities/user.entity.ts
+
+@Column({
+  type: 'text',
+  nullable: true,
+  name: 'hashed_refresh_token',
+})
+hashedRefreshToken?: string | null;
+```
+
+Nota de migración: Al agregar este campo a la entidad, deberás generar y aplicar la migración correspondiente con TypeORM (npm run migration:generate -- src/database/migrations/AddHashedRefreshTokenToUser
+
+
+2. Actualizar las Variables de Entorno (.env y .env.example)
+
+Definimos dos claves de firma y tiempos de expiración diferenciados:
+
+```
+# Access Token (Corta duración)
+JWT_SECRET=super_secret_access_key_123!
+JWT_EXPIRES_IN=15m
+
+# Refresh Token (Larga duración)
+JWT_REFRESH_SECRET=super_secret_refresh_key_987!
+JWT_REFRESH_EXPIRES_IN=7d
+```
+
+
+
+## Actualización de JwtPayload e Interfaces
+
+Necesitamos distinguir la estructura de los payloads si deseas guardar metadata extra
+o extender la interfaz del request cuando valide el Refresh Token.
+
+Actualizamos src/auth/interfaces/jwt-payload.interface.ts:
+
+```
+
+export interface JwtPayload {
+  id: string;
+  email: string;
+}
+
+export interface JwtPayloadWithRt extends JwtPayload {
+  refreshToken: string;
+}
+```
+
+
+
+## Crear la Estrategia para el Refresh Token (jwt-refresh.strategy.ts)
+
+Creamos una segunda estrategia de Passport llamada 'jwt-refresh'.
+Su función es validar que la firma del Refresh Token sea correcta con JWT_REFRESH_SECRET
+extraer tanto el payload (id, email) como el token original
+para poder compararlo más adelante con la versión hasheada en la base de datos.
+
+Crea el archivo src/auth/strategies/jwt-refresh.strategy.ts:
+
+```
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { PassportStrategy } from '@nestjs/passport';
+import { Request } from 'express';
+import { ExtractJwt, Strategy } from 'passport-jwt';
+
+import { JwtPayload, JwtPayloadWithRt } from '../interfaces/jwt-payload.interface';
+
+@Injectable()
+export class JwtRefreshStrategy extends PassportStrategy(Strategy, 'jwt-refresh') {
+  constructor(configService: ConfigService) {
+    super({
+      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      secretOrKey: configService.getOrThrow<string>('JWT_REFRESH_SECRET'),
+      passReqToCallback: true, // Nos permite acceder al objeto Request en validate()
+    });
+  }
+
+  validate(req: Request, payload: JwtPayload): JwtPayloadWithRt {
+    const authHeader = req.get('Authorization');
+    if (!authHeader) {
+      throw new UnauthorizedException('Refresh Token no proporcionado');
+    }
+
+    const refreshToken = authHeader.replace('Bearer', '').trim();
+
+    return {
+      ...payload,
+      refreshToken,
+    };
+  }
+}
+```
+
+
+Actualizar AuthService para gestionar el Par de Tokens
+
+Actualizamos src/auth/auth.service.ts agregando los siguientes métodos:
+
+1. getTokens(): Genera el Access Token y el Refresh Token en paralelo usando Promise.all().
+
+2. updateHashedRefreshToken(): Hashea el Refresh Token con bcrypt y lo guarda en la entidad del usuario.
+
+3. refreshTokens(): Valida que el usuario exista, que tenga un token registrado
+compara el hash enviado contra la base de datos y expide un nuevo par de tokens
+(Rotación de Tokens)
+
+4. logout(): Invalida el Refresh Token fijando hashedRefreshToken = null en la base de datos.
+
+```
+import {
+  Injectable,
+  UnauthorizedException,
+  ForbiddenException,
+  Logger,
+} from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
+import * as bcrypt from 'bcrypt';
+
+import { UsersService } from '../users/users.service';
+import { RegisterUserDto, LoginUserDto } from '../users/dto';
+import { JwtPayload } from './interfaces/jwt-payload.interface';
+
+@Injectable()
+export class AuthService {
+  private readonly logger = new Logger(AuthService.name);
+
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly jwtService: JwtService,
+    private readonly configService: ConfigService,
+  ) {}
+
+  // 1. Registro
+  async register(registerUserDto: RegisterUserDto) {
+    const user = await this.usersService.create(registerUserDto);
+    const tokens = await this.getTokens(user.id, user.email);
+    await this.updateHashedRefreshToken(user.id, tokens.refreshToken);
+
+    return { user, ...tokens };
+  }
+
+  // 2. Login
+  async login(loginUserDto: LoginUserDto) {
+    const { email, password } = loginUserDto;
+    const user = await this.usersService.findByEmailWithPassword(email);
+
+    if (!user) {
+      this.logger.warn(`Login fallido para email no registrado: ${email}`);
+      throw new UnauthorizedException('Credenciales no válidas');
+    }
+
+    if (!user.isActive) {
+      throw new UnauthorizedException('El usuario se encuentra inactivo');
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      throw new UnauthorizedException('Credenciales no válidas');
+    }
+
+    const { password: _, ...userWithoutPassword } = user;
+    const tokens = await this.getTokens(user.id, user.email);
+    await this.updateHashedRefreshToken(user.id, tokens.refreshToken);
+
+    return {
+      user: userWithoutPassword,
+      ...tokens,
+    };
+  }
+
+  // 3. Renovar Tokens (Refresh)
+  async refreshTokens(userId: string, refreshToken: string) {
+    const user = await this.usersService.findById(userId);
+
+    if (!user || !user.hashedRefreshToken) {
+      throw new ForbiddenException('Acceso denegado: Sesión no encontrada');
+    }
+
+    const rtMatches = await bcrypt.compare(refreshToken, user.hashedRefreshToken);
+    if (!rtMatches) {
+      throw new ForbiddenException('Acceso denegado: Refresh Token inválido');
+    }
+
+    // Rotación de Tokens: Se expide un par completamente nuevo
+    const tokens = await this.getTokens(user.id, user.email);
+    await this.updateHashedRefreshToken(user.id, tokens.refreshToken);
+
+    return tokens;
+  }
+
+  // 4. Logout (Revocación remota)
+  async logout(userId: string) {
+    await this.usersService.update(userId, { hashedRefreshToken: null });
+    return { message: 'Sesión cerrada exitosamente' };
+  }
+
+  // Helper: Generar par de tokens (AT + RT)
+  private async getTokens(userId: string, email: string) {
+    const jwtPayload: JwtPayload = { id: userId, email };
+
+    const [accessToken, refreshToken] = await Promise.all([
+      this.jwtService.signAsync(jwtPayload, {
+        secret: this.configService.getOrThrow<string>('JWT_SECRET'),
+        expiresIn: this.configService.getOrThrow<string>('JWT_EXPIRES_IN'),
+      }),
+      this.jwtService.signAsync(jwtPayload, {
+        secret: this.configService.getOrThrow<string>('JWT_REFRESH_SECRET'),
+        expiresIn: this.configService.getOrThrow<string>('JWT_REFRESH_EXPIRES_IN'),
+      }),
+    ]);
+
+    return {
+      accessToken,
+      refreshToken,
+    };
+  }
+
+  // Helper: Guardar el RT hasheado en la base de datos
+  private async updateHashedRefreshToken(userId: string, refreshToken: string) {
+    const hash = await bcrypt.hash(refreshToken, 10);
+    await this.usersService.update(userId, { hashedRefreshToken: hash });
+  }
+}
+```
+
+
+## Guard para el Refresh Token (jwt-refresh.guard.ts)
+
+Encapsulamos la estrategia 'jwt-refresh' dentro de un Guard inyectable para usarlo limpiamente mediante decoradores en los controladores.
+
+Crea el archivo src/auth/guards/jwt-refresh.guard.ts:
+
+```
+import { Injectable } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+
+@Injectable()
+export class JwtRefreshGuard extends AuthGuard('jwt-refresh') {}
+```
+
+
+Actualizar AuthController con /refresh y /logout
+
+Agregamos los dos nuevos endpoints protegidos por sus respectivos Guards:
+
+POST /auth/refresh: Protegido por JwtRefreshGuard
+Extrae el userId y el refreshToken enviado en los headers.
+
+POST /auth/logout: Protegido por el guard de autenticación estándar (AuthGuard('jwt')).
+Extrae el userId para limpiar el hash en base de datos.
+
+Actualizamos src/auth/auth.controller.ts:
+
+```
+import {
+  Controller,
+  Post,
+  Body,
+  HttpCode,
+  HttpStatus,
+  UseGuards,
+} from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
+
+import { AuthService } from './auth.service';
+import { RegisterUserDto, LoginUserDto } from '../users/dto';
+import { GetUser } from './decorators/get-user.decorator';
+import { JwtRefreshGuard } from './guards/jwt-refresh.guard';
+import { User } from '../users/entities/user.entity';
+
+@ApiTags('Auth')
+@Controller('auth')
+export class AuthController {
+  constructor(private readonly authService: AuthService) {}
+
+  @Post('register')
+  @ApiOperation({ summary: 'Registrar un nuevo usuario' })
+  @ApiResponse({ status: 201, description: 'Usuario registrado exitosamente.' })
+  @ApiResponse({ status: 400, description: 'Datos no válidos.' })
+  @ApiResponse({ status: 409, description: 'El correo ya existe.' })
+  register(@Body() registerUserDto: RegisterUserDto) {
+    return this.authService.register(registerUserDto);
+  }
+
+  @Post('login')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Iniciar sesión de usuario' })
+  @ApiResponse({ status: 200, description: 'Login exitoso. Devuelve accessToken y refreshToken.' })
+  @ApiResponse({ status: 401, description: 'Credenciales inválidas.' })
+  login(@Body() loginUserDto: LoginUserDto) {
+    return this.authService.login(loginUserDto);
+  }
+
+  @Post('refresh')
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(JwtRefreshGuard)
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Renovar tokens de acceso',
+    description: 'Recibe un Refresh Token válido en las cabeceras Bearer, lo valida contra BD y devuelve un nuevo par de tokens.',
+  })
+  @ApiResponse({ status: 200, description: 'Tokens renovados exitosamente.' })
+  @ApiResponse({ status: 403, description: 'Refresh Token inválido o expirado.' })
+  refreshTokens(
+    @GetUser('id') userId: string,
+    @GetUser('refreshToken') refreshToken: string,
+  ) {
+    return this.authService.refreshTokens(userId, refreshToken);
+  }
+
+  @Post('logout')
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(AuthGuard('jwt'))
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Cerrar sesión de usuario y revocar Refresh Token' })
+  @ApiResponse({ status: 200, description: 'Sesión cerrada exitosamente.' })
+  @ApiResponse({ status: 401, description: 'No autorizado.' })
+  logout(@GetUser('id') userId: string) {
+    return this.authService.logout(userId);
+  }
+}
+```
+
+
+Registrar las Estrategias y Servicios en AuthModule
+
+Asegúrate de registrar la nueva estrategia JwtRefreshStrategy en el arreglo providers de src/auth/auth.module.ts:
+
+```
+import { Module } from '@nestjs/common';
+import { JwtModule } from '@nestjs/jwt';
+import { PassportModule } from '@nestjs/passport';
+import { ConfigModule } from '@nestjs/config';
+
+import { AuthService } from './auth.service';
+import { AuthController } from './auth.controller';
+import { UsersModule } from '../users/users.module';
+import { JwtStrategy } from './strategies/jwt.strategy';
+import { JwtRefreshStrategy } from './strategies/jwt-refresh.strategy';
+
+@Module({
+  imports: [
+    ConfigModule,
+    UsersModule,
+    PassportModule.register({ defaultStrategy: 'jwt' }),
+    JwtModule.register({}), // La configuración de secret/expiresIn se maneja dinámicamente en AuthService
+  ],
+  controllers: [AuthController],
+  providers: [AuthService, JwtStrategy, JwtRefreshStrategy],
+  exports: [JwtStrategy, JwtRefreshStrategy, PassportModule, JwtModule],
+})
+export class AuthModule {}
+```
+
+
+## Flujo refresh tokens
+
+POST /auth/login: Genera un Access Token (15m) y un Refresh Token (7d).
+El hash del Refresh Token se guarda en la columna hashed_refresh_token del usuario.
+
+Peticiones Estándar (/tasks, /categories): El cliente envía Authorization: Bearer <accessToken>. Validado por JwtStrategy.
+
+POST /auth/refresh: Si el Access Token expira (401), el cliente envía Authorization: Bearer <refreshToken> a esta ruta. JwtRefreshStrategy
+valida la firma del token y AuthService comprueba contra la BD con bcrypt.compare().
+Si es válido, se emiten nuevos tokens y se actualiza el hash en BD (rotación activa).
+
+POST /auth/logout: Asigna hashed_refresh_token = null en la base de datos, invalidando cualquier intento futuro de renovar la sesión
+
+
+
+## Post refresh tokens
+
+1. Al agregar el atributo hashedRefreshToken en UserEntity, la tabla users en PostgreSQL aún no posee esa columna. Debes generar y ejecutar la migración:
+
+```
+# Generar la migración basada en el cambio de la entidad
+npm run migration:generate -- src/database/migrations/AddHashedRefreshTokenToUser
+
+# Aplicar la migración en la base de datos
+npm run migration:run
+```
+
+
+2. Método Interno en UsersService (Seguridad de DTOs)
+
+En AuthService llamamos a this.usersService.update(userId, { hashedRefreshToken: hash }).
+
+Si tu UsersService.update utiliza un UpdateUserDto, nunca debes exponer hashedRefreshToken dentro de ese DTO
+
+un usuario maligno podría enviar esa propiedad en el cuerpo de una petición HTTP PATCH /users/me.
+
+La solución más limpia en src/users/users.service.ts es agregar un método interno dedicado:
+
+```
+// src/users/users.service.ts
+
+async updateHashedRefreshToken(userId: string, hashedRefreshToken: string | null): Promise<void> {
+  await this.usersRepository.update(userId, {
+    hashedRefreshToken,
+  });
+}
+```
+
+luego actualizar en AuthService:
+
+```
+// Reemplazar:
+// await this.usersService.update(userId, { hashedRefreshToken: hash });
+
+// Por:
+await this.usersService.updateHashedRefreshToken(userId, hash);
+```
+
+
+3. Habilitar la Autenticación en Swagger (main.ts)
+
+Para poder probar los endpoints /auth/refresh y /auth/logout con el botón Authorize desde la interfaz de Swagger UI
+asegúrate de que la configuración en src/main.ts incluya .addBearerAuth():
+
+```
+// src/main.ts
+const config = new DocumentBuilder()
+  .setTitle('Task Management API')
+  .setDescription('API RESTful multi-tenant')
+  .setVersion('1.0')
+  .addBearerAuth() // 👈 Permite enviar tokens JWT desde Swagger UI
+  .build();
+```
+
+
+Implementación en UsersService y Conexión con AuthService
+
+Para mantener esta separación estricta y no sobrecargar el UsersService ni alterar los DTOs públicos,
+agregamos el método dedicado en UsersService
+
+1. Actualización en src/users/users.service.ts
+
+Añadimos updateHashedRefreshToken:
+
+```
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+
+import { User } from './entities/user.entity';
+
+@Injectable()
+export class UsersService {
+  constructor(
+    @InjectRepository(User)
+    private readonly usersRepository: Repository<User>,
+  ) {}
+
+  // ...resto de métodos (create, findById, findByEmailWithPassword)...
+
+  /**
+   * Método exclusivo para la gestión interna de sesiones/autenticación.
+   * Modifica directamente la columna hashed_refresh_token sin pasar por DTOs públicos.
+   */
+  async updateHashedRefreshToken(userId: string, hashedRefreshToken: string | null): Promise<void> {
+    const result = await this.usersRepository.update(userId, {
+      hashedRefreshToken,
+    });
+
+    if (result.affected === 0) {
+      throw new NotFoundException(`Usuario con ID ${userId} no encontrado`);
+    }
+  }
+}
+```
+
+2. Actualización en src/auth/auth.service.ts
+
+Sustituimos la llamada privada en AuthService para invocar este nuevo método:
+
+```
+// src/auth/auth.service.ts
+
+// ...
+private async updateHashedRefreshToken(userId: string, refreshToken: string) {
+  const hash = await bcrypt.hash(refreshToken, 10);
+  await this.usersService.updateHashedRefreshToken(userId, hash);
+}
+
+// Y en el método logout:
+async logout(userId: string) {
+  await this.usersService.updateHashedRefreshToken(userId, null);
+  return { message: 'Sesión cerrada exitosamente' };
+}
+```
+
+
+
+
+
+
+# Testing Unitario
+
+#### Valida el comportamiento de cada componente (servicios o controladores) de forma aislada
+##### reemplazando la base de datos y dependencias externas por objetos simulados (mocks).
+
+
+1. Identificar la unidad y aislar dependencias
+
+Servicios: Se prueba la lógica de negocio pura
+Los repositorios de TypeORM (Repository<TaskEntity>)
+y servicios externos (JwtService) deben reemplazarse por mocks con jest.fn().
+
+Controladores: Se prueba la recepción de DTOs, extracción de parámetros (@Param, @GetUser) y que la respuesta coincida con la salida esperada del servicio.
+
+
+2. Fábrica de Mocks de TypeORM
+
+Patrón genérico para simular las consultas a PostgreSQL sin tocar la base de datos real
+
+```
+export type MockRepository<T = any> = {
+  [P in keyof T]?: jest.Mock<{}>;
+};
+
+export const repositoryMockFactory = (): MockRepository => ({
+  find: jest.fn(),
+  findOne: jest.fn(),
+  create: jest.fn(),
+  save: jest.fn(),
+  preload: jest.fn(),
+  softRemove: jest.fn(),
+});
+```
+
+
+3. Configurar el módulo de prueba (Test.createTestingModule)
+Monta un contenedor ligero inyectando los mocks mediante getRepositoryToken:
+
+```
+const module: TestingModule = await Test.createTestingModule({
+  providers: [
+    TasksService,
+    {
+      provide: getRepositoryToken(TaskEntity),
+      useFactory: repositoryMockFactory,
+    },
+  ],
+}).compile();
+
+service = module.get<TasksService>(TasksService);
+taskRepositoryMock = module.get(getRepositoryToken(TaskEntity));
+```
+
+
+4. Aplicar el patrón AAA (Arrange, Act, Assert)
+Estructura cada bloque it() en tres etapas claras:
+
+#### Arrange (Preparar): Configura las respuestas simuladas del mock (ej. taskRepositoryMock.findOne.mockResolvedValue(mockTask)).
+
+#### Act (Ejecutar): Llama al método real bajo prueba (ej. await service.findOne(id, user)).
+
+#### Assert (Verificar): Contrasta el resultado retornado y asegura que el repositorio fue invocado correctamente (expect(result).toEqual(...), expect(repository.findOne).toHaveBeenCalledWith(...)).
+
+
+5. Orden de implementación recomendado
+
+1. AuthService (Hashing de contraseñas con bcrypt, validación de credenciales, firma de JWT).
+2. CategoriesService (CRUD básico con validación de nombres duplicados por usuario).
+3. TasksService (Asignación de relaciones, aislamiento multi-tenant, soft delete y restauración).
+4. Controladores (AuthController, CategoriesController, TasksController).
+
+
+
+Filtros, Decoradores y Estrategias
+
+`JwtStrategy`:
+Aunque Passport maneja la extracción del token, el método validate(payload) ejecuta lógica crítica de negocio
+(verificar en la base de datos si el usuario existe, si está activo o si sus roles son válidos).
+Se testea simulando el payload decodificado e inyectando un mock de UsersRepository o UsersService
+
+`HttpExceptionFilter`:
+Guardián de la consistencia de respuestas de error de tu API
+Se prueba creando mocks de ArgumentsHost, Request y Response para verificar que
+ante cualquier excepción, el filtro devuelva el código HTTP correcto, el timestamp y el formato JSON estandarizado
+
+`GetUser Decorator`:
+Los decoradores creados con createParamDecorator son funciones que extraen datos del ExecutionContext
+Aunque se pueden testear de forma aislada ejecutando la función interna con un contexto simulado
+la mayoría de los equipos los evalúa implícitamente en los tests de controladores o pruebas E2E.
+
+
+
+Entidades y DTOs
+
+Son definiciones estáticas que se omiten en testing
+
+`DTOs (Data Transfer Objects)`:
+clases de paso con anotaciones de class-validator y swagger
+Probar si @IsString() valida una cadena es probar el marco de trabajo (class-validator)
+
+excepción: Si creas un validador personalizado con @ValidatorConstraint()
+o un método transformador complejo dentro del DTO.
+
+`Entidades`:
+esquema y mapeo ORM de TypeORM en PostgreSQL
+Probar propiedades simples o decoradores de columnas es redundante
+
+excepción: Si la entidad contiene métodos de dominio propios (ej. hasPermission())
+o lógica en hooks como @BeforeInsert() o @BeforeUpdate() que desees aislar
+
+
+
+### Infraestructura base y utilidades reutilizables
+
+evitará duplicar código en cada archivo spec.ts. 
+
+1. Mocks Reutilizables de TypeORM y JwtService
+helper para generar repositorios y servicios simulados
+
+archivo de utilidades en src/common/testing/mock-factory.ts
+dentro de test/mocks/:
+
+src/common/testing/mock-factory.ts
+
+```
+import { Repository } from 'typeorm';
+
+// Tipo helper para extraer métodos simulados con Jest
+export type MockRepository<T = any> = {
+  [P in keyof Repository<T>]?: jest.Mock<{}>;
+};
+
+// Fábrica de Mocks para Repositorios de TypeORM
+export const repositoryMockFactory = <T = any>(): MockRepository<T> => ({
+  find: jest.fn(),
+  findOne: jest.fn(),
+  findOneBy: jest.fn(),
+  create: jest.fn(),
+  save: jest.fn(),
+  preload: jest.fn(),
+  softRemove: jest.fn(),
+  delete: jest.fn(),
+  createQueryBuilder: jest.fn(() => ({
+    where: jest.fn().mockReturnThis(),
+    andWhere: jest.fn().mockReturnThis(),
+    leftJoinAndSelect: jest.fn().mockReturnThis(),
+    getMany: jest.fn().mockResolvedValue([]),
+    getOne: jest.fn().mockResolvedValue(null),
+  })),
+});
+
+// Fábrica de Mock para JwtService de NestJS
+export const jwtServiceMockFactory = () => ({
+  sign: jest.fn().mockReturnValue('mocked_jwt_token'),
+  signAsync: jest.fn().mockResolvedValue('mocked_jwt_token'),
+  verify: jest.fn(),
+  verifyAsync: jest.fn(),
+});
+```
+
+
+2. Configuración de Jest
+NestJS configura Jest en el package.json
+o en jest.config.json
+
+```
+"jest": {
+  "moduleFileExtensions": [
+    "js",
+    "json",
+    "ts"
+  ],
+  "rootDir": "src",
+  "testRegex": ".*\\.spec\\.ts$",
+  "transform": {
+    "^.+\\.(t|j)s$": "ts-jest"
+  },
+  "collectCoverageFrom": [
+    "**/*.(t|j)s",
+    "!**/*.dto.(t|j)s",
+    "!**/*.entity.(t|j)s",
+    "!**/*.module.(t|j)s",
+    "!main.(t|j)s"
+  ],
+  "coverageDirectory": "../coverage",
+  "testEnvironment": "node"
+}
+```
+
+Reglas de exclusión (!**/*.dto.ts, !**/*.entity.ts
+collectCoverageFrom para que las métricas de cobertura de Jest ignoren los archivos que no requieren pruebas unitarias
+
+
+3. Comandos
+
+```
+# Ejecutar todos los tests unitarios
+npm run test
+
+# Ejecutar tests en modo watch (re-ejecuta al guardar cambios)
+npm run test:watch
+
+# Generar reporte de cobertura de código
+npm run test:cov
+```
+
+
+
+## 0. UsersService (users.service.spec.ts): Gestión y búsqueda base de usuarios.
+
+ajustes de normalización, manejo de la restricción única de PostgreSQL (23505) y el Logger
+
+
+### Casos críticos para create():
+
+1. Registro exitoso (Camino feliz):
+Verificar: Que el email se transforme a minúsculas y sin espacios, que bcrypt.hash sea invocado con la contraseña y salt = 10
+que el repositorio guarde la entidad y que el objeto devuelto no contenga la propiedad password.
+
+2. Email duplicado en verificación previa:
+Verificar: Que si findOne encuentra un usuario con ese email, el flujo se detenga inmediatamente lanzando ConflictException sin ejecutar bcrypt ni save
+
+3. Condición de carrera en PostgreSQL (Código 23505):
+si findOne pasa (no encontró usuario previo), pero dos peticiones simultáneas provocan que save() lance un error con error.code = '23505',
+el bloque catch intercepte la violación de índice único y responda con ConflictException.
+
+4. Error interno inesperado y trazabilidad de logs:
+si save() falla por otro motivo (ej. pérdida de conexión a base de datos)
+se invoque el método logger.error(...) con el mensaje/stack trace y se lance un InternalServerErrorException
+
+
+### Casos críticos para findByEmailWithPassword()
+
+5. Búsqueda por email con contraseña (Camino feliz):
+Que el QueryBuilder ejecute where con el email normalizado y que la llamada a addSelect('user.password') garantice la inclusión del hash en la respuesta enviada a AuthService.
+
+6. Usuario no encontrado:
+Que si el QueryBuilder retorna null, el servicio devuelva null de forma limpia sin arrojar excepciones
+
+
+### Casos críticos para findById()
+
+7. Retorno de usuario activo:
+Que findOne reciba explícitamente los criterios { id, isActive: true } y devuelva la entidad del usuario.
+
+8. Excepción por usuario inexistente o inactivo
+Que si findOne retorna null (por ID inválido o porque isActive es false)
+el servicio lance un NotFoundException.
+
+
+
+
+
+## 1. AuthService (auth.service.spec.ts): Login, hashing con bcrypt y generación del JWT.
+
+
+
+
+## 2. JwtStrategy (jwt.strategy.spec.ts): Validación del payload del token llamando a UsersService
+
+
+
+
+## 3. CategoriesService (categories.service.spec.ts): CRUD de datos maestros
+
+
+
+
+## 4. TasksService (tasks.service.spec.ts): Lógica principal del dominio y relaciones.
+
+
+
+
+## 5. HttpExceptionFilter (http-exception.filter.spec.ts):  Filtro global de excepciones
+
+
+
+## 6. AuthController
+
+
+
+
+## 7.  CategoriesController
+
+
+
+## 8. TasksController
+
+
+
+
+#### cuestionario
+
+0. Archivo por archivo
+
+1. Necesita
+
+2. Si necesita, esenciales/criticos
+
+
+
+
+
+
 ## Fakes emails
+
+
+
+
+
+
+
+# Arq: Entrada, proceso y salida
+
+```
+DTO de entrada
+    ↓
+qué acepta la API
+
+
+DTO de salida
+    ↓
+qué devuelve la API
+
+
+Entidad
+    ↓
+cómo representamos los datos internamente
+
+
+Servicio
+    ↓
+qué lógica ejecutamos
+```
+
+#### esa información de salida no viene toda del LoginUserDto. El LoginUserDto solamente aporta las credenciales necesarias para que el servidor pueda identificar y autenticar al usuario
+#### La respuesta se construye durante el proceso de AuthService.login().
+
+
+1. Lo que entra
+
+El cliente envía:
+
+{
+  "email": "pepe@example.com",
+  "password": "Password123!"
+}
+
+se convierte en
+
+LoginUserDto
+├── email
+└── password
+
+
+2. AuthService.login() busca al usuario
+
+El servicio puede hacer conceptualmente:
+
+```
+LoginUserDto
+    │
+    └── email
+         ↓
+UsersService.findByEmailWithPassword()
+         ↓
+        User
+```
+
+
+aquí aparece una diferencia importante.
+
+La base de datos ya contiene algo parecido a:
+
+User
+├── id
+├── email
+├── password           ← hash
+├── userName
+├── isActive
+├── createdAt
+├── updatedAt
+└── ...
+
+##### Por eso id, email, userName y createdAt no se generan durante el login.Ya existían en la base de datos
+
+Estos datos salen de PostgreSQL:
+
+id
+email
+userName
+createdAt
+
+No salen del LoginUserDto.
+
+                    LOGIN
+                      │
+                      ▼
+              LoginUserDto
+              ├── email
+              └── password
+                      │
+                      ▼
+                 AuthService
+                      │
+             buscar por email
+                      │
+                      ▼
+                    User
+                ┌─────┴─────┐
+                │           │
+         datos de BD     password
+                │           │
+                │      bcrypt.compare()
+                │           │
+                │           ▼
+                │        válido
+                │           │
+                ▼           │
+        generar tokens ◄────┘
+          │          │
+          ▼          ▼
+    accessToken   refreshToken
+                      │
+                      ▼
+                 bcrypt.hash()
+                      │
+                      ▼
+             hashedRefreshToken
+                      │
+                      ▼
+          updateHashedRefreshToken()
+                      │
+                      ▼
+                  PostgreSQL
+                      
+User
+ │
+ ▼
+UserResponseDto
+ │
+ ▼
+┌──────────────────────────────┐
+│ accessToken                  │ ← generado
+│ refreshToken                 │ ← generado
+│ user.id                      │ ← BD
+│ user.email                   │ ← BD
+│ user.userName                │ ← BD
+│ user.createdAt               │ ← BD
+└──────────────────────────────┘
+
+
+
+# Seguridad e información de salida: Lo que la entidad puede mostrar y lo que debe ocultar
+
+User interno
+│
+├── id                 → ✅
+├── email              → ✅
+├── userName           → ✅
+├── createdAt          → ✅
+├── password           → ❌
+├── hashedRefreshToken → ❌
+├── deletedAt          → ❌
+└── relaciones         → ❌
+
+
+## Información sensible que sí debe cruzar la frontera
+
+### Aquí aparece algo interesante: accessToken y refreshToken
+
+fueron creados para que el cliente pueda utilizarlos para autenticarse.
+
+### distinción muy importante
+#### Información sensible no significa necesariamente información que nunca puede salir del backend.
+
+### Significa que debemos controlar cuidadosamente si sale, a quién sale y cómo se transporta/almacena.
+
+##### Por ejemplo, OWASP recomienda no guardar tokens de autenticación, incluidos refresh tokens, en localStorage o sessionStorage del navegador, debido a su exposición ante JavaScript/XSS;
+##### para aplicaciones web recomienda considerar cookies HttpOnly, Secure y SameSite, entre otros enfoques
+
+
+## Consumidor/receptor de la inforación
+
+
+Frontend Angular / React
+          │
+solicitud │ HTTP
+          ▼
+     NestJS API
+          │
+          │ respuesta HTTP
+          ▼
+Frontend Angular / React
+
+
+podría ser:
+
+Aplicación móvil
+        ↓
+    NestJS API
+
+o
+
+Otro backend
+        ↓
+    NestJS API
+    
+
+
+
+# Peticiones y validación: desde afuera hacia dentro
+
+### ¿Quién está haciendo la petición?
+        ↓
+### ¿El token es válido?
+        ↓
+¿Qué información confiable puedo asociar a esa petición?
+        ↓
+¿Cómo se la entrego cómodamente al Controller?
+
+HTTP Request
+     │
+     ▼
+JwtRefreshGuard
+     │
+     ▼
+JwtRefreshStrategy
+     │
+     ├── extrae JWT
+     ├── verifica firma/expiración
+     ├── ejecuta validate()
+     │
+     ▼
+request.user
+     │
+     ▼
+@GetUser(...)
+     │
+     ▼
+AuthController
+     │
+     ▼
+AuthService
+
+
+
+#### 1. NestJS usa Passport justamente con este modelo
+
+#### 2. la strategy autentica la petición y, cuando tiene éxito, la información retornada por validate() queda disponible en request.user
+
+
+2. JwtRefreshGuard
+
+Empecemos por la pieza más pequeña:
+
+@Injectable()
+export class JwtRefreshGuard extends AuthGuard('jwt-refresh') {}
+
+2. JwtRefreshGuard
+
+Empecemos por la pieza más pequeña:
+
+@Injectable()
+export class JwtRefreshGuard extends AuthGuard('jwt-refresh') {}
+
+y le dice a Nest:
+
+##### "Para esta ruta quiero utilizar la estrategia de Passport llamada jwt-refresh."
+
+patrón documentado:
+export class JwtAuthGuard extends AuthGuard('jwt') {}
+
+y luego una estrategia registrada con ese nombre.
+
+AuthGuard('jwt-refresh')
+             ↓
+       JwtRefreshStrategy
+
+@UseGuards(JwtRefreshGuard)
+
+#### "Antes de ejecutar el Controller, ejecutá el mecanismo de autenticación identificado como jwt-refresh."
+
+##### Los guards están precisamente situados para decidir si la petición puede continuar hacia el handler.
+
+
+3. JwtRefreshStrategy
+
+Ahora viene la parte realmente importante.
+
+export class JwtRefreshStrategy extends PassportStrategy(
+  Strategy,
+  'jwt-refresh',
+)
+
+PassportStrategy + passport-jwt Strategy + nombre = "jwt-refresh"
+
+Ese nombre es exactamente el que utiliza:
+
+AuthGuard('jwt-refresh')
+
+
+Qué configura el constructor:
+
+```
+super({
+  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+  secretOrKey: configService.getOrThrow<string>('JWT_REFRESH_SECRET'),
+  passReqToCallback: true,
+});
+```
+
+CONFIGURACIÓN DE LA STRATEGY
+
+¿Dónde está el token?
+        ↓
+Authorization: Bearer ...
+
+¿Cómo verifico el token?
+        ↓
+JWT_REFRESH_SECRET
+
+¿Necesito también el Request?
+        ↓
+Sí → passReqToCallback: true
+
+
+passport-jwt documenta jwtFromRequest como la función que extrae el JWT del request
+y fromAuthHeaderAsBearerToken() busca el token en el header Authorization usando el esquema Bearer
+También documenta passReqToCallback para pasar el Request al callback de verificación
+
+
+validate()?
+
+Ej: si llega Authorization: Bearer ABC123
+
+Request
+   ↓
+extraer Bearer token
+   ↓
+obtener JWT
+   ↓
+verificar firma
+   ↓
+verificar expiración
+   ↓
+decodificar payload
+   ↓
+validate(...)
+
+
+validate(req: Request, payload: JwtPayload): JwtPayloadWithRt {
+recibe dos cosas:
+Payload del JWT
+
+devuelve
+JwtPayloadWithRt
+
+1. const authHeader = req.get('Authorization');
+const authHeader = req.get('Authorization');
+
+2. const refreshToken = authHeader
+  .replace(/^Bearer\s+/i, '')
+  .trim();
+
+extrae: ABC123
+
+```
+return {
+  ...payload,
+  refreshToken,
+};
+
+{
+  id: '123',
+  email: 'pepe@example.com',
+  refreshToken: 'ABC123'
+}
+```
+   
+Passport toma lo que devuelve validate() y lo coloca en:
+
+```
+request.user
+```
+
+payload:
+
+export interface JwtPayload {
+  id: string;
+  email: string;
+}
+
+representa el contenido que tú decidiste meter dentro del JWT.
+
+{
+  "id": "123",
+  "email": "pepe@example.com"
+}
+
+JWT
+ ├── header
+ ├── payload
+ │     ├── id
+ │     └── email
+ └── signature
+
+ 
+importante:
+
+El payload JWT no es un lugar para guardar secretos.
+
+El JWT contiene datos que el cliente puede leer; la firma sirve para verificar su integridad, no para ocultar el payload.
+
+sería una mala idea:
+
+{
+  id,
+  email,
+  password,
+  hashedRefreshToken,
+  databasePassword,
+  secretKey
+}
+
+
+hace:
+{
+  id,
+  email
+}
+
+
+7. JwtPayloadWithRt
+
+JwtPayload
+
+id
+email
+
+        +
+refreshToken
+
+{
+  id,
+  email,
+  refreshToken
+}
+
+
+pero para refreshTokens() tu AuthService también necesita el refresh token original.
+
+Entonces la strategy construye un objeto temporal:
+
+JWT payload
+      +
+raw refresh token
+      ↓
+request.user
+
+
+refreshTokens(
+  @GetUser('id') userId: string,
+  @GetUser('refreshToken') refreshToken: string,
+)
+
+
+8. llegamos a GetUser
+
+Este decorador es simplemente un extractor cómodo.
+
+Nest documenta precisamente este patrón: en lugar de hacer manualmente request.user, puedes crear un decorador personalizado como @User() y extraer una propiedad específica con @User('firstName').
+
+
+const req = ctx.switchToHttp().getRequest<RequestWithUser>();
+
+significa
+
+ExecutionContext
+      ↓
+contexto HTTP
+      ↓
+Express Request
+
+const user = req.user;
+busca request.user
+
+Y si no existe:
+throw new InternalServerErrorException(...)
+
+return data ? user[data] : user;
+
+#### @GetUser()
+
+Devuelve todo: request.user
+
+#### @GetUser('id') Devuelve solo: request.user.id
+
+
+#### @GetUser('refreshToken') devuelve: request.user.refreshToken
+
+
+patrón que Nest muestra para decoradores de usuario personalizados
+
+
+10. JwtStrategy: la otra strategy
+
+utiliza: JWT_SECRET
+
+ACCESS TOKEN
+     ↓
+JwtStrategy
+     ↓
+JWT_SECRET
+
+
+REFRESH TOKEN
+     ↓
+JwtRefreshStrategy
+     ↓
+JWT_REFRESH_SECRET
+
+
+11. ¿Qué hace JwtStrategy.validate()?
+
+async validate(payload: JwtPayload): Promise<User> {
+
+recibe: payload
+
+{
+  id: '123',
+  email: 'pepe@example.com'
+}
+
+
+
+
+12. devuelve User
+
+return user;
+
+Y Passport hará que ese valor termine en:
+
+request.user
+
+
+13. logout
+
+#### "cerrá la sesión del usuario que el sistema ya autenticó"
+
+
+
+POST /auth/logout
+       ↓
+AuthGuard('jwt')
+       ↓
+JwtStrategy
+       ↓
+extrae JWT
+       ↓
+verifica JWT
+       ↓
+payload
+       ↓
+validate(payload)
+       ↓
+UsersService.findById(id)
+       ↓
+usuario existente/activo
+       ↓
+return user
+       ↓
+request.user = user
+       ↓
+@GetUser('id')
+       ↓
+userId
+       ↓
+AuthService.logout(userId)
+
+
+
+
+| Pieza                | Responsabilidad                                              |
+| -------------------- | ------------------------------------------------------------ |
+| `JwtRefreshGuard`    | Decide utilizar la strategy `jwt-refresh`                    |
+| `JwtRefreshStrategy` | Extrae/verifica el refresh JWT y prepara `request.user`      |
+| `JwtStrategy`        | Extrae/verifica el access JWT y valida el usuario actual     |
+| `JwtPayload`         | Define los datos que viajan dentro del JWT                   |
+| `JwtPayloadWithRt`   | Añade temporalmente el refresh token al contexto autenticado |
+| `GetUser`            | Extrae información de `request.user` para el Controller      |
+
+
+Controller:
+Guard
+  ↓
+Strategy
+  ↓
+request.user
+  ↓
+@GetUser()
+  ↓
+Controller
+  ↓
+Service
+
+
+
+
+# Decorador Get user
+
+```
+import {
+  createParamDecorator,
+  ExecutionContext,
+  InternalServerErrorException,
+} from '@nestjs/common';
+import { Request } from 'express';
+
+interface RequestWithUser extends Request {
+  user?: Record<string, unknown>;
+}
+
+export const GetUser = createParamDecorator(
+  (data: string | undefined, ctx: ExecutionContext): unknown => {
+    const req = ctx.switchToHttp().getRequest<RequestWithUser>();
+    const user = req.user;
+
+    if (!user) {
+      throw new InternalServerErrorException(
+        'Usuario no encontrado en el request (asegúrate de resguardar la ruta con AuthGuard())',
+      );
+    }
+
+    return data ? user[data] : user;
+  },
+);
+
+```
+
+@GetUser('id')
+
+
+
+
+# Jwt strategy
+
+necesita comprobar:
+
+id del JWT
+   ↓
+¿usuario existe?
+¿usuario está activo?
+
+utilizar UsersService tiene sentido
+
+
+const user = await this.usersService.findById(id);
+
+if (!user) {
+  throw new UnauthorizedException(
+    'Token no válido: usuario no existe',
+  );
+}
+
+UsersService.findById() actual es:
+
+
+async findById(id: string): Promise<User> {
+  const user = await this.userRepository.findOne({
+    where: { id },
+  });
+
+  if (!user) {
+    throw new NotFoundException(...);
+  }
+
+  return user;
+}
+
+
+
+dos caminos teóricos
+findById()
+   │
+   ├── usuario existe → User
+   │
+   └── usuario no existe → lanza NotFoundException
+
+Auth tenga una forma de buscar al usuario que permita esta semántica, por ejemplo conceptualmente
+
+findById()
+    → User
+    → NotFoundException
+
+findByIdOrNull()
+    → User | null
+    → null si no existe
+
+
+
+
+# Funcionamiento de los Tokens
+
+#### un usuario inicia sesión queremos que haga las acciones post, get, etc
+##### sin tener que logearse con mail + pass para cada accion
+##### Le damos un creenc/tok temporal (access) corta duración
+
+cliente:
+
+Login
+  ↓
+email + password
+  ↓
+Backend autentica
+  ↓
+Access Token
+
+   |
+acciones
+
+
+2. Cuando expira access token
+
+Aparece Refresh token
+
+##### nuevo Access Token sin volver a pedir las credenciales primarias al usuario
+
+cuando at expira:
+
+Access Token ❌
+Refresh Token ✅
+
+      ↓
+
+POST /auth/refresh
+
+      ↓
+
+nuevo Access Token
+nuevo Refresh Token
+
+
+#### En sus funciones hacen cosas diferentes
+
+Access Token
+    ↓
+¿El token es válido?
+    ↓
+¿El usuario existe?
+    ↓
+¿Está activo?
+    ↓
+✅ permitir acceso
+
+
+Refresh Token
+    ↓
+validar JWT
+    ↓
+extraer refreshToken
+    ↓
+request.user
+
+
+No tendría sentido utilizar exactamente la misma regla para ambas.
+
+
+                     LOGIN
+                       │
+                       ▼
+                 AuthService
+                       │
+              ┌────────┴────────┐
+              ▼                 ▼
+         Access Token      Refresh Token
+              │                 │
+              │                 │
+              ▼                 ▼
+        JwtStrategy       JwtRefreshStrategy
+              │                 │
+              ▼                 ▼
+      acceso a recursos    renovar tokens
+
+      
+
+Client
+  │
+  │ Access Token
+  ▼
+JwtStrategy
+  ↓
+request.user
+  ↓
+Controller
+  ↓
+Service
+
+
+
+Client
+  │
+  │ Access Token
+  ▼
+JwtStrategy
+  ↓
+request.user
+  ↓
+Controller
+  ↓
+Service
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+
 
 
 
@@ -11508,7 +15496,7 @@ Navegador / Cliente  ──►
 # UI/UX de 100% backend hacia Frontend
 
 una API REST en NestJS actúa como un backend headless (desacoplado) que se comunica exclusivamente mediante JSON.
-                             
+
 1. Habilitar CORS en NestJS:
 Por seguridad, los navegadores bloquean solicitudes entre orígenes distintos (por ejemplo, un cliente React corriendo en localhost:5173 llamando a NestJS en localhost:3000).
 Se resuelve agregando app.enableCors() en el archivo main.ts.
@@ -11643,7 +15631,7 @@ Ej: nest g res transactions -d
 `TransactionType Enum (src/transactions/enums/transaction-type.enum.ts)`:
 Definición que restringe los tipos de movimientos a dos valores posibles: INGRESO y GASTO.
 
-     
+
 2. Entidades de Persistencia (Modelado de Datos)
 
 `Entidad Category (src/categories/entities/category.entity.ts)`:
