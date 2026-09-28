@@ -2897,11 +2897,588 @@ El juego utiliza el cifrado César con diferentes teclas de mayúsculas. Deberá
 
 ### Asymmetric Encryption
 
+#### cómo comparten esa clave de forma segura en primer lugar
+
+##### misma llave: Si la envían en texto plano, un atacante la intercepta. Si cifran la clave, necesitan otra clave, lo que nos lleva de nuevo al mismo problema
+
+
+
+#### cifrado asimétrico utiliza dos claves vinculadas matemáticamente:
+
+#### 1. Una clave pública que cualquiera puede conocer y utilizar.
+#### 2. Una clave privada que solo una persona mantiene en secreto.
+
+##### Si encriptas algo con la clave pública de alguien, solo su clave privada podrá descifrarlo.
+##### Si encriptas algo con tu clave privada, cualquiera que tenga tu clave pública podrá descifrarlo
+
+Utilizado para firmas digitales
+
+##### Las dos claves están conectadas mediante complejos cálculos matemáticos
+##### pero a un ordenador común le llevaría cientos o incluso miles de años recuperar la clave privada a partir de la clave pública
+Esta dificultad computacional es lo que hace que el cifrado asimétrico sea seguro
+
+
+La ranura para correo en la parte superior es la llave pública. Cualquiera que pase por allí puede dejar una carta. Está completamente abierta y accesible.
+    La puerta cerrada con llave en la parte delantera es la llave privada. Solo el dueño del buzón tiene la llave para abrirlo y recoger las cartas.
+
+Cuando Alice quiere enviarle un secreto a Bob:
+
+    Alice encuentra la clave pública de Bob (el buzón de correo). Esto no es ningún secreto: Bob puede publicarla en su sitio web o enviarla por correo electrónico.
+    Alice escribe su mensaje, lo cifra con la clave pública de Bob y lo envía.
+    Solo Bob puede descifrarlo porque es el único que tiene la clave privada (la llave de la puerta).
+
+Bob crea una clave pública y una clave privada en su ordenador. Guarda la clave privada para sí mismo y comparte la clave pública con todo el mundo.
+    Alice obtiene la clave pública de Bob (quizás de su sitio web o de un servidor de claves).
+    Alice encripta su mensaje utilizando la clave pública de Bob y lo envía.
+    Bob lo recibe y lo descifra utilizando su clave privada.
+
+En ningún momento fue necesario intercambiar una clave a través de la red de forma secreta.
+#### La única clave que se transmitió públicamente fue la clave pública de Bob, que no es secreta por diseño. Esa es la solución al problema de la distribución de claves
+
+
+    
+#### HTTPS
+
+El uso cotidiano más común del cifrado asimétrico se encuentra en HTTPS, el protocolo seguro que utilizas cada vez que ves ese candado en tu navegador.
+
+Esto es lo que sucede cuando visitas https://google.com:
+
+    Su navegador solicita la clave pública del sitio web.
+    El sitio web devuelve su clave pública envuelta en un certificado (más sobre esto en breve).
+    Tu navegador y el sitio web utilizan cifrado asimétrico para acordar un secreto compartido (una clave simétrica) sin que nadie más pueda verlo.
+    A partir de ese momento, cambian a un cifrado simétrico rápido utilizando esa clave secreta compartida durante el resto de la sesión.
+
+Esta combinación a veces se denomina enfoque híbrido:
+
+#### El cifrado asimétrico resuelve el problema de la distribución de claves.
+#### El cifrado simétrico se encarga del trabajo pesado porque es mucho más rápido.
+
+    
+#### !!! la clave pública pertenece realmente a Bob y no a un atacante que se hace pasar por él? Ahí es donde entran en juego los certificados.
+
+### Un certificado es un documento digital que:
+
+Contiene la clave pública de alguien.
+Indica a quién pertenece esa clave (como example.com).
+Una autoridad de confianza, denominada Autoridad de Certificación (CA), lo firma digitalmente
+
+
+### !!! Tu navegador y sistema operativo vienen precargados con una lista de autoridades de certificación (CA) de confianza. Cuando un sitio web entrega un certificado:
+
+Tu navegador comprueba que una autoridad de certificación de confianza lo haya firmado.
+Tu navegador comprueba que sigue siendo válido (que no ha caducado ni ha sido revocado).
+Si todo parece correcto, su navegador mostrará el candado y confiará en la clave pública.
+
+
+#### Si algo no funciona correctamente (por ejemplo, si el certificado ha caducado o ha sido firmado por una autoridad no confiable), su navegador mostrará una advertencia y podría negarse a conectarse.    
+
+
+#### Visualización de un certificado en su navegador
+
+Ahora mismo puedes consultar el certificado de cualquier sitio HTTPS. Estos pasos te guiarán para ver los certificados:
+
+    Visita cualquier sitio HTTPS (prueba con https://www.tryhackme.com).
+    Haz clic en el icono del candado en la barra de direcciones.
+    Busque algo como "Certificado", "La conexión es segura" o "Ver certificado".
+    Se abre una ventana que muestra detalles como:
+        Emitido a: El dominio del sitio web.
+        Emitido por: El 
+
+que lo firmó.
+Válido desde / Válido hasta: Las fechas de vencimiento del certificado.
+
+
+
+Número de claves
+Una clave para cifrar y descifrar
+Dos claves: pública y privada
+
+Compartir claves
+Ambas personas necesitan la misma clave secreta
+La clave pública se puede compartir abiertamente
+
+Velocidad
+Muy rápida
+Más lenta (utilizada para pequeñas cantidades de datos)
+
+Uso principal:
+Cifrado de grandes volúmenes de datos (archivos, tráfico de red).
+Compartir claves de forma segura y certificados digitales.
+
+Analogía:
+Una llave abre y cierra una caja.
+Un buzón: cualquiera puede enviar algo, pero solo el dueño puede recogerlo.
+
+
+En la práctica, los sistemas reales utilizan ambos:
+
+El cifrado asimétrico inicia una conexión y comparte de forma segura una clave simétrica.
+El cifrado simétrico toma el control durante el resto de la sesión para gestionar los datos de forma eficiente.
+
+Así es como funcionan HTTPS, las VPN y las aplicaciones de mensajería cifrada.
+
+
+
+#### Con el cifrado asimétrico, Alice puede cifrar un mensaje usando la clave pública de Bob, y solo la clave privada de Bob puede descifrarlo. ¿Sí o no?
+
+#### Symmetric: After initial asymmetric exchange in HTTPS, what encryption type handles bulk data?
+
+
+#### Fundamentos de la criptografía y su papel en la protección de la confidencialidad, uno de los tres pilares de la
+
+    El texto plano es lo que puedes leer. El texto cifrado es un galimatías revuelto.
+    Una llave es el secreto que controla el proceso de codificación y decodificación.
+    Un algoritmo es el método público para usar la clave.
+
+
+#### El cifrado simétrico utiliza una única clave tanto para cifrar como para descifrar. Es rápido y eficiente, pero se necesita una forma segura de compartir esa clave. Utilizamos el cifrado César para comprobar su funcionamiento.
+#### El cifrado asimétrico utiliza dos claves vinculadas: una clave pública que cualquiera puede usar y una clave privada que solo una persona conserva. Esto resuelve el problema de la distribución de claves y permite el establecimiento de la conexión HTTPS.
+
+la base de casi todos los sistemas seguros que utilizas en línea. Pero no es magia.
+Es una capa dentro de un panorama de seguridad mucho más amplio que incluye:
+
+Prácticas seguras para contraseñas.
+Almacenamiento seguro de llaves.
+Sensibilización y formación del usuario.
+Actualizaciones de software periódicas.
+Seguimiento y respuesta ante incidentes
+        
+
 
 
 ## 3. Become a Hacker
 
 
+
+
+
 ## 4. Become a Defender
+
+
+
+
+
+
+# Search Skills: saber qué buscar
+
+
+##### A menudo se describe a Shodan como un motor de búsqueda para el Internet de las Cosas,
+pero esa descripción no le hace justicia.
+#### Shodan escanea continuamente internet, buscando equipos de red, sistemas de control industrial, cámaras de tráfico y prácticamente cualquier otro dispositivo con conexión a una red pública para ver qué está funcionando y dónde.
+
+Por ejemplo, al buscar "apache 2.4.1" se obtiene una lista de servidores que anuncian esa versión en sus encabezados HTTP, desglosada por país, organización y puerto
+
+#### Durante una prueba de penetración o una evaluación de vulnerabilidades, este tipo de información resulta extremadamente útil
+##### sobre todo si se combina con una vulnerabilidad CVE conocida que afecte a esa versión.
+
+
+### 1. Shodan también admite sus propios filtros de consulta, que permiten reducir significativamente los resultados:
+
+Country: country:IE
+Restringir los resultados a un código de país específico.
+
+port: port:22
+Filter by a specific port number or a range.
+
+org: AS7224
+El alcance da como resultado una organización con nombre o un identificador ASN (que posee un rango de direcciones IP).
+
+hostname: hostname:fakebank.thm
+Coincidencia con un nombre de host o dominio específico.
+
+
+Necesitarás...
+1. Busca el término apache en la barra de búsqueda de TryScanMe.
+es un tipo popular de servidor web
+2. Revisa la primera entrada de la lista.
+3. Utilice esa información para responder a la siguiente pregunta.
+
+
+
+### 2. Virus Total
+
+VirusTotal recopila los resultados de más de 70 motores antivirus y escáneres de sitios web en una sola interfaz.
+##### Introduce un archivo, una URL, un dominio o un hash de archivo. VirusTotal te indicará si alguno de esos motores lo ha marcado como malicioso o no
+#### Si bien no es infalible, VirusTotal es un recurso popular en la comunidad de equipos de defensa para obtener un consenso general sobre archivos y enlaces sospechosos, así como para recopilar información sobre nuevas amenazas en circulación
+
+
+Necesitarás...
+1. Busca el archivo invoice_payment.exe en TryDetectMe.
+2. Revise la información que se le ha proporcionado. Verá una lista de proveedores de seguridad que han identificado el archivo que le hemos facilitado como peligroso.
+3. Determine cuántos proveedores de seguridad han identificado el archivo como peligroso para responder a la pregunta que aparece a continuación.
+
+
+¿Cuántos proveedores de seguridad han identificado el archivo como peligroso?
+
+Puedes ver el recuento total en la parte superior de la página.
+
+
+
+### 3. CVE: Common Vulnerabilities and Exposures
+
+#### diccionario universal de vulnerabilidades conocidas.
+
+#### A cada vulnerabilidad confirmada se le asigna un identificador único con el formato CVE-AÑO-NÚMERO
+CVE-2025-55182.
+
+#### Si la vulnerabilidad es lo suficientemente importante, incluso puede recibir un nombre.
+##### Es posible que hayas oído hablar de vulnerabilidades como Heartbleed, React2Shell y Log4Shell.
+#### !!! A estas vulnerabilidades se les asigna una puntuación (CVSS) basada en diversos factores, como:
+
+#### 1. Impacto: ¿Qué daños puede ocasionar esta vulnerabilidad?
+#### 2. Complejidad: ¿Es fácil de explotar la vulnerabilidad o no? 
+#### 3. Disponibilidad: ¿Qué probabilidades hay de que alguien pueda explotar esto?
+
+
+#### 1. El tiempo que tarda el desarrollador en crear el parche
+Cuando un investigador descubre una falla,
+suele realizar una divulgación responsable: notifica al desarrollador en privado
+y se le suele dar un plazo estándar de 90 días para crear una solución
+antes de que el CVE se publique de forma masiva.
+
+#### 2. El tiempo que tardan las empresas en aplicar el parche
+Una vez que el CVE y su respectivo parche son públicos, comienza la carrera para las organizaciones:
+
+El promedio general: De acuerdo con reportes globales de ciberseguridad, las empresas tardan un promedio de 43 días en cerrar brechas críticas. Otras métricas globales elevan este promedio hasta los 74 días para la remediación de parches de infraestructura.
+
+Dispositivos críticos y de red: Un estudio de Tenable Research demostró que en plataformas perimetrales (como routers empresariales o firewalls) el tiempo promedio de remediación en América Latina llega a ser de 203 días.
+
+Estándares exigidos: Entidades de ciberseguridad como la CISA obligan a las agencias gubernamentales a corregir fallas "Críticas" en un máximo de 15 días y fallas "Altas" en 30 días.
+
+
+#### Las organizaciones utilizan este tipo de puntuación para priorizar su nivel de riesgo,
+##### abordando primero los riesgos con la puntuación más alta.
+
+#### Estos identificadores funcionan como punto de referencia entre proveedores, investigadores, herramientas de seguridad y documentación
+asegurando que todos los que hablen sobre una vulnerabilidad se refieran al mismo problema
+#### Sitios web como ExploitDB recopilan esta información junto con "Pruebas de Concepto" (PoC),
+que son scripts capaces de demostrar la vulnerabilidad.
+
+Necesitarás...
+1. Busque en la base de datos de vulnerabilidades CVE-2026-1337.
+2. Revisar los detalles sobre la vulnerabilidad.
+3. Encuentra el CVSS
+puntuación para responder a la pregunta.
+
+
+
+#### CVSS: Common Vulnerability Scoring System
+##### score: Impact, Complexity, Availability
+
+Ej: CVE-2026-1337
+CRITICAL 10/10 high
+Existe una vulnerabilidad crítica de inyección SQL en las versiones 3.2.0 a 3.4.5 de Apache WebPortal que permite a atacantes remotos ejecutar comandos SQL arbitrarios mediante el parámetro "userId" en el módulo de autenticación de inicio de sesión. Esta vulnerabilidad puede explotarse sin autenticación y podría comprometer completamente la base de datos, incluyendo el acceso no autorizado a credenciales de usuario confidenciales, tokens de sesión y datos confidenciales de la aplicación.
+
+CVSS Version 2.0
+AV:N/AC:L/Au:N/C:C/I:C/A:C
+
+#### CVSS Metrics
+ 
+Attack Vector
+NETWORK
+
+Attack Complexity
+LOW
+
+Authentication
+NONE
+
+Confidentiality Impact
+COMPLETE
+
+Integrity Impact
+COMPLETE
+
+Availability Impact
+COMPLETE
+
+
+Weakness Enumeration
+CWE-89SQL Injection
+Vulnerability Details
+
+Exploitability: Proof of concept exploit code is publicly available
+
+Impact: Complete compromise of database integrity and confidentiality
+
+Solution: Update to Apache WebPortal version 3.5.0 or later.
+Implement prepared statements and parameterized queries.
+
+Affected Products
+Vendor:Apache Software Foundation
+Product:WebPortal
+Versions:3.2.0 - 3.4.5
+Status:Vulnerable
+
+
+
+### MAN: Tech Doc
+
+#### Cada herramienta o plataforma de seguridad importante proporciona su propia documentación,
+que es la más fiable y actualizada que cualquier tutorial de terceros
+
+Cuando se trata de solucionar problemas de comportamiento inesperado o de comprender cómo usar una herramienta de una manera determinada
+##### la documentación oficial siempre debe ser lo primero que se consulte, no lo último.
+
+man <command>
+man nc
+
+
+```
+user@thm$ man nc
+NC
+																	  
+NAME
+nc — arbitrary TCP and UDP connections and listens
+
+SYNOPSIS
+nc  [-46bCDdFhklNnrStUuvZz]  [-I  length]  [-i  interval]  [-M  ttl] [-m minttl] [-O length] [-P proxy_username] [-p source_port] [-q seconds] [-s sourceaddr] [-T keyword] [-V rtable] [-W recvlimit] [-w timeout]
+[-X proxy_protocol] [-x proxy_address[:port]] [destination] [port]
+     
+```
+
+1. Busque en las páginas del MANUAL la herramienta nc (netcat).
+2. Busca el comando de ejemplo que te permite abrir una conexión para host.example.com en el puerto 42 (este se encuentra al final de la salida).
+3. Copie y pegue el comando para responder a la pregunta que aparece a continuación.
+
+
+GitHub puede ser un gran recurso para mantenerse actualizado sobre las últimas amenazas y vulnerabilidades
+#### Los investigadores a menudo publican pruebas de concepto (poc) código, herramientas de explotación e informes técnicos detallados allí
+##### que suelen ser más rápidos que los canales oficiales
+
+busca directamente en GitHub un identificador (por ejemplo, CVE-2026-1337
+es probable que se encuentren repositorios que contengan código de prueba de concepto, scripts de escaneo o análisis detallados de la vulnerabilidad
+
+#### no todas las pruebas de concepto (PoC) son igualmente fiables
+##### Algunas están incompletas, otras tienen fallos intencionados y
+##### en ocasiones, un repositorio de "PoC" es malicioso en sí mismo
+#### Siempre verifica lo que estás a punto de ejecutar.
+
+
+
+
+# Linux Fundamentals
+
+
+Se puede decir que Linux es mucho más intimidante que otros sistemas operativos como Windows.
+Ambas variantes tienen sus ventajas y desventajas.
+Por ejemplo, Linux es considerablemente más ligero,
+¡y te sorprendería saber que probablemente lo hayas usado de una forma u otra todos los días!
+
+Linux impulsa cosas como:
+
+Sitios web que usted visita
+Paneles de control/entretenimiento del automóvil
+Sistemas de punto de venta (TPV), como cajas registradoras y terminales de pago en tiendas.
+Infraestructuras críticas como controladores de semáforos o sensores industriales.
+Teléfonos y dispositivos informáticos pequeños similares
+mucho más!
+
+Implementación de su primera máquina Linux
+
+Esta sala cuenta con una máquina Ubuntu Linux con la que puedes interactuar directamente desde tu navegador mientras sigues el material de la sala.
+Para empezar, simplemente pulsa el botón verde "Iniciar máquina" que aparece a continuación.
+
+Una vez iniciado, aparecerá una tarjeta en la parte superior de la sala:
+
+Aquí encontrará toda la información del equipo instalado en la sala, incluyendo la dirección IP y el temporizador de caducidad, además de botones para gestionarlo.
+Recuerde finalizar el equipo una vez que haya terminado de usar la sala.
+Encontrará más información al respecto en la sala de tutoriales.
+
+
+## Comandos
+
+#### 1. whoami: Te indica quién eres en el sistema.
+
+#### 2. echo: mostrar algún texto específico que se proporciona
+Para mostrar el texto "TryHackMe", podemos usar `echo TryHackMe`.
+Si hay varias palabras, debemos ponerlas entre comillas
+Por ejemplo, `echo "hola mundo"`.
+Por ejemplo, `echo "hola mundo"`.
+
+Usar `echo` es solo el comienzo de una habilidad muy importante en ciberseguridad:
+poder generar información y enviarla.
+
+Necesitarás...
+1. Utilice el comando whoami para ver quién es usted en el sistema.
+2. Pulse la tecla Intro para ejecutar el comando.
+3. Ahora, usa echo para mostrar el texto TryHackMe.
+
+
+### Muévete sin tocar el ratón.
+
+Aprendamos a navegar por los archivos del sistema a través de la terminal. Cuatro comandos realizan casi toda la navegación.
+
+
+#### 3. ls lista el contenido de la carpeta actual
+#### 4. cd cambiar de directorio — moverse a una carpeta
+#### 5. cat muestra el contenido de un archivo.
+#### 6. pwd imprimir directorio de trabajo — "¿dónde estoy?"
+
+
+### Encontrar cosas: Buscar y navegar por archivos de manera eficiente
+
+#### find busca archivos por su nombre.
+Por ejemplo, find -name passwords.txt
+
+#### El comando grep busca texto en el interior.
+Por ejemplo, grep "password123" passwords.txt
+
+En tu carpeta personal hay un archivo de registro de un servidor web llamado access.log, que tiene cientos de líneas. En algún lugar dentro hay una bandera.
+
+1. Escribe cd /home/tryhackme para volver a tu carpeta de inicio.
+2. Ejecuta grep "THM" access.log para usar grep para buscar en el archivo de registro por nosotros.
+3. Copie la salida THM{} que se ha encontrado.
+
+
+
+### Combinar Comandos
+
+#### !!! Existe un conjunto de caracteres especiales que permiten combinar comandos
+##### se denominan "operadores" y le indican a Linux cómo debe procesar ambos comandos
+##### Desde la combinación de comandos hasta la redirección
+##### (enviar la salida de los comandos a otro lugar)
+
+#### 7. & El comando se ejecuta en segundo plano y resulta útil para aquellos que tardan en completarse o que se desean mantener en ejecución.
+#### 8. && Ejecuta ambos comandos, pero espera a que el primero termine antes de ejecutar el siguiente. Como un juego de dominó.
+#### 9. > Se utiliza para redirigir la salida. Podemos tomar la salida de un comando y enviarla a un archivo. Este operador sobrescribirá todo lo que exista en el archivo.
+#### 10. >> Este redireccionador hace lo mismo, pero en lugar de sobrescribir, simplemente agregará la salida al final del archivo.
+
+Por ejemplo, `echo hey > welcome` crea un archivo llamado `welcome` que contiene el texto "hey". Podemos usar `cat welcome` para verificar que funcionó.
+ 
+Necesitarás...
+1. En una sola línea, usa echo para imprimir el texto "TryHackMe". Usa el redireccionador > para guardarlo como un archivo llamado thm. Por ejemplo, echo "test" > thm.
+2. Ahora inténtalo de nuevo, pero usando el redireccionador >> con el texto "thm". Luego puedes comprobarlo usando cat thm. Observa que no ha reemplazado por completo el texto anterior.
+
+
+
+# Windows
+
+
+## New Technology File System
+
+
+
+## Folders
+
+### (C:\Windows): contiene el SO
+#### La carpeta no tiene por qué estar necesariamente en la unidad C. Puede estar en cualquier otra unidad y, técnicamente, en una carpeta diferente.
+
+#### Aquí es donde entran en juego las variables de entorno, más específicamente las variables de entorno del sistema
+
+#### !!! la variable de entorno del sistema para el directorio de Windows es %windir%.
+
+##### Según Microsoft (se abre en una pestaña nueva), "Las variables de entorno almacenan información sobre el entorno del sistema operativo
+
+###### Esta información incluye detalles como la ruta del sistema operativo, el número de procesadores utilizados por el sistema operativo y la ubicación de las carpetas temporales".
+
+#### !!! La carpeta System32 contiene los archivos importantes que son fundamentales para el sistema operativo.
+
+Debe proceder con extrema precaución al interactuar con esta carpeta. Eliminar accidentalmente cualquier archivo o carpeta dentro de System32 puede provocar que Windows se bloquee.
+
+Inoperativo. Lea más sobre esta acción aquí (se abre en una pestaña nueva). 
+
+#### !!! Nota: Muchas de las herramientas que se tratarán en la serie Fundamentos de Windows se encuentran dentro de la carpeta System32.
+
+
+
+### User Accounts, Profiles and Permissions
+
+#### En un sistema Windows local típico, las cuentas de usuario pueden ser de dos tipos: Administrador y Usuario estándar. 
+##### El tipo de cuenta de usuario determinará qué acciones puede realizar el usuario en ese sistema Windows específico. 
+
+#### 1. Un administrador puede realizar cambios en el sistema: agregar usuarios, eliminar usuarios, modificar grupos, modificar la configuración del sistema, etc.
+#### 2. Un usuario estándar solo puede realizar cambios en las carpetas/archivos que se le atribuyen y no puede realizar cambios a nivel del sistema, como instalar programas.
+
+Actualmente has iniciado sesión como administrador.
+#### Existen varias maneras de determinar qué cuentas de usuario existen en el sistema.
+
+Una forma es hacer clic en el menú Inicio y escribir "Otro usuario".
+Debería aparecer un acceso directo a Configuración del sistema > Otros usuarios.
+`Start Menu and type Other User. A shortcut to System Settings > Other users`.
+
+
+Como usted es el administrador, verá la opción de agregar a otra persona a este PC.
+
+Nota: Un usuario estándar no verá esta opción.  
+
+Haz clic en la cuenta de usuario local. Deberían aparecer más opciones: Cambiar tipo de cuenta y Eliminar.
+
+Haz clic en Cambiar tipo de cuenta. El valor que aparece en el menú desplegable (o el valor resaltado si haces clic en el menú desplegable) es el tipo de cuenta actual.
+
+
+
+### Comando: lusrmgr.msc Local User and Group Management
+
+Nota: El cuadro de diálogo Ejecutar nos permite abrir elementos rápidamente. 
+
+Volviendo a lusrmgr, debería ver dos carpetas: Usuarios y Grupos. 
+
+#### Si haces clic en Grupos, verás los nombres de todos los grupos locales junto con una breve descripción de cada uno. 
+
+#### Cada grupo tiene permisos asignados, y el administrador es quien asigna o agrega los usuarios a los grupos. Cuando un usuario se asigna a un grupo, hereda los permisos de dicho grupo. Un usuario puede pertenecer a varios grupos.
+
+#### Nota: Si hace clic en Agregar a otra persona a este PC desde Otros usuarios, se abrirá Usuarios locales y Administración.
+
+
+
+
+### User Account Control
+
+#### !!! La gran mayoría de los usuarios domésticos inician sesión en sus sistemas Windows como administradores locales
+cualquier usuario con cuenta de administrador puede realizar cambios en el sistema.
+
+Un usuario no necesita privilegios elevados para realizar tareas que no los requieren, como navegar por internet o trabajar con un documento de Word
+Estos privilegios elevados aumentan el riesgo de que el sistema se vea comprometido, ya que facilitan la infección por malware
+En consecuencia, dado que la cuenta de usuario puede modificar el sistema
+el malware se ejecutaría con las credenciales del usuario que ha iniciado sesión.
+
+#### Para proteger al usuario local con tales privilegios, Microsoft introdujo el Control de cuentas de usuario 
+
+Este concepto se introdujo por primera vez con el efímero Windows Vista (se abre en una pestaña nueva) y continuó con las versiones de Windows que le siguieron.
+
+Nota: El Control de cuentas de usuario (UAC) no se aplica de forma predeterminada a la cuenta de administrador local integrada. 
+
+Cómo funciona el Control de cuentas de usuario (UAC)? Cuando un usuario con una cuenta de administrador inicia sesión en un sistema, la sesión actual no se ejecuta con permisos elevados
+
+#### !!! Si se requiere ejecutar una operación que exige privilegios de nivel superior, se le pedirá al usuario que confirme si autoriza su ejecución
+
+Veamos el programa en la cuenta con la que has iniciado sesión actualmente, la cuenta de administrador integrada. Haz clic con el botón derecho para ver sus propiedades.
+
+#### wireshark: En la pestaña Seguridad, podemos ver los usuarios/grupos y sus permisos para este archivo. Observe que el usuario estándar no aparece en la lista.
+
+Inicie sesión como usuario estándar e intente instalar este programa.
+Para ello, puede acceder al equipo mediante escritorio remoto con la cuenta de usuario estándar. 
+
+Nota: Tienes el nombre de usuario y la contraseña del usuario estándar.
+Puedes verlos en lusrmgr.msc.
+
+Antes de instalar el programa, fíjate en el icono.
+¿Notas la diferencia? Cuando inicias sesión como usuario estándar, el icono del escudo aparece en el icono predeterminado del programa.
+Mira abajo.
+
+
+
+
+### Settings, Control Panel
+
+#### los lugares principales para realizar cambios son el menú Configuración y el Panel de control.
+los lugares principales para realizar cambios son el menú Configuración y el Panel de control.
+
+
+
+
+# Windows 2 
+
+
+
+
+
+
+
+
+
+    
+
 
 

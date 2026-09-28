@@ -14570,9 +14570,133 @@ el servicio lance un NotFoundException.
 
 
 
+## Recursos Testing
+
+
+1. Mock de repos
+permite controlar completamente escenarios como:
+
+repository.findOne()
+    ↓
+encuentra usuario
+
+repository.findOne()
+    ↓
+no encuentra usuario
+
+repository.save()
+    ↓
+éxito
+
+repository.save()
+    ↓
+lanza QueryFailedError
+
+
+2. logica
+
+Por ejemplo CategoriesService:
+
+create()
+ ├── crea categoría
+ ├── persiste
+ ├── transforma a DTO
+ └── maneja UNIQUE
+ 
+UsersService:
+
+create()
+ ├── normaliza email
+ ├── comprueba email
+ ├── comprueba username
+ ├── hashea password
+ ├── persiste
+ └── maneja UNIQUE
+
+AuthService
+
+login()
+ ├── usuario inexistente
+ ├── usuario inactivo
+ ├── password incorrecto
+ ├── password correcto
+ ├── genera tokens
+ └── actualiza refresh token
+
+TasksService:
+
+create()
+ ├── sin categorías
+ ├── con categorías
+ ├── categoría inexistente
+ ├── categoría de otro usuario
+ └── persiste tarea 
+ 
+
+3. Testing module
+
+
+```
+import { Test } from '@nestjs/testing';
+
+const module = await Test.createTestingModule({
+  providers: [
+    MiService,
+  ],
+}).compile();
+```
+
+nuestro CategoriesService tiene:
+
+podemos simplemente registrar CategoriesService.
+Nest preguntaría:
+"¿Dónde está el Repository<CategoryEntity>?"
+
+en un unit test nosotros se lo proporcionamos mediante un mock.
+
+aparece:
+
+TestingModule
+      +
+mock
+      ↓
+unidad aislada
+
+
+
+
 
 ## 1. AuthService (auth.service.spec.ts): Login, hashing con bcrypt y generación del JWT.
 
+
+### 1. Register:
+
+#### 2. create()
+
+
+##### Necesidad de updateHashedRefreshToken(): toma dos tokens
+
+
+### Test de create userService:
+
+##### Contrato minimo para create()
+
+UserRepository Mock
+│
+├── findOne()
+│   ├── email → User | null
+│   └── username → User | null
+│
+├── create()
+│   └── datos → User
+│
+└── save()
+    ├── éxito → User
+    └── error → throw
+
+
+
+    
 
 
 
@@ -14592,6 +14716,7 @@ el servicio lance un NotFoundException.
 
 
 ## 5. HttpExceptionFilter (http-exception.filter.spec.ts):  Filtro global de excepciones
+
 
 
 
@@ -15434,6 +15559,7 @@ Service
 
 
 
+# Ownership: en service
 
 
 
