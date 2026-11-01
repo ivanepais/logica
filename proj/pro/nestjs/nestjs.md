@@ -15563,14 +15563,1769 @@ Service
 
 
 
-
-
-
-
-
     
 
 
+
+# Producción
+
+
+1. main
+
+```
+import { NestFactory, Reflector } from '@nestjs/core';
+import { ClassSerializerInterceptor, ValidationPipe, Logger } from '@nestjs/common';
+import { CustomExceptionFilter } from './common/filters/http-exception.filter';
+import { ConfigService } from '@nestjs/config';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { AppModule } from './app.module';
+
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule);
+  const logger = new Logger('Bootstrap');
+  const configService = app.get(ConfigService);
+
+  const port = configService.get<number>('PORT') || 8000;
+  const apiPrefix = configService.get<string>('API_PREFIX') || 'api/v1';
+  const environment = configService.get<string>('ENVIRONMENT') || 'development';
+  const showSwagger = configService.get<string>('SHOW_SWAGGER') === 'true' || environment !== 'production';
+
+  // 1. Prefijo global
+  app.setGlobalPrefix(apiPrefix);
+
+  // 2. Habilitar CORS (Necesario para consumo externo y Swagger)
+  app.enableCors({
+    origin: true,
+    credentials: true,
+  });
+
+  // 3. Pipes, Filtros e Interceptores globales (Tus configuraciones)
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+    }),
+  );
+
+  app.useGlobalFilters(new CustomExceptionFilter());
+  app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
+
+  // 4. Configuración de Swagger UI (Condicional)
+  if (showSwagger) {
+    const config = new DocumentBuilder()
+      .setTitle('Task Management API')
+      .setDescription(
+        'API REST multi-tenant para gestión de tareas y categorías construida con NestJS, TypeORM y PostgreSQL.',
+      )
+      .setVersion('1.0')
+      .addTag('Auth', 'Endpoints de autenticación y registro')
+      .addTag('Categories', 'Gestión de categorías')
+      .addTag('Tasks', 'Gestión de tareas')
+      .addBearerAuth(
+        {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+          name: 'JWT',
+          description: 'Ingresa el token JWT sin el prefijo Bearer',
+          in: 'header',
+        },
+        'JWT-auth',
+      )
+      .addBearerAuth(
+        {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+          name: 'JWT Refresh Token',
+          description: 'Ingresa tu Refresh Token (solo para /auth/refresh)',
+          in: 'header',
+        },
+        'refresh-token',
+      )
+      .build();
+
+    const document = SwaggerModule.createDocument(app, config);
+
+    SwaggerModule.setup(`${apiPrefix}/docs`, app, document, {
+      swaggerOptions: {
+        persistAuthorization: true, // Mantiene el JWT guardado al recargar la página
+        tagsSorter: 'alpha',
+        operationsSorter: 'alpha',
+      },
+    });
+
+    logger.log(`📄 Documentación Swagger lista en: /${apiPrefix}/docs`);
+  }
+
+  // 5. Escuchar en '0.0.0.0' (Requerido por Koyeb / Docker)
+  await app.listen(port, '0.0.0.0');
+  logger.log(`🚀 Aplicación corriendo en el puerto ${port} [Entorno: ${environment}]`);
+}
+
+bootstrap();
+```
+
+
+app.listen(port, '0.0.0.0'): Sin '0.0.0.0', el proxy de Koyeb no puede redirigir el tráfico web a tu aplicación dentro del contenedor.
+
+app.enableCors(): Permite que las llamadas desde la interfaz de Swagger o desde un navegador no sean bloqueadas.
+
+Control con SHOW_SWAGGER: Si en el panel de Koyeb configuras SHOW_SWAGGER=true, la interfaz cargará en producción sin importar la variable ENVIRONMENT.
+
+persistAuthorization: true: Te ahorra volver a ingresar el token Bearer en Swagger cada vez que refrescas la pestaña.
+
+Ruta dinámica para Swagger: Ahora usa ${apiPrefix}/docs (por ejemplo, /api/v1/docs), manteniendo consistencia con el prefijo global de tu API.
+
+
+
+2. app.module
+
+
+```
+import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import * as Joi from 'joi';
+
+import { TasksModule } from './tasks/tasks.module';
+import { UsersModule } from './users/users.module';
+import { AuthModule } from './auth/auth.module';
+import { CategoriesModule } from './categories/categories.module';
+
+@Module({
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      validationSchema: Joi.object({
+        PORT: Joi.number().default(8000),
+        ENVIRONMENT: Joi.string()
+          .valid('development', 'production', 'test')
+          .default('development'),
+        API_PREFIX: Joi.string().default('api/v1'),
+        SHOW_SWAGGER: Joi.string().default('false'),
+
+        DB_HOST: Joi.string().required(),
+        DB_PORT: Joi.number().default(5432),
+        DB_USERNAME: Joi.string().required(),
+        DB_PASSWORD: Joi.string().required(),
+        DB_DATABASE: Joi.string().required(),
+
+        JWT_SECRET: Joi.string().required(),
+        JWT_EXPIRES_IN: Joi.string().default('15m'),
+        JWT_REFRESH_SECRET: Joi.string().required(),
+        JWT_REFRESH_EXPIRES_IN: Joi.string().default('7d'),
+      }),
+    }),
+
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => {
+        const isProd = configService.get<string>('ENVIRONMENT') === 'production';
+
+        return {
+          type: 'postgres',
+          host: configService.get<string>('DB_HOST'),
+          port: configService.get<number>('DB_PORT'),
+          username: configService.get<string>('DB_USERNAME'),
+          password: configService.get<string>('DB_PASSWORD'),
+          database: configService.get<string>('DB_DATABASE'),
+          autoLoadEntities: true,
+          synchronize: false,
+          logging: isProd ? ['error'] : ['query', 'error'],
+          ssl: isProd ? { rejectUnauthorized: false } : false,
+        };
+      },
+    }),
+
+    AuthModule,
+    TasksModule,
+    UsersModule,
+    CategoriesModule,
+  ],
+  controllers: [],
+  providers: [],
+})
+export class AppModule {}
+```
+
+Soporte SSL dinámico (ssl: isProd ? { rejectUnauthorized: false } : false):
+Neon.tech rechaza conexiones sin cifrado TLS. Esta bandera permite que en desarrollo local te conectes a tu PostgreSQL de Docker sin SSL, mientras que en producción la activa automáticamente.
+
+Control de Logs según el entorno (logging: isProd ? ['error'] : ['query', 'error']):
+Evita saturar la consola de Koyeb registrando cada consulta SQL en producción, registrando únicamente las consultas que fallen.
+
+Validación de SHOW_SWAGGER en Joi:
+Añadido al esquema de validación para permitir la activación manual de Swagger en Koyeb mediante variables de entorno.
+
+Ajuste del puerto por defecto (8000):
+Alineado con el valor por defecto configurado en main.ts
+
+
+3. data-source
+
+```
+import { DataSource } from 'typeorm';
+import * as dotenv from 'dotenv';
+
+dotenv.config();
+
+const isProd = process.env.ENVIRONMENT === 'production';
+
+export const AppDataSource = new DataSource({
+  type: 'postgres',
+  host: process.env.DB_HOST || 'localhost',
+  port: parseInt(process.env.DB_PORT || '5432', 10),
+  username: process.env.DB_USERNAME || 'postgres',
+  password: process.env.DB_PASSWORD || 'postgres',
+  database: process.env.DB_DATABASE || 'taskmanager_db',
+  entities: [__dirname + '/../**/*.entity{.ts,.js}'],
+  migrations: [__dirname + '/migrations/*{.ts,.js}'],
+  synchronize: false,
+  logging: isProd ? ['error'] : ['query', 'error'],
+  // Configuración SSL requerida por Neon.tech en producción
+  ssl: isProd ? { rejectUnauthorized: false } : false,
+});
+
+export default AppDataSource;
+```
+
+Soporte SSL dinámico (ssl: isProd ? { rejectUnauthorized: false } : false):
+Evita errores de handshake SSL cuando la CLI de TypeORM corra migraciones contra Neon.tech en Koyeb, manteniendo la compatibilidad sin SSL para tu entorno local.
+
+Optimización de Logs:
+Reduce el ruido en la consola de Koyeb durante la ejecución de migraciones en producción.
+
+Mantenimiento de rutas relativas con __dirname:
+Las rutas [__dirname + '/../**/*.entity{.ts,.js}'] funcionan tanto en desarrollo con ts-node como en producción sobre la carpeta de compilación dist/.
+
+
+4. package.json
+
+```
+"scripts": {
+  "build": "nest build",
+  "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+  "start": "nest start",
+  "start:dev": "nest start --watch",
+  "start:debug": "nest start --debug --watch",
+  "start:prod": "node dist/main.js",
+  "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
+  "migration:generate": "npm run typeorm -- migration:generate -d src/database/data-source.ts",
+  "migration:run": "npm run typeorm -- migration:run -d src/database/data-source.ts",
+  "migration:revert": "npm run typeorm -- migration:revert -d src/database/data-source.ts",
+  "migration:run:prod": "npx typeorm migration:run -d dist/database/data-source.js"
+}
+```
+
+
+
+5. Dockerfile: Multi-stage build
+
+Rendimiento y seguridad: Separa la etapa de compilación (que requiere TypeScript y dependencias de desarrollo) de la etapa de ejecución final.
+
+Imágenes livianas: Al finalizar, solo incluye las dependencias necesarias de producción y la carpeta dist/ compilada,
+reduciendo drásticamente el tamaño del contenedor en Koyeb.
+
+Ejecución de migraciones: Permite ejecutar automáticamente migration:run
+contra Neon.tech antes de iniciar la API en Koyeb.
+
+```
+# ================================
+# Etapa 1: Build (Compilador)
+# ================================
+FROM node:20-alpine AS builder
+
+WORKDIR /usr/src/app
+
+# Copiar archivos de dependencias
+COPY package*.json ./
+
+# Instalar todas las dependencias (incluyendo devDependencies para compilar)
+RUN npm ci
+
+# Copiar el código fuente
+COPY . .
+
+# Compilar la aplicación NestJS a JavaScript (dist/)
+RUN npm run build
+
+# ================================
+# Etapa 2: Runner (Producción)
+# ================================
+FROM node:20-alpine AS runner
+
+WORKDIR /usr/src/app
+
+ENV NODE_ENV=production
+
+# Copiar archivos de dependencias
+COPY package*.json ./
+
+# Instalar ÚNICAMENTE dependencias de producción
+RUN npm ci --only=production && npm cache clean --force
+
+# Copiar la carpeta compilada desde la etapa builder
+COPY --from=builder /usr/src/app/dist ./dist
+
+# Puerto expuesto por defecto en Koyeb
+EXPOSE 8000
+
+# Comando de inicio: Corre migraciones pendientes en Neon.tech y luego arranca la API
+CMD ["sh", "-c", "npx typeorm migration:run -d dist/database/data-source.js && node dist/main.js"]
+```
+
+
+
+1. Neon.tech
+
+Koyeb
+pedirá ingresar las variables de entorno (DB_HOST, DB_USERNAME, DB_PASSWORD, etc.).
+
+Necesitamos tener la base de datos ya creada en Neon para copiar esas credenciales directamente
+
+
+nuevo Proyecto
+Dashboard
+
+Project Name: Asigna un nombre a tu proyecto (por ejemplo: task-manager-db).
+
+PostgreSQL Version: Puedes dejar la versión por defecto (PostgreSQL 16 o 15).
+
+Region: Elige la región recomendada o más cercana a tu tráfico (por ejemplo, aws-us-east-1 o aws-eu-central-1).
+
+
+Cadena de Conexión y Credenciales:
+ventana Connection Details
+modo PostgreSQL o la cadena de conexión (Connection String).
+
+`postgres://alex:AbCd1234xYz@ep-cool-flower-123456.us-east-1.aws.neon.tech/neondb?sslmode=require`
+
+Guarda o copia esa URL, o extrae los valores individuales que vas a necesitar:
+
+DB_HOST: ep-cool-flower-123456.us-east-1.aws.neon.tech (solo el dominio)
+
+DB_PORT: 5432
+
+DB_USERNAME: alex
+
+DB_PASSWORD: AbCd1234xYz
+
+DB_DATABASE: neondb
+
+
+
+2. Koyeb
+
+nuevo servicio
+Vincular el repositorio de la API
+
+Create App (o Create Service).
+Deployment Method, selecciona GitHub.
+
+Busca y selecciona el repositorio de tu proyecto NestJS.
+
+Selecciona la rama principal (main o master).
+
+
+método de compilación
+Usar el Dockerfile multietapa creado anteriormente
+
+En la opción Builder, selecciona Dockerfile.
+
+Koyeb detectará automáticamente el archivo Dockerfile en la raíz de tu proyecto.
+
+En Exposed Port (Puerto Expuesto),
+cambia el valor a 8000 (debe coincidir con la variable PORT).
+
+En Instance Type, selecciona la opción gratuita/económica (Nano o Micro).
+
+
+
+Variables de Entorno
+Inyectar credenciales de Neon y configuración de producción
+
+
+PORT: 8000
+
+ENVIRONMENT: production
+
+API_PREFIX: api/v1
+
+SHOW_SWAGGER: true
+
+DB_HOST: ep-cool-flower-123456.us-east-1.aws.neon.tech (Copiado de Neon)
+
+DB_PORT: 5432
+
+DB_USERNAME: tu_usuario_neon (Copiado de Neon)
+
+DB_PASSWORD: tu_password_neon (Copiado de Neon)
+
+DB_DATABASE: neondb (O el nombre que le diste en Neon)
+
+JWT_SECRET: una_clave_secreta_larga_y_segura_para_prod
+
+JWT_EXPIRES_IN: 15m
+
+JWT_REFRESH_SECRET: otra_clave_secreta_para_refresh_token
+
+JWT_REFRESH_EXPIRES_IN: 7d
+
+
+
+Desplegar la aplicación
+Iniciar el proceso de Build y Deploy
+
+Haz clic en el botón Deploy.
+
+Koyeb comenzará a descargar las dependencias, compilar la imagen Docker y ejecutar el contenedor.
+
+Dirígete a la pestaña Logs dentro del panel de Koyeb para observar la ejecución:
+
+Verás el proceso de compilación TypeScript.
+
+Luego verás la salida de la migración: query: CREATE TABLE users....
+
+Finalmente el mensaje de inicio: 🚀 Aplicación corriendo en el puerto 8000 [Entorno: production].
+
+
+Comprobar la disponibilidad pública
+Probar la API en vivo
+
+
+Una vez que el estado del servicio cambie a Healthy, copia la URL pública asignada por Koyeb (por ejemplo: [https://task-manager-xyz.koyeb.app](https://task-manager-xyz.koyeb.app)).
+
+Abre en tu navegador la ruta de la documentación:
+[https://task-manager-xyz.koyeb.app/api/v1/docs](https://task-manager-xyz.koyeb.app/api/v1/docs)
+
+Prueba crear un usuario desde la interfaz de Swagger UI para validar la conexión y persistencia con Neon.tech.
+
+
+
+
+
+3. render
+
+haz clic en New + (arriba a la derecha) y selecciona Web Service.
+Selecciona la opción Build and deploy from a Git repository y haz clic en Next.
+Busca y selecciona tu repositorio task-manager-api (si no aparece, otorga permisos a Render para ver tus repositorios de GitHub).
+
+En el formulario de creación, completa los campos con los siguientes datos:
+
+    Name: task-manager-api (o el nombre que prefieras para tu subdominio de Render).
+
+    Region: Elige la región más cercana a tu base de datos de Neon (ej. Oregon (US West) o Frankfurt (EU)).
+
+    Language / Environment: Selecciona Docker
+Render detectará automáticamente tu Dockerfile en la raíz del proyecto y compilará la imagen utilizando Node 24 Alpine).
+
+Branch: main
+
+Instance Type: Selecciona el plan Free ($0 / month
+    
+
+Configurar Variables de Entorno (Environment Variables)
+
+En la misma pantalla de configuración, desplázate hacia abajo hasta la sección Environment Variables y añade las siguientes claves:
+
+Nota sobre el puerto: Render asigna automáticamente una variable de entorno PORT en el contenedor. Tu main.ts la leerá de forma transparente gracias a process.env.PORT.
+
+Paso 5: Desplegar y Monitorear Logs
+
+    Haz clic en el botón Create Web Service.
+
+    Render comenzará el proceso de compilación del Dockerfile:
+
+        Fase 1 (Build): Instalará dependencias y compilará TypeScript (npm run build).
+
+        Fase 2 (Start): Ejecutará las migraciones de TypeORM en Neon.tech y arrancará la aplicación NestJS.
+
+    Una vez finalizado, verás el mensaje 🚀 Aplicación corriendo en el puerto... en los logs y un estado Live en color verde.
+
+
+
+
+# Contrato Api frontend
+
+
+1. Configurar CORS en NestJS (Backend)
+
+los navegadores bloquean las peticiones que se hacen desde un dominio (tu frontend) hacia otro distinto (tu API en Render).
+
+```
+// src/main.ts
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule);
+
+  app.enableCors({
+    origin: [
+      'http://localhost:5173',          // Desarrollo local (Vite/React/Vue)
+      'http://localhost:4200',          // Desarrollo local (Angular)
+      'https://tu-frontend.vercel.app', // Dominio de producción
+    ],
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    credentials: true,                  // Si usas cookies o headers autorizados
+  });
+
+  app.setGlobalPrefix(process.env.API_PREFIX || 'api/v1');
+  await app.listen(process.env.PORT || 8000);
+}
+```
+
+
+2. Base URL en el Frontend (.env)
+
+```
+# .env.development (local)
+VITE_API_URL=http://localhost:8000/api/v1
+
+# .env.production (producción)
+VITE_API_URL=https://task-manager-api-xyz.onrender.com/api/v1
+```
+
+
+3. Crear un cliente HTTP centralizado con Interceptores
+
+En tu frontend (usando axios o la API nativa fetch), crea una instancia centralizada para inyectar automáticamente el token JWT en cada petición enviada al servidor
+
+
+```
+// api/client.ts (Ejemplo con Axios)
+import axios from 'axios';
+
+export const apiClient = axios.create({
+  baseURL: import.meta.env.VITE_API_URL,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
+// Interceptor para adjuntar el Bearer Token automáticamente
+apiClient.interceptors.request.use((config) => {
+  const token = localStorage.getItem('access_token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
+// Interceptor para capturar expiración de sesión (401 Unauthorized)
+apiClient.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      localStorage.removeItem('access_token');
+      window.location.href = '/login';
+    }
+    return Promise.reject(error);
+  }
+);
+```
+
+
+4. Compartir Modelos y Contratos de Datos (Interfaces DTO)
+
+Crea archivos de definición de tipos en tu frontend que coincidan exactamente con la estructura que envía tu API. Esto evita errores al consumir atributos:
+
+
+```
+// types/task.ts
+export interface Task {
+  id: string;
+  title: string;
+  description?: string;
+  status: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED';
+  created_at: string;
+}
+
+export interface CreateTaskDto {
+  title: string;
+  description?: string;
+}
+```
+
+
+5. Control de Estados de Carga (Soporte para "Cold Start")
+
+Dado que Render en el plan gratuito entra en suspensión (spin down) tras 15 minutos de inactividad
+la primera petición del frontend puede demorar hasta 30 segundos en responder mientras el servidor "despierta".
+
+El frontend debe contemplar esto en la experiencia de usuario:
+Indicadores visuales (Spinners / Loaders): Evita dejar la pantalla en blanco.
+Manejo de Timeouts: Configura un tiempo límite de respuesta generoso (ej. 15-30 segundos) para evitar abortar la petición mientras el contenedor levanta.
+
+```
+[ Frontend Form ]  ---> POST /api/v1/auth/login
+                   <--- Recibe { access_token }
+                   ---> Guarda token en localStorage / memoria
+
+[ Frontend View ]  ---> GET /api/v1/tasks (Header: Authorization: Bearer <token>)
+                   <--- Recibe Array de Task objetos
+```
+
+
+
+## Contrato
+
+                       
+1. Requisitos y Tecnologías para el Contrato
+
+Un contrato de API es la definición formal de cómo se comunican ambos sistemas.
+
+Requisitos:
+
+1. Rutas y Métodos HTTP: Qué endpoints existen (ej. POST /api/v1/auth/login, GET /api/v1/tasks).
+
+2. Estructura de las Peticiones (Requests):
+
+Encabezados obligatorios (ej. Authorization: Bearer <token>).
+
+Parámetros de ruta o consulta (ej. ?status=COMPLETED&limit=10).
+
+Esquema del cuerpo (Body DTOs) con tipos y validaciones (ej. title obligatorio de max 50 caracteres).    
+
+3. Estructura de las Respuestas (Responses):
+
+Códigos de estado HTTP esperados (200 OK, 201 Created, 400 Bad Request, 401 Unauthorized).
+
+Esquema exacto del JSON retornado en caso de éxito.
+
+Esquema estándar de errores (ej. { statusCode, message, error, timestamp }).
+
+4. Mecanismo de Autenticación: Especificación del esquema JWT Bearer
+
+
+
+OpenAPI 3.0 (Swagger): Es el estándar global (en formato JSON o YAML).
+Como tu API en NestJS ya usa Swagger, ya tienes el contrato generado automáticamente
+
+TypeScript Interfaces / DTOs: Para definir los tipos de datos exactos en ambos lados.
+Generadores de Código de Frontend (Code Generators):
+
+
+openapi-typescript: Convierte el esquema de Swagger de NestJS en tipos de TypeScript para tu Frontend.
+
+orval o @hey-api/openapi-ts: Lee el Swagger y genera automáticamente todos los servicios HTTP (Axios/Fetch/React Query/Angular) con autocompletado y tipos perfectos.
+
+
+
+### Contrato en front o backend:
+
+### 1. Backend-First / Code-First
+
+El contrato nace en el Backend y el Frontend lo consume.
+NestJS (Back) define los DTOs y decoradores de @nestjs/swagger.
+    
+NestJS expone el contrato en formato JSON en una ruta como [https://tu-api.onrender.com/api/v1/docs-json](https://tu-api.onrender.com/api/v1/docs-json).
+
+El Frontend ejecuta un comando para leer ese JSON y generar automáticamente sus tipos e interfaces en TypeScript.
+
+
+### 2. Design-First / Contract-First (Enfoque Colaborativo)
+
+El contrato se diseña antes de escribir una sola línea de código, de manera neutral.
+Ambos equipos (Front y Back) se sientan a diseñar un archivo openapi.yaml usando herramientas como Stoplight, SwaggerHub o Postman
+archivo openapi.yaml se guarda en un repositorio compartido.
+Backend implementa la API asegurando cumplir ese archivo.
+Frontend programa la interfaz contra ese mismo archivo.
+
+Ej para backend first
+
+```
+[ Backend (NestJS) ] 
+       │
+       ▼ Genera contrato automáticamente
+[ OpenAPI JSON Spec (/api/v1/docs-json) ]
+       │
+       ▼ Importa / Genera tipos automáticos
+[ Frontend (TypeScript) ]
+```
+
+
+npx openapi-typescript https://tu-app.onrender.com/api/v1/docs-json -o src/types/api.ts
+
+generará automáticamente en el frontend todas las interfaces (User, Task, CreateTaskDto, etc.)
+alineadas al 100% con la API sin necesidad de escribir tipos a mano.
+
+
+
+## Limpiar frontend
+
+Pasa a ser una app basada en solicitudes HTTP asíncronas
+
+1. Elementos a limpiar/eliminar:
+El almacenamiento de tareas en localStorage o arrays en memoria:
+
+Eliminar: La lógica en storage que guardaba la lista de tareas en el navegador (localStorage.setItem('tasks', ...)).
+#### !!! Nuevo uso de storage: localStorage (o sessionStorage) solo se usará para guardar el token JWT (access_token).
+
+
+2. Generación local de IDs (UUIDs / Math.random()):
+Eliminar: Cualquier función en el frontend que genere IDs para tareas o usuarios al crear un registro.
+
+Nuevo flujo: La API (PostgreSQL) asigna el ID y lo retorna en la respuesta 201 Created
+
+    
+3. Interfaces/Tipos duplicados:
+Reemplazar: Reemplazar los tipos locales manuales (interface Task { ... })
+#### !!! por los tipos importados del contrato generado (src/api/schema.ts).
+
+
+Arquitectura
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                 UI Components & Pages                   │
+│         (LoginForm, TaskList, TaskCard, Form)           │
+└───────────────────────────┬─────────────────────────────┘
+                            │ Consumen estados y métodos
+                            ▼
+┌─────────────────────────────────────────────────────────┐
+│                      Custom Hooks                       │
+│             (useAuth, useTasks, useCategories)          │
+└───────────────────────────┬─────────────────────────────┘
+                            │ Ejecutan peticiones HTTP
+                            ▼
+┌─────────────────────────────────────────────────────────┐
+│               API Client & Contract Services            │
+│               (Axios / Fetch + schema.ts)               │
+└───────────────────────────┬─────────────────────────────┘
+                            │ Leen token persistido
+                            ▼
+┌─────────────────────────────────────────────────────────┐
+│                        Storage                          │
+│                (localStorage: JWT Token)                │
+└─────────────────────────────────────────────────────────┘
+```
+
+Responsabilidades:
+
+1. Contrato & Cliente HTTP (src/api/)
+
+Configura el cliente HTTP (Axios) con la baseURL de Render(service/host) y añade un interceptor que lee el JWT de localStorage.
+Consume el contrato (schema.ts) para asegurar que los parámetros enviados y las respuestas recibidas coincidan exactamente con la API.
+
+2. Storage (src/utils/storage.ts)
+Encapsula la lectura y escritura del token JWT en el navegador (getToken(), setToken(token), removeToken()).
+
+3. Entidades y Tipos (src/types/ o src/entities/)
+Re-exporta o extiende los tipos que provienen del contrato generado:
+
+Ej:
+
+```
+import { components } from './api/schema';
+
+export type Task = components['schemas']['Task'];
+export type CreateTaskDto = components['schemas']['CreateTaskDto'];
+export type User = components['schemas']['User'];
+```
+
+4. Custom Hooks (src/hooks/)
+
+Lógica de estado asíncrono (tasks, loading, error).
+Consume servicios de la API y el storage para el token.
+
+Ej:
+
+```
+export const useTasks = () => {
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchTasks = async () => {
+    setLoading(true);
+    const data = await api.getTasks(); // Llama a la API usando el token
+    setTasks(data);
+    setLoading(false);
+  };
+
+  const createTask = async (dto: CreateTaskDto) => {
+    const newTask = await api.createTask(dto);
+    setTasks((prev) => [newTask, ...prev]); // Actualiza el estado visual
+  };
+
+  return { tasks, loading, fetchTasks, createTask };
+};
+```
+
+
+5. Componentes de UI (src/components/, src/pages/)
+Renderizan la interfaz visual y capturan eventos del usuario (formularios de login y tareas).
+
+Consume los Custom Hooks (useAuth, useTasks).
+Los componentes no saben que existe Axios, ni cómo se envían los headers de autenticación, ni la estructura directa del contrato
+
+
+
+
+
+# Contrato: Backend-First / Code-First
+
+
+## Guía
+
+En Backend-First / Code-First, el código fuente de tu API es la fuente única de verdad
+no se escribe manualmente; se extrae automáticamente a partir de los DTOs, entidades y controladores de NestJS.
+
+
+### 1. Enriquecer el Código Backend (NestJS)
+Para que el contrato generado sea completo y estricto, el código en NestJS debe explicitar tres cosas
+tipos de datos, reglas de validación y respuestas HTTP.
+
+1. Modelado de DTOs y Entidades:
+Decorar las propiedades de entrada (CreateTaskDto, LoginDto) y respuesta con @ApiProperty() y @ApiPropertyOptional().
+Integrar class-validator para definir tipos, opcionalidad, formatos (emails, UUIDs) y rangos
+
+2. Documentación de Controladores:
+Agrupar recursos con @ApiTags('tasks'), @ApiTags('auth').
+Describir la operación de cada endpoint con @ApiOperation({ summary: '...' }).
+Declarar los códigos de estado HTTP posibles con @ApiResponse({ status: 200, type: TaskDto }), @ApiBadRequestResponse(), @ApiUnauthorizedResponse().
+
+3. Seguridad y Parámetros Globals:
+Marcar los endpoints protegidos con @ApiBearerAuth().
+Documentar parámetros de consulta (@ApiQuery()) y de ruta (@ApiParam()).
+
+    
+### 2. Exponer y Exportar la Especificación OpenAPI
+Una vez enriquecidos los controladores y DTOs, NestJS compila el árbol de metadatos y genera la especificación estructurada en formato JSON/YAML.
+
+1. Exposición Dinámica (Runtime):
+Configurar DocumentBuilder y SwaggerModule en main.ts.
+Exponer el endpoint dinámico en /api/v1/docs-json.
+    
+2. Exportación Estática (Build Time / Opcional):
+Crear un script en NestJS que compile el módulo y escriba un archivo swagger.json en disco antes del despliegue.
+Ventaja: Permite generar el contrato en el frontend sin necesidad de tener la API corriendo en vivo
+    
+
+### 3. Generar el Contrato en el Frontend (React + TypeScript)
+
+El frontend no escribe interfaces TypeScript manualmente;
+descarga la especificación del backend y ejecuta herramientas de generación de código (code generators).
+
+1. Selección de Herramientas CLI:
+
+openapi-typescript: Genera un archivo .ts estricto únicamente con las interfaces e inmunidad de tipos (ligero y transparente).
+orval o @hey-api/openapi-ts: Genera tanto los tipos como las funciones del cliente HTTP (Axios/Fetch/React Query) listas para invocar.
+
+2. Ejecución y Extracción:
+
+Definir un script en el package.json del frontend que consuma la URL de la API en Render
+o el archivo swagger.json exportado
+
+`npm run generate:api-types`
+
+Salida: Archivo src/api/schema.ts con todos los tipos (Task, User, CreateTaskDto, etc.).
+
+
+### 4. Mapeo en la Arquitectura del Frontend
+
+Con los tipos auto-generados en el frontend, se conectan las capas internas de la aplicación.
+
+1. Tipado del Cliente HTTP:
+Configurar el cliente Axios/Fetch vinculando los tipos del contrato a las funciones de petición (GET, POST, PATCH).
+    
+2. Absorción en Custom Hooks:
+Crear hooks como useAuth y useTasks declarando sus parámetros y estados con las interfaces extraídas del contrato.
+
+3. Consumo en la UI:
+Conectar formularios y componentes visuales a las propiedades tipadas, obteniendo autocompletado nativo y errores de compilación si la API cambia un campo.
+
+
+### 5. Mantenimiento del contrato
+
+#### !!! El contrato se mantiene siempre actualizado mediante un flujo continuo:
+
+```
+[ Modificación en NestJS ] ──> [ Build / Deploy ] ──> [ Regeneración en React ]
+   (Cambia DTO o Controller)     (Nuevo JSON OpenAPI)     (npm run generate:api-types)
+```
+
+
+## Código
+
+
+### 1. Configuración Global (src/main.ts)
+
+Swagger Setup: Verificar cómo están configurados DocumentBuilder y SwaggerModule.setup().
+Ruta del JSON: Confirmar que la ruta /api/v1/docs-json esté pública para que el frontend pueda descargar el contrato.
+ValidationPipe: Asegurar que ValidationPipe esté globalmente activo con { transform: true, whitelist: true } para que las validaciones descritas en Swagger se apliquen en tiempo de ejecución.    
+
+    
+### 2. DTOs de Entrada y Salida (Data Transfer Objects)
+
+Revisar si las clases que reciben y devuelven datos tienen sus campos decorados con class-validator y @nestjs/swagger:
+
+src/auth/dto/ (login.dto.ts, register.dto.ts, auth-response.dto.ts):
+Que tengan @ApiProperty() con ejemplos, descripciones y restricciones (@IsEmail(), @MinLength()).
+    
+src/tasks/dto/ (create-task.dto.ts, update-task.dto.ts, task-response.dto.ts):
+Que los enums (como el estado de la tarea PENDING | IN_PROGRESS | COMPLETED) usen @ApiProperty({ enum: TaskStatus }).
+    
+
+### 3. Controladores (src/auth/ y src/tasks/)
+
+Revisar qué decoradores tienen los métodos de los controladores:
+
+Etiquetas y Resúmenes:
+ @ApiTags('Auth'), @ApiTags('Tasks') y @ApiOperation({ summary: '...' }).
+
+Respuestas HTTP explícitas:
+@ApiResponse({ status: 200, type: TaskResponseDto })
+@ApiBadRequestResponse({ description: 'Datos de entrada inválidos' })
+@ApiUnauthorizedResponse({ description: 'Token JWT faltante o inválido' })
+     
+#### !!! Seguridad: Que los endpoints privados tengan el decorador @ApiBearerAuth().
+
+
+### 4. Entidades y Mapeos de Base de Datos
+
+Verificar que los nombres de los atributos expuestos hacia el cliente coincidan con las respuestas
+ejemplo, asegurando que userName en TypeScript mapee limpiamente a user_name en la BD sin romper el JSON enviado al frontend
+
+
+## 1. main.ts
+
+Antes del contrato
+
+```
+import { NestFactory, Reflector } from '@nestjs/core';
+import { ClassSerializerInterceptor, ValidationPipe, Logger } from '@nestjs/common';
+import { CustomExceptionFilter } from './common/filters/http-exception.filter';
+import { ConfigService } from '@nestjs/config';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { AppModule } from './app.module';
+
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule);
+  const configService = app.get(ConfigService);
+  const logger = new Logger('Bootstrap');
+
+  const port = configService.get<number>('PORT') || 3000;
+  const apiPrefix = configService.get<string>('API_PREFIX') || 'api/v1';
+  const environment = configService.get<string>('ENVIRONMENT') || 'development';
+  const showSwagger = configService.get<string>('SHOW_SWAGGER') === 'true' || environment !== 'production';
+
+  app.setGlobalPrefix(apiPrefix);
+
+  app.enableCors({
+    origin: true,
+    credentials: true,
+  });
+
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+    }),
+  );
+
+  app.useGlobalFilters(new CustomExceptionFilter());
+  app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
+
+  if (showSwagger) {
+    const config = new DocumentBuilder()
+      .setTitle('Task Management API')
+      .setDescription(
+        'API REST multi-tenant para gestión de tareas y categorías construida con NestJS, TypeORM y PostgreSQL.',
+      )
+      .setVersion('1.0')
+      .addTag('Auth', 'Endpoints de autenticación y registro')
+      .addTag('Categories', 'Gestión de categorías')
+      .addTag('Tasks', 'Gestión de tareas')
+      .addBearerAuth(
+        {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+          name: 'JWT',
+          description: 'Ingresa el token JWT sin el prefijo Bearer',
+          in: 'header',
+        },
+        'JWT-auth',
+      )
+      .addBearerAuth(
+        {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+          name: 'JWT Refresh Token',
+          description: 'Ingresa tu Refresh Token (solo para /auth/refresh)',
+          in: 'header',
+        },
+        'refresh-token',
+      )
+      .build();
+
+    const document = SwaggerModule.createDocument(app, config);
+
+    SwaggerModule.setup(`${apiPrefix}/docs`, app, document, {
+      swaggerOptions: {
+        persistAuthorization: true,
+        tagsSorter: 'alpha',
+        operationsSorter: 'alpha',
+      },
+    });
+
+    logger.log(`📄 Documentación Swagger lista en: /${apiPrefix}/docs`);
+  }
+
+  await app.listen(port, '0.0.0.0');
+  logger.log(`🚀 Aplicación corriendo en el puerto ${port} [Entorno: ${environment}]`);
+}
+bootstrap();
+
+```
+
+
+### Claves:
+
+CORS activado:
+Permitirá peticiones desde cualquier frontend local (localhost:5173, etc.) o en producción.
+
+Pipes y Transforma de datos:
+ValidationPipe con { transform: true, whitelist: true } garantiza que los DTOs se validen e interpreten correctamente.
+
+Autenticación en Swagger:
+esquemas 'JWT-auth' y 'refresh-token', necesarios para indicar en la documentación qué endpoints requieren token.
+
+#### !!! Endpoint automático para el Contrato:
+Al invocar SwaggerModule.setup('api/v1/docs', ...), NestJS expone automáticamente el JSON del contrato en la ruta:
+En producción (Render): `[https://task-manager-api.onrender.com/api/v1/docs-json](https://task-manager-api.onrender.com/api/v1/docs-json)`
+
+
+En local: http://localhost:8000/api/v1/docs-json
+
+En producción (Render): [https://task-manager-api.onrender.com/api/v1/docs-json](https://task-manager-api.onrender.com/api/v1/docs-json)
+
+
+## 2. auth dto
+
+#### ApiProperty
+
+```
+
+import { ApiProperty } from '@nestjs/swagger';
+import { UserResponseDto } from '../../users/dto/user-response.dto';
+
+export class TokensDto {
+  @ApiProperty({
+    example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
+    description: 'Token de acceso JWT de corta duración',
+  })
+  accessToken: string;
+
+  @ApiProperty({
+    example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
+    description: 'Token de refresco JWT de larga duración',
+  })
+  refreshToken: string;
+}
+
+export class AuthResponseDto extends TokensDto {
+  @ApiProperty({
+    type: () => UserResponseDto,
+    description: 'Datos del usuario autenticado',
+  })
+  user: UserResponseDto;
+}
+```
+
+type: () => UserResponseDto: Resolver la referencia a UserResponseDto con una función flecha
+#### evita problemas de dependencias circulares al compilar la especificación OpenAPI.
+
+Herencia con extends TokensDto: OpenAPI reconocerá que AuthResponseDto incluye tanto accessToken y refreshToken como el objeto user
+
+
+
+## 3. login dto
+
+```
+import { ApiProperty } from '@nestjs/swagger';
+import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import { Transform } from 'class-transformer';
+
+export class LoginUserDto {
+  @ApiProperty({
+    description: 'Correo electrónico del usuario registrado',
+    example: 'pepe1@ejemplo.com',
+  })
+  @Transform(({ value }: { value: unknown }) =>
+    typeof value === 'string' ? value.trim() : value,
+  )
+  @IsNotEmpty({ message: 'El correo electrónico es obligatorio' })
+  @IsEmail({}, { message: 'El correo electrónico no tiene un formato válido' })
+  email: string;
+
+  @ApiProperty({
+    description: 'Contraseña de acceso del usuario',
+    example: 'Password123!',
+  })
+  @IsString({ message: 'La contraseña debe ser una cadena de texto' })
+  @IsNotEmpty({ message: 'La contraseña es obligatoria' })
+  password: string;
+}
+
+```
+
+Integración limpia de class-validator + @nestjs/swagger
+#### mensajes de error personalizados y los atributos example/description le permitirán al generador de código del frontend inferir tipos e instrucciones claras
+
+
+## 4. register dto
+
+Declarar minLength: 8 y maxLength: 50 dentro de @ApiProperty permite que el generador del contrato en el frontend (openapi-typescript u orval) pueda extraer no solo el tipo string, sino también metadatos de validación para construir esquemas de formularios (como zod o yup).
+
+Consistencia del payload: La propiedad expuesta en el JSON es userName (camelCase), lo cual es el estándar REST
+NestJS la recibirá como userName y la mapeará internamente al campo user_name de la base de datos PostgreSQL mediante TypeORM
+
+
+## 5. user-response.dt
+
+Aclarar los formatos especificados (format: 'uuid' y format: 'date-time')
+
+
+
+## 6. auth controller
+
+#### apitags, ApiOperation, ApiResponse y ApiBearerAuth,
+
+seguridad
+@ApiBearerAuth('refresh-token') sobre @Post('refresh'),
+#### !!! endpoint específico exige la clave
+
+Tipado estricto en respuestas:
+Con type: AuthResponseDto y type: TokensDto
+#### cualquier cliente que consuma este contrato sabrá exactamente qué objetos JSON esperar en cada código de estado HTTP (200, 201, 400, 401, 409).
+
+
+## Service
+
+No forma parte del contrato de la API ni se exporta a la especificación OpenAPI (Swagger).
+
+#### El contrato de la API describe exclusivamente la interfaz pública HTTP
+##### qué cliente habla con qué servidor, bajo qué rutas, qué parámetros envía y qué estructura JSON recibe
+
+#### El Service es un detalle de implementación interno del backend
+reglas de negocio, consultas a la base de datos, cifrado con bcrypt y firma de tokens JWT
+Está oculto en el frontend
+Lógica de AuthService (login, register)
+Algoritmos de cifrado (bcrypt.hash, bcrypt.compare)
+Firma y expiración de JWT (jwtService.signAsync)
+Consultas TypeORM y base de datos PostgreSQL
+Módulos inyectados (UsersService, ConfigService)
+
+
+#### El contrato es lo que el front ve
+Rutas y Métodos HTTP (POST /auth/login)
+DTOs de Entrada (RegisterUserDto, LoginUserDto)
+DTOs de Salida (AuthResponseDto, TokensDto)
+Códigos de Estado HTTP (200, 201, 401, 403)
+Esquemas de Seguridad (Bearer Token Header)
+
+
+### Errores y Códigos de Estado HTTP: se mapean
+#### Cuando tu AuthService lanza excepciones de NestJS, estas se convierten en códigos de respuesta HTTP que el controlador debe declarar en sus decoradores:
+
+throw new UnauthorizedException('Credenciales no válidas')
+pasa como Requiere @ApiResponse({ status: 401 }) en el Controller.
+
+throw new ForbiddenException('Acceso denegado')
+Requiere @ApiResponse({ status: 403 }) en el Controller.
+
+Sanitización y Filtrado de Datos Sensibles
+
+Tu método privado toUserResponseDto(user: User) es clave para el contrato
+#### !!! Garantiza que la entidad cruda de PostgreSQL (User con password y hashedRefreshToken) se transforme en UserResponseDto antes de salir
+asegurando que el contrato jamás exponga campos confidenciales al frontend.
+
+
+Tipado Estricto de Retorno
+#### !!! devuelviendo DTOs explícitos en lugar de entidades de TypeORM:
+
+#### !!! aseguras de que TypeScript en el backend fuerce al Service a entregar la misma estructura JSON que el Controller le prometió al frontend en Swagger
+
+
+
+## 7. CreateTaskDto
+
+@ApiPropertyOptional: Diferenciar entre campos requeridos (title) y opcionales (description, completed, categoryIds) evita que el contrato fuerce al frontend a enviar campos nulos o no deseados al crear una tarea.
+
+#### Definición de colecciones y arreglos: Al especificar type: [String] en categoryIds
+el generador de tipos del frontend sabrá que debe tiparlo como string[] en lugar de any[].
+
+#### Atributos default y nullable: Indicar default: false en completed y nullable: true en description le brinda al cliente frontend toda la metadata necesaria para inicializar formularios con valores por defecto exactos
+
+
+## 8. task-response.dto
+
+type: () => [CategoryResponseDto] es la forma exacta en la que NestJS
+Swagger resuelven arreglos de objetos anidados sin provocar bloqueos por referencias circulares entre módulos
+TasksModule y CategoriesModule
+
+Nulos (nullable: true):
+Al definir description: string | null
+TypeScript en el frontend tipará automáticamente la propiedad como string | null, obligando a la interfaz de usuario a manejar de forma segura los valores nulos sin riesgo de errores tipo runtime (Cannot read properties of null).
+
+
+## 9. update-task
+
+Marca todas las propiedades heredadas de CreateTaskDto (title, description, completed, categoryIds)
+ como opcionales a nivel de TypeScript y class-validator.
+
+Aplica automáticamente el decorador @ApiPropertyOptional()
+a cada una en el esquema JSON de Swagger, heredando los mismos tipos, descripciones y ejemplos ya definidos.
+
+
+## 10. task.controller
+
+Tipado exacto de paginación: Al retornar PaginatedTasksDto en findAll, el contrato expuesto hacia el frontend especificará la estructura exacta de los metadatos de paginación (total, page, limit, totalPages) junto al array de tareas.
+Validación estricta de UUID v7: Usar ParseUUIDPipe({ version: '7' }) documenta en Swagger y valida en tiempo de ejecución que las rutas /tasks/:id solo acepten identificadores UUID v7 válidos.
+
+
+La especificación OpenAPI (Swagger JSON) se genera automáticamente a partir de tu código en:
+
+```
+Local: http://localhost:3000/api/v1/docs-json
+Producción: [https://tu-api.onrender.com/api/v1/docs-json](https://tu-api.onrender.com/api/v1/docs-json)
+
+```
+
+
+
+# Entity
+
+nunca deben exponerse ni enviarse directamente al frontend
+limita exclusivamente al dominio interno y a la capa de persistencia (servicios, repositorios y base de datos).
+Antes de responder a una petición HTTP o WebSocket, la entidad pasa por un proceso de transformación o mapeo hacia un DTO de respuesta
+(Response DTO) o un contrato público formateado en JSON.
+
+`[ Base de Datos ] ──> [ Entidad (ORM/Dominio) ] ──> [ Mapper / Servicio ] ──> [ DTO de Salida ] ──> [ JSON al Frontend ]`
+
+Recuperación: entrega datos persistidos al ORM o repositorio, generando una instancia de la Entidad
+Operación de Negocio: El servicio procesa la entidad aplicando reglas de dominio.
+Mapeo / Filtrado: La entidad se transforma en un DTO (Data Transfer Object) diseñado específicamente para el contrato de la API.
+#### !!! Respuesta: El controlador serializa el DTO a formato JSON y lo envía al cliente.
+
+Referencias Cíclicas:
+Los ORMs (como TypeORM o Prisma) manejan relaciones bidireccionales
+(User -> Tasks -> User), causando bucles infinitos en JSON.stringify.
+La entidad guarda datos primitivos/módem de BD; el frontend requiere campos computados o formateados.
+
+
+## Mapeo
+
+Ej:
+
+1. Entidad del Backend (UserEntity)
+Contiene datos de infraestructura, persistencia y metadatos de auditoría:`
+
+```
+// user.entity.ts
+export class UserEntity {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  passwordHash: string; // SENSIBLE: Nunca debe salir del backend
+  role: 'ADMIN' | 'USER';
+  failedLoginAttempts: number; // Interno del sistema
+  createdAt: Date;
+  updatedAt: Date;
+  deletedAt?: Date; // Metadato de soft delete
+}
+```
+
+2. DTO de Respuesta (UserResponseDto)
+Es la estructura limpia que define la interfaz pública que el frontend consumirá:
+
+```
+// user-response.dto.ts
+export class UserResponseDto {
+  id: string;
+  fullName: string;
+  email: string;
+  role: string;
+}
+```
+
+3. Capa de Mapeo / Servicio
+Donde se realiza la conversión antes de entregar la respuesta:
+
+```
+// user.mapper.ts
+export class UserMapper {
+  static toResponseDto(entity: UserEntity): UserResponseDto {
+    return {
+      id: entity.id,
+      fullName: `${entity.firstName} ${entity.lastName}`,
+      email: entity.email,
+      role: entity.role,
+    };
+  }
+}
+```
+
+### 1. solicitud (Request): La entidad no existe aún o no se modifica directamente
+El frontend envía un Create/Update DTO con validaciones de entrada (class-validator)
+el backend usa ese DTO para construir o mutar la entidad.
+
+### 2. respuesta (Response): La entidad actúa como la fuente de verdad
+El backend toma el estado de la entidad y extrae solo la representación relevante para la interfaz
+
+
+
+
+
+# Frontend: Consumir el contrato en React + TypeScript
+
+#### generar el archivo de tipos en el Frontend a partir del JSON que expone NestJS
+
+Instalación en el front:
+
+`npm install -D openapi-typescript typescript`
+
+script en package.json
+para actualizar el contrato con una sola instrucción
+
+```
+"scripts": {
+  "dev": "vite",
+  "build": "tsc && vite build",
+  "generate:api-types": "openapi-typescript http://localhost:3000/api/v1/docs-json -o src/api/schema.ts"
+}
+```
+
+
+### Generación del contrato
+
+Con el servidor de NestJS corriendo (npm run start:dev), ejecuta en el frontend:
+
+```
+npm run generate:api-types
+```
+
+creará automáticamente el archivo src/api/schema.ts, el cual contendrá todas las interfaces TypeScript
+TaskResponseDto, CreateTaskDto, AuthResponseDto, UserResponseDto, etc
+
+
+
+## Guía
+
+### 1. Capa de Contrato y Tipado (src/api/)
+
+Generador de Tipos: Dependencia openapi-typescript instalada como devDependencies.
+
+Archivo de Contrato (schema.ts): Un único archivo generado automáticamente donde se mapean las rutas (paths)
+métodos (get, post, put, delete) y componentes (components["schemas"]).
+
+Utilidades de Extracción de Tipos: Un archivo de helpers o alias (types.ts) para reutilizar fácilmente los modelos de la API en los componentes de React:
+
+```
+import { components } from './schema';
+
+export type Task = components['schemas']['TaskResponseDto'];
+export type CreateTaskInput = components['schemas']['CreateTaskDto'];
+export type User = components['schemas']['UserResponseDto'];
+```
+
+
+### 2. Capa de Red y Cliente HTTP (src/services/ o src/api/)
+
+Cliente Base:
+
+Instancia de Axios configurada con baseURL
+(ej. http://localhost:3000/api/v1)
+y cabeceras por defecto (Content-Type: application/json).
+
+
+Interceptor de Petición (Request):
+
+Lee el accessToken (desde memoria o localStorage)
+y lo inyecta automáticamente en el header: Authorization: Bearer <token>.
+
+
+Interceptor de Respuesta (Response):
+
+Intercepta respuestas con código 401 Unauthorized.
+    
+Ejecuta una cola de peticiones pausadas mientras llama al endpoint /auth/refresh enviando el refreshToken.
+Si la renovación es exitosa, actualiza las cabeceras y reintenta la petición original.
+Si la renovación falla, limpia la sesión y redirige al usuario al /login.
+
+
+### 3. Capa de Autenticación y Estado Global
+(src/context/ o src/store/)
+
+Mantiene el estado de la sesión activa en toda la interfaz de usuario.
+
+#### AuthContext + AuthProvider:
+
+Estado global: user: User | null,
+isAuthenticated: boolean, isLoading: boolean.
+
+Métodos expuestos: login(), register(), logout().
+
+#### Persistencia de Sesión
+
+Definir la estrategia de almacenamiento para los tokens
+(localStorage, sessionStorage o almacenamiento en memoria).
+
+
+#### Guardia de Rutas (ProtectedRoute / PublicRoute):
+
+Componentes wrapper en React Router para restringir vistas privadas (como /tasks) 
+a usuarios autenticados y redirigir usuarios autenticados fuera de las vistas públicas (como /login).    
+
+
+### 4. Capa de Estado del Servidor y Custom Hooks (src/hooks/)
+
+lógica de consumo de API
+
+#### Separación de Estados:
+
+Estado UI: Controlado con useState / useReducer (ej. modales abiertos, filtros seleccionados, temas visuales).
+Estado Servidor (API): Gestionado idealmente con TanStack Query (React Query) o Custom Hooks con Axios.
+
+
+#### Hooks de Tareas (useTasks):
+
+useGetTasks(filters): Carga y almacenamiento en caché de la lista paginada
+
+useCreateTask(): Mutación que envía el CreateTaskInput e invalida la caché para refrescar la lista.
+
+useUpdateTask(), useDeleteTask(), useRestoreTask().
+
+
+### 5. Capa de Formularios y Validación de UI (src/components/forms/)
+
+Asegura que los datos ingresados por el usuario cumplan las reglas impuestas por los DTOs
+
+ej: Librería de Formularios: React Hook Form junto con Zod o Yup para validación.
+
+Esquemas Alineados: Construcción de esquemas de validación del lado del cliente que espejen exactamente las restricciones expuestas en los DTOs del backend
+(minLength: 3, maxLength: 100, formato de correo, etc.).
+
+
+Mapeador de Errores de API:
+Función formateadora para interpretar el formato estándar de excepciones de NestJS:
+
+```
+{
+  "statusCode": 400,
+  "message": ["El título debe tener al menos 3 caracteres."],
+  "error": "Bad Request"
+}
+```
+
+Asignación automática de los mensajes de error a los campos correspondientes del formulario (setError('title', ...)).
+
+
+
+
+
+
+# Design-First / Contract-First
+
+Archivo de especificación OpenAPI (openapi.yaml o openapi.json)
+se diseña y aprueba antes de escribir cualquier línea de código en el backend o en el frontend
+
+##### El archivo YAML se convierte en la Única Fuente de Verdad
+
+A partir de él, el frontend genera sus tipos/clientes HTTP y el backend genera o valida sus DTOs y controladores
+
+┌──────────────────────────────┐
+               │  1. Escribir openapi.yaml    │
+               │ (Diseño de API / Contrato)   │
+               └──────────────┬───────────────┘
+                              │
+         ┌────────────────────┴────────────────────┐
+         ▼                                         ▼
+┌─────────────────────────┐               ┌─────────────────────────┐
+│  2. Servidor Mock       │               │  3. Frontend (React)    │
+│  (Prism HTTP Server)    │               │  Genera schema.ts       │
+└────────┬────────────────┘               └────────┬────────────────┘
+         │                                         │
+         │  Frontend desarrolla con Mocks          │
+         └────────────────────┬────────────────────┘
+                              │
+                              ▼
+               ┌──────────────────────────────┐
+               │  4. Backend (NestJS)         │
+               │  Implementa el Contrato      │
+               └──────────────┬───────────────┘
+                              │
+                              ▼
+               ┌──────────────────────────────┐
+               │  5. Pruebas de Contrato      │
+               │  (Contract Testing)          │
+               └──────────────────────────────┘
+
+               
+1. Diseñar la especificación OpenAPI (openapi.yaml)
+En lugar de usar decoradores de NestJS
+se escribe directamente el archivo de especificación utilizando herramientas visuales o extensiones de editor.
+
+Herramientas de edición: Stoplight Studio, Swagger Editor o extensiones de VS Code (OpenAPI (Swagger) Editor, Redocly).
+
+Ej:
+
+```
+openapi: 3.0.3
+info:
+  title: Task Management API
+  version: 1.0.0
+paths:
+  /api/v1/tasks:
+    get:
+      summary: Obtener tareas paginadas
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Lista de tareas
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedTasksResponse'
+components:
+  schemas:
+    TaskResponse:
+      type: object
+      required:
+        - id
+        - title
+        - completed
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        completed:
+          type: boolean
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+```
+
+
+2. Servidor Mock para el Front
+Sin necesidad de que el backend haya escrito una sola línea en NestJS
+##### el frontend puede empezar a consumir endpoints simulados que devuelven respuestas coherentes basadas en los ejemplos del YAML
+
+Herramienta: Prism CLI (@stoplight/prism-cli).
+
+```
+npx @stoplight/prism-cli mock openapi.yaml -p 4000
+```
+
+Prism expone una API REST funcional en http://localhost:4000 que valida peticiones de entrada
+y devuelve datos falsos (mocked) respetando las estructuras del openapi.yaml.
+
+
+3. Generación de Código en el Frontend (React)
+El proceso en el frontend se mantiene exacto al enfoque Code-First, pero apuntando directamente al archivo local openapi.yaml:
+
+`npx openapi-typescript openapi.yaml -o src/api/schema.ts`
+
+React genera sus interfaces TypeScript (TaskResponse, CreateTaskInput).
+
+Conecta sus custom hooks y Axios al servidor mock de Prism (http://localhost:4000).
+
+El equipo de Frontend puede desarrollar el 100% de la UI de forma totalmente independiente del ritmo de trabajo del Backend.
+
+
+4. Implementación en el Backend (NestJS)
+
+En NestJS hay dos formas de consumir este contrato preexistente:
+
+A: Mapeo Manual Asistido
+El desarrollador crea los DTOs e interfaces en NestJS replicando las estructuras descritas en el YAML
+y decora el controlador para que /docs coincida con el contrato.
+
+B: Generación Automática de Interfaces
+
+Utilizar generadores de código como:
+`@openapitools/openapi-generator-cli`
+para transformar el openapi.yaml directamente en interfaces TypeScript y DTOs de NestJS:
+
+```
+npx @openapitools/openapi-generator-cli generate \
+  -i openapi.yaml \
+  -g typescript-nestjs \
+  -o src/generated-api
+```
+
+
+5. Linting y Pruebas de Contrato
+
+Evitar que el backend sufra de "desviación de contrato" (contract drift)
+durante el desarrollo, se utilizan herramientas de prueba:
+
+#### Linting del Contrato (Spectral): Garantiza que la API cumpla estándares de diseño (nombres en camelCase/kebab-case, códigos de estado HTTP correctos, descripciones presentes):
+
+`npx @stoplight/spectral-cli lint openapi.yaml`
+
+Pruebas con Prism Proxy: Durante las pruebas de integración en NestJS, se hacen pasar las peticiones HTTP por Prism en modo proxy para validar que las respuestas de NestJS sigan coincidiendo exactamente con lo prometido en openapi.yaml.
+
+
+
+## Desarrollo bajo Design-First
+
+A partir de la especificación openapi.yaml.
+
+
+### 0. Definición y Aprobación del Contrato (Fase Conjunta)
+
+Ambos equipos se sientan a diseñar la API antes de escribir código de la aplicación.
+
+Artefacto generado: openapi.yaml
+
+Acciones:
+Se definen rutas (/auth/login, /tasks), métodos HTTP, códigos de estado (200, 201, 400, 401, 404).
+Se especifican estructuras JSON requeridas (DTOs) y esquemas de seguridad (Bearer JWT).
+Se valida la calidad del YAML con un linter como Spectral (npx @stoplight/spectral-cli lint openapi.yaml).
+
+
+### 1. Configuración de Entornos y Generación de Tipos
+
+Una vez congelado el contrato, cada lado prepara su entorno de trabajo de forma independiente:
+
+Aspecto Frontend (React + TypeScript) | Backend (NestJS + TypeORM)
+
+Herramienta:
+front: Prism CLI + openapi-typescript
+back: OpenAPI Generator / DTOs manuales
+
+Acción:
+front:
+1. servidor Mock: npx prism mock openapi.yaml -p 4000
+2. Genera tipos estáticos: npx openapi-typescript openapi.yaml -o src/api/schema.ts
+
+back: Genera o escribe los DTOs y tipos respaldados por el YAML.
+1. Genera o escribe los DTOs y tipos respaldados por el YAML.
+2. Configura esquemas de base de datos y migraciones en PostgreSQL.
+
+Estado:
+front:
+Servidor de API simulada operativo en localhost:4000
+entregando datos falsos coherentes con el contrato
+
+back: 
+Esqueleto del proyecto con módulos, entidades y controladores sin lógica interna
+
+
+### 2. Desarrollo de Infraestructura Base
+
+enfoque: 
+
+front:
+Cliente HTTP y Manejo de Sesión
+
+back:
+Persistencia y Seguridad Interna
+
+
+front: 
+Desarrolla el AuthContext y la persistencia de tokens.
+Crea interceptores Axios para inyectar Bearer Token ficticio y probar errores 401.
+
+back:
+Crea las entidades del dominio (UserEntity, TaskEntity, CategoryEntity).
+Implementa JwtStrategy, JwtRefreshGuard y hashing de contraseñas con bcrypt.
+
+
+consumo/prueba:
+
+front:
+Pide login a Prism (POST /auth/login)
+y recibe una respuesta AuthResponseDto simulada válida.
+
+back:
+Pruebas unitarias de servicios (AuthService, UsersService) con bases de datos en memoria o contenedores Docker.
+
+
+### 3. Implementación de Funcionalidades
+En paralelo, sin bloquearse
+
+```
+[ Frontend React ] ──( HTTP Request )──> [ Prism Mock Server (4000) ]
+                                                │ (Devuelve datos YAML)
+[ Backend NestJS ] ──( HTTP Request )──> [ NestJS App (3000) ] <── [ Postgres BD ]
+```
+
+Vista/CRUD Feature
+
+front:
+Crea la interfaz de usuario (listas, modales, checkboxes de completado).
+Implementa React Hook Form + Zod replicando reglas de validación del openapi.yaml.
+Crea custom hooks (useTasks) consumiendo GET /tasks y POST /tasks de Prism.
+
+back:
+Desarrolla TasksService con lógica de negocio (consultas SQL, filtros, paginación real).
+Desarrolla TasksController mapeando la entidad TaskEntity a TaskResponseDto.
+Escribe pruebas de integración.
+
+
+Estado:
+ 
+front: 
+La aplicación React está 100% construida, diseñada y testeada visualmente contra la API simulada.
+
+back:
+El backend tiene toda la base de datos, relaciones y endpoints listos y probados.
+
+
+### 4. Switch de Integración: conectar front con back
+
+Reemplazar la API simulada de Prism por el servidor real de NestJS.
+
+1. Frontend: Cambia una sola variable de entorno:
+
+```
+# Antes (Prism Mock):
+VITE_API_URL=http://localhost:4000/api/v1
+
+# Ahora (NestJS Real):
+VITE_API_URL=http://localhost:3000/api/v1
+```
+
+2. Resultado: Todo el sistema funciona a la primera
+
+No hay errores de propiedad no encontrada (undefined).
+No hay desacoples de nombres (user_name vs userName).
+Los tipos TypeScript en el frontend coinciden exactamente con lo que envía la base de datos a través de NestJS.
+
+
+### 5. Evolución y Mantenimiento de Cambios: Nueva Feature
+
+Añadir un campo priority: 'LOW' | 'MEDIUM' | 'HIGH'
+
+`1. Editar openapi.yaml ──> 2. Linter (Spectral) ──> 3. Regenerar FE schema.ts & BE DTOs`
+
+Actualizar el YAML: Se agrega priority en el openapi.yaml.
+
+Frontend: Ejecuta npm run generate:api-types.
+TypeScript marcará exactamente qué formularios y componentes necesitan actualizarse para soportar el campo priority.
+
+Backend: Actualiza CreateTaskDto y la entidad en NestJS.
+Si el controlador o servicio no cumple el contrato, la suite de pruebas o el compilador fallarán.
+
+
+
+
+
+
+
+# Estrategias de Mapeo
 
 
 
